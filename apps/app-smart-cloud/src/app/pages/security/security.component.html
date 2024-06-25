@@ -4,7 +4,7 @@
   [title]="'app.security.title' | i18n"
 >
   <ng-template #breadcrumb>
-    <nz-breadcrumb [nzSeparator]="separatorTemplate">
+    <nz-breadcrumb [nzSeparator]="iconTemplate">
       <nz-breadcrumb-item>{{
         'app.breadcrumb.home' | i18n
       }}</nz-breadcrumb-item>
@@ -16,6 +16,7 @@
       }}</nz-breadcrumb-item>
     </nz-breadcrumb>
   </ng-template>
+  <ng-template #iconTemplate><one-portal-svg-icon [icon]="'icon_breadcrumb'"></one-portal-svg-icon></ng-template>
   <ng-template #action>
     <div class="alain-custom-action text-right">
       <share-users-combobox></share-users-combobox>

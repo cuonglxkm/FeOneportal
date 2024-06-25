@@ -67,9 +67,11 @@ export class CoreDataService {
         let regionId = localStorage.getItem('regionId');
 
         //localStorage.removeItem('regions');
+        
 
         this.regionService.getAll(baseUrl).subscribe({
             next : (data) => {
+                console.log(data);
                 
                 if (!data) {
                     this.router.navigateByUrl(`/exception/500`)

@@ -52,7 +52,7 @@ export class SnapshotCreateComponent implements OnInit, OnChanges {
   selectedVM: any;
   selectedSnapshotPackage: any;
   projectType = 0;
-  @Input() snapshotTypeCreate: any = 0; // VM:1 Volume:0 none:0
+  @Input() navigateType: any = 2; // navigate form(VM:1 Volume:0 none:2)
   loadingCreate: boolean;
   disableByQuota = false;
 
@@ -64,6 +64,7 @@ export class SnapshotCreateComponent implements OnInit, OnChanges {
   quotaTotal: any;
   quotaUsed: any;
   quotaRemain: any;
+  selectedVolumeRoot: any;
 
 
   constructor(private router: Router,
@@ -116,8 +117,8 @@ export class SnapshotCreateComponent implements OnInit, OnChanges {
     const data = {
       name: this.validateForm.controls['name'].value,
       description: this.validateForm.controls['description'].value,
-      volumeId: this.selectedSnapshotType == 0 ? this.selectedVolume.id : null,
-      vmId: this.selectedSnapshotType == 1 ? this.selectedVM.id : null,
+      volumeId: this.navigateType == 0 || (this.selectedSnapshotType == 0 && this.navigateType == 2) ? this.selectedVolume.id : null,
+      vmId: this.navigateType == 1 || (this.selectedSnapshotType == 1 && this.navigateType == 2) ? this.selectedVM.id : null,
       region: this.region,
       projectId: this.project,
       scheduleId: null,
@@ -222,15 +223,15 @@ export class SnapshotCreateComponent implements OnInit, OnChanges {
   checkDisable() {
     this.disableCreate = false;
     if ((this.selectedSnapshotPackage == undefined && this.projectType != 1) ||
-      ((this.selectedSnapshotType == 0 || this.snapshotTypeCreate==0) && this.selectedVolume == undefined) ||
-      ((this.selectedSnapshotType == 1 || this.snapshotTypeCreate==1) && this.selectedVM == undefined)) {
+      ((this.selectedSnapshotType == 0 || this.navigateType==0) && this.selectedVolume == undefined) ||
+      ((this.selectedSnapshotType == 1 || this.navigateType==1) && this.selectedVM == undefined)) {
       this.disableCreate = true;
     }
 
-    if (this.selectedSnapshotType == 0) {
+    if ((this.navigateType == 0 || (this.selectedSnapshotType == 0 && this.navigateType == 2)) && this.selectedVolume != undefined) {
       this.validateForm.controls['quota'].setValue(this.selectedVolume?.sizeInGB == undefined ? '0GB' : this.selectedVolume?.sizeInGB + 'GB');
-    } else if (this.selectedSnapshotType == 1) {
-      this.validateForm.controls['quota'].setValue(this.selectedVM?.storage == undefined ? '0GB' : this.selectedVM?.storage + 'GB');
+    } else if ((this.navigateType == 1 || (this.selectedSnapshotType == 1 && this.navigateType == 2)) && this.selectedVolume != undefined) {
+      this.validateForm.controls['quota'].setValue(this.selectedVolumeRoot?.sizeInGB == undefined ? '0GB' : this.selectedVM?.storage + 'GB');
     } else {
       this.validateForm.controls['quota'].setValue('0GB');
     }
@@ -239,8 +240,8 @@ export class SnapshotCreateComponent implements OnInit, OnChanges {
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes.snapshotTypeCreate && changes.snapshotTypeCreate.previousValue == undefined) {
-      if (this.snapshotTypeCreate != undefined) {
-        this.selectedSnapshotType = this.snapshotTypeCreate;
+      if (this.navigateType != undefined) {
+        this.selectedSnapshotType = this.navigateType;
       }
     }
   }
@@ -293,20 +294,23 @@ export class SnapshotCreateComponent implements OnInit, OnChanges {
   changeVmVolume() {
     // get type
     if ((this.selectedVolume != undefined || this.selectedVM != undefined)) {
-      if (this.selectedSnapshotType == 0 || this.snapshotTypeCreate==0) {
+      if (this.navigateType == 0 || (this.selectedSnapshotType == 0 && this.navigateType == 2)) {
         this.quotaType = this.selectedVolume.volumeType;
       } else {
         this.vlService.getVolumeById(this.selectedVM.volumeRootId, this.project).subscribe(
           data => {
             this.quotaType = data.volumeType;
+            this.selectedVolumeRoot = data;
           }
         );
       }
       this.checkDisable();
+    } else {
+      this.validateForm.controls['quota'].setValue('0GB');
     }
 
-    if (((this.snapshotTypeCreate==0 || this.selectedSnapshotType==0) && this.selectedVolume == undefined) ||
-      ((this.snapshotTypeCreate==1 || this.selectedSnapshotType==1) && this.selectedVM == undefined)) {
+    if (((this.navigateType==0 || this.selectedSnapshotType==0) && this.selectedVolume == undefined) ||
+      ((this.navigateType==1 || this.selectedSnapshotType==1) && this.selectedVM == undefined)) {
       this.disableByQuota = false;
       this.disableCreate = true;
     }

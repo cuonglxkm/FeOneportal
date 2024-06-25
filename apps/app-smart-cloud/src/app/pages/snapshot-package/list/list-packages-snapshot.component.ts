@@ -13,6 +13,8 @@ import { debounceTime, finalize } from 'rxjs';
 import { ProjectService } from 'src/app/shared/services/project.service';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from '@core';
+import { VolumeService } from '../../../shared/services/volume.service';
+import { SnapshotVolumeService } from '../../../shared/services/snapshot-volume.service';
 
 
 @Component({
@@ -24,7 +26,7 @@ export class ListPackagesSnapshotComponent implements OnInit {
   region = JSON.parse(localStorage.getItem('regionId'));
   project = JSON.parse(localStorage.getItem('projectId'));
 
-  pageSize: number = 5
+  pageSize: number = 10
   pageIndex: number = 1
 
   isLoading: boolean = false
@@ -65,8 +67,11 @@ export class ListPackagesSnapshotComponent implements OnInit {
 
   formSearchPackageSnapshot: FormSearchPackageSnapshot = new FormSearchPackageSnapshot()
   isBegin: boolean = false;
-  isVisibleEdit = false;
   dataAction: any;
+  isLoadingSnapshot = false;
+  snapshotArray: any;
+  snapshotSchefuleArray: any[];
+  isLoadingSnapshotSchedule = false;
 
   constructor(private router: Router,
               private packageSnapshotService: PackageSnapshotService,
@@ -74,6 +79,8 @@ export class ListPackagesSnapshotComponent implements OnInit {
               @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
               private notification: NzNotificationService,
               private fb: NonNullableFormBuilder,
+              private vlService: VolumeService,
+              private snapshotVolumeService: SnapshotVolumeService,
               private projectService: ProjectService) {
   }
 
@@ -161,12 +168,18 @@ export class ListPackagesSnapshotComponent implements OnInit {
     this.isVisibleDelete = true
     this.dataAction = data;
     this.packageName = data.packageName;
+    this.loadingSnapshot();
+    this.loadingSnapshotSchedule();
   }
 
   handleDeletedOk() {
     this.isLoadingDelete = true
     if (this.valueDelete === this.packageName) {
-      this.packageSnapshotService.delete(this.snapshotId).subscribe(data => {
+      this.packageSnapshotService.delete(this.dataAction.id)
+        .pipe(finalize(() => {
+          this.handleDeleteCancel();
+        }))
+        .subscribe(data => {
         this.isLoadingDelete = false
         this.isVisibleDelete = false
         this.notification.success('Thành công', 'Xóa gói snapshot thành công')
@@ -186,6 +199,8 @@ export class ListPackagesSnapshotComponent implements OnInit {
 
   handleDeleteCancel() {
     this.isVisibleDelete = false
+    this.dataAction = undefined;
+    this.packageName = '';
   }
 
 
@@ -231,5 +246,37 @@ export class ListPackagesSnapshotComponent implements OnInit {
           this.notification.error(this.i18n.fanyi('app.status.fail'),'Cập nhật gói snapshot thất bại')
         }
       )
+  }
+
+  private loadingSnapshot() {
+    this.isLoadingSnapshot = true;
+    this.vlService.serchSnapshot(999999, 1, this.region, this.project, '', '')
+      .pipe(finalize(() => {
+        this.isLoadingSnapshot = false;
+      }))
+      .subscribe(
+        data => {
+          this.snapshotArray = data.records;
+        }
+      );
+  }
+
+  private loadingSnapshotSchedule() {
+    this.isLoadingSnapshotSchedule = true;
+    this.snapshotVolumeService.getListSchedule(99999, 1, this.region, this.project, '', '', this.dataAction.id)
+      .pipe(finalize(() => {
+        this.isLoadingSnapshotSchedule = false;
+      }))
+      .subscribe({
+        next: (next) => {
+          this.snapshotSchefuleArray = next.records;
+        },
+        error: (error) => {
+          this.notification.error(
+            'Có lỗi xảy ra',
+            'Lấy danh sách lịch Snapshot thất bại'
+          );
+        },
+      });
   }
 }

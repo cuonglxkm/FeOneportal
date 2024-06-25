@@ -91,15 +91,14 @@
         </nz-row>
         <nz-table #fixedTable
                   style="margin-top: 15px;"
+                  nzShowSizeChanger
                   nzShowPagination
-                  [nzScroll]="{ x: '100%', y: '55vh' }"
                   [nzData]="response?.records"
-                  [nzPageSize]="response?.pageSize"
+                  [nzPageSize]="pageSize"
                   (nzPageSizeChange)="onPageSizeChange($event)"
-                  [nzPageIndex]="response?.currentPage"
+                  [nzPageIndex]="pageIndex"
                   (nzPageIndexChange)="onPageIndexChange($event)"
                   [nzTotal]="response?.totalCount"
-                  [nzFrontPagination]="false"
                   [nzLoading]="isLoading">
           <thead>
           <tr>
@@ -115,8 +114,8 @@
           <tbody>
           <tr *ngFor="let data of fixedTable.data">
             <td><a [routerLink]="'/app-smart-cloud/snapshot/packages/detail/'+ data.id">{{data.packageName}}</a></td>
-            <td>{{data.totalSizeHDD}}</td>
-            <td>{{data.totalSizeSSD}}</td>
+            <td class='text-right'>{{data.totalSizeHDD}}</td>
+            <td class='text-right'>{{data.totalSizeSSD}}</td>
             <ng-container *ngIf="data.status | ServiceStatusPipe as statusModel">
               <td nzBreakWord nzAlign="left" [ngStyle]="{ color: statusModel.color }">{{ statusModel.status }}</td>
             </ng-container>
@@ -173,15 +172,47 @@
     </div>
     <div *nzModalContent>
       <nz-alert nzBanner
-                [nzMessage]="'Bạn đang thực hiện xoá gói Snapshot ' + packageName"
+                nzMessage="Bạn đang thực hiện xoá gói Snapshot {{packageName}}.Hành động này không thể được hoàn tác"
                 nzShowIcon
       ></nz-alert>
-      <p class="text-p" style="margin-top: 10px">Đế thực hiện xoá gói Snapshot, vui lòng nhập tên gói để xác nhận.</p>
+      <p class="text-p" style="margin-top: 10px">Đế thực hiện xoá gói Snapshot, vui lòng nhập tên gói Snapshot để  xác nhận.</p>
       <input placeholder="{{dataAction.packageName}}" class="input-custom" nz-input [(ngModel)]="valueDelete" (ngModelChange)="onInputChangeDelete($event)" type="text" />
+      <nz-alert nzBanner style="margin-top: 15px;"
+                [nzMessage]="'Các bản Snapshot của gói Snapshot này cũng sẽ bị xóa.'"
+                nzShowIcon
+      ></nz-alert>
+      <nz-table #fixedTable1 style="margin-top: 5px;" nzHideOnSinglePage="true" [nzLoading]="isLoadingSnapshot" [nzData]="snapshotArray">
+        <thead>
+        <tr>
+          <th nzLeft>Tên gói</th>
+          <th nzBreakWord>Dung lượng (GB)</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let data of fixedTable1.data">
+          <td>{{data.name}}</td>
+          <td class="text-right">{{data.sizeInGB}}</td>
+        </tr>
+        </tbody>
+      </nz-table>
       <nz-alert nzBanner style="margin-top: 15px;"
                 [nzMessage]="'Các lịch Snapshot tự động được tạo từ Gói Snapshot này cũng sẽ bị xóa.'"
                 nzShowIcon
       ></nz-alert>
+      <nz-table #fixedTable2 style="margin-top: 5px;" nzHideOnSinglePage="true" [nzData]="snapshotSchefuleArray" [nzLoading]="isLoadingSnapshotSchedule">
+        <thead>
+        <tr>
+          <th nzLeft>Tên lịch Snapshot</th>
+          <th nzBreakWord>Số bản lưu trữ</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let data of fixedTable2.data">
+          <td>{{data.name}}</td>
+          <td class="text-right">{{data.maxSnapshot}}</td>
+        </tr>
+        </tbody>
+      </nz-table>
     </div>
     <div *nzModalFooter style="padding-left: 8px; padding-right: 8px;">
       <button nz-button nzType="default" (click)="handleDeleteCancel()" class="button-cancel">

@@ -88,7 +88,9 @@ export class SnapshotListComponent implements OnInit{
   }
 
   navigateToCreate() {
-    this.router.navigate(['/app-smart-cloud/snapshot/create'])
+    this.router.navigate(['/app-smart-cloud/snapshot/create',  {
+      navigateType: 2
+    }])
   }
 
   search(isBegin: boolean) {
@@ -123,11 +125,19 @@ export class SnapshotListComponent implements OnInit{
   }
 
 
-  navigateToCreateVolume(idSnapshot) {
-    if(this.typeVpc == 1) {
-      this.router.navigate(['/app-smart-cloud/volume/vpc/create', {idSnapshot: idSnapshot}])
-    } else {
-      this.router.navigate(['/app-smart-cloud/volume/create', {idSnapshot: idSnapshot}])
+  navigateToCreateVolumeVM(idSnapshot, type: any) {
+    if (type == 0) {
+      if(this.typeVpc == 1) {
+        this.router.navigate(['/app-smart-cloud/volume/vpc/create', {idSnapshot: idSnapshot}])
+      } else {
+        this.router.navigate(['/app-smart-cloud/volume/create', {idSnapshot: idSnapshot}])
+      }
+    } else if (type == 1) {
+      if(this.typeVpc == 1) {
+        this.router.navigate(['/app-smart-cloud/instances/instances-create-vpc', {idSnapshot: idSnapshot}])
+      } else {
+        this.router.navigate(['/app-smart-cloud/instances/instances-create', {idSnapshot: idSnapshot}])
+      }
     }
   }
 
