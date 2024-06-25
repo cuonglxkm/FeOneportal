@@ -1,12 +1,6 @@
-import {Component, EventEmitter, Inject, Input, OnChanges, OnInit, Output, SimpleChanges} from '@angular/core';
-import {CommonModule} from '@angular/common';
-import {SshKeyService} from "../../../pages/ssh-key/ssh-key.service";
-import {ModalHelper} from "@delon/theme";
-import {NzModalService} from "ng-zorro-antd/modal";
-import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
-import {DomSanitizer} from "@angular/platform-browser";
-import { ProjectService } from '../../services/project.service';
+import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
 import { ProjectModel } from '../../../../../../../libs/common-utils/src';
+import { ProjectService } from '../../services/project.service';
 
 @Component({
   selector: 'project-select-dropdown',
@@ -38,14 +32,19 @@ export class ProjectSelectDropdownComponent implements OnInit, OnChanges {
         this.regionId = JSON.parse(localStorage.getItem('regionId'));
       // this.valueChanged.emit(this.selectedRegion)
     }
-    // this.loadProjects();
+    // this.loadProjects(false);
   }
 
   loadProjects(reload: boolean) {
+   debugger   
+    console.log(this.regionId);
+    
     if (this.regionId == null)
       return;
     if (localStorage.getItem('projects') && reload == false) {
       this.listProject = JSON.parse(localStorage.getItem('projects'));
+      console.log(this.listProject);
+      
       if (this.listProject.length > 0) {
         if (localStorage.getItem('projectId') != null) {
           this.selectedProject = this.listProject.find(item => item.id == JSON.parse(localStorage.getItem('projectId')));
@@ -90,6 +89,7 @@ export class ProjectSelectDropdownComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
+    
     if (changes.regionId && changes.regionId.previousValue == undefined) {
       this.loadProjects(false);
     }

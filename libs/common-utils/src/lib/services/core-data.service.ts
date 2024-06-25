@@ -1,6 +1,6 @@
 import { Router } from "@angular/router";
 import { RegionCoreService } from "./region-core.service";
-import { Inject, Injectable } from "@angular/core";
+import { ChangeDetectorRef, Inject, Injectable } from "@angular/core";
 import { DA_SERVICE_TOKEN, ITokenService } from "@delon/auth";
 import { PolicyCoreService } from "./policy-core.service";
 import { ProjectCoreService } from "./project-core.service";
@@ -102,12 +102,12 @@ export class CoreDataService {
     }
 
     public getProjects(baseUrl:string, regionId: number) {
+        debugger
         if (regionId < 1) {
             return;
         }
-
+        
         //localStorage.removeItem('projects');
-
         this.projectService.getByRegion(baseUrl, regionId).subscribe({
             next: (data) => {
                 console.log(data);
