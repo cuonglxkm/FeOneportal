@@ -102,11 +102,18 @@ export class FileSystemSnapshotComponent {
     this.getData()
   }
 
-  
-  ngOnInit() {
+  onRegionInitComplete() {
     let regionAndProject = getCurrentRegionAndProject();
     this.region = regionAndProject.regionId;
     this.project = regionAndProject.projectId;
+    console.log(this.region, this.project);
+  }
+
+  
+  ngOnInit() {
+    this.onRegionInitComplete()
+    
+    
     this.customerId = this.tokenService.get()?.userId  
     this.searchDelay.pipe(debounceTime(TimeCommon.timeOutSearch)).subscribe(() => {     
       this.getData();
