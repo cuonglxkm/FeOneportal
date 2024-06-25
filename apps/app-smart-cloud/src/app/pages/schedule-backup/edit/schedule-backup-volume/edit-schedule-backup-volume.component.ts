@@ -250,7 +250,9 @@ export class EditScheduleBackupVolumeComponent implements OnInit{
       this.backupSchedule = data
       this.isLoading = false
       this.validateForm.controls.backupMode.setValue(this.backupSchedule?.mode)
+
       this.validateForm.controls.times.setValue(this.backupSchedule?.runtime)
+      console.log('times', this.validateForm.controls.times.value)
       this.validateForm.controls.name.setValue(this.backupSchedule?.name)
       this.validateForm.controls.description.setValue(this.backupSchedule?.description)
       this.validateForm.controls.months.setValue(this.backupSchedule?.interval)
