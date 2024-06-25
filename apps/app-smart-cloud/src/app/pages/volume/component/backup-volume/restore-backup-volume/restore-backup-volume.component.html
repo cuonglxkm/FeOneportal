@@ -225,11 +225,11 @@
                   </nz-form-item>
                 </nz-col>
               </nz-row>
-              <div>
+              <div *ngIf="typeEncrypt">
                 <label class="text-label" nz-checkbox [nzChecked]="backupVolume?.isEncryption" nzDisabled
                        style="font-size: 16px;">{{ 'volume.info.type.encrypt'|i18n }}</label>
               </div>
-              <div style="margin-top: 15px;">
+              <div *ngIf="typeMultiple" style="margin-top: 15px;">
                 <label class="text-label" nz-checkbox [nzChecked]="backupVolume?.isMultiAttach" nzDisabled
                        style="font-size: 16px;">{{ 'volume.info.type.multiAttach'|i18n }}</label>
               </div>

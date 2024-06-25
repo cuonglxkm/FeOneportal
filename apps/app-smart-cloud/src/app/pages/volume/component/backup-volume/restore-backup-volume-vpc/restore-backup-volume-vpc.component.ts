@@ -25,6 +25,8 @@ import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from '@core';
 import { ProjectModel, RegionModel } from '../../../../../../../../../libs/common-utils/src';
 import { getCurrentRegionAndProject } from '@shared';
+import { SupportService } from '../../../../../shared/models/catalog.model';
+import { CatalogService } from '../../../../../shared/services/catalog.service';
 
 @Component({
   selector: 'one-portal-restore-backup-volume-vpc',
@@ -103,6 +105,7 @@ export class RestoreBackupVolumeVpcComponent implements OnInit {
               private cdr: ChangeDetectorRef,
               private configurationsService: ConfigurationsService,
               private instanceService: InstancesService,
+              private catalogService: CatalogService,
               @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
               @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService) {
   }
@@ -161,6 +164,7 @@ export class RestoreBackupVolumeVpcComponent implements OnInit {
       this.validateForm.get('formNew').get('volumeName').clearValidators();
       this.validateForm.get('formNew').get('volumeName').updateValueAndValidity();
     } else if (this.selectedOption === 'new') {
+      this.getActiveServiceByRegion();
       this.validateForm.get('formNew').get('storage').setValue(this.backupVolume?.size);
       this.validateForm.get('formNew').get('volumeName').setValidators([Validators.required, Validators.pattern(/^[a-zA-Z0-9_]*$/), this.duplicateNameValidator.bind(this)]);
       this.validateForm.get('formNew').get('storage').setValidators([Validators.required, Validators.pattern(/^[0-9]*$/)]);
@@ -338,6 +342,29 @@ export class RestoreBackupVolumeVpcComponent implements OnInit {
           this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.backup.volume.notification.restore.fail', { error: error.error.detail }));
         });
     }
+  }
+
+  serviceActiveByRegion: SupportService[] = [];
+  typeMultiple: boolean;
+  typeEncrypt: boolean;
+
+  getActiveServiceByRegion() {
+    this.isLoading = true
+    this.catalogService.getActiveServiceByRegion(
+      ['volume-ssd', 'volume-hdd', 'MultiAttachment', 'Encryption', 'volume-snapshot-ssd', 'volume-snapshot-hdd'], this.region)
+      .subscribe(data => {
+        this.isLoading = false
+        this.serviceActiveByRegion = data;
+        this.serviceActiveByRegion.forEach(item => {
+          this.typeMultiple = ['MultiAttachment'].includes(item.productName);
+          this.typeEncrypt = ['Encryption'].includes(item.productName);
+        })
+      }, error => {
+        this.isLoading = false
+        this.typeEncrypt = false
+        this.typeMultiple = false
+        this.serviceActiveByRegion = []
+      });
   }
 
   ngOnInit() {

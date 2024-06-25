@@ -27,6 +27,7 @@ import { InstancesService } from '../../../../instances/instances.service';
 import { OrderItem } from '../../../../../shared/models/price';
 import { OrderService } from '../../../../../shared/services/order.service';
 import { CatalogService } from '../../../../../shared/services/catalog.service';
+import { SupportService } from '../../../../../shared/models/catalog.model';
 
 @Component({
   selector: 'one-portal-restore-backup-volume',
@@ -167,6 +168,7 @@ export class RestoreBackupVolumeComponent implements OnInit {
       this.validateForm.get('formNew').get('volumeName').clearValidators();
       this.validateForm.get('formNew').get('volumeName').updateValueAndValidity();
     } else if (this.selectedOption === 'new') {
+      this.getActiveServiceByRegion();
       this.validateForm.get('formNew').get('storage').setValue(this.backupVolume?.size);
       this.validateForm.get('formNew').get('volumeName').setValidators([Validators.required, Validators.pattern(/^[a-zA-Z0-9_]*$/), this.duplicateNameValidator.bind(this)]);
       this.validateForm.get('formNew').get('storage').setValidators([Validators.required, Validators.pattern(/^[0-9]*$/)]);
@@ -346,6 +348,29 @@ export class RestoreBackupVolumeComponent implements OnInit {
         console.log('thanh tien volume', result.data);
         this.orderItem = result.data;
         this.unitPrice = this.orderItem?.orderItemPrices[0]?.unitPrice.amount;
+      });
+  }
+
+  serviceActiveByRegion: SupportService[] = [];
+  typeMultiple: boolean;
+  typeEncrypt: boolean;
+
+  getActiveServiceByRegion() {
+    this.isLoading = true
+    this.catalogService.getActiveServiceByRegion(
+      ['volume-ssd', 'volume-hdd', 'MultiAttachment', 'Encryption', 'volume-snapshot-ssd', 'volume-snapshot-hdd'], this.region)
+      .subscribe(data => {
+        this.isLoading = false
+        this.serviceActiveByRegion = data;
+        this.serviceActiveByRegion.forEach(item => {
+          this.typeMultiple = ['MultiAttachment'].includes(item.productName);
+          this.typeEncrypt = ['Encryption'].includes(item.productName);
+        })
+      }, error => {
+        this.isLoading = false
+        this.typeEncrypt = false
+        this.typeMultiple = false
+        this.serviceActiveByRegion = []
       });
   }
 
