@@ -115,7 +115,7 @@ export class DetailBackupVmComponent implements OnInit {
         this.notification.error('', error.error.detail)
       } else {
         // this.router.navigate(['/app-smart-cloud/backup-vm'])
-        this.notification.error(error.status, error.error.detail)
+        this.notification.error(error.statusText, error.error.title)
       }
     })
   }
