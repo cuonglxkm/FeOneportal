@@ -155,22 +155,14 @@ export class CreateVolumeComponent implements OnInit {
         this.isLoading = false
         this.serviceActiveByRegion = data;
         this.serviceActiveByRegion.forEach(item => {
-          if(['volume-snapshot-hdd', 'volume-snapshot-ssd'].includes(item.productName)) {
-            this.typeSnapshot = true
-          } else {
-            this.typeSnapshot = false
+          if(['volume-snapshot-hdd', 'volume-snapshot-ssd'].includes(item.productName)){
+            this.typeSnapshot = item.isActive
           }
-
-          if(['MultiAttachment'].includes(item.productName)) {
-            this.typeMultiple = true
-          } else {
-            this.typeMultiple = false
+          if(['MultiAttachment'].includes(item.productName)){
+            this.typeMultiple = item.isActive
           }
-
-          if(['Encryption'].includes(item.productName)) {
-            this.typeEncrypt = true
-          } else {
-            this.typeEncrypt = false
+          if(['Encryption'].includes(item.productName)){
+            this.typeEncrypt = item.isActive
           }
         })
       }, error => {
