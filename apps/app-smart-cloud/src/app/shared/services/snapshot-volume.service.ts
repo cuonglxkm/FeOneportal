@@ -77,9 +77,10 @@ export class SnapshotVolumeService extends BaseService {
     regionId: number,
     projectId: number,
     name: string,
-    volumeName: string
+    volumeName: string,
+    ssPackageId: string
   ): Observable<any> {
-    let urlResult = `/vlsnapshots/schedule?pageSize=${pageSize}&pageNumber=${pageNumber}&regionId=${regionId}&projectId=${projectId}&name=${name}&volumeName=${volumeName}`;
+    let urlResult = `/vlsnapshots/schedule?pageSize=${pageSize}&pageNumber=${pageNumber}&regionId=${regionId}&projectId=${projectId}&name=${name}&volumeName=${volumeName}&ssPackageId=${ssPackageId}`;
     return this.http
       .get<any>(
         this.baseUrl + this.ENDPOINT.provisions + urlResult,
