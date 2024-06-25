@@ -289,6 +289,22 @@ export class PaymentSummaryComponent implements OnInit {
             serviceItem.name = `K8s-Premium - ${specificationObj.serviceName}`;
             serviceItem.type = this.i18n.fanyi('app.button.extend');
             break;
+          case 'backuppackage_create':
+            serviceItem.name = `Backup Package - ${specificationObj.serviceName}`;
+            serviceItem.type = this.i18n.fanyi('app.label.create')
+            break;
+          case 'backuppacket_resize':
+            serviceItem.name = `Backup Package - ${specificationObj.serviceName}`;
+            serviceItem.type = this.i18n.fanyi('app.button.resize')
+            break;
+          case 'backuppacket_extend':
+            serviceItem.name = `Backup Package - ${specificationObj.serviceName}`;
+            serviceItem.type = this.i18n.fanyi('app.button.extend')
+            break;
+          case 'restore_volumebackup':
+            serviceItem.name = `Backup Volume - ${specificationObj.serviceName}`;
+            serviceItem.type = this.i18n.fanyi('app.restore')
+            break;
           default:
             serviceItem.name = '';
             break;
@@ -511,7 +527,7 @@ export class PaymentSummaryComponent implements OnInit {
         this.customerTypes = customerGroupFilter[0].customerTypes;
         this.customerType = this.customerTypes[0].id;
         console.log(this.customerType);
-        
+
         if (this.customerType === 1) {
           this.formCustomerInvoice.controls.taxCode.setValidators([
             Validators.pattern(TAX_CODE_REGEX),

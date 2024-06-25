@@ -191,7 +191,7 @@ export class CreateBackupVmVpcComponent implements OnInit {
       this.instanceSelected = this.listInstances[0].id
     }, error => {
       this.isLoadingInstance = false
-      this.notification.error(error.status, this.i18n.fanyi('app.failData'))
+      this.notification.error(error.statusText, this.i18n.fanyi('app.failData'))
     });
   }
 

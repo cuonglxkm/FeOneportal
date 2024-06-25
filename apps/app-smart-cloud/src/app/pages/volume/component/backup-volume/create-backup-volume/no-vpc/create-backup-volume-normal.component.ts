@@ -110,14 +110,15 @@ export class CreateBackupVolumeNormalComponent implements OnInit {
         }
       }, error => {
         this.isLoadingBackupPackage = false;
-        this.notification.error(error.status, this.i18n.fanyi('app.failData'))
+        this.notification.error(error.statusText, this.i18n.fanyi('app.failData'))
       })
       console.log('backup package', this.backupPackages);
       this.validateForm.controls.backupPacketId.setValue(this.backupPackages[0].id);
     });
   }
 
-  volumeInfo: VolumeDTO = new VolumeDTO()
+  volumeInfo: VolumeDTO = new VolumeDTO();
+
 
   getDataByVolumeId(id) {
     this.volumeService.getVolumeById(id, this.project).subscribe(data => {
@@ -135,7 +136,7 @@ export class CreateBackupVolumeNormalComponent implements OnInit {
       this.validateForm.controls.volumeId.setValue(this.listVolumes[0]?.id)
     }, error => {
       this.isLoadingVolume = false
-      this.notification.error(error.status, this.i18n.fanyi('app.failData'))
+      this.notification.error(error.statusText, this.i18n.fanyi('app.failData'))
     })
   }
 
@@ -205,13 +206,31 @@ export class CreateBackupVolumeNormalComponent implements OnInit {
       this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('app.backup.volume.notification.create.request.send'));
       this.router.navigate(['/app-smart-cloud/backup-volume']);
     });
-
   }
+
+  getListBackupVolumes() {
+    this.isLoading = true
+    this.backupVolumeService.getListBackupVolume(this.region, this.project, '', '', 99999, 1).subscribe(data => {
+      this.isLoading = false
+      data?.records.forEach(item => {
+        if (this.listName.length > 0) {
+          this.listName.push(item.name);
+        } else {
+          this.listName = [item.name];
+        }
+      })
+    }, error =>  {
+      this.isLoading = false
+      this.notification.error(error.statusText, this.i18n.fanyi('app.failData'))
+    });
+  }
+
   ngOnInit(): void {
     let regionAndProject = getCurrentRegionAndProject();
     this.region = regionAndProject.regionId;
     this.project = regionAndProject.projectId;
 
+    this.getListBackupVolumes();
     if (this.activatedRoute.snapshot.paramMap.get('volumeId') != undefined || this.activatedRoute.snapshot.paramMap.get('volumeId') != null) {
       console.log('here')
       this.volumeIdParam = Number.parseInt(this.activatedRoute.snapshot.paramMap.get('volumeId'));
