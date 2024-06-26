@@ -461,10 +461,12 @@ export class RestoreBackupVmVpcComponent implements OnInit {
   getListOptionGpuValue() {
     this.configurationService
       .getConfigurations('OPTIONGPUVALUE')
-      .subscribe(
-        (data) =>
-          (this.listOptionGpuValue = data.valueString.split(', ').map(Number))
-      );
+      .subscribe((data) => {
+        this.listOptionGpuValue = data.valueString.split(', ').map(Number);
+        this.listOptionGpuValue = this.listOptionGpuValue.filter(
+          (e) => e <= this.remainingGpu
+        );
+      });
   }
 
   activeBlockHDD: boolean = true;
@@ -522,9 +524,7 @@ export class RestoreBackupVmVpcComponent implements OnInit {
     } else {
       this.remainingGpu = gpuProject.gpuCount;
     }
-    this.listOptionGpuValue = this.listOptionGpuValue.filter(
-      (e) => e <= this.remainingGpu
-    );
+    this.getListOptionGpuValue();
     this.cdr.detectChanges();
   }
 
@@ -546,9 +546,7 @@ export class RestoreBackupVmVpcComponent implements OnInit {
     } else {
       this.remainingGpu = gpuProject.gpuCount;
     }
-    this.listOptionGpuValue = this.listOptionGpuValue.filter(
-      (e) => e <= this.remainingGpu
-    );
+    this.getListOptionGpuValue();
   }
 
   resetData() {

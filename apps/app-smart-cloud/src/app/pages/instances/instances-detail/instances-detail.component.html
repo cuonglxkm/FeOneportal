@@ -190,26 +190,12 @@
               >{{ instancesModel.flavorName | slice : 3 }}</a
             >
             <ng-template #contentConfigPackage>
-              <nz-row
-                *ngIf="instancesModel.gpuType != null"
-                style="width: 320px"
-              >
-                <nz-col nzSpan="12">
-                  GPU - {{ instancesModel.gpuType.toUpperCase() }}
+              <nz-row style="width: 320px">
+                <nz-col nzSpan="12"
+                  >{{ instancesModel.volumeType == 1 ? 'SSD' : 'HDD' }}
                 </nz-col>
                 <nz-col class="text-right" nzSpan="12">
-                  {{ instancesModel.gpuCount }} GPU
-                </nz-col>
-              </nz-row>
-              <nz-row
-                [ngStyle]="{
-                  width: '320px',
-                  'margin-top': instancesModel.gpuType ? '5px' : '0px'
-                }"
-              >
-                <nz-col nzSpan="12"> CPU </nz-col>
-                <nz-col class="text-right" nzSpan="12">
-                  {{ instancesModel.cpu }} vCPU
+                  {{ instancesModel.storage }} GB
                 </nz-col>
               </nz-row>
               <nz-row style="width: 320px; margin-top: 5px">
@@ -219,9 +205,20 @@
                 </nz-col>
               </nz-row>
               <nz-row style="width: 320px; margin-top: 5px">
-                <nz-col nzSpan="12"> {{ 'app.capacity' | i18n }} </nz-col>
+                <nz-col nzSpan="12"> CPU </nz-col>
                 <nz-col class="text-right" nzSpan="12">
-                  {{ instancesModel.storage }} GB
+                  {{ instancesModel.cpu }} vCPU
+                </nz-col>
+              </nz-row>
+              <nz-row
+                *ngIf="instancesModel.gpuType != null"
+                style="width: 320px; margin-top: 5px"
+              >
+                <nz-col nzSpan="12">
+                  GPU - NVIDIA-{{ instancesModel.gpuType.toUpperCase() }}
+                </nz-col>
+                <nz-col class="text-right" nzSpan="12">
+                  {{ instancesModel.gpuCount }} GPU
                 </nz-col>
               </nz-row>
             </ng-template>

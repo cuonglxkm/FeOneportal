@@ -498,37 +498,40 @@
                     </thead>
                     <tbody class="ant-table-tbody">
                       <tr>
-                        <td>
+                        <td style="width: 50%">
                           <nz-form-label style="margin-left: -12px"
-                            >CPUs (<span class="text-red">*</span
-                            >)</nz-form-label
+                            >{{ 'app.ssd.capacity' | i18n }} (<span
+                              class="text-red"
+                              >*</span
+                            >) - GB</nz-form-label
                           >
                           <nz-slider
-                            [nzMin]="0"
-                            [nzMax]="62"
-                            [(ngModel)]="configGPU.CPU"
-                            (ngModelChange)="changeCpuOfGpu($event)"
+                            [nzMin]="minCapacity"
+                            [nzMax]="maxCapacity"
+                            [nzStep]="stepCapacity"
+                            [(ngModel)]="configGPU.storage"
+                            (ngModelChange)="changeStorageOfGpu($event)"
                             [ngModelOptions]="{ standalone: true }"
                           ></nz-slider>
                         </td>
                         <td>
                           <nz-input-number
-                            [(ngModel)]="configGPU.CPU"
+                            [(ngModel)]="configGPU.storage"
                             (keydown)="onKeyDown($event)"
-                            (ngModelChange)="changeCpuOfGpu($event)"
+                            (ngModelChange)="changeStorageOfGpu($event)"
                             [ngModelOptions]="{ standalone: true }"
-                            [nzMin]="0"
-                            [nzMax]="62"
-                            [nzStep]="1"
+                            [nzMin]="minCapacity"
+                            [nzMax]="maxCapacity"
+                            [nzStep]="stepCapacity"
                             nzSize="large"
                           ></nz-input-number>
                         </td>
                         <td nzAlign="right">
                           <label class="text-custom-price">
-                            {{ cpuIntoMoney | number }} </label
+                            {{ volumeIntoMoney | number }} </label
                           ><br />
                           <label class="text-custom-unit-price">
-                            {{ cpuUnitPrice | number }}
+                            {{ volumeUnitPrice | number }}
                           </label>
                         </td>
                       </tr>
@@ -569,40 +572,37 @@
                         </td>
                       </tr>
                       <tr>
-                        <td style="width: 50%">
+                        <td>
                           <nz-form-label style="margin-left: -12px"
-                            >{{ 'app.ssd.capacity' | i18n }} (<span
-                              class="text-red"
-                              >*</span
-                            >) - GB</nz-form-label
+                            >CPU (<span class="text-red">*</span>) -
+                            vCPU</nz-form-label
                           >
                           <nz-slider
-                            [nzMin]="minCapacity"
-                            [nzMax]="maxCapacity"
-                            [nzStep]="stepCapacity"
-                            [(ngModel)]="configGPU.storage"
-                            (ngModelChange)="changeStorageOfGpu($event)"
+                            [nzMin]="0"
+                            [nzMax]="62"
+                            [(ngModel)]="configGPU.CPU"
+                            (ngModelChange)="changeCpuOfGpu($event)"
                             [ngModelOptions]="{ standalone: true }"
                           ></nz-slider>
                         </td>
                         <td>
                           <nz-input-number
-                            [(ngModel)]="configGPU.storage"
+                            [(ngModel)]="configGPU.CPU"
                             (keydown)="onKeyDown($event)"
-                            (ngModelChange)="changeStorageOfGpu($event)"
+                            (ngModelChange)="changeCpuOfGpu($event)"
                             [ngModelOptions]="{ standalone: true }"
-                            [nzMin]="minCapacity"
-                            [nzMax]="maxCapacity"
-                            [nzStep]="stepCapacity"
+                            [nzMin]="0"
+                            [nzMax]="62"
+                            [nzStep]="1"
                             nzSize="large"
                           ></nz-input-number>
                         </td>
                         <td nzAlign="right">
                           <label class="text-custom-price">
-                            {{ volumeIntoMoney | number }} </label
+                            {{ cpuIntoMoney | number }} </label
                           ><br />
                           <label class="text-custom-unit-price">
-                            {{ volumeUnitPrice | number }}
+                            {{ cpuUnitPrice | number }}
                           </label>
                         </td>
                       </tr>
@@ -681,6 +681,12 @@
               [ngModelOptions]="{ standalone: true }"
               [disabled]="isSnapshot"
               >{{ 'volume.info.type.encrypt' | i18n }}
+              <img
+                [nz-tooltip]="'volume.tooltip.type.encrypt' | i18n"
+                src="assets/imgs/pajamas_question.svg"
+                alt=""
+                [nzPopoverOverlayStyle]="{ width: '320px' }"
+              />
             </label>
             <nz-row style="margin-top: 20px" nzGutter="16">
               <nz-col nzLg="12" nzMd="12" nzSm="24">
@@ -1197,34 +1203,47 @@
               'app.estimated.cost' | i18n
             }}</span>
           </div>
-          <div class="text-value">{{ 'app.instances.name' | i18n }}</div>
-          <div style="margin-top: 10px" class="text-label">
-            {{ restoreInstanceBackup.serviceName }}
+          <div class="card-money">
+            <div class="text-value">{{ 'app.instances.name' | i18n }}</div>
+            <div style="margin-top: 10px" class="text-label">
+              {{ restoreInstanceBackup.serviceName }}
+            </div>
+            <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
+            <div class="text-value">{{ 'app.instances.OS' | i18n }}</div>
+            <div style="margin-top: 10px" class="text-label">
+              {{ backupVmModel?.systemInfoBackups[0].osName }}
+            </div>
+            <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
+            <div class="text-value">{{ 'app.text.package' | i18n }}</div>
+            <div style="margin-top: 10px" class="text-label">
+              {{ restoreInstanceBackup.cpu }} vCPU
+            </div>
+            <div style="margin-top: 10px" class="text-label">
+              {{ restoreInstanceBackup.ram }} GB RAM
+            </div>
+            <div style="margin-top: 10px" class="text-label">
+              {{ restoreInstanceBackup.volumeSize }} GB Root Disk (<span>{{
+                activeBlockHDD ? 'HDD' : 'SSD'
+              }}</span
+              >)
+            </div>
+            <div
+              *ngIf="isGpuConfig"
+              style="margin-top: 10px"
+              class="text-label"
+            >
+              {{ restoreInstanceBackup.gpuCount }} GPU ({{ gpuTypeName }})
+            </div>
+            <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
+            <div class="text-value">
+              {{ 'app.info.backup.vm.external.volume' | i18n }}
+            </div>
+            <div *ngFor="let v of listOfDataBlockStorage; let last = last">
+              <div style="margin-top: 10px" class="text-label">
+                {{ v.capacity }} GB {{ v.name }} ({{ v.type }})
+              </div>
+            </div>
           </div>
-          <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
-          <div class="text-value">{{ 'app.instances.OS' | i18n }}</div>
-          <div style="margin-top: 10px" class="text-label">
-            {{ backupVmModel?.systemInfoBackups[0].osName }}
-          </div>
-          <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
-          <div class="text-value">{{ 'app.text.package' | i18n }}</div>
-          <div style="margin-top: 10px" class="text-label">
-            {{ restoreInstanceBackup.cpu }} CPUs
-          </div>
-          <div style="margin-top: 10px" class="text-label">
-            {{ restoreInstanceBackup.ram }} GB RAM
-          </div>
-          <div style="margin-top: 10px" class="text-label">
-            {{ restoreInstanceBackup.volumeSize }} GB Root Disk (<span>{{
-              activeBlockHDD ? 'HDD' : 'SSD'
-            }}</span
-            >)
-          </div>
-          <div *ngIf="isGpuConfig" style="margin-top: 10px" class="text-label">
-            {{ restoreInstanceBackup.gpuCount }} GPU ({{ gpuTypeName }})
-          </div>
-          <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
-          <div class="text-value">{{ 'app.setting' | i18n }}</div>
           <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
           <nz-row style="margin-bottom: 10px" nzGutter="16">
             <nz-col nzSpan="16">
