@@ -289,11 +289,15 @@ export class ExtensionComponent implements OnInit {
     let specification = this.setDataExtend();
 
     this.isSubmitting = true;
-    this.clusterService.validateExtendService({Specification: specification})
+    this.clusterService.validateExtendService({Specification: JSON.stringify(specification)})
     .pipe(finalize(() => this.isSubmitting = false))
     .subscribe((r: any) => {
-      this.signature = r.data;
-      this.onExtendService();
+      if (r && r.code == 200) {
+        this.signature = r.data;
+        this.onExtendService();
+      } else {
+        this.notificationService.error(this.i18n.fanyi('app.status.fail'), r.message);
+      }
     });
   }
 
