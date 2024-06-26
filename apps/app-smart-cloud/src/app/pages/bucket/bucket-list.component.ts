@@ -96,6 +96,7 @@ export class BucketListComponent implements OnInit {
         next: (data) => {
           this.user = data;
           this.getUserById(this.user.id);
+          this.cdr.detectChanges();
         },
         error: (e) => {
           this.notification.error(
@@ -113,6 +114,7 @@ export class BucketListComponent implements OnInit {
         next: (data) => {
           this.objectStorage = data;
           console.log(this.objectStorage);
+          this.cdr.detectChanges();
         },
         error: (e) => {
           this.notification.error(

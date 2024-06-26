@@ -68,6 +68,10 @@ export class DetailBackupVmComponent implements OnInit {
     // });
   }
 
+  onRegionChanged(region: RegionModel) {
+    this.region = region.regionId;
+  }
+
   projectChanged(project: ProjectModel) {
     this.project = project?.id
     this.typeVpc = project?.type

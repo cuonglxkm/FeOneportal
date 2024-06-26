@@ -136,6 +136,10 @@ export class CreateFileSystemNormalComponent implements OnInit {
     this.router.navigate(['/app-smart-cloud/file-storage/file-system/list']);
   }
 
+  onRegionChanged(region: RegionModel) {
+    this.region = region.regionId;
+  }
+
   projectChanged(project: ProjectModel) {
     this.project = project?.id;
   }

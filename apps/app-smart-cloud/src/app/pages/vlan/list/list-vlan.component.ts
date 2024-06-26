@@ -57,6 +57,10 @@ export class ListVlanComponent implements OnInit, OnDestroy {
     // this.getListVlanNetwork()
   }
 
+  onRegionChanged(region: RegionModel) {
+    this.region = region.regionId;
+  }
+
   projectChanged(project: ProjectModel) {
     this.project = project?.id
     this.typeVPC = project?.type

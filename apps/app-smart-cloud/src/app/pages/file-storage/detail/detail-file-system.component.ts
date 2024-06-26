@@ -39,6 +39,10 @@ export class DetailFileSystemComponent implements OnInit {
     this.router.navigate(['/app-smart-cloud/file-storage/file-system/list']);
   }
 
+  onRegionChanged(region: RegionModel) {
+    this.region = region.regionId;
+  }
+
   projectChanged(project: ProjectModel) {
     this.typeVpc = project?.type;
     this.project = project?.id;

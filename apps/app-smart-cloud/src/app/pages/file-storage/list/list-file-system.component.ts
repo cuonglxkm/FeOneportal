@@ -93,6 +93,10 @@ export class ListFileSystemComponent implements OnInit, OnDestroy {
     this.region = region.regionId;
   }
 
+  onRegionChanged(region: RegionModel) {
+    this.region = region.regionId;
+  }
+
   projectChanged(project: ProjectModel) {
     this.project = project?.id;
     this.typeVpc = project?.type;
@@ -225,7 +229,6 @@ export class ListFileSystemComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-
     // this.getProject();
     
     console.log('project', this.project);
