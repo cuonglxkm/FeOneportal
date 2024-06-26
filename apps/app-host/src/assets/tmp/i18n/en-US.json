@@ -477,6 +477,7 @@
 
   "app.instances.list": "Instance list",
   "app.instances.create": "Create Instance",
+  "app.instances.create1": "Create Instance",
   "app.instances.create.confirm": "Confirm instance creation",
   "app.instances.edit": "Resize Instance",
   "app.instances.detail": "Instance detail",

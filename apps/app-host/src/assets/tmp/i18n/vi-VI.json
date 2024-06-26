@@ -370,6 +370,7 @@
 
   "app.instances.list": "Danh sách máy ảo",
   "app.instances.create": "Khởi tạo máy ảo",
+  "app.instances.create1": "Tạo máy ảo",
   "app.instances.create.confirm": "Xác nhận khởi tạo máy ảo",
   "app.instances.edit": "Điều chỉnh máy ảo",
   "app.instances.detail": "Chi tiết máy ảo",
@@ -3032,6 +3033,7 @@
   "schedule.backup.confirm.reactive": "Quý khách đang thực hiện tiếp tục lịch backup {{name}} ? Vui lòng xác nhận trước khi tiếp tục",
   "schedule.backup.tooltip.name": "Tên lịch backup. Không bao gồm ký tự đặc biệt, dấu cách, dấu tiếng Việt.",
   "schedule.backup.require.max.backup": "Vui lòng chọn số bản ghi backup",
+  "schedule.backup.pattern.max.backup": "Số bản ghi backup là số nguyên dương không quá 5",
   "schedule.backup.alert.delete": "Quý khách đang thực hiện xóa lịch backup {{name}} ? Vui lòng xác nhận trước khi xóa",
   "schedule.backup.confirm.delete": "Đế thực hiện xoá lịch Backup {{name}}, vui lòng nhập tên lịch Backup để xác nhận.",
   "schedule.backup.confirm.input.name": "Vui lòng nhập đúng tên Backup",

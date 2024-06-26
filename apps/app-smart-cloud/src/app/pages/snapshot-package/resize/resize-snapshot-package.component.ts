@@ -22,6 +22,9 @@ import { ServiceActionType, ServiceType } from 'src/app/shared/enums/common.enum
 import { RegionModel, ProjectModel } from '../../../../../../../libs/common-utils/src';
 import { ProjectService } from 'src/app/shared/services/project.service';
 import { debounceTime, finalize, Subject } from 'rxjs';
+import { ConfigurationsService } from '../../../shared/services/configurations.service';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
+import { I18NService } from '../../../../../../app-kafka/src/app/core/i18n/i18n.service';
 
 @Component({
   selector: 'one-portal-resize-snapshot-package',
@@ -51,7 +54,8 @@ export class ResizeSnapshotPackageComponent implements OnInit {
 
   resizeDate: Date;
   loadingCalculate = false;
-  private searchSubject = new Subject<string>();
+  private searchSubjectHdd = new Subject<string>();
+  private searchSubjectSsd = new Subject<string>();
   private readonly debounceTimeMs = 500;
 
   constructor(private router: Router,
@@ -61,17 +65,39 @@ export class ResizeSnapshotPackageComponent implements OnInit {
               private notification: NzNotificationService,
               private instanceService: InstancesService,
               private route: ActivatedRoute,
+              @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
               private fb: NonNullableFormBuilder,
+              private configurationsService: ConfigurationsService,
               private projectService: ProjectService) {
-    // this.validateForm.get('storage').valueChanges.subscribe(data => {
-    //   this.getTotalAmount()
-    // })
-
-    this.searchSubject.pipe(debounceTime(this.debounceTimeMs)).subscribe((searchValue) => {
+    this.searchSubjectHdd.pipe(debounceTime(this.debounceTimeMs)).subscribe((searchValue) => {
+      if ((this.numberHDDBonus % this.stepStorage) > 0) {
+        this.notification.warning('', this.i18n.fanyi('app.notify.amount.capacity', { number: this.stepStorage }));
+        this.numberHDDBonus = this.numberHDDBonus - (this.numberHDDBonus % this.stepStorage);
+      }
+      this.getTotalAmount();
+    });
+    this.searchSubjectSsd.pipe(debounceTime(this.debounceTimeMs)).subscribe((searchValue) => {
+      if ((this.numberSSDBonus % this.stepStorage) > 0) {
+        this.notification.warning('', this.i18n.fanyi('app.notify.amount.capacity', { number: this.stepStorage }));
+        this.numberSSDBonus = this.numberSSDBonus - (this.numberSSDBonus % this.stepStorage);
+      }
       this.getTotalAmount();
     });
   }
 
+  minStorage: number = 0;
+  stepStorage: number = 0;
+  valueString: string;
+  maxStorage: number = 0;
+
+  getConfiguration() {
+    this.configurationsService.getConfigurations('BLOCKSTORAGE').subscribe(data => {
+      this.valueString = data.valueString;
+      this.minStorage = Number.parseInt(this.valueString?.split('#')[0]);
+      this.stepStorage = Number.parseInt(this.valueString?.split('#')[1]);
+      this.maxStorage = Number.parseInt(this.valueString?.split('#')[2]);
+    });
+  }
   regionChanged(region: RegionModel) {
     this.region = region.regionId;
     this.projectService.getByRegion(this.region).subscribe(data => {
@@ -237,6 +263,7 @@ export class ResizeSnapshotPackageComponent implements OnInit {
 
   ngOnInit() {
     this.validateForm.controls['description'].disable();
+    this.getConfiguration();
     this.idSnapshotPackage = Number.parseInt(this.route.snapshot.paramMap.get('id'));
     let regionAndProject = getCurrentRegionAndProject();
     this.region = regionAndProject.regionId;
@@ -259,7 +286,11 @@ export class ResizeSnapshotPackageComponent implements OnInit {
     }
   }
 
-  changeQuota() {
-    this.searchSubject.next('');
+  changeQuota(isHdd: boolean) {
+    if (isHdd) {
+      this.searchSubjectHdd.next('');
+    } else {
+      this.searchSubjectSsd.next('');
+    }
   }
 }
