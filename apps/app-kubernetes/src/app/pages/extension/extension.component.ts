@@ -293,6 +293,7 @@ export class ExtensionComponent implements OnInit {
     .pipe(finalize(() => this.isSubmitting = false))
     .subscribe((r: any) => {
       this.signature = r.data;
+      this.onExtendService();
     });
   }
 

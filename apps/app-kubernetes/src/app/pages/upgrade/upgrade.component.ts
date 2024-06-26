@@ -667,7 +667,7 @@ export class UpgradeComponent implements OnInit {
 
     this.isSubmitting = true;
     let cluster = this.setClusterData();
-    cluster.specification = JSON.stringify(cluster);
+    cluster.Specification = JSON.stringify(cluster);
     // this.submitUpgrade(cluster);
 
     this.clusterService.validateUpgradeCluster(cluster)

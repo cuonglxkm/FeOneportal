@@ -324,7 +324,7 @@
           </div>
 
           <div nz-col [nzSpan]="12">
-            <button nz-button nzType="primary" nzBlock class="border-button" (click)="onExtendService()" [disabled]="isSubmitting || this.extendMonth == null || this.extendMonth == undefined
+            <button nz-button nzType="primary" nzBlock class="border-button" (click)="onValidateExtend()" [disabled]="isSubmitting || this.extendMonth == null || this.extendMonth == undefined
                 || (detailCluster?.serviceStatus != 2 && detailCluster?.serviceStatus != 3) || statusInput != null" nzSize="large">
               <span nz-icon>
                 <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
