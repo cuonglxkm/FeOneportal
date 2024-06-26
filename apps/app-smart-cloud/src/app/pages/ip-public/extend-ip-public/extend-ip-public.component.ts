@@ -83,6 +83,10 @@ export class ExtendIpPublicComponent implements OnInit{
     this.regionId = region.regionId;
   }
 
+  onRegionChanged(region: RegionModel) {
+    this.regionId = region.regionId;
+  }
+
   projectChange(project: ProjectModel) {
     this.router.navigate(['/app-smart-cloud/ip-public']);
     this.projectId = project.id;

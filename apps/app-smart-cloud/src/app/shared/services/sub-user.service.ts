@@ -15,13 +15,14 @@ export class SubUserService extends BaseService {
     super();
   }
 
-  getListSubUser(subuserName: string, pageSize: number, currentPage: number) {
+  getListSubUser(subuserName: string, pageSize: number, currentPage: number, regionId: number) {
     let params = new HttpParams()
     if(subuserName != undefined || subuserName != null) {
       params = params.append('subuserName', subuserName)
     }
     params = params.append('pageSize', pageSize)
     params = params.append('currentPage', currentPage)
+    params = params.append('regioniId', regionId)
     return this.http.get<BaseResponse<SubUser[]>>(this.baseUrl + this.ENDPOINT.provisions + `/object-storage/subuser`, {
       params: params
     }).pipe(catchError((error: HttpErrorResponse) => {

@@ -261,6 +261,9 @@ export class InstancesEditVpcComponent implements OnInit {
     });
   }
 
+  onRegionChanged(region: RegionModel) {
+    this.region = region.regionId;
+  }
   listIPPublicStr = '';
   listIPLanStr = '';
   getListIpPublic() {

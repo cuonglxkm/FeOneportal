@@ -9,6 +9,7 @@ import {
 import { Router } from '@angular/router';
 import { I18NService } from '@core';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
+import { getCurrentRegionAndProject } from '@shared';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { ClipboardService } from 'ngx-clipboard';
@@ -29,6 +30,7 @@ export class StaticWebHostingComponent implements OnInit {
   bucketDetail: BucketDetail = new BucketDetail();
   bucketWebsitecreate: BucketWebsite = new BucketWebsite();
   isLoading: boolean = false;
+  region = JSON.parse(localStorage.getItem('regionId'));
   constructor(
     private bucketService: BucketService,
     private cdr: ChangeDetectorRef,
@@ -40,7 +42,9 @@ export class StaticWebHostingComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.bucketService.getBucketDetail(this.bucketName).subscribe((data) => {
+    let regionAndProject = getCurrentRegionAndProject();
+    this.region = regionAndProject.regionId;
+    this.bucketService.getBucketDetail(this.bucketName, this.region).subscribe((data) => {
       this.bucketDetail = data;
       this.cdr.detectChanges();
     });
@@ -66,7 +70,7 @@ export class StaticWebHostingComponent implements OnInit {
       }
 
       this.bucketService
-        .createBucketWebsite(this.bucketWebsitecreate)
+        .createBucketWebsite(this.bucketWebsitecreate, this.region)
         .subscribe({
           next: (data) => {
             this.isLoading = false
@@ -87,7 +91,7 @@ export class StaticWebHostingComponent implements OnInit {
         });
     } else {
       this.bucketService
-        .deleteBucketWebsite({ bucketName: this.bucketName })
+        .deleteBucketWebsite({ bucketName: this.bucketName }, this.region)
         .subscribe({
           next: (data) => {
             this.isLoading = false

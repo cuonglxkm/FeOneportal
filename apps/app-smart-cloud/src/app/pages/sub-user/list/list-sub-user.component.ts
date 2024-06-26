@@ -63,7 +63,7 @@ export class ListSubUserComponent implements OnInit {
   hasObjectStorage() {
     this.loadingSrv.open({ type: 'spin', text: 'Loading...' });
     this.objectSevice
-      .getUserInfo()
+      .getUserInfo(this.region)
       .pipe(finalize(() => this.loadingSrv.close()))
       .subscribe({
         next: (data) => {
@@ -121,7 +121,7 @@ export class ListSubUserComponent implements OnInit {
   getListSubUsers(isBegin) {
     this.isLoading = true;
     this.subUserService
-      .getListSubUser(this.value.trim(), this.pageSize, this.pageIndex)
+      .getListSubUser(this.value.trim(), this.pageSize, this.pageIndex, this.region)
       .subscribe(
         (data) => {
           this.response = data;

@@ -56,6 +56,10 @@ export class V1Component implements OnInit {
     console.log(region)
   }
 
+  onRegionChanged(region: RegionModel) {
+    this.selectedRegion = region.regionId;
+  }
+
   onProjectChange(projectModel: ProjectModel) {
     console.log(projectModel)
   }
