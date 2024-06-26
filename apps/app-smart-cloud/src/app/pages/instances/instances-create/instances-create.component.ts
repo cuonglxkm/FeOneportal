@@ -605,6 +605,7 @@ export class InstancesCreateComponent implements OnInit {
     this.totalAmount = 0;
     this.totalVAT = 0;
     this.totalincludesVAT = 0;
+    this.isValid = false;
   }
 
   getVolumeById(id: number) {
@@ -646,6 +647,7 @@ export class InstancesCreateComponent implements OnInit {
     }
     this.listOfferFlavors = [];
     this.initFlavors();
+    this.isValid = false;
   }
 
   isPreConfigPackage = true;
@@ -724,6 +726,7 @@ export class InstancesCreateComponent implements OnInit {
       this.getTotalAmount();
     }
     this.instanceCreate.gpuCount = 0;
+    this.isValid = false;
   }
   //#endregion
 
@@ -897,6 +900,7 @@ export class InstancesCreateComponent implements OnInit {
     if (this.hdh != null || this.selectedSnapshot != null) {
       this.getTotalAmount();
     }
+    this.checkValidConfig();
     console.log(this.offerFlavor);
   }
 
@@ -1001,6 +1005,7 @@ export class InstancesCreateComponent implements OnInit {
           this.getUnitPrice(0, 0, 1, 0, null);
           this.getTotalAmount();
         }
+        this.checkValidConfig();
       });
   }
 
@@ -1018,6 +1023,7 @@ export class InstancesCreateComponent implements OnInit {
           this.getUnitPrice(0, 1, 0, 0, null);
           this.getTotalAmount();
         }
+        this.checkValidConfig();
       });
   }
 
@@ -1083,6 +1089,7 @@ export class InstancesCreateComponent implements OnInit {
         this.getUnitPrice(1, 0, 0, 0, null);
         this.getTotalAmount();
       }
+      this.checkValidConfig();
     });
   }
   //#endregion
@@ -1124,6 +1131,7 @@ export class InstancesCreateComponent implements OnInit {
           this.getUnitPrice(0, 0, 1, 0, null);
           this.getTotalAmount();
         }
+        this.checkValidConfig();
       });
   }
 
@@ -1141,6 +1149,7 @@ export class InstancesCreateComponent implements OnInit {
           this.getUnitPrice(0, 1, 0, 0, null);
           this.getTotalAmount();
         }
+        this.checkValidConfig();
       });
   }
 
@@ -1192,6 +1201,7 @@ export class InstancesCreateComponent implements OnInit {
           this.getUnitPrice(1, 0, 0, 0, null);
           this.getTotalAmount();
         }
+        this.checkValidConfig();
       });
   }
 
@@ -1211,6 +1221,7 @@ export class InstancesCreateComponent implements OnInit {
           }
           this.getTotalAmount();
         }
+        this.checkValidConfig();
       });
   }
 
@@ -1228,6 +1239,37 @@ export class InstancesCreateComponent implements OnInit {
       (this.hdh != null || this.selectedSnapshot != null)
     ) {
       this.getTotalAmount();
+    }
+  }
+
+  isValid: boolean = false;
+  checkValidConfig() {
+    if (
+      this.isCustomconfig &&
+      (!this.instanceCreate.volumeSize ||
+        this.instanceCreate.volumeSize == 0 ||
+        !this.instanceCreate.ram ||
+        this.instanceCreate.ram == 0 ||
+        !this.instanceCreate.cpu ||
+        this.instanceCreate.cpu == 0)
+    ) {
+      this.isValid = false;
+    } else if (
+      this.isGpuConfig &&
+      (!this.instanceCreate.volumeSize ||
+        this.instanceCreate.volumeSize == 0 ||
+        !this.instanceCreate.ram ||
+        this.instanceCreate.ram == 0 ||
+        !this.instanceCreate.cpu ||
+        this.instanceCreate.cpu == 0 ||
+        !this.instanceCreate.gpuCount ||
+        this.instanceCreate.gpuCount == 0)
+    ) {
+      this.isValid = false;
+    } else if (this.isPreConfigPackage && this.selectedElementFlavor) {
+      this.isValid = true;
+    } else {
+      this.isValid = true;
     }
   }
   //#endregion

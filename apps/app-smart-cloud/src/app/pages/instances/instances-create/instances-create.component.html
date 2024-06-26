@@ -1791,6 +1791,7 @@
                 [nzLoading]="isLoading"
                 (click)="save()"
                 [disabled]="
+                  !isValid ||
                   form.invalid ||
                   isExistName ||
                   totalincludesVAT +
@@ -1803,6 +1804,7 @@
                 <span nz-icon nzType="wallet" nzTheme="outline"></span>
                 <span
                   [style.color]="
+                    !isValid ||
                     form.invalid ||
                     isExistName ||
                     totalincludesVAT +
