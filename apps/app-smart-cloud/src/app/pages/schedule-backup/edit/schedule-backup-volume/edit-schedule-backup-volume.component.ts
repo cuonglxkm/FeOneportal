@@ -231,6 +231,7 @@ export class EditScheduleBackupVolumeComponent implements OnInit{
       }, error => {
         this.isLoadingAction = false
         this.notification.error(this.i18n.fanyi("app.status.fail"), this.i18n.fanyi("schedule.backup.notify.edit.volume.fail"))
+        this.router.navigate(['/app-smart-cloud/schedule/backup/list']);
       })
     } else {
       console.log(this.validateForm.controls);
