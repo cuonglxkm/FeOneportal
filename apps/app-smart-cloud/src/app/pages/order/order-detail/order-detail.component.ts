@@ -257,7 +257,7 @@ export class OrderDetailComponent {
       this.specType = 'instancebackup_restore'
     }else if(serviceName === 'VPNSiteToSites' && this.data.orderItems[0].serviceType === 'Gia hạn'){
       this.specType = 'vpnsitetosite_extend'
-    }else if(serviceName === 'VPNSiteToSites' && this.data.orderItems[0].serviceType === 'Điều chỉnh'){
+    }else if(serviceName === 'VPNSiteToSites' && this.data.orderItems[0].serviceType.includes('Điều chỉnh')){
       this.specType = 'vpnsitetosite_resize'
     }else if(serviceName === 'VPNSiteToSites' && this.data.orderItems[0].serviceType === 'Tạo mới'){
       this.specType = 'vpnsitetosite_create'
@@ -265,13 +265,13 @@ export class OrderDetailComponent {
       this.specType = 'snapshotpackage_create'
     }else if(serviceName === 'Snapshot Package' && this.data.orderItems[0].serviceType === 'Gia hạn'){
       this.specType = 'snapshotpackage_extend'
-    }else if(serviceName === 'Snapshot Package' && this.data.orderItems[0].serviceType === 'Điều chỉnh'){
+    }else if(serviceName === 'Snapshot Package' && this.data.orderItems[0].serviceType.includes('Điều chỉnh')){
       this.specType = 'snapshotpackage_resize'
     }else if(serviceName === 'Mongodb' && this.data.orderItems[0].serviceType === 'Tạo mới'){
       this.specType = 'mongodb_create'
     }else if(serviceName === 'Mongodb' && this.data.orderItems[0].serviceType === 'Gia hạn'){
       this.specType = 'mongodb_extend'
-    }else if(serviceName === 'Mongodb' && this.data.orderItems[0].serviceType === 'Điều chỉnh'){
+    }else if(serviceName === 'Mongodb' && this.data.orderItems[0].serviceType.includes('Điều chỉnh')){
       this.specType = 'mongodb_resize'
     }else if(serviceName === 'File system snapshot' && this.data.orderItems[0].serviceType === 'Tạo mới'){
       this.specType = 'sharesnapshot_create'
@@ -285,7 +285,7 @@ export class OrderDetailComponent {
       this.specType = 'volume_create'
     }else if(serviceName === 'Volume' && this.data.orderItems[0].serviceType === 'Gia hạn'){
       this.specType = 'volume_extend'
-    }else if(serviceName === 'Volume' && this.data.orderItems[0].serviceType === 'Điều chỉnh'){
+    }else if(serviceName === 'Volume' && this.data.orderItems[0].serviceType.includes('Điều chỉnh')){
       this.specType = 'volume_resize'
     }else if(serviceName === 'Vpc' && this.data.orderItems[0].serviceType === 'Tạo mới'){
       this.specType = 'vpc_create'
@@ -297,37 +297,37 @@ export class OrderDetailComponent {
       this.specType = 'objectstorage_create'
     }else if(serviceName === 'Object Storage' && this.data.orderItems[0].serviceType === 'Gia hạn'){
       this.specType = 'objectstorage_extend'
-    }else if(serviceName === 'Object Storage' && this.data.orderItems[0].serviceType === 'Điều chỉnh'){
+    }else if(serviceName === 'Object Storage' && this.data.orderItems[0].serviceType.includes('Điều chỉnh')){
       this.specType = 'objectstorage_resize'
     }else if(serviceName === 'File Storage' && this.data.orderItems[0].serviceType === 'Tạo mới'){
       this.specType = 'filestorage_create'
     }else if(serviceName === 'File Storage' && this.data.orderItems[0].serviceType === 'Gia hạn'){
       this.specType = 'filestorage_extend'
-    }else if(serviceName === 'File Storage' && this.data.orderItems[0].serviceType === 'Điều chỉnh'){
+    }else if(serviceName === 'File Storage' && this.data.orderItems[0].serviceType.includes('Điều chỉnh')){
       this.specType = 'filestorage_resize'
     }else if(serviceName === 'Loadbalancer SDN' && this.data.orderItems[0].serviceType === 'Tạo mới'){
       this.specType = 'loadbalancer_create'
     }else if(serviceName === 'Loadbalancer SDN' && this.data.orderItems[0].serviceType === 'Gia hạn'){
       this.specType = 'loadbalancer_extend'
-    }else if(serviceName === 'Loadbalancer SDN' && this.data.orderItems[0].serviceType === 'Điều chỉnh'){
+    }else if(serviceName === 'Loadbalancer SDN' && this.data.orderItems[0].serviceType.includes('Điều chỉnh')){
       this.specType = 'loadbalancer_resize'
     }else if(serviceName === 'Backup Packet' && this.data.orderItems[0].serviceType === 'Tạo mới'){
       this.specType = 'backuppackage_create'
     }else if(serviceName === 'Backup Packet' && this.data.orderItems[0].serviceType === 'Gia hạn'){
       this.specType = 'backuppackage_extend'
-    }else if(serviceName === 'Backup Packet' && this.data.orderItems[0].serviceType === 'Điều chỉnh'){
+    }else if(serviceName === 'Backup Packet' && this.data.orderItems[0].serviceType.includes('Điều chỉnh')){
       this.specType = 'backuppackage_resize'
     }else if(serviceName === 'K8s' && this.data.orderItems[0].serviceType === 'Tạo mới'){
       this.specType = 'k8s_create'
     }else if(serviceName === 'K8s' && this.data.orderItems[0].serviceType === 'Gia hạn'){
       this.specType = 'k8s_extend'
-    }else if(serviceName === 'K8s' && this.data.orderItems[0].serviceType === 'Điều chỉnh'){
+    }else if(serviceName === 'K8s' && this.data.orderItems[0].serviceType.includes('Điều chỉnh')){
       this.specType = 'k8s_resize'
     }else if(serviceName === 'Kafka' && this.data.orderItems[0].serviceType === 'Tạo mới'){
       this.specType = 'kafka_create'
     }else if(serviceName === 'Kafka' && this.data.orderItems[0].serviceType === 'Gia hạn'){
       this.specType = 'kafka_extend'
-    }else if(serviceName === 'Kafka' && this.data.orderItems[0].serviceType === 'Điều chỉnh'){
+    }else if(serviceName === 'Kafka' && this.data.orderItems[0].serviceType.includes('Điều chỉnh')){
       this.specType = 'kafka_resize'
     }else if(serviceName === 'Volume Snapshot' && this.data.orderItems[0].serviceType === 'Tạo mới'){
       this.specType = 'volumesnapshot_create'
@@ -339,7 +339,7 @@ export class OrderDetailComponent {
       this.specType = 'instance_create'
     }else if(this.serviceName.includes('Máy ảo') && this.data.orderItems[0].serviceType === 'Gia hạn'){
       this.specType = 'instance_extend'
-    }else if(this.serviceName.includes('Máy ảo') && this.data.orderItems[0].serviceType === 'Điều chỉnh'){
+    }else if(this.serviceName.includes('Máy ảo') && this.data.orderItems[0].serviceType.includes('Điều chỉnh')){
       this.specType = 'instance_resize'
     }
   }

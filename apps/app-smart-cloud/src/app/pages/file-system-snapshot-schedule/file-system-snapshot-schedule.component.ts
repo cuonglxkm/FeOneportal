@@ -104,7 +104,6 @@ export class FileSystemSnapshotScheduleComponent {
   }
 
   ngOnInit() {
-    debugger
     let regionAndProject = getCurrentRegionAndProject();
     this.region = regionAndProject.regionId;
     this.project = regionAndProject.projectId;

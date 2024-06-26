@@ -94,17 +94,6 @@ export class DashboardObjectStorageComponent implements OnInit {
   }
 
 
-  regionChanged(region: RegionModel) {
-    this.region = region.regionId;
-  }
-
-  onRegionChanged(region: RegionModel) {
-    this.region = region.regionId;
-  }
-
-  projectChanged(project: ProjectModel) {
-    this.project = project?.id;
-  }
 
   getSummaryObjectStorage() {
     console.log('time', this.timeSelected)

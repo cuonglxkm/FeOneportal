@@ -112,6 +112,7 @@
   "app.used.capacity": "Dung lượng đã dùng",
   "app.storage.usage": "Dung lượng sử dụng",
   "app.upload.capacity": "Dung lượng tải lên",
+  "app.upload.download": "Dung lượng tải về",
   "app.number.object": "Số lượng Object",
   "app.amount": "Số lượng",
   "app.resource": "Tài nguyên",
@@ -445,6 +446,7 @@
   "app.tooltip.use.lan.network": "Khi sử dụng mạng LAN, máy ảo sẽ được trang bị thêm 01 IP LAN",
   "app.tooltip.access.method.instance": "Có thể sử dụng mật khẩu hoặc keypair để truy cập vào máy ảo",
   "app.tooltip.usage.time": "Thời gian khách hàng mua {{name}} để sử dụng, tính theo tháng",
+  "app.tooltip.instance.volume.encypt": "- HDD: IOPS cố định là 300<br>- SSD: IOPS tịnh tiến theo dung lượng Volume được tính theo công thức IOPS = Dung lượng * 10. Tuy nhiên IOPS có giá trị Min = 400 nên là đối với các Volume <= 40 GB thì IOPS luôn là 400, từ 41GB trở lên thì theo công thức IOPS = Dung lượng * 10",
 
   "validation.exist.instance.name": "Tên máy ảo này đã được sử dụng, vui lòng chọn tên khác",
   "validation.instance.password.required": "Vui lòng nhập mật khẩu",
