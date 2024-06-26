@@ -44,7 +44,7 @@ export class CreateScheduleBackupComponent implements OnInit {
       volumeToBackupIds: new FormControl(null as number[]),
       maxBackup: new FormControl(1, {
         nonNullable: true,
-        validators: [Validators.required, Validators.pattern(/^[0-9]*$/)]
+        validators: [Validators.required, Validators.pattern(/^[1-5]*$/)]
       }),
       description: new FormControl('', {
         validators: [Validators.maxLength(255)]
@@ -77,7 +77,7 @@ export class CreateScheduleBackupComponent implements OnInit {
       }),
       maxBackup: new FormControl(1, {
         nonNullable: true,
-        validators: [Validators.required, Validators.pattern(/^[0-9]*$/)]
+        validators: [Validators.required, Validators.pattern(/^[1-5]*$/)]
       }),
       description: new FormControl('', {
         validators: [Validators.maxLength(255)]
