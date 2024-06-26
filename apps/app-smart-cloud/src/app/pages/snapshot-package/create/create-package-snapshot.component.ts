@@ -76,6 +76,10 @@ export class CreatePackageSnapshotComponent implements OnInit {
     this.router.navigate(['/app-smart-cloud/snapshot/packages']);
   }
 
+  onRegionChanged(region: RegionModel) {
+    this.region = region.regionId;
+  }
+
   projectChanged(project: ProjectModel) {
     this.project = project?.id;
   }

@@ -195,5 +195,9 @@ export class PolicyDetailComponent implements OnInit {
     this.region = region.regionId
   }
 
+  onRegionChanged(region: RegionModel) {
+    this.region = region.regionId;
+  }
+
   protected readonly navigator = navigator;
 }

@@ -81,6 +81,10 @@ export class ListBackupVmComponent implements OnInit, OnDestroy {
     this.getListBackupVM(true)
   }
 
+  onRegionChanged(region: RegionModel) {
+    this.region = region.regionId;
+  }
+
   projectChanged(project: ProjectModel) {
     this.project = project?.id
     this.formSearch.projectId = this.project

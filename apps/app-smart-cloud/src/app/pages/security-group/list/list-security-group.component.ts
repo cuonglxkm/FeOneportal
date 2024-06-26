@@ -45,6 +45,10 @@ export class ListSecurityGroupComponent implements OnInit {
     this.getListSG(true);
   }
 
+  onRegionChanged(region: RegionModel) {
+    this.region = region.regionId;
+  }
+
   projectChanged(project: ProjectModel) {
     this.project = project.id;
     this.getListSG(true);

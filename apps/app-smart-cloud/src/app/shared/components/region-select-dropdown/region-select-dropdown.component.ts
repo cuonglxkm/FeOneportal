@@ -24,6 +24,12 @@ export class RegionSelectDropdownComponent implements OnInit {
 
     ngOnInit() {
       if (localStorage.getItem('regions')) {
+        if (localStorage.getItem('regionId') != null) {
+          this.selectedRegion = this.listRegion.find(item => item.regionId == JSON.parse(localStorage.getItem('regionId')));
+        } else {
+          this.selectedRegion = this.listRegion[0];
+          localStorage.setItem('regionId', JSON.stringify(this.listRegion[0].regionId))
+        }
         this.listRegion = JSON.parse(localStorage.getItem('regions'));
         this.setSelectedRegionFromLocalStorage();
       } else {
@@ -41,6 +47,7 @@ export class RegionSelectDropdownComponent implements OnInit {
     }
 
     setSelectedRegionFromLocalStorage() {   
+      let baseUrl = environment['baseUrl'];
       if (this.isAdvance) {
         this.selectedRegion = this.listRegion[2];
         localStorage.setItem('regionId', JSON.stringify(this.listRegion[2].regionId));
@@ -53,6 +60,7 @@ export class RegionSelectDropdownComponent implements OnInit {
     }
 
     updateSelectedRegion() {
+      let baseUrl = environment['baseUrl'];
       console.log(this.isAdvance);
       if (this.isAdvance) {
         this.selectedRegion = this.listRegion[2];

@@ -47,6 +47,10 @@ export class DetailL7PolicyComponent implements OnInit{
     // this.router.navigate(['/app-smart-cloud/load-balancer/list'])
   }
 
+  onRegionChanged(region: RegionModel) {
+    this.region = region.regionId;
+  }
+
   projectChanged(project: ProjectModel) {
     this.project = project?.id;
   }
