@@ -35,6 +35,7 @@
       ></region-select-dropdown>
       <project-select-dropdown
         [regionId]="region"
+        (valueChanged)="valueChangeProject($event)"
         (userChanged)="userChangeProject()"
       ></project-select-dropdown>
     </div>
@@ -688,36 +689,39 @@
                 </thead>
                 <tbody class="ant-table-tbody">
                   <tr>
-                    <td>
+                    <td style="width: 50%">
                       <nz-form-label style="margin-left: -12px"
-                        >CPUs (<span class="text-red">*</span>)</nz-form-label
+                        >{{ 'app.ssd.capacity' | i18n }} (<span class="text-red"
+                          >*</span
+                        >) - GB</nz-form-label
                       >
                       <nz-slider
-                        [nzMin]="0"
-                        [nzMax]="62"
-                        [(ngModel)]="configGPU.CPU"
-                        (ngModelChange)="changeCpuOfGpu($event)"
+                        [nzMin]="minCapacity"
+                        [nzMax]="maxCapacity"
+                        [nzStep]="stepCapacity"
+                        [(ngModel)]="configGPU.storage"
+                        (ngModelChange)="changeStorageOfGpu($event)"
                         [ngModelOptions]="{ standalone: true }"
                       ></nz-slider>
                     </td>
                     <td>
                       <nz-input-number
-                        [(ngModel)]="configGPU.CPU"
+                        [(ngModel)]="configGPU.storage"
                         (keydown)="onKeyDown($event)"
-                        (ngModelChange)="changeCpuOfGpu($event)"
+                        (ngModelChange)="changeStorageOfGpu($event)"
                         [ngModelOptions]="{ standalone: true }"
-                        [nzMin]="0"
-                        [nzMax]="62"
-                        [nzStep]="1"
+                        [nzMin]="minCapacity"
+                        [nzMax]="maxCapacity"
+                        [nzStep]="stepCapacity"
                         nzSize="large"
                       ></nz-input-number>
                     </td>
                     <td nzAlign="right">
                       <label class="text-custom-price">
-                        {{ cpuIntoMoney | number }} </label
+                        {{ volumeIntoMoney | number }} </label
                       ><br />
                       <label class="text-custom-unit-price">
-                        {{ cpuUnitPrice | number }}
+                        {{ volumeUnitPrice | number }}
                       </label>
                     </td>
                   </tr>
@@ -758,39 +762,37 @@
                     </td>
                   </tr>
                   <tr>
-                    <td style="width: 50%">
+                    <td>
                       <nz-form-label style="margin-left: -12px"
-                        >{{ 'app.ssd.capacity' | i18n }} (<span class="text-red"
-                          >*</span
-                        >) - GB</nz-form-label
+                        >CPU (<span class="text-red">*</span>) -
+                        vCPU</nz-form-label
                       >
                       <nz-slider
-                        [nzMin]="minCapacity"
-                        [nzMax]="maxCapacity"
-                        [nzStep]="stepCapacity"
-                        [(ngModel)]="configGPU.storage"
-                        (ngModelChange)="changeStorageOfGpu($event)"
+                        [nzMin]="0"
+                        [nzMax]="62"
+                        [(ngModel)]="configGPU.CPU"
+                        (ngModelChange)="changeCpuOfGpu($event)"
                         [ngModelOptions]="{ standalone: true }"
                       ></nz-slider>
                     </td>
                     <td>
                       <nz-input-number
-                        [(ngModel)]="configGPU.storage"
+                        [(ngModel)]="configGPU.CPU"
                         (keydown)="onKeyDown($event)"
-                        (ngModelChange)="changeStorageOfGpu($event)"
+                        (ngModelChange)="changeCpuOfGpu($event)"
                         [ngModelOptions]="{ standalone: true }"
-                        [nzMin]="minCapacity"
-                        [nzMax]="maxCapacity"
-                        [nzStep]="stepCapacity"
+                        [nzMin]="0"
+                        [nzMax]="62"
+                        [nzStep]="1"
                         nzSize="large"
                       ></nz-input-number>
                     </td>
                     <td nzAlign="right">
                       <label class="text-custom-price">
-                        {{ volumeIntoMoney | number }} </label
+                        {{ cpuIntoMoney | number }} </label
                       ><br />
                       <label class="text-custom-unit-price">
-                        {{ volumeUnitPrice | number }}
+                        {{ cpuUnitPrice | number }}
                       </label>
                     </td>
                   </tr>
@@ -857,6 +859,52 @@
             </div>
           </nz-tab>
         </nz-tabset>
+        <div style="margin-top: 20px" class="text-label" *ngIf="activeBlockHDD">
+          IOPS
+          <img
+            nz-popover
+            [nzPopoverContent]="contentTemplateEncryptVolume"
+            src="assets/imgs/pajamas_question.svg"
+            alt=""
+            [nzPopoverOverlayStyle]="{ width: '320px' }"
+          />
+          300
+        </div>
+        <div
+          style="margin-top: 20px"
+          class="text-label"
+          *ngIf="activeBlockSSD && volumeRootCapacity <= 40"
+        >
+          IOPS
+          <img
+            nz-popover
+            [nzPopoverContent]="contentTemplateEncryptVolume"
+            src="assets/imgs/pajamas_question.svg"
+            alt=""
+            [nzPopoverOverlayStyle]="{ width: '320px' }"
+          />
+          400
+        </div>
+        <div
+          style="margin-top: 20px"
+          class="text-label"
+          *ngIf="activeBlockSSD && volumeRootCapacity > 40"
+        >
+          IOPS
+          <img
+            nz-popover
+            [nzPopoverContent]="contentTemplateEncryptVolume"
+            src="assets/imgs/pajamas_question.svg"
+            alt=""
+            [nzPopoverOverlayStyle]="{ width: '320px' }"
+          />
+          {{ volumeRootCapacity * 10 }}
+        </div>
+        <ng-template #contentTemplateEncryptVolume>
+          <span
+            [innerHTML]="'app.tooltip.instance.volume.encypt' | i18n"
+          ></span>
+        </ng-template>
         <label
           *ngIf="isSupportEncryption"
           style="margin-top: 20px"
@@ -865,6 +913,12 @@
           [ngModelOptions]="{ standalone: true }"
           [disabled]="isSnapshot"
           >{{ 'volume.info.type.encrypt' | i18n }}
+          <img
+            [nz-tooltip]="'volume.tooltip.type.encrypt' | i18n"
+            src="assets/imgs/pajamas_question.svg"
+            alt=""
+            [nzPopoverOverlayStyle]="{ width: '320px' }"
+          />
         </label>
         <nz-row style="margin-top: 20px" nzGutter="16">
           <nz-col nzLg="12" nzMd="12" nzSm="24">
@@ -1611,7 +1665,7 @@
             <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
             <div class="text-value">{{ 'app.text.package' | i18n }}</div>
             <div style="margin-top: 10px" class="text-label">
-              {{ instanceCreate.cpu }} CPUs
+              {{ instanceCreate.cpu }} vCPU
             </div>
             <div style="margin-top: 10px" class="text-label">
               {{ instanceCreate.ram }} GB RAM
