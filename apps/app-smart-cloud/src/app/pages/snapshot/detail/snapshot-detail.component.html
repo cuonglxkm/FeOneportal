@@ -47,7 +47,7 @@
           <nz-col nzSpan="12">
             <nz-row style="padding: 12px 0 12px 0">
               <span class="text-label customSpan" style="width: 35%">Trạng thái:</span>
-              <ng-container *ngIf="data.serviceStatus | ServiceStatusPipe as statusModel">
+              <ng-container *ngIf="data.resourceStatus | ServiceStatusPipe as statusModel">
                 <span nzBreakWord  [ngStyle]="{ color: statusModel.color }" class="text-value-detail customSpan">{{statusModel.status}}</span>
 <!--                <td >{{  }}</td>-->
               </ng-container>
@@ -63,28 +63,32 @@
         <nz-row>
           <nz-col nzSpan="12">
             <nz-row style="padding: 12px 0 12px 0">
+              <span class="text-label customSpan" style="width: 35%">Gói Snapshot:</span>
+              <span *ngIf="typeProject != 1" class="text-value-detail customSpan">{{packageSnap?.packageName}}</span>
+            </nz-row>
+          </nz-col>
+          <nz-col nzSpan="12">
+            <nz-row style="padding: 12px 0 12px 0">
+              <span class="text-label customSpan" style="width: 35%">Ngày hết hạn: </span>
+              <span class="text-value-detail customSpan">{{data.endDate | date : 'HH:mm:ss dd/MM/yyyy'}}</span>
+            </nz-row>
+          </nz-col>
+        </nz-row>
+        <nz-row style="background-color: #e2e2e9">
+          <nz-col nzSpan="12">
+            <nz-row style="padding: 12px 0 12px 0">
               <span class="text-label customSpan" style="width: 35%">Loại Snapshot:</span>
               <span class="text-value-detail customSpan">{{data.fromRootVolume == true ? 'Snapshot VM' : 'Snapshot Volume'}}</span>
             </nz-row>
           </nz-col>
           <nz-col nzSpan="12">
-            <nz-row style="padding: 12px 0 12px 0">
+            <nz-row *ngIf="data.fromRootVolume == false" style="padding: 12px 0 12px 0">
               <span class="text-label customSpan" style="width: 35%">Volume: </span>
               <span class="text-value-detail customSpan">{{data.volumeName}}</span>
             </nz-row>
-          </nz-col>
-        </nz-row>
-        <nz-row *ngIf="typeProject == 0" style="background-color: #e2e2e9">
-          <nz-col nzSpan="12">
-            <nz-row style="padding: 12px 0 12px 0">
-              <span class="text-label customSpan" style="width: 35%">Gói Snapshot:</span>
-              <span class="text-value-detail customSpan">{{packageSnap?.packageName}}</span>
-            </nz-row>
-          </nz-col>
-          <nz-col nzSpan="12">
-            <nz-row style="padding: 12px 0 12px 0">
-              <span class="text-label customSpan" style="width: 35%">Dung lượng gói: </span>
-              <span class="text-value-detail customSpan">{{packageSnap?.totalSize}} GB</span>
+            <nz-row *ngIf="data.fromRootVolume == true" style="padding: 12px 0 12px 0">
+              <span class="text-label customSpan" style="width: 35%">{{'app.instances' | i18n}}: </span>
+              <span class="text-value-detail customSpan">{{data.instanceName}}</span>
             </nz-row>
           </nz-col>
         </nz-row>
