@@ -539,7 +539,8 @@ export class UpgradeComponent implements OnInit {
       const nodeNumber = pack.workerNode;
       this.currentTotalCpu = nodeNumber * pack.cpu;
       this.currentTotalRam = nodeNumber * pack.ram;
-      this.currentTotalStorage = nodeNumber * pack.rootStorage + pack.volumeStorage;
+      // this.currentTotalStorage = nodeNumber * pack.rootStorage + pack.volumeStorage;
+      this.currentTotalStorage = nodeNumber * pack.rootStorage;
 
     } else {
 
