@@ -26,6 +26,7 @@ import { NzModalService } from 'ng-zorro-antd/modal';
 import { OrderService } from 'src/app/shared/services/order.service';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from '../../../../../../app-kafka/src/app/core/i18n/i18n.service';
+import { RegionModel } from '../../../../../../../libs/common-utils/src';
 
 @Component({
   selector: 'one-portal-instances-extend',
@@ -143,6 +144,10 @@ export class InstancesExtendComponent implements OnInit {
   onChangeTime(value) {
     this.numberMonth = value;
     this.getTotalAmount();
+  }
+
+  onRegionChanged(region: RegionModel) {
+    this.regionId = region.regionId;
   }
 
   instanceExtendInit() {

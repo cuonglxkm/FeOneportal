@@ -9,6 +9,7 @@ import {
 import { I18NService } from '@core';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
+import { getCurrentRegionAndProject } from '@shared';
 import { id } from 'date-fns/locale';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { debounceTime, finalize, Subject } from 'rxjs';
@@ -33,6 +34,7 @@ class HeaderName {
 export class BucketCorsComponent implements OnInit {
   @Input() bucketName: string;
   value: string = '';
+  region = JSON.parse(localStorage.getItem('regionId'));
   listBucketCors: BucketCors[] = [];
   listHeaderName: HeaderName[] = [];
   pageSize: number = 10;
@@ -58,6 +60,8 @@ export class BucketCorsComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    let regionAndProject = getCurrentRegionAndProject();
+    this.region = regionAndProject.regionId;
     this.searchBucketCors();
     this.searchDelay.pipe(debounceTime(TimeCommon.timeOutSearch)).subscribe(() => {     
       this.searchBucketCors();
@@ -94,7 +98,8 @@ export class BucketCorsComponent implements OnInit {
         this.bucketName,
         this.pageNumber,
         this.pageSize,
-        this.value.trim()
+        this.value.trim(),
+        this.region
       )
       .pipe(
         finalize(() => {
@@ -168,7 +173,7 @@ export class BucketCorsComponent implements OnInit {
       this.bucketCorsCreate.allowedHeaders.push(element.name);
     });
 
-    this.bucketService.createBucketCORS(this.bucketCorsCreate).subscribe({
+    this.bucketService.createBucketCORS(this.bucketCorsCreate, this.region).subscribe({
       next: (data) => {
         this.isLoadingCreate = false
         this.isVisibleCreate = false;
@@ -213,7 +218,7 @@ export class BucketCorsComponent implements OnInit {
 
   handleOkDelete() {
     this.isLoadingDelete = true
-    this.bucketService.deleteBucketCORS(this.bucketCorsDelete).subscribe({
+    this.bucketService.deleteBucketCORS(this.bucketCorsDelete, this.region).subscribe({
       next: (data) => {
         this.isLoadingDelete = false;
         this.isVisibleDelete = false;
@@ -294,7 +299,7 @@ export class BucketCorsComponent implements OnInit {
       this.bucketCorsUpdate.allowedHeaders.push(element.name);
     });
 
-    this.bucketService.updateBucketCORS(this.bucketCorsUpdate).subscribe({
+    this.bucketService.updateBucketCORS(this.bucketCorsUpdate, this.region).subscribe({
       next: (data) => {
         this.isLoadingUpdate = false
         this.isVisibleUpdate = false;

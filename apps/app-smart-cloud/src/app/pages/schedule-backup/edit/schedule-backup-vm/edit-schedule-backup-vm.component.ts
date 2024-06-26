@@ -189,7 +189,9 @@ export class EditScheduleBackupVmComponent implements OnInit {
     return this.formEdit;
   }
 
+  isLoadingAction: boolean = false
   submitForm() {
+    this.isLoadingAction = true;
     if (this.validateForm.valid) {
       this.formEdit = this.getData();
       this.formEdit.runtime = this.datepipe.transform(this.validateForm.controls.times.value, 'yyyy-MM-ddTHH:mm:ss', 'vi-VI');
@@ -199,12 +201,15 @@ export class EditScheduleBackupVmComponent implements OnInit {
       this.formEdit.scheduleId = this.idSchedule;
       // })
       this.scheduleService.edit(this.formEdit).subscribe(data => {
+        this.isLoadingAction = false
         this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('schedule.backup.notify.edit.success'));
         this.nameList = [];
         this.getListScheduleBackup();
         this.router.navigate(['/app-smart-cloud/schedule/backup/list']);
       }, error => {
+        this.isLoadingAction = false;
         this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('schedule.backup.notify.edit.fail'));
+        this.router.navigate(['/app-smart-cloud/schedule/backup/list']);
       });
     } else {
       console.log('invalid', this.validateForm.getRawValue());

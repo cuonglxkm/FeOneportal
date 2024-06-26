@@ -441,13 +441,13 @@ export class RestoreBackupVmComponent implements OnInit {
           if (e.typeName.toUpperCase().includes('HDD')) {
             tempBS.type = 'HDD';
             tempBS.price = e.size * this.unitPriceVolumeHDD;
-            tempBS.VAT = e.size * this.unitVATVolumeHDD;
-            tempBS.priceAndVAT = e.size * this.unitPaymentVolumeHDD;
+            tempBS.VAT = Math.round(tempBS.price * 0.1);
+            tempBS.priceAndVAT = tempBS.price + tempBS.VAT;
           } else {
             tempBS.type = 'SSD';
             tempBS.price = e.size * this.unitPriceVolumeSSD;
-            tempBS.VAT = e.size * this.unitVATVolumeSSD;
-            tempBS.priceAndVAT = e.size * this.unitPaymentVolumeSSD;
+            tempBS.VAT = Math.round(tempBS.price * 0.1);
+            tempBS.priceAndVAT = tempBS.price + tempBS.VAT;
           }
           this.listOfDataBlockStorage.push(tempBS);
         });
@@ -1024,11 +1024,7 @@ export class RestoreBackupVmComponent implements OnInit {
   listOfDataBlockStorage: BlockStorage[] = [];
 
   unitPriceVolumeHDD: number = 0;
-  unitVATVolumeHDD: number = 0;
-  unitPaymentVolumeHDD: number = 0;
   unitPriceVolumeSSD: number = 0;
-  unitVATVolumeSSD: number = 0;
-  unitPaymentVolumeSSD: number = 0;
   // Lấy giá tiền của Volume gắn thêm 1GB/1Tháng
   getVolumeUnitMoney() {
     this.loadingSrv.open({ type: 'spin', text: 'Loading...' });
@@ -1062,12 +1058,6 @@ export class RestoreBackupVmComponent implements OnInit {
           console.log('thanh tien volume', result);
           this.unitPriceVolumeHDD = Number.parseFloat(
             result.data.totalAmount.amount
-          );
-          this.unitVATVolumeHDD = Number.parseFloat(
-            result.data.totalVAT.amount
-          );
-          this.unitPaymentVolumeHDD = Number.parseFloat(
-            result.data.totalPayment.amount
           );
           this.cdr.detectChanges();
         });
@@ -1104,12 +1094,6 @@ export class RestoreBackupVmComponent implements OnInit {
           this.unitPriceVolumeSSD = Number.parseFloat(
             result.data.totalAmount.amount
           );
-          this.unitVATVolumeSSD = Number.parseFloat(
-            result.data.totalVAT.amount
-          );
-          this.unitPaymentVolumeSSD = Number.parseFloat(
-            result.data.totalPayment.amount
-          );
           this.getDetailBackupById(this.idBackup);
           this.cdr.detectChanges();
         });
@@ -1127,13 +1111,13 @@ export class RestoreBackupVmComponent implements OnInit {
         if (e.typeName.toUpperCase().includes('HDD')) {
           tempBS.type = 'HDD';
           tempBS.price = e.size * this.unitPriceVolumeHDD;
-          tempBS.VAT = e.size * this.unitVATVolumeHDD;
-          tempBS.priceAndVAT = e.size * this.unitPaymentVolumeHDD;
+          tempBS.VAT = Math.round(tempBS.price * 0.1);
+          tempBS.priceAndVAT = tempBS.price + tempBS.VAT;
         } else {
           tempBS.type = 'SSD';
           tempBS.price = e.size * this.unitPriceVolumeSSD;
-          tempBS.VAT = e.size * this.unitVATVolumeSSD;
-          tempBS.priceAndVAT = e.size * this.unitPaymentVolumeSSD;
+          tempBS.VAT = Math.round(tempBS.price * 0.1);
+          tempBS.priceAndVAT = tempBS.price + tempBS.VAT;
         }
         this.listOfDataBlockStorage.push(tempBS);
       }

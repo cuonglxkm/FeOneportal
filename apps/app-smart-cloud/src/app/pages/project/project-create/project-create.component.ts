@@ -506,6 +506,10 @@ export class ProjectCreateComponent implements OnInit {
     this.router.navigate(['/app-smart-cloud/project']);
   }
 
+  onRegionChanged(region: RegionModel) {
+    this.regionId = region.regionId;
+  }
+
   onChangeTime(numberMonth: number) {
 
     this.numOfMonth = numberMonth;

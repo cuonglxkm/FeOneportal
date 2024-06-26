@@ -469,6 +469,10 @@ export class ProjectUpdateComponent implements OnInit {
     this.router.navigate(['/app-smart-cloud/project'])
   }
 
+  onRegionChanged(region: RegionModel) {
+    this.regionId = region.regionId;
+  }
+
   onChangeTime() {
     const dateNow = new Date();
     dateNow.setMonth(dateNow.getMonth() + Number(this.form.controls['numOfMonth'].value));

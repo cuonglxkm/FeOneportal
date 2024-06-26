@@ -378,8 +378,14 @@ export class CreateFileSystemSnapshotComponent implements OnInit {
 
 
   onRegionChange(region: RegionModel) {
+    console.log(region);
+    
     this.region = region.regionId;
     this.router.navigate(['/app-smart-cloud/file-system-snapshot']);
+  }
+
+  onRegionChanged(region: RegionModel) {
+    this.region = region.regionId;
   }
 
   onProjectChange(project: ProjectModel) {

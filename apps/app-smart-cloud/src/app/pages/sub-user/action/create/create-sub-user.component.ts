@@ -80,7 +80,7 @@ export class CreateSubUserComponent implements OnInit{
   }
 
   getListSubUser() {
-    this.subUserService.getListSubUser(null, 99999, 1).subscribe(data => {
+    this.subUserService.getListSubUser(null, 99999, 1, this.region).subscribe(data => {
       data?.records?.forEach(item => {
         this.nameList?.push(item?.subUserId);
       });
@@ -97,6 +97,7 @@ export class CreateSubUserComponent implements OnInit{
       formCreate.generate_secret = true
       formCreate.secret_key = ""
       formCreate.key_type = "s3"
+      formCreate.regionId = this.region
       if(this.validateForm.controls.access.value.includes('none')) {
         formCreate.access = ""
       } else {
@@ -112,7 +113,7 @@ export class CreateSubUserComponent implements OnInit{
   }
 
   getInformationOfUserObject() {
-    this.objectStorageService.getUserInfo().subscribe(data => {
+    this.objectStorageService.getUserInfo(this.region).subscribe(data => {
       console.log('data', data)
       this.userInfoObjectStorage = data
     })

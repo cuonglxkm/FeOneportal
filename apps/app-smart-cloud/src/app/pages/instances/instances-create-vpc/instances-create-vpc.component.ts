@@ -112,6 +112,7 @@ export class InstancesCreateVpcComponent implements OnInit {
   remainingVolume: number = 0;
   remainingVCPU: number = 0;
   remainingGpu: number = 0;
+  volumeRootCapacity: number = 0;
 
   onKeyDown(event: KeyboardEvent) {
     // Lấy giá trị của phím được nhấn
@@ -184,6 +185,10 @@ export class InstancesCreateVpcComponent implements OnInit {
     this.updateActivePoint(); // Gọi hàm này sau khi view đã được init để đảm bảo có giá trị cần thiết
   }
 
+  onRegionChanged(region: RegionModel) {
+    this.region = region.regionId;
+  }
+  
   updateActivePoint(): void {
     // Gọi hàm reloadCarousel khi cần reload
     if (this.reloadCarousel) {
@@ -513,10 +518,12 @@ export class InstancesCreateVpcComponent implements OnInit {
   getListOptionGpuValue() {
     this.configurationService
       .getConfigurations('OPTIONGPUVALUE')
-      .subscribe(
-        (data) =>
-          (this.listOptionGpuValue = data.valueString.split(', ').map(Number))
-      );
+      .subscribe((data) => {
+        this.listOptionGpuValue = data.valueString.split(', ').map(Number);
+        this.listOptionGpuValue = this.listOptionGpuValue.filter(
+          (e) => e <= this.remainingGpu
+        );
+      });
   }
 
   isCustomconfig = true;
@@ -575,9 +582,7 @@ export class InstancesCreateVpcComponent implements OnInit {
     } else {
       this.remainingGpu = gpuProject.gpuCount;
     }
-    this.listOptionGpuValue = this.listOptionGpuValue.filter(
-      (e) => e <= this.remainingGpu
-    );
+    this.getListOptionGpuValue();
     this.cdr.detectChanges();
   }
 
@@ -599,9 +604,7 @@ export class InstancesCreateVpcComponent implements OnInit {
     } else {
       this.remainingGpu = gpuProject.gpuCount;
     }
-    this.listOptionGpuValue = this.listOptionGpuValue.filter(
-      (e) => e <= this.remainingGpu
-    );
+    this.getListOptionGpuValue();
   }
 
   resetData() {
@@ -613,6 +616,7 @@ export class InstancesCreateVpcComponent implements OnInit {
           ? this.stepCapacity
           : this.sizeSnapshotVL;
     }
+    this.volumeRootCapacity = this.instanceCreate.volumeSize;
     this.instanceCreate.ram = 0;
     this.instanceCreate.gpuCount = 0;
     this.instanceCreate.gpuOfferId = null;
@@ -679,6 +683,7 @@ export class InstancesCreateVpcComponent implements OnInit {
               ? this.stepCapacity
               : this.sizeSnapshotVL;
         }
+        this.volumeRootCapacity = this.instanceCreate.volumeSize;
         this.checkValidConfig();
         this.cdr.detectChanges();
       });

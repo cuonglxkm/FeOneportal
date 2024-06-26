@@ -133,6 +133,10 @@ export class EditIkePoliciesComponent implements OnInit {
     this.router.navigate(['/app-smart-cloud/vpn-site-to-site']);
   }
 
+  onRegionChanged(region: RegionModel) {
+    this.region = region.regionId;
+  }
+
   onProjectChange(project: ProjectModel) {
     this.project = project?.id;
   }
