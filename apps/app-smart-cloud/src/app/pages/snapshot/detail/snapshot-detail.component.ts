@@ -9,6 +9,7 @@ import { ProjectModel, RegionModel } from '../../../../../../../libs/common-util
 import { finalize } from 'rxjs';
 import { da } from 'date-fns/locale';
 import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
+import { PackageSnapshotService } from '../../../shared/services/package-snapshot.service';
 
 @Component({
   selector: 'one-portal-snapshot-detail',
@@ -33,6 +34,7 @@ export class SnapshotDetailComponent implements OnInit{
               private router: Router,
               private activatedRoute: ActivatedRoute,
               private service: VolumeService,
+              private packageSnapshotService: PackageSnapshotService,
               private notification: NzNotificationService) {
   }
 
@@ -77,10 +79,9 @@ export class SnapshotDetailComponent implements OnInit{
   }
 
   private loadPackageSnapshot(snapshotPackageId) {
-    this.service.getDetailPackageSnapshot(snapshotPackageId).subscribe(
-      data => {
-        this.packageSnap = data;
-      }
-    )
+    this.packageSnapshotService.detail(snapshotPackageId, this.project).subscribe(data => {
+      console.log('data', data);
+      this.packageSnap = data;
+    });
   }
 }

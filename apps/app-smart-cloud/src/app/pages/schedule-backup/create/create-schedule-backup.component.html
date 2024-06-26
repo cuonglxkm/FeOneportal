@@ -4,7 +4,8 @@
       <nz-breadcrumb-item><a [routerLink]="'/'">{{ 'app.breadcrumb.home' | i18n }}</a></nz-breadcrumb-item>
       <nz-breadcrumb-item>{{ 'app.breadcrumb.infrastructure.service' | i18n }}</nz-breadcrumb-item>
       <nz-breadcrumb-item>Backup</nz-breadcrumb-item>
-      <nz-breadcrumb-item><a routerLink="/app-smart-cloud/schedule/backup/list">{{ 'schedule.backup.title.job' | i18n }}</a>
+      <nz-breadcrumb-item><a
+        routerLink="/app-smart-cloud/schedule/backup/list">{{ 'schedule.backup.title.job' | i18n }}</a>
       </nz-breadcrumb-item>
       <ng-template #iconTemplate>
         <one-portal-svg-icon [icon]="'icon_breadcrumb'"></one-portal-svg-icon>
@@ -133,10 +134,14 @@
                                        formControlName="maxBackup"
                                        style="width: 100%; margin-left: 0;"
                                        nzMin="1"
-                                       nzStep="1" />
+                                       nzStep="1"
+                                       nzMax="5" />
                       <ng-template #maxBackupTpl let-control>
                         <ng-container
                           *ngIf="control.hasError('required')">{{ 'schedule.backup.require.max.backup' | i18n }}
+                        </ng-container>
+                        <ng-container
+                          *ngIf="control.hasError('pattern')">{{ 'schedule.backup.pattern.max.backup' | i18n }}
                         </ng-container>
                       </ng-template>
                     </nz-form-control>
@@ -228,7 +233,7 @@
                 <nz-col nzSpan="12">
                   <nz-row nzGutter="24">
                     <nz-col nzSpan="12">
-                      <span class="text-label">{{'app.tooltip.backup.package.storage'|i18n}}</span>
+                      <span class="text-label">{{ 'app.tooltip.backup.package.storage'|i18n }}</span>
                     </nz-col>
                     <nz-col nzSpan="12" style="text-align: end;">
                       <span class="text-label">{{ backupPackageDetail?.sizeInGB }} GB</span>
@@ -236,7 +241,7 @@
                   </nz-row>
                   <nz-row nzGutter="24">
                     <nz-col nzSpan="12">
-                      <span class="text-label">{{'app.backup.package.storage.used'|i18n}}</span>
+                      <span class="text-label">{{ 'app.backup.package.storage.used'|i18n }}</span>
                     </nz-col>
                     <nz-col nzSpan="12" style="text-align: end;">
                       <span class="text-label">{{ backupPackageDetail?.usedSize }} GB</span>
@@ -244,10 +249,11 @@
                   </nz-row>
                   <nz-row nzGutter="24">
                     <nz-col nzSpan="12">
-                      <span class="text-label">{{'app.backup.package.storage.remaining'|i18n}}</span>
+                      <span class="text-label">{{ 'app.backup.package.storage.remaining'|i18n }}</span>
                     </nz-col>
                     <nz-col nzSpan="12" style="text-align: end;">
-                      <span class="text-label">{{ backupPackageDetail?.sizeInGB - backupPackageDetail?.usedSize }} GB</span>
+                      <span class="text-label">{{ backupPackageDetail?.sizeInGB - backupPackageDetail?.usedSize }}
+                        GB</span>
                     </nz-col>
                   </nz-row>
                 </nz-col>
@@ -425,8 +431,11 @@
                           nzShowIcon></nz-alert>
                 <ng-template #titleMessage>
               <span
-                style="color: #FF0000;">{{ 'schedule.backup.alert.storage.normal'|i18n:
-                { storage: ((instance?.storage + sizeOfVlAttach) * validateForm.get('formInstance').get('maxBackup').value) } }} <a [routerLink]="'/app-smart-cloud/backup/packages/resize/' + backupPackageDetail?.id">{{backupPackageDetail?.packageName}}</a> {{'schedule.backup.alert.storage.normal1'|i18n}}</span>
+                style="color: #FF0000;">{{
+                  'schedule.backup.alert.storage.normal'|i18n:
+                    { storage: ((instance?.storage + sizeOfVlAttach) * validateForm.get('formInstance').get('maxBackup').value) }
+                }} <a
+                  [routerLink]="'/app-smart-cloud/backup/packages/resize/' + backupPackageDetail?.id">{{ backupPackageDetail?.packageName }}</a> {{ 'schedule.backup.alert.storage.normal1'|i18n }}</span>
                 </ng-template>
               </div>
               <nz-form-item>
@@ -534,10 +543,14 @@
                                        formControlName="maxBackup"
                                        style="width: 100%; margin-left: 0;"
                                        nzMin="1"
-                                       nzStep="1" />
+                                       nzStep="1"
+                                       nzMax="5" />
                       <ng-template #maxBackupTpl let-control>
                         <ng-container
                           *ngIf="control.hasError('required')">{{ 'schedule.backup.require.max.backup' | i18n }}
+                        </ng-container>
+                        <ng-container
+                          *ngIf="control.hasError('pattern')">{{ 'schedule.backup.pattern.max.backup' | i18n }}
                         </ng-container>
                       </ng-template>
                     </nz-form-control>
@@ -625,11 +638,11 @@
                   </nz-form-item>
                 </nz-col>
               </nz-row>
-              <nz-row nzGutter="24" style="margin-bottom: 0;"  *ngIf="modeSelected == 1">
+              <nz-row nzGutter="24" style="margin-bottom: 0;" *ngIf="modeSelected == 1">
                 <nz-col nzSpan="12">
                   <nz-row nzGutter="24">
                     <nz-col nzSpan="12">
-                      <span class="text-label">{{'app.tooltip.backup.package.storage'|i18n}}</span>
+                      <span class="text-label">{{ 'app.tooltip.backup.package.storage'|i18n }}</span>
                     </nz-col>
                     <nz-col nzSpan="12" style="text-align: end;">
                       <span class="text-label">{{ backupPackageDetail?.sizeInGB }} GB</span>
@@ -637,7 +650,7 @@
                   </nz-row>
                   <nz-row nzGutter="24">
                     <nz-col nzSpan="12">
-                      <span class="text-label">{{'app.backup.package.storage.used'|i18n}}</span>
+                      <span class="text-label">{{ 'app.backup.package.storage.used'|i18n }}</span>
                     </nz-col>
                     <nz-col nzSpan="12" style="text-align: end;">
                       <span class="text-label">{{ backupPackageDetail?.usedSize }} GB</span>
@@ -645,10 +658,11 @@
                   </nz-row>
                   <nz-row nzGutter="24">
                     <nz-col nzSpan="12">
-                      <span class="text-label">{{'app.backup.package.storage.remaining'|i18n}}</span>
+                      <span class="text-label">{{ 'app.backup.package.storage.remaining'|i18n }}</span>
                     </nz-col>
                     <nz-col nzSpan="12" style="text-align: end;">
-                      <span class="text-label">{{ backupPackageDetail?.sizeInGB - backupPackageDetail?.usedSize }} GB</span>
+                      <span class="text-label">{{ backupPackageDetail?.sizeInGB - backupPackageDetail?.usedSize }}
+                        GB</span>
                     </nz-col>
                   </nz-row>
                 </nz-col>
@@ -730,7 +744,7 @@
                   <nz-col nzSpan="12">
                     <nz-row nzGutter="24">
                       <nz-col nzSpan="12">
-                        <span class="text-label">{{'app.tooltip.backup.package.storage'|i18n}}</span>
+                        <span class="text-label">{{ 'app.tooltip.backup.package.storage'|i18n }}</span>
                       </nz-col>
                       <nz-col nzSpan="12" style="text-align: end;">
                         <span class="text-label">{{ backupPackageDetail?.sizeInGB }} GB</span>
@@ -738,7 +752,7 @@
                     </nz-row>
                     <nz-row nzGutter="24">
                       <nz-col nzSpan="12">
-                        <span class="text-label">{{'app.backup.package.storage.used'|i18n}}</span>
+                        <span class="text-label">{{ 'app.backup.package.storage.used'|i18n }}</span>
                       </nz-col>
                       <nz-col nzSpan="12" style="text-align: end;">
                         <span class="text-label">{{ backupPackageDetail?.usedSize }} GB</span>
@@ -746,10 +760,11 @@
                     </nz-row>
                     <nz-row nzGutter="24">
                       <nz-col nzSpan="12">
-                        <span class="text-label">{{'app.backup.package.storage.remaining'|i18n}}</span>
+                        <span class="text-label">{{ 'app.backup.package.storage.remaining'|i18n }}</span>
                       </nz-col>
                       <nz-col nzSpan="12" style="text-align: end;">
-                        <span class="text-label">{{ backupPackageDetail?.sizeInGB - backupPackageDetail?.usedSize }} GB</span>
+                        <span class="text-label">{{ backupPackageDetail?.sizeInGB - backupPackageDetail?.usedSize }}
+                          GB</span>
                       </nz-col>
                     </nz-row>
                   </nz-col>
@@ -788,7 +803,7 @@
                   <nz-col nzSpan="12">
                     <nz-row nzGutter="24">
                       <nz-col nzSpan="12">
-                        <span class="text-label">{{'app.tooltip.backup.package.storage'|i18n}}</span>
+                        <span class="text-label">{{ 'app.tooltip.backup.package.storage'|i18n }}</span>
                       </nz-col>
                       <nz-col nzSpan="12" style="text-align: end;">
                         <span class="text-label">{{ backupPackageDetail?.sizeInGB }} GB</span>
@@ -796,7 +811,7 @@
                     </nz-row>
                     <nz-row nzGutter="24">
                       <nz-col nzSpan="12">
-                        <span class="text-label">{{'app.backup.package.storage.used'|i18n}}</span>
+                        <span class="text-label">{{ 'app.backup.package.storage.used'|i18n }}</span>
                       </nz-col>
                       <nz-col nzSpan="12" style="text-align: end;">
                         <span class="text-label">{{ backupPackageDetail?.usedSize }} GB</span>
@@ -804,10 +819,11 @@
                     </nz-row>
                     <nz-row nzGutter="24">
                       <nz-col nzSpan="12">
-                        <span class="text-label">{{'app.backup.package.storage.remaining'|i18n}}</span>
+                        <span class="text-label">{{ 'app.backup.package.storage.remaining'|i18n }}</span>
                       </nz-col>
                       <nz-col nzSpan="12" style="text-align: end;">
-                        <span class="text-label">{{ backupPackageDetail?.sizeInGB - backupPackageDetail?.usedSize }} GB</span>
+                        <span class="text-label">{{ backupPackageDetail?.sizeInGB - backupPackageDetail?.usedSize }}
+                          GB</span>
                       </nz-col>
                     </nz-row>
                   </nz-col>
@@ -942,8 +958,11 @@
                           nzShowIcon></nz-alert>
                 <ng-template #titleMessage>
               <span
-                style="color: #FF0000;">{{ 'schedule.backup.alert.storage.normal'|i18n:
-                { storage: ((sizeOfVolume) * validateForm.get('formVolume').get('maxBackup').value) } }} <a [routerLink]="'/app-smart-cloud/backup/packages/resize/' + backupPackageDetail?.id">{{backupPackageDetail?.packageName}}</a> {{'schedule.backup.alert.storage.normal1'|i18n}}</span>
+                style="color: #FF0000;">{{
+                  'schedule.backup.alert.storage.normal'|i18n:
+                    { storage: ((sizeOfVolume) * validateForm.get('formVolume').get('maxBackup').value) }
+                }} <a
+                  [routerLink]="'/app-smart-cloud/backup/packages/resize/' + backupPackageDetail?.id">{{ backupPackageDetail?.packageName }}</a> {{ 'schedule.backup.alert.storage.normal1'|i18n }}</span>
                 </ng-template>
               </div>
               <nz-form-item>

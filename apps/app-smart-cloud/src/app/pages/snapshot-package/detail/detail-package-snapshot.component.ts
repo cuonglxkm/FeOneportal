@@ -54,12 +54,12 @@ export class DetailSnapshotComponent implements OnInit{
     this.project = project?.id
   }
 
-  getDetailPackageBackup(id) {
-    this.packageBackupService.detail(id, this.project).subscribe(data => {
-      console.log('data', data)
-      this.packageBackupModel = data
-    })
-  }
+  // getDetailPackageBackup(id) {
+  //   this.packageBackupService.detail(id, this.project).subscribe(data => {
+  //     console.log('data', data)
+  //     this.packageBackupModel = data
+  //   })
+  // }
 
   getDetailPackageSnapshot(id) {
     this.packageSnapshotService.detail(id, this.project).subscribe(data => {
@@ -93,7 +93,7 @@ export class DetailSnapshotComponent implements OnInit{
       this.loadProjects();
     }
     if (this.idPackageBackup) {
-      this.getDetailPackageBackup(this.idPackageBackup);
+      // this.getDetailPackageBackup(this.idPackageBackup);
       this.getDetailPackageSnapshot(this.idPackageBackup);
     }
   }
