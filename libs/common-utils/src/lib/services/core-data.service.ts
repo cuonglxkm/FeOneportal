@@ -102,7 +102,7 @@ export class CoreDataService {
     }
 
     public getProjects(baseUrl:string, regionId: number) {
-        debugger
+        // debugger
         if (regionId < 1) {
             return;
         }
