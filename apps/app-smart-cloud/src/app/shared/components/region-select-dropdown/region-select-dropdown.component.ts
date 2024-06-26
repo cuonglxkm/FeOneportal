@@ -1,6 +1,8 @@
-import {Component, EventEmitter, Input, OnInit, Output, SimpleChanges} from '@angular/core';
+import {ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output, SimpleChanges} from '@angular/core';
 import { RegionModel, RegionCoreService, CoreDataService } from '../../../../../../../libs/common-utils/src';
 import {environment} from '@env/environment';
+import { Router } from '@angular/router';
+import { NzNotificationService } from 'ng-zorro-antd/notification';
 
 @Component({
   selector: 'region-select-dropdown',
@@ -8,79 +10,72 @@ import {environment} from '@env/environment';
   styleUrls: ['./region-select-dropdown.component.less'],
 })
 export class RegionSelectDropdownComponent implements OnInit {
-  @Input() isAdvance: boolean;
-  @Input() isDetail = false;
-  @Output() valueChanged = new EventEmitter();
-  @Output() userChanged = new EventEmitter();
-  @Output() initComplete = new EventEmitter<void>();
-  selectedRegion: RegionModel;
-  listRegion: RegionModel[] = []
-
-  constructor(private regionService: RegionCoreService, private coreDataService: CoreDataService) {
-  }
-
-  ngOnChanges(changes: SimpleChanges): void {
-    if (changes['isAdvance']) {
-      this.updateSelectedRegion();
+    @Input() isAdvance: boolean;
+    @Input() isDetail = false;
+    @Output() valueChanged = new EventEmitter();
+    @Output() userChanged = new EventEmitter();
+    @Output() regionChange = new EventEmitter();
+    selectedRegion: RegionModel;
+    listRegion: RegionModel[] = []
+    constructor(private regionService: RegionCoreService, private coreDataService: CoreDataService, private router: Router,private notification: NzNotificationService) {
     }
-  }
 
-  ngOnInit() {
-    if (localStorage.getItem('regions')) {
-      this.listRegion = JSON.parse(localStorage.getItem('regions'));
-      this.setSelectedRegionFromLocalStorage();
-      this.initComplete.emit();
-    } else {
-      this.regionService.getAll(environment['baseUrl']).subscribe({
-        next: (data) => {
-          this.listRegion = data;
-          localStorage.setItem('regions', JSON.stringify(this.listRegion));
-          this.setSelectedRegionFromLocalStorage();
-          this.initComplete.emit();
-        },
-        error: (error) => {
-          this.listRegion = [];
-        }
-      });
+
+
+    ngOnInit() {
+      if (localStorage.getItem('regions')) {
+        this.listRegion = JSON.parse(localStorage.getItem('regions'));
+        this.setSelectedRegionFromLocalStorage();
+      } else {
+        this.regionService.getAll(environment['baseUrl']).subscribe({
+          next: (data) => {
+            this.listRegion = data;
+            localStorage.setItem('regions', JSON.stringify(this.listRegion));
+            this.setSelectedRegionFromLocalStorage();
+          },
+          error: (error) => {
+            this.listRegion = [];
+          }
+        });
+      }
     }
-  }
 
-   setSelectedRegionFromLocalStorage() {
-    let baseUrl = environment['baseUrl'];
-    if (this.isAdvance) {
-      this.selectedRegion = this.listRegion[2];
-      localStorage.setItem('regionId', JSON.stringify(this.listRegion[2].regionId));
-      this.coreDataService.getProjects(baseUrl, this.listRegion[2].regionId);
-      localStorage.removeItem('projectId')
-    } else {
+    setSelectedRegionFromLocalStorage() {   
+      if (this.isAdvance) {
+        this.selectedRegion = this.listRegion[2];
+        localStorage.setItem('regionId', JSON.stringify(this.listRegion[2].regionId));
+        this.regionChange.emit(this.listRegion[2]);
+      } else {
         this.selectedRegion = this.listRegion[1];
         localStorage.setItem('regionId', JSON.stringify(this.listRegion[1].regionId));
-        console.log(this.listRegion[1].regionId);
-        
-        this.coreDataService.getProjects(baseUrl, this.listRegion[1].regionId);
+        this.regionChange.emit(this.listRegion[1]);
+      }
+    }
+
+    updateSelectedRegion() {
+      console.log(this.isAdvance);
+      if (this.isAdvance) {
+        this.selectedRegion = this.listRegion[2];
+        localStorage.setItem('regionId', JSON.stringify(this.listRegion[2].regionId));
+        this.regionChange.emit(this.listRegion[2]);
+      } else {
+        this.setSelectedRegionFromLocalStorage();
+      }
+    }
+
+    regionChanged(region: RegionModel) {
+      if(this.isAdvance && region.regionId !== 7){
+        this.notification.error('Thất bại', 'Khu vực không hợp lệ!')
+        this.router.navigate(['/app-smart-cloud/dashboard'])
+      }else if(!this.isAdvance && region.regionId === 7){
+        this.notification.error('Thất bại', 'Khu vực không hợp lệ!')
+        this.router.navigate(['/app-smart-cloud/dashboard'])
+      }else{
+        let baseUrl = environment['baseUrl'];
+        localStorage.setItem('regionId', JSON.stringify(region.regionId))
+        this.coreDataService.getProjects(baseUrl, region.regionId);
         localStorage.removeItem('projectId')
+        this.valueChanged.emit(region);
+      }
     }
-  }
-
-   updateSelectedRegion() {
-    debugger
-    console.log(this.isAdvance);
-    let baseUrl = environment['baseUrl'];
-    if (this.isAdvance) {
-      this.selectedRegion = this.listRegion[2];
-      localStorage.setItem('regionId', JSON.stringify(this.listRegion[2].regionId));
-      this.coreDataService.getProjects(baseUrl, this.listRegion[2].regionId);
-      localStorage.removeItem('projectId')
-    } else {
-      this.setSelectedRegionFromLocalStorage();
-    }
-  }
-
-  regionChanged(region: RegionModel) {
-    let baseUrl = environment['baseUrl'];
-    localStorage.setItem('regionId', JSON.stringify(region.regionId))
-    this.coreDataService.getProjects(baseUrl, region.regionId);
-    localStorage.removeItem('projectId')
-    this.valueChanged.emit(region);
-  }
 }

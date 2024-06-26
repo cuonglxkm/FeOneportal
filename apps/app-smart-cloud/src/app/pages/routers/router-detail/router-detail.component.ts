@@ -470,6 +470,10 @@ export class RouterDetailComponent implements OnInit {
     this.router.navigate(['/app-smart-cloud/network/router']);
   }
 
+  onRegionChanged(region: RegionModel) {
+    this.regionId = region.regionId;
+  }
+
   onProjectChange(project: ProjectModel) {
     this.vpcId = project?.id;
   }

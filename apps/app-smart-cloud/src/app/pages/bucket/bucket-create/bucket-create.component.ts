@@ -14,6 +14,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { BucketService } from 'src/app/shared/services/bucket.service';
 import { I18NService } from '@core';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
+import { getCurrentRegionAndProject } from '@shared';
 
 @Component({
   selector: 'one-portal-bucket-create',
@@ -25,6 +26,7 @@ export class BucketCreateComponent implements OnInit {
   bucketName: string;
   type: string;
   isLoading: boolean = false;
+  region = JSON.parse(localStorage.getItem('regionId'));
   form = new FormGroup({
     name: new FormControl('', {
       nonNullable: true,
@@ -49,6 +51,8 @@ export class BucketCreateComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    let regionAndProject = getCurrentRegionAndProject();
+    this.region = regionAndProject.regionId;
     this.breakpointObserver
       .observe([
         Breakpoints.XSmall,
@@ -89,17 +93,15 @@ export class BucketCreateComponent implements OnInit {
   initPrivate(): void {
     this.activePrivate = true;
     this.activePublic = false;
-    this.type = 'Private';
   }
   initPublic(): void {
     this.activePrivate = false;
     this.activePublic = true;
-    this.type = 'Public';
   }
 
   save() {
     this.isLoading = true
-    this.bucketService.createBucket(this.bucketName, this.type).subscribe({
+    this.bucketService.createBucket(this.bucketName, this.activePrivate === true ? 'Private': 'Public', this.region).subscribe({
       next: (data) => {
         this.isLoading = false
         this.notification.success(

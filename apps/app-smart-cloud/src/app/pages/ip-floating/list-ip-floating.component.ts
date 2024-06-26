@@ -44,6 +44,10 @@ export class ListIpFloatingComponent implements OnInit {
     this.refreshParams();
   }
 
+  onRegionChanged(region: RegionModel) {
+    this.region = region.regionId;
+  }
+
   projectChange(project: ProjectModel) {
     this.project = project.id;
     this.projectType = project.type;

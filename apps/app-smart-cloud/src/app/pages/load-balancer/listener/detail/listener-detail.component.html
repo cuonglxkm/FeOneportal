@@ -22,7 +22,7 @@
   <ng-template #action>
     <div class="alain-custom-action text-right">
       <share-users-combobox></share-users-combobox>
-      <region-select-dropdown (valueChanged)="onRegionChange($event)" isDetail="true"></region-select-dropdown>
+      <region-select-dropdown (regionChange)="onRegionChanged($event)" (valueChanged)="onRegionChange($event)" isDetail="true"></region-select-dropdown>
       <project-select-dropdown [regionId]="regionId" (userChanged)="projectChange($event)" isDetail="true"></project-select-dropdown>
     </div>
   </ng-template>

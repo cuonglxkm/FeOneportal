@@ -88,6 +88,10 @@ export class DetailIpPublicComponent {
     this.regionId = region.regionId;
   }
 
+  onRegionChanged(region: RegionModel) {
+    this.regionId = region.regionId;
+  }
+
   projectChange(project: ProjectModel) {
     this.router.navigate(['/app-smart-cloud/ip-public']);
     this.projectId = project.id;

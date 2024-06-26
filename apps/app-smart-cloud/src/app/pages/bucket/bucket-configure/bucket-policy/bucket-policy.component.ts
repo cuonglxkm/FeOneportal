@@ -16,6 +16,7 @@ import {
 import { ActivatedRoute } from '@angular/router';
 import { I18NService } from '@core';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
+import { getCurrentRegionAndProject } from '@shared';
 import { JsonEditorComponent, JsonEditorOptions } from 'ang-jsoneditor';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { debounceTime, finalize, Subject } from 'rxjs';
@@ -48,6 +49,7 @@ export class BucketPolicyComponent implements OnInit {
   @ViewChild(JsonEditorComponent) editor: JsonEditorComponent;
   public optionJsonEditor: JsonEditorOptions;
   searchDelay = new Subject<boolean>();
+  region = JSON.parse(localStorage.getItem('regionId'));
   constructor(
     private bucketService: BucketService,
     private notification: NzNotificationService,
@@ -61,6 +63,8 @@ export class BucketPolicyComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    let regionAndProject = getCurrentRegionAndProject();
+    this.region = regionAndProject.regionId;
     this.searchBucketPolicy();
     this.searchDelay.pipe(debounceTime(TimeCommon.timeOutSearch)).subscribe(() => {     
       this.searchBucketPolicy();
@@ -87,7 +91,8 @@ export class BucketPolicyComponent implements OnInit {
         this.bucketName,
         this.pageNumber,
         this.pageSize,
-        this.value.trim()
+        this.value.trim(),
+        this.region
       )
       .pipe(
         finalize(() => {
@@ -122,7 +127,7 @@ export class BucketPolicyComponent implements OnInit {
   getListSubuser() {
     this.loadingSubuser = true;
     this.bucketService
-      .getListSubuser(9999, 0)
+      .getListSubuser(9999, 0, this.region)
       .pipe(finalize(() => (this.loadingSubuser = false)))
       .subscribe({
         next: (data) => {
@@ -262,7 +267,8 @@ export class BucketPolicyComponent implements OnInit {
         this.permission,
         this.emailUser,
         this.isUserOther,
-        Array.from(this.setActionPermission)
+        Array.from(this.setActionPermission),
+        this.region
       )
       .subscribe({
         next: (data) => {
@@ -294,7 +300,7 @@ export class BucketPolicyComponent implements OnInit {
   modalUpdate(sid: string) {
     this.isVisibleUpdate = true;
     this.getListSubuser();
-    this.bucketService.getBucketPolicyDetail(sid, this.bucketName).subscribe({
+    this.bucketService.getBucketPolicyDetail(sid, this.bucketName, this.region).subscribe({
       next: (data) => {
         console.log(data);
 
@@ -420,7 +426,8 @@ export class BucketPolicyComponent implements OnInit {
         this.formEdit.controls.permission.value,
         this.formEdit.controls.emailUser.value,
         this.isUserOther,
-        Array.from(this.setActionPermission)
+        Array.from(this.setActionPermission),
+        this.region
       )
       .subscribe({
         next: (data) => {
@@ -457,7 +464,7 @@ export class BucketPolicyComponent implements OnInit {
   handleOkDelete() {
     this.isLoadingDelete = true;
     this.bucketService
-      .deleteBucketPolicy(this.bucketName, this.bucketPolicyId)
+      .deleteBucketPolicy(this.bucketName, this.bucketPolicyId, this.region)
       .subscribe({
         next: (data) => {
           console.log(data);
@@ -494,7 +501,7 @@ export class BucketPolicyComponent implements OnInit {
   bucketPolicyDetail: bucketPolicyDetail = new bucketPolicyDetail();
   modalJson(sid: string) {
     this.isVisibleJson = true;
-    this.bucketService.getBucketPolicyDetail(sid, this.bucketName).subscribe({
+    this.bucketService.getBucketPolicyDetail(sid, this.bucketName, this.region).subscribe({
       next: (data) => {
         console.log(data);
 

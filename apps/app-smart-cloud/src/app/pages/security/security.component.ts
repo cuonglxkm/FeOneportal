@@ -15,8 +15,6 @@ import { RegionModel, ProjectModel } from '../../../../../../libs/common-utils/s
   styleUrls: ['./security.component.less'],
 })
 export class SecurityComponent implements OnInit {
-  region = JSON.parse(localStorage.getItem('regionId'));
-  project = JSON.parse(localStorage.getItem('projectId'));
 
   toggleSwitch: boolean = false
   toggleSwitchGoogleAuthenticator: boolean = false
@@ -24,6 +22,7 @@ export class SecurityComponent implements OnInit {
   isVisibleUpdate: boolean = false
   isLoadingUpdate: boolean = false
   isVisibleOTPForAuthenticator: boolean = false
+  isVisibleReCreateGoogleAuthenticator: boolean = false
   isLoadingOTPForAuthenticator: boolean = false
   isVisibleAuthenticator: boolean = false
   isLoadingAuthenticator: boolean = false
@@ -43,7 +42,7 @@ export class SecurityComponent implements OnInit {
   isDisableButtonGgAuthen: boolean = false;
   countdownIntervalGgAuthen: any;
 
-
+  type: number = 0
   form: FormGroup<{
     otp: FormControl<string>;
   }> = this.fb.group({
@@ -64,19 +63,8 @@ export class SecurityComponent implements OnInit {
     @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService
   ) {}
 
-  onRegionChange(region: RegionModel) {
-    this.region = region.regionId;
-  }
-
-  projectChange(project: ProjectModel) {
-    this.project = project.id;
-  }
 
   ngOnInit() {
-
-    let regionAndProject = getCurrentRegionAndProject();
-    this.region = regionAndProject.regionId;
-    this.project = regionAndProject.projectId;
 
     this.email = this.tokenService.get().email
     
@@ -106,6 +94,7 @@ export class SecurityComponent implements OnInit {
     this.startCountdown();
     this.service.getOneTimePassword().subscribe((data: any) => {
       this.notification.success(this.i18n.fanyi("app.status.success"), this.i18n.fanyi("Thao tác thành công"));
+      this.form.reset()
     }, error => {
       this.toggleSwitch = !this.toggleSwitch;
       this.notification.error(this.i18n.fanyi("app.status.fail"), this.i18n.fanyi("app.security.noti.fail2"))
@@ -158,6 +147,7 @@ export class SecurityComponent implements OnInit {
     this.toggleSwitchGoogleAuthenticator = event
     this.service.getOTPForAuthenticator().subscribe((data: any) => {
       this.isVisibleOTPForAuthenticator = true;
+      this.form.reset()
     }, error => {
       this.toggleSwitchGoogleAuthenticator = !this.toggleSwitchGoogleAuthenticator;
       this.notification.error(this.i18n.fanyi("app.status.fail"), this.i18n.fanyi("app.security.noti.fail2"))
@@ -180,6 +170,7 @@ export class SecurityComponent implements OnInit {
     this.startCountdownGgAuthen();
     this.service.getOTPForAuthenticator().subscribe((data: any) => {
       this.notification.success(this.i18n.fanyi("app.status.success"), this.i18n.fanyi("Thao tác thành công"));
+      this.type = 1
     }, error => {
       this.notification.error(this.i18n.fanyi("app.status.fail"), this.i18n.fanyi("app.security.noti.fail2"))
     });
@@ -211,6 +202,7 @@ export class SecurityComponent implements OnInit {
           this.isLoadingOTPForAuthenticator = false
           this.isActiveGoogleAuthenticator = false;
           this.notification.success(this.i18n.fanyi("app.status.success"), this.i18n.fanyi("Thao tác thành công"));
+          this.form.reset()
         }
       }
       else
@@ -250,6 +242,7 @@ export class SecurityComponent implements OnInit {
         this.isVisibleAuthenticator = false;
         this.isActiveGoogleAuthenticator = true;
         this.notification.success(this.i18n.fanyi("app.status.success"), this.i18n.fanyi("Thao tác thành công"));
+        this.formAuthenticator.reset()
       }
       else
       {
@@ -267,14 +260,59 @@ export class SecurityComponent implements OnInit {
   handleCancelAuthenticator() {
     this.isVisibleAuthenticator = false;
     this.isVisibleOTPForAuthenticator = false;
-    this.toggleSwitchGoogleAuthenticator = !this.toggleSwitchGoogleAuthenticator;
+    if(this.type === 1){
+      this.toggleSwitchGoogleAuthenticator = !this.toggleSwitchGoogleAuthenticator;
+    }
   }
 
   handleRecreateAuthenticator(event){
     this.service.getOTPForAuthenticator().subscribe((data: any) => {
-      this.isVisibleOTPForAuthenticator = true;
+      this.isVisibleReCreateGoogleAuthenticator = true;
       this.isRecreateAuthenticator = true;
+      this.type = 2
     }, error => {
+      this.notification.error(this.i18n.fanyi("app.status.fail"), this.i18n.fanyi("app.security.noti.fail2"))
+    });
+  }
+
+  handleCancelRecreateGoogleAuthenticator(){
+    this.isVisibleReCreateGoogleAuthenticator = false
+    this.form.reset()
+  }
+
+  handleSubmitRecreateGoogleAuthenticator(){
+    let formeEnable2FA = new FormEnable2FA();
+    formeEnable2FA.twofactorType = "Email";
+    formeEnable2FA.code = this.form.controls.otp.value.toString();
+    formeEnable2FA.enable = this.toggleSwitchGoogleAuthenticator;
+    this.isLoadingOTPForAuthenticator = true
+    this.service.submitOTPForAuthenticator(formeEnable2FA).subscribe((data: any) => {
+      if (data.success == true) {
+        if (formeEnable2FA.enable == true) {
+          this.authenticatorKey = data.key;
+          this.authenticatorQrData = 'otpauth://totp/OnePortal:' + this.email + '?secret=' + data.key + '&issuer=OnePortal';
+          this.isVisibleReCreateGoogleAuthenticator = false;
+          this.isVisibleAuthenticator = true;
+          console.log(this.authenticatorKey);
+          this.isLoadingOTPForAuthenticator = false
+          this.form.reset()
+        }
+        else
+        {
+          this.isVisibleReCreateGoogleAuthenticator = false;
+          this.isLoadingOTPForAuthenticator = false
+          this.isActiveGoogleAuthenticator = false;
+          this.notification.success(this.i18n.fanyi("app.status.success"), this.i18n.fanyi("Thao tác thành công"));
+          this.form.reset()
+        }
+      }
+      else
+      {
+        this.notification.error(this.i18n.fanyi("app.status.fail"), this.i18n.fanyi("app.security.noti.fail"));
+        this.isLoadingOTPForAuthenticator = false
+      }
+    }, error => {
+      this.isLoadingOTPForAuthenticator = false
       this.notification.error(this.i18n.fanyi("app.status.fail"), this.i18n.fanyi("app.security.noti.fail2"))
     });
   }
