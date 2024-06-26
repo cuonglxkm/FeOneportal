@@ -94,6 +94,10 @@ export class EditScheduleBackupVmComponent implements OnInit {
 
   }
 
+  onRegionChanged(region: RegionModel) {
+    this.region = region.regionId;
+  }
+
   userChanged(project: ProjectModel) {
     this.router.navigate(['/app-smart-cloud/schedule/backup/list']);
   }

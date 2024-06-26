@@ -87,6 +87,8 @@ export class FileSystemSnapshotComponent {
     this.formSearchFileSystemSnapshot.currentPage = this.pageIndex
     this.formSearchFileSystemSnapshot.name = this.value.toLowerCase().trim()
     this.formSearchFileSystemSnapshot.customerId = this.customerId
+    console.log(this.formSearchFileSystemSnapshot);
+    
     this.fileSystemSnapshotService.getFileSystemSnapshot(this.formSearchFileSystemSnapshot)
       .pipe(debounceTime(500))
       .subscribe(data => {

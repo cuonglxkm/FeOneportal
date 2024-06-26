@@ -36,6 +36,7 @@
   <ng-template #action>
     <div class="alain-custom-action text-right">
       <region-select-dropdown
+      (regionChange)="onRegionChanged($event)"
         (valueChanged)="regionChanged($event)"
       ></region-select-dropdown>
       <project-select-dropdown

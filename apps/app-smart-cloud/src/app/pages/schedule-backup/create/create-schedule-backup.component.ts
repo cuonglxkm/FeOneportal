@@ -188,7 +188,10 @@ export class CreateScheduleBackupComponent implements OnInit {
   regionChanged(region: RegionModel) {
     this.region = region.regionId;
     this.router.navigate(['/app-smart-cloud/schedule/backup/list']);
+  }
 
+  onRegionChanged(region: RegionModel) {
+    this.region = region.regionId;
   }
 
   userChanged(project: ProjectModel) {

@@ -28,6 +28,7 @@ import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { ConfigurationsService } from 'src/app/shared/services/configurations.service';
 import { OrderItemObject } from 'src/app/shared/models/price';
 import { OrderService } from 'src/app/shared/services/order.service';
+import { getCurrentRegionAndProject } from '@shared';
 
 @Component({
   selector: 'one-portal-object-storage-extend',
@@ -47,6 +48,7 @@ export class ObjectStorageEditComponent implements OnInit {
   orderObject: OrderItemObject = new OrderItemObject();
   isVisiblePopupError: boolean = false;
   errorList: string[] = [];
+  region = JSON.parse(localStorage.getItem('regionId'));
   closePopupError() {
     this.isVisiblePopupError = false;
   }
@@ -65,6 +67,8 @@ export class ObjectStorageEditComponent implements OnInit {
 
   ngOnInit(): void {
     this.id = this.activatedRoute.snapshot.paramMap.get('id');
+    let regionAndProject = getCurrentRegionAndProject();
+    this.region = regionAndProject.regionId;
     this.getObjectStorage();
     this.getTotalAmount();
     this.getConfigurations();
@@ -101,7 +105,7 @@ export class ObjectStorageEditComponent implements OnInit {
     this.objectStorageResize.actorEmail = this.tokenService.get()?.email;
     this.objectStorageResize.typeName =
       'SharedKernel.IntegrationEvents.Orders.Specifications.UserObjectStorageExtendSpecification,SharedKernel.IntegrationEvents, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null';
-    this.objectStorageResize.regionId = 0;
+    this.objectStorageResize.regionId = this.region;
     this.objectStorageResize.serviceType = 13;
     this.objectStorageResize.actionType = 4;
     this.objectStorageResize.serviceInstanceId = this.id;

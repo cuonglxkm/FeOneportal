@@ -217,6 +217,7 @@
   "app.used.capacity": "Used capacity",
   "app.storage.usage": "Used capacity",
   "app.upload.capacity": "Upload capacity",
+  "app.upload.download": "Download capacity",
   "app.number.object": "Number of Objects",
   "app.amount": "Amount",
   "app.resource": "Resource",

@@ -72,6 +72,10 @@ export class ListScheduleBackupComponent implements OnInit, OnDestroy {
     this.getCapacityBackup();
   }
 
+  onRegionChanged(region: RegionModel) {
+    this.region = region.regionId;
+  }
+
   projectChanged(project: ProjectModel) {
     this.project = project?.id;
     this.typeVPC = project?.type;
