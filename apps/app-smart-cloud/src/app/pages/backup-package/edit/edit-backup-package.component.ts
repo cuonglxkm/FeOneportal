@@ -208,8 +208,8 @@ export class EditBackupPackageComponent implements OnInit {
         orderItemQuantity: 1,
         specification: JSON.stringify(this.formUpdateBackupPackageModel),
         specificationType: 'backuppacket_resize',
-        price: this.orderItem?.totalPayment?.amount,
-        serviceDuration: 0
+        price: this.orderItem?.totalAmount.amount,
+        serviceDuration: 1
       }
     ];
     return request;
