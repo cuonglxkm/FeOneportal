@@ -53,7 +53,7 @@ export class VpcService extends BaseService {
 
   getData(searchKey: string, selectedStatus: string, userId: any, regionId: any, size: number, index: number): Observable<BaseResponse<VpcModel[]>> {
     return this.http.get<BaseResponse<VpcModel[]>>(this.baseUrl + this.ENDPOINT.provisions + '/vpcs?projectName=' + searchKey + '&status=' + selectedStatus+ '&customerId=' + userId+
-      '&regionId=' + regionId+'&pageSize=' + size+ '&currentPage=' + index);
+      '&regionId=' + regionId+'&pageSize=' + size+ '&currentPage=' + index,this.httpOptions);
   }
 
   getDetail(id: any): Observable<VpcModel> {
