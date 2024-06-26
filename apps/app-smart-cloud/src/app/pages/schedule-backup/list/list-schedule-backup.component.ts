@@ -11,6 +11,9 @@ import { getCurrentRegionAndProject } from '@shared';
 import { I18NService } from '@core';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { debounceTime, Subject, Subscription } from 'rxjs';
+import { PackageBackupService } from '../../../shared/services/package-backup.service';
+import { PackageBackupModel } from '../../../shared/models/package-backup.model';
+import { NzNotificationService } from 'ng-zorro-antd/notification';
 
 @Component({
   selector: 'one-portal-list-schedule-backup',
@@ -54,9 +57,13 @@ export class ListScheduleBackupComponent implements OnInit, OnDestroy {
 
   projectName: string;
 
+  backupPackageModel: PackageBackupModel = new PackageBackupModel()
+
   constructor(private router: Router,
               @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
-              private backupScheduleService: ScheduleService) {
+              private backupScheduleService: ScheduleService,
+              private backupPackageService: PackageBackupService,
+              private notification: NzNotificationService) {
   }
 
   regionChanged(region: RegionModel) {
@@ -71,7 +78,6 @@ export class ListScheduleBackupComponent implements OnInit, OnDestroy {
     this.projectName = project?.projectName
     this.getListScheduleBackup(true);
     this.getCapacityBackup();
-
   }
 
   onChange(value: string) {
@@ -213,6 +219,17 @@ export class ListScheduleBackupComponent implements OnInit, OnDestroy {
       this.loadingCapacity = false;
       this.responseCapacityBackup = null;
     });
+  }
+
+  getBackupPackage(id) {
+    this.isLoading = true
+    this.backupPackageService.detail(id, this.project).subscribe(data => {
+      this.isLoading = false
+      this.backupPackageModel = data;
+    }, error => {
+      this.isLoading = false
+      this.notification.error(error.statusText, this.i18n.fanyi('app.failData'))
+    })
   }
 
   ngOnInit(): void {

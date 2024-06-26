@@ -8,7 +8,6 @@ import { BackupVmService } from '../../../shared/services/backup-vm.service';
 import { InstancesService } from '../../instances/instances.service';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { ScheduleService } from '../../../shared/services/schedule.service';
-import { PackageBackupService } from '../../../shared/services/package-backup.service';
 import { BackupVolumeService } from '../../../shared/services/backup-volume.service';
 import { VolumeService } from '../../../shared/services/volume.service';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
@@ -16,7 +15,7 @@ import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from '@core';
 import { ProjectService } from '../../../shared/services/project.service';
 import { SizeInCloudProject } from '../../../shared/models/project.model';
-import { BackupPackage, BackupVm, BackupVMFormSearch, VolumeAttachment } from '../../../shared/models/backup-vm';
+import { BackupVm, BackupVMFormSearch, VolumeAttachment } from '../../../shared/models/backup-vm';
 import { InstancesModel } from '../../instances/instances.model';
 import { BackupSchedule, FormCreateSchedule, FormSearchScheduleBackup } from '../../../shared/models/schedule.model';
 import { VolumeDTO } from '../../../shared/dto/volume.dto';
@@ -25,15 +24,15 @@ import { BackupVolume } from '../../volume/component/backup-volume/backup-volume
 @Component({
   selector: 'one-portal-create-schedule-backup-vpc',
   templateUrl: './create-schedule-backup-vpc.component.html',
-  styleUrls: ['./create-schedule-backup-vpc.component.less'],
+  styleUrls: ['./create-schedule-backup-vpc.component.less']
 })
-export class CreateScheduleBackupVpcComponent implements OnInit{
+export class CreateScheduleBackupVpcComponent implements OnInit {
   region = JSON.parse(localStorage.getItem('regionId'));
   project = JSON.parse(localStorage.getItem('projectId'));
 
-  isLoading: boolean = false
+  isLoading: boolean = false;
 
-  nameList: string[] = []
+  nameList: string[] = [];
 
   validateForm = new FormGroup({
     formInstance: new FormGroup({
@@ -157,7 +156,7 @@ export class CreateScheduleBackupVpcComponent implements OnInit{
   volumeAttachSelected: VolumeDTO[] = [];
   sizeOfVlAttach: number = 0;
 
-  projectName: string
+  projectName: string;
 
   constructor(private fb: NonNullableFormBuilder,
               private location: Location,
@@ -188,7 +187,7 @@ export class CreateScheduleBackupVpcComponent implements OnInit{
 
   projectChanged(project: ProjectModel) {
     this.project = project.id;
-    this.projectName = project?.projectName
+    this.projectName = project?.projectName;
   }
 
   duplicateNameValidator(control) {
@@ -228,13 +227,14 @@ export class CreateScheduleBackupVpcComponent implements OnInit{
   }
 
   sizeOfVolume: number = 0;
+
   selectVolumeChange(value) {
     console.log('value volume selected', value);
     if (value != undefined) {
       this.volumeSelected = value;
       const find = this.listVolumeNotUseUnique?.find(x => x.id === this.volumeSelected);
       this.volumeName = find?.name;
-      this.sizeOfVolume += find?.sizeInGB
+      this.sizeOfVolume += find?.sizeInGB;
     }
   }
 
@@ -272,7 +272,8 @@ export class CreateScheduleBackupVpcComponent implements OnInit{
   }
 
 
-  isLoadingInstance: boolean = false
+  isLoadingInstance: boolean = false;
+
   getListInstances() {
     this.isLoadingInstance = true;
     let customerId = this.tokenService.get()?.userId;
@@ -295,14 +296,14 @@ export class CreateScheduleBackupVpcComponent implements OnInit{
             }
           });
           console.log('list instance', this.listInstanceNotUse);
-          this.listInstanceNotUse = this.listInstanceNotUse.filter(item => item.taskState === 'ACTIVE')
+          this.listInstanceNotUse = this.listInstanceNotUse.filter(item => item.taskState === 'ACTIVE');
           this.instanceSelected = this.listInstanceNotUse[0]?.id;
           this.cdr.detectChanges();
         });
 
       }, error => {
-        this.isLoadingInstance = false
-        this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.failData'))
+        this.isLoadingInstance = false;
+        this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.failData'));
       });
   }
 
@@ -339,7 +340,7 @@ export class CreateScheduleBackupVpcComponent implements OnInit{
           });
         });
         console.log('list volume', this.listVolumeNotUseUnique);
-        this.listVolumeNotUseUnique = this.listVolumeNotUseUnique.filter(item => item.serviceStatus === 'AVAILABLE')
+        this.listVolumeNotUseUnique = this.listVolumeNotUseUnique.filter(item => item.serviceStatus === 'AVAILABLE');
         this.volumeSelected = this.listVolumeNotUseUnique[0]?.id;
         this.cdr.detectChanges();
       });
@@ -489,7 +490,7 @@ export class CreateScheduleBackupVpcComponent implements OnInit{
     console.log('click', this.validateForm.get('formInstance').valid);
 
     if (this.selectedOption == 'instance') {
-      this.isLoadingAction = true
+      this.isLoadingAction = true;
       let formCreateSchedule = new FormCreateSchedule();
       formCreateSchedule.customerId = this.tokenService.get()?.userId;
       formCreateSchedule.name = this.validateForm.get('formInstance').get('name').value;
@@ -513,16 +514,16 @@ export class CreateScheduleBackupVpcComponent implements OnInit{
         formCreateSchedule.dayOfMonth = this.validateForm.get('formInstance').get('date').value;
       }
       this.backupScheduleService.create(formCreateSchedule).subscribe(data => {
-        this.isLoadingAction = false
+        this.isLoadingAction = false;
         this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('schedule.backup.notify.create.success'));
         this.nameList = [];
         this.router.navigate(['/app-smart-cloud/schedule/backup/list']);
       }, error => {
-        this.isLoadingAction = false
+        this.isLoadingAction = false;
         this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('schedule.backup.notify.create.fail') + '. ' + error.error.detail);
       });
     } else {
-      this.isLoadingAction = true
+      this.isLoadingAction = true;
       let formCreateSchedule1 = new FormCreateSchedule();
       formCreateSchedule1.customerId = this.tokenService.get()?.userId;
       formCreateSchedule1.name = this.validateForm.get('formVolume').get('name').value;
@@ -545,12 +546,12 @@ export class CreateScheduleBackupVpcComponent implements OnInit{
         formCreateSchedule1.dayOfMonth = this.validateForm.get('formVolume').get('date').value;
       }
       this.backupScheduleService.create(formCreateSchedule1).subscribe(data => {
-        this.isLoadingAction = false
+        this.isLoadingAction = false;
         this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('schedule.backup.volume.notify.create.success'));
         this.nameList = [];
         this.router.navigate(['/app-smart-cloud/schedule/backup/list']);
       }, error => {
-        this.isLoadingAction = false
+        this.isLoadingAction = false;
         this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('schedule.backup.volume.notify.create.fail') + '. ' + error.error.detail);
       });
     }
