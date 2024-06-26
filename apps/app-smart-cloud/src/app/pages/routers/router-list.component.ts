@@ -134,6 +134,10 @@ export class RouterListComponent implements OnInit {
     console.log(this.tokenService.get()?.userId);
   }
 
+  onRegionChanged(region: RegionModel) {
+    this.region = region.regionId;
+  }
+
   onProjectChange(project: ProjectModel) {
     this.loading = true;
     this.projectId = project.id;

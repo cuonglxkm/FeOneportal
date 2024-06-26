@@ -140,6 +140,10 @@ export class InstancesDetailComponent implements OnInit {
     this.router.navigate(['/app-smart-cloud/instances']);
   }
 
+  onRegionChanged(region: RegionModel) {
+    
+  }
+
   userChangeProject() {
     this.router.navigate(['/app-smart-cloud/instances']);
   }

@@ -25,6 +25,7 @@ import { ObjectObjectStorageModel } from '../../../shared/models/object-storage.
 import { BucketService } from '../../../shared/services/bucket.service';
 import { ObjectObjectStorageService } from '../../../shared/services/object-object-storage.service';
 import { TimeCommon } from 'src/app/shared/utils/common';
+import { getCurrentRegionAndProject } from '@shared';
 
 @Component({
   selector: 'one-portal-bucket-detail',
@@ -33,6 +34,7 @@ import { TimeCommon } from 'src/app/shared/utils/common';
 })
 export class BucketDetailComponent extends BaseService implements OnInit {
   listOfData: ObjectObjectStorageModel[];
+  region = JSON.parse(localStorage.getItem('regionId'));
   listOfDataVersioning: ObjectObjectStorageModel[];
   dataAction: ObjectObjectStorageModel;
   listOfFolder: any = [];
@@ -163,6 +165,8 @@ export class BucketDetailComponent extends BaseService implements OnInit {
   }
 
   ngOnInit(): void {
+    let regionAndProject = getCurrentRegionAndProject();
+    this.region = regionAndProject.regionId;
     this.loadBucket();
     this.loadData();
     this.searchDelay.pipe(debounceTime(TimeCommon.timeOutSearch)).subscribe(() => {     
@@ -223,6 +227,7 @@ export class BucketDetailComponent extends BaseService implements OnInit {
     let data = {
       bucketName: this.activatedRoute.snapshot.paramMap.get('name'),
       folderName: this.currentKey + this.nameFolder,
+      regionId: this.region
     };
     this.service
     .createFolder(data)
@@ -273,6 +278,7 @@ export class BucketDetailComponent extends BaseService implements OnInit {
         bucketName: this.activatedRoute.snapshot.paramMap.get('name'),
         key: this.currentKey + item.name,
         uploadId: item.uploadId,
+        regionId: this.region
       };
       const modal: NzModalRef = this.modalService.create({
         nzTitle: this.i18n.fanyi('app.bucket.detail.deleteFile'),
@@ -356,7 +362,7 @@ export class BucketDetailComponent extends BaseService implements OnInit {
         this.currentKey + this.value.trim(),
         this.filterQuery,
         this.tokenService.get()?.userId,
-        '',
+        this.region,
         this.size,
         this.index
       )
@@ -383,7 +389,7 @@ export class BucketDetailComponent extends BaseService implements OnInit {
 
   private loadBucket() {
     this.bucketservice
-      .getBucketDetail(this.activatedRoute.snapshot.paramMap.get('name'))
+      .getBucketDetail(this.activatedRoute.snapshot.paramMap.get('name'), this.region)
       .subscribe((data) => {
         this.bucket = data;
       });
@@ -410,6 +416,7 @@ export class BucketDetailComponent extends BaseService implements OnInit {
     let data = {
       bucketName: this.dataAction.bucketName,
       selectedItems: [this.dataAction],
+      regionId: this.region
     };
     this.service
       .deleteObject(data)
@@ -494,7 +501,7 @@ export class BucketDetailComponent extends BaseService implements OnInit {
 
   downloadFile(versionId: any) {
     this.service
-      .downloadFile(this.dataAction.bucketName, this.dataAction.key, versionId)
+      .downloadFile(this.dataAction.bucketName, this.dataAction.key, versionId, this.region)
       .subscribe(
         (data) => {
           console.log(data);
@@ -518,7 +525,7 @@ export class BucketDetailComponent extends BaseService implements OnInit {
   private loadTreeFolder() {
     const data = {
       customerId: 0,
-      regionId: 0,
+      regionId: this.region,
       bucketName: '',
       isAllBucket: true,
     };
@@ -546,6 +553,7 @@ export class BucketDetailComponent extends BaseService implements OnInit {
       sourceBucket: this.dataAction.bucketName,
       destinationKey: destinationKey,
       destinationBucket: destinationBucket,
+      regionId: this.region
     };
 
     this.service
@@ -587,7 +595,8 @@ export class BucketDetailComponent extends BaseService implements OnInit {
         .editPermission(
           this.dataAction.bucketName,
           this.dataAction.key,
-          this.activePrivate == true ? 'private' : 'public'
+          this.activePrivate == true ? 'private' : 'public',
+          this.region
         )
         .pipe(
           finalize(() => {
@@ -629,6 +638,7 @@ export class BucketDetailComponent extends BaseService implements OnInit {
       key: this.dataAction.key,
       validTo: event,
       isDownload: true,
+      regionId: this.region
     };
     this.service.getLinkShare(data).subscribe((data) => {
       this.isLoadingGetLink = false;
@@ -641,6 +651,7 @@ export class BucketDetailComponent extends BaseService implements OnInit {
     let data = {
       bucketName: this.dataAction.bucketName,
       key: this.dataAction.key,
+      regionId: this.region
     };
     this.service
       .loadDataVersion(data)
@@ -662,6 +673,7 @@ export class BucketDetailComponent extends BaseService implements OnInit {
       key: this.dataAction.key,
       versionId: this.versionId,
       deleteAllVersions: false,
+      regionId: this.region
     };
     this.service
       .deleteObjectSimple(data)
@@ -695,6 +707,7 @@ export class BucketDetailComponent extends BaseService implements OnInit {
       bucketName: this.dataAction.bucketName,
       key: this.dataAction.key,
       versionId: this.versionId,
+      regionId: this.region
     };
     this.service
       .restoreObject(data)
@@ -806,6 +819,7 @@ export class BucketDetailComponent extends BaseService implements OnInit {
           key: this.currentKey + item.name,
           metadata: this.listOfMetadata,
           acl: this.radioValue,
+          regionId: this.region
         };
 
         console.log(params);
@@ -839,6 +853,7 @@ export class BucketDetailComponent extends BaseService implements OnInit {
             uploadId: upload_id,
             partETags: uploadPartsArray,
             modal: uploadPartsArray,
+            regionId: this.region
           };
 
           const xhr = new XMLHttpRequest();
@@ -903,7 +918,8 @@ export class BucketDetailComponent extends BaseService implements OnInit {
             partNumber: index.toString(),
             uploadId: upload_id,
             expiryTime: addDays(new Date(), 1),
-            urlOrigin: 'https://oneportal.onsmartcloud.com',
+            urlOrigin: 'http://localhost:4200',
+            regionId: this.region
           };
 
           this.service.getSignedUrl(data).subscribe(
@@ -983,7 +999,8 @@ export class BucketDetailComponent extends BaseService implements OnInit {
           bucketName: this.activatedRoute.snapshot.paramMap.get('name'),
           key: this.currentKey + item.name,
           expiryTime: addDays(this.date, 1),
-          urlOrigin: 'https://oneportal.onsmartcloud.com',
+          urlOrigin: 'http://localhost:4200',
+          regionId: this.region
         };
         this.service.getSignedUrl(data).subscribe(
           (responseData) => {
@@ -1051,7 +1068,7 @@ export class BucketDetailComponent extends BaseService implements OnInit {
         return;
       } else {
         downloadObservables.push(
-          this.service.downloadFile(this.bucket.bucketName, item.key, '').pipe(
+          this.service.downloadFile(this.bucket.bucketName, item.key, '', this.region).pipe(
             map((fileData: any) => {
               const fileName = item.key;
               const fileContent = fileData.body;

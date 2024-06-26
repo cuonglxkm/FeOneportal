@@ -666,6 +666,10 @@ export class PoolDetailComponent implements OnInit {
     this.router.navigate(['/app-smart-cloud/load-balancer/list']);
   }
 
+  onRegionChanged(region: RegionModel) {
+    this.regionId = region.regionId;
+  }
+
   userChangeProject() {
     this.router.navigate(['/app-smart-cloud/load-balancer/list']);
   }

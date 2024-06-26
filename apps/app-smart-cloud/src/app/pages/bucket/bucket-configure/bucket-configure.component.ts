@@ -9,6 +9,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { I18NService } from '@core';
 import { LoadingService } from '@delon/abc/loading';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
+import { getCurrentRegionAndProject } from '@shared';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { finalize } from 'rxjs';
 import { BucketDetail } from 'src/app/shared/models/bucket.model';
@@ -25,6 +26,7 @@ export class BucketConfigureComponent implements OnInit {
   bucketDetail: BucketDetail = new BucketDetail();
   isLoading: boolean = false;
   isLoadingVersion: boolean = false;
+  region = JSON.parse(localStorage.getItem('regionId'));
   constructor(
     private bucketService: BucketService,
     private router: Router,
@@ -37,9 +39,11 @@ export class BucketConfigureComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadingSrv.open({ type: 'spin', text: 'Loading...' });
+    let regionAndProject = getCurrentRegionAndProject();
+    this.region = regionAndProject.regionId;
     this.bucketName = this.activatedRoute.snapshot.paramMap.get('bucketName');
     this.bucketService
-      .getBucketDetail(this.bucketName)
+      .getBucketDetail(this.bucketName, this.region)
       .pipe(finalize(() => this.loadingSrv.close()))
       .subscribe((data) => {
         console.log(data);
@@ -52,7 +56,7 @@ export class BucketConfigureComponent implements OnInit {
   setBucketACL() {
     this.isLoading = true
     this.bucketService
-      .setBucketACL(this.bucketName, this.bucketDetail.aclType)
+      .setBucketACL(this.bucketName, this.bucketDetail.aclType, this.region)
       .subscribe({
         next: (data) => {
           this.isLoading = false
@@ -76,7 +80,7 @@ export class BucketConfigureComponent implements OnInit {
   setBucketVersioning() {
     this.isLoadingVersion = true
     this.bucketService
-      .setBucketVersioning(this.bucketName, this.bucketDetail.isVersioning)
+      .setBucketVersioning(this.bucketName, this.bucketDetail.isVersioning, this.region)
       .subscribe({
         next: (data) => {
           this.isLoadingVersion = false

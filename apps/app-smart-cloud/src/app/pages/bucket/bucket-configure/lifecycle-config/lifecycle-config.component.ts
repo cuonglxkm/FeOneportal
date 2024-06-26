@@ -8,6 +8,7 @@ import {
 } from '@angular/core';
 import { I18NService } from '@core';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
+import { getCurrentRegionAndProject } from '@shared';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { debounceTime, finalize, Subject } from 'rxjs';
 import {
@@ -42,6 +43,7 @@ export class LifecycleConfigComponent implements OnInit {
   isLoadingUpdate: boolean = false;
   isLoadingDelete: boolean = false;
   searchDelay = new Subject<boolean>();
+  region = JSON.parse(localStorage.getItem('regionId'));
   constructor(
     private bucketService: BucketService,
     private notification: NzNotificationService,
@@ -50,7 +52,8 @@ export class LifecycleConfigComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.searchLifeCycle();
+    let regionAndProject = getCurrentRegionAndProject();
+    this.region = regionAndProject.regionId;
     this.searchLifeCycle();
     this.searchDelay.pipe(debounceTime(TimeCommon.timeOutSearch)).subscribe(() => {     
       this.searchLifeCycle();
@@ -65,7 +68,8 @@ export class LifecycleConfigComponent implements OnInit {
         this.bucketName,
         this.pageNumber,
         this.pageSize,
-        this.value.trim()
+        this.value.trim(),
+        this.region
       )
       .pipe(
         finalize(() => {
@@ -115,7 +119,7 @@ export class LifecycleConfigComponent implements OnInit {
       lifecycleTagPredicate.metaValue = e.value;
       this.lifecycleCreate.lifecycleTagPredicate.push(lifecycleTagPredicate);
     });
-    this.bucketService.createBucketLifecycle(this.lifecycleCreate).subscribe({
+    this.bucketService.createBucketLifecycle(this.lifecycleCreate, this.region).subscribe({
       next: (data) => {
         this.isVisibleCreate = false;
         this.isLoadingCreate = false;
@@ -159,7 +163,7 @@ export class LifecycleConfigComponent implements OnInit {
 
   handleOkDelete() {
     this.isLoadingDelete = true
-    this.bucketService.deleteBucketLifecycle(this.lifecycleDelete).subscribe({
+    this.bucketService.deleteBucketLifecycle(this.lifecycleDelete, this.region).subscribe({
       next: (data) => {
         this.isVisibleDelete = false;
         this.isLoadingDelete = false;
@@ -209,7 +213,7 @@ export class LifecycleConfigComponent implements OnInit {
       lifecycleTagPredicate.metaValue = e.value;
       this.lifecycleUpdate.lifecycleTagPredicate.push(lifecycleTagPredicate);
     });
-    this.bucketService.updateBucketLifecycle(this.lifecycleUpdate).subscribe({
+    this.bucketService.updateBucketLifecycle(this.lifecycleUpdate, this.region).subscribe({
       next: (data) => {
         this.isVisibleUpdate = false;
         this.isLoadingUpdate = false;
