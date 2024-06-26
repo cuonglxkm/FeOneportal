@@ -868,7 +868,7 @@ export class InstancesComponent implements OnInit {
     this.router.navigate([
       '/app-smart-cloud/snapshot/create',
       { instanceId: id },
-    ],{ queryParams: { snapshotTypeCreate: 1 } });
+    ],{ queryParams: { navigateType: 1 } });
   }
 
   instancesModel: InstancesModel = new InstancesModel();

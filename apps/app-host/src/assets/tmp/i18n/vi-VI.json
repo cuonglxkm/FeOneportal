@@ -370,6 +370,7 @@
 
   "app.instances.list": "Danh sách máy ảo",
   "app.instances.create": "Khởi tạo máy ảo",
+  "app.instances.create1": "Tạo máy ảo",
   "app.instances.create.confirm": "Xác nhận khởi tạo máy ảo",
   "app.instances.edit": "Điều chỉnh máy ảo",
   "app.instances.detail": "Chi tiết máy ảo",
