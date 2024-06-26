@@ -667,10 +667,13 @@ export class UpgradeComponent implements OnInit {
 
     this.isSubmitting = true;
     let cluster = this.setClusterData();
-    cluster.Specification = JSON.stringify(cluster);
     // this.submitUpgrade(cluster);
 
-    this.clusterService.validateUpgradeCluster(cluster)
+    let data = {
+      ServiceOrderCode: this.serviceOrderCode,
+      Specification: JSON.stringify(cluster)
+    };
+    this.clusterService.validateUpgradeCluster(data)
     .pipe(finalize(() => this.isSubmitting = false))
     .subscribe((r: any) => {
       if (r && r.code == 200) {
