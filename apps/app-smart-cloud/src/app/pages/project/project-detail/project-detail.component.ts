@@ -65,6 +65,10 @@ export class ProjectDetailComponent implements OnInit{
     this.regionId = region.regionId;
     this.router.navigate(['/app-smart-cloud/project'])
   }
+
+  onRegionChanged(region: RegionModel) {
+    this.regionId = region.regionId;
+  }
 isAdjust:boolean= true;
   private getData(id: any) {
    

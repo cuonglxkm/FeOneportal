@@ -9,6 +9,7 @@ import { Router } from '@angular/router';
 import { I18NService } from '@core';
 import { LoadingService } from '@delon/abc/loading';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
+import { getCurrentRegionAndProject } from '@shared';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { ClipboardService } from 'ngx-clipboard';
@@ -48,8 +49,10 @@ export class BucketListComponent implements OnInit {
     private loadingSrv: LoadingService
   ) {}
   hasOS: boolean = undefined;
-
+  region = JSON.parse(localStorage.getItem('regionId'));
   ngOnInit(): void {
+    let regionAndProject = getCurrentRegionAndProject();
+    this.region = regionAndProject.regionId;
       this.hasObjectStorageInfo()
       this.hasObjectStorage();
       this.searchDelay
@@ -64,7 +67,7 @@ export class BucketListComponent implements OnInit {
   hasObjectStorageInfo() {
     this.loadingSrv.open({ type: 'spin', text: 'Loading...' });
     this.objectSevice
-      .getUserInfo()
+      .getUserInfo(this.region)
       .pipe(finalize(() => this.loadingSrv.close()))
       .subscribe({
         next: (data) => {
@@ -125,7 +128,7 @@ export class BucketListComponent implements OnInit {
   search() {
     this.loading = true;
     this.bucketService
-      .getListBucket(this.pageNumber, this.pageSize, this.value.trim())
+      .getListBucket(this.pageNumber, this.pageSize, this.value.trim(), this.region)
       .pipe(
         finalize(() => {
           this.loading = false;
@@ -201,7 +204,7 @@ export class BucketListComponent implements OnInit {
 
   handleOkDeleteBucket() {
     if (this.codeVerify == this.bucketDeleteName) {
-      this.bucketService.deleteBucket(this.bucketDeleteName).subscribe({
+      this.bucketService.deleteBucket(this.bucketDeleteName, this.region).subscribe({
         next: (data) => {
           if (data == 'Thao tác thành công') {
             this.notification.success(

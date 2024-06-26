@@ -68,6 +68,7 @@ export class DeleteSubUserComponent implements AfterViewInit {
       formDelete.subuser = this.idSubUser;
       formDelete.purge_data = true;
       formDelete.actorEmail = '';
+      formDelete.regionId = this.region;
       this.subUserService.deleteSubUser(formDelete).subscribe(data => {
         this.isLoading = false;
         this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('app.delete.subuser.success'));

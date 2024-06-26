@@ -20,10 +20,10 @@ export class ObjectStorageService extends BaseService {
     super();
   }
 
-  getUserInfo() {
+  getUserInfo(regionId: number) {
     return this.http
       .get<UserInfoObjectStorage>(
-        this.baseUrl + this.ENDPOINT.provisions + '/object-storage/userinfo'
+        this.baseUrl + this.ENDPOINT.provisions + `/object-storage/userinfo?regionId=${regionId}`
       )
       .pipe(
         catchError((error: HttpErrorResponse) => {
@@ -45,12 +45,12 @@ export class ObjectStorageService extends BaseService {
     );
   }
 
-  getMonitorObjectStorage(bucketname: string, from: number) {
+  getMonitorObjectStorage(bucketname: string, from: number, regionId: number) {
     return this.http
       .get<Summary[]>(
         this.baseUrl +
           this.ENDPOINT.provisions +
-          `/object-storage/Monitor?from=${from}&bucketname=${bucketname}`
+          `/object-storage/Monitor?from=${from}&bucketname=${bucketname}&regionId=${regionId}`
       )
       .pipe(
         catchError((error: HttpErrorResponse) => {

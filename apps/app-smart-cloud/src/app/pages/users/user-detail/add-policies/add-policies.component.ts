@@ -52,6 +52,10 @@ export class AddPoliciesComponent implements OnInit {
     // this.getSshKeys();
   }
 
+  onRegionChanged(region: RegionModel) {
+    this.regionId = region.regionId;
+  }
+
   onProjectChange(project: ProjectModel) {
     this.projectId = project.id;
     // this.getSshKeys();

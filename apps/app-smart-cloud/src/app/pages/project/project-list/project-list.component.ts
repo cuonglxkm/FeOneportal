@@ -115,6 +115,10 @@ export class ProjectListComponent implements OnInit {
     this.getData(true);
   }
 
+  onRegionChanged(region: RegionModel) {
+    this.regionId = region.regionId;
+  }
+
   getData(isCheckBegin: boolean): void {
     this.loading = true;
     this.vpcService.getData(this.searchKey, this.selectedStatus, this.tokenService.get()?.userId, this.regionId, this.size, this.index)

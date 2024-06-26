@@ -79,6 +79,10 @@ export class ListenerDetailComponent implements OnInit {
     this.regionId = region.regionId;
   }
 
+  onRegionChanged(region: RegionModel) {
+    this.regionId = region.regionId;
+  }
+
   projectChange(project: ProjectModel) {
     this.projectId = project.id;
   }
