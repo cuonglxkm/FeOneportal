@@ -579,6 +579,8 @@ export class ProjectUpdateComponent implements OnInit {
             if (result.success) {
               var returnPath: string = window.location.pathname;
               this.router.navigate(['/app-smart-cloud/order/cart'], { state: { data: request, path: returnPath } });
+              this.totalPayment = this.total.data.totalPayment.amount;
+              this.totalVAT = this.total.data.totalVAT.amount;
             } else {
               this.isVisiblePopupError = true;
               this.errorList = result.data;
