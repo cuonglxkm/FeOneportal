@@ -221,13 +221,14 @@ export class ListScheduleBackupComponent implements OnInit, OnDestroy {
     });
   }
 
+  isLoadingBackupPackage: boolean = false
   getBackupPackage(id) {
-    this.isLoading = true
+    this.isLoadingBackupPackage = true
     this.backupPackageService.detail(id, this.project).subscribe(data => {
-      this.isLoading = false
+      this.isLoadingBackupPackage = false
       this.backupPackageModel = data;
     }, error => {
-      this.isLoading = false
+      this.isLoadingBackupPackage = false
       this.notification.error(error.statusText, this.i18n.fanyi('app.failData'))
     })
   }
