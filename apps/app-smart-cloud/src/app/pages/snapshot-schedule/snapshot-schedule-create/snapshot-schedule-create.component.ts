@@ -235,6 +235,10 @@ export class SnapshotScheduleCreateComponent implements OnInit {
     this.region = region.regionId;
   }
 
+  onRegionChanged(region: RegionModel) {
+    this.region = region.regionId;
+  }
+
   onProjectChange(project: ProjectModel) {
     this.project = project?.id;
     this.doGetListVolume();

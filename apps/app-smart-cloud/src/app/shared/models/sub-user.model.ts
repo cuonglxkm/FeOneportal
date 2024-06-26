@@ -17,6 +17,7 @@ export class FormUpdateSubUser {
   subuser: string
   access: string
   actorEmail: string
+  regionId: number
 }
 
 export class FormDeleteSubUser {
@@ -24,6 +25,7 @@ export class FormDeleteSubUser {
   subuser: string
   purge_data: true
   actorEmail: string
+  regionId: number
 }
 
 export class FormCreateSubUser {
@@ -34,4 +36,5 @@ export class FormCreateSubUser {
   key_type: string
   access: string
   generate_secret: true
+  regionId: number
 }

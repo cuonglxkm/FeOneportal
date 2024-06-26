@@ -123,7 +123,7 @@ export class CreateScheduleBackupComponent implements OnInit {
 
   modeSelected: any;
 
-  backupPackageList: BackupPackage[] = [];
+  backupPackageList = [];
   backupPackageSelected: any;
 
   numberOfWeekChangeSelected: any;
@@ -464,7 +464,7 @@ export class CreateScheduleBackupComponent implements OnInit {
 
   getBackupPackage() {
     this.isLoading = true;
-    this.backupVmService.getBackupPackages().subscribe(data => {
+    this.backupPackageService.search('','', this.project, this.region, 99999, 1).subscribe(data => {
       console.log('backup packages: ', data.records);
       this.backupPackageList = data?.records;
       this.isLoading = false;

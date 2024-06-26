@@ -159,6 +159,10 @@ export class InstancesComponent implements OnInit {
     this.onChangeSearchParam();
   }
 
+  onRegionChanged(region: RegionModel) {
+    this.region = region.regionId;
+  }
+
   dataSubjectSearchParam: Subject<any> = new Subject<any>();
   private searchSubscription: Subscription;
   private enterPressed: boolean = false;

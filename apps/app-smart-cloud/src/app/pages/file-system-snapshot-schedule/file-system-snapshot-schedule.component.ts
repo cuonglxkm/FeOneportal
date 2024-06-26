@@ -40,6 +40,8 @@ export class FileSystemSnapshotScheduleComponent {
 }
 
   onRegionChange(region: RegionModel) {
+    console.log(region);
+    
     this.region = region.regionId;
     this.refreshParams();
   }
@@ -95,6 +97,10 @@ export class FileSystemSnapshotScheduleComponent {
 
   handleOkCreateFileSystemSnapShot() {
     this.getData()
+  }
+
+  onRegionChanged(region: RegionModel) {
+    this.region = region.regionId;
   }
 
   ngOnInit() {

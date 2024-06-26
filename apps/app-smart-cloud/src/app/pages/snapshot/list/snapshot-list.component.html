@@ -53,11 +53,12 @@
           </nz-col>
         </nz-row>
         <nz-table #fixedTable
+                  nzShowSizeChanger
                   style="margin-top: 20px;"
                   [nzData]="response?.records || []"
-                  [nzPageSize]="response?.pageSize"
+                  [nzPageSize]="size"
                   (nzPageSizeChange)="onPageSizeChange($event)"
-                  [nzPageIndex]="response?.currentPage"
+                  [nzPageIndex]="index"
                   (nzPageIndexChange)="onPageIndexChange($event)"
                   [nzTotal]="response?.totalCount"
                   [nzFrontPagination]="false"
@@ -92,7 +93,8 @@
               <img nz-dropdown [nzDropdownMenu]="opMenu" src="assets/imgs/more1.svg" alt="" style="margin-left: 5px; cursor:pointer;" />
               <nz-dropdown-menu #opMenu="nzDropdownMenu">
               <ul nz-menu>
-                <li *ngIf="data.fromRootVolume == false" nz-menu-item (click)="navigateToCreateVolume(data.id)">{{ 'volume.notification.request.create' | i18n}}</li>
+                <li *ngIf="data.fromRootVolume == false" nz-menu-item (click)="navigateToCreateVolumeVM(data.id,0)">{{ 'volume.notification.request.create' | i18n}}</li>
+                <li *ngIf="data.fromRootVolume == true" nz-menu-item (click)="navigateToCreateVolumeVM(data.id,1)">{{ 'app.instances.create' | i18n}}</li>
                 <li nz-menu-item (click)="enableDelete(data)" style="color: red">{{ 'app.delete' | i18n}}</li>
               </ul>
             </nz-dropdown-menu>

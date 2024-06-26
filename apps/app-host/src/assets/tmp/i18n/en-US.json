@@ -2301,7 +2301,7 @@
   "validation.service.name-required": "The service name cannot be empty",
   "validation.service.name-not-correct": "The service name is not correct",
   "validation.service.name-length": "The service name should be between 5 and 50 characters",
-  "validation.service.name-pattern": "The service name can only include lowercase letters, uppercase letters, numbers, and the characters _ and -",
+  "validation.service.name-pattern": "The service name can only include lowercase letters, uppercase letters, numbers, and the characters “-” “_”",
   "validation.service.version-required": "Version cannot be empty",
   "validation.kafka.broker-required": "The number of brokers cannot be empty",
   "validation.kafka-required-1": "The value of",
@@ -2848,6 +2848,8 @@
   "app.backup.volume.validator.backup.package.required": "Please enter the name of the Backup",
   "app.backup.volume.request.create": "Backup Volume creation request has been sent.",
   "app.backup.volume.notification.create.request.send": "Backup Volume creation request has been sent.",
+  "app.backup.volume.current": "Restore to the current Volume",
+  "app.backup.volume.new": "Restore to a new Volume",
 
   "app.dashboard.subscription.service": "Service",
   "app.dashboard.subscription.service.active": "Service Active",
@@ -2989,6 +2991,7 @@
   "app.backup.vm.confirm.delete": "To proceed with deleting Backup {{name}}, please enter the Backup name for confirmation.",
   "app.backup.vm.alert.storage.vpc": "The backup capacity remaining is smaller than the sum of the operating system's capacity and the total capacity of the attached external volumes ({{storage}} GB). Please adjust the VPC project to ensure that the VM backup process is not interrupted.",
 
+  "app.backup.vm.create.placeholder": "Enter name Backup VM",
   "app.backup.vm.create.name.required": "Please enter the name for the Backup VM.",
   "app.backup.vm.create.name.duplicateName": "The Backup VM name already exists. Please enter a different name.",
   "app.backup.vm.create.name.pattern": "The Backup VM name should only contain letters, numbers, and underscores. Please enter a different name.",

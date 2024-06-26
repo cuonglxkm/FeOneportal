@@ -219,13 +219,15 @@ export class ListFileSystemComponent implements OnInit, OnDestroy {
     this.router.navigate(['/app-smart-cloud/file-storage/file-system/' + cloudFileSystem + '/access-rule/list', { fileSystem: id }]);
   }
 
-  ngOnInit() {
+  onRegionInitComplete() {
     let regionAndProject = getCurrentRegionAndProject();
-    this.region = regionAndProject.regionId;
-    this.project = regionAndProject.projectId;
+    this.region = regionAndProject.regionId;;
+  }
+
+  ngOnInit() {
 
     // this.getProject();
-
+    
     console.log('project', this.project);
     this.customerId = this.tokenService.get()?.userId;
     this.fileSystemService.model.subscribe((data) => {
@@ -243,6 +245,7 @@ export class ListFileSystemComponent implements OnInit, OnDestroy {
           case 'DELETED':
           case 'EXTENDING':
           case 'DELETING':
+          case 'ERROR':
           case 'AVAILABLE':
             this.getListFileSystem(true);
             break;

@@ -52,6 +52,10 @@ export class NetworkTopologyComponent {
     this.region = region.regionId;
   }
 
+  onRegionChanged(region: RegionModel) {
+    this.region = region.regionId;
+  }
+
   projectChange(project: ProjectModel) {
     this.project = project.id;
     this.projectType = project.type;

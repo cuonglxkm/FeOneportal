@@ -44,10 +44,6 @@ export class OrderService extends BaseService {
     fromDate: string,
     toDate: string,
     status: number,
-    status1: number,
-    status2: number,
-    status3: number,
-
   ): Observable<BaseResponse<OrderDTO[]>> {
     let urlResult = this.getConditionSearcOrders(
       pageSize,
@@ -60,14 +56,11 @@ export class OrderService extends BaseService {
       dSubscriptionNumber,
       dSubscriptionType,
       fromDate,
-      toDate,
-      status,
-      status1,
-      status2,
-      status3,
+      toDate
     );
+  
     return this.http
-      .get<BaseResponse<OrderDTO[]>>(urlResult, this.httpOptions)
+      .post<BaseResponse<OrderDTO[]>>(urlResult, status, this.httpOptions)
       .pipe(
         catchError(
           this.handleError<BaseResponse<OrderDTO[]>>('get order-list error')
@@ -87,12 +80,9 @@ export class OrderService extends BaseService {
     dSubscriptionType: string,
     fromDate: string,
     toDate: string,
-    status: number,
-    status1: number,
-    status2: number,
-    status3: number,
   ): string {
     let urlResult = this.urlSnapshotVl;
+    urlResult += '/paging'
     let count = 0;
     if (pageSize !== undefined && pageSize != null) {
       if (count == 0) {
@@ -181,38 +171,6 @@ export class OrderService extends BaseService {
         count++;
       } else {
         urlResult += '&toDate=' + toDate;
-      }
-    }
-    if (status !== undefined && status != null) {
-      if (count == 0) {
-        urlResult += '?status=' + status;
-        count++;
-      } else {
-        urlResult += '&status=' + status;
-      }
-    }
-    if (status1 !== undefined && status1 != null) {
-      if (count == 0) {
-        urlResult += '?status=' + status1;
-        count++;
-      } else {
-        urlResult += '&status=' + status1;
-      }
-    }
-    if (status2 !== undefined && status2 != null) {
-      if (count == 0) {
-        urlResult += '?status=' + status2;
-        count++;
-      } else {
-        urlResult += '&status=' + status2;
-      }
-    }
-    if (status3 !== undefined && status3 != null) {
-      if (count == 0) {
-        urlResult += '?status=' + status3;
-        count++;
-      } else {
-        urlResult += '&status=' + status3;
       }
     }
     return urlResult;

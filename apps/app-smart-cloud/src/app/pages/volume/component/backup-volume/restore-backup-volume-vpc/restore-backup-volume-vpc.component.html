@@ -98,9 +98,9 @@
                   [ngModelOptions]="{ standalone: true }"
                   (ngModelChange)="onSelectionChange()"
                   style="margin-top: 20px; display: grid">
-                  <label nz-radio nzValue="current">{{ 'app.backup.vm.restore.current' | i18n }}</label>
+                  <label nz-radio nzValue="current">{{ 'app.backup.volume.current' | i18n }}</label>
                   <label nz-radio nzValue="new"
-                         style="margin-top: 10px">{{ 'app.backup.vm.restore.new' | i18n }}</label>
+                         style="margin-top: 10px">{{ 'app.backup.volume.new' | i18n }}</label>
                 </nz-radio-group>
               </nz-col>
               <nz-col nzSpan="12">
@@ -225,10 +225,10 @@
                   </nz-form-item>
                 </nz-col>
               </nz-row>
-              <div>
+              <div *ngIf="typeEncrypt">
                 <label class="text-label" nz-checkbox [nzChecked]="backupVolume?.isEncryption" nzDisabled style="font-size: 16px;">{{ 'volume.info.type.encrypt'|i18n }}</label>
               </div>
-              <div style="margin-top: 15px;">
+              <div *ngIf="typeMultiple" style="margin-top: 15px;">
                 <label  class="text-label" nz-checkbox [nzChecked]="backupVolume?.isMultiAttach" nzDisabled style="font-size: 16px;">{{ 'volume.info.type.multiAttach'|i18n }}</label>
               </div>
             </div>
@@ -282,7 +282,7 @@
                 </div>
                 <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
                 <div class="text-value">{{ 'volume.storage.volume' | i18n }}</div>
-<!--                                <div style="margin-top: 10px" class="text-label">{{ volumeRestoreNew. }} GB</div>-->
+                <div style="margin-top: 10px" class="text-label">{{ validateForm.get('formNew').get('storage').value }} GB</div>
                 <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
                 <nz-row>
                   <nz-col style="width: 100%">

@@ -201,6 +201,10 @@ export class AddToGroupComponent implements OnInit {
     this.cdr.detectChanges();
   }
 
+  onRegionChanged(region: RegionModel) {
+    this.regionId = region.regionId;
+  }
+
   onProjectChange(project: any) {
     // Handle the region change event
     this.projectId = project.id;

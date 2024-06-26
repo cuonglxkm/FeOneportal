@@ -87,6 +87,8 @@ export class CreateBackupVmVpcComponent implements OnInit {
   formCreateBackup: FormCreateBackup = new FormCreateBackup();
   projectDetail: SizeInCloudProject
 
+  instanceSelected: any;
+
   constructor(private backupVmService: BackupVmService,
               private instanceService: InstancesService,
               private backupPackageService: PackageBackupService,
@@ -154,19 +156,19 @@ export class CreateBackupVmVpcComponent implements OnInit {
   }
 
   getDataByInstanceId(id) {
+    this.securityGroupSelected = [];
     this.instanceService.getInstanceById(id).subscribe(data => {
       this.instance = data;
-      this.isLoading = false;
-      this.instanceService.getAllSecurityGroupByInstance(this.instance.cloudId, this.instance.regionId, this.instance.customerId, this.instance.projectId).subscribe(data => {
-        data.forEach(item => {
-          console.log('data sg', item.name === 'default')
-          if(item.name != 'default') {
-            this.securityGroups?.push(item)
-          } else {
+      this.isLoading = true;
+      this.instanceService.getAllSecurityGroupByInstance(this.instance.cloudId, this.instance.regionId,
+        this.instance.customerId, this.instance.projectId).subscribe(data => {
+        this.securityGroups = data;
+        // this.securityGroups = data;
+        this.securityGroups.forEach(item => {
+          if(item.name.toUpperCase() === 'DEFAULT') {
             this.securityGroupSelected?.push(item.id)
           }
         })
-        // this.securityGroups = data;
         console.log('sg sag', this.securityGroups);
         console.log('sg', this.securityGroupSelected);
       }, error => {
@@ -177,19 +179,30 @@ export class CreateBackupVmVpcComponent implements OnInit {
     });
   }
 
+
+  isLoadingInstance: boolean = false
   getListInstances() {
+    this.isLoadingInstance = true
     this.instanceService.search(1, 9999, this.region, this.project, '', '', true, this.tokenService.get()?.userId).subscribe(data => {
       console.log('dataa', data);
+      this.isLoadingInstance = false
       this.listInstances = data.records;
       this.listInstances = this.listInstances.filter(item => item.taskState === 'ACTIVE')
+      this.instanceSelected = this.listInstances[0].id
+    }, error => {
+      this.isLoadingInstance = false
+      this.notification.error(error.statusText, this.i18n.fanyi('app.failData'))
     });
   }
 
   onSelectedInstance(value) {
     console.log('selected', value);
+    this.instanceSelected = value
     this.validateForm.controls.volumeToBackupIds.reset();
     this.validateForm.controls.securityGroupToBackupIds.reset();
-    this.getDataByInstanceId(value)
+    if (this.instanceSelected != undefined) {
+      this.getDataByInstanceId(this.instanceSelected)
+    }
   }
 
   getBackupPackage() {

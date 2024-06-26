@@ -74,6 +74,10 @@ export class ProjectExtendComponent implements OnInit{
     this.router.navigate(['/app-smart-cloud/project'])
   }
 
+  onRegionChanged(region: RegionModel) {
+    this.regionId = region.regionId;
+  }
+
   private getData(id: any) {
     this.loading = true;
     this.service.getDetail(id)

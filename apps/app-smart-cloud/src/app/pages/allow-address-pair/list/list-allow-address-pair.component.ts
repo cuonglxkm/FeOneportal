@@ -212,4 +212,8 @@ export class ListAllowAddressPairComponent implements OnInit {
   onInputChange(value: string) {
     this.value = value;
   }
+
+  onRegionChanged(region: RegionModel) {
+    this.region = region.regionId;
+  }
 }

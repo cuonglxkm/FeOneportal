@@ -48,6 +48,8 @@ export class FileSystemSnapshotComponent {
 }
 
   onRegionChange(region: RegionModel) {
+    console.log(region);
+    
     this.region = region.regionId;
     this.refreshParams();
   }
@@ -100,6 +102,10 @@ export class FileSystemSnapshotComponent {
 
   handleOkEditFileSystemSnapShot(){
     this.getData()
+  }
+
+  onRegionChanged(region: RegionModel) {
+    this.region = region.regionId;
   }
 
   
