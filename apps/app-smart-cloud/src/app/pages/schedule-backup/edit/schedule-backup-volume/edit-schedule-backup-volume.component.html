@@ -33,7 +33,7 @@
       <nz-row nzGutter="24">
         <nz-col nzSpan="16">
           <nz-card style="border-radius: 8px;">
-            <span class="text-card-header">{{ 'schedule.backup.label.edit' | i18n }}</span>
+            <span class="text-card-header">{{ 'schedule.backup.title.card' | i18n }}</span>
             <div style="display: grid; margin-top: 25px;">
               <label nz-radio nzValue="VM"
                      class="text-label"
@@ -468,7 +468,7 @@
                           (click)="submitForm()">
                     <img src="assets/imgs/wallet.svg" style="margin-right: 5px; padding-bottom: 5px;" />
                     <span [style.color]="validateForm.invalid ? 'gray' : 'white'">
-                        {{ 'app.button.resize' |i18n }}
+                        {{ 'app.text.edit' |i18n }}
                       </span>
 
                   </button>

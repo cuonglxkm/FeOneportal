@@ -3135,7 +3135,7 @@
   "schedule.backup.placeholder.input.name": "Enter name schedule",
   "schedule.backup.alert.storage.vpc": "The remaining backup storage is less than the scheduled backup size ({{storage}} GB). Please adjust your project accordingly.",
   "schedule.backup.alert.storage.vpc1":"to ensure the backup process is not interrupted.",
-
+  "schedule.backup.title.card": "Schedule backup information",
 
   "listner.create.duplicate.port.weight": "Members with the same IP cannot have duplicate Port and Weight",
   "app.validate.order.fail": "Fail to validate order",
