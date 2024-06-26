@@ -551,6 +551,7 @@
   "app.tooltip.use.lan.network": "When using LAN network, the instance will be equipped with an additional LAN IP",
   "app.tooltip.access.method.instance": "Customer can use a password or keypair to access the instance",
   "app.tooltip.usage.time": "The period of time a customer purchases {{name}} for use, calculated on a monthly basis",
+  "app.tooltip.instance.volume.encypt": "HDD: Fixed IOPS is 300<br>- SSD: IOPS scales with volume size according to the formula IOPS = Volume Size * 10. However, the minimum IOPS is 400, so for volumes ≤ 40 GB, the IOPS is always 400. For volumes ≥ 41 GB, the formula IOPS = Volume Size * 10 applies",
 
   "validation.exist.instance.name": "This instance name has already been used, please choose another name",
   "validation.instance.password.required": "Please enter the password",

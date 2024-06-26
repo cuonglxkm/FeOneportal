@@ -527,19 +527,22 @@
                 </thead>
                 <tbody class="ant-table-tbody">
                   <tr>
-                    <td>
+                    <td style="width: 50%">
                       <nz-form-label style="margin-left: -12px"
-                        >CPUs (<span class="text-red">*</span>)</nz-form-label
+                        >{{ 'app.ssd.capacity' | i18n }} (<span class="text-red"
+                          >*</span
+                        >) - GB</nz-form-label
                       >
                       <nz-slider
-                        [nzMin]="0"
-                        [nzMax]="remainingVCPU"
-                        [(ngModel)]="instanceCreate.cpu"
-                        (ngModelChange)="checkValidConfig()"
+                        [nzMin]="minCapacity"
+                        [nzMax]="remainingVolume"
+                        [nzStep]="stepCapacity"
+                        [(ngModel)]="instanceCreate.volumeSize"
+                        (ngModelChange)="changeCapacity($event)"
                         [ngModelOptions]="{ standalone: true }"
                       ></nz-slider>
                       <div
-                        *ngIf="remainingVCPU == 0"
+                        *ngIf="remainingVolume == 0"
                         style="font-size: 14px; color: #ff4d4f"
                       >
                         {{ 'app.alert.quota.vpc' | i18n }}
@@ -555,10 +558,11 @@
                     </td>
                     <td>
                       <nz-input-number
-                        [nzMin]="0"
-                        [nzMax]="remainingVCPU"
-                        [(ngModel)]="instanceCreate.cpu"
-                        (ngModelChange)="checkValidConfig()"
+                        [nzMin]="minCapacity"
+                        [nzMax]="remainingVolume"
+                        [nzStep]="stepCapacity"
+                        [(ngModel)]="instanceCreate.volumeSize"
+                        (ngModelChange)="changeCapacity($event)"
                         (keydown)="onKeyDown($event)"
                         [ngModelOptions]="{ standalone: true }"
                         nzSize="large"
@@ -606,22 +610,20 @@
                     </td>
                   </tr>
                   <tr>
-                    <td style="width: 50%">
+                    <td>
                       <nz-form-label style="margin-left: -12px"
-                        >{{ 'app.ssd.capacity' | i18n }} (<span class="text-red"
-                          >*</span
-                        >) - GB</nz-form-label
+                        >CPU (<span class="text-red">*</span>) -
+                        vCPU</nz-form-label
                       >
                       <nz-slider
-                        [nzMin]="minCapacity"
-                        [nzMax]="remainingVolume"
-                        [nzStep]="stepCapacity"
-                        [(ngModel)]="instanceCreate.volumeSize"
-                        (ngModelChange)="changeCapacity($event)"
+                        [nzMin]="0"
+                        [nzMax]="remainingVCPU"
+                        [(ngModel)]="instanceCreate.cpu"
+                        (ngModelChange)="checkValidConfig()"
                         [ngModelOptions]="{ standalone: true }"
                       ></nz-slider>
                       <div
-                        *ngIf="remainingVolume == 0"
+                        *ngIf="remainingVCPU == 0"
                         style="font-size: 14px; color: #ff4d4f"
                       >
                         {{ 'app.alert.quota.vpc' | i18n }}
@@ -637,11 +639,10 @@
                     </td>
                     <td>
                       <nz-input-number
-                        [nzMin]="minCapacity"
-                        [nzMax]="remainingVolume"
-                        [nzStep]="stepCapacity"
-                        [(ngModel)]="instanceCreate.volumeSize"
-                        (ngModelChange)="changeCapacity($event)"
+                        [nzMin]="0"
+                        [nzMax]="remainingVCPU"
+                        [(ngModel)]="instanceCreate.cpu"
+                        (ngModelChange)="checkValidConfig()"
                         (keydown)="onKeyDown($event)"
                         [ngModelOptions]="{ standalone: true }"
                         nzSize="large"
@@ -719,6 +720,52 @@
             </div>
           </nz-tab>
         </nz-tabset>
+        <div style="margin-top: 20px" class="text-label" *ngIf="activeBlockHDD">
+          IOPS
+          <img
+            nz-popover
+            [nzPopoverContent]="contentTemplateEncryptVolume"
+            src="assets/imgs/pajamas_question.svg"
+            alt=""
+            [nzPopoverOverlayStyle]="{ width: '320px' }"
+          />
+          300
+        </div>
+        <div
+          style="margin-top: 20px"
+          class="text-label"
+          *ngIf="activeBlockSSD && volumeRootCapacity <= 40"
+        >
+          IOPS
+          <img
+            nz-popover
+            [nzPopoverContent]="contentTemplateEncryptVolume"
+            src="assets/imgs/pajamas_question.svg"
+            alt=""
+            [nzPopoverOverlayStyle]="{ width: '320px' }"
+          />
+          400
+        </div>
+        <div
+          style="margin-top: 20px"
+          class="text-label"
+          *ngIf="activeBlockSSD && volumeRootCapacity > 40"
+        >
+          IOPS
+          <img
+            nz-popover
+            [nzPopoverContent]="contentTemplateEncryptVolume"
+            src="assets/imgs/pajamas_question.svg"
+            alt=""
+            [nzPopoverOverlayStyle]="{ width: '320px' }"
+          />
+          {{ volumeRootCapacity * 10 }}
+        </div>
+        <ng-template #contentTemplateEncryptVolume>
+          <span
+            [innerHTML]="'app.tooltip.instance.volume.encypt' | i18n"
+          ></span>
+        </ng-template>
         <label
           *ngIf="isSupportEncryption"
           style="margin-top: 20px"
@@ -727,6 +774,12 @@
           [ngModelOptions]="{ standalone: true }"
           [disabled]="isSnapshot"
           >{{ 'volume.info.type.encrypt' | i18n }}
+          <img
+            [nz-tooltip]="'volume.tooltip.type.encrypt' | i18n"
+            src="assets/imgs/pajamas_question.svg"
+            alt=""
+            [nzPopoverOverlayStyle]="{ width: '320px' }"
+          />
         </label>
         <nz-row style="margin-top: 20px" nzGutter="16">
           <nz-col nzLg="12" nzMd="12" nzSm="24">
@@ -1104,7 +1157,7 @@
           <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
           <div class="text-value">{{ 'app.text.package' | i18n }}</div>
           <div style="margin-top: 10px" class="text-label">
-            {{ instanceCreate.cpu }} CPUs
+            {{ instanceCreate.cpu }} vCPU
           </div>
           <div style="margin-top: 10px" class="text-label">
             {{ instanceCreate.ram }} GB RAM

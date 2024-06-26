@@ -159,9 +159,7 @@ export class InstancesEditVpcComponent implements OnInit {
       } else {
         this.remainingGpu = gpuProject.gpuCount;
       }
-      this.listOptionGpuValue = this.listOptionGpuValue.filter(
-        (e) => e <= this.remainingGpu
-      );
+      this.getListOptionGpuValue();
     } else {
       this.isCurrentConfigGpu = false;
     }
@@ -186,6 +184,9 @@ export class InstancesEditVpcComponent implements OnInit {
       .getConfigurations('OPTIONGPUVALUE')
       .subscribe((data) => {
         this.listOptionGpuValue = data.valueString.split(', ').map(Number);
+        this.listOptionGpuValue = this.listOptionGpuValue.filter(
+          (e) => e <= this.remainingGpu
+        );
         this.getCurrentInfoInstance();
       });
   }
@@ -324,9 +325,7 @@ export class InstancesEditVpcComponent implements OnInit {
       } else {
         this.remainingGpu = gpuProject.gpuCount;
       }
-      this.listOptionGpuValue = this.listOptionGpuValue.filter(
-        (e) => e <= this.remainingGpu
-      );
+      this.getListOptionGpuValue();
     }
     this.checkChangeConfig();
     this.cdr.detectChanges();
@@ -353,9 +352,7 @@ export class InstancesEditVpcComponent implements OnInit {
     } else {
       this.remainingGpu = gpuProject.gpuCount;
     }
-    this.listOptionGpuValue = this.listOptionGpuValue.filter(
-      (e) => e <= this.remainingGpu
-    );
+    this.getListOptionGpuValue();
     this.instanceResize.gpuCount = this.listOptionGpuValue[0];
   }
 
