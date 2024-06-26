@@ -29,6 +29,7 @@ export class SecurityComponent implements OnInit {
   email:string = ''
   authenticatorKey: string = ''
   authenticatorQrData: string = ''
+  authenticatorQrImage: string = ''
   isActiveGoogleAuthenticator: boolean = false
   isRecreateAuthenticator: boolean = false
   timeCountDown: number = 10;
@@ -186,7 +187,8 @@ export class SecurityComponent implements OnInit {
       if (data.success == true) {
         if (formeEnable2FA.enable == true) {
           this.authenticatorKey = data.key;
-          this.authenticatorQrData = 'otpauth://totp/OnePortal:' + this.email + '?secret=' + data.key + '&issuer=OnePortal';
+          this.authenticatorQrImage = data.authenticatorQrImage;
+          //this.authenticatorQrData = 'otpauth://totp/OnePortal:' + this.email + '?secret=' + data.key + '&issuer=OnePortal';
           this.isVisibleOTPForAuthenticator = false;
           this.isVisibleAuthenticator = true;
           console.log(this.authenticatorKey);

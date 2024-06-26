@@ -49,8 +49,8 @@
                   </nz-row>
                 </nz-col>
                 <nz-col nzSpan="12">
-                  <nz-row style="padding: 12px 0 12px 0">
-                    <span class="text-label" style="width: 35%">{{ 'app.backup.package.storage'|i18n }}</span>
+                  <nz-row style="padding: 12px 0 12px 0; width: 100%;">
+                    <span class="text-label" style="width: 45%">{{ 'app.backup.package.storage'|i18n }}</span>
                     <span class="text-value-detail">{{ packageBackupModel?.sizeInGB }} GB</span>
                   </nz-row>
                 </nz-col>
@@ -66,7 +66,7 @@
                 </nz-col>
                 <nz-col nzSpan="12">
                   <nz-row style="padding: 12px 0 12px 0">
-                    <span class="text-label" style="width: 35%">{{ 'app.backup.package.storage.used' | i18n }}</span>
+                    <span class="text-label" style="width: 45%">{{ 'app.backup.package.storage.used' | i18n }}</span>
                     <span class="text-value-detail">{{ packageBackupModel?.usedSize }} GB</span>
                   </nz-row>
                 </nz-col>
@@ -82,7 +82,7 @@
                 </nz-col>
                 <nz-col nzSpan="12">
                   <nz-row style="padding: 12px 0 12px 0">
-                    <span class="text-label" style="width: 35%">{{ 'app.backup.package.storage.remaining'|i18n }}</span>
+                    <span class="text-label" style="width: 45%">{{ 'app.backup.package.storage.remaining'|i18n }}</span>
                     <span class="text-value-detail">{{ packageBackupModel?.availableSize }} GB</span>
                   </nz-row>
                 </nz-col>
@@ -171,7 +171,7 @@
                 {{ packageBackupModel?.packageName }}
               </div>
               <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
-              <div class="text-value">{{ 'app.info.backup.vm.total.storage'|i18n }}</div>
+              <div class="text-value">{{ 'app.backup.package.storage'|i18n }}</div>
               <div style="margin-top: 10px" class="text-label">{{ formUpdateBackupPackageModel?.newSize }} GB</div>
               <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
               <nz-row style="margin-bottom: 10px" nzGutter="16">

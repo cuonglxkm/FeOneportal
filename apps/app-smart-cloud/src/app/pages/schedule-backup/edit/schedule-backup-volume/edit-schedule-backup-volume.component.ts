@@ -231,6 +231,7 @@ export class EditScheduleBackupVolumeComponent implements OnInit{
       }, error => {
         this.isLoadingAction = false
         this.notification.error(this.i18n.fanyi("app.status.fail"), this.i18n.fanyi("schedule.backup.notify.edit.volume.fail"))
+        this.router.navigate(['/app-smart-cloud/schedule/backup/list']);
       })
     } else {
       console.log(this.validateForm.controls);
@@ -250,7 +251,9 @@ export class EditScheduleBackupVolumeComponent implements OnInit{
       this.backupSchedule = data
       this.isLoading = false
       this.validateForm.controls.backupMode.setValue(this.backupSchedule?.mode)
+
       this.validateForm.controls.times.setValue(this.backupSchedule?.runtime)
+      console.log('times', this.validateForm.controls.times.value)
       this.validateForm.controls.name.setValue(this.backupSchedule?.name)
       this.validateForm.controls.description.setValue(this.backupSchedule?.description)
       this.validateForm.controls.months.setValue(this.backupSchedule?.interval)

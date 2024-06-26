@@ -2777,7 +2777,7 @@
   "app.backup.package.breadcrumb.extend": "Gia hạn gói Backup",
   "app.backup.package.create": "Tạo mới gói Backup",
   "app.backup.package.list": "Danh sách gói Backup",
-  "app.backup.package.information": "Thông tin của gói Backup",
+  "app.backup.package.information": "Thông tin gói Backup",
   "app.backup.package.name": "Tên gói Backup",
   "app.backup.package.storage": "Dung lượng gói backup",
   "app.backup.size": "Dung lượng bản backup",
