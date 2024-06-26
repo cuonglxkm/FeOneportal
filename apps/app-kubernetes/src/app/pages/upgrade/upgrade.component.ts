@@ -661,15 +661,16 @@ export class UpgradeComponent implements OnInit {
     }
   }
 
+  signature: string;
   onValidateInfo = () => {
     this.validateForm();
 
     this.isSubmitting = true;
     let cluster = this.setClusterData();
+    cluster.specification = JSON.stringify(cluster);
     // this.submitUpgrade(cluster);
 
-    let reqDto = new UpgradeWorkerGroupDto(cluster);
-    this.clusterService.validateUpgradeCluster(reqDto)
+    this.clusterService.validateUpgradeCluster(cluster)
     .pipe(finalize(() => this.isSubmitting = false))
     .subscribe((r: any) => {
       if (r && r.code == 200) {
@@ -681,6 +682,7 @@ export class UpgradeComponent implements OnInit {
 
         } else {
           // call payment
+          this.signature = r.data;
           this.submitUpgrade(cluster);
         }
       }
@@ -705,6 +707,7 @@ export class UpgradeComponent implements OnInit {
     orderItem.orderItemQuantity = 1;
     orderItem.specificationType = KubernetesConstant.CLUSTER_UPGRADE_TYPE;
     orderItem.specification = JSON.stringify(cluster);
+    orderItem.signature = this.signature;
 
     order.orderItems = [...order.orderItems, orderItem];
 
