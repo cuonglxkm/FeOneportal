@@ -3039,6 +3039,7 @@
   "schedule.backup.alert.storage.normal": "Dung lượng backup còn lại nhỏ hơn dung lượng lập lịch backup ({{storage}} GB). Quý khách hãy điều chỉnh gói backup",
   "schedule.backup.alert.storage.vpc1":"để quá trình backup không bị gián đoạn.",
   "schedule.backup.alert.storage.normal1":"để quá trình backup không bị gián đoạn.",
+  "schedule.backup.title.card": "Thông tin lịch backup",
 
 
   "listner.create.duplicate.port.weight": "Các member có cùng IP không được trùng Port và Weight",
