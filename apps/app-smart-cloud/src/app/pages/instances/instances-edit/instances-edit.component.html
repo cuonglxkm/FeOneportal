@@ -845,8 +845,7 @@
             style="margin-top: 10px"
             class="text-label"
           >
-            {{ configGPU.GPU }} GPU (Nvidia
-            {{ instanceResize.gpuType | uppercase }})
+            {{ configGPU.GPU }} GPU (NVIDIA-{{ instanceResize.gpuType | uppercase }})
           </div>
           <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
           <nz-row style="margin-bottom: 10px" nzGutter="16">
