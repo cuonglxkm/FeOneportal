@@ -615,6 +615,8 @@ export class ProjectCreateComponent implements OnInit {
       customerId: this.tokenService.get()?.userId,
       createdByUserId: this.tokenService.get()?.userId,
       note: 'Tạo VPC',
+      totalPayment : this.total.data.totalPayment.amount,
+      totalVAT :this.total.data.totalVAT.amount,
       orderItems: [
         {
           orderItemQuantity: 1,
