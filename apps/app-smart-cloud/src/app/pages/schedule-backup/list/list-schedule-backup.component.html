@@ -95,13 +95,13 @@
                 <span *ngIf="data.serviceType === 2">Volume - {{ data.serviceName }}</span>
               </td>
               <td *ngIf="typeVPC != 1"
-                  style="cursor: pointer;"
-                  nz-popover
-                  [nzPopoverTitle]="data.backupPackageName"
-                  [nzPopoverContent]="titleBackupPackage"
-                  [nzPopoverTrigger]="'click'"
-                  [nzPopoverPlacement]="'bottom'"
-                  (click)="getBackupPackage(data.backupPackageId)">{{ data.backupPackageName }}</td>
+                  style="cursor: pointer;">
+                <a nz-popover
+                   [nzPopoverTitle]="data.backupPackageName"
+                   [nzPopoverContent]="titleBackupPackage"
+                   [nzPopoverTrigger]="'click'"
+                   [nzPopoverPlacement]="'bottom'"
+                   (click)="getBackupPackage(data.backupPackageId)">{{ data.backupPackageName }}</a></td>
 <!--              <td>{{ data.backupPackageName }}</td>-->
               <td nzAlign="right">{{ data.maxBackup }}</td>
               <ng-container *ngIf="data.status | ServiceStatusPipe as statusModel">

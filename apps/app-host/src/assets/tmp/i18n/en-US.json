@@ -583,6 +583,7 @@
   "app.notify.choose.config.package.required": "Please choose the configuration package",
   "app.notify.optional.configuration.invalid": "The optional configuration is invalid",
   "app.notify.gpu.configuration.invalid": "The GPU configuration is invalid",
+  "app.notify.gpu.count.invalid": "Please select the number of GPUs",
   "app.notify.check.config.for.os": "The current configuration is not compatible with the operating system. Please choose the minimum {{nameHdh}} configuration of {{volume}} GB Storage / {{ram}} GB RAM / {{cpu}} vCPU",
   "app.notify.check.config.for.change.os": "Currently, you do not have sufficient resources to perform the operating system conversion. Please update the minimum configuration of {{nameHdh}} to {{volume}} GB storage / {{ram}} GB RAM / {{cpu}} vCPU",
   "app.notify.success.instances.order.create": "Successfully created an instance order",
@@ -3136,7 +3137,7 @@
   "schedule.backup.placeholder.input.name": "Enter name schedule",
   "schedule.backup.alert.storage.vpc": "The remaining backup storage is less than the scheduled backup size ({{storage}} GB). Please adjust your project accordingly.",
   "schedule.backup.alert.storage.vpc1":"to ensure the backup process is not interrupted.",
-
+  "schedule.backup.title.card": "Schedule backup information",
 
   "listner.create.duplicate.port.weight": "Members with the same IP cannot have duplicate Port and Weight",
   "app.validate.order.fail": "Fail to validate order",

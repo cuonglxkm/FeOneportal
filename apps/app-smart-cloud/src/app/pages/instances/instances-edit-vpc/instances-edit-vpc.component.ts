@@ -420,7 +420,7 @@ export class InstancesEditVpcComponent implements OnInit {
     ) {
       this.notification.error(
         '',
-        this.i18n.fanyi('app.notify.gpu.configuration.invalid')
+        this.i18n.fanyi('app.notify.gpu.count.invalid')
       );
       return;
     }

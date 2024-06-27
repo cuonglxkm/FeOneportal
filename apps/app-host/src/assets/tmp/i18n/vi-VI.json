@@ -477,6 +477,7 @@
   "app.notify.choose.config.package.required": "Vui lòng chọn gói cấu hình",
   "app.notify.optional.configuration.invalid": "Cấu hình tùy chọn chưa hợp lệ",
   "app.notify.gpu.configuration.invalid": "Cấu hình GPU chưa hợp lệ",
+  "app.notify.gpu.count.invalid": "Vui lòng chọn số lượng GPU",
   "app.notify.check.config.for.os": "Cấu hình hiện tại chưa phù hợp với hệ điều hành. Vui lòng chọn cấu hình tối thiểu của {{nameHdh}} là {{volume}} GB dung lượng / {{ram}} GB RAM / {{cpu}} vCPU",
   "app.notify.check.config.for.change.os": "Quý khách hiện không đủ tài nguyên để thực hiện việc chuyển đổi hệ điều hành. Vui lòng cập nhật cấu hình tối thiểu của {{nameHdh}} là {{volume}} GB dung lượng / {{ram}} GB RAM / {{cpu}} vCPU",
   "app.notify.success.instances.order.create": "Tạo order máy ảo thành công",
@@ -3042,6 +3043,7 @@
   "schedule.backup.alert.storage.normal": "Dung lượng backup còn lại nhỏ hơn dung lượng lập lịch backup ({{storage}} GB). Quý khách hãy điều chỉnh gói backup",
   "schedule.backup.alert.storage.vpc1":"để quá trình backup không bị gián đoạn.",
   "schedule.backup.alert.storage.normal1":"để quá trình backup không bị gián đoạn.",
+  "schedule.backup.title.card": "Thông tin lịch backup",
 
 
   "listner.create.duplicate.port.weight": "Các member có cùng IP không được trùng Port và Weight",

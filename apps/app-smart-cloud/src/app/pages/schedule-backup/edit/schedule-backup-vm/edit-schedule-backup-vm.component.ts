@@ -259,6 +259,8 @@ export class EditScheduleBackupVmComponent implements OnInit {
     let formSearch: FormSearchScheduleBackup = new FormSearchScheduleBackup();
     formSearch.pageSize = 9999;
     formSearch.pageIndex = 1;
+    formSearch.scheduleName = '';
+    formSearch.scheduleStatus = '';
     this.scheduleService.search(formSearch).subscribe(data => {
       data.records?.forEach(item => {
         if (!this.backupSchedule?.name.includes(item.name)) {

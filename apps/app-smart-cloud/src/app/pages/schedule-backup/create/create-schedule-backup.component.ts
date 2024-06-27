@@ -201,6 +201,8 @@ export class CreateScheduleBackupComponent implements OnInit {
   projectChanged(project: ProjectModel) {
     this.project = project.id;
     this.projectName = project?.projectName
+
+    console.log('type vpc', project?.type)
   }
 
   duplicateNameValidator(control) {
@@ -287,6 +289,15 @@ export class CreateScheduleBackupComponent implements OnInit {
     formSearchBackup.pageSize = 10000000;
     formSearchBackup.currentPage = 1;
     formSearchBackup.customerId = customerId;
+
+    let formSearchBackupSchedule = new FormSearchScheduleBackup();
+    formSearchBackupSchedule.regionId = this.region
+    formSearchBackupSchedule.projectId = this.project
+    formSearchBackupSchedule.pageSize = 9999
+    formSearchBackupSchedule.pageIndex = 1
+    formSearchBackupSchedule.customerId = customerId;
+    formSearchBackupSchedule.scheduleName = '';
+    formSearchBackupSchedule.scheduleStatus = '';
     this.instanceService.search(1, 9999, this.region, this.project, '', '', true, customerId)
       .subscribe(data => {
         this.isLoadingInstance = false;
@@ -301,9 +312,17 @@ export class CreateScheduleBackupComponent implements OnInit {
               this.listInstanceNotUse?.push(item1);
             }
           });
-          console.log('list instance', this.listInstanceNotUse);
-          this.listInstanceNotUse = this.listInstanceNotUse.filter(item => item.taskState === 'ACTIVE')
-          this.instanceSelected = this.listInstanceNotUse[0]?.id;
+          this.backupScheduleService.search(formSearchBackupSchedule).subscribe(data3 => {
+            console.log('lịch', data3?.records)
+            data3.records?.forEach(item3 => {
+              this.listInstanceNotUse = this.listInstanceNotUse.filter(ins => ins.id != item3.serviceId && ins.taskState === 'ACTIVE')
+
+              console.log('list instance', this.listInstanceNotUse);
+
+              this.instanceSelected = this.listInstanceNotUse[0]?.id;
+            })
+          })
+
           this.cdr.detectChanges();
         });
 
@@ -322,7 +341,18 @@ export class CreateScheduleBackupComponent implements OnInit {
     });
   }
 
+  isLoadingVolume: boolean = false;
   getListVolume() {
+    this.isLoadingVolume = true;
+    let customerId = this.tokenService.get()?.userId;
+    let formSearchBackupSchedule = new FormSearchScheduleBackup();
+    formSearchBackupSchedule.regionId = this.region
+    formSearchBackupSchedule.projectId = this.project
+    formSearchBackupSchedule.pageSize = 9999
+    formSearchBackupSchedule.pageIndex = 1
+    formSearchBackupSchedule.customerId = customerId;
+    formSearchBackupSchedule.scheduleName = '';
+    formSearchBackupSchedule.scheduleStatus = '';
     this.backupVolumeService.getListBackupVolume(this.region, this.project, null, null, 9999, 1).subscribe(data => {
       this.backupVolumeList = data?.records;
       console.log('backup volume', this.backupVolumeList);
@@ -345,11 +375,23 @@ export class CreateScheduleBackupComponent implements OnInit {
             }
           });
         });
+
+        this.backupScheduleService.search(formSearchBackupSchedule).subscribe(data3 => {
+          console.log('lịch', data3?.records)
+          data3.records?.forEach(item3 => {
+            this.listVolumeNotUseUnique = this.listVolumeNotUseUnique.filter((volume) => volume.id != item3.serviceId && ['AVAILABLE', 'IN-USE'].includes(volume.serviceStatus))
+
+            console.log('list volume', this.listVolumeNotUseUnique);
+
+            this.volumeSelected = this.listVolumeNotUseUnique[0]?.id;
+          })
+        })
+        this.isLoadingVolume = false
         console.log('list volume', this.listVolumeNotUseUnique);
-        this.listVolumeNotUseUnique = this.listVolumeNotUseUnique.filter(item => item.serviceStatus === 'AVAILABLE')
-        this.volumeSelected = this.listVolumeNotUseUnique[0]?.id;
         this.cdr.detectChanges();
       });
+    }, error =>  {
+      this.isLoadingVolume = false
     });
   }
 
@@ -565,7 +607,7 @@ export class CreateScheduleBackupComponent implements OnInit {
         this.router.navigate(['/app-smart-cloud/schedule/backup/list']);
       }, error => {
         this.isLoadingAction = false
-        this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('schedule.backup.volume.notify.create.fail') + '. ' + error.error.detail);
+        this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('schedule.backup.volume.notify.create.fail'));
       });
     }
 
