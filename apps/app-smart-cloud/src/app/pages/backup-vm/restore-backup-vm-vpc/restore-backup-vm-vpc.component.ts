@@ -13,7 +13,11 @@ import {
 } from '../../../../../../../libs/common-utils/src';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BackupVmService } from '../../../shared/services/backup-vm.service';
-import { getCurrentRegionAndProject, getUniqueObjects } from '@shared';
+import {
+  getCurrentRegionAndProject,
+  getListGpuConfigRecommend,
+  getUniqueObjects,
+} from '@shared';
 import {
   BackupVm,
   RestoreFormCurrent,
@@ -28,6 +32,7 @@ import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from '@core';
 import {
+  GpuConfigRecommend,
   GpuProject,
   GpuUsage,
   InfoVPCModel,
@@ -457,6 +462,7 @@ export class RestoreBackupVmVpcComponent implements OnInit {
   }
 
   //#region  cấu hình
+  configRecommend: GpuConfigRecommend;
   listOptionGpuValue: number[] = [];
   getListOptionGpuValue() {
     this.configurationService
@@ -475,6 +481,7 @@ export class RestoreBackupVmVpcComponent implements OnInit {
   isGpuConfig = false;
   listGPUType: OfferItem[] = [];
   purchasedListGPUType: OfferItem[] = [];
+  listGpuConfigRecommend: GpuConfigRecommend[] = [];
   getListGpuType() {
     this.dataService
       .getListOffers(this.region, 'vm-flavor-gpu')
@@ -482,6 +489,10 @@ export class RestoreBackupVmVpcComponent implements OnInit {
         this.listGPUType = data.filter(
           (e: OfferItem) => e.status.toUpperCase() == 'ACTIVE'
         );
+        this.listGpuConfigRecommend = getListGpuConfigRecommend(
+          this.listGPUType
+        );
+        console.log('list gpu config recommend', this.listGpuConfigRecommend);
         let listGpuOfferIds: number[] = [];
         this.infoVPC.cloudProject.gpuProjects.forEach((gputype) =>
           listGpuOfferIds.push(gputype.gpuOfferId)
@@ -531,6 +542,7 @@ export class RestoreBackupVmVpcComponent implements OnInit {
   gpuTypeName: string = '';
   changeGpuType(id: number) {
     this.restoreInstanceBackup.gpuCount = 0;
+    this.configRecommend = null;
     this.gpuTypeName = this.purchasedListGPUType.filter(
       (e) => e.id == id
     )[0].offerName;
@@ -549,6 +561,15 @@ export class RestoreBackupVmVpcComponent implements OnInit {
     this.getListOptionGpuValue();
   }
 
+  changeGpu() {
+    this.configRecommend = this.listGpuConfigRecommend.filter(
+      (e) =>
+        e.id == this.restoreInstanceBackup.gpuTypeOfferId &&
+        e.gpuCount == this.restoreInstanceBackup.gpuCount
+    )[0];
+    console.log('cấu hình đề recommend', this.configRecommend);
+  }
+
   resetData() {
     this.restoreInstanceBackup.cpu = 0;
     this.restoreInstanceBackup.volumeSize =
@@ -558,6 +579,7 @@ export class RestoreBackupVmVpcComponent implements OnInit {
     this.restoreInstanceBackup.gpuCount = 0;
     this.restoreInstanceBackup.gpuTypeOfferId = null;
     this.isValid = false;
+    this.configRecommend = null;
   }
 
   minCapacity: number;

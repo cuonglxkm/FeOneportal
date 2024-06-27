@@ -675,3 +675,13 @@ export class GpuUsage {
   gpuOfferId: number;
   gpuCount: number;
 }
+
+export class GpuConfigRecommend {
+  constructor(
+    public gpuCount: number,
+    public ssd: number,
+    public ram: number,
+    public cpu: number,
+    public id: number
+  ) {}
+}

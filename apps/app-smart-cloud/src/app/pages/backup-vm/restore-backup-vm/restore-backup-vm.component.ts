@@ -14,7 +14,11 @@ import {
 } from '../../../../../../../libs/common-utils/src';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BackupVmService } from '../../../shared/services/backup-vm.service';
-import { getCurrentRegionAndProject, getUniqueObjects } from '@shared';
+import {
+  getCurrentRegionAndProject,
+  getListGpuConfigRecommend,
+  getUniqueObjects,
+} from '@shared';
 import {
   BackupVm,
   RestoreFormCurrent,
@@ -29,6 +33,7 @@ import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from '@core';
 import {
   DataPayment,
+  GpuConfigRecommend,
   IPPublicModel,
   ItemPayment,
   OfferItem,
@@ -895,6 +900,7 @@ export class RestoreBackupVmComponent implements OnInit {
   //#endregion
 
   //#region Cấu hình GPU
+  configRecommend: GpuConfigRecommend;
   listOptionGpuValue: number[] = [];
   getListOptionGpuValue() {
     this.configurationService
@@ -905,6 +911,7 @@ export class RestoreBackupVmComponent implements OnInit {
       );
   }
 
+  listGpuConfigRecommend: GpuConfigRecommend[] = [];
   listGPUType: OfferItem[] = [];
   getListGpuType() {
     this.dataService
@@ -913,6 +920,10 @@ export class RestoreBackupVmComponent implements OnInit {
         this.listGPUType = data.filter(
           (e: OfferItem) => e.status.toUpperCase() == 'ACTIVE'
         );
+        this.listGpuConfigRecommend = getListGpuConfigRecommend(
+          this.listGPUType
+        );
+        console.log('list gpu config recommend', this.listGpuConfigRecommend);
       });
   }
 
@@ -1010,6 +1021,12 @@ export class RestoreBackupVmComponent implements OnInit {
       .subscribe((res) => {
         if (this.configGPU.gpuOfferId != 0) {
           this.getUnitPrice(0, 0, 0, 1, this.configGPU.gpuOfferId);
+          this.configRecommend = this.listGpuConfigRecommend.filter(
+            (e) =>
+              e.id == this.configGPU.gpuOfferId &&
+              e.gpuCount == this.configGPU.GPU
+          )[0];
+          console.log('cấu hình đề recommend', this.configRecommend);
         }
         this.getTotalAmount();
         this.checkValidConfig();
@@ -1023,6 +1040,11 @@ export class RestoreBackupVmComponent implements OnInit {
     )[0].offerName;
     if (this.configGPU.GPU != 0) {
       this.getUnitPrice(0, 0, 0, 1, this.configGPU.gpuOfferId);
+      this.configRecommend = this.listGpuConfigRecommend.filter(
+        (e) =>
+          e.id == this.configGPU.gpuOfferId && e.gpuCount == this.configGPU.GPU
+      )[0];
+      console.log('cấu hình đề recommend', this.configRecommend);
     }
     if (this.configGPU.GPU != 0 && this.configGPU.gpuOfferId != 0) {
       this.getTotalAmount();
