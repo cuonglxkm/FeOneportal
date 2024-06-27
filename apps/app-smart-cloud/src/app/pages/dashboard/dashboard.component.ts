@@ -409,6 +409,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.onChangeInputChange();
     if(this.getUserRole().includes("SI")) {
       localStorage.setItem('role', 'SI')
+    } else {
+      localStorage.setItem('role', '')
     }
   }
 }
