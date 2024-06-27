@@ -83,6 +83,14 @@ export class DashboardObjectStorageComponent implements OnInit {
       });
   }
 
+  onRegionChange(region: RegionModel) {
+    this.region = region.regionId;
+  }
+
+  onRegionChanged(region: RegionModel) {
+    this.region = region.regionId;
+  }
+
   onBucketChange(value) {
     this.bucketSelected = value;
     this.getSummaryObjectStorage();

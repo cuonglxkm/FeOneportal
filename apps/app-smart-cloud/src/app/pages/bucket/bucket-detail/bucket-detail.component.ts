@@ -26,6 +26,7 @@ import { BucketService } from '../../../shared/services/bucket.service';
 import { ObjectObjectStorageService } from '../../../shared/services/object-object-storage.service';
 import { TimeCommon } from 'src/app/shared/utils/common';
 import { getCurrentRegionAndProject } from '@shared';
+import { RegionModel } from '../../../../../../../libs/common-utils/src';
 
 @Component({
   selector: 'one-portal-bucket-detail',
@@ -172,6 +173,14 @@ export class BucketDetailComponent extends BaseService implements OnInit {
     this.searchDelay.pipe(debounceTime(TimeCommon.timeOutSearch)).subscribe(() => {     
       this.loadData();
     });
+  }
+
+  onRegionChange(region: RegionModel) {
+    this.region = region.regionId;
+  }
+
+  onRegionChanged(region: RegionModel) {
+    this.region = region.regionId;
   }
 
   onPageSizeChange(event: any) {
