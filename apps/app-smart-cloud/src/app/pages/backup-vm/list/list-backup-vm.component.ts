@@ -240,7 +240,8 @@ export class ListBackupVmComponent implements OnInit, OnDestroy {
   }
 
   navigateToRestore(id: number) {
-    if (this.typeVPC == 1) {
+    let hasRoleSI = localStorage.getItem('role').includes('SI')
+    if (this.typeVPC == 1 || hasRoleSI) {
       this.router.navigate(['/app-smart-cloud/backup-vm/restore-backup-vm-vpc/' + id])
     } else {
       this.router.navigate(['/app-smart-cloud/backup-vm/restore-backup-vm/' + id])

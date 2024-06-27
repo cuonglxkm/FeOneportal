@@ -7,6 +7,7 @@ import { NzSpaceModule } from 'ng-zorro-antd/space';
 import { FullContentModule } from '@delon/abc/full-content';
 import { WelcomeComponent } from './welcome/welcome.component';
 import { ModalResetPassComponent } from '../layout/basic/widgets/modal-resetpass.component';
+import { CreateUserComponent } from './user-profile/create-user/create-user.component';
 
 const COMPONENTS: Array<Type<null>> = [];
 
@@ -17,6 +18,7 @@ const COMPONENTS: Array<Type<null>> = [];
     UserProfileComponent,
     WelcomeComponent,
     ModalResetPassComponent,
+    CreateUserComponent,
   ],
 })
 export class RoutesModule {}

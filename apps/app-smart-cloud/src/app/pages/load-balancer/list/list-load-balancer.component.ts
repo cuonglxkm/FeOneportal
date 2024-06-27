@@ -66,7 +66,8 @@ export class ListLoadBalancerComponent implements OnInit{
 
   navigateToCreate(typeVpc) {
     console.log(typeVpc)
-    if(typeVpc === 1) {
+    let hasRoleSI = localStorage.getItem('role').includes('SI')
+    if(typeVpc === 1 || hasRoleSI) {
       this.router.navigate(['/app-smart-cloud/load-balancer/create/vpc'])
     }
     if(typeVpc === 0) {

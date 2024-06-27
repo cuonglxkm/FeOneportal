@@ -206,7 +206,7 @@
     </ng-container>
   </nz-card>
 </nz-content>
-<nz-content *ngIf="typeVPC == 1">
+<nz-content *ngIf="typeVPC == 1 || hasRoleSI">
   <nz-card>
     <ng-container [ngSwitch]="isBegin">
       <ng-container *ngSwitchCase="false">

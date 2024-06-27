@@ -69,6 +69,9 @@
   "form.account.validate.address":"Tỉnh/Thành phố",
   "form.account.validate.address.detail":"Địa chỉ chi tiết có thể chứa ký tự / - và khoảng trống, không chứa ký tự đặc biệt",
 
+  "form.account.create.new": "Đăng ký tài khoản",
+  "form.account.create.new.success": "Tài khoản đã đăng ký thành công.",
+
   "app.account.validation": "Vui lòng nhập đầy đủ thông tin",
   "app.account.form.success": "Cập nhật tài khoản thành công!",
   "app.account.form.fail": "Cập nhật tài khoản không thành công!",

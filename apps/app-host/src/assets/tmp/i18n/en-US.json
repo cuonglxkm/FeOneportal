@@ -175,6 +175,8 @@
   "form.account.validate.phone":"Invalid phone number!",
   "form.account.validate.address":"Province/City",
   "form.account.validate.address.detail":"Detailed address can contain characters / - and spaces, but no special characters",
+  "form.account.create.new": "Register an account",
+  "form.account.create.new.success": "Account successfully registered.",
 
   "app.account.validation": "Please enter complete information!",
   "app.account.form.success": "Account updated successfully!",
