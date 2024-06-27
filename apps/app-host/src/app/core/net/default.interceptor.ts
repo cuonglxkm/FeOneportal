@@ -219,6 +219,7 @@ export class DefaultInterceptor implements HttpInterceptor {
     localStorage.removeItem('_token');
     localStorage.removeItem('projects');
     localStorage.removeItem('projectId');
+    localStorage.removeItem('role');
   }
 
   private getAdditionalHeaders(headers?: HttpHeaders): { [name: string]: string } {

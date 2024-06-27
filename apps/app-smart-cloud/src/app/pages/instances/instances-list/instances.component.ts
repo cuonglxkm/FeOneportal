@@ -826,7 +826,8 @@ export class InstancesComponent implements OnInit {
   }
 
   navigateToCreate() {
-    if (this.project.type == 1) {
+    let hasRoleSI = localStorage.getItem('role').includes('SI')
+    if (this.project.type == 1 || hasRoleSI) {
       this.router.navigate(['/app-smart-cloud/instances/instances-create-vpc']);
     } else {
       this.router.navigate(['/app-smart-cloud/instances/instances-create']);
@@ -895,5 +896,9 @@ export class InstancesComponent implements OnInit {
     }
     this.dataList[foundIndex] = record;
     this.cdr.detectChanges();
+  }
+
+  navigateToCreateScheduleSnapshot(id: number) {
+    this.router.navigate(['/app-smart-cloud/schedule/snapshot/create', {instanceId: id}], { queryParams: { snapshotTypeCreate: 1 } });
   }
 }

@@ -24,6 +24,7 @@ import { InstancesService } from '../../instances/instances.service';
 import { checkPossiblePressNumber } from '../../../shared/utils/common';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from '@core';
+import { VpcService } from '../../../shared/services/vpc.service';
 
 @Component({
   selector: 'one-portal-create-schedule-snapshot',
@@ -38,15 +39,39 @@ export class SnapshotScheduleCreateComponent implements OnInit {
   volumeId: number;
   volumeList: NzSelectOptionInterface[] = [];
   userId: number;
-  dateStart: string;
   descSchedule: string = '';
-  snapshotMode: string = 'Theo tuần';
   mode: string = 'Hằng ngày'
-  numberArchivedCopies = 1;
-  selectedValueRadio = 'normal';
   snapshotPackageList: NzSelectOptionInterface[] = []
   time: Date = new Date();
   defaultOpenValue = new Date(0, 0, 0, 0, 0, 0);
+  quotaHDDTotal: any;
+  quotaHDDUsed: any;
+  quotaSSDTotal: any;
+  quotaSSDUsed: any;
+  quotaTotal: any;
+  quotaUsed: any;
+  quotaRemain: any;
+  disableByQuota: boolean;
+  quotaType: any;
+  selectedVolumeRoot: any;
+  loadingCreate: boolean;
+  constructor(
+    private vpcService: VpcService,
+    private router: Router,
+    private loadingSrv: LoadingService,
+    private activatedRoute: ActivatedRoute,
+    private instancesService: InstancesService,
+    @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
+    private fb: NonNullableFormBuilder,
+    private snapshotService: SnapshotVolumeService,
+    private volumeService: VolumeService,
+    private modalService: NzModalService,
+    private notification: NzNotificationService,
+    private packageSnapshotService: PackageSnapshotService,
+    @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
+    private vlService: VolumeService,
+    private datepipe: DatePipe
+  ) {}
 
   //new
   snapShotArray = [
@@ -57,8 +82,10 @@ export class SnapshotScheduleCreateComponent implements OnInit {
   formSearchPackageSnapshot: FormSearchPackageSnapshot = new FormSearchPackageSnapshot()
   validateForm: FormGroup<{
     radio: FormControl<any>
+    quota: FormControl<string>
   }> = this.fb.group({
     radio: [''],
+    quota: ['0GB', []]
   })
 
   form: FormGroup<{
@@ -91,13 +118,7 @@ export class SnapshotScheduleCreateComponent implements OnInit {
     this.loadSnapshotPackage();
     this.loadVolumeList();
     this.loadVmList();
-  }
-
-  getDayLabel(selectedValue: string): any {
-    const selectedDay = this.dateList.find(
-      (day) => day.value === selectedValue
-    );
-    return selectedDay ? selectedDay.label : '';
+    this.validateForm.controls['quota'].disable();
   }
 
   doGetListVolume() {
@@ -144,23 +165,6 @@ export class SnapshotScheduleCreateComponent implements OnInit {
     })
   }
 
-  constructor(
-    private router: Router,
-    private loadingSrv: LoadingService,
-    private activatedRoute: ActivatedRoute,
-    private instancesService: InstancesService,
-    @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
-    private fb: NonNullableFormBuilder,
-    private snapshotService: SnapshotVolumeService,
-    private volumeService: VolumeService,
-    private modalService: NzModalService,
-    private notification: NzNotificationService,
-    private packageSnapshotService: PackageSnapshotService,
-    @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
-    private datepipe: DatePipe
-  ) {}
-
-
   request = new CreateScheduleSnapshotDTO();
   projectType: number;
   snapshotPackageLoading: boolean ;
@@ -174,6 +178,7 @@ export class SnapshotScheduleCreateComponent implements OnInit {
   volumeArray: any;
   vmArray: any;
   numOfVersion = 1;
+  disableCreate = true;
   create() {
     const modal: NzModalRef = this.modalService.create({
       nzTitle: 'Xác nhận tạo lịch Snapshot',
@@ -217,7 +222,7 @@ export class SnapshotScheduleCreateComponent implements OnInit {
                   this.isLoading = false;
                   this.notification.success('Success', 'Tạo lịch thành công');
                   this.router.navigate([
-                    '/app-smart-cloud/schedule/snapshot/list',
+                    '/app-smart-cloud/schedule/snapshot',
                   ]);
               },
               error => {
@@ -243,10 +248,21 @@ export class SnapshotScheduleCreateComponent implements OnInit {
     this.project = project?.id;
     this.doGetListVolume();
     this.projectType = project?.type;
+    if (project?.type == 1) {
+      this.vpcService.getTotalResouce(project?.id).subscribe(
+        data => {
+          let total = data.cloudProject;
+          let used = data.cloudProjectResourceUsed;
+          this.quotaHDDUsed = used.hdd;
+          this.quotaHDDTotal = total.quotaHddInGb;
+          this.quotaSSDUsed = used.ssd;
+          this.quotaSSDTotal = total.quotaSSDInGb;
+        });
+    }
   }
 
   onUserChange(project: ProjectModel) {
-    this.router.navigate(['/app-smart-cloud/schedule/snapshot/list'])
+    this.router.navigate(['/app-smart-cloud/schedule/snapshot'])
   }
 
   private loadSnapshotPackage() {
@@ -268,18 +284,63 @@ export class SnapshotScheduleCreateComponent implements OnInit {
   }
 
   changePackageSnapshot() {
-
+    if (this.projectType != 1 && this.selectedSnapshotPackage != undefined) {
+      this.packageSnapshotService.detail(this.selectedSnapshotPackage.id, this.project)
+        .pipe(finalize(() => {
+          this.checkDisable();
+        }))
+        .subscribe(data => {
+          this.quotaHDDTotal = data.totalSizeHDD;
+          this.quotaHDDUsed = data.usedSizeHDD;
+          this.quotaSSDTotal = data.totalSizeSSD;
+          this.quotaSSDUsed = data.usedSizeSSD;
+        });
+    }
+    if (this.selectedSnapshotPackage == undefined) {
+      this.disableByQuota = false;
+      this.disableCreate = true;
+    }
   }
 
   changeTypeSnaphot() {
     this.selectedVolume = undefined;
     this.selectedVM = undefined;
+    this.quotaType = undefined;
+    this.checkDisable();
   }
 
   changeVmVolume() {
+// get type
+    if ((this.selectedVolume != undefined || this.selectedVM != undefined)) {
+      if (this.snapshotTypeCreate == 0 || (this.selectedSnapshotType == 0 && this.snapshotTypeCreate == 2)) {
+        this.quotaType = this.selectedVolume.volumeType;
+        this.checkDisable();
+      } else {
+        this.loadingCreate = true;
+        this.vlService.getVolumeById(this.selectedVM.volumeRootId, this.project)
+          .pipe(finalize(() => {
+            this.checkDisable();
+            this.loadingCreate = false;
+          }))
+          .subscribe(
+            data => {
+              this.quotaType = data.volumeType;
+              this.selectedVolumeRoot = data;
+            }
+          );
+      }
+    } else {
+      this.validateForm.controls['quota'].setValue('0GB');
+      this.quotaType = '';
+    }
 
+    if (((this.snapshotTypeCreate == 0 || (this.selectedSnapshotType == 0 && this.snapshotTypeCreate == 2)) && this.selectedVolume == undefined) ||
+      ((this.snapshotTypeCreate == 1 || (this.selectedSnapshotType == 1 && this.snapshotTypeCreate == 2)) && this.selectedVM == undefined)) {
+      this.disableByQuota = false;
+      this.disableCreate = true;
+    }
   }
-
+  idVolume: number;
   private loadVolumeList() {
     this.loadingSrv.open({ type: 'spin', text: 'Loading...' });
     this.volumeService.getVolumes(this.tokenService.get()?.userId, this.project, this.region, 9999, 1, 'KHOITAO', '')
@@ -291,15 +352,18 @@ export class SnapshotScheduleCreateComponent implements OnInit {
           this.volumeArray = data?.records.filter(item => {
             return ['AVAILABLE', 'IN-USE'].includes(item?.serviceStatus);
           });
-          // if (this.activatedRoute.snapshot.paramMap.get('volumeId') != undefined) {
-          //   // this.selectedSnapshotType = 0;
-          //   console.log('volume array', this.volumeArray);
-          //   this.selectedVolume = this.volumeArray?.filter(e => e.id == this.idVolume)[0];
-          //   console.log('selected volume', this.selectedVolume);
-          // } else {
-          //   this.selectedVolume = null;
-          //   // this.selectedSnapshotType = 1;
-          // }
+          if (this.activatedRoute.snapshot.paramMap.get('volumeId') != undefined) {
+            this.idVolume = Number.parseInt(this.activatedRoute.snapshot.paramMap.get('volumeId'));
+            console.log('id volume', this.idVolume);
+            // this.selectedSnapshotType = 0;
+            console.log('volume array', this.volumeArray);
+            this.selectedVolume = this.volumeArray?.filter(e => e.id == this.idVolume)[0];
+            console.log('selected volume', this.selectedVolume);
+            this.changeVmVolume();
+          } else {
+            this.selectedVolume = null;
+            // this.selectedSnapshotType = 1;
+          }
           // this.volumeArray = data.records;
         }
       );
@@ -318,19 +382,57 @@ export class SnapshotScheduleCreateComponent implements OnInit {
             return item.taskState === 'ACTIVE';
           });
           this.vmArray = rs1;
-          // if (this.activatedRoute.snapshot.paramMap.get('instanceId') != undefined || this.activatedRoute.snapshot.paramMap.get('instanceId') != null) {
-          //   // this.selectedSnapshotType = 1;
-          //   this.selectedVM = this.vmArray.filter(e => e.id == Number.parseInt(this.activatedRoute.snapshot.paramMap.get('instanceId')))[0];
-          // } else {
-          //   this.selectedVM = null;
-          //   // this.selectedSnapshotType = 0;
-          // }
+          if (this.activatedRoute.snapshot.paramMap.get('instanceId') != undefined || this.activatedRoute.snapshot.paramMap.get('instanceId') != null) {
+            // this.selectedSnapshotType = 1;
+            this.selectedVM = this.vmArray.filter(e => e.id == Number.parseInt(this.activatedRoute.snapshot.paramMap.get('instanceId')))[0];
+            this.changeVmVolume();
+          } else {
+            this.selectedVM = null;
+            // this.selectedSnapshotType = 0;
+          }
         }
       );
   }
+  checkPossiblePress(event: KeyboardEvent) {
+    const key = event.key;
+    if (isNaN(Number(key)) && key !== 'Backspace' && key !== 'Delete' && key !== 'ArrowLeft' && key !== 'ArrowRight') {
+      event.preventDefault();
+    }
+  }
 
-  // checkPossiblePress($event: KeyboardEvent) {
-  //
-  // }
-  protected readonly checkPossiblePress = checkPossiblePressNumber;
+  private checkDisableByQuota() {
+    this.disableByQuota = false;
+    if (this.quotaType != undefined && this.quotaSSDTotal!=undefined && this.quotaSSDUsed!=undefined && this.quotaHDDTotal!=undefined && this.quotaHDDUsed!=undefined
+      && this.validateForm.controls['quota'].value != '0GB') {
+      if (this.quotaType == 'ssd') {
+        this.quotaTotal = this.quotaSSDTotal;
+        this.quotaUsed = this.quotaSSDUsed;
+      } else {
+        this.quotaTotal = this.quotaHDDTotal;
+        this.quotaUsed = this.quotaHDDUsed;
+      }
+      this.quotaRemain = this.quotaTotal - this.quotaUsed;
+      if (this.quotaRemain < this.validateForm.controls['quota'].value.replace('GB', '')) {
+        this.disableByQuota = true;
+      }
+    }
+  }
+
+  private checkDisable() {
+    this.disableCreate = false;
+    if ((this.selectedSnapshotPackage == undefined && this.projectType != 1) ||
+      ((this.snapshotTypeCreate == 0 || (this.selectedSnapshotType == 0 && this.snapshotTypeCreate == 2)) && this.selectedVolume == undefined) ||
+      ((this.snapshotTypeCreate == 1 || (this.selectedSnapshotType == 1 && this.snapshotTypeCreate == 2)) && this.selectedVM == undefined)) {
+      this.disableCreate = true;
+    }
+
+    if ((this.snapshotTypeCreate == 0 || (this.selectedSnapshotType == 0 && this.snapshotTypeCreate == 2)) && this.selectedVolume != undefined) {
+      this.validateForm.controls['quota'].setValue(this.selectedVolume?.sizeInGB == undefined ? '0GB' : this.selectedVolume?.sizeInGB + 'GB');
+    } else if ((this.snapshotTypeCreate == 1 || (this.selectedSnapshotType == 1 && this.snapshotTypeCreate == 2)) && this.selectedVolumeRoot != undefined) {
+      this.validateForm.controls['quota'].setValue(this.selectedVolumeRoot?.sizeInGB == undefined ? '0GB' : this.selectedVolumeRoot?.sizeInGB + 'GB');
+    } else {
+      this.validateForm.controls['quota'].setValue('0GB');
+    }
+    this.checkDisableByQuota();
+  }
 }

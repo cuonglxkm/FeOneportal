@@ -9,7 +9,7 @@
         <a [routerLink]="['/']">{{ 'app.breadcrumb.home' | i18n }}</a>
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>
-        <a [routerLink]="['/app-smart-cloud/schedule/snapshot/list']"
+        <a [routerLink]="['/app-smart-cloud/schedule/snapshot']"
           >{{ 'app.breadcrumb.infrastructure.service' | i18n }}</a
         >
       </nz-breadcrumb-item>
@@ -104,7 +104,7 @@
           </nz-select>
         </nz-form-control>
         </nz-form-item>
-        
+
         <nz-form-item>
           <nz-form-label nzFor="name">
             <div>
@@ -433,7 +433,7 @@
           <span>{{FileSystemSnapshotForm.value.name}}</span>
         </div>
         <div style="margin-bottom: 20px">
-          <h3 class="custom-subtitle">{{ 'app.file.system.name' | i18n }}</h3>     
+          <h3 class="custom-subtitle">{{ 'app.file.system.name' | i18n }}</h3>
             <div style="overflow-wrap: break-word;">{{ selectedFileSystemName }}</div>
         </div>
         <div style="margin-bottom: 20px">

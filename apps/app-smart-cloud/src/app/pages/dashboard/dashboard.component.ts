@@ -14,6 +14,7 @@ import { I18NService } from '@core';
 import { PaymentService } from '../../shared/services/payment.service';
 import { debounceTime, Subject, Subscription } from 'rxjs';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
+import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 
 @Component({
   selector: 'one-portal-dashboard',
@@ -51,7 +52,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
               private router: Router,
               private paymentService: PaymentService,
               private notification: NzNotificationService,
-              @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService) {
+              @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
+              @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService) {
   }
 
   ngOnDestroy() {
@@ -379,6 +381,24 @@ export class DashboardComponent implements OnInit, OnDestroy {
     }
   }
 
+  getUserRole(): string[] {
+    const token = this.tokenService.get()?.token;
+    if (token) {
+      const decodedToken = this.decodeToken(token);
+      return decodedToken['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'] || []; // Adjust 'roles' to the actual key used in your token
+    }
+    return [];
+  }
+
+  private decodeToken(token: string): any {
+    const parts = token.split('.');
+    if (parts.length !== 3) {
+      throw new Error('The token is not valid JWT');
+    }
+    const decoded = atob(parts[1]);
+    return JSON.parse(decoded);
+  }
+
   ngOnInit() {
     setTimeout(() => {
       this.getSubscriptionsDashboard();
@@ -387,5 +407,10 @@ export class DashboardComponent implements OnInit, OnDestroy {
       this.getDataChart();
     }, 1500)
     this.onChangeInputChange();
+    if(this.getUserRole().includes("SI")) {
+      localStorage.setItem('role', 'SI')
+    } else {
+      localStorage.setItem('role', '')
+    }
   }
 }

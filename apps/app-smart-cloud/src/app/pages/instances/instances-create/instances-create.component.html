@@ -856,6 +856,23 @@
                   </tr>
                 </tbody>
               </table>
+              <nz-alert
+                *ngIf="configRecommend"
+                style="margin-top: 20px"
+                nzType="warning"
+                [nzDescription]="
+                  'app.alert.config.gpu.recommend'
+                    | i18n
+                      : {
+                          type: gpuTypeName,
+                          gpu: configRecommend.gpuCount,
+                          ssd: configRecommend.ssd,
+                          ram: configRecommend.ram,
+                          cpu: configRecommend.cpu
+                        }
+                "
+                nzShowIcon
+              ></nz-alert>
             </div>
           </nz-tab>
         </nz-tabset>

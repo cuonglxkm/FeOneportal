@@ -69,6 +69,9 @@
   "form.account.validate.address":"Tỉnh/Thành phố",
   "form.account.validate.address.detail":"Địa chỉ chi tiết có thể chứa ký tự / - và khoảng trống, không chứa ký tự đặc biệt",
 
+  "form.account.create.new": "Đăng ký tài khoản",
+  "form.account.create.new.success": "Tài khoản đã đăng ký thành công.",
+
   "app.account.validation": "Vui lòng nhập đầy đủ thông tin",
   "app.account.form.success": "Cập nhật tài khoản thành công!",
   "app.account.form.fail": "Cập nhật tài khoản không thành công!",
@@ -438,6 +441,8 @@
   "app.alert.create.allow.address.pair.next": "Quý khách chắc chắn muốn thực hiện xóa Allowed Address Pair?",
   "app.alert.change.instances.OS": "Các phiên bản hệ điều hành Windows Server là bản dùng thử. Quý khách hàng vui lòng kích hoạt bản quyền trước khi sử dụng.",
   "app.alert.change.instances.OS.next": "Quý khách chắn chắn muốn thực hiện thay đổi thông tin máy ảo?",
+  "app.alert.config.gpu.recommend": "Đối với GPU {{type}} và số lượng là {{gpu}}, Quý khách nên điều chỉnh cầu hình là: SSD - {{ssd}} GB, RAM - {{ram}} GB, CPU - {{cpu}} vCPU để sử dụng dịch vụ GPU với trải nghiệm tốt nhất",
+  "app.alert.resize.instance": "Trong quá trình điều chỉnh máy ảo, máy ảo sẽ bị tắt và tự động mở lại sau khi thành công",
 
   "app.tooltip.instance.name": "Tên máy ảo không bao gồm dấu tiếng Việt, dấu cách, ký tự đặc biệt (trừ _)",
   "app.tooltip.instances.from.snapshot": "Quý khách có thể tạo máy ảo từ một bản snapshot có sẵn để phục hồi máy ảo về trạng thái khi thực hiện tạo bản snapshot đó",
@@ -520,7 +525,7 @@
   "app.notify.create.instances.success": "Khởi tạo máy ảo {{name}} thành công",
   "app.notify.create.instances.fail": "Khởi tạo máy ảo {{name}} không thành công",
 
-  "app.choose.snapshot": "chọn Snapshot",
+  "app.choose.snapshot": "Chọn Snapshot",
   "app.choose.volume.type": "Chọn loại Volume",
   "app.configuration.package": "Gói cấu hình",
   "app.Preconfigured.Package": "Gói cấu hình sẵn",
@@ -2751,6 +2756,7 @@
   "app.backup.volume.note.restore.new": "Khôi phục backup volume",
   "app.backup.volume.current": "Khôi phục vào Volume hiện tại",
   "app.backup.volume.new": "Khôi phục vào Volume mới",
+  "app.backup.volume.restore.current": "Chọn Volume có dung lượng lớn hơn hoặc bằng dung lượng backup",
 
   "app.dashboard.subscription.service": "Dịch vụ",
   "app.dashboard.subscription.service.active": "Đang hoạt động",

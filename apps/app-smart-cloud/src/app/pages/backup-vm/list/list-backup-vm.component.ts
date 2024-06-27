@@ -33,7 +33,8 @@ export class ListBackupVmComponent implements OnInit, OnDestroy {
   status = [
     {label: this.i18n.fanyi('app.status.all'), value: 'all'},
     {label: this.i18n.fanyi('app.status.running'), value: 'AVAILABLE'},
-    {label: this.i18n.fanyi('app.status.suspend'), value: 'SUSPENDED'}
+    {label: this.i18n.fanyi('app.status.suspend'), value: 'SUSPENDED'},
+    {label: this.i18n.fanyi('app.status.error'), value: 'ERROR'}
   ]
 
   selectedValue?: string = null
@@ -184,7 +185,7 @@ export class ListBackupVmComponent implements OnInit, OnDestroy {
       this.router.navigate(['/app-smart-cloud/backup-vm/create/vpc']);
     }
 
-    if(this.typeVPC == 0) {
+    if(this.typeVPC != 1) {
       this.router.navigate(['/app-smart-cloud/backup-vm/create/no-vpc']);
     }
 
@@ -244,7 +245,8 @@ export class ListBackupVmComponent implements OnInit, OnDestroy {
   }
 
   navigateToRestore(id: number) {
-    if (this.typeVPC == 1) {
+    let hasRoleSI = localStorage.getItem('role').includes('SI')
+    if (this.typeVPC == 1 || hasRoleSI) {
       this.router.navigate(['/app-smart-cloud/backup-vm/restore-backup-vm-vpc/' + id])
     } else {
       this.router.navigate(['/app-smart-cloud/backup-vm/restore-backup-vm/' + id])

@@ -387,6 +387,8 @@ export class UserProfileComponent implements OnInit {
     }),
   };
 
+  hasRoleSI: boolean = false;
+
   loadUserProfile() {
     // @ts-ignore
     let email = this.tokenService.get()['email'];
@@ -399,6 +401,8 @@ export class UserProfileComponent implements OnInit {
       .subscribe(
         (res) => {
           this.userModel = res;
+
+          this.hasRoleSI = this.getUserRole().includes("SI");
 
           this.form.patchValue({
             name: res.name,
@@ -526,6 +530,27 @@ export class UserProfileComponent implements OnInit {
       this.form.controls['name'].value!.trimStart()
     );
   }
+
+
+  getUserRole(): string[] {
+    const token = this.tokenService.get()?.token;
+    if (token) {
+      const decodedToken = this.decodeToken(token);
+      return decodedToken['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'] || []; // Adjust 'roles' to the actual key used in your token
+    }
+    return [];
+  }
+
+  private decodeToken(token: string): any {
+    const parts = token.split('.');
+    if (parts.length !== 3) {
+      throw new Error('The token is not valid JWT');
+    }
+    const decoded = atob(parts[1]);
+    return JSON.parse(decoded);
+  }
+
+
 }
 
 export function noAllWhitespace(): ValidatorFn {
