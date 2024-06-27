@@ -1,5 +1,5 @@
 <nz-content>
-  <nz-card class="border-card">
+  <nz-card class="border-radius-card">
     <!-- filter -->
     <div class="flex-style mb-5">
       <div class="w-40">
@@ -23,34 +23,34 @@
       [nzPageSize]="pageSize" [nzPageIndex]="pageIndex" (nzQueryParams)="onQueryParamsChange($event)" [nzLoading]="isLoadingInstance">
       <thead>
         <tr>
-          <th>{{ 'app.order.ordinalNumber' | i18n }}</th>
-          <th>{{ 'app.cluster.node' | i18n }}</th>
-          <th>{{ 'app.cluster.worker-group-name' | i18n }}</th>
-          <th>{{ 'app.text.status' | i18n }}</th>
-          <th>IP Private</th>
-          <th>vCPU</th>
-          <th>RAM (GB)</th>
-          <th>Storage (GB)</th>
-          <th>{{ 'app.hard.drive.type' | i18n }}</th>
-          <th>{{ 'app.text.operation' | i18n }}</th>
+          <th class="content header-table">{{ 'app.order.ordinalNumber' | i18n }}</th>
+          <th class="content header-table">{{ 'app.cluster.node' | i18n }}</th>
+          <th class="content header-table">{{ 'app.cluster.worker-group-name' | i18n }}</th>
+          <th class="content header-table">{{ 'app.text.status' | i18n }}</th>
+          <th class="content header-table">IP Private</th>
+          <th class="content header-table">vCPU</th>
+          <th class="content header-table">RAM (GB)</th>
+          <th class="content header-table">Storage (GB)</th>
+          <th class="content header-table">{{ 'app.hard.drive.type' | i18n }}</th>
+          <th class="content header-table">{{ 'app.text.operation' | i18n }}</th>
         </tr>
       </thead>
       <tbody>
         <tr *ngFor="let item of instanceTable.data; let i = index;">
-          <td class="right-align content-table">{{ i + 1 }}</td>
-          <td class="content-table">{{ item.instanceName }}</td>
-          <td class="content-table">{{ item.workerGroupName }}</td>
-          <td class="content-table">
+          <td class="right-align content-table content">{{ i + 1 }}</td>
+          <td class="content-table content">{{ item.instanceName }}</td>
+          <td class="content-table content">{{ item.workerGroupName }}</td>
+          <td class="content-table content">
             <ng-container *ngIf="item.status | statusCode2Label as status">
               <span [ngStyle]="{color: status.color}">{{ status.status | i18n }}</span>
             </ng-container>
           </td>
-          <td class="content-table">{{ item.privateIP }}</td>
-          <td class="right-align content-table">{{ item.vcpus }}</td>
-          <td class="right-align content-table">{{ item.ram | convertUnit : 'GB'}}</td>
-          <td class="right-align content-table">{{ item.volumeSize }}</td>
-          <td class="content-table">{{ item.volumeType }}</td>
-          <td class="content-table">
+          <td class="content-table content">{{ item.privateIP }}</td>
+          <td class="right-align content-table" content>{{ item.vcpus }}</td>
+          <td class="right-align content-table content">{{ item.ram | convertUnit : 'GB'}}</td>
+          <td class="right-align content-table content">{{ item.volumeSize }}</td>
+          <td class="content-table content">{{ item.volumeType }}</td>
+          <td class="content-table content">
             <div class="flex">
               <nz-switch nz-switch [nzCheckedChildren]="'app.start' | i18n" [nzUnCheckedChildren]="'app.off' | i18n"
                 [nz-tooltip]="item.action ? ('app.cluster.off-node' | i18n) : ('app.cluster.start-node' | i18n)" [nzControl]="true"

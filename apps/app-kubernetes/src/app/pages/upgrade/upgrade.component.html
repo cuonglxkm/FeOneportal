@@ -29,7 +29,7 @@
 <div nz-row [nzGutter]="16">
   <div nz-col [nzSpan]="16" class="gutter-row">
     <ng-container *ngIf="detailCluster; else loadingClusterTpl">
-      <nz-card class="border-card">
+      <nz-card class="border-radius-card">
         <h3>{{ 'app.cluster.overall' | i18n }}</h3>
         <div class="detailtable">
           <nz-table [nzTemplateMode]="true" nzBordered>
@@ -70,8 +70,7 @@
               <tr>
                 <td class="w-50"><row-data [value]="detailCluster.createdDate | date: 'dd/MM/yyyy'"
                     [label]="'app.text.creation-time' | i18n"></row-data></td>
-                <td class="w-50"><row-data
-                    [value]="(detailCluster.createdDate | calculateDate : detailCluster.usageTime) | date: 'dd/MM/yyyy'"
+                <td class="w-50 border-cell"><row-data [value]="detailCluster.expiredDate| date: 'dd/MM/yyyy'"
                     [label]="'app.service.expiration-date' | i18n" [type]="'danger'"></row-data></td>
               </tr>
 
@@ -86,7 +85,7 @@
       </nz-card>
 
       <!-- Thông tin worker group -->
-      <nz-card class="border-card">
+      <nz-card class="border-radius-card">
         <h3>{{ 'app.cluster.wg-info' | i18n }}</h3>
         <ng-container *ngFor="let item of detailCluster.workerGroup ; let i = index;">
           <div nz-row>
@@ -143,7 +142,7 @@
       </nz-card>
 
       <!-- Thông tin network -->
-      <nz-card class="border-card">
+      <nz-card class="border-radius-card">
         <h3>{{ 'app.cluster.network' | i18n }}</h3>
         <div nz-row>
           <div nz-col [nzSpan]="24" class="detailtable">
@@ -172,13 +171,13 @@
       </nz-card>
     </ng-container>
     <ng-template #loadingClusterTpl>
-      <nz-card class="border-card">
+      <nz-card class="border-radius-card">
         <nz-table [nzTemplateMode]="true" [nzLoading]="true">
         </nz-table>
       </nz-card>
     </ng-template>
 
-    <nz-card class="border-card">
+    <nz-card class="border-radius-card">
       <h3 class="mb-5">{{ 'app.cluster.upgrade-config' | i18n }}</h3>
 
       <nz-alert nzType="warning" [nzDescription]="upgradeWarning" nzShowIcon></nz-alert>
@@ -432,7 +431,7 @@
       </nz-tabset>
     </nz-card>
 
-    <nz-card class="border-card">
+    <nz-card class="border-radius-card">
       <nz-table [nzTemplateMode]="true">
         <tbody>
           <tr>
@@ -453,15 +452,8 @@
                 {{upgradePackDescription}}
               </ng-container>
               <ng-template #customUpgradeConfigTpl>
-                <ng-container *ngFor="let control of listFormWorker.controls">
-                  <div *ngIf="control.get('workerGroupName').value && control.get('cpu').value
-                    && control.get('ram').value && control.get('volumeStorage').value; else noneConfigTpl">
-                    {{control.get('workerGroupName').value ? control.get('workerGroupName').value : ''}}
-                    / {{control.get('cpu').value ? control.get('cpu').value : ''}}vCPU
-                    / {{control.get('ram').value ? control.get('ram').value : ''}}GB
-                    / {{control.get('volumeStorage').value ? control.get('volumeStorage').value : ''}}GB
-                    {{control.get('volumeTypeName').value ? control.get('volumeTypeName').value : ''}}
-                  </div>
+                <ng-container *ngIf="newTotalCpu > 0 && newTotalRam > 0 && newTotalStorage > 0">
+                  {{ 'mongodb.db.optional' | i18n }} / {{newTotalCpu}}vCPU / {{newTotalRam}}GB / {{newTotalStorage}}GB
                 </ng-container>
               </ng-template>
             </td>
@@ -478,7 +470,7 @@
   <!-- payment tab -->
   <div nz-col [nzSpan]="8" class="gutter-row">
     <nz-affix [nzOffsetTop]="72">
-      <nz-card class="border-card price-card">
+      <nz-card class="border-radius-card price-card">
         <h3 class="mb-3">{{ 'app.estimated.cost' | i18n }}</h3>
 
         <div class="ml-3"><label class="weight-600">{{ 'app.dashboard.service.near.expire.service.name' | i18n

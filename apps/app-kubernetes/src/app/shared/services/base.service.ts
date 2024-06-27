@@ -19,9 +19,11 @@ export abstract class BaseService {
     k8s: '/k8s-service'
   }
   protected baseUrl: string;
+  protected baseSCUrl: string;
 
   protected constructor() {
     this.baseUrl = environment.baseUrl;
+    this.baseSCUrl = environment.baseSCUrl;
   }
 
   protected errorCode(error: HttpErrorResponse) {
