@@ -704,7 +704,7 @@
                           style="margin-left: 8px; width: 90px"
                           [nzShowSearch]="true"
                           [(ngModel)]="instanceCreate.gpuCount"
-                          (ngModelChange)="checkValidConfig()"
+                          (ngModelChange)="checkValidConfig(); changeGpu()"
                           [ngModelOptions]="{ standalone: true }"
                           nzSize="large"
                         >
@@ -718,6 +718,23 @@
                   </tr>
                 </tbody>
               </table>
+              <nz-alert
+                *ngIf="configRecommend"
+                style="margin-top: 20px"
+                nzType="warning"
+                [nzDescription]="
+                  'app.alert.config.gpu.recommend'
+                    | i18n
+                      : {
+                          type: gpuTypeName,
+                          gpu: configRecommend.gpuCount,
+                          ssd: configRecommend.ssd,
+                          ram: configRecommend.ram,
+                          cpu: configRecommend.cpu
+                        }
+                "
+                nzShowIcon
+              ></nz-alert>
             </div>
           </nz-tab>
         </nz-tabset>
