@@ -49,9 +49,7 @@
       {{ 'app.storage.usage' | i18n }}:
     </div>
     <div style="font-weight: bold">
-      {{ bucket ? bucket.bucketSize : '' }} Bytes /
-      {{ bucket ? bucket.bucketItemCount : '' }}
-      objects
+      {{usage}}
     </div>
   </nz-row>
   <nz-row>
