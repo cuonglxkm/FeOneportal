@@ -43,6 +43,10 @@ export class ListLoadBalancerComponent implements OnInit{
     this.search(true)
   }
 
+  onRegionChanged(region: RegionModel) {
+    this.region = region.regionId;
+  }
+
   projectChanged(project: ProjectModel) {
     this.project = project?.id;
     this.typeVPC = project?.type;

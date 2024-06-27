@@ -261,6 +261,10 @@ export class RestoreBackupVmComponent implements OnInit {
     this.router.navigate(['/app-smart-cloud/backup-vm']);
   }
 
+  onRegionChanged(region: RegionModel) {
+    this.region = region.regionId;
+  }
+
   projectChanged(project: ProjectModel) {
     this.project = project?.id;
   }
@@ -654,6 +658,7 @@ export class RestoreBackupVmComponent implements OnInit {
       this.getTotalAmount();
     }
     this.restoreInstanceBackup.gpuCount = 0;
+    this.checkValidConfig();
   }
 
   activeBlockHDD: boolean = true;
@@ -713,6 +718,7 @@ export class RestoreBackupVmComponent implements OnInit {
       (flavor) => flavor.id === event
     );
     this.getTotalAmount();
+    this.checkValidConfig();
     console.log(this.offerFlavor);
   }
 
@@ -808,6 +814,7 @@ export class RestoreBackupVmComponent implements OnInit {
       .subscribe((res) => {
         this.getUnitPrice(0, 0, 1, 0, null);
         this.getTotalAmount();
+        this.checkValidConfig();
       });
   }
 
@@ -823,6 +830,7 @@ export class RestoreBackupVmComponent implements OnInit {
       .subscribe((res) => {
         this.getUnitPrice(0, 1, 0, 0, null);
         this.getTotalAmount();
+        this.checkValidConfig();
       });
   }
 
@@ -885,6 +893,7 @@ export class RestoreBackupVmComponent implements OnInit {
       }
       this.getUnitPrice(1, 0, 0, 0, null);
       this.getTotalAmount();
+      this.checkValidConfig();
     });
   }
   //#endregion
@@ -924,6 +933,7 @@ export class RestoreBackupVmComponent implements OnInit {
       .subscribe((res) => {
         this.getUnitPrice(0, 0, 1, 0, null);
         this.getTotalAmount();
+        this.checkValidConfig();
       });
   }
 
@@ -939,6 +949,7 @@ export class RestoreBackupVmComponent implements OnInit {
       .subscribe((res) => {
         this.getUnitPrice(0, 1, 0, 0, null);
         this.getTotalAmount();
+        this.checkValidConfig();
       });
   }
 
@@ -987,6 +998,7 @@ export class RestoreBackupVmComponent implements OnInit {
         }
         this.getUnitPrice(1, 0, 0, 0, null);
         this.getTotalAmount();
+        this.checkValidConfig();
       });
   }
 
@@ -1004,6 +1016,7 @@ export class RestoreBackupVmComponent implements OnInit {
           this.getUnitPrice(0, 0, 0, 1, this.configGPU.gpuOfferId);
         }
         this.getTotalAmount();
+        this.checkValidConfig();
       });
   }
 
@@ -1017,6 +1030,37 @@ export class RestoreBackupVmComponent implements OnInit {
     }
     if (this.configGPU.GPU != 0 && this.configGPU.gpuOfferId != 0) {
       this.getTotalAmount();
+    }
+  }
+
+  isValid: boolean = false;
+  checkValidConfig() {
+    if (
+      this.isCustomconfig &&
+      (!this.restoreInstanceBackup.volumeSize ||
+        this.restoreInstanceBackup.volumeSize == 0 ||
+        !this.restoreInstanceBackup.ram ||
+        this.restoreInstanceBackup.ram == 0 ||
+        !this.restoreInstanceBackup.cpu ||
+        this.restoreInstanceBackup.cpu == 0)
+    ) {
+      this.isValid = false;
+    } else if (
+      this.isGpuConfig &&
+      (!this.restoreInstanceBackup.volumeSize ||
+        this.restoreInstanceBackup.volumeSize == 0 ||
+        !this.restoreInstanceBackup.ram ||
+        this.restoreInstanceBackup.ram == 0 ||
+        !this.restoreInstanceBackup.cpu ||
+        this.restoreInstanceBackup.cpu == 0 ||
+        !this.restoreInstanceBackup.gpuCount ||
+        this.restoreInstanceBackup.gpuCount == 0)
+    ) {
+      this.isValid = false;
+    } else if (this.isPreConfigPackage && this.selectedElementFlavor) {
+      this.isValid = true;
+    } else {
+      this.isValid = true;
     }
   }
   //#endregion

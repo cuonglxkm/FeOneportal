@@ -65,7 +65,7 @@
           <nz-form-control [nzErrorTip]="phoneErrorTpl">
             <input
               nz-input
-              maxlength="11"
+              appPhoneValidator
               formControlName="phone"
               [placeholder]="'form.account.phone' | i18n"
               nzSize="large"
@@ -234,7 +234,7 @@
                   type="text"
                   [placeholder]="'app.invoice.pop-up.update.phone.placeholder' | i18n"
                   class="input-custom"
-                  [maxlength]="10"
+                  appPhoneValidator
                   formControlName="phoneNumber"
                 />
               </nz-form-control>
