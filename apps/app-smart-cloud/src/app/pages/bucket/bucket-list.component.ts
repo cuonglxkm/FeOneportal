@@ -19,6 +19,7 @@ import { ObjectStorage } from 'src/app/shared/models/object-storage.model';
 import { BucketService } from 'src/app/shared/services/bucket.service';
 import { ObjectStorageService } from 'src/app/shared/services/object-storage.service';
 import { TimeCommon } from 'src/app/shared/utils/common';
+import { RegionModel } from '../../../../../../libs/common-utils/src';
 
 @Component({
   selector: 'one-portal-bucket-list',
@@ -37,6 +38,7 @@ export class BucketListComponent implements OnInit {
   isLoadingDeleteOS: boolean = false;
   searchDelay = new Subject<boolean>();
   user: any
+  
   constructor(
     @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
     private bucketService: BucketService,
@@ -49,7 +51,7 @@ export class BucketListComponent implements OnInit {
     private loadingSrv: LoadingService
   ) {}
   hasOS: boolean = undefined;
-  region = JSON.parse(localStorage.getItem('regionId'));
+  region: number
   ngOnInit(): void {
     let regionAndProject = getCurrentRegionAndProject();
     this.region = regionAndProject.regionId;
@@ -105,6 +107,16 @@ export class BucketListComponent implements OnInit {
           );
         },
       });
+  }
+
+  onRegionChange(region: RegionModel) {
+    this.region = region.regionId;
+      this.hasObjectStorageInfo()
+      this.hasObjectStorage();
+  }
+
+  onRegionChanged(region: RegionModel) {
+    this.region = region.regionId;
   }
 
   private getUserById(id: number) {

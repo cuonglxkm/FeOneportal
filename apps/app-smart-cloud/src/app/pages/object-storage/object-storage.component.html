@@ -1,4 +1,4 @@
-<page-header [breadcrumb]="breadcrumb" [autoTitle]="false">
+<page-header [breadcrumb]="breadcrumb" [action]="action" [autoTitle]="false">
   <ng-template #breadcrumb>
     <nz-breadcrumb [nzSeparator]="separatorTemplate">
       <nz-breadcrumb-item>
@@ -9,6 +9,13 @@
     <ng-template #separatorTemplate
       ><img src="assets/imgs/arrow-square-right.svg" alt="" />
     </ng-template>
+  </ng-template>
+  <ng-template #action>
+    <div class="alain-custom-action text-right">
+      <region-select-dropdown
+        (regionChange)="onRegionChanged($event)"
+      ></region-select-dropdown>
+    </div>
   </ng-template>
 </page-header>
 <div>
