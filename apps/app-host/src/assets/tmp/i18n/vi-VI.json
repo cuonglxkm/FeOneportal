@@ -1709,7 +1709,7 @@
   "mongodb.overview.alert-1": "Thao tác chi tiết với biểu đồ ở mục ",
   "mongodb.overview.alert-2": "Giám sát.",
   "mongodb.overview.alert-3": " ",
-  "mongodb.overview.chart-logicalSize.name": "Tổng dung lượng document và index (MB)",
+  "mongodb.overview.chart-logicalSize.name": "Tổng dung lượng document và index",
   "mongodb.overview.chart-connection.series": "Số lượng kết nối",
   "mongodb.overview.chart-opcounter.name": "Số lượng Operations/s",
 
