@@ -395,6 +395,8 @@ export class DetailClusterComponent implements OnInit, OnDestroy {
       }, 1500);
     };
     dlink.click(); dlink.remove();
+
+    this.notificationService.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('app.cluster.download-file'));
   }
 
   // for kubeconfig
@@ -431,6 +433,8 @@ export class DetailClusterComponent implements OnInit, OnDestroy {
       }, 1500);
     };
     dlink.click(); dlink.remove();
+
+    this.notificationService.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('app.cluster.download-file'));
   }
 
   // upgrade worker

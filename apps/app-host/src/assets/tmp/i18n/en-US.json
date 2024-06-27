@@ -2040,6 +2040,7 @@
   "app.cluster.warning-upgrade-1": "Changing the configuration or version may cause temporary service disruptions and prevent cluster configuration changes.",
   "app.cluster.warning-upgrade-2": "To ensure data safety, please perform a data backup. This operation will start immediately and it will not be possible to revert to previous versions.",
   "app.cluster.warning-upgrade-3": "Please read more information at",
+  "app.cluster.download-file": "File downloaded successfully",
 
   "cluster.status.not-yet-extend": "Not Extended",
   "cluster.status.running": "Running",
