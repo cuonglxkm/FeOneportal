@@ -8,7 +8,7 @@ import { formDeleteS3Key, s3KeyCreate, s3KeyGenerate } from 'src/app/shared/mode
 import { ObjectStorageService } from 'src/app/shared/services/object-storage.service';
 import { ObjectObjectStorageService } from '../../../shared/services/object-object-storage.service';
 import { SubUserService } from '../../../shared/services/sub-user.service';
-import { BaseResponse } from '../../../../../../../libs/common-utils/src';
+import { BaseResponse, RegionModel } from '../../../../../../../libs/common-utils/src';
 import { I18NService } from '@core';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { Subject } from 'rxjs';
@@ -63,6 +63,14 @@ export class S3KeyComponent implements OnInit {
     this.searchDelay.pipe(debounceTime(TimeCommon.timeOutSearch)).subscribe(() => {     
       this.getData();
     });
+  }
+
+  onRegionChange(region: RegionModel) {
+    this.region = region.regionId;
+  }
+
+  onRegionChanged(region: RegionModel) {
+    this.region = region.regionId;
   }
 
   search(search: string) {  

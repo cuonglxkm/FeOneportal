@@ -189,6 +189,14 @@ const routes: Routes = [
     }
   },
   {
+    path: 'volumesadvance',
+    component: VolumeComponent,
+    canActivate: [PermissionGuard],
+    data: {
+      permission: 'volume:List'
+    }
+  },
+  {
     path: 'volume/create',
     component: CreateVolumeComponent,
     canActivate: [PermissionGuard],
@@ -222,6 +230,18 @@ const routes: Routes = [
   },
   {
     path: 'instances',
+    loadChildren: () =>
+      import('../pages/instances/instances.module').then(
+        (m) => m.InstancesModule
+      ),
+    canActivate: [PermissionGuard],
+    data: {
+      permission: 'instance:List'
+    }
+
+  },
+  {
+    path: 'instanceadvance',
     loadChildren: () =>
       import('../pages/instances/instances.module').then(
         (m) => m.InstancesModule
@@ -986,6 +1006,14 @@ const routes: Routes = [
   },
   {
     path: 'object-storage/bucket',
+    component: BucketListComponent,
+    canActivate: [PermissionGuard],
+    data: {
+      permission: 'objectstorages:ObjectStorageUser'
+    }
+  },
+  {
+    path: 'object-storage/bucketadvance',
     component: BucketListComponent,
     canActivate: [PermissionGuard],
     data: {
