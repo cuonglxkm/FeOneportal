@@ -897,4 +897,8 @@ export class InstancesComponent implements OnInit {
     this.dataList[foundIndex] = record;
     this.cdr.detectChanges();
   }
+
+  navigateToCreateScheduleSnapshot(id: number) {
+    this.router.navigate(['/app-smart-cloud/schedule/snapshot/create', {instanceId: id}], { queryParams: { snapshotTypeCreate: 1 } });
+  }
 }

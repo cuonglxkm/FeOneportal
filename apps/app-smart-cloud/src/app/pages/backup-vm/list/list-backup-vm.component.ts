@@ -185,7 +185,7 @@ export class ListBackupVmComponent implements OnInit, OnDestroy {
       this.router.navigate(['/app-smart-cloud/backup-vm/create/vpc']);
     }
 
-    if(this.typeVPC == 0) {
+    if(this.typeVPC != 1) {
       this.router.navigate(['/app-smart-cloud/backup-vm/create/no-vpc']);
     }
 

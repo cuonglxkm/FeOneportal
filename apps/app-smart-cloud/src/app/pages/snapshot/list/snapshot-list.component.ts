@@ -99,7 +99,7 @@ export class SnapshotListComponent implements OnInit{
 
   search(isBegin: boolean) {
     this.isLoading = true;
-    this.service.serchSnapshot(this.size, this.index, this.region, this.project, this.value, this.status)
+    this.service.serchSnapshot(this.size, this.index, this.region, this.project, this.value, this.status, '')
       .pipe(finalize(() => {
         this.isLoading = false;
       }))

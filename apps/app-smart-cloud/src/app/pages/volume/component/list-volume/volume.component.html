@@ -160,7 +160,7 @@
                     </li>
                     <li nz-menu-item (click)="navigateToSnapshot(data.id)">{{ 'app.snapshot.create' | i18n }}</li>
                     <li nz-menu-item
-                        (click)="navigateToCreateScheduleSnapshot()">{{ 'volume.menu.create.schedule.snapshot' | i18n }}
+                        (click)="navigateToCreateScheduleSnapshot(data.id)">{{ 'volume.menu.create.schedule.snapshot' | i18n }}
                     </li>
                     <one-portal-update-volume [region]="region" [project]="project" [volume]="data"
                                               (onOk)="handleOkUpdate()" />
@@ -344,7 +344,7 @@
                     </li>
                     <li nz-menu-item (click)="navigateToSnapshot(i.id)">{{ 'app.snapshot.create' | i18n }}</li>
                     <li nz-menu-item
-                        (click)="navigateToCreateScheduleSnapshot()">{{ 'volume.menu.create.schedule.snapshot' | i18n }}
+                        (click)="navigateToCreateScheduleSnapshot(i.id)">{{ 'volume.menu.create.schedule.snapshot' | i18n }}
                     </li>
                     <one-portal-update-volume [region]="region" [project]="project" [volume]="i"
                                               (onOk)="handleOkUpdate()" />
