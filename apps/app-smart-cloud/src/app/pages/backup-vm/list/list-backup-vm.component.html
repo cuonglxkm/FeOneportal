@@ -58,7 +58,7 @@
             </ng-template>
           </nz-col>
           <nz-col>
-            <button nz-button nzType="primary" nzSize="large" (click)="navigateToCreateBackup()">
+            <button nz-button nzType="primary" nzSize="large" [nzLoading]="isLoadingAction" (click)="navigateToCreateBackup()">
               <img style="padding-right: 10px; margin-top: -4px" src="assets/imgs/add-circle.svg" alt="" />
               <span class="button-text-primary">{{ 'app.backup.vm.create.button'|i18n }}</span>
             </button>
@@ -108,7 +108,7 @@
 <!--              <div [ngSwitch]="data.status">-->
                 <div *ngIf="data.status.includes('AVAILABLE')">
                   <img src="assets/imgs/rotate-right.svg" alt=""
-                       style="cursor: pointer;"
+                       style="cursor: pointer; margin-left: 5px;"
                        (click)="navigateToRestore(data.id)"
                        nz-popover nzPopoverPlacement="bottom"
                        [nzPopoverContent]="'Restore'" />
