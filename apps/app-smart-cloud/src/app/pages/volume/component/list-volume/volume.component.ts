@@ -217,8 +217,8 @@ export class VolumeComponent implements OnInit, OnDestroy {
     this.getListVolume(false);
   }
 
-  navigateToCreateScheduleSnapshot() {
-    this.router.navigate(['/app-smart-cloud/schedule/snapshot/create']);
+  navigateToCreateScheduleSnapshot(idVolume: number) {
+    this.router.navigate(['/app-smart-cloud/schedule/snapshot/create', {volumeId: idVolume}], { queryParams: { snapshotTypeCreate: 0 } });
   }
 
   navigateToCreateBackup(idVolume) {

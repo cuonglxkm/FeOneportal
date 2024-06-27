@@ -179,7 +179,7 @@ export class ListPackagesSnapshotComponent implements OnInit {
   handleDeletedOk() {
     this.isLoadingDelete = true
     if (this.valueDelete === this.packageName) {
-      this.packageSnapshotService.delete(this.dataAction.id)
+      this.packageSnapshotService.delete(this.dataAction.id, this.project, this.region)
         .pipe(finalize(() => {
           this.handleDeleteCancel();
         }))
@@ -254,7 +254,7 @@ export class ListPackagesSnapshotComponent implements OnInit {
 
   private loadingSnapshot() {
     this.isLoadingSnapshot = true;
-    this.vlService.serchSnapshot(999999, 1, this.region, this.project, '', '')
+    this.vlService.serchSnapshot(999999, 1, this.region, this.project, '', '',this.dataAction.id)
       .pipe(finalize(() => {
         this.isLoadingSnapshot = false;
       }))

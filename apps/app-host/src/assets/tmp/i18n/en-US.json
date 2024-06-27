@@ -546,6 +546,8 @@
   "app.alert.create.allow.address.pair.next": "Are you sure you want to delete the Allowed Address Pair?",
   "app.alert.change.instances.OS": "Windows Server operating system versions are trial versions. Customers are advised to activate the license before use.",
   "app.alert.change.instances.OS.next": "Are you sure you want to change the information of the instance?",
+  "app.alert.config.gpu.recommend": "For GPU {{type}} and quantity {{gpu}}, it is recommended to configure as follows for the best experience: SSD - {{ssd}} GB, RAM - {{ram}} GB, CPU - {{cpu}} vCPU to use GPU services optimally",
+  "app.alert.resize.instance": "During the adjustment process, the instance will be turned off and automatically restarted upon successful completion",
 
   "app.tooltip.instance.name": "The instance name does not include Vietnamese accents, spaces, or special characters (except _)",
   "app.tooltip.instances.from.snapshot": "Customer can create an instance from an existing snapshot to restore the instance to the state when the snapshot was created",

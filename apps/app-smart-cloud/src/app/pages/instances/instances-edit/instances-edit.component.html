@@ -345,6 +345,12 @@
           <div style="margin-bottom: 20px">
             <span class="text-card-header">{{ 'app.adjust.info' | i18n }}</span>
           </div>
+          <nz-alert
+            style="margin-bottom: 20px"
+            nzType="warning"
+            [nzDescription]="'app.alert.resize.instance' | i18n"
+            nzShowIcon
+          ></nz-alert>
           <div style="margin-bottom: 20px">
             <span class="text-label"
               >{{ 'app.current.config' | i18n }}: {{ instancesModel.cpu }} vCPU,
@@ -786,6 +792,23 @@
               </div>
             </nz-tab>
           </nz-tabset>
+          <nz-alert
+            *ngIf="configRecommend"
+            style="margin-top: 20px"
+            nzType="warning"
+            [nzDescription]="
+              'app.alert.config.gpu.recommend'
+                | i18n
+                  : {
+                      type: gpuTypeName,
+                      gpu: configRecommend.gpuCount,
+                      ssd: configRecommend.ssd,
+                      ram: configRecommend.ram,
+                      cpu: configRecommend.cpu
+                    }
+            "
+            nzShowIcon
+          ></nz-alert>
           <div style="margin-top: 20px" class="text-label">
             {{ 'app.adjust.date' | i18n }}: {{ today | date : 'dd/MM/yyyy' }}
           </div>
@@ -845,7 +868,9 @@
             style="margin-top: 10px"
             class="text-label"
           >
-            {{ configGPU.GPU }} GPU (NVIDIA-{{ instanceResize.gpuType | uppercase }})
+            {{ configGPU.GPU }} GPU (NVIDIA-{{
+              instanceResize.gpuType | uppercase
+            }})
           </div>
           <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
           <nz-row style="margin-bottom: 10px" nzGutter="16">
