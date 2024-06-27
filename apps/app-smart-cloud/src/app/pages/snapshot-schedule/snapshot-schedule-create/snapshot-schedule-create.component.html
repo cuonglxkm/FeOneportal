@@ -5,15 +5,11 @@
 >
   <ng-template #breadcrumb>
     <nz-breadcrumb [nzSeparator]="separatorTemplate">
-      <nz-breadcrumb-item>
-        <a [routerLink]="['/']">Home</a>
-      </nz-breadcrumb-item>
-      <nz-breadcrumb-item>
-        <a [routerLink]="['/app-smart-cloud/schedule/snapshot/list']"
-        >Lịch Snapshot</a
-        >
-      </nz-breadcrumb-item>
-      <nz-breadcrumb-item> Tạo lịch Snapshot</nz-breadcrumb-item>
+      <nz-breadcrumb-item><a [routerLink]="['/']">{{ 'app.breadcrumb.home' | i18n }}</a></nz-breadcrumb-item>
+      <nz-breadcrumb-item>{{'app.breadcrumb.infrastructure.service' | i18n }}</nz-breadcrumb-item>
+      <nz-breadcrumb-item>Block Storage</nz-breadcrumb-item>
+      <nz-breadcrumb-item><a routerLink="/app-smart-cloud/schedule/snapshot/list">Lịch Snapshot</a></nz-breadcrumb-item>
+      <nz-breadcrumb-item><a routerLink="/app-smart-cloud/schedule/snapshot/create?snapshotTypeCreate=2">Tạo lịch Snapshot</a></nz-breadcrumb-item>
     </nz-breadcrumb>
     <ng-template #separatorTemplate
     ><img src="assets/imgs/arrow-square-right.svg" alt="" />
@@ -24,6 +20,7 @@
       <share-users-combobox></share-users-combobox>
       <region-select-dropdown
         (valueChanged)="onRegionChange($event)"
+        (regionChange)="onRegionChanged($event)"
       ></region-select-dropdown>
       <project-select-dropdown
         [regionId]="region"

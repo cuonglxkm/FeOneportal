@@ -159,6 +159,10 @@ export class InstancesComponent implements OnInit {
     this.onChangeSearchParam();
   }
 
+  onRegionChanged(region: RegionModel) {
+    this.region = region.regionId;
+  }
+
   dataSubjectSearchParam: Subject<any> = new Subject<any>();
   private searchSubscription: Subscription;
   private enterPressed: boolean = false;
@@ -864,7 +868,7 @@ export class InstancesComponent implements OnInit {
     this.router.navigate([
       '/app-smart-cloud/snapshot/create',
       { instanceId: id },
-    ],{ queryParams: { snapshotTypeCreate: 1 } });
+    ],{ queryParams: { navigateType: 1 } });
   }
 
   instancesModel: InstancesModel = new InstancesModel();

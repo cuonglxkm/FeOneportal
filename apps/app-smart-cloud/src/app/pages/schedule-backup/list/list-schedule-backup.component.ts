@@ -11,6 +11,9 @@ import { getCurrentRegionAndProject } from '@shared';
 import { I18NService } from '@core';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { debounceTime, Subject, Subscription } from 'rxjs';
+import { PackageBackupService } from '../../../shared/services/package-backup.service';
+import { PackageBackupModel } from '../../../shared/models/package-backup.model';
+import { NzNotificationService } from 'ng-zorro-antd/notification';
 
 @Component({
   selector: 'one-portal-list-schedule-backup',
@@ -22,7 +25,7 @@ export class ListScheduleBackupComponent implements OnInit, OnDestroy {
   project = JSON.parse(localStorage.getItem('projectId'));
 
   selectedValue?: string = null;
-  value?: string = null;
+  value?: string = '';
 
   status = [
     { label: this.i18n.fanyi('app.status.all'), value: 'all' },
@@ -54,9 +57,13 @@ export class ListScheduleBackupComponent implements OnInit, OnDestroy {
 
   projectName: string;
 
+  backupPackageModel: PackageBackupModel = new PackageBackupModel()
+
   constructor(private router: Router,
               @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
-              private backupScheduleService: ScheduleService) {
+              private backupScheduleService: ScheduleService,
+              private backupPackageService: PackageBackupService,
+              private notification: NzNotificationService) {
   }
 
   regionChanged(region: RegionModel) {
@@ -65,13 +72,16 @@ export class ListScheduleBackupComponent implements OnInit, OnDestroy {
     this.getCapacityBackup();
   }
 
+  onRegionChanged(region: RegionModel) {
+    this.region = region.regionId;
+  }
+
   projectChanged(project: ProjectModel) {
     this.project = project?.id;
     this.typeVPC = project?.type;
     this.projectName = project?.projectName
     this.getListScheduleBackup(true);
     this.getCapacityBackup();
-
   }
 
   onChange(value: string) {
@@ -149,7 +159,7 @@ export class ListScheduleBackupComponent implements OnInit, OnDestroy {
     this.isLoading = true;
     let formSearch = new FormSearchScheduleBackup();
     if (this.selectedValue == 'all') {
-      formSearch.scheduleStatus = null;
+      formSearch.scheduleStatus = '';
     } else {
       formSearch.scheduleStatus = this.selectedValue;
     }
@@ -213,6 +223,18 @@ export class ListScheduleBackupComponent implements OnInit, OnDestroy {
       this.loadingCapacity = false;
       this.responseCapacityBackup = null;
     });
+  }
+
+  isLoadingBackupPackage: boolean = false
+  getBackupPackage(id) {
+    this.isLoadingBackupPackage = true
+    this.backupPackageService.detail(id, this.project).subscribe(data => {
+      this.isLoadingBackupPackage = false
+      this.backupPackageModel = data;
+    }, error => {
+      this.isLoadingBackupPackage = false
+      this.notification.error(error.statusText, this.i18n.fanyi('app.failData'))
+    })
   }
 
   ngOnInit(): void {

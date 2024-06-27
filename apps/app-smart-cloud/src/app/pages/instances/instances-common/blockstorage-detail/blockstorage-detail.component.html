@@ -17,9 +17,6 @@
           <th *ngIf="isSupportEncryption">
             {{ 'app.encrypt' | i18n }}
           </th>
-          <th *ngIf="isSupportMultiAttachment">
-            Multi Attach
-          </th>
           <th>{{ 'app.volume.status' | i18n }}</th>
           <th>{{ 'app.disk.type' | i18n }}</th>
         </tr>
@@ -51,15 +48,6 @@
               *ngIf="isSupportEncryption"
               nz-checkbox
               [ngModel]="data.isEncryption"
-              [ngModelOptions]="{ standalone: true }"
-              [disabled]="true"
-            ></label>
-          </td>
-          <td nzAlign="center">
-            <label
-              *ngIf="isSupportMultiAttachment"
-              nz-checkbox
-              [ngModel]="data.isMultiAttach"
               [ngModelOptions]="{ standalone: true }"
               [disabled]="true"
             ></label>

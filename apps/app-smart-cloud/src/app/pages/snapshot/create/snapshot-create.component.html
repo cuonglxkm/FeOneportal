@@ -17,7 +17,7 @@
   <ng-template #action>
     <div class="alain-custom-action text-right">
       <share-users-combobox></share-users-combobox>
-      <region-select-dropdown (valueChanged)="regionChanged($event)"></region-select-dropdown>
+      <region-select-dropdown (regionChange)="onRegionChanged($event)" (valueChanged)="regionChanged($event)"></region-select-dropdown>
       <project-select-dropdown (valueChanged)="projectChanged($event)"
                                (userChanged)="userChanged($event)"
                                [regionId]="region"></project-select-dropdown>
@@ -36,7 +36,7 @@
                      nzShowIcon></nz-alert>
           <ng-template #nzMessage>
             <div>
-              Dung lượng Snapshot {{selectedSnapshotType == 1 ? 'Volume' : 'Máy ảo'}} đã dùng: {{quotaUsed}}GB / {{quotaTotal}}GB. Quý khách còn lại {{quotaRemain}}GB dung lượng Snapshot
+              Dung lượng Snapshot {{navigateType == 0 || (selectedSnapshotType==0 && navigateType==2) ? 'Volume' : 'Máy ảo'}} đã dùng: {{quotaUsed}}GB / {{quotaTotal}}GB. Quý khách còn lại {{quotaRemain}}GB dung lượng Snapshot
             </div>
           </ng-template>
 <!--          name-->
@@ -98,7 +98,7 @@
                     <nz-select nzPlaceHolder="{{'schedule.backup.volume.select' | i18n}}" nzAllowClear
                                [(ngModel)]="selectedVolume" [disabled] = "volumeLoading" [nzLoading]="volumeLoading" (ngModelChange)="changeVmVolume()" [ngModelOptions]="{ standalone: true }" nzSize="large">
                       <nz-option *ngFor="let index of volumeArray" [nzValue]="index"
-                                 nzLabel="{{index.name}} ({{index.volumeType}},{{index.sizeInGB}}GB)"></nz-option>
+                                 nzLabel="{{index.name}}"></nz-option>
                     </nz-select>
                   </nz-form-control>
                 </nz-form-item>
@@ -310,13 +310,16 @@
             <div style="margin-top: 10px" class="text-value">Tên Snapshot</div>
             <div style="margin-top: 10px" class="text-label">{{validateForm.controls['name'].value}}</div>
             <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
-            <div *ngIf="selectedSnapshotType == 0" style="margin-top: 10px" class="text-value">Volume</div>
-            <div *ngIf="selectedSnapshotType == 0" style="margin-top: 10px" class="text-label">{{selectedVolume?.name}}</div>
-            <div *ngIf="selectedSnapshotType == 1" style="margin-top: 10px" class="text-value">{{'app.instances' | i18n}}</div>
-            <div *ngIf="selectedSnapshotType == 1" style="margin-top: 10px" class="text-label">{{selectedVM?.name}}</div>
+            <div *ngIf="navigateType == 0 || (navigateType == 2 && selectedSnapshotType == 0)" style="margin-top: 10px" class="text-value">Volume</div>
+            <div *ngIf="navigateType == 0 || (navigateType == 2 && selectedSnapshotType == 0)" style="margin-top: 10px" class="text-label">{{selectedVolume?.name}}</div>
+            <div *ngIf="navigateType == 1 || (navigateType == 2 && selectedSnapshotType == 1)" style="margin-top: 10px" class="text-value">{{'app.instances' | i18n}}</div>
+            <div *ngIf="navigateType == 1 || (navigateType == 2 && selectedSnapshotType == 1)" style="margin-top: 10px" class="text-label">{{selectedVM?.name}}</div>
             <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
             <div style="margin-top: 10px" class="text-value">{{'app.capacity' | i18n}}</div>
             <div style="margin-top: 10px" class="text-label">{{validateForm.controls['quota'].value}}</div>
+            <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
+            <div style="margin-top: 10px" class="text-value">Loại Snapshot</div>
+            <div style="margin-top: 10px" class="text-label">{{quotaType?.toUpperCase()}}</div>
             <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
             <div *ngIf="projectType != 1">
               <div style="margin-top: 10px" class="text-value">Gói Snapshot</div>

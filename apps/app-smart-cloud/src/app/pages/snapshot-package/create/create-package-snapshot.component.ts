@@ -17,6 +17,7 @@ import { debounceTime, finalize, Subject } from 'rxjs';
 import { OrderService } from '../../../shared/services/order.service';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from '../../../../../../app-kafka/src/app/core/i18n/i18n.service';
+import { ConfigurationsService } from '../../../shared/services/configurations.service';
 
 @Component({
   selector: 'one-portal-create-package-snapshot',
@@ -49,7 +50,8 @@ export class CreatePackageSnapshotComponent implements OnInit {
   expiredDate: Date = addDays(this.dateString, 30);
 
   isLoading: boolean = false;
-  private searchSubject = new Subject<string>();
+  private searchSubjectHdd = new Subject<string>();
+  private searchSubjectSsd = new Subject<string>();
   private readonly debounceTimeMs = 500;
   totalAmount: number;
   totalPayment: number;
@@ -57,6 +59,7 @@ export class CreatePackageSnapshotComponent implements OnInit {
 
   constructor(private router: Router,
               private orderService: OrderService,
+              private configurationsService: ConfigurationsService,
               private packageBackupService: PackageBackupService,
               @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
               private notification: NzNotificationService,
@@ -66,14 +69,43 @@ export class CreatePackageSnapshotComponent implements OnInit {
     this.validateForm.get('time').valueChanges.subscribe(data => {
       this.getTotalAmount();
     });
-    this.searchSubject.pipe(debounceTime(this.debounceTimeMs)).subscribe((searchValue) => {
+    this.searchSubjectHdd.pipe(debounceTime(this.debounceTimeMs)).subscribe((searchValue) => {
+      if ((this.numberHDD % this.stepStorage) > 0) {
+        this.notification.warning('', this.i18n.fanyi('app.notify.amount.capacity', { number: this.stepStorage }));
+        this.numberHDD = this.numberHDD - (this.numberHDD % this.stepStorage);
+      }
       this.getTotalAmount();
+    });
+    this.searchSubjectSsd.pipe(debounceTime(this.debounceTimeMs)).subscribe((searchValue) => {
+      if ((this.numberSSD % this.stepStorage) > 0) {
+        this.notification.warning('', this.i18n.fanyi('app.notify.amount.capacity', { number: this.stepStorage }));
+        this.numberSSD = this.numberSSD - (this.numberSSD % this.stepStorage);
+      }
+      this.getTotalAmount();
+    });
+  }
+
+  minStorage: number = 0;
+  stepStorage: number = 0;
+  valueString: string;
+  maxStorage: number = 0;
+
+  getConfiguration() {
+    this.configurationsService.getConfigurations('BLOCKSTORAGE').subscribe(data => {
+      this.valueString = data.valueString;
+      this.minStorage = Number.parseInt(this.valueString?.split('#')[0]);
+      this.stepStorage = Number.parseInt(this.valueString?.split('#')[1]);
+      this.maxStorage = Number.parseInt(this.valueString?.split('#')[2]);
     });
   }
 
   regionChanged(region: RegionModel) {
     this.region = region.regionId;
     this.router.navigate(['/app-smart-cloud/snapshot/packages']);
+  }
+
+  onRegionChanged(region: RegionModel) {
+    this.region = region.regionId;
   }
 
   projectChanged(project: ProjectModel) {
@@ -130,7 +162,7 @@ export class CreatePackageSnapshotComponent implements OnInit {
     this.formCreateSnapshotPackage.quotaSsdSizeInGB = this.numberSSD;
     this.formCreateSnapshotPackage.description = this.validateForm.get('description').value;
     this.formCreateSnapshotPackage.projectId = this.project;
-    this.formCreateSnapshotPackage.vpcId = this.project.toString();
+    this.formCreateSnapshotPackage.vpcId = this.project?.toString();
     this.formCreateSnapshotPackage.oneSMEAddonId = null;
     this.formCreateSnapshotPackage.serviceType = ServiceType.SNAPSHOT_PACKET;
     this.formCreateSnapshotPackage.serviceInstanceId = 0;
@@ -210,7 +242,7 @@ export class CreatePackageSnapshotComponent implements OnInit {
     // this.customerId = this.tokenService.get()?.userId
     this.getTotalAmount();
     console.log(this.tokenService.get());
-
+    this.getConfiguration();
   }
 
   onChangeTime($event: any) {
@@ -224,8 +256,12 @@ export class CreatePackageSnapshotComponent implements OnInit {
     }
   }
 
-  changeQuota() {
-    this.searchSubject.next('');
+  changeQuota(isHdd) {
+    if (isHdd) {
+      this.searchSubjectHdd.next('');
+    } else {
+      this.searchSubjectSsd.next('');
+    }
   }
 }
 

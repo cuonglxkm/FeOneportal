@@ -12,7 +12,7 @@
   <ng-template #action>
     <div class="alain-custom-action text-right">
       <share-users-combobox></share-users-combobox>
-      <region-select-dropdown (valueChanged)="onRegionChange($event)"></region-select-dropdown>
+      <region-select-dropdown (regionChange)="onRegionChanged($event)" (valueChanged)="onRegionChange($event)"></region-select-dropdown>
     </div>
   </ng-template>
 </page-header>
@@ -780,7 +780,7 @@
                 (click)="deleteVpnGpu()"></one-portal-svg-icon>
             </div>
            
-            <p class="label-fontsize label-color" *ngFor="let gpu of gpuOld"> Số lượng GPU (Type-{{gpu?.gpuType}}): {{gpu?.gpuCount}}GB</p>
+            <p class="label-fontsize label-color" *ngFor="let gpu of gpuOld"> Số lượng GPU (Type-{{gpu?.gpuType}}): {{gpu?.gpuCount}}</p>
             <div *ngIf="!activeVpnGpu">
               <button class="h-btn" nz-button nzType="default" (click)="initVpnGpu()">
                 <img style="padding-right: 10px; margin-top: -4px" src="assets/imgs/add.svg" alt="" />{{ "app.bonus" |

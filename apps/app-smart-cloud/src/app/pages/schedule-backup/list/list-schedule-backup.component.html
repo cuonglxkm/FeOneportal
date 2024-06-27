@@ -18,7 +18,7 @@
   <ng-template #action>
     <div class="alain-custom-action text-right">
       <share-users-combobox></share-users-combobox>
-      <region-select-dropdown (valueChanged)="regionChanged($event)"></region-select-dropdown>
+      <region-select-dropdown (regionChange)="onRegionChanged($event)" (valueChanged)="regionChanged($event)"></region-select-dropdown>
       <project-select-dropdown (valueChanged)="projectChanged($event)"
                                (userChanged)="projectChanged($event)"
                                [regionId]="region"></project-select-dropdown>
@@ -79,7 +79,7 @@
             <tr>
               <th>{{ 'app.name' | i18n }}</th>
               <th>{{ 'schedule.backup.model.backup' | i18n }}</th>
-              <!--              <th nzBreakWord>{{'app.backup.volume.backup.package' | i18n}}</th>-->
+              <th *ngIf="typeVPC != 1">{{'app.backup.volume.backup.package' | i18n}}</th>
               <th>{{ 'app.maximum.number.of.record' | i18n }}</th>
               <th>{{ 'app.order.status' | i18n }}</th>
               <th>{{ 'schedule.backup.next.step' | i18n }}</th>
@@ -94,7 +94,15 @@
                 <span *ngIf="data.serviceType === 1">VM - {{ data.serviceName }}</span>
                 <span *ngIf="data.serviceType === 2">Volume - {{ data.serviceName }}</span>
               </td>
-              <!--              <td nzBreakWord>{{ data.backupPackageName }}</td>-->
+              <td *ngIf="typeVPC != 1"
+                  style="cursor: pointer;">
+                <a nz-popover
+                   [nzPopoverTitle]="data.backupPackageName"
+                   [nzPopoverContent]="titleBackupPackage"
+                   [nzPopoverTrigger]="'click'"
+                   [nzPopoverPlacement]="'bottom'"
+                   (click)="getBackupPackage(data.backupPackageId)">{{ data.backupPackageName }}</a></td>
+<!--              <td>{{ data.backupPackageName }}</td>-->
               <td nzAlign="right">{{ data.maxBackup }}</td>
               <ng-container *ngIf="data.status | ServiceStatusPipe as statusModel">
                 <td *ngIf="!!data.warningMessage">
@@ -140,7 +148,41 @@
             </tbody>
           </nz-table>
         </div>
-        <div style="margin-top: 30px;">
+        <ng-template #titleBackupPackage>
+          <div style="width: 400px;">
+            <nz-row style="margin-top: 5px">
+              <nz-col nzSpan="12">{{'app.backup.package.name'|i18n}}</nz-col>
+              <nz-col class="text-right" nzSpan="12">
+                {{ backupPackageModel?.packageName }}
+              </nz-col>
+            </nz-row>
+            <nz-row style="margin-top: 5px">
+              <nz-col nzSpan="12">{{'app.backup.package.expire.date'|i18n}}</nz-col>
+              <nz-col class="text-right" nzSpan="12">
+                {{ backupPackageModel?.expirationDate | date: 'HH:mm:ss dd/MM/yyyy'}}
+              </nz-col>
+            </nz-row>
+            <nz-row style="margin-top: 5px">
+              <nz-col nzSpan="12">{{'app.backup.package.storage.total'|i18n}}</nz-col>
+              <nz-col class="text-right" nzSpan="12">
+                {{ backupPackageModel?.sizeInGB }} GB
+              </nz-col>
+            </nz-row>
+            <nz-row style="margin-top: 5px">
+              <nz-col nzSpan="12">{{'app.backup.package.storage.used'|i18n}}</nz-col>
+              <nz-col class="text-right" nzSpan="12">
+                {{ backupPackageModel?.usedSize }} GB
+              </nz-col>
+            </nz-row>
+            <nz-row style="margin-top: 5px">
+              <nz-col nzSpan="12">{{'app.backup.package.storage.remaining'|i18n}}</nz-col>
+              <nz-col class="text-right" nzSpan="12">
+                {{ backupPackageModel?.availableSize }} GB
+              </nz-col>
+            </nz-row>
+          </div>
+        </ng-template>
+        <div style="margin-top: 30px;" *ngIf="typeVPC == 1">
           <span class="text-card-header">{{ 'schedule.backup.label.backup.cap.info' | i18n }}</span>
           <nz-table #tableScheduleCapacityBackup
                     [nzData]="responseCapacityBackup"

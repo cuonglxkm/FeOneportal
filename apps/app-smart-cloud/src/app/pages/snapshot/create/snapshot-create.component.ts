@@ -96,6 +96,10 @@ export class SnapshotCreateComponent implements OnInit, OnChanges {
     this.region = region.regionId;
   }
 
+  onRegionChanged(region: RegionModel) {
+    this.region = region.regionId;
+  }
+
   projectChanged(project: ProjectModel) {
     this.project = project?.id;
     this.projectType = project?.type;
@@ -230,8 +234,8 @@ export class SnapshotCreateComponent implements OnInit, OnChanges {
 
     if ((this.navigateType == 0 || (this.selectedSnapshotType == 0 && this.navigateType == 2)) && this.selectedVolume != undefined) {
       this.validateForm.controls['quota'].setValue(this.selectedVolume?.sizeInGB == undefined ? '0GB' : this.selectedVolume?.sizeInGB + 'GB');
-    } else if ((this.navigateType == 1 || (this.selectedSnapshotType == 1 && this.navigateType == 2)) && this.selectedVolume != undefined) {
-      this.validateForm.controls['quota'].setValue(this.selectedVolumeRoot?.sizeInGB == undefined ? '0GB' : this.selectedVM?.storage + 'GB');
+    } else if ((this.navigateType == 1 || (this.selectedSnapshotType == 1 && this.navigateType == 2)) && this.selectedVolumeRoot != undefined) {
+      this.validateForm.controls['quota'].setValue(this.selectedVolumeRoot?.sizeInGB == undefined ? '0GB' : this.selectedVolumeRoot?.sizeInGB + 'GB');
     } else {
       this.validateForm.controls['quota'].setValue('0GB');
     }
@@ -296,17 +300,25 @@ export class SnapshotCreateComponent implements OnInit, OnChanges {
     if ((this.selectedVolume != undefined || this.selectedVM != undefined)) {
       if (this.navigateType == 0 || (this.selectedSnapshotType == 0 && this.navigateType == 2)) {
         this.quotaType = this.selectedVolume.volumeType;
+
+        this.checkDisable();
       } else {
-        this.vlService.getVolumeById(this.selectedVM.volumeRootId, this.project).subscribe(
+        this.loadingCreate = true;
+        this.vlService.getVolumeById(this.selectedVM.volumeRootId, this.project)
+          .pipe(finalize(() => {
+            this.checkDisable();
+            this.loadingCreate = false;
+          }))
+          .subscribe(
           data => {
             this.quotaType = data.volumeType;
             this.selectedVolumeRoot = data;
           }
         );
       }
-      this.checkDisable();
     } else {
       this.validateForm.controls['quota'].setValue('0GB');
+      this.quotaType = '';
     }
 
     if (((this.navigateType==0 || this.selectedSnapshotType==0) && this.selectedVolume == undefined) ||

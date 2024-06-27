@@ -506,6 +506,10 @@ export class ProjectCreateComponent implements OnInit {
     this.router.navigate(['/app-smart-cloud/project']);
   }
 
+  onRegionChanged(region: RegionModel) {
+    this.regionId = region.regionId;
+  }
+
   onChangeTime(numberMonth: number) {
 
     this.numOfMonth = numberMonth;
@@ -611,6 +615,8 @@ export class ProjectCreateComponent implements OnInit {
       customerId: this.tokenService.get()?.userId,
       createdByUserId: this.tokenService.get()?.userId,
       note: 'Tạo VPC',
+      totalPayment : this.total.data.totalPayment.amount,
+      totalVAT :this.total.data.totalVAT.amount,
       orderItems: [
         {
           orderItemQuantity: 1,
@@ -898,7 +904,9 @@ export class ProjectCreateComponent implements OnInit {
         for (let gpu of this.gpuQuotasGobal) {
           if (gpu.GpuType == 'Nvidia A30') {
             gpu.GpuPrice = item.totalAmount.amount;
+            console.log("gpu.GpuPrice", gpu.GpuPrice)
             gpu.GpuPriceUnit = item.unitPrice.amount;
+            console.log("gpu.GpuPriceUnit", gpu.GpuPriceUnit)
           }
         }
 
@@ -907,7 +915,9 @@ export class ProjectCreateComponent implements OnInit {
         for (let gpu of this.gpuQuotasGobal) {
           if (gpu.GpuType == 'Nvidia A100') {
             gpu.GpuPrice = item.totalAmount.amount;
+            console.log("gpu.GpuPrice 2", gpu.GpuPrice)
             gpu.GpuPriceUnit = item.unitPrice.amount;
+            console.log("gpu.GpuPriceUnit 2", gpu.GpuPriceUnit)
           }
         }
       }

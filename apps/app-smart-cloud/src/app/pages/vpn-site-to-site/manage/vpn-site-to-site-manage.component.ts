@@ -32,6 +32,10 @@ export class VpnSiteToSiteManage {
     this.region = region.regionId;
   }
 
+  onRegionChanged(region: RegionModel) {
+    this.region = region.regionId;
+  }
+
   projectChanged(project: ProjectModel) {
     this.projectObject = project;
     this.project = project.id;

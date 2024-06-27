@@ -28,6 +28,7 @@
     <div class="alain-custom-action text-right">
       <region-select-dropdown
         (valueChanged)="onRegionChange($event)"
+        (regionChange)="onRegionChanged($event)"
       ></region-select-dropdown>
       <project-select-dropdown
         [regionId]="region"

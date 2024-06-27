@@ -58,6 +58,7 @@ export class EditSubUserComponent {
     formUpdate.uid = this.uid
     formUpdate.subuser = this.idSubUser
     formUpdate.actorEmail = ''
+    formUpdate.regionId = this.region
     if(this.validateForm.controls.access.value.includes('none')) {
       this.validateForm.controls.access.setValue('')
     } else {

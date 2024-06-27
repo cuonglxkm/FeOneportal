@@ -48,6 +48,8 @@ export class FileSystemSnapshotComponent {
 }
 
   onRegionChange(region: RegionModel) {
+    console.log(region);
+    
     this.region = region.regionId;
     this.refreshParams();
   }
@@ -85,6 +87,8 @@ export class FileSystemSnapshotComponent {
     this.formSearchFileSystemSnapshot.currentPage = this.pageIndex
     this.formSearchFileSystemSnapshot.name = this.value.toLowerCase().trim()
     this.formSearchFileSystemSnapshot.customerId = this.customerId
+    console.log(this.formSearchFileSystemSnapshot);
+    
     this.fileSystemSnapshotService.getFileSystemSnapshot(this.formSearchFileSystemSnapshot)
       .pipe(debounceTime(500))
       .subscribe(data => {
@@ -102,18 +106,15 @@ export class FileSystemSnapshotComponent {
     this.getData()
   }
 
-  onRegionInitComplete() {
-    let regionAndProject = getCurrentRegionAndProject();
-    this.region = regionAndProject.regionId;
-    this.project = regionAndProject.projectId;
-    console.log(this.region, this.project);
+  onRegionChanged(region: RegionModel) {
+    this.region = region.regionId;
   }
 
   
   ngOnInit() {
-    this.onRegionInitComplete()
-    
-    
+    let regionAndProject = getCurrentRegionAndProject();
+    this.region = regionAndProject.regionId;
+    this.project = regionAndProject.projectId;
     this.customerId = this.tokenService.get()?.userId  
     this.searchDelay.pipe(debounceTime(TimeCommon.timeOutSearch)).subscribe(() => {     
       this.getData();

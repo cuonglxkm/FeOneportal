@@ -108,9 +108,7 @@ export class PaymentSummaryComponent implements OnInit {
 
     if (state) {
       this.returnPath = state.path;
-      console.log({ path: this.returnPath });
       const myOrder = state.data;
-      console.log(state.data);
 
       this.order.customerId = myOrder.customerId;
       this.order.createdByUserId = myOrder.createdByUserId;
@@ -120,12 +118,8 @@ export class PaymentSummaryComponent implements OnInit {
       this.totalVAT = myOrder.totalVAT;
       console.log('order summary', this.order);
       this.order.orderItems.forEach((e: OrderItem) => {
-        console.log(e);
-
         var serviceItem = new ServiceInfo();
         const specificationObj = JSON.parse(e.specification);
-        console.log(specificationObj);
-
         switch (e.specificationType) {
           case 'instance_create':
             serviceItem.name =

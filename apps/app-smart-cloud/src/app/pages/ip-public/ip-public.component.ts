@@ -97,6 +97,10 @@ export class IpPublicComponent implements OnInit {
     this.refreshParams();
   }
 
+  onRegionChanged(region: RegionModel) {
+    this.regionId = region.regionId;
+  }
+
   projectChange(project: ProjectModel) {
     this.projectId = project.id;
     this.projectType = project.type;

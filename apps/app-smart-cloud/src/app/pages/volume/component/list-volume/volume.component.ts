@@ -86,6 +86,10 @@ export class VolumeComponent implements OnInit, OnDestroy {
     }, 2500);
   }
 
+  onRegionChanged(region: RegionModel) {
+    this.region = region.regionId;
+  }
+
   projectChanged(project: ProjectModel) {
     this.project = project?.id;
     this.typeVPC = project?.type;
@@ -238,7 +242,7 @@ export class VolumeComponent implements OnInit, OnDestroy {
   }
 
   navigateToSnapshot(idVolume: number) {
-    this.router.navigate(['/app-smart-cloud/snapshot/create', {volumeId: idVolume}], { queryParams: { snapshotTypeCreate: 0 } })
+    this.router.navigate(['/app-smart-cloud/snapshot/create', {volumeId: idVolume}], { queryParams: { navigateType: 0 } })
   }
 
   ngOnInit() {

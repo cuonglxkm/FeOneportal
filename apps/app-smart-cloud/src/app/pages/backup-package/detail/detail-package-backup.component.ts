@@ -42,6 +42,10 @@ export class DetailPackageBackupComponent implements OnInit {
     this.router.navigate(['/app-smart-cloud/backup/packages']);
   }
 
+  onRegionChanged(region: RegionModel) {
+    this.region = region.regionId;
+  }
+
   projectChanged(project: ProjectModel) {
     this.project = project?.id;
   }

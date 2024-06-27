@@ -4,7 +4,8 @@
       <nz-breadcrumb-item>{{ 'app.breadcrumb.home' | i18n }}</nz-breadcrumb-item>
       <nz-breadcrumb-item>{{ 'app.breadcrumb.infrastructure.service' | i18n }}</nz-breadcrumb-item>
       <nz-breadcrumb-item>Backup</nz-breadcrumb-item>
-      <nz-breadcrumb-item><a routerLink="/app-smart-cloud/schedule/backup/list">{{ 'schedule.backup.title.job' | i18n }}</a>
+      <nz-breadcrumb-item><a
+        routerLink="/app-smart-cloud/schedule/backup/list">{{ 'schedule.backup.title.job' | i18n }}</a>
       </nz-breadcrumb-item>
       <ng-template #iconTemplate>
         <one-portal-svg-icon [icon]="'icon_breadcrumb'"></one-portal-svg-icon>
@@ -14,7 +15,7 @@
   <ng-template #action>
     <div class="alain-custom-action text-right">
       <share-users-combobox></share-users-combobox>
-      <region-select-dropdown (valueChanged)="regionChanged($event)"></region-select-dropdown>
+      <region-select-dropdown (regionChange)="onRegionChanged($event)" (valueChanged)="regionChanged($event)"></region-select-dropdown>
       <project-select-dropdown (userChanged)="userChanged($event)"
                                (valueChanged)="projectChanged($event)"
                                [regionId]="region"></project-select-dropdown>
@@ -133,10 +134,14 @@
                                        formControlName="maxBackup"
                                        style="width: 100%; margin-left: 0;"
                                        nzMin="1"
-                                       nzStep="1" />
+                                       nzStep="1"
+                                       nzMax="5" />
                       <ng-template #maxBackupTpl let-control>
                         <ng-container
                           *ngIf="control.hasError('required')">{{ 'schedule.backup.require.max.backup' | i18n }}
+                        </ng-container>
+                        <ng-container
+                          *ngIf="control.hasError('pattern')">{{ 'schedule.backup.pattern.max.backup' | i18n }}
                         </ng-container>
                       </ng-template>
                     </nz-form-control>
@@ -178,7 +183,7 @@
                 <nz-col nzSpan="12">
                   <nz-row nzGutter="24">
                     <nz-col nzSpan="12">
-                      <span class="text-label">{{'app.info.backup.vm.total.storage'|i18n}}</span>
+                      <span class="text-label">{{ 'app.info.backup.vm.total.storage'|i18n }}</span>
                     </nz-col>
                     <nz-col nzSpan="12" style="text-align: end;">
                       <span class="text-label">{{ sizeInCloudProject?.cloudProject?.quotaBackupVolumeInGb }} GB</span>
@@ -186,7 +191,7 @@
                   </nz-row>
                   <nz-row nzGutter="24">
                     <nz-col nzSpan="12">
-                      <span class="text-label">{{'app.backup.package.storage.used'|i18n}}</span>
+                      <span class="text-label">{{ 'app.backup.package.storage.used'|i18n }}</span>
                     </nz-col>
                     <nz-col nzSpan="12" style="text-align: end;">
                       <span class="text-label">{{ sizeInCloudProject?.cloudProjectResourceUsed?.backup }} GB</span>
@@ -194,10 +199,12 @@
                   </nz-row>
                   <nz-row nzGutter="24">
                     <nz-col nzSpan="12">
-                      <span class="text-label">{{'app.backup.package.storage.remaining'|i18n}}</span>
+                      <span class="text-label">{{ 'app.backup.package.storage.remaining'|i18n }}</span>
                     </nz-col>
                     <nz-col nzSpan="12" style="text-align: end;">
-                      <span class="text-label">{{ sizeInCloudProject?.cloudProject?.quotaBackupVolumeInGb - sizeInCloudProject?.cloudProjectResourceUsed?.backup }} GB</span>
+                      <span
+                        class="text-label">{{ sizeInCloudProject?.cloudProject?.quotaBackupVolumeInGb - sizeInCloudProject?.cloudProjectResourceUsed?.backup }}
+                        GB</span>
                     </nz-col>
                   </nz-row>
                 </nz-col>
@@ -371,7 +378,7 @@
                                        class="input-custom"
                                        id="date"
                                        [nzMin]="1"
-                                       nzMax="31"
+                                       nzMax="30"
                                        nzStep="1" />
                       <ng-template #dateErrorTpl let-control>
                         <ng-container *ngIf="control.hasError('required')">{{ 'schedule.backup.0.to.31' | i18n }}
@@ -393,7 +400,9 @@
                           nzShowIcon></nz-alert>
                 <ng-template #titleMessage>
               <span
-                style="color: #FF0000;">{{ 'schedule.backup.alert.storage.vpc'|i18n:{ storage: ((instance?.storage + sizeOfVlAttach) * validateForm.get('formInstance').get('maxBackup').value) } }} <a [routerLink]="'/app-smart-cloud/project/detail/' + project">{{projectName}}</a> {{'schedule.backup.alert.storage.normal1'|i18n}}</span>
+                style="color: #FF0000;">{{ 'schedule.backup.alert.storage.vpc'|i18n:{ storage: ((instance?.storage + sizeOfVlAttach) * validateForm.get('formInstance').get('maxBackup').value) } }}
+                <a
+                  [routerLink]="'/app-smart-cloud/project/detail/' + project">{{ projectName }}</a> {{ 'schedule.backup.alert.storage.normal1'|i18n }}</span>
                 </ng-template>
               </div>
               <nz-form-item>
@@ -470,6 +479,7 @@
                                  nzSize="large"
                                  nzPlaceHolder="{{'schedule.backup.volume.select' | i18n}}"
                                  [nzShowSearch]="false"
+                                 [nzLoading]="isLoadingVolume"
                                  [(ngModel)]="volumeSelected"
                                  (ngModelChange)="selectVolumeChange($event)">
                         <nz-option *ngFor="let i of listVolumeNotUseUnique"
@@ -500,10 +510,14 @@
                                        formControlName="maxBackup"
                                        style="width: 100%; margin-left: 0;"
                                        nzMin="1"
-                                       nzStep="1" />
+                                       nzStep="1"
+                                       nzMax="5" />
                       <ng-template #maxBackupTpl let-control>
                         <ng-container
                           *ngIf="control.hasError('required')">{{ 'schedule.backup.require.max.backup' | i18n }}
+                        </ng-container>
+                        <ng-container
+                          *ngIf="control.hasError('pattern')">{{ 'schedule.backup.pattern.max.backup' | i18n }}
                         </ng-container>
                       </ng-template>
                     </nz-form-control>
@@ -545,7 +559,7 @@
                 <nz-col nzSpan="12">
                   <nz-row nzGutter="24">
                     <nz-col nzSpan="12">
-                      <span class="text-label">{{'app.info.backup.vm.total.storage'|i18n}}</span>
+                      <span class="text-label">{{ 'app.info.backup.vm.total.storage'|i18n }}</span>
                     </nz-col>
                     <nz-col nzSpan="12" style="text-align: end;">
                       <span class="text-label">{{ sizeInCloudProject?.cloudProject?.quotaBackupVolumeInGb }} GB</span>
@@ -553,7 +567,7 @@
                   </nz-row>
                   <nz-row nzGutter="24">
                     <nz-col nzSpan="12">
-                      <span class="text-label">{{'app.backup.package.storage.used'|i18n}}</span>
+                      <span class="text-label">{{ 'app.backup.package.storage.used'|i18n }}</span>
                     </nz-col>
                     <nz-col nzSpan="12" style="text-align: end;">
                       <span class="text-label">{{ sizeInCloudProject?.cloudProjectResourceUsed?.backup }} GB</span>
@@ -561,10 +575,12 @@
                   </nz-row>
                   <nz-row nzGutter="24">
                     <nz-col nzSpan="12">
-                      <span class="text-label">{{'app.backup.package.storage.remaining'|i18n}}</span>
+                      <span class="text-label">{{ 'app.backup.package.storage.remaining'|i18n }}</span>
                     </nz-col>
                     <nz-col nzSpan="12" style="text-align: end;">
-                      <span class="text-label">{{ sizeInCloudProject?.cloudProject?.quotaBackupVolumeInGb - sizeInCloudProject?.cloudProjectResourceUsed?.backup }} GB</span>
+                      <span
+                        class="text-label">{{ sizeInCloudProject?.cloudProject?.quotaBackupVolumeInGb - sizeInCloudProject?.cloudProjectResourceUsed?.backup }}
+                        GB</span>
                     </nz-col>
                   </nz-row>
                 </nz-col>
@@ -637,7 +653,7 @@
                   <nz-col nzSpan="12">
                     <nz-row nzGutter="24">
                       <nz-col nzSpan="12">
-                        <span class="text-label">{{'app.info.backup.vm.total.storage'|i18n}}</span>
+                        <span class="text-label">{{ 'app.info.backup.vm.total.storage'|i18n }}</span>
                       </nz-col>
                       <nz-col nzSpan="12" style="text-align: end;">
                         <span class="text-label">{{ sizeInCloudProject?.cloudProject?.quotaBackupVolumeInGb }} GB</span>
@@ -645,7 +661,7 @@
                     </nz-row>
                     <nz-row nzGutter="24">
                       <nz-col nzSpan="12">
-                        <span class="text-label">{{'app.backup.package.storage.used'|i18n}}</span>
+                        <span class="text-label">{{ 'app.backup.package.storage.used'|i18n }}</span>
                       </nz-col>
                       <nz-col nzSpan="12" style="text-align: end;">
                         <span class="text-label">{{ sizeInCloudProject?.cloudProjectResourceUsed?.backup }} GB</span>
@@ -653,10 +669,12 @@
                     </nz-row>
                     <nz-row nzGutter="24">
                       <nz-col nzSpan="12">
-                        <span class="text-label">{{'app.backup.package.storage.remaining'|i18n}}</span>
+                        <span class="text-label">{{ 'app.backup.package.storage.remaining'|i18n }}</span>
                       </nz-col>
                       <nz-col nzSpan="12" style="text-align: end;">
-                        <span class="text-label">{{ sizeInCloudProject?.cloudProject?.quotaBackupVolumeInGb - sizeInCloudProject?.cloudProjectResourceUsed?.backup }} GB</span>
+                        <span
+                          class="text-label">{{ sizeInCloudProject?.cloudProject?.quotaBackupVolumeInGb - sizeInCloudProject?.cloudProjectResourceUsed?.backup }}
+                          GB</span>
                       </nz-col>
                     </nz-row>
                   </nz-col>
@@ -667,7 +685,7 @@
                   <nz-col nzSpan="12">
                     <nz-row nzGutter="24">
                       <nz-col nzSpan="12">
-                        <span class="text-label">{{'app.info.backup.vm.total.storage'|i18n}}</span>
+                        <span class="text-label">{{ 'app.info.backup.vm.total.storage'|i18n }}</span>
                       </nz-col>
                       <nz-col nzSpan="12" style="text-align: end;">
                         <span class="text-label">{{ sizeInCloudProject?.cloudProject?.quotaBackupVolumeInGb }} GB</span>
@@ -675,7 +693,7 @@
                     </nz-row>
                     <nz-row nzGutter="24">
                       <nz-col nzSpan="12">
-                        <span class="text-label">{{'app.backup.package.storage.used'|i18n}}</span>
+                        <span class="text-label">{{ 'app.backup.package.storage.used'|i18n }}</span>
                       </nz-col>
                       <nz-col nzSpan="12" style="text-align: end;">
                         <span class="text-label">{{ sizeInCloudProject?.cloudProjectResourceUsed?.backup }} GB</span>
@@ -683,10 +701,12 @@
                     </nz-row>
                     <nz-row nzGutter="24">
                       <nz-col nzSpan="12">
-                        <span class="text-label">{{'app.backup.package.storage.remaining'|i18n}}</span>
+                        <span class="text-label">{{ 'app.backup.package.storage.remaining'|i18n }}</span>
                       </nz-col>
                       <nz-col nzSpan="12" style="text-align: end;">
-                        <span class="text-label">{{ sizeInCloudProject?.cloudProject?.quotaBackupVolumeInGb - sizeInCloudProject?.cloudProjectResourceUsed?.backup }} GB</span>
+                        <span
+                          class="text-label">{{ sizeInCloudProject?.cloudProject?.quotaBackupVolumeInGb - sizeInCloudProject?.cloudProjectResourceUsed?.backup }}
+                          GB</span>
                       </nz-col>
                     </nz-row>
                   </nz-col>
@@ -798,7 +818,7 @@
                                          style="width:100%; margin-left: 0;"
                                          class="input-custom"
                                          [nzMin]="1"
-                                         nzMax="31"
+                                         nzMax="30"
                                          nzStep="1" />
                         <ng-template #dateErrorTpl let-control>
                           <ng-container *ngIf="control.hasError('required')">{{ 'schedule.backup.0.to.31' | i18n }}
@@ -821,8 +841,11 @@
                           nzShowIcon></nz-alert>
                 <ng-template #titleMessage>
               <span
-                style="color: #FF0000;">{{ 'schedule.backup.alert.storage.vpc'|i18n:
-                { storage: ((sizeOfVolume) * validateForm.get('formVolume').get('maxBackup').value) } }} <a [routerLink]="'/app-smart-cloud/project/detail/' + project">{{projectName}}</a> {{'schedule.backup.alert.storage.vpc1'|i18n}}</span>
+                style="color: #FF0000;">{{
+                  'schedule.backup.alert.storage.vpc'|i18n:
+                    { storage: ((sizeOfVolume) * validateForm.get('formVolume').get('maxBackup').value) }
+                }} <a
+                  [routerLink]="'/app-smart-cloud/project/detail/' + project">{{ projectName }}</a> {{ 'schedule.backup.alert.storage.vpc1'|i18n }}</span>
                 </ng-template>
               </div>
               <nz-form-item>

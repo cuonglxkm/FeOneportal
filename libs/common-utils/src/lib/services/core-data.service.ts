@@ -102,7 +102,7 @@ export class CoreDataService {
     }
 
     public getProjects(baseUrl:string, regionId: number) {
-        debugger
+        // debugger
         if (regionId < 1) {
             return;
         }
@@ -117,6 +117,7 @@ export class CoreDataService {
                 }
 
                 localStorage.setItem('projects', JSON.stringify(data));
+                console.log(localStorage.getItem('projects'));
 
                 if (data && data.length > 0) {
                     let projectId = localStorage.getItem('projectId');

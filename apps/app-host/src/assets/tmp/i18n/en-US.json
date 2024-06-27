@@ -217,6 +217,7 @@
   "app.used.capacity": "Used capacity",
   "app.storage.usage": "Used capacity",
   "app.upload.capacity": "Upload capacity",
+  "app.upload.download": "Download capacity",
   "app.number.object": "Number of Objects",
   "app.amount": "Amount",
   "app.resource": "Resource",
@@ -477,6 +478,7 @@
 
   "app.instances.list": "Instance list",
   "app.instances.create": "Create Instance",
+  "app.instances.create1": "Create Instance",
   "app.instances.create.confirm": "Confirm instance creation",
   "app.instances.edit": "Resize Instance",
   "app.instances.detail": "Instance detail",
@@ -551,6 +553,7 @@
   "app.tooltip.use.lan.network": "When using LAN network, the instance will be equipped with an additional LAN IP",
   "app.tooltip.access.method.instance": "Customer can use a password or keypair to access the instance",
   "app.tooltip.usage.time": "The period of time a customer purchases {{name}} for use, calculated on a monthly basis",
+  "app.tooltip.instance.volume.encypt": "HDD: Fixed IOPS is 300<br>- SSD: IOPS scales with volume size according to the formula IOPS = Volume Size * 10. However, the minimum IOPS is 400, so for volumes ≤ 40 GB, the IOPS is always 400. For volumes ≥ 41 GB, the formula IOPS = Volume Size * 10 applies",
 
   "validation.exist.instance.name": "This instance name has already been used, please choose another name",
   "validation.instance.password.required": "Please enter the password",
@@ -580,6 +583,7 @@
   "app.notify.choose.config.package.required": "Please choose the configuration package",
   "app.notify.optional.configuration.invalid": "The optional configuration is invalid",
   "app.notify.gpu.configuration.invalid": "The GPU configuration is invalid",
+  "app.notify.gpu.count.invalid": "Please select the number of GPUs",
   "app.notify.check.config.for.os": "The current configuration is not compatible with the operating system. Please choose the minimum {{nameHdh}} configuration of {{volume}} GB Storage / {{ram}} GB RAM / {{cpu}} vCPU",
   "app.notify.check.config.for.change.os": "Currently, you do not have sufficient resources to perform the operating system conversion. Please update the minimum configuration of {{nameHdh}} to {{volume}} GB storage / {{ram}} GB RAM / {{cpu}} vCPU",
   "app.notify.success.instances.order.create": "Successfully created an instance order",
@@ -3133,7 +3137,7 @@
   "schedule.backup.placeholder.input.name": "Enter name schedule",
   "schedule.backup.alert.storage.vpc": "The remaining backup storage is less than the scheduled backup size ({{storage}} GB). Please adjust your project accordingly.",
   "schedule.backup.alert.storage.vpc1":"to ensure the backup process is not interrupted.",
-
+  "schedule.backup.title.card": "Schedule backup information",
 
   "listner.create.duplicate.port.weight": "Members with the same IP cannot have duplicate Port and Weight",
   "app.validate.order.fail": "Fail to validate order",

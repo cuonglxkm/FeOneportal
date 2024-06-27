@@ -177,6 +177,10 @@ export class CreateNetworkComponent implements OnInit {
     this.router.navigate(['/app-smart-cloud/vlan/network/list']);
   }
 
+  onRegionChanged(region: RegionModel) {
+    this.region = region.regionId;
+  }
+
   projectChanged(project: ProjectModel) {
     this.project = project?.id;
   }

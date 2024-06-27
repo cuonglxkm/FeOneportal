@@ -93,6 +93,10 @@ export class ListFileSystemComponent implements OnInit, OnDestroy {
     this.region = region.regionId;
   }
 
+  onRegionChanged(region: RegionModel) {
+    this.region = region.regionId;
+  }
+
   projectChanged(project: ProjectModel) {
     this.project = project?.id;
     this.typeVpc = project?.type;
@@ -221,16 +225,12 @@ export class ListFileSystemComponent implements OnInit, OnDestroy {
 
   onRegionInitComplete() {
     let regionAndProject = getCurrentRegionAndProject();
-    this.region = regionAndProject.regionId;
-    this.project = regionAndProject.projectId;
-    console.log(this.region, this.project);
+    this.region = regionAndProject.regionId;;
   }
 
   ngOnInit() {
-    this.onRegionInitComplete()
-
     // this.getProject();
-
+    
     console.log('project', this.project);
     this.customerId = this.tokenService.get()?.userId;
     this.fileSystemService.model.subscribe((data) => {

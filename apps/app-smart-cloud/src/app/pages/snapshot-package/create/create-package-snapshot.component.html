@@ -23,6 +23,7 @@
     <div class="alain-custom-action text-right">
       <share-users-combobox></share-users-combobox>
       <region-select-dropdown
+      (regionChange)="onRegionChanged($event)"
         (valueChanged)="regionChanged($event)"
       ></region-select-dropdown>
       <project-select-dropdown
@@ -100,7 +101,7 @@
                 <td class='text-right'>
                   <nz-input-number style="width: 20%; margin-left: -1px" [nzMin]="0" [nzStep]="1"
                                    (keydown)="checkPossiblePress($event)" [(ngModel)]="numberHDD"
-                                   (ngModelChange)="changeQuota()" [ngModelOptions]="{ standalone: true }"
+                                   (ngModelChange)="changeQuota(true)" [ngModelOptions]="{ standalone: true }"
                                    nzSize="large"></nz-input-number>
                 </td>
                 <td class="text-right">{{hddPrice| number}}</td>
@@ -110,7 +111,7 @@
                 <td class='text-right'>
                   <nz-input-number style="width: 20%; margin-left: -1px" [nzMin]="0" [nzStep]="1"
                                    (keydown)="checkPossiblePress($event)" [(ngModel)]="numberSSD"
-                                   (ngModelChange)="changeQuota()" [ngModelOptions]="{ standalone: true }"
+                                   (ngModelChange)="changeQuota(false)" [ngModelOptions]="{ standalone: true }"
                                    nzSize="large"></nz-input-number>
                 </td>
                 <td class="text-right">{{ssdPrice | number}}</td>

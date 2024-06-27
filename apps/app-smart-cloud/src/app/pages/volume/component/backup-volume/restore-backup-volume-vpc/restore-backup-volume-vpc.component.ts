@@ -133,6 +133,10 @@ export class RestoreBackupVolumeVpcComponent implements OnInit {
     this.router.navigate(['/app-smart-cloud/backup-volume']);
   }
 
+  onRegionChanged(region: RegionModel) {
+    this.region = region.regionId;
+  }
+
   projectChanged(project: ProjectModel) {
     this.project = project?.id;
     this.typeVpc = project?.type;
