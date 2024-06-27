@@ -25,7 +25,7 @@ export class ListScheduleBackupComponent implements OnInit, OnDestroy {
   project = JSON.parse(localStorage.getItem('projectId'));
 
   selectedValue?: string = null;
-  value?: string = null;
+  value?: string = '';
 
   status = [
     { label: this.i18n.fanyi('app.status.all'), value: 'all' },
@@ -70,6 +70,10 @@ export class ListScheduleBackupComponent implements OnInit, OnDestroy {
     this.region = region.regionId;
     this.getListScheduleBackup(true);
     this.getCapacityBackup();
+  }
+
+  onRegionChanged(region: RegionModel) {
+    this.region = region.regionId;
   }
 
   projectChanged(project: ProjectModel) {
@@ -155,7 +159,7 @@ export class ListScheduleBackupComponent implements OnInit, OnDestroy {
     this.isLoading = true;
     let formSearch = new FormSearchScheduleBackup();
     if (this.selectedValue == 'all') {
-      formSearch.scheduleStatus = null;
+      formSearch.scheduleStatus = '';
     } else {
       formSearch.scheduleStatus = this.selectedValue;
     }

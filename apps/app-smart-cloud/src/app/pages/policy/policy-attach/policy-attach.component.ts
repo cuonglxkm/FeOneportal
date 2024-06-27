@@ -154,6 +154,10 @@ export class PolicyAttachComponent implements OnInit {
     this.region = region.regionId
   }
 
+  onRegionChanged(region: RegionModel) {
+    this.region = region.regionId;
+  }
+
   ngOnInit(): void {
 
     const url = this.activatedRoute.snapshot.url;

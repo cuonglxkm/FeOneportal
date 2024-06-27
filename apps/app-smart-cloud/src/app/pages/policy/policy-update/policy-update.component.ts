@@ -327,4 +327,8 @@ export class PolicyUpdateComponent implements OnInit {
     this.region = region.regionId;
   }
 
+  onRegionChanged(region: RegionModel) {
+    this.region = region.regionId;
+  }
+
 }

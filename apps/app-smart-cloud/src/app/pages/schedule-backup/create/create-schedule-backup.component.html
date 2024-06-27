@@ -15,7 +15,7 @@
   <ng-template #action>
     <div class="alain-custom-action text-right">
       <share-users-combobox></share-users-combobox>
-      <region-select-dropdown (valueChanged)="regionChanged($event)"></region-select-dropdown>
+      <region-select-dropdown (regionChange)="onRegionChanged($event)" (valueChanged)="regionChanged($event)"></region-select-dropdown>
       <project-select-dropdown (userChanged)="userChanged($event)"
                                (valueChanged)="projectChanged($event)"
                                [regionId]="region"></project-select-dropdown>
@@ -409,7 +409,7 @@
                                        class="input-custom"
                                        id="date"
                                        [nzMin]="1"
-                                       nzMax="31"
+                                       nzMax="30"
                                        nzStep="1" />
                       <ng-template #dateErrorTpl let-control>
                         <ng-container *ngIf="control.hasError('required')">{{ 'schedule.backup.0.to.31' | i18n }}
@@ -513,6 +513,7 @@
                                  nzSize="large"
                                  nzPlaceHolder="{{'schedule.backup.volume.select' | i18n}}"
                                  [nzShowSearch]="false"
+                                 [nzLoading]="isLoadingVolume"
                                  [(ngModel)]="volumeSelected"
                                  (ngModelChange)="selectVolumeChange($event)">
                         <nz-option *ngFor="let i of listVolumeNotUseUnique"
@@ -935,7 +936,7 @@
                                          style="width:100%; margin-left: 0;"
                                          class="input-custom"
                                          [nzMin]="1"
-                                         nzMax="31"
+                                         nzMax="30"
                                          nzStep="1" />
                         <ng-template #dateErrorTpl let-control>
                           <ng-container *ngIf="control.hasError('required')">{{ 'schedule.backup.0.to.31' | i18n }}

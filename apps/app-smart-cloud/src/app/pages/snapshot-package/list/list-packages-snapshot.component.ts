@@ -88,6 +88,10 @@ export class ListPackagesSnapshotComponent implements OnInit {
     this.region = region.regionId
   }
 
+  onRegionChanged(region: RegionModel) {
+    this.region = region.regionId;
+  }
+
   projectChange(project: ProjectModel) {
     this.project = project?.id
     this.getListPackageSnapshot(true)

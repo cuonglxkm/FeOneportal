@@ -69,6 +69,9 @@
   "form.account.validate.address":"Tỉnh/Thành phố",
   "form.account.validate.address.detail":"Địa chỉ chi tiết có thể chứa ký tự / - và khoảng trống, không chứa ký tự đặc biệt",
 
+  "form.account.create.new": "Đăng ký tài khoản",
+  "form.account.create.new.success": "Tài khoản đã đăng ký thành công.",
+
   "app.account.validation": "Vui lòng nhập đầy đủ thông tin",
   "app.account.form.success": "Cập nhật tài khoản thành công!",
   "app.account.form.fail": "Cập nhật tài khoản không thành công!",
@@ -112,6 +115,7 @@
   "app.used.capacity": "Dung lượng đã dùng",
   "app.storage.usage": "Dung lượng sử dụng",
   "app.upload.capacity": "Dung lượng tải lên",
+  "app.upload.download": "Dung lượng tải về",
   "app.number.object": "Số lượng Object",
   "app.amount": "Số lượng",
   "app.resource": "Tài nguyên",
@@ -2752,6 +2756,7 @@
   "app.backup.volume.note.restore.new": "Khôi phục backup volume",
   "app.backup.volume.current": "Khôi phục vào Volume hiện tại",
   "app.backup.volume.new": "Khôi phục vào Volume mới",
+  "app.backup.volume.restore.current": "Chọn Volume có dung lượng lớn hơn hoặc bằng dung lượng backup",
 
   "app.dashboard.subscription.service": "Dịch vụ",
   "app.dashboard.subscription.service.active": "Đang hoạt động",
@@ -3044,6 +3049,7 @@
   "schedule.backup.alert.storage.normal": "Dung lượng backup còn lại nhỏ hơn dung lượng lập lịch backup ({{storage}} GB). Quý khách hãy điều chỉnh gói backup",
   "schedule.backup.alert.storage.vpc1":"để quá trình backup không bị gián đoạn.",
   "schedule.backup.alert.storage.normal1":"để quá trình backup không bị gián đoạn.",
+  "schedule.backup.title.card": "Thông tin lịch backup",
 
 
   "listner.create.duplicate.port.weight": "Các member có cùng IP không được trùng Port và Weight",

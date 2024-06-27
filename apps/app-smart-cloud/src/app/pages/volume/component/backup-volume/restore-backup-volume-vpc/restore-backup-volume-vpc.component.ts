@@ -133,6 +133,10 @@ export class RestoreBackupVolumeVpcComponent implements OnInit {
     this.router.navigate(['/app-smart-cloud/backup-volume']);
   }
 
+  onRegionChanged(region: RegionModel) {
+    this.region = region.regionId;
+  }
+
   projectChanged(project: ProjectModel) {
     this.project = project?.id;
     this.typeVpc = project?.type;
@@ -164,7 +168,7 @@ export class RestoreBackupVolumeVpcComponent implements OnInit {
       this.validateForm.get('formNew').get('volumeName').clearValidators();
       this.validateForm.get('formNew').get('volumeName').updateValueAndValidity();
     } else if (this.selectedOption === 'new') {
-      this.getActiveServiceByRegion();
+
       this.validateForm.get('formNew').get('storage').setValue(this.backupVolume?.size);
       this.validateForm.get('formNew').get('volumeName').setValidators([Validators.required, Validators.pattern(/^[a-zA-Z0-9_]*$/), this.duplicateNameValidator.bind(this)]);
       this.validateForm.get('formNew').get('storage').setValidators([Validators.required, Validators.pattern(/^[0-9]*$/)]);
@@ -384,5 +388,6 @@ export class RestoreBackupVolumeVpcComponent implements OnInit {
     this.getConfiguration();
     this.onChangeValueStorage();
     this.getListInstance();
+    this.getActiveServiceByRegion();
   }
 }

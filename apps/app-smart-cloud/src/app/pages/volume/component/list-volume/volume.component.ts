@@ -86,6 +86,10 @@ export class VolumeComponent implements OnInit, OnDestroy {
     }, 2500);
   }
 
+  onRegionChanged(region: RegionModel) {
+    this.region = region.regionId;
+  }
+
   projectChanged(project: ProjectModel) {
     this.project = project?.id;
     this.typeVPC = project?.type;
@@ -241,10 +245,13 @@ export class VolumeComponent implements OnInit, OnDestroy {
     this.router.navigate(['/app-smart-cloud/snapshot/create', {volumeId: idVolume}], { queryParams: { navigateType: 0 } })
   }
 
+  hasRoleSI: boolean = false;
   ngOnInit() {
     let regionAndProject = getCurrentRegionAndProject();
     this.region = regionAndProject.regionId;
     this.project = regionAndProject.projectId;
+
+    this.hasRoleSI = localStorage.getItem('role').includes('SI')
     console.log('project', this.project);
     this.selectedValue = this.options[0].value;
     this.customerId = this.tokenService.get()?.userId;

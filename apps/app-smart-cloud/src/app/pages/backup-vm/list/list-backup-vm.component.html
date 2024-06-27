@@ -15,7 +15,7 @@
   <ng-template #action>
     <div class="alain-custom-action text-right">
       <share-users-combobox></share-users-combobox>
-      <region-select-dropdown (valueChanged)="regionChanged($event)"></region-select-dropdown>
+      <region-select-dropdown (regionChange)="onRegionChanged($event)" (valueChanged)="regionChanged($event)"></region-select-dropdown>
       <project-select-dropdown (valueChanged)="projectChanged($event)"
                                (userChanged)="projectChanged($event)"
                                [regionId]="region"></project-select-dropdown>
@@ -82,8 +82,8 @@
             <th nzBreakWord>{{ 'app.table.backup.vm.vm.original'|i18n }}</th>
             <th nzBreakWord>{{ 'app.table.backup.vm.storage'|i18n }} (GB)</th>
             <th nzBreakWord *ngIf="typeVPC==0">{{ 'app.table.backup.vm.backup.package'|i18n }}</th>
-            <th nzBreakWord>{{ 'app.table.backup.vm.create.date'|i18n }}</th>
-            <th nzBreakWord>{{ 'app.table.backup.vm.expire.date'|i18n }}</th>
+            <th nzBreakWord>{{ 'app.service.start.date'|i18n }}</th>
+            <th nzBreakWord>{{ 'app.service.expiration-date'|i18n }}</th>
             <th nzBreakWord>{{ 'app.table.backup.vm.status'|i18n }}</th>
             <th nzBreakWord>{{ 'app.table.backup.vm.action'|i18n }}</th>
           </tr>

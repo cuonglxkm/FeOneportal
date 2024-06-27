@@ -84,6 +84,10 @@ export class VlanDetailComponent implements OnInit, OnChanges, OnDestroy {
     this.router.navigate(['/app-smart-cloud/vlan/network/list']);
   }
 
+  onRegionChanged(region: RegionModel) {
+    this.region = region.regionId;
+  }
+
   projectChanged(project: ProjectModel) {
     this.project = project?.id;
     // this.getVlanByNetworkId()

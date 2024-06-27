@@ -108,6 +108,10 @@ export class ResizeSnapshotPackageComponent implements OnInit {
     });
   }
 
+  onRegionChanged(region: RegionModel) {
+    this.region = region.regionId;
+  }
+
   projectChanged(project: ProjectModel) {
     this.project = project?.id;
   }

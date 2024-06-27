@@ -96,6 +96,10 @@ export class SnapshotCreateComponent implements OnInit, OnChanges {
     this.region = region.regionId;
   }
 
+  onRegionChanged(region: RegionModel) {
+    this.region = region.regionId;
+  }
+
   projectChanged(project: ProjectModel) {
     this.project = project?.id;
     this.projectType = project?.type;

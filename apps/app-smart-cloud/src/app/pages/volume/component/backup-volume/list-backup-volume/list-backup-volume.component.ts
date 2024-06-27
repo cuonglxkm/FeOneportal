@@ -42,7 +42,8 @@ export class ListBackupVolumeComponent implements OnInit, OnDestroy{
   status = [
     {label: this.i18n.fanyi('app.status.all'), value: 'all'},
     {label: this.i18n.fanyi('app.status.running'), value: 'available'},
-    {label: this.i18n.fanyi('app.status.suspend'), value: 'suspended'}
+    {label: this.i18n.fanyi('app.status.suspend'), value: 'suspended'},
+    { label: this.i18n.fanyi('app.status.error'), value: 'ERROR' },
   ]
 
   dataSubjectInputSearch: Subject<any> = new Subject<any>();
@@ -66,6 +67,10 @@ export class ListBackupVolumeComponent implements OnInit, OnDestroy{
     this.region = region.regionId;
     // this.getListBackupVolumes(true)
     // this.getListVolume(true);
+  }
+
+  onRegionChanged(region: RegionModel) {
+    this.region = region.regionId;
   }
 
   projectChanged(project: ProjectModel) {
@@ -145,7 +150,8 @@ export class ListBackupVolumeComponent implements OnInit, OnDestroy{
   }
 
   navigateToCreate(){
-    if(this.typeVpc == 1) {
+    let hasRoleSI = localStorage.getItem('role').includes('SI')
+    if(this.typeVpc == 1 || hasRoleSI) {
       this.router.navigate(['/app-smart-cloud/backup-volume/create/vpc']);
     }
     if(this.typeVpc == 0) {

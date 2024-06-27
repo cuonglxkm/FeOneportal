@@ -93,6 +93,10 @@ export class ListFileSystemComponent implements OnInit, OnDestroy {
     this.region = region.regionId;
   }
 
+  onRegionChanged(region: RegionModel) {
+    this.region = region.regionId;
+  }
+
   projectChanged(project: ProjectModel) {
     this.project = project?.id;
     this.typeVpc = project?.type;
@@ -107,12 +111,13 @@ export class ListFileSystemComponent implements OnInit, OnDestroy {
   }
 
   navigateToCreateFileSystem(typeVpc) {
+    let hasRoleSI = localStorage.getItem('role').includes('SI')
     this.isLoading = true
     this.fileSystemService.checkRouter(this.region, this.project).subscribe({
       next: (data) => {
         this.isLoading = false
         //in vpc
-        if (typeVpc == 1) {
+        if (typeVpc == 1 || hasRoleSI) {
           this.router.navigate([
             '/app-smart-cloud/file-storage/file-system/create'
           ]);
@@ -225,9 +230,8 @@ export class ListFileSystemComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-
     // this.getProject();
-    
+
     console.log('project', this.project);
     this.customerId = this.tokenService.get()?.userId;
     this.fileSystemService.model.subscribe((data) => {

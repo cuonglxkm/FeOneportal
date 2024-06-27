@@ -88,6 +88,7 @@ export class PaymentSummaryComponent implements OnInit {
     { label: this.i18n.fanyi('app.invoice.export.customer2'), value: 2 },
   ];
 
+
   constructor(
     private service: InstancesService,
     private psService: PaymentSummaryService,
@@ -270,17 +271,17 @@ export class PaymentSummaryComponent implements OnInit {
             break;
           case 'k8s_prem_create':
             this.serviceType = 'k8s_prem';
-            serviceItem.name = `K8s-Premium - ${specificationObj.serviceName}`;
+            serviceItem.name = `VAK - ${specificationObj.serviceName}`;
             serviceItem.type = this.i18n.fanyi('app.label.create');
             break;
           case 'k8s_prem_resize':
             this.serviceType = 'k8s_prem';
-            serviceItem.name = `K8s-Premium - ${specificationObj.serviceName}`;
+            serviceItem.name = `VAK - ${specificationObj.serviceName}`;
             serviceItem.type = this.i18n.fanyi('app.text.upgrade');
             break;
           case 'k8s_prem_extend':
             this.serviceType = 'k8s_prem';
-            serviceItem.name = `K8s-Premium - ${specificationObj.serviceName}`;
+            serviceItem.name = `VAK - ${specificationObj.serviceName}`;
             serviceItem.type = this.i18n.fanyi('app.button.extend');
             break;
           case 'backuppackage_create':

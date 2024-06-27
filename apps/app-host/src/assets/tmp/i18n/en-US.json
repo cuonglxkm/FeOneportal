@@ -175,6 +175,8 @@
   "form.account.validate.phone":"Invalid phone number!",
   "form.account.validate.address":"Province/City",
   "form.account.validate.address.detail":"Detailed address can contain characters / - and spaces, but no special characters",
+  "form.account.create.new": "Register an account",
+  "form.account.create.new.success": "Account successfully registered.",
 
   "app.account.validation": "Please enter complete information!",
   "app.account.form.success": "Account updated successfully!",
@@ -217,6 +219,7 @@
   "app.used.capacity": "Used capacity",
   "app.storage.usage": "Used capacity",
   "app.upload.capacity": "Upload capacity",
+  "app.upload.download": "Download capacity",
   "app.number.object": "Number of Objects",
   "app.amount": "Amount",
   "app.resource": "Resource",
@@ -2854,6 +2857,7 @@
   "app.backup.volume.notification.create.request.send": "Backup Volume creation request has been sent.",
   "app.backup.volume.current": "Restore to the current Volume",
   "app.backup.volume.new": "Restore to a new Volume",
+  "app.backup.volume.restore.current": "Select a Volume with a capacity greater than or equal to the backup size",
 
   "app.dashboard.subscription.service": "Service",
   "app.dashboard.subscription.service.active": "Service Active",
@@ -3138,7 +3142,7 @@
   "schedule.backup.placeholder.input.name": "Enter name schedule",
   "schedule.backup.alert.storage.vpc": "The remaining backup storage is less than the scheduled backup size ({{storage}} GB). Please adjust your project accordingly.",
   "schedule.backup.alert.storage.vpc1":"to ensure the backup process is not interrupted.",
-
+  "schedule.backup.title.card": "Schedule backup information",
 
   "listner.create.duplicate.port.weight": "Members with the same IP cannot have duplicate Port and Weight",
   "app.validate.order.fail": "Fail to validate order",

@@ -33,7 +33,8 @@ export class ListBackupVmComponent implements OnInit, OnDestroy {
   status = [
     {label: this.i18n.fanyi('app.status.all'), value: 'all'},
     {label: this.i18n.fanyi('app.status.running'), value: 'AVAILABLE'},
-    {label: this.i18n.fanyi('app.status.suspend'), value: 'SUSPENDED'}
+    {label: this.i18n.fanyi('app.status.suspend'), value: 'SUSPENDED'},
+    {label: this.i18n.fanyi('app.status.error'), value: 'ERROR'}
   ]
 
   selectedValue?: string = null
@@ -79,6 +80,10 @@ export class ListBackupVmComponent implements OnInit, OnDestroy {
     this.region = region.regionId
     this.formSearch.regionId = this.region
     this.getListBackupVM(true)
+  }
+
+  onRegionChanged(region: RegionModel) {
+    this.region = region.regionId;
   }
 
   projectChanged(project: ProjectModel) {
@@ -240,7 +245,8 @@ export class ListBackupVmComponent implements OnInit, OnDestroy {
   }
 
   navigateToRestore(id: number) {
-    if (this.typeVPC == 1) {
+    let hasRoleSI = localStorage.getItem('role').includes('SI')
+    if (this.typeVPC == 1 || hasRoleSI) {
       this.router.navigate(['/app-smart-cloud/backup-vm/restore-backup-vm-vpc/' + id])
     } else {
       this.router.navigate(['/app-smart-cloud/backup-vm/restore-backup-vm/' + id])

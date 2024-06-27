@@ -314,6 +314,10 @@ export class RestoreBackupVmVpcComponent implements OnInit {
     this.router.navigate(['/app-smart-cloud/backup-vm']);
   }
 
+  onRegionChanged(region: RegionModel) {
+    this.region = region.regionId;
+  }
+
   projectChanged(project: ProjectModel) {
     this.project = project?.id;
   }

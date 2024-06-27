@@ -21,7 +21,7 @@
   <ng-template #action>
     <div class="alain-custom-action text-right">
       <share-users-combobox></share-users-combobox>
-      <region-select-dropdown (valueChanged)="regionChanged($event)"></region-select-dropdown>
+      <region-select-dropdown (regionChange)="onRegionChanged($event)" (valueChanged)="regionChanged($event)"></region-select-dropdown>
       <project-select-dropdown (valueChanged)="projectChanged($event)"
                                (userChanged)="projectChanged($event)"
                                [regionId]="region"></project-select-dropdown>
@@ -206,7 +206,7 @@
     </ng-container>
   </nz-card>
 </nz-content>
-<nz-content *ngIf="typeVPC == 1">
+<nz-content *ngIf="typeVPC == 1 || hasRoleSI">
   <nz-card>
     <ng-container [ngSwitch]="isBegin">
       <ng-container *ngSwitchCase="false">

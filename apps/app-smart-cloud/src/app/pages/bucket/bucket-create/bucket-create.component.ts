@@ -15,6 +15,7 @@ import { BucketService } from 'src/app/shared/services/bucket.service';
 import { I18NService } from '@core';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { getCurrentRegionAndProject } from '@shared';
+import { RegionModel } from '../../../../../../../libs/common-utils/src';
 
 @Component({
   selector: 'one-portal-bucket-create',
@@ -86,6 +87,14 @@ export class BucketCreateComponent implements OnInit {
           this.cardHeight
         );
       });
+  }
+
+  onRegionChange(region: RegionModel) {
+    this.region = region.regionId;
+  }
+
+  onRegionChanged(region: RegionModel) {
+    this.region = region.regionId;
   }
 
   activePrivate: boolean = true;

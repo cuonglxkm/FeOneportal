@@ -18,7 +18,7 @@
   <ng-template #action>
     <div class="alain-custom-action text-right">
       <share-users-combobox></share-users-combobox>
-      <region-select-dropdown (valueChanged)="regionChanged($event)"></region-select-dropdown>
+      <region-select-dropdown (regionChange)="onRegionChanged($event)" (valueChanged)="regionChanged($event)"></region-select-dropdown>
       <project-select-dropdown (valueChanged)="projectChanged($event)"
                                (userChanged)="projectChanged($event)"
                                [regionId]="region"></project-select-dropdown>
@@ -83,7 +83,7 @@
               <th>{{ 'app.maximum.number.of.record' | i18n }}</th>
               <th>{{ 'app.order.status' | i18n }}</th>
               <th>{{ 'schedule.backup.next.step' | i18n }}</th>
-              <th>{{ 'app.payment.createDate' | i18n }}</th>
+              <th>{{ 'app.service.start.date' | i18n }}</th>
               <th>{{ 'app.action-history.operation' | i18n }}</th>
             </tr>
             </thead>
@@ -95,13 +95,13 @@
                 <span *ngIf="data.serviceType === 2">Volume - {{ data.serviceName }}</span>
               </td>
               <td *ngIf="typeVPC != 1"
-                  style="cursor: pointer;"
-                  nz-popover
-                  [nzPopoverTitle]="data.backupPackageName"
-                  [nzPopoverContent]="titleBackupPackage"
-                  [nzPopoverTrigger]="'click'"
-                  [nzPopoverPlacement]="'bottom'"
-                  (click)="getBackupPackage(data.backupPackageId)">{{ data.backupPackageName }}</td>
+                  style="cursor: pointer;">
+                <a nz-popover
+                   [nzPopoverTitle]="data.backupPackageName"
+                   [nzPopoverContent]="titleBackupPackage"
+                   [nzPopoverTrigger]="'click'"
+                   [nzPopoverPlacement]="'bottom'"
+                   (click)="getBackupPackage(data.backupPackageId)">{{ data.backupPackageName }}</a></td>
 <!--              <td>{{ data.backupPackageName }}</td>-->
               <td nzAlign="right">{{ data.maxBackup }}</td>
               <ng-container *ngIf="data.status | ServiceStatusPipe as statusModel">
