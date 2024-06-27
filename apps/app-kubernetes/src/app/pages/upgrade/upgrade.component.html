@@ -70,8 +70,7 @@
               <tr>
                 <td class="w-50"><row-data [value]="detailCluster.createdDate | date: 'dd/MM/yyyy'"
                     [label]="'app.text.creation-time' | i18n"></row-data></td>
-                <td class="w-50"><row-data
-                    [value]="(detailCluster.createdDate | calculateDate : detailCluster.usageTime) | date: 'dd/MM/yyyy'"
+                <td class="w-50 border-cell"><row-data [value]="detailCluster.expiredDate| date: 'dd/MM/yyyy'"
                     [label]="'app.service.expiration-date' | i18n" [type]="'danger'"></row-data></td>
               </tr>
 
