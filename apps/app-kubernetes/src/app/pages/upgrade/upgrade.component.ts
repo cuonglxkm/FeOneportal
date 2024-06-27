@@ -539,7 +539,8 @@ export class UpgradeComponent implements OnInit {
       const nodeNumber = pack.workerNode;
       this.currentTotalCpu = nodeNumber * pack.cpu;
       this.currentTotalRam = nodeNumber * pack.ram;
-      this.currentTotalStorage = nodeNumber * pack.rootStorage + pack.volumeStorage;
+      // this.currentTotalStorage = nodeNumber * pack.rootStorage + pack.volumeStorage;
+      this.currentTotalStorage = nodeNumber * pack.rootStorage;
 
     } else {
 
@@ -667,10 +668,13 @@ export class UpgradeComponent implements OnInit {
 
     this.isSubmitting = true;
     let cluster = this.setClusterData();
-    cluster.Specification = JSON.stringify(cluster);
     // this.submitUpgrade(cluster);
 
-    this.clusterService.validateUpgradeCluster(cluster)
+    let data = {
+      ServiceOrderCode: this.serviceOrderCode,
+      Specification: JSON.stringify(cluster)
+    };
+    this.clusterService.validateUpgradeCluster(data)
     .pipe(finalize(() => this.isSubmitting = false))
     .subscribe((r: any) => {
       if (r && r.code == 200) {
