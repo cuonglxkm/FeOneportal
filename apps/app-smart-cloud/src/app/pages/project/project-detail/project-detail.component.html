@@ -163,50 +163,50 @@
       <td>{{ item.used }}</td>
       <td>{{ item.remain }}</td>
     </tr> -->
-    <tr>
+    <tr *ngIf="data?.type == 'VPC'">
       <td>CPU(vCPU)</td>
       <td>{{totalLimit?.quotavCpu}} vcpu</td>
       <td>{{totalUsed?.cpu}} vcpu</td>
       <td>{{totalLimit?.quotavCpu-totalUsed?.cpu}} vcpu</td>
     </tr>
 
-    <tr >
+    <tr  *ngIf="data?.type == 'VPC'" >
       <td>RAM (GB)</td>
       <td>{{totalLimit?.quotaRamInGb}} GB</td>
       <td>{{totalUsed?.ram}} GB</td>
       <td>{{totalLimit?.quotaRamInGb-totalUsed?.ram}} GB</td>
     </tr>
-    <tr >
+    <tr  *ngIf="data?.type == 'VPC'">
       <td>HDD (GB)</td>
       <td>{{totalLimit?.quotaHddInGb}} GB</td>
       <td>{{totalUsed?.hdd}} GB</td>
       <td>{{totalLimit?.quotaHddInGb-totalUsed?.hdd}} GB</td>
     </tr>
-    <tr >
+    <tr  *ngIf="data?.type == 'VPC'">
       <td>SSD (GB)</td>
       <td>{{totalLimit?.quotaSSDInGb}} GB</td>
       <td>{{totalUsed?.ssd}} GB</td>
       <td>{{totalLimit?.quotaSSDInGb-totalUsed?.ssd}} GB</td>
     </tr>
-    <tr  *ngIf="catalogStatus['backup-volume']">
-      <td>Dung lượng Backup Volume/VN(GB)</td>
+    <tr  *ngIf="catalogStatus['backup-volume'] && data?.type == 'VPC'">
+      <td>Dung lượng Backup Volume/VM(GB)</td>
       <td>{{totalLimit?.quotaBackupVolumeInGb}} GB</td>
       <td>{{totalUsed?.backup}} GB</td>
       <td>{{totalLimit?.quotaBackupVolumeInGb-totalUsed?.backup}} GB</td>
     </tr>
-    <tr  *ngIf="catalogStatus['ip']">
+    <tr  *ngIf="catalogStatus['ip'] && data?.type == 'VPC'">
       <td>Số lượng IP Floating</td>
       <td>{{totalLimit?.quotaIpFloatingCount}}</td>
       <td>{{totalUsed?.ipFloatingCount}}</td>
       <td>{{totalLimit?.quotaIpFloatingCount-totalUsed?.ipFloatingCount}}</td>
     </tr>
-    <tr *ngIf="catalogStatus['ip']">
+    <tr *ngIf="catalogStatus['ip'] && data?.type == 'VPC'">
       <td>Số lượng IP Public</td>
       <td>{{totalLimit?.quotaIpPublicCount}}</td>
       <td>{{totalUsed?.ipPublicCount}}</td>
       <td>{{totalLimit?.quotaIpPublicCount-totalUsed?.ipPublicCount}}</td>
     </tr>
-    <tr *ngIf="catalogStatus['ipv6']">
+    <tr *ngIf="catalogStatus['ipv6'] && data?.type == 'VPC'">
       <td>Số lượng IPv6</td>
       <td>{{totalLimit?.quotaIpv6Count}}</td>
       <td>{{totalUsed?.ipv6Count}}</td>
@@ -230,32 +230,32 @@
       <td>{{totalUsed?.routerCount}}</td>
       <td>{{totalLimit?.quotaRouterCount-totalUsed?.routerCount}}</td>
     </tr>
-    <tr *ngIf="catalogStatus['loadbalancer-sdn']">
+    <tr *ngIf="catalogStatus['loadbalancer-sdn'] && data?.type == 'VPC'">
       <td>Số lượng Load Balancer</td>
       <td>{{totalLimit?.quotaLoadBalancerSDNCount}}</td>
       <td>{{totalUsed?.loadBalancerSdnCount}}</td>
       <td>{{totalLimit?.quotaLoadBalancerSDNCount-totalUsed?.loadBalancerSdnCount}}</td>
     </tr>
-    <tr *ngIf="catalogStatus['file-storage']">
+    <tr *ngIf="catalogStatus['file-storage'] && data?.type == 'VPC'">
       <td>Dung lượng File System (GB)</td>
       <td>{{totalLimit?.quotaShareInGb}} GB</td>
       <td>{{totalUsed?.quotaShareInGb}} GB</td>
       <td>{{totalLimit?.quotaShareInGb-totalUsed?.quotaShareInGb}} GB</td>
     </tr>
-    <tr *ngIf="catalogStatus['file-storage-snapshot']" >
+    <tr *ngIf="catalogStatus['file-storage-snapshot'] && data?.type == 'VPC'" >
       <td>Dung lượng File System Snapshot (GB)</td>
       <td>{{totalLimit?.quotaShareSnapshotInGb}} GB</td>
       <td>{{totalUsed?.quotaShareSnapshotInGb}} GB</td>
       <td>{{totalLimit?.quotaShareSnapshotInGb-totalUsed?.quotaShareSnapshotInGb}} GB</td>
     </tr>
 
-    <tr *ngIf="catalogStatus['volume-snapshot-hdd']">
+    <tr *ngIf="catalogStatus['volume-snapshot-hdd'] && data?.type == 'VPC'">
       <td>Dung lượng Snapshot HDD (GB)</td>
       <td>{{totalLimit?.quotaVolumeSnapshotHddInGb}} GB</td>
       <td>{{totalUsed?.volumeSnapshotHddInGb}} GB</td>
       <td>{{totalLimit?.quotaVolumeSnapshotHddInGb-totalUsed?.volumeSnapshotHddInGb}} GB</td>
     </tr>
-    <tr *ngIf="catalogStatus['volume-snapshot-ssd']">
+    <tr *ngIf="catalogStatus['volume-snapshot-ssd'] && data?.type == 'VPC'">
       <td>Dung lượng Snapshot SSD (GB)</td>
       <td>{{totalLimit?.quotaVolumeSnapshotSsdInGb}} GB</td>
       <td>{{totalUsed?.volumeSnapshotSsdInGb}} GB</td>
@@ -263,10 +263,10 @@
     </tr>
 
       <tr *ngFor="let gpu of totalGpu" >
-        <td *ngIf="catalogStatus['vm-gpu']">Số lượng GPU (Type - {{gpu?.gpuType}})</td>
-        <td *ngIf="catalogStatus['vm-gpu']">{{gpu?.totalLimitGpu}}</td>
-        <td *ngIf="catalogStatus['vm-gpu']">{{gpu?.totalUsedGpu}}</td>
-        <td *ngIf="catalogStatus['vm-gpu']">{{gpu?.totalLimitGpu-gpu?.totalUsedGpu}}</td>
+        <td *ngIf="catalogStatus['vm-gpu'] && data?.type == 'VPC'">Số lượng GPU ({{gpu?.gpuType}})</td>
+        <td *ngIf="catalogStatus['vm-gpu'] && data?.type == 'VPC'">{{gpu?.totalLimitGpu}}</td>
+        <td *ngIf="catalogStatus['vm-gpu'] && data?.type == 'VPC'">{{gpu?.totalUsedGpu}}</td>
+        <td *ngIf="catalogStatus['vm-gpu'] && data?.type == 'VPC'">{{gpu?.totalLimitGpu-gpu?.totalUsedGpu}}</td>
       </tr>
 
    
