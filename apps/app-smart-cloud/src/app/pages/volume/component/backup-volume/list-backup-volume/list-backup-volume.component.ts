@@ -42,7 +42,8 @@ export class ListBackupVolumeComponent implements OnInit, OnDestroy{
   status = [
     {label: this.i18n.fanyi('app.status.all'), value: 'all'},
     {label: this.i18n.fanyi('app.status.running'), value: 'available'},
-    {label: this.i18n.fanyi('app.status.suspend'), value: 'suspended'}
+    {label: this.i18n.fanyi('app.status.suspend'), value: 'suspended'},
+    { label: this.i18n.fanyi('app.status.error'), value: 'ERROR' },
   ]
 
   dataSubjectInputSearch: Subject<any> = new Subject<any>();

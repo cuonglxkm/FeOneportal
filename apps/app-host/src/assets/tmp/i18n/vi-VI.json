@@ -2752,6 +2752,7 @@
   "app.backup.volume.note.restore.new": "Khôi phục backup volume",
   "app.backup.volume.current": "Khôi phục vào Volume hiện tại",
   "app.backup.volume.new": "Khôi phục vào Volume mới",
+  "app.backup.volume.restore.current": "Chọn Volume có dung lượng lớn hơn hoặc bằng dung lượng backup",
 
   "app.dashboard.subscription.service": "Dịch vụ",
   "app.dashboard.subscription.service.active": "Đang hoạt động",

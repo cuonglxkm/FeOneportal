@@ -2853,6 +2853,7 @@
   "app.backup.volume.notification.create.request.send": "Backup Volume creation request has been sent.",
   "app.backup.volume.current": "Restore to the current Volume",
   "app.backup.volume.new": "Restore to a new Volume",
+  "app.backup.volume.restore.current": "Select a Volume with a capacity greater than or equal to the backup size",
 
   "app.dashboard.subscription.service": "Service",
   "app.dashboard.subscription.service.active": "Service Active",

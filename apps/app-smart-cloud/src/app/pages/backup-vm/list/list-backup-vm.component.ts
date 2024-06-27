@@ -33,7 +33,8 @@ export class ListBackupVmComponent implements OnInit, OnDestroy {
   status = [
     {label: this.i18n.fanyi('app.status.all'), value: 'all'},
     {label: this.i18n.fanyi('app.status.running'), value: 'AVAILABLE'},
-    {label: this.i18n.fanyi('app.status.suspend'), value: 'SUSPENDED'}
+    {label: this.i18n.fanyi('app.status.suspend'), value: 'SUSPENDED'},
+    {label: this.i18n.fanyi('app.status.error'), value: 'ERROR'}
   ]
 
   selectedValue?: string = null
