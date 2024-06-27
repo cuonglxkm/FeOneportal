@@ -616,7 +616,7 @@ const routes: Routes = [
     }
   },
   {
-    path: 'schedule/snapshot/list',
+    path: 'schedule/snapshot',
     component: SnapshotScheduleListComponent,
     canActivate: [PermissionGuard],
     data: {

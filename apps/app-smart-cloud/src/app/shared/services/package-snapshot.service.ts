@@ -83,9 +83,9 @@ export class PackageSnapshotService extends BaseService {
       }))
   }
 
-  delete(id: number) {
+  delete(id: number, project: any, region: any) {
     return this.http.delete(this.baseUrl + this.ENDPOINT.provisions
-      + `/snapshots/packages/${id}`);
+      + `/snapshots/packages/${id}?projectId=${project}&regionId=${region}`);
   }
 
   createOrder(request: BackupPackageRequestModel) {

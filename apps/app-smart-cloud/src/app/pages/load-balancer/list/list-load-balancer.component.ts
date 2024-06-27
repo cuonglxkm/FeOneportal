@@ -74,7 +74,7 @@ export class ListLoadBalancerComponent implements OnInit{
     if(typeVpc === 1 || hasRoleSI) {
       this.router.navigate(['/app-smart-cloud/load-balancer/create/vpc'])
     }
-    if(typeVpc === 0) {
+    if(typeVpc !== 1) {
       this.router.navigate(['/app-smart-cloud/load-balancer/create'])
     }
   }
