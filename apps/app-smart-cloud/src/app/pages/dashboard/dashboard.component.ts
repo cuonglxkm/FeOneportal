@@ -407,6 +407,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
       this.getDataChart();
     }, 1500)
     this.onChangeInputChange();
+    console.log('role', this.getUserRole())
     if(this.getUserRole().includes("SI")) {
       localStorage.setItem('role', 'SI')
     } else {

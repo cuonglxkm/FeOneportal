@@ -179,13 +179,17 @@ export class ListBackupVmComponent implements OnInit, OnDestroy {
     this.getListBackupVM(false)
   }
 
+  isLoadingAction: boolean = false
   navigateToCreateBackup() {
     // this.dataService.setSelectedObjectId(id)
+    this.isLoadingAction = true
     if(this.typeVPC == 1) {
+      this.isLoadingAction = false
       this.router.navigate(['/app-smart-cloud/backup-vm/create/vpc']);
     }
 
     if(this.typeVPC != 1) {
+      this.isLoadingAction = false
       this.router.navigate(['/app-smart-cloud/backup-vm/create/no-vpc']);
     }
 
