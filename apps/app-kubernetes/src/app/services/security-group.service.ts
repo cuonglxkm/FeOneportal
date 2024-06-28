@@ -15,8 +15,6 @@ export class SecurityGroupService extends BaseService {
     super();
   }
 
-  baseUrl: string = "https://api-dev.onsmartcloud.com";
-
   private getHeaders() {
     return new HttpHeaders({
       'Content-Type': 'application/json',
@@ -31,7 +29,7 @@ export class SecurityGroupService extends BaseService {
     params = params.append('projectId', condition.projectId);
     params = params.append('regionId', condition.regionId);
 
-    return this.http.get<SecurityGroup[]>(this.baseUrl + this.ENDPOINT.provisions + '/security_group/getall', { params: params });
+    return this.http.get<SecurityGroup[]>(this.baseSCUrl + this.ENDPOINT.provisions + '/security_group/getall', { params: params });
   }
 
   searchRule(condition: RuleSearchCondition) {
@@ -44,19 +42,19 @@ export class SecurityGroupService extends BaseService {
     params = params.append('securityGroupId', condition.securityGroupId);
     params = params.append('direction', condition.direction);
 
-    return this.http.get(this.baseUrl + this.ENDPOINT.provisions + '/security_group/rule/getpaging', { params: params });
+    return this.http.get(this.baseSCUrl + this.ENDPOINT.provisions + '/security_group/rule/getpaging', { params: params });
   }
 
   createSecurityGroup(form: CreateSGReqDto) {
-    return this.http.post(this.baseUrl + this.ENDPOINT.provisions + '/security_group', Object.assign(form));
+    return this.http.post(this.baseSCUrl + this.ENDPOINT.provisions + '/security_group', Object.assign(form));
   }
 
   deleteRule(formDeleteRule: FormDeleteRule) {
-    return this.http.delete(this.baseUrl + this.ENDPOINT.provisions + '/security_group/rule', { body: formDeleteRule });
+    return this.http.delete(this.baseSCUrl + this.ENDPOINT.provisions + '/security_group/rule', { body: formDeleteRule });
   }
 
   createRule(form: SecurityGroupRuleCreateForm) {
-    return this.http.post(this.baseUrl + this.ENDPOINT.provisions + '/security_group/rule', Object.assign(form));
+    return this.http.post(this.baseSCUrl + this.ENDPOINT.provisions + '/security_group/rule', Object.assign(form));
   }
 
 }

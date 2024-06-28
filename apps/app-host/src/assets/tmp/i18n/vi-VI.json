@@ -1998,6 +1998,7 @@
   "app.cluster.warning-upgrade-1": "Việc thay đổi cấu hình, phiên bản có thể khiến dịch vụ gặp gián đoạn tạm thời và không thể sửa cluster config.",
   "app.cluster.warning-upgrade-2": "Để đảm bảo an toàn, xin hãy thực hiện backup dữ liệu. Hoạt động này sẽ bắt đầu ngay lập tức và không thể quay trở lại phiên bản cũ.",
   "app.cluster.warning-upgrade-3": "Vui lòng đọc thêm thông tin tại",
+  "app.cluster.download-file": "Tải file thành công",
 
   "cluster.status.not-yet-extend": "Tạm ngưng",
   "cluster.status.running": "Đang hoạt động",
