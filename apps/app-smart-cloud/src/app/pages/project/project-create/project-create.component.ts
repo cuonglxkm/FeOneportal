@@ -19,6 +19,7 @@ import { CatalogService } from 'src/app/shared/services/catalog.service';
 import { Interface } from 'readline';
 import { VpcService } from 'src/app/shared/services/vpc.service';
 import { OrderService } from 'src/app/shared/services/order.service';
+import { LoadingService } from '@delon/abc/loading';
 
 
 
@@ -216,7 +217,8 @@ export class ProjectCreateComponent implements OnInit {
     @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
     private ipService: IpPublicService,
     private vpc: VpcService,
-    private orderService: OrderService) {
+    private orderService: OrderService,
+    private loadingSrv: LoadingService) {
     this.inputChangeSubject.pipe(
       debounceTime(800)
     ).subscribe(data => this.checkNumberInput(data.value, data.name));
@@ -245,6 +247,7 @@ export class ProjectCreateComponent implements OnInit {
     this.catalogs.forEach(catalog => {
       this.getProductActivebyregion(catalog, this.regionId);
     });
+    this.getCatelogOffer();
 
   }
   offervCpu: number;
@@ -641,11 +644,13 @@ export class ProjectCreateComponent implements OnInit {
         }
       );
     } else {
+      this.loadingSrv.open({ type: 'spin', text: 'Loading...' });
       this.orderService
         .validaterOrder(request)
         .pipe(
                 finalize(() => {
-                  this.isLoading = false;
+                  this.loadingSrv.close()
+                  // this.isLoading = false;
                   this.cdr.detectChanges();
                 })
               )
@@ -767,14 +772,15 @@ export class ProjectCreateComponent implements OnInit {
   initVpnGpu() {
     this.activeVpnGpu = true;
     this.trashVpnGpu = true;
-    this.getCatelogOffer();
-    this.calculate(null);
+   
+    // this.calculate(null);
 
   }
   deleteVpnGpu() {
     this.activeVpnGpu = false;
     this.trashVpnGpu = false;
-    this.gpuQuotasGobal = []
+    this.getCatelogOffer();
+    // this.gpuQuotasGobal = []
     this.calculate(null)
   }
 
@@ -901,10 +907,10 @@ export class ProjectCreateComponent implements OnInit {
         this.price.hhd = item.totalAmount.amount;
         this.price.hhdPerUnit = item.unitPrice.amount;
       }
-      else if (item.typeName == 'Nvidia A30') {
+      else if (item.typeName == 'NVIDIA-A30') {
         console.log("this.gpuQuotasGobal555", this.gpuQuotasGobal)
         for (let gpu of this.gpuQuotasGobal) {
-          if (gpu.GpuType == 'Nvidia A30') {
+          if (gpu.GpuType == 'NVIDIA-A30') {
             gpu.GpuPrice = item.totalAmount.amount;
             console.log("gpu.GpuPrice", gpu.GpuPrice)
             gpu.GpuPriceUnit = item.unitPrice.amount;
@@ -913,9 +919,9 @@ export class ProjectCreateComponent implements OnInit {
         }
 
       }
-      else if (item.typeName == 'Nvidia A100') {
+      else if (item.typeName == 'NVIDIA-A100') {
         for (let gpu of this.gpuQuotasGobal) {
-          if (gpu.GpuType == 'Nvidia A100') {
+          if (gpu.GpuType == 'NVIDIA-A100') {
             gpu.GpuPrice = item.totalAmount.amount;
             console.log("gpu.GpuPrice 2", gpu.GpuPrice)
             gpu.GpuPriceUnit = item.unitPrice.amount;
@@ -1019,13 +1025,17 @@ export class ProjectCreateComponent implements OnInit {
       res => {
         this.listTypeCatelogOffer = res
         console.log("listTypeCatelogOffer", res)
-        this.gpuQuotasGobal = this.listTypeCatelogOffer.map((item: any) => ({
+        this.gpuQuotasGobal = this.listTypeCatelogOffer.map((item: any) => (
+        
+          {
+         
           GpuOfferId: item.id,
           GpuCount: 0,
           GpuType: item.offerName,
           GpuPrice: null,
-          GpuPriceUnit: null
+          GpuPriceUnit: item.price?.fixedPrice?.amount
         }));
+        console.log("this.gpuQuotasGobal",this.gpuQuotasGobal)
       }
     );
   }
@@ -1036,7 +1046,7 @@ export class ProjectCreateComponent implements OnInit {
 
 
   getValues(index: number, value: number): void {
-
+   
     console.log("index", index)
     console.log("value", value)
     console.log("gpuQuotasGobal 123", this.gpuQuotasGobal)
@@ -1048,38 +1058,12 @@ export class ProjectCreateComponent implements OnInit {
       this.isShowAlertGpu = false
       console.log("isShowAlertGpu else", this.isShowAlertGpu)
     }
-    // console.log(this.gpuQuotasGobal[index].GpuCount);
-    // if (index == 0) {
-    //   if (this.gpuQuotasGobal[0].GpuCount <= this.maxTotal) {
-    //     this.maxNumber[1] = this.maxTotal - this.gpuQuotasGobal[0].GpuCount;
-    //     if (this.gpuQuotasGobal[1].GpuCount > 0 && this.gpuQuotasGobal[1].GpuCount > this.maxNumber[1]) {
-    //       this.notification.warning('', 'Bạn chỉ có thể mua tổng 2 loại GPU tối đa là 8');
-    //       this.gpuQuotasGobal[1].GpuCount = this.maxNumber[1]
-    //     }
-    //   }
-    // }
-    // else {
-    //   if (this.gpuQuotasGobal[1].GpuCount <= this.maxTotal) {
-    //     this.maxNumber[0] = this.maxTotal - this.gpuQuotasGobal[1].GpuCount
-    //     if (this.gpuQuotasGobal[0].GpuCount > 0 && this.gpuQuotasGobal[0].GpuCount > this.maxNumber[0]) {
-    //       this.notification.warning('', 'Bạn chỉ có thể mua tổng 2 loại GPU tối đa là 8');
-    //       this.gpuQuotasGobal[0].GpuCount = this.maxNumber[0]
-    //     }
-    //   }
-    // }
     this.calculate(null)
+   
+
   }
 
-  // getMaxValue(index: number): number {
-  //   if (this.gpuQuotasGobal[index].GpuCount < 8) {
-  //     return this.maxNumber[index];
-  //   }
-  // }
-
-  // isDisabled(index: number): boolean {
-  //   let total = this.numbergpu.reduce((sum, current) => sum + current, 0);
-  //   return total >= this.maxTotal && this.numbergpu[index] === 0;
-  // }
+  
   refreshQuota() {
     this.vCPU = 0;
     this.ram = 0;
@@ -1111,9 +1095,17 @@ export class ProjectCreateComponent implements OnInit {
   }
 
 
-  getProductActivebyregion(catalog:string, regionid:number){
+  // getProductActivebyregion(catalog:string, regionid:number){
+  //   this.vpc.getProductActivebyregion(catalog, regionid).subscribe((res: any) => {
+  //     this.productByRegion = res
+  //     this.catalogStatus[catalog] = this.productByRegion.some(product => product.isActive === true);
+
+  //   })
+  // }
+  getProductActivebyregion(catalog:any, regionid:number){
     this.vpc.getProductActivebyregion(catalog, regionid).subscribe((res: any) => {
       this.productByRegion = res
+      console.log("productByRegion", this.productByRegion)
       this.catalogStatus[catalog] = this.productByRegion.some(product => product.isActive === true);
 
     })

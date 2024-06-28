@@ -308,6 +308,8 @@ export class ListClusterComponent implements OnInit, OnDestroy {
         if (r && r.code == 200) {
           const yamlString = r.data;
           this.downloadKubeConfig(item.clusterName, yamlString);
+
+          this.notificationService.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('app.cluster.download-file'));
         } else {
           console.error('An error ocur when download file');
         }

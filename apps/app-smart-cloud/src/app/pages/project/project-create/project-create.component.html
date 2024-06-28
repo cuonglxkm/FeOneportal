@@ -1027,10 +1027,9 @@
                   <table *ngFor="let typeCatelog of gpuQuotasGobal;let i = index;trackBy:trackById">
                     <td style="width:60%">
                       <nz-form-item>
-                        <nz-form-label class="custom-label">Số lượng GPU (Type -
-                          {{typeCatelog?.GpuType}})</nz-form-label>
+                        <nz-form-label class="custom-label">Số lượng GPU ({{typeCatelog?.GpuType}})</nz-form-label>
                         <nz-form-control>
-                          <nz-input-number style="width: 100%; margin-left: -1px" nzMin="0" nzStep="1" name="gpu"
+                          <nz-input-number style="width: 100%; margin-left: -1px" nzMin="0" nzMax="1000" nzStep="1" name="gpu"
                             [(ngModel)]="gpuQuotasGobal[i].GpuCount"
                             (ngModelChange)="getValues(i,gpuQuotasGobal?.[i]?.GpuCount)"
                             [ngModelOptions]="{ standalone: true }" nzSize="large"></nz-input-number>
@@ -1112,11 +1111,11 @@
                 </nz-row>
                 <nz-row style="display: flex;justify-content: space-between;">
                   <div style="margin-top: 10px" class="text-label">Dung lượng HDD:</div>
-                  <div style="margin-top: 10px" class="text-label">{{ hhd }}GB</div>
+                  <div style="margin-top: 10px" class="text-label">{{ hhd }} GB</div>
                 </nz-row>
                 <nz-row style="display: flex;justify-content: space-between;">
                   <div style="margin-top: 10px" class="text-label">Dung lượng SSD:</div>
-                  <div style="margin-top: 10px" class="text-label">{{ ssd }}GB</div>
+                  <div style="margin-top: 10px" class="text-label">{{ ssd }} GB</div>
                 </nz-row>
 
 
@@ -1149,15 +1148,15 @@
               </nz-row>
               <nz-row *ngIf="numberSnapshothdd != 0" style="display: flex;justify-content: space-between;">
                 <div style="margin-top: 10px" class="text-label">Dung lượng Snapshot - HDD:</div>
-                <div style="margin-top: 10px" class="text-label">{{ numberSnapshothdd }}GB</div>
+                <div style="margin-top: 10px" class="text-label">{{ numberSnapshothdd }} GB</div>
               </nz-row>
               <nz-row *ngIf="numberSnapshotssd != 0" style="display: flex;justify-content: space-between;">
                 <div style="margin-top: 10px" class="text-label">Dung lượng Snapshot - SSD:</div>
-                <div style="margin-top: 10px" class="text-label">{{ numberSnapshotssd }}GB</div>
+                <div style="margin-top: 10px" class="text-label">{{ numberSnapshotssd }} GB</div>
               </nz-row>
               <nz-row *ngIf="numberBackup != 0" style="display: flex;justify-content: space-between;">
                 <div style="margin-top: 10px" class="text-label">Backup:</div>
-                <div style="margin-top: 10px" class="text-label">{{ numberBackup }}GB</div>
+                <div style="margin-top: 10px" class="text-label">{{ numberBackup }} GB</div>
               </nz-row>
               <nz-row *ngIf="numberLoadBalancer != 0|| loadBalancerId"
                 style="display: flex;justify-content: space-between;">
@@ -1166,11 +1165,11 @@
               </nz-row>
               <nz-row *ngIf="numberFileSystem != 0" style="display: flex;justify-content: space-between;">
                 <div style="margin-top: 10px" class="text-label">Dung lượng File System:</div>
-                <div style="margin-top: 10px" class="text-label">{{ numberFileSystem }}GB</div>
+                <div style="margin-top: 10px" class="text-label">{{ numberFileSystem }} GB</div>
               </nz-row>
               <nz-row *ngIf="numberFileSystem != 0" style="display: flex;justify-content: space-between;">
                 <div style="margin-top: 10px" class="text-label">Dung lượng File System Snapshot:</div>
-                <div style="margin-top: 10px" class="text-label">{{ numberFileScnapsshot }}GB</div>
+                <div style="margin-top: 10px" class="text-label">{{ numberFileScnapsshot }} GB</div>
               </nz-row>
               <nz-row *ngIf="siteToSiteId " style="display: flex;justify-content: space-between;">
                 <div style="margin-top: 10px" class="text-label">VPN site to site:</div>

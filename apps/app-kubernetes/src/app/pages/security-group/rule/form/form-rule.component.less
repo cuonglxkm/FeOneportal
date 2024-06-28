@@ -6,3 +6,37 @@ textarea,
 ::ng-deep .ant-select:not(.ant-select-customize-input) .ant-select-selector {
   border-radius: 8px;
 }
+
+::ng-deep .ant-form label {
+  font-size: 16px;
+}
+
+.content, .name-rule {
+  font-size: 16px;
+}
+
+[data-theme='dark'] :host ::ng-deep .content-table {
+  color: #DDDDDD;
+}
+
+[data-theme='compact'] {
+  :host ::ng-deep {
+    .content {
+      font-size: 14px;
+    }
+
+    .name-rule {
+      font-size: 14px;
+    }
+
+    .ant-form label {
+      font-size: 14px;
+    }
+
+    input,
+    textarea,
+    .border-button {
+      border-radius: 8px;
+    }
+  }
+}

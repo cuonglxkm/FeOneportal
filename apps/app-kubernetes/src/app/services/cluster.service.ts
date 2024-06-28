@@ -70,6 +70,11 @@ export class ClusterService extends BaseService {
       { headers: this.getHeaders() });
   }
 
+  validateExtendService(data: any) {
+    return this.http.post(`${this.baseUrl}${this.ENDPOINT.k8s}/k8s/validate-extend`, data,
+      { headers: this.getHeaders() });
+  }
+
   editClusterInfo(data: any) {
     return this.http.put(`${this.baseUrl}${this.ENDPOINT.k8s}/k8s/edit-cluster`, data, {headers: this.getHeaders()});
   }
