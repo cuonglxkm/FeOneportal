@@ -19,7 +19,7 @@ import {
 import { ActivatedRoute, Router } from '@angular/router';
 import { InstancesService } from '../instances.service';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
-import { finalize } from 'rxjs';
+import { asapScheduler, finalize } from 'rxjs';
 import { LoadingService } from '@delon/abc/loading';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { NzModalService } from 'ng-zorro-antd/modal';
@@ -77,10 +77,12 @@ export class InstancesExtendComponent implements OnInit {
     }
   }
 
+  hasRoleSI: boolean;
   ngOnInit(): void {
     this.customerId = this.tokenService.get()?.userId;
     this.email = this.tokenService.get()?.email;
     this.id = Number.parseInt(this.activatedRoute.snapshot.paramMap.get('id'));
+    this.hasRoleSI = localStorage.getItem('role').includes('SI')
     this.service.getById(this.id, true).subscribe({
       next: (data) => {
         this.loadingSrv.open({ type: 'spin', text: 'Loading...' });
@@ -277,4 +279,6 @@ export class InstancesExtendComponent implements OnInit {
       '/app-smart-cloud/instances/instances-detail/' + this.id,
     ]);
   }
+
+  protected readonly asapScheduler = asapScheduler;
 }

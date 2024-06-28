@@ -223,6 +223,7 @@ export class ProjectCreateComponent implements OnInit {
 
   }
 
+  hasRoleSI: boolean
   ngOnInit() {
     let regionAndProject = getCurrentRegionAndProject();
     this.regionId = regionAndProject.regionId;
@@ -232,6 +233,7 @@ export class ProjectCreateComponent implements OnInit {
     this.loadListIpConnectInternet();
     this.loadInforProjectNormal();
     this.calculateReal();
+    this.hasRoleSI = localStorage.getItem('role').includes('SI')
     this.searchSubject.pipe(debounceTime(this.debounceTimeMs)).subscribe((searchValue) => {
       this.calculateReal();
     });
@@ -263,7 +265,7 @@ export class ProjectCreateComponent implements OnInit {
       if (lstIp != null && lstIp != undefined) {
         ip = lstIp[0];
       }
-     
+
 
       let IPPublicNum = this.numberIpPublic;
       let IPFloating = this.ipConnectInternet != null && this.ipConnectInternet != '' ? this.numberIpFloating : 0;
@@ -381,7 +383,7 @@ export class ProjectCreateComponent implements OnInit {
       const valuestring: any = res.valueString;
       const parts = valuestring.split("#")
       this.minBlock = parseInt(parts[0]);
-      this.stepBlock = parseInt(parts[1]);    
+      this.stepBlock = parseInt(parts[1]);
       this.maxBlock = parseInt(parts[2]);
     })
   }
@@ -564,7 +566,7 @@ export class ProjectCreateComponent implements OnInit {
           quotaIpPublicCount: this.numberIpPublic,
           quotaIpFloatingCount: this.numberIpFloating,
           quotaIpv6Count: this.numberIpv6,
-          
+
           projectType: this.vpcType,
           quotaNetworkCount: this.numberNetwork,
           quotaRouterCount: this.numberRouter,
@@ -707,7 +709,7 @@ export class ProjectCreateComponent implements OnInit {
   initBackup() {
     this.activeBackup = true;
     this.trashBackup = true;
-    // this.price.backupUnit= 
+    // this.price.backupUnit=
 
   }
   deleteBackup() {
@@ -989,7 +991,7 @@ export class ProjectCreateComponent implements OnInit {
     this.price.snapshotssdUnit = 0;
   }
 
-  // 
+  //
 
   findNameLoadBalance(loadBalancerId: number) {
     if (loadBalancerId) {
@@ -1105,7 +1107,7 @@ export class ProjectCreateComponent implements OnInit {
    else{
     this.isShowAlertGpu = true
    }
-  
+
   }
 
 

@@ -204,6 +204,8 @@ export class ProjectUpdateComponent implements OnInit {
   isLoading = false;
   isVisiblePopupError: boolean = false;
   errorList: string[] = [];
+
+  hasRoleSI: boolean
   closePopupError() {
     this.isVisiblePopupError = false;
   }
@@ -263,6 +265,7 @@ export class ProjectUpdateComponent implements OnInit {
     this.catalogs.forEach(catalog => {
       this.getProductActivebyregion(catalog, this.regionId);
     });
+    this.hasRoleSI = localStorage.getItem('role').includes('SI')
 
   }
   openIpSubnet() {
@@ -551,7 +554,7 @@ export class ProjectUpdateComponent implements OnInit {
         regionId: this.regionId,
         serviceName: this.form.controls['name'].value
       }
-      
+
       const request = {
         customerId: this.tokenService.get()?.userId,
         createdByUserId: this.tokenService.get()?.userId,
@@ -582,7 +585,7 @@ export class ProjectUpdateComponent implements OnInit {
             if (result.success) {
               var returnPath: string = window.location.pathname;
               this.router.navigate(['/app-smart-cloud/order/cart'], { state: { data: request, path: returnPath } });
-             
+
             } else {
               this.isVisiblePopupError = true;
               this.errorList = result.data;
@@ -647,7 +650,7 @@ export class ProjectUpdateComponent implements OnInit {
           console.log("data vpc detail", this.data)
           this.checkConfigPackage(this.data?.offerId)
 
-          // this.price.vcpu = 
+          // this.price.vcpu =
           this.form.controls['name'].setValue(data.displayName);
           this.form.controls['description'].setValue(data.description);
           this.today = this.data.createDate;
