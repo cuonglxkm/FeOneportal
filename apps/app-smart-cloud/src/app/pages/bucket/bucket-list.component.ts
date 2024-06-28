@@ -38,7 +38,8 @@ export class BucketListComponent implements OnInit {
   isLoadingDeleteOS: boolean = false;
   searchDelay = new Subject<boolean>();
   user: any
-  
+  usage: any
+  totalUsage: number
   constructor(
     @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
     private bucketService: BucketService,
@@ -57,6 +58,7 @@ export class BucketListComponent implements OnInit {
     this.region = regionAndProject.regionId;
       this.hasObjectStorageInfo()
       this.hasObjectStorage();
+      this.getUsageOfUser()
       this.searchDelay
         .pipe(debounceTime(TimeCommon.timeOutSearch))
         .subscribe(() => {
@@ -109,10 +111,31 @@ export class BucketListComponent implements OnInit {
       });
   }
 
+  getUsageOfUser() {
+    this.loadingSrv.open({ type: 'spin', text: 'Loading...' });
+    this.objectSevice
+      .getUsageOfUser(this.region)
+      .pipe(finalize(() => this.loadingSrv.close()))
+      .subscribe({
+        next: (data) => {
+          this.usage = data;
+          this.totalUsage = parseFloat(this.usage.usage) / parseInt(this.usage.total) * 100
+          this.cdr.detectChanges();
+        },
+        error: (e) => {
+          this.notification.error(
+            this.i18n.fanyi('app.status.fail'),
+            this.i18n.fanyi('app.bucket.getObject.fail')
+          );
+        },
+      });
+  }
+
   onRegionChange(region: RegionModel) {
     this.region = region.regionId;
       this.hasObjectStorageInfo()
       this.hasObjectStorage();
+      this.getUsageOfUser()
   }
 
   onRegionChanged(region: RegionModel) {

@@ -348,7 +348,7 @@
                     <nz-form-control>
                       <nz-input-number style="width: 100%; margin-left: -1px" [nzMin]="0" [nzStep]="1"
                         (keydown)="checkPossiblePress($event)" [(ngModel)]="numberIpFloating"
-                        (ngModelChange)="calculate(null)" [ngModelOptions]="{ standalone: true }"
+                        (ngModelChange)="calculate()" [ngModelOptions]="{ standalone: true }"
                         nzSize="large"></nz-input-number>
                     </nz-form-control>
                   </nz-form-item>
@@ -790,7 +790,7 @@
             </div>
 
             <div *ngIf="activeVpnGpu">
-              <div class="ant-table" [nzLoading]="isLoading">
+              <div class="ant-table" >
                 <table *ngFor="let typeCatelog of gpuQuotasGobal;let i = index;trackBy:trackById">
                   <td style="width:60%">
                     <nz-form-item>
