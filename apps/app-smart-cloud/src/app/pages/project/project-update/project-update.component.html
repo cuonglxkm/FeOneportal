@@ -1157,31 +1157,33 @@
           </nz-col>
         </nz-row> -->
         <nz-divider *ngIf="siteToSiteId||numberSnapshotssd!=0||numberSnapshothdd!=0||numberLoadBalancer != 0 || numberFileSystem != 0 || numberFileScnapsshot !=0|| numberBackup != 0 ||numberIpFloating != 0|| numberIpPublic != 0|| numberIpv6 != 0" style="margin: 10px 0" nzType="horizontal"></nz-divider>
-        <nz-row style="margin-bottom: 10px" nzGutter="16">
-          <nz-col nzSpan="16">
-            <span class="text-value"> Chi phí VAT (10%)</span>
-          </nz-col>
-          <nz-col class="text-right" nzSpan="8">
+        <div *ngIf="!hasRoleSI">
+          <nz-row style="margin-bottom: 10px" nzGutter="16">
+            <nz-col nzSpan="16">
+              <span class="text-value"> Chi phí VAT (10%)</span>
+            </nz-col>
+            <nz-col class="text-right" nzSpan="8">
             <span class="text-value" style="color: #0066b3" nzAlign="right">
               {{ totalVAT | formatPrice}}
               VND
             </span>
-          </nz-col>
-        </nz-row>
-        <nz-row style="
+            </nz-col>
+          </nz-row>
+          <nz-row style="
             margin-bottom: 20px;
             background-color: #cce9ff;
             padding: 16px 0 16px 0;
             border-radius: 8px;
           " nzGutter="16">
-          <nz-col nzSpan="16">
-            <span class="text-label">{{'app.total.payment' | i18n}}</span><br />
-            <span class="text-note-italicized">({{'app.payment-detail.vat' | i18n}})</span>
-          </nz-col>
-          <nz-col class="text-right" nzSpan="8">
-            <span class="text-value" style="color: #ea3829" nzAlign="right">{{ totalPayment | formatPrice  }} VND</span>
-          </nz-col>
-        </nz-row>
+            <nz-col nzSpan="16">
+              <span class="text-label">{{'app.total.payment' | i18n}}</span><br />
+              <span class="text-note-italicized">({{'app.payment-detail.vat' | i18n}})</span>
+            </nz-col>
+            <nz-col class="text-right" nzSpan="8">
+              <span class="text-value" style="color: #ea3829" nzAlign="right">{{ totalPayment | formatPrice  }} VND</span>
+            </nz-col>
+          </nz-row>
+        </div>
         <nz-row>
           <nz-col style="width: 100%">
             <button style="width: 100%" nz-button nzSize="large" nzType="primary" (click)="updateVpc()"
