@@ -170,6 +170,7 @@ export class SecurityComponent implements OnInit {
     this.startCountdownGgAuthen();
     this.service.getOTPForAuthenticator().subscribe((data: any) => {
       this.notification.success(this.i18n.fanyi("app.status.success"), this.i18n.fanyi("Thao tác thành công"));
+      this.form.reset()
       this.type = 1
     }, error => {
       this.notification.error(this.i18n.fanyi("app.status.fail"), this.i18n.fanyi("app.security.noti.fail2"))

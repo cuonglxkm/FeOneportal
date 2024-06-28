@@ -27,6 +27,8 @@ import { ObjectObjectStorageService } from '../../../shared/services/object-obje
 import { TimeCommon } from 'src/app/shared/utils/common';
 import { getCurrentRegionAndProject } from '@shared';
 import { RegionModel } from '../../../../../../../libs/common-utils/src';
+import { LoadingService } from '@delon/abc/loading';
+import { ObjectStorageService } from 'src/app/shared/services/object-storage.service';
 
 @Component({
   selector: 'one-portal-bucket-detail',
@@ -104,7 +106,7 @@ export class BucketDetailComponent extends BaseService implements OnInit {
   keyName: string;
   isLoadingGetLink: boolean = false;
   isVisibleDeleteObject: boolean = false;
-
+  usage: string
   activePrivate = true;
   filterQuery: string = '';
   listFile = [];
@@ -117,6 +119,7 @@ export class BucketDetailComponent extends BaseService implements OnInit {
 
   constructor(
     private service: ObjectObjectStorageService,
+    private objectSevice: ObjectStorageService,
     private bucketservice: BucketService,
     private activatedRoute: ActivatedRoute,
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
@@ -124,7 +127,8 @@ export class BucketDetailComponent extends BaseService implements OnInit {
     private notification: NzNotificationService,
     private clipboard: Clipboard,
     private modalService: NzModalService,
-    private fb: NonNullableFormBuilder
+    private fb: NonNullableFormBuilder,
+    private loadingSrv: LoadingService
   ) {
     super();
   }
@@ -168,6 +172,7 @@ export class BucketDetailComponent extends BaseService implements OnInit {
   ngOnInit(): void {
     let regionAndProject = getCurrentRegionAndProject();
     this.region = regionAndProject.regionId;
+    this.getUsageOfBucket()
     this.loadBucket();
     this.loadData();
     this.searchDelay.pipe(debounceTime(TimeCommon.timeOutSearch)).subscribe(() => {     
@@ -210,6 +215,26 @@ export class BucketDetailComponent extends BaseService implements OnInit {
     this.isVisibleShare = false;
     this.dateShare = new Date();
     this.linkShare = '';
+  }
+
+  getUsageOfBucket() {
+    this.loadingSrv.open({ type: 'spin', text: 'Loading...' });
+    this.objectSevice
+      .getUsageOfBucket(this.activatedRoute.snapshot.paramMap.get('name'), this.region)
+      .pipe(finalize(() => this.loadingSrv.close()))
+      .subscribe({
+        next: (data) => {
+          console.log(data);
+          
+          this.usage = data;
+        },
+        error: (e) => {
+          this.notification.error(
+            this.i18n.fanyi('app.status.fail'),
+            this.i18n.fanyi('app.bucket.getObject.fail')
+          );
+        },
+      });
   }
 
 
