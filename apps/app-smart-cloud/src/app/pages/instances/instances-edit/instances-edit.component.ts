@@ -183,6 +183,7 @@ export class InstancesEditComponent implements OnInit {
     }
   }
 
+  hasRoleSI: boolean;
   ngOnInit(): void {
     this.userId = this.tokenService.get()?.userId;
     this.userEmail = this.tokenService.get()?.email;
@@ -193,6 +194,7 @@ export class InstancesEditComponent implements OnInit {
     this.getConfigurations();
     this.getListIpPublic();
     this.getListGpuType();
+    this.hasRoleSI = localStorage.getItem('role').includes('SI')
     this.breakpointObserver
       .observe([
         Breakpoints.XSmall,
