@@ -161,9 +161,6 @@ export class OrderListComponent implements OnInit {
       this.refreshParams();
       this.searchSnapshotScheduleList();
     }
-
-    console.log(this.searchStatus);
-    console.log(this.searchStatusOrder);
   }
 
   onChanggeDate(value: Date[]) {
@@ -200,10 +197,6 @@ export class OrderListComponent implements OnInit {
   }
 
   searchSnapshotScheduleList() {
-    debugger;
-    console.log(this.searchStatus);
-    console.log(this.searchStatusOrder);
-
     this.doGetSnapSchedules(
       this.pageSize,
       this.currentPage,
