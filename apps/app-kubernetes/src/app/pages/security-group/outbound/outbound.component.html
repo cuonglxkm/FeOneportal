@@ -18,25 +18,25 @@
   (nzQueryParams)="onQueryParamsChange($event)" [nzLoading]="isLoadingOutbound">
   <thead>
     <tr>
-      <th>{{ 'app.order.ordinalNumber' | i18n }}</th>
-      <th>IP Version</th>
-      <th>Protocol</th>
-      <th>Port Range</th>
-      <th>Remote IP Prefix</th>
-      <th>Remote Security Group</th>
-      <th>{{ 'app.text.operation' | i18n }}</th>
+      <th class="content header-table">{{ 'app.order.ordinalNumber' | i18n }}</th>
+      <th class="content header-table">IP Version</th>
+      <th class="content header-table">Protocol</th>
+      <th class="content header-table">Port Range</th>
+      <th class="content header-table">Remote IP Prefix</th>
+      <th class="content header-table">Remote Security Group</th>
+      <th class="content header-table">{{ 'app.text.operation' | i18n }}</th>
     </tr>
   </thead>
   <tbody>
     <ng-container *ngFor="let item of ruleTable.data; let i = index;">
       <tr>
-        <td class="right-align content-table">{{ i + 1 }}</td>
-        <td class="content-table">{{item.etherType}}</td>
-        <td class="content-table">{{item.protocol | protocol2label}}</td>
-        <td class="content-table">{{item.portRange}}</td>
-        <td class="content-table">{{item.remoteIpPrefix}}</td>
-        <td class="content-table">{{item.remoteGroupName}}</td>
-        <td class="content-table">
+        <td class="right-align content-table content">{{ i + 1 }}</td>
+        <td class="content-table content">{{item.etherType}}</td>
+        <td class="content-table content">{{item.protocol | protocol2label}}</td>
+        <td class="content-table content">{{item.portRange}}</td>
+        <td class="content-table content">{{item.remoteIpPrefix}}</td>
+        <td class="content-table content">{{item.remoteGroupName}}</td>
+        <td class="content-table content">
           <ng-container *ngIf="item | canDelRule; else cannotDelRuleTpl">
             <div class="center-align">
               <one-portal-delete-outbound

@@ -885,9 +885,9 @@ export class ProjectUpdateComponent implements OnInit {
         this.price.hhd = item.totalAmount.amount;
         this.price.hhdPerUnit = item.unitPrice.amount;
       }
-      else if (item.typeName == 'Nvidia A30') {
+      else if (item.typeName == 'NVIDIA-A30') {
         for (let gpu of this.gpuQuotasGobal) {
-          if (gpu.GpuType == 'Nvidia A30') {
+          if (gpu.GpuType == 'NVIDIA-A30') {
             gpu.GpuPrice = item.totalAmount.amount;
             console.log("gpu.GpuPrice", gpu.GpuPrice)
             gpu.GpuPriceUnit = item.unitPrice.amount;
@@ -896,9 +896,9 @@ export class ProjectUpdateComponent implements OnInit {
         }
 
       }
-      else if (item.typeName == 'Nvidia A100') {
+      else if (item.typeName == 'NVIDIA-A100') {
         for (let gpu of this.gpuQuotasGobal) {
-          if (gpu.GpuType == 'Nvidia A100') {
+          if (gpu.GpuType == 'NVIDIA-A100') {
             gpu.GpuPrice = item.totalAmount.amount;
             console.log("gpu.GpuPrice 2", gpu.GpuPrice)
             gpu.GpuPriceUnit = item.unitPrice.amount;

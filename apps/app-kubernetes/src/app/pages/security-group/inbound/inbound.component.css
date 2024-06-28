@@ -19,6 +19,10 @@
   text-align: center;
 }
 
+.content {
+  font-size: 16px; 
+}
+
 .lock-rule {
   cursor: no-drop;
   text-align: center;
@@ -26,4 +30,13 @@
 
 [data-theme='dark'] :host ::ng-deep .content-table {
   color: #DDDDDD;
+}
+
+[data-theme='compact'] :host ::ng-deep .content {
+  font-size: 14px;
+}
+
+[data-theme='compact'] :host ::ng-deep .header-table {
+  font-weight: 600;
+  background-color: #E2EEFC;
 }

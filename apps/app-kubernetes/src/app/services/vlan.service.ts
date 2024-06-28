@@ -16,8 +16,6 @@ export class VlanService extends BaseService {
     super();
   }
 
-  baseUrl: string = "https://api-dev.onsmartcloud.com";
-
   private getHeaders() {
     return new HttpHeaders({
       'Content-Type': 'application/json',
@@ -46,14 +44,14 @@ export class VlanService extends BaseService {
     if (formSearch.pageNumber != undefined || formSearch.pageNumber != null) {
       params = params.append('pageNumber', formSearch.pageNumber)
     }
-    return this.http.get<BaseResponse<NetWorkModel[]>>(this.baseUrl + this.ENDPOINT.provisions + '/vlans/vlannetworks', {
+    return this.http.get<BaseResponse<NetWorkModel[]>>(this.baseSCUrl + this.ENDPOINT.provisions + '/vlans/vlannetworks', {
       headers: this.getHeaders(),
       params: params
     })
   }
 
   getVlanById(vlanId: number) {
-    return this.http.get<BaseResponse<NetWorkModel[]>>(this.baseUrl + this.ENDPOINT.provisions + '/vlans/' + vlanId, {
+    return this.http.get<BaseResponse<NetWorkModel[]>>(this.baseSCUrl + this.ENDPOINT.provisions + '/vlans/' + vlanId, {
       headers: this.getHeaders()
     });
   }
@@ -66,7 +64,7 @@ export class VlanService extends BaseService {
     if (region != undefined || region != null) {
       params = params.append('region', region)
     }
-    return this.http.get<Port[]>(this.baseUrl + this.ENDPOINT.provisions + '/vlans/listallportbynetworkid', {
+    return this.http.get<Port[]>(this.baseSCUrl + this.ENDPOINT.provisions + '/vlans/listallportbynetworkid', {
       headers: this.getHeaders(),
       params: params
     })
@@ -95,7 +93,7 @@ export class VlanService extends BaseService {
     if (formSearchSubnet.vpcId != undefined || formSearchSubnet.vpcId != null) {
       params = params.append('vpcId', formSearchSubnet.vpcId);
     }
-    return this.http.get<BaseResponse<Subnet[]>>(this.baseUrl + this.ENDPOINT.provisions + '/vlans/vlansubnets', {
+    return this.http.get<BaseResponse<Subnet[]>>(this.baseSCUrl + this.ENDPOINT.provisions + '/vlans/vlansubnets', {
       headers: this.getHeaders(),
       params: params
     })
