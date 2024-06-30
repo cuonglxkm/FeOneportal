@@ -46,6 +46,7 @@
   "service.status.restoring": "Đang khôi phục",
   "service.status.disabled": "Gián đoạn",
   "service.status.paused": "Tạm dừng",
+  "service.status.processing": "Đang xử lý",
   "service.status.unknown": "Không xác định",
 
 
