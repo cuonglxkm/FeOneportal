@@ -952,7 +952,7 @@ export class BucketDetailComponent extends BaseService implements OnInit {
             partNumber: index.toString(),
             uploadId: upload_id,
             expiryTime: addDays(new Date(), 1),
-            urlOrigin: 'http://localhost:4200',
+            urlOrigin: 'https://oneportal.onsmartcloud.com',
             regionId: this.region
           };
 
@@ -1033,7 +1033,7 @@ export class BucketDetailComponent extends BaseService implements OnInit {
           bucketName: this.activatedRoute.snapshot.paramMap.get('name'),
           key: this.currentKey + item.name,
           expiryTime: addDays(this.date, 1),
-          urlOrigin: 'http://localhost:4200',
+          urlOrigin: 'https://oneportal.onsmartcloud.com',
           regionId: this.region
         };
         this.service.getSignedUrl(data).subscribe(

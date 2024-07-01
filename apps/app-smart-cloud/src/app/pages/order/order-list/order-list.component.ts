@@ -26,7 +26,7 @@ export class OrderListComponent implements OnInit {
   region = JSON.parse(localStorage.getItem('regionId'));
   project = JSON.parse(localStorage.getItem('projectId'));
 
-  searchStatus?: any;
+  searchStatus?: any = 7;
   searchStatusOrder?: any = 6;
   searchName?: string;
   searchDelay = new Subject<boolean>();
@@ -62,53 +62,6 @@ export class OrderListComponent implements OnInit {
   actionSelected: number;
   isVisibleError: boolean = false;
 
-  private doGetSnapSchedules(
-    pageSize: number,
-    pageNumber: number,
-    orderCode: string,
-    saleDept: string,
-    saleDeptCode: string,
-    seller: string,
-    ticketCode: string,
-    dSubscriptionNumber: string,
-    dSubscriptionType: string,
-    fromDate: string,
-    toDate: string,
-    status: any
-  ) {
-    this.isLoadingEntities = true;
-    this.orderService
-      .getOrders(
-        pageSize,
-        pageNumber,
-        orderCode,
-        saleDept,
-        saleDeptCode,
-        seller,
-        ticketCode,
-        dSubscriptionNumber,
-        dSubscriptionType,
-        fromDate,
-        toDate,
-        status
-      )
-      .subscribe(
-        (data) => {
-          this.totalData = data.totalCount;
-          this.listOfData = data.records;
-          this.isLoadingEntities = false;
-          console.log('Huyen', data);
-        },
-        (error) => {
-          this.notification.error(
-            'Có lỗi xảy ra',
-            'Lấy danh sách Đơn hàng thất bại'
-          );
-          this.isLoadingEntities = false;
-        }
-      );
-  }
-
   constructor(
     private router: Router,
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
@@ -119,7 +72,6 @@ export class OrderListComponent implements OnInit {
 
   ngOnInit(): void {
     this.customerID = this.tokenService.get()?.userId;
-    this.searchSnapshotScheduleList();
     this.searchDelay
       .pipe(debounceTime(TimeCommon.timeOutSearch))
       .subscribe(() => {
@@ -136,7 +88,7 @@ export class OrderListComponent implements OnInit {
 
   onChange(value: number) {
     this.searchStatusOrder = value;
-      this.searchStatus = null;
+      this.searchStatus = 7;
       this.noInstalled = false;
     this.refreshParams();
     this.searchSnapshotScheduleList();
@@ -196,6 +148,53 @@ export class OrderListComponent implements OnInit {
     this.currentPage = 1;
   }
 
+  private doGetSnapSchedules(
+    pageSize: number,
+    pageNumber: number,
+    orderCode: string,
+    saleDept: string,
+    saleDeptCode: string,
+    seller: string,
+    ticketCode: string,
+    dSubscriptionNumber: string,
+    dSubscriptionType: string,
+    fromDate: string,
+    toDate: string,
+    status: any
+  ) {
+    this.isLoadingEntities = true;
+    this.orderService
+      .getOrders(
+        pageSize,
+        pageNumber,
+        orderCode,
+        saleDept,
+        saleDeptCode,
+        seller,
+        ticketCode,
+        dSubscriptionNumber,
+        dSubscriptionType,
+        fromDate,
+        toDate,
+        status
+      )
+      .subscribe(
+        (data) => {
+          this.totalData = data.totalCount;
+          this.listOfData = data.records;
+          this.isLoadingEntities = false;
+        },
+        (error) => {
+          this.notification.error(
+            'Có lỗi xảy ra',
+            'Lấy danh sách Đơn hàng thất bại'
+          );
+          this.isLoadingEntities = false;
+        }
+      );
+  }
+
+
   searchSnapshotScheduleList() {
     this.doGetSnapSchedules(
       this.pageSize,
@@ -220,6 +219,8 @@ export class OrderListComponent implements OnInit {
           this.searchStatus === 5 ||
           this.searchStatus === 3)
         ? [8]
+        : (this.searchStatusOrder === 1 || this.searchStatusOrder === 0 ) && (this.searchStatus === 7)
+        ? [this.searchStatusOrder]
         : this.searchStatusOrder === 6
         ? [0, 1, 2, 3, 4, 5, 6]
         : this.searchStatusOrder === 2 && (this.searchStatus === 7 || this.searchStatus === null)
@@ -235,8 +236,6 @@ export class OrderListComponent implements OnInit {
   navigateToCreate() {
     this.router.navigate(['/app-smart-cloud/schedule/snapshot/create']);
   }
-
-  handleNavigateToContact() {}
 
   handleCancel() {
     this.isVisibleError = false;
