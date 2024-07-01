@@ -111,9 +111,12 @@ export class OrderDetailComponent {
             data?.orderItems?.forEach((item) => {
               this.serviceName = item.serviceName.split('-')[0].trim()
               if(this.serviceName.includes('Máy ảo')){
-                this.serviceName = 'VM'
+                item.serviceNameLink = 'VM'
+              }else{
+                item.serviceNameLink = this.serviceName
               }
-            });
+            })
+            
 
             if(data.statusCode == 0){
               data.statusCode = 1
