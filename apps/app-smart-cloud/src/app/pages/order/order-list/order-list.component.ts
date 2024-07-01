@@ -62,53 +62,6 @@ export class OrderListComponent implements OnInit {
   actionSelected: number;
   isVisibleError: boolean = false;
 
-  private doGetSnapSchedules(
-    pageSize: number,
-    pageNumber: number,
-    orderCode: string,
-    saleDept: string,
-    saleDeptCode: string,
-    seller: string,
-    ticketCode: string,
-    dSubscriptionNumber: string,
-    dSubscriptionType: string,
-    fromDate: string,
-    toDate: string,
-    status: any
-  ) {
-    this.isLoadingEntities = true;
-    this.orderService
-      .getOrders(
-        pageSize,
-        pageNumber,
-        orderCode,
-        saleDept,
-        saleDeptCode,
-        seller,
-        ticketCode,
-        dSubscriptionNumber,
-        dSubscriptionType,
-        fromDate,
-        toDate,
-        status
-      )
-      .subscribe(
-        (data) => {
-          this.totalData = data.totalCount;
-          this.listOfData = data.records;
-          this.isLoadingEntities = false;
-          console.log('Huyen', data);
-        },
-        (error) => {
-          this.notification.error(
-            'Có lỗi xảy ra',
-            'Lấy danh sách Đơn hàng thất bại'
-          );
-          this.isLoadingEntities = false;
-        }
-      );
-  }
-
   constructor(
     private router: Router,
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
@@ -119,7 +72,6 @@ export class OrderListComponent implements OnInit {
 
   ngOnInit(): void {
     this.customerID = this.tokenService.get()?.userId;
-    this.searchSnapshotScheduleList();
     this.searchDelay
       .pipe(debounceTime(TimeCommon.timeOutSearch))
       .subscribe(() => {
@@ -196,6 +148,53 @@ export class OrderListComponent implements OnInit {
     this.currentPage = 1;
   }
 
+  private doGetSnapSchedules(
+    pageSize: number,
+    pageNumber: number,
+    orderCode: string,
+    saleDept: string,
+    saleDeptCode: string,
+    seller: string,
+    ticketCode: string,
+    dSubscriptionNumber: string,
+    dSubscriptionType: string,
+    fromDate: string,
+    toDate: string,
+    status: any
+  ) {
+    this.isLoadingEntities = true;
+    this.orderService
+      .getOrders(
+        pageSize,
+        pageNumber,
+        orderCode,
+        saleDept,
+        saleDeptCode,
+        seller,
+        ticketCode,
+        dSubscriptionNumber,
+        dSubscriptionType,
+        fromDate,
+        toDate,
+        status
+      )
+      .subscribe(
+        (data) => {
+          this.totalData = data.totalCount;
+          this.listOfData = data.records;
+          this.isLoadingEntities = false;
+        },
+        (error) => {
+          this.notification.error(
+            'Có lỗi xảy ra',
+            'Lấy danh sách Đơn hàng thất bại'
+          );
+          this.isLoadingEntities = false;
+        }
+      );
+  }
+
+
   searchSnapshotScheduleList() {
     this.doGetSnapSchedules(
       this.pageSize,
@@ -235,8 +234,6 @@ export class OrderListComponent implements OnInit {
   navigateToCreate() {
     this.router.navigate(['/app-smart-cloud/schedule/snapshot/create']);
   }
-
-  handleNavigateToContact() {}
 
   handleCancel() {
     this.isVisibleError = false;
