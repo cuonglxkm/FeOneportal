@@ -26,7 +26,7 @@ export class OrderListComponent implements OnInit {
   region = JSON.parse(localStorage.getItem('regionId'));
   project = JSON.parse(localStorage.getItem('projectId'));
 
-  searchStatus?: any;
+  searchStatus?: any = 7;
   searchStatusOrder?: any = 6;
   searchName?: string;
   searchDelay = new Subject<boolean>();
@@ -88,7 +88,7 @@ export class OrderListComponent implements OnInit {
 
   onChange(value: number) {
     this.searchStatusOrder = value;
-      this.searchStatus = null;
+      this.searchStatus = 7;
       this.noInstalled = false;
     this.refreshParams();
     this.searchSnapshotScheduleList();
@@ -219,6 +219,8 @@ export class OrderListComponent implements OnInit {
           this.searchStatus === 5 ||
           this.searchStatus === 3)
         ? [8]
+        : (this.searchStatusOrder === 1 || this.searchStatusOrder === 0 ) && (this.searchStatus === 7)
+        ? [this.searchStatusOrder]
         : this.searchStatusOrder === 6
         ? [0, 1, 2, 3, 4, 5, 6]
         : this.searchStatusOrder === 2 && (this.searchStatus === 7 || this.searchStatus === null)
