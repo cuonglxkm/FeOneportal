@@ -245,6 +245,7 @@ export class InstancesCreateComponent implements OnInit {
   }
 
   packageId: number;
+  hasRoleSI: boolean;
   ngOnInit(): void {
     this.userId = this.tokenService.get()?.userId;
     if (
@@ -290,6 +291,7 @@ export class InstancesCreateComponent implements OnInit {
     this.getListGpuType();
     this.getAllImageType();
     this.getListOptionGpuValue();
+    this.hasRoleSI = localStorage.getItem('role').includes('SI')
 
     this.breakpointObserver
       .observe([
