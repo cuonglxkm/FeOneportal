@@ -1,6 +1,7 @@
 <page-header
   [breadcrumb]="breadcrumb"
   [title]="'app.object.storage.create' | i18n"
+  [action]="action"
 >
   <ng-template #breadcrumb>
     <nz-breadcrumb [nzSeparator]="separatorTemplate">
@@ -19,6 +20,15 @@
     <ng-template #separatorTemplate
       ><img src="assets/imgs/arrow-square-right.svg" alt="" />
     </ng-template>
+  </ng-template>
+  <ng-template #action>
+    <div class="alain-custom-action text-right">
+      <region-select-dropdown
+      [isAdvance]="true"
+      (valueChanged)="onRegionChange($event)"
+        (regionChange)="onRegionChanged($event)"
+      ></region-select-dropdown>
+    </div>
   </ng-template>
 </page-header>
 

@@ -92,6 +92,8 @@ export class CreateClusterReqDto {
   VolumeCloudType: string;
   UsageTime: number;
 
+  Specification?: string;
+
   constructor(obj: any) {
     if (obj) {
       this.ClusterName = obj.clusterName;
@@ -297,6 +299,7 @@ export class OrderItem {
   specificationType: string;
   price: number;
   serviceDuration: number;
+  signature?: string;
 }
 
 export class OrderPayment {

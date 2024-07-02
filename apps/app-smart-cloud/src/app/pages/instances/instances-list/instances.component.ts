@@ -86,6 +86,7 @@ export class InstancesComponent implements OnInit {
     private vlanService: VlanService
   ) {}
 
+
   ngOnInit() {
     console.log('current language', this.i18n.currentLang);
     this.searchParam.status = '';
@@ -93,6 +94,7 @@ export class InstancesComponent implements OnInit {
     this.region = regionAndProject.regionId;
     this.projectId = regionAndProject.projectId;
     this.userId = this.tokenService.get()?.userId;
+
     this.getListNetwork();
     this.getAllSecurityGroup();
     if (this.notificationService.connection == undefined) {
@@ -895,5 +897,9 @@ export class InstancesComponent implements OnInit {
     }
     this.dataList[foundIndex] = record;
     this.cdr.detectChanges();
+  }
+
+  navigateToCreateScheduleSnapshot(id: number) {
+    this.router.navigate(['/app-smart-cloud/schedule/snapshot/create', {instanceId: id}], { queryParams: { snapshotTypeCreate: 1 } });
   }
 }

@@ -395,6 +395,8 @@ export class DetailClusterComponent implements OnInit, OnDestroy {
       }, 1500);
     };
     dlink.click(); dlink.remove();
+
+    this.notificationService.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('app.cluster.download-file'));
   }
 
   // for kubeconfig
@@ -431,6 +433,8 @@ export class DetailClusterComponent implements OnInit, OnDestroy {
       }, 1500);
     };
     dlink.click(); dlink.remove();
+
+    this.notificationService.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('app.cluster.download-file'));
   }
 
   // upgrade worker
@@ -500,37 +504,37 @@ export class DetailClusterComponent implements OnInit, OnDestroy {
   <style>
     .danger-color {color: #ea3829;}
 
-    span {
+    .content {
       font-size: 16px;
     }
 
     /* dark theme */
-    [data-theme='dark'] :host ::ng-deep label, span, input, p {
+    [data-theme='dark'] :host ::ng-deep .content {
       font-size: 16px;
     }
 
     /* compact theme */
-    [data-theme='compact'] :host ::ng-deep label, span, input, p {
+    [data-theme='compact'] :host ::ng-deep .content {
       font-size: 14px;
     }
   </style>
   <div nz-row>
     <div nz-col nzSpan="8">
-      <span>{{label}}</span>
+      <span class="content">{{label}}</span>
     </div>
     <div nz-col nzSpan="16" style="font-weight: 600;"
       [ngClass]="type === 'danger' ? 'danger-color' : ''">
       <ng-container *ngIf="(value + '').length <= 30; else truncateValueTpl">
-        <span>{{value}}</span>
+        <span class="content">{{value}}</span>
       </ng-container>
       <ng-template #truncateValueTpl>
         <div [nzPopoverContent]="contentTpl"
           nzPopoverPlacement="bottom" nz-popover>
-          <span>{{value | truncateLabel}}</span>
+          <span class="content">{{value | truncateLabel}}</span>
         </div>
 
         <ng-template #contentTpl>
-          <div style="width: fit-content"><span>{{value}}</span></div>
+          <div style="width: fit-content"><span class="content">{{value}}</span></div>
         </ng-template>
       </ng-template>
     </div>

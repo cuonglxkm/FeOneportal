@@ -24,6 +24,7 @@ import {
   Image,
   DataPayment,
   ItemPayment,
+  GpuConfigRecommend,
 } from '../instances.model';
 import { ActivatedRoute, Router } from '@angular/router';
 import { InstancesService } from '../instances.service';
@@ -34,7 +35,11 @@ import { slider } from '../../../../../../../libs/common-utils/src/lib/slide-ani
 import { SnapshotVolumeService } from 'src/app/shared/services/snapshot-volume.service';
 import { SnapshotVolumeDto } from 'src/app/shared/dto/snapshot-volume.dto';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
-import { getCurrentRegionAndProject, getUniqueObjects } from '@shared';
+import {
+  getCurrentRegionAndProject,
+  getListGpuConfigRecommend,
+  getUniqueObjects,
+} from '@shared';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { CatalogService } from 'src/app/shared/services/catalog.service';
 import { Subject, debounceTime, finalize } from 'rxjs';
@@ -240,6 +245,7 @@ export class InstancesCreateComponent implements OnInit {
   }
 
   packageId: number;
+  hasRoleSI: boolean;
   ngOnInit(): void {
     this.userId = this.tokenService.get()?.userId;
     if (
@@ -285,6 +291,7 @@ export class InstancesCreateComponent implements OnInit {
     this.getListGpuType();
     this.getAllImageType();
     this.getListOptionGpuValue();
+    this.hasRoleSI = localStorage.getItem('role').includes('SI')
 
     this.breakpointObserver
       .observe([
@@ -1095,6 +1102,7 @@ export class InstancesCreateComponent implements OnInit {
   //#endregion
 
   //#region Cấu hình GPU
+  configRecommend: GpuConfigRecommend;
   listOptionGpuValue: number[] = [];
   getListOptionGpuValue() {
     this.configurationService
@@ -1105,6 +1113,7 @@ export class InstancesCreateComponent implements OnInit {
       );
   }
 
+  listGpuConfigRecommend: GpuConfigRecommend[] = [];
   listGPUType: OfferItem[] = [];
   getListGpuType() {
     this.dataService
@@ -1113,6 +1122,10 @@ export class InstancesCreateComponent implements OnInit {
         this.listGPUType = data.filter(
           (e: OfferItem) => e.status.toUpperCase() == 'ACTIVE'
         );
+        this.listGpuConfigRecommend = getListGpuConfigRecommend(
+          this.listGPUType
+        );
+        console.log('list gpu config recommend', this.listGpuConfigRecommend);
       });
   }
 
@@ -1218,6 +1231,11 @@ export class InstancesCreateComponent implements OnInit {
         if (this.hdh != null || this.selectedSnapshot != null) {
           if (this.configGPU.gpuOfferId != 0) {
             this.getUnitPrice(0, 0, 0, 1, this.configGPU.gpuOfferId);
+            this.configRecommend = this.listGpuConfigRecommend.filter(
+              (e) =>
+                e.id == this.configGPU.gpuOfferId && e.gpuCount == this.configGPU.GPU
+            )[0];
+            console.log("cấu hình đề recommend", this.configRecommend);
           }
           this.getTotalAmount();
         }
@@ -1232,6 +1250,11 @@ export class InstancesCreateComponent implements OnInit {
     )[0].offerName;
     if (this.configGPU.GPU != 0) {
       this.getUnitPrice(0, 0, 0, 1, this.configGPU.gpuOfferId);
+      this.configRecommend = this.listGpuConfigRecommend.filter(
+        (e) =>
+          e.id == this.configGPU.gpuOfferId && e.gpuCount == this.configGPU.GPU
+      )[0];
+      console.log("cấu hình đề recommend", this.configRecommend);
     }
     if (
       this.configGPU.GPU != 0 &&

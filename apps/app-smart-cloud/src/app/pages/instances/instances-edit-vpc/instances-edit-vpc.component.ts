@@ -6,6 +6,7 @@ import {
   OnInit,
 } from '@angular/core';
 import {
+  GpuConfigRecommend,
   GpuProject,
   GpuUsage,
   InfoVPCModel,
@@ -22,7 +23,7 @@ import { InstancesService } from '../instances.service';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { slider } from '../../../../../../../libs/common-utils/src/lib/slide-animation';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
-import { getCurrentRegionAndProject } from '@shared';
+import { getCurrentRegionAndProject, getListGpuConfigRecommend } from '@shared';
 import {
   RegionModel,
   ProjectModel,
@@ -159,7 +160,6 @@ export class InstancesEditVpcComponent implements OnInit {
       } else {
         this.remainingGpu = gpuProject.gpuCount;
       }
-      this.getListOptionGpuValue();
     } else {
       this.isCurrentConfigGpu = false;
     }
@@ -174,7 +174,15 @@ export class InstancesEditVpcComponent implements OnInit {
         this.listSecurityGroupModel = datasg;
         this.cdr.detectChanges();
       });
+    console.log('so du gpu', this.remainingGpu);
+    this.listOptionGpuValue = this.listOptionGpuValue.filter(
+      (e) => e <= this.remainingGpu + this.instancesModel.gpuCount
+    );
     this.instanceResize.gpuCount = this.instancesModel.gpuCount;
+    this.configRecommend = this.listGpuConfigRecommend.filter(
+      (e) =>
+        e.id == this.gpuOfferId && e.gpuCount == this.instanceResize.gpuCount
+    )[0];
     this.cdr.detectChanges();
   }
 
@@ -184,13 +192,12 @@ export class InstancesEditVpcComponent implements OnInit {
       .getConfigurations('OPTIONGPUVALUE')
       .subscribe((data) => {
         this.listOptionGpuValue = data.valueString.split(', ').map(Number);
-        this.listOptionGpuValue = this.listOptionGpuValue.filter(
-          (e) => e <= this.remainingGpu
-        );
         this.getCurrentInfoInstance();
       });
   }
 
+  configRecommend: GpuConfigRecommend;
+  listGpuConfigRecommend: GpuConfigRecommend[] = [];
   listGPUType: OfferItem[] = [];
   purchasedListGPUType: OfferItem[] = [];
   getListGpuType() {
@@ -200,6 +207,10 @@ export class InstancesEditVpcComponent implements OnInit {
         this.listGPUType = data.filter(
           (e: OfferItem) => e.status.toUpperCase() == 'ACTIVE'
         );
+        this.listGpuConfigRecommend = getListGpuConfigRecommend(
+          this.listGPUType
+        );
+        console.log('list gpu config recommend', this.listGpuConfigRecommend);
         let listGpuOfferIds: number[] = [];
         this.infoVPC.cloudProject.gpuProjects.forEach((gputype) =>
           listGpuOfferIds.push(gputype.gpuOfferId)
@@ -356,7 +367,16 @@ export class InstancesEditVpcComponent implements OnInit {
       this.remainingGpu = gpuProject.gpuCount;
     }
     this.getListOptionGpuValue();
-    this.instanceResize.gpuCount = this.listOptionGpuValue[0];
+    this.instanceResize.gpuCount = 0;
+    this.configRecommend = null;
+  }
+
+  changeGpu() {
+    this.configRecommend = this.listGpuConfigRecommend.filter(
+      (e) =>
+        e.id == this.gpuOfferId && e.gpuCount == this.instanceResize.gpuCount
+    )[0];
+    console.log('cấu hình đề recommend', this.configRecommend);
   }
 
   resetData() {
@@ -364,6 +384,10 @@ export class InstancesEditVpcComponent implements OnInit {
     this.storage = 0;
     this.ram = 0;
     this.instanceResize.gpuCount = this.instancesModel.gpuCount;
+    this.configRecommend = this.listGpuConfigRecommend.filter(
+      (e) =>
+        e.id == this.gpuOfferId && e.gpuCount == this.instanceResize.gpuCount
+    )[0];
   }
 
   vCPU: number = 0;

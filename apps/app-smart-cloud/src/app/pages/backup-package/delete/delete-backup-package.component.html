@@ -10,6 +10,7 @@
   </div>
   <div *nzModalContent>
     <nz-alert nzBanner
+              style="margin-bottom: 10px"
               [nzMessage]="'app.backup.package.delete.alert'|i18n:{name: packageBackupModel?.packageName}"
               nzShowIcon></nz-alert>
     <span class="text-label"
@@ -18,6 +19,7 @@
            nz-input
            class="input-custom"
            [(ngModel)]="value"
+           style="margin-top: 15px; margin-bottom: 15px;"
            (keydown.enter)="focusOkButton($event)"
            (ngModelChange)="onInputChange($event)"
            [placeholder]="'app.input.name' | i18n" />

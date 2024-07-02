@@ -25,6 +25,7 @@ import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { I18NService } from '@core';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { getCurrentRegionAndProject } from '@shared';
+import { RegionModel } from '../../../../../../../libs/common-utils/src';
 
 @Component({
   selector: 'one-portal-object-storage-create',
@@ -61,6 +62,14 @@ export class ObjectStorageCreateComponent implements OnInit {
   errorList: string[] = [];
   closePopupError() {
     this.isVisiblePopupError = false;
+  }
+
+  onRegionChange(region: RegionModel) {
+    this.region = region.regionId;
+  }
+
+  onRegionChanged(region: RegionModel) {
+    this.region = region.regionId;
   }
 
   ngOnInit(): void {

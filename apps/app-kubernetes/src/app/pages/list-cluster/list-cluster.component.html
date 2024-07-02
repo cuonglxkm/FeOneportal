@@ -75,42 +75,42 @@
         [nzLoading]="isLoadingCluster">
         <thead>
           <tr>
-            <th>{{ 'app.order.ordinalNumber' | i18n }}</th>
-            <th>{{ 'app.cluster.name' | i18n }}</th>
-            <th>{{ 'app.text.version' | i18n }}</th>
-            <th>{{ 'app.service.status' | i18n }}</th>
-            <th>{{ 'app.cluster.api-endpoint' | i18n }}</th>
-            <th>{{ 'app.cluster.total-node' | i18n }}</th>
-            <th>{{ 'app.text.created-date' | i18n }}</th>
-            <th>{{ 'app.text.operation' | i18n }}</th>
+            <th class="content header-table">{{ 'app.order.ordinalNumber' | i18n }}</th>
+            <th class="content header-table">{{ 'app.cluster.name' | i18n }}</th>
+            <th class="content header-table">{{ 'app.text.version' | i18n }}</th>
+            <th class="content header-table">{{ 'app.service.status' | i18n }}</th>
+            <th class="content header-table">{{ 'app.cluster.api-endpoint' | i18n }}</th>
+            <th class="content header-table">{{ 'app.cluster.total-node' | i18n }}</th>
+            <th class="content header-table">{{ 'app.text.created-date' | i18n }}</th>
+            <th class="content header-table">{{ 'app.text.operation' | i18n }}</th>
           </tr>
         </thead>
         <tbody>
           <tr *ngFor="let item of clusterTable.data; let i = index;">
-            <td class="right-align content-table">{{ getIndexOfCluster(item.id) }}</td>
+            <td class="right-align content-table content">{{ getIndexOfCluster(item.id) }}</td>
             <td nzBreakWord>
               <a routerLink={{item.serviceOrderCode}}>
                 <ng-container *ngIf="item.clusterName?.length <= 30; else truncateNameTpl">
-                  {{ item.clusterName }}
+                  <span class="content">{{ item.clusterName }}</span>
                 </ng-container>
                 <ng-template #truncateNameTpl>
                   <span nz-popover nzPopoverPlacement="bottomLeft" [nzPopoverContent]="clusterNameTpl">
-                    {{ item.clusterName | truncateLabel }}
+                    <span class="content">{{ item.clusterName | truncateLabel }}</span>
                   </span>
                   <ng-template #clusterNameTpl>
-                    {{ item.clusterName }}
+                    <span class="content">{{ item.clusterName }}</span>
                   </ng-template>
                 </ng-template>
               </a>
             </td>
-            <td class="content-table">{{ item.currentVersion }}</td>
-            <td>
+            <td class="content-table content">{{ item.currentVersion }}</td>
+            <td class="content">
               <ng-container *ngIf="item.serviceStatus | status2ColorPipe as status">
 
                 <ng-container *ngIf="item.serviceStatus == 2; else ortherStatusTpl">
                   <div class="flex-style">
                     <nz-progress [nzPercent]="100" nzSize="small" nzType="circle" [nzWidth]="24" class="mr-2 pb-1"></nz-progress>
-                    <span [ngStyle]="{color: status.color, 'margin-top': '2px'}">{{ status.status | i18n }}</span>
+                    <span [ngStyle]="{color: status.color, 'margin-top': '2px'}" class="content">{{ status.status | i18n }}</span>
                   </div>
                 </ng-container>
 
@@ -127,22 +127,11 @@
 
               </ng-container>
             </td>
-            <td nzBreakWord class="content-table">
+            <td nzBreakWord class="content-table content">
               {{ item.apiEndpoint }}
-              <!-- <ng-container *ngIf="item.apiEndpoint?.length <= 25; else apiEndpointTruncateTpl">
-                {{ item.apiEndpoint }}
-              </ng-container>
-              <ng-template #apiEndpointTruncateTpl>
-                <span [nzPopoverContent]="contentTpl" nzPopoverPlacement="bottom" nz-popover>
-                  {{ item.apiEndpoint | truncateLabel : 25 }}
-                </span>
-                <ng-template #contentTpl>
-                  <div style="width: fit-content">{{ item.apiEndpoint }}</div>
-                </ng-template>
-              </ng-template> -->
             </td>
-            <td class="right-align content-table">{{ item.totalNode ? item.totalNode : 0 }}</td>
-            <td class="content-table">{{ item.createdDate | date: 'dd/MM/yyyy' }}</td>
+            <td class="right-align content-table content">{{ item.totalNode ? item.totalNode : 0 }}</td>
+            <td class="content-table content">{{ item.createdDate | date: 'dd/MM/yyyy' }}</td>
             <td>
               <button nz-button nzType="text" [nzTooltipTitle]="'app.text.edit' | i18n" nzTooltipPlacement="top" nz-tooltip (click)="onDestroy()"
                 class="borderless marleft-0 action-btn" [disabled]="item.serviceStatus == 3"  routerLink="edit/{{item.serviceOrderCode}}">
@@ -160,8 +149,8 @@
               </button>
 
               <button nz-button nzType="text" [nzTooltipTitle]="'app.cluster.download-config' | i18n" nzTooltipPlacement="top" nz-tooltip
-                class="borderless marleft-0 action-btn" [disabled]="item.serviceStatus == 3">
-                <img src="assets/imgs/download-file.svg" class="icon-action" (click)="handleDownloadKubeConfig(item)" />
+                class="borderless marleft-0 action-btn" [disabled]="item.serviceStatus == 3" (click)="handleDownloadKubeConfig(item)">
+                <img src="assets/imgs/download.svg" class="icon-action" (click)="handleDownloadKubeConfig(item)" />
               </button>
 
               <ng-container *ngIf="item.serviceStatus | checkStatus as progressing">

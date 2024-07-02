@@ -27,6 +27,7 @@ import { ConfigurationsService } from 'src/app/shared/services/configurations.se
 import { OrderItemObject } from 'src/app/shared/models/price';
 import { OrderService } from 'src/app/shared/services/order.service';
 import { getCurrentRegionAndProject } from '@shared';
+import { RegionModel } from '../../../../../../../libs/common-utils/src';
 
 @Component({
   selector: 'one-portal-object-storage-extend',
@@ -118,6 +119,14 @@ export class ObjectStorageExtendComponent implements OnInit {
           this.getTotalAmount();
         }
       });
+  }
+
+  onRegionChange(region: RegionModel) {
+    this.region = region.regionId;
+  }
+
+  onRegionChanged(region: RegionModel) {
+    this.region = region.regionId;
   }
 
   objectStorageExtend: ObjectStorageExtend = new ObjectStorageExtend();
