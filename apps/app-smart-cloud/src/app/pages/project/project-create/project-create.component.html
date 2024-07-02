@@ -1031,6 +1031,7 @@
                         <nz-form-control>
                           <nz-input-number style="width: 100%; margin-left: -1px" nzMin="0" nzMax="1000" nzStep="1" name="gpu"
                             [(ngModel)]="gpuQuotasGobal[i].GpuCount"
+                            (keydown)="checkPossiblePress($event)"
                             (ngModelChange)="getValues(i,gpuQuotasGobal?.[i]?.GpuCount)"
                             [ngModelOptions]="{ standalone: true }" nzSize="large"></nz-input-number>
 

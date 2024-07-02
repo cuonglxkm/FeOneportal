@@ -799,7 +799,7 @@
                         <nz-input-number  style="width: 100%; margin-left: -1px" nzMin="0" nzStep="1"  name="gpu"
                           [(ngModel)]="gpuQuotasGobal[i].GpuCount"
                           (ngModelChange)="getValues(i,gpuQuotasGobal?.[i]?.GpuCount)"
-
+                          (keydown)="checkPossiblePress($event)"
                           [ngModelOptions]="{ standalone: true }"
                           nzSize="large"
                           ></nz-input-number>
