@@ -92,7 +92,7 @@ export class ListPaymentComponent implements OnInit {
     this.searchDelay
       .pipe(debounceTime(TimeCommon.timeOutSearch))
       .subscribe(() => {
-        this.refreshParams()
+        this.refreshParams();
         this.getListInvoices();
       });
     if (this.notificationService.connection == undefined) {
@@ -118,7 +118,7 @@ export class ListPaymentComponent implements OnInit {
 
   search(search: string) {
     this.value = search.toUpperCase().trim();
-    this.refreshParams()
+    this.refreshParams();
     this.getListInvoices();
   }
 
@@ -126,7 +126,6 @@ export class ListPaymentComponent implements OnInit {
     this.selectedValueInvoice = value;
     this.getListInvoices();
   }
-
 
   updateCheckedSet(id: number, checked: boolean): void {
     if (checked) {
@@ -145,19 +144,23 @@ export class ListPaymentComponent implements OnInit {
   }
 
   refreshCheckedStatus(): void {
-    for (let item of this.response.records) {
-      item.checked = this.setOfCheckedId.has(item.id);
-      item.indeterminate = this.setOfCheckedId.has(item.id) && !item.checked;
+    if (!this.response?.records) {
+      return;
+    } else {
+      for (let item of this.response?.records) {
+        item.checked = this.setOfCheckedId.has(item.id);
+        item.indeterminate = this.setOfCheckedId.has(item.id) && !item.checked;
+      }
+      this.downloadList = this.response?.records.filter(
+        (data) => this.setOfCheckedId.has(data.id) && !!data.eInvoiceCode
+      );
     }
-    this.downloadList = this.response.records.filter(
-      (data) => this.setOfCheckedId.has(data.id) && !!data.eInvoiceCode
-    );
   }
 
   onCurrentPageDataChange(
     listOfCurrentPageData: readonly PaymentModel[]
   ): void {
-    listOfCurrentPageData = this.response.records;
+    listOfCurrentPageData = this.response?.records;
     this.refreshCheckedStatus();
   }
   onItemChecked(id: number, checked: boolean): void {
@@ -166,7 +169,7 @@ export class ListPaymentComponent implements OnInit {
   }
 
   onAllChecked(value: boolean): void {
-    this.response.records.forEach((item) =>
+    this.response?.records.forEach((item) =>
       this.updateCheckedSet(item.id, value)
     );
     this.refreshCheckedStatus();
@@ -196,7 +199,7 @@ export class ListPaymentComponent implements OnInit {
         this.isLoading = false;
         this.response = data;
         this.listFilteredData = data.records;
-        this.response.records = this.response.records.map((item) => {
+        this.response.records = this.response?.records.map((item) => {
           return {
             ...item,
             eInvoiceCodePadded:
@@ -217,7 +220,6 @@ export class ListPaymentComponent implements OnInit {
   pad(n) {
     return n < 8 ? '0' + n : n;
   }
-
 
   refreshParams() {
     this.pageSize = 10;
@@ -260,7 +262,6 @@ export class ListPaymentComponent implements OnInit {
       }
     );
   }
-
 
   getPaymentDetail(data: any) {
     this.router.navigate([

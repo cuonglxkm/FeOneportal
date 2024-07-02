@@ -86,6 +86,7 @@ export class InstancesComponent implements OnInit {
     private vlanService: VlanService
   ) {}
 
+
   ngOnInit() {
     console.log('current language', this.i18n.currentLang);
     this.searchParam.status = '';
@@ -93,6 +94,7 @@ export class InstancesComponent implements OnInit {
     this.region = regionAndProject.regionId;
     this.projectId = regionAndProject.projectId;
     this.userId = this.tokenService.get()?.userId;
+
     this.getListNetwork();
     this.getAllSecurityGroup();
     if (this.notificationService.connection == undefined) {
@@ -826,8 +828,7 @@ export class InstancesComponent implements OnInit {
   }
 
   navigateToCreate() {
-    let hasRoleSI = localStorage.getItem('role').includes('SI')
-    if (this.project.type == 1 || hasRoleSI) {
+    if (this.project.type == 1) {
       this.router.navigate(['/app-smart-cloud/instances/instances-create-vpc']);
     } else {
       this.router.navigate(['/app-smart-cloud/instances/instances-create']);

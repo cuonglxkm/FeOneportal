@@ -106,9 +106,9 @@
             <label for="description" class="label-fontsize pb-3">Mô tả</label>
             <textarea name="description" id="description" class="row-gray-bg textbox-radius-lg" rows="3" readonly>{{data?.description}}</textarea>
           </div>
-        
+
         </div>
-        
+
       </nz-card>
       <!-- <nz-card class="text-label" nzTitle="" style="border-radius: 8px;">
         <div style="margin-bottom: 20px">
@@ -151,7 +151,7 @@
           <div nz-col nzSpan="12" style="color: red;">{{'app.service.start.date' | i18n}}:  {{ today | date : 'dd/MM/yyyy' }}</div>
           <div nz-col nzSpan="12" style="color: red;">Ngày hết hạn:  {{ expiredDate | date : 'dd/MM/yyyy' }}</div>
         </nz-row>
-     
+
         <nz-form-item style="margin-bottom: 5px" class="mt-5">
           <nz-form-label>Số tháng cần gia hạn thêm (<span style="color: red;">*</span>)
           </nz-form-label>
@@ -171,50 +171,52 @@
     </nz-col>
 
     <!---------------CARD-THÀNH TIỀN-------------->
-  
+
       <nz-col nzSpan="8">
         <nz-affix [nzOffsetTop]="72">
         <nz-card style="border-radius: 8px;border: 1px solid #B2DEFF;" [nzLoading]="loadingCalculate">
           <div style="margin-bottom: 20px">
             <span class="text-card-header">{{'app.estimated.cost' | i18n}}</span>
           </div>
-          <nz-row style="margin-bottom: 10px" nzGutter="16">
-            <nz-col nzSpan="16">
+          <div *ngIf="!hasRoleSI">
+            <nz-row style="margin-bottom: 10px" nzGutter="16">
+              <nz-col nzSpan="16">
               <span class="text-value">{{'app.service.cost' | i18n}} {{ timeSelected || 1 }}
                 {{'app.month' | i18n}}</span>
-            </nz-col>
-            <nz-col class="text-right" nzSpan="8">
+              </nz-col>
+              <nz-col class="text-right" nzSpan="8">
               <span class="text-value" style="color: #0066b3" nzAlign="right">
                 {{ totalAmount |formatPrice }}
                 VND
               </span>
-            </nz-col>
-          </nz-row>
-          <nz-row style="margin-bottom: 10px" nzGutter="16">
-            <nz-col nzSpan="16">
-              <span class="text-value">Chi phí VAT (10%)</span>
-            </nz-col>
-            <nz-col class="text-right" nzSpan="8">
+              </nz-col>
+            </nz-row>
+            <nz-row style="margin-bottom: 10px" nzGutter="16">
+              <nz-col nzSpan="16">
+                <span class="text-value">Chi phí VAT (10%)</span>
+              </nz-col>
+              <nz-col class="text-right" nzSpan="8">
               <span class="text-value" style="color: #0066b3" nzAlign="right">
                 {{ totalVAT |formatPrice  }}
                 VND
               </span>
-            </nz-col>
-          </nz-row>
-          <nz-row style="
+              </nz-col>
+            </nz-row>
+            <nz-row style="
               margin-bottom: 20px;
               background-color: #cce9ff;
               padding: 16px 0 16px 0;
               border-radius: 8px;
             " nzGutter="16">
-            <nz-col nzSpan="16">
-              <span class="text-label">{{'app.total.payment' | i18n}}</span><br />
-              <span class="text-note-italicized">({{'app.payment-detail.vat' | i18n}})</span>
-            </nz-col>
-            <nz-col class="text-right" nzSpan="8">
-              <span class="text-value" style="color: #ea3829" nzAlign="right">{{ totalPayment |formatPrice}} VND</span>
-            </nz-col>
-          </nz-row>
+              <nz-col nzSpan="16">
+                <span class="text-label">{{'app.total.payment' | i18n}}</span><br />
+                <span class="text-note-italicized">({{'app.payment-detail.vat' | i18n}})</span>
+              </nz-col>
+              <nz-col class="text-right" nzSpan="8">
+                <span class="text-value" style="color: #ea3829" nzAlign="right">{{ totalPayment |formatPrice}} VND</span>
+              </nz-col>
+            </nz-row>
+          </div>
           <nz-row>
             <nz-col style="width: 100%">
               <button style="width: 100%" nz-button nzSize="large" nzType="primary" (click)="extendVpc()">
@@ -226,8 +228,8 @@
         </nz-card>
       </nz-affix>
       </nz-col>
-    
-    
+
+
   </nz-row>
 </form>
 <one-portal-popup-list-error
