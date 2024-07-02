@@ -1927,6 +1927,24 @@
   "mongodb.role.use": "You cannot delete this custom role because it is currently being used by the following users:",
   "mongodb.role.delete-user": "To delete this custom role, you must either delete the listed users or modify their permissions.",
 
+  "mongodb.upgrade.mongodb.node.validation-1": "Value cannot be blank",
+  "mongodb.upgrade.mongodb.node.validation-2": "Minimum Node value is 3",
+  "mongodb.upgrade.mongodb.node.validation-3":"Value must be higher than the current usage level.",
+  "mongodb.upgrade.mongodb.node.validation-4":"Maximum Node value is 5",
+
+  "mongodb.upgrade.mongodb.cpu.validation-1": "Value cannot be blank",
+  "mongodb.upgrade.mongodb.cpu.validation-2":"Minimum vCPU value is 2",
+  "mongodb.upgrade.mongodb.cpu.validation-3":"Value must be higher than the current usage level.",
+  "mongodb.upgrade.mongodb.cpu.validation-4":"Maximum vCPU value is 32",
+  
+  "mongodb.upgrade.mongodb.ram.validation-1": "Value cannot be blank",
+  "mongodb.upgrade.mongodb.ram.validation-2":"Minimum RAM value is 2",
+  "mongodb.upgrade.mongodb.ram.validation-3":"Value must be higher than the current usage level.",
+  "mongodb.upgrade.mongodb.ram.validation-4":"Maximum RAM value is 64",
+ 
+  "mongodb.upgrade.mongodb.storage.validation-1": "Value cannot be blank",
+  "mongodb.upgrade.mongodb.storage.validation-2": "Storage must be higher than the current usage level.",
+
   "mongodb.default.role.description-1": "Custom permissions cannot apply duplicate resources for the same action. Please select different databases and collections for each action.",
   "mongodb.default.role.description-2": "Name your custom role and associate the actions of that custom role with the corresponding database and collection.",
   "mongodb.default.role.name": "Custom Role Name",
