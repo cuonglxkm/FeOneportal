@@ -1732,35 +1732,37 @@
             </div>
           </div>
           <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
-          <nz-row style="margin-bottom: 10px" nzGutter="16">
-            <nz-col nzSpan="16">
+
+          <div *ngIf="!hasRoleSI">
+            <nz-row style="margin-bottom: 10px" nzGutter="16">
+              <nz-col nzSpan="16">
               <span *ngIf="numberMonth == 1" class="text-value">
                 {{ 'app.cost.a.month' | i18n }}
               </span>
-              <span *ngIf="numberMonth > 1" class="text-value">
+                <span *ngIf="numberMonth > 1" class="text-value">
                 {{ 'app.cost.n.month' | i18n : { numberMonth: numberMonth } }}
               </span>
-            </nz-col>
-            <nz-col class="text-right" nzSpan="8">
+              </nz-col>
+              <nz-col class="text-right" nzSpan="8">
               <span class="text-value" style="color: #0066b3" nzAlign="right">
                 {{
                   totalAmount +
-                    totalAmountVolume +
-                    totalAmountIPv4 +
-                    totalAmountIPv6 | number
+                  totalAmountVolume +
+                  totalAmountIPv4 +
+                  totalAmountIPv6 | number
                 }}
                 VND
               </span>
-            </nz-col>
-          </nz-row>
-          <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
-          <nz-row style="margin-bottom: 10px" nzGutter="16">
-            <nz-col nzSpan="16">
+              </nz-col>
+            </nz-row>
+            <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
+            <nz-row style="margin-bottom: 10px" nzGutter="16">
+              <nz-col nzSpan="16">
               <span class="text-value">
                 {{ 'app.cost.vat' | i18n }}
               </span>
-            </nz-col>
-            <nz-col class="text-right" nzSpan="8">
+              </nz-col>
+              <nz-col class="text-right" nzSpan="8">
               <span class="text-value" style="color: #0066b3" nzAlign="right">
                 {{
                   totalVAT + totalVATVolume + totalVATIPv4 + totalVATIPv6
@@ -1768,36 +1770,38 @@
                 }}
                 VND
               </span>
-            </nz-col>
-          </nz-row>
-          <nz-row
-            style="
+              </nz-col>
+            </nz-row>
+            <nz-row
+              style="
               margin-bottom: 20px;
               background-color: #cce9ff;
               padding: 16px 0 16px 0;
               border-radius: 8px;
             "
-            nzGutter="16"
-          >
-            <nz-col nzSpan="16">
+              nzGutter="16"
+            >
+              <nz-col nzSpan="16">
               <span class="text-label">{{ 'app.total.payment' | i18n }}</span
               ><br />
-              <span class="text-note-italicized"
+                <span class="text-note-italicized"
                 >({{ 'app.include.vat' | i18n : { vat: '10' } }})</span
-              >
-            </nz-col>
-            <nz-col class="text-right" nzSpan="8">
+                >
+              </nz-col>
+              <nz-col class="text-right" nzSpan="8">
               <span class="text-value" style="color: #ea3829" nzAlign="right">
                 {{
                   totalincludesVAT +
-                    totalPaymentVolume +
-                    totalPaymentIPv4 +
-                    totalPaymentIPv6 | number : '1.0-0'
+                  totalPaymentVolume +
+                  totalPaymentIPv4 +
+                  totalPaymentIPv6 | number : '1.0-0'
                 }}
                 VND
               </span>
-            </nz-col>
-          </nz-row>
+              </nz-col>
+            </nz-row>
+
+          </div>
           <nz-row>
             <nz-col style="width: 100%">
               <button
@@ -1832,7 +1836,7 @@
                       ? 'gray'
                       : 'white'
                   "
-                  >{{ 'app.button.create' | i18n }}</span
+                >{{ 'app.button.create' | i18n }}</span
                 >
               </button>
             </nz-col>
