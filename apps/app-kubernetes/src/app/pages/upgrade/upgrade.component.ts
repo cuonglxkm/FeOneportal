@@ -539,7 +539,8 @@ export class UpgradeComponent implements OnInit {
       const nodeNumber = pack.workerNode;
       this.currentTotalCpu = nodeNumber * pack.cpu;
       this.currentTotalRam = nodeNumber * pack.ram;
-      this.currentTotalStorage = nodeNumber * pack.rootStorage + pack.volumeStorage;
+      // this.currentTotalStorage = nodeNumber * pack.rootStorage + pack.volumeStorage;
+      this.currentTotalStorage = nodeNumber * pack.rootStorage;
 
     } else {
 
@@ -617,6 +618,9 @@ export class UpgradeComponent implements OnInit {
     this.vatCost = 0;
     this.newConfigCost = 0;
     this.upgradeCost = 0;
+    this.newTotalCpu = 0;
+    this.newTotalRam = 0;
+    this.newTotalStorage = 0;
   }
 
   // validate duplicate worker group name
@@ -658,6 +662,7 @@ export class UpgradeComponent implements OnInit {
     }
   }
 
+  signature: string;
   onValidateInfo = () => {
     this.validateForm();
 
@@ -665,8 +670,11 @@ export class UpgradeComponent implements OnInit {
     let cluster = this.setClusterData();
     // this.submitUpgrade(cluster);
 
-    let reqDto = new UpgradeWorkerGroupDto(cluster);
-    this.clusterService.validateUpgradeCluster(reqDto)
+    let data = {
+      ServiceOrderCode: this.serviceOrderCode,
+      Specification: JSON.stringify(cluster)
+    };
+    this.clusterService.validateUpgradeCluster(data)
     .pipe(finalize(() => this.isSubmitting = false))
     .subscribe((r: any) => {
       if (r && r.code == 200) {
@@ -678,6 +686,7 @@ export class UpgradeComponent implements OnInit {
 
         } else {
           // call payment
+          this.signature = r.data;
           this.submitUpgrade(cluster);
         }
       }
@@ -702,6 +711,7 @@ export class UpgradeComponent implements OnInit {
     orderItem.orderItemQuantity = 1;
     orderItem.specificationType = KubernetesConstant.CLUSTER_UPGRADE_TYPE;
     orderItem.specification = JSON.stringify(cluster);
+    orderItem.signature = this.signature;
 
     order.orderItems = [...order.orderItems, orderItem];
 

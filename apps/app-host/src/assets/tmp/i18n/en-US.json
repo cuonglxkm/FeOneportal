@@ -175,6 +175,8 @@
   "form.account.validate.phone":"Invalid phone number!",
   "form.account.validate.address":"Province/City",
   "form.account.validate.address.detail":"Detailed address can contain characters / - and spaces, but no special characters",
+  "form.account.create.new": "Register an account",
+  "form.account.create.new.success": "Account successfully registered.",
 
   "app.account.validation": "Please enter complete information!",
   "app.account.form.success": "Account updated successfully!",
@@ -434,6 +436,7 @@
   "service.status.restoring": "Restoring",
   "service.status.disabled": "Disabled",
   "service.status.paused": "Paused",
+  "service.status.processing": "In-Process",
   "service.status.unknown": "Unknown ",
 
 
@@ -544,6 +547,8 @@
   "app.alert.create.allow.address.pair.next": "Are you sure you want to delete the Allowed Address Pair?",
   "app.alert.change.instances.OS": "Windows Server operating system versions are trial versions. Customers are advised to activate the license before use.",
   "app.alert.change.instances.OS.next": "Are you sure you want to change the information of the instance?",
+  "app.alert.config.gpu.recommend": "For GPU {{type}} and quantity {{gpu}}, it is recommended to configure as follows for the best experience: SSD - {{ssd}} GB, RAM - {{ram}} GB, CPU - {{cpu}} vCPU to use GPU services optimally",
+  "app.alert.resize.instance": "During the adjustment process, the instance will be turned off and automatically restarted upon successful completion",
 
   "app.tooltip.instance.name": "The instance name does not include Vietnamese accents, spaces, or special characters (except _)",
   "app.tooltip.instances.from.snapshot": "Customer can create an instance from an existing snapshot to restore the instance to the state when the snapshot was created",
@@ -2097,6 +2102,7 @@
   "app.cluster.warning-upgrade-1": "Changing the configuration or version may cause temporary service disruptions and prevent cluster configuration changes.",
   "app.cluster.warning-upgrade-2": "To ensure data safety, please perform a data backup. This operation will start immediately and it will not be possible to revert to previous versions.",
   "app.cluster.warning-upgrade-3": "Please read more information at",
+  "app.cluster.download-file": "File downloaded successfully",
 
   "cluster.status.not-yet-extend": "Not Extended",
   "cluster.status.running": "Running",
@@ -2853,6 +2859,7 @@
   "app.backup.volume.notification.create.request.send": "Backup Volume creation request has been sent.",
   "app.backup.volume.current": "Restore to the current Volume",
   "app.backup.volume.new": "Restore to a new Volume",
+  "app.backup.volume.restore.current": "Select a Volume with a capacity greater than or equal to the backup size",
 
   "app.dashboard.subscription.service": "Service",
   "app.dashboard.subscription.service.active": "Service Active",

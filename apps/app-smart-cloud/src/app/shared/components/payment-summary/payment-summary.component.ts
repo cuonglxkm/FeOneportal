@@ -88,6 +88,7 @@ export class PaymentSummaryComponent implements OnInit {
     { label: this.i18n.fanyi('app.invoice.export.customer2'), value: 2 },
   ];
 
+
   constructor(
     private service: InstancesService,
     private psService: PaymentSummaryService,

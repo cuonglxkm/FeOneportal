@@ -1,4 +1,4 @@
-<page-header [breadcrumb]="breadcrumb" [title]="'app.bucket.create' | i18n">
+<page-header [breadcrumb]="breadcrumb" [action]="action" [title]="'app.bucket.create' | i18n">
   <ng-template #breadcrumb>
     <nz-breadcrumb [nzSeparator]="separatorTemplate">
       <nz-breadcrumb-item
@@ -14,6 +14,14 @@
     <ng-template #separatorTemplate
       ><img src="assets/imgs/arrow-square-right.svg" alt="" />
     </ng-template>
+  </ng-template>
+  <ng-template #action>
+    <div class="alain-custom-action text-right">
+      <region-select-dropdown
+        (valueChanged)="onRegionChange($event)"
+        (regionChange)="onRegionChanged($event)"
+      ></region-select-dropdown>
+    </div>
   </ng-template>
 </page-header>
 <form nz-form [formGroup]="form" [nzLayout]="'vertical'">

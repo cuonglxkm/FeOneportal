@@ -8,7 +8,7 @@
       <nz-breadcrumb-item><a [routerLink]="['/']">{{ 'app.breadcrumb.home' | i18n }}</a></nz-breadcrumb-item>
       <nz-breadcrumb-item>{{'app.breadcrumb.infrastructure.service' | i18n }}</nz-breadcrumb-item>
       <nz-breadcrumb-item>Block Storage</nz-breadcrumb-item>
-      <nz-breadcrumb-item><a routerLink="/app-smart-cloud/schedule/snapshot/list">Lịch Snapshot</a></nz-breadcrumb-item>
+      <nz-breadcrumb-item><a routerLink="/app-smart-cloud/schedule/snapshot">Lịch Snapshot</a></nz-breadcrumb-item>
       <nz-breadcrumb-item><a routerLink="/app-smart-cloud/schedule/snapshot/create?snapshotTypeCreate=2">Tạo lịch Snapshot</a></nz-breadcrumb-item>
     </nz-breadcrumb>
     <ng-template #separatorTemplate
@@ -43,6 +43,15 @@
         </div>
         <form nz-form [formGroup]="form" [nzLayout]="'vertical'">
           <nz-spin [nzSpinning]="isLoading" nzSize="large">
+            <nz-alert  nzBanner *ngIf="disableCreate == false"
+                       style="margin-bottom: 10px;margin-top: 15px"
+                       [nzMessage]="nzMessage"
+                       nzShowIcon></nz-alert>
+            <ng-template #nzMessage>
+              <div>
+                Dung lượng Snapshot {{snapshotTypeCreate == 0 || (selectedSnapshotType==0 && snapshotTypeCreate==2) ? 'Volume' : 'Máy ảo'}} đã dùng: {{quotaUsed}}GB / {{quotaTotal}}GB. Quý khách còn lại {{quotaRemain}}GB dung lượng Snapshot
+              </div>
+            </ng-template>
             <div *ngIf="projectType != 1">
               <!--        name-->
               <nz-form-item *ngIf="snapshotTypeCreate != 2">
@@ -399,6 +408,15 @@
             <div style="margin-top: 10px" class="text-label">{{ selectedVM?.name }}</div>
             <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
           </div>
+
+          <div style="margin-top: 10px" class="text-value">{{'app.capacity' | i18n}}</div>
+          <div style="margin-top: 10px" class="text-label">{{validateForm.controls['quota'].value}}</div>
+          <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
+          <div style="margin-top: 10px" class="text-value">Loại Snapshot</div>
+          <div style="margin-top: 10px" class="text-label">{{quotaType?.toUpperCase()}}</div>
+          <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
+
+
           <div style="margin-top: 10px" class="text-value">Chế độ Snapshot</div>
           <div style="margin-top: 10px" class="text-label">{{ mode }}</div>
           <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
@@ -408,19 +426,9 @@
           <div style="margin-top: 10px" class="text-value">{{ 'app.number.of.snapshot.copy' | i18n }}</div>
           <div style="margin-top: 10px" class="text-label">{{ numOfVersion }}</div>
           <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
-          <button
-            nz-button
-            nzType="primary"
-            style="
-          border: none;
-          width: 100%;
-          display: flex;
-          align-items: center;
-          gap: 5px;
-          justify-content: center;
-        "
+          <button nz-button nzType="primary" style=" border: none;width: 100%;display: flex;align-items: center;gap: 5px;justify-content: center;"
             nzSize="large"
-            [disabled]="form.invalid"
+            [disabled]="form.invalid || disableByQuota"
             (click)="create()"
           >
             <img src="assets/imgs/wallet.svg" alt="" />

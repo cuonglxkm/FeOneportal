@@ -4,6 +4,8 @@ import {
   Component,
   Inject,
   OnInit,
+  SimpleChanges,
+  ViewChild,
 } from '@angular/core';
 import { Router } from '@angular/router';
 import { I18NService } from '@core';
@@ -19,6 +21,8 @@ import { ObjectStorage } from 'src/app/shared/models/object-storage.model';
 import { BucketService } from 'src/app/shared/services/bucket.service';
 import { ObjectStorageService } from 'src/app/shared/services/object-storage.service';
 import { TimeCommon } from 'src/app/shared/utils/common';
+import { RegionModel } from '../../../../../../libs/common-utils/src';
+import { RegionSelectDropdownComponent } from 'src/app/shared/components/region-select-dropdown/region-select-dropdown.component';
 
 @Component({
   selector: 'one-portal-bucket-list',
@@ -27,6 +31,7 @@ import { TimeCommon } from 'src/app/shared/utils/common';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class BucketListComponent implements OnInit {
+  currentRegion: RegionModel;
   objectStorage: ObjectStorage = new ObjectStorage();
   listBucket: BucketModel[] = [];
   pageNumber: number = 1;
@@ -36,7 +41,10 @@ export class BucketListComponent implements OnInit {
   loading: boolean = true;
   isLoadingDeleteOS: boolean = false;
   searchDelay = new Subject<boolean>();
-  user: any
+  user: any;
+  usage: any;
+  totalUsage: number;
+  url = window.location.pathname;
   constructor(
     @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
     private bucketService: BucketService,
@@ -49,20 +57,27 @@ export class BucketListComponent implements OnInit {
     private loadingSrv: LoadingService
   ) {}
   hasOS: boolean = undefined;
-  region = JSON.parse(localStorage.getItem('regionId'));
+  region: number;
+
   ngOnInit(): void {
-    let regionAndProject = getCurrentRegionAndProject();
-    this.region = regionAndProject.regionId;
-      this.hasObjectStorageInfo()
-      this.hasObjectStorage();
-      this.searchDelay
-        .pipe(debounceTime(TimeCommon.timeOutSearch))
-        .subscribe(() => {
-          this.search();
-        });
+    if (!this.url.includes('advance')) {
+      if(Number(localStorage.getItem('regionId')) === 7) {
+        this.region = 5
+      }else{
+        this.region = Number(localStorage.getItem('regionId'));
+      }
+    } else {
+      this.region = 7;
+    }
+    this.hasObjectStorageInfo();
+    this.hasObjectStorage();
+    this.getUsageOfUser();
+    this.searchDelay
+      .pipe(debounceTime(TimeCommon.timeOutSearch))
+      .subscribe(() => {
+        this.search();
+      });
   }
-
-
 
   hasObjectStorageInfo() {
     this.loadingSrv.open({ type: 'spin', text: 'Loading...' });
@@ -107,13 +122,16 @@ export class BucketListComponent implements OnInit {
       });
   }
 
-  private getUserById(id: number) {
-    this.bucketService
-      .getUserById(id)
+  getUsageOfUser() {
+    this.loadingSrv.open({ type: 'spin', text: 'Loading...' });
+    this.objectSevice
+      .getUsageOfUser(this.region)
+      .pipe(finalize(() => this.loadingSrv.close()))
       .subscribe({
         next: (data) => {
-          this.objectStorage = data;
-          console.log(this.objectStorage);
+          this.usage = data;
+          this.totalUsage =
+            (parseFloat(this.usage.usage) / parseInt(this.usage.total)) * 100;
           this.cdr.detectChanges();
         },
         error: (e) => {
@@ -124,13 +142,40 @@ export class BucketListComponent implements OnInit {
         },
       });
   }
-  
 
+  onRegionChange(region: RegionModel) {
+    this.region = region.regionId;
+  }
+
+  onRegionChanged(region: RegionModel) {
+    this.region = region.regionId;
+  }
+
+  private getUserById(id: number) {
+    this.bucketService.getUserById(id).subscribe({
+      next: (data) => {
+        this.objectStorage = data;
+        console.log(this.objectStorage);
+        this.cdr.detectChanges();
+      },
+      error: (e) => {
+        this.notification.error(
+          this.i18n.fanyi('app.status.fail'),
+          this.i18n.fanyi('app.bucket.getObject.fail')
+        );
+      },
+    });
+  }
 
   search() {
     this.loading = true;
     this.bucketService
-      .getListBucket(this.pageNumber, this.pageSize, this.value.trim(), this.region)
+      .getListBucket(
+        this.pageNumber,
+        this.pageSize,
+        this.value.trim(),
+        this.region
+      )
       .pipe(
         finalize(() => {
           this.loading = false;
@@ -185,7 +230,7 @@ export class BucketListComponent implements OnInit {
   }
 
   deleteObjectStorage() {
-    this.isVisibleDeleteOS = true
+    this.isVisibleDeleteOS = true;
   }
 
   isVisibleDeleteBucket: boolean = false;
@@ -206,29 +251,31 @@ export class BucketListComponent implements OnInit {
 
   handleOkDeleteBucket() {
     if (this.codeVerify == this.bucketDeleteName) {
-      this.bucketService.deleteBucket(this.bucketDeleteName, this.region).subscribe({
-        next: (data) => {
-          if (data == 'Thao tác thành công') {
-            this.notification.success(
-              this.i18n.fanyi('app.status.success'),
-              this.i18n.fanyi('app.bucket.delete.bucket.success')
-            );
-            this.isVisibleDeleteBucket = false;
-            this.search();
-          } else {
+      this.bucketService
+        .deleteBucket(this.bucketDeleteName, this.region)
+        .subscribe({
+          next: (data) => {
+            if (data == 'Thao tác thành công') {
+              this.notification.success(
+                this.i18n.fanyi('app.status.success'),
+                this.i18n.fanyi('app.bucket.delete.bucket.success')
+              );
+              this.isVisibleDeleteBucket = false;
+              this.search();
+            } else {
+              this.notification.error(
+                this.i18n.fanyi('app.status.fail'),
+                this.i18n.fanyi('app.bucket.delete.bucket.fail')
+              );
+            }
+          },
+          error: (error) => {
             this.notification.error(
               this.i18n.fanyi('app.status.fail'),
               this.i18n.fanyi('app.bucket.delete.bucket.fail')
             );
-          }
-        },
-        error: (error) => {
-          this.notification.error(
-            this.i18n.fanyi('app.status.fail'),
-            this.i18n.fanyi('app.bucket.delete.bucket.fail')
-          );
-        },
-      });
+          },
+        });
     } else {
       this.notification.error(
         this.i18n.fanyi('app.status.fail'),
@@ -248,23 +295,21 @@ export class BucketListComponent implements OnInit {
 
   handleOkDeleteOS() {
     this.isLoadingDeleteOS = true;
-    this.bucketService
-      .deleteOS(this.user.id)
-      .subscribe({
-        next: (data) => {
-          console.log(data);
-          this.notification.success('', 'Xóa Object Storage thành công');
-          this.isVisibleDeleteOS = false;
-          this.isLoadingDeleteOS = false;
-          this.hasObjectStorageInfo();
-          this.cdr.detectChanges()
-        },
-        error: (error) => {
-          console.log(error.error);
-          this.notification.error('', 'Xóa Object Storage không thành công');
-          this.isLoadingDeleteOS = false;
-          this.cdr.detectChanges()
-        },
-      });
+    this.bucketService.deleteOS(this.user.id).subscribe({
+      next: (data) => {
+        console.log(data);
+        this.notification.success('', 'Xóa Object Storage thành công');
+        this.isVisibleDeleteOS = false;
+        this.isLoadingDeleteOS = false;
+        this.hasObjectStorageInfo();
+        this.cdr.detectChanges();
+      },
+      error: (error) => {
+        console.log(error.error);
+        this.notification.error('', 'Xóa Object Storage không thành công');
+        this.isLoadingDeleteOS = false;
+        this.cdr.detectChanges();
+      },
+    });
   }
 }

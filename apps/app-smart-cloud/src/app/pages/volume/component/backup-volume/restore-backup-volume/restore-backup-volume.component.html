@@ -56,16 +56,28 @@
             </nz-row>
             <nz-row nzGutter="24">
               <nz-col nzSpan="12">
-                <nz-form-item>
+                <nz-form-item *ngIf="typeVpc == 0 || typeVpc == 2">
                   <nz-form-label>
-                    <span>{{ 'app.info.backup.vm.total.storage'|i18n }}</span>
+                    <span>{{ 'app.backup.package.storage'|i18n }}</span>
                   </nz-form-label>
                   <nz-form-control>
-                    <input *ngIf="typeVpc == 1" nz-input class="input-custom"
-                           [value]="projectDetail?.cloudProject?.quotaBackupVolumeInGb" [disabled]="true" />
-                    <input *ngIf="typeVpc == 0 || typeVpc == 2" nz-input class="input-custom"
-                           [value]="backupPackageDetail?.sizeInGB"
-                           [disabled]="true" />
+                    <nz-input-group [nzAddOnAfter]="'GB'" class="input-custom">
+                      <input  nz-input
+                              [value]="backupPackageDetail?.sizeInGB"
+                              [disabled]="true" />
+                    </nz-input-group>
+                  </nz-form-control>
+                </nz-form-item>
+                <nz-form-item *ngIf="typeVpc == 1" >
+                  <nz-form-label>
+                    <span>{{ 'app.backup.vm.bought'|i18n }}</span>
+                  </nz-form-label>
+                  <nz-form-control>
+                    <nz-input-group [nzAddOnAfter]="'GB'" class="input-custom">
+                      <input  nz-input
+                              [value]="projectDetail?.cloudProject?.quotaBackupVolumeInGb"
+                              [disabled]="true" />
+                    </nz-input-group>
                   </nz-form-control>
                 </nz-form-item>
               </nz-col>
@@ -125,6 +137,16 @@
                                    [nzLabel]="data.name + '(' + data.sizeInGB + ' GB)'"></nz-option>
                       </nz-select>
                     </nz-form-control>
+                  </nz-form-item>
+                  <nz-form-item>
+                    <div *ngIf="typeEncrypt">
+                      <label class="text-label" nz-checkbox [nzChecked]="backupVolume?.isEncryption" nzDisabled
+                             style="font-size: 16px;">{{ 'volume.info.type.encrypt'|i18n }}</label>
+                    </div>
+                    <div *ngIf="typeMultiple" style="margin-top: 15px;">
+                      <label class="text-label" nz-checkbox [nzChecked]="backupVolume?.isMultiAttach" nzDisabled
+                             style="font-size: 16px;">{{ 'volume.info.type.multiAttach'|i18n }}</label>
+                    </div>
                   </nz-form-item>
                 </div>
               </nz-col>

@@ -84,11 +84,11 @@ isAdjust:boolean= true;
         // const expireDate: string = this.getCurrentDateTime(this.data?.expireDate);
         // 
         const expireDate1 = new Date(this.data?.expireDate)
-        console.log("expireDate", expireDate1)
+        // console.log("expireDate", expireDate1)
         const expireDateTime:string = this.getCurrentDateTime(expireDate1);
-        console.log("expireDateTime", expireDateTime)
+        // console.log("expireDateTime", expireDateTime)
         const currentDateTime: string = this.getCurrentDateTime(this.todayNow);
-        console.log("currentDateTime",currentDateTime); // Output: "15:30:45 06/09/2024"
+        // console.log("currentDateTime",currentDateTime); // Output: "15:30:45 06/09/2024"
 
         if(expireDateTime<currentDateTime){
           this.isAdjust= false
@@ -206,10 +206,10 @@ isAdjust:boolean= true;
   }
   checkExpireDate(){
 //  const today = this.parseDate(this.todayNow);
- console.log("today", this.todayNow)
+//  console.log("today", this.todayNow)
 //   const expireDate = this.parseDate(this.data?.expireDate);
 //   console.log("expireDate",expireDate)
-console.log("this.data?.expireDate",this.data?.expireDate)
+// console.log("this.data?.expireDate",this.data?.expireDate)
 
   }
  
