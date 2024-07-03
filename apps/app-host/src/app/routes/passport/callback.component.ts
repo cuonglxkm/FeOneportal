@@ -77,7 +77,7 @@ export class CallbackComponent implements OnInit {
       .set('grant_type', 'authorization_code')
       .set('code', this.code)
       .set('redirect_uri', environment['sso'].callback);
-
+    
     localStorage.removeItem('UserRootId');
     localStorage.removeItem('PermissionOPA');
     localStorage.removeItem('ShareUsers');

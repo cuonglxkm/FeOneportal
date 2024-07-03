@@ -231,7 +231,7 @@
 
 <nz-modal
   [(nzVisible)]="isVisibleAuthenticator"
-  [nzTitle]="type === 2 ? 'Thiết lập lại ứng dụng Google Authenticator' : 'Thiết lập ứng dụng Google Authenticator'"
+  [nzTitle]="type === 2 ? 'Thiết lập lại ứng dụng Authenticator' : 'Thiết lập ứng dụng Authenticator'"
   (nzOnCancel)="handleCancelAuthenticator()"
 >
   <form nz-form [formGroup]="formAuthenticator" class="mt-3">
@@ -307,7 +307,7 @@
 
 <nz-modal
   [(nzVisible)]="isVisibleReCreateGoogleAuthenticator"
-  nzTitle="Tạo lại Mã Google Authenticator"
+  nzTitle="Tạo lại Mã ứng dụng Authenticator"
   (nzOnCancel)="handleCancelRecreateGoogleAuthenticator()"
 >
   <form nz-form [formGroup]="form" class="mt-3">
