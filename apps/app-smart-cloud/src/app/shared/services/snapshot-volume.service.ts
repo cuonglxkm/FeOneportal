@@ -68,7 +68,7 @@ export class SnapshotVolumeService extends BaseService {
   }
 
   getDetailSnapshotSchedule(id): Observable<any> {
-    return this.http.get<SnapshotVolumeDto>(this.baseUrl + this.ENDPOINT.provisions + `/vlsnapshots/${id}`, this.httpOptions);
+    return this.http.get<SnapshotVolumeDto>(this.baseUrl + this.ENDPOINT.provisions + `/vlsnapshots/schedule/${id}`, this.httpOptions);
   }
 
   getListSchedule(
