@@ -25,8 +25,6 @@ import {
   RestoreInstanceBackup,
   VolumeBackup,
 } from '../../../shared/models/backup-vm';
-import { PackageBackupModel } from '../../../shared/models/package-backup.model';
-import { PackageBackupService } from '../../../shared/services/package-backup.service';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
@@ -34,6 +32,7 @@ import { I18NService } from '@core';
 import {
   DataPayment,
   GpuConfigRecommend,
+  InstancesModel,
   IPPublicModel,
   ItemPayment,
   OfferItem,
@@ -51,7 +50,6 @@ import {
 } from '../../../shared/models/vlan.model';
 import { VlanService } from '../../../shared/services/vlan.service';
 import { debounceTime, finalize, Subject } from 'rxjs';
-import { ProjectService } from 'src/app/shared/services/project.service';
 import { ConfigurationsService } from 'src/app/shared/services/configurations.service';
 import { NguCarousel, NguCarouselConfig } from '@ngu/carousel';
 import { BlockStorage } from '../../instances/instances-create/instances-create.component';
@@ -150,8 +148,6 @@ export class RestoreBackupVmComponent implements OnInit {
     private router: Router,
     private backupService: BackupVmService,
     private activatedRoute: ActivatedRoute,
-    private projectService: ProjectService,
-    private backupPackageService: PackageBackupService,
     private catalogService: CatalogService,
     private notification: NzNotificationService,
     private dataService: InstancesService,
@@ -407,6 +403,8 @@ export class RestoreBackupVmComponent implements OnInit {
     });
   }
 
+  instanceModel: InstancesModel;
+  selectedIndextab: number = 0;
   listIDAttachVolume: number[] = [];
   getDetailBackupById(id) {
     this.backupSize = 0;
@@ -419,6 +417,19 @@ export class RestoreBackupVmComponent implements OnInit {
       )
       .subscribe((data) => {
         this.backupVmModel = data;
+        this.dataService
+          .getById(this.backupVmModel.instanceId)
+          .subscribe((data) => {
+            this.instanceModel = data;
+            if (this.instanceModel.offerId != 0) {
+              this.selectedIndextab = 1;
+              this.onClickCustomConfig();
+            }
+            if (this.instanceModel.gpuType != null) {
+              this.selectedIndextab = 2;
+              this.onClickGpuConfig();
+            }
+          });
         this.backupVmModel.volumeBackups.forEach((e) => {
           this.backupSize += e.size;
         });

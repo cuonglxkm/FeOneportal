@@ -27,7 +27,7 @@
     <div class="alain-custom-action text-right">
       <share-users-combobox></share-users-combobox>
       <region-select-dropdown
-      (regionChange)="onRegionChanged($event)"
+        (regionChange)="onRegionChanged($event)"
         (valueChanged)="regionChanged($event)"
       ></region-select-dropdown>
       <project-select-dropdown
@@ -184,6 +184,7 @@
         >
           <div>
             <nz-tabset
+              [(nzSelectedIndex)]="selectedIndextab"
               nzCentered
               nzSize="large"
               (keydown)="handleKeyboardEvent($event)"
