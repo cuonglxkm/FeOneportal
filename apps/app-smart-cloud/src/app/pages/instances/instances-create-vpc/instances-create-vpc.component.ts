@@ -24,7 +24,7 @@ import {
   GpuUsage,
   GpuConfigRecommend,
 } from '../instances.model';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { InstancesService } from '../instances.service';
 import { Observable, Subject, debounceTime, finalize, of } from 'rxjs';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
@@ -169,6 +169,7 @@ export class InstancesCreateVpcComponent implements OnInit {
     private notification: NzNotificationService,
     private cdr: ChangeDetectorRef,
     private router: Router,
+    private activatedRoute: ActivatedRoute,
     private loadingSrv: LoadingService,
     private el: ElementRef,
     private renderer: Renderer2,
@@ -205,6 +206,13 @@ export class InstancesCreateVpcComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    if (this.activatedRoute.snapshot.paramMap.get('idSnapshot')) {
+      this.isSnapshot = true;
+      this.selectedSnapshot = Number.parseInt(
+        this.activatedRoute.snapshot.paramMap.get('idSnapshot')
+      );
+      this.changeSelectedSnapshot();
+    }
     this.userId = this.tokenService.get()?.userId;
     let regionAndProject = getCurrentRegionAndProject();
     this.region = regionAndProject.regionId;
@@ -588,7 +596,7 @@ export class InstancesCreateVpcComponent implements OnInit {
       this.infoVPC.cloudProjectResourceUsed.gpuUsages.filter(
         (e) => e.gpuOfferId == this.instanceCreate.gpuOfferId
       )[0];
-    if (gpuUsage != undefined && gpuUsage != null) {
+    if (gpuUsage) {
       this.remainingGpu = gpuProject.gpuCount - gpuUsage.gpuCount;
     } else {
       this.remainingGpu = gpuProject.gpuCount;
@@ -611,7 +619,7 @@ export class InstancesCreateVpcComponent implements OnInit {
       this.infoVPC.cloudProjectResourceUsed.gpuUsages.filter(
         (e) => e.gpuOfferId == id
       )[0];
-    if (gpuUsage != undefined && gpuUsage != null) {
+    if (gpuUsage) {
       this.remainingGpu = gpuProject.gpuCount - gpuUsage.gpuCount;
     } else {
       this.remainingGpu = gpuProject.gpuCount;

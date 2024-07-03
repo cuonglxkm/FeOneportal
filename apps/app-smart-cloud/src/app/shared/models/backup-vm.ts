@@ -245,3 +245,9 @@ export class RestoreInstanceBackup {
   serviceName: any
   typeName: string
 }
+
+export class VolumeBackup {
+  id: number
+  name: string
+  size: number
+}
