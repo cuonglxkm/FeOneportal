@@ -153,13 +153,13 @@
 <nz-modal [(nzVisible)]="isVisibleRestart" nzTitle="Khôi phục lịch Snapshot" (nzOnCancel)="handleCancel()" [nzStyle]="modalStyle">
   <ng-container *nzModalContent>
     <div class="text-label" style="margin-bottom: 3px; margin-top: 10px">Quý khách muốn thực hiện khôi phục lịch Snapshot?</div>
-    <nz-alert nzBanner
-              style="margin-bottom: 10px;"
-              [nzMessage]="msgTpl"
-              nzShowIcon></nz-alert>
-    <ng-template #msgTpl>
-      <span class="description-info">Vui lòng thực hiện @khuyển nghị (Đã viết trong URD)  <a>Tại đây</a> để dịch vụ không bị gián đoạn</span>
-    </ng-template>
+<!--    <nz-alert nzBanner-->
+<!--              style="margin-bottom: 10px;"-->
+<!--              [nzMessage]="msgTpl"-->
+<!--              nzShowIcon></nz-alert>-->
+<!--    <ng-template #msgTpl>-->
+<!--      <span class="description-info">Vui lòng thực hiện {{dataAction.warningMessage}} <a href="">Tại đây</a> để dịch vụ không bị gián đoạn</span>-->
+<!--    </ng-template>-->
   </ng-container>
   <div *nzModalFooter>
     <button nz-button (click)="handleCancel()">
