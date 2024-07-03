@@ -1820,7 +1820,7 @@
   "mongodb.overview.alert-2": "Monitoring ",
   "mongodb.overview.alert-3": "tab.",
   "mongodb.overview.chart-connection.series": "Num of connections",
-  "mongodb.overview.chart-logicalSize.name": "Sum total size of the document and index data (MB)",
+  "mongodb.overview.chart-logicalSize.name": "Sum total size of the document and index data",
   "mongodb.overview.chart-opcounter.name": "Num of Operations/s",
 
   "mongo.db.monitoring":"Monitoring",

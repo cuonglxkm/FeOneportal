@@ -47,7 +47,7 @@ export class CreateBackupVmNormalComponent implements OnInit{
   securityGroupSelected = []
   volumeAttachments: VolumeAttachment[] = [];
   backupPackages: PackageBackupModel[] = [];
-  backupPackageDetail: PackageBackupModel = new PackageBackupModel();
+  backupPackageDetail: PackageBackupModel;
   sizeOfOs: number;
   sizeOfVlAttach: number = 0;
   instanceSelected: number;
@@ -215,7 +215,7 @@ export class CreateBackupVmNormalComponent implements OnInit{
         }
       })
       console.log('backup package', this.backupPackages);
-      this.validateForm.controls.backupPacketId.setValue(this.backupPackages[0].id);
+      this.validateForm.controls.backupPacketId.setValue(this.backupPackages[0]?.id);
     }, error => {
       this.isLoading = false
       this.backupPackages = []
@@ -223,9 +223,12 @@ export class CreateBackupVmNormalComponent implements OnInit{
   }
 
   onChangeBackupPackage(value) {
-    this.backupPackageService.detail(value, this.project).subscribe(data => {
-      this.backupPackageDetail = data;
-    });
+    if(value != undefined) {
+      this.backupPackageService.detail(value, this.project).subscribe(data => {
+        this.backupPackageDetail = data;
+      });
+    }
+
   }
 
   onSelectedVolume(value) {
@@ -339,7 +342,7 @@ export class CreateBackupVmNormalComponent implements OnInit{
     this.region = regionAndProject.regionId;
     this.project = regionAndProject.projectId;
 
-
+  console.log('detail', this.backupPackageDetail)
     if (this.activatedRoute.snapshot.paramMap.get('instanceId') != undefined || this.activatedRoute.snapshot.paramMap.get('instanceId') != null) {
       this.instanceIdParam = Number.parseInt(this.activatedRoute.snapshot.paramMap.get('instanceId'));
       this.validateForm.controls.instanceId.setValue(this.instanceIdParam)
