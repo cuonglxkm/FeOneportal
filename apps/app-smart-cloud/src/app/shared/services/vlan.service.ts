@@ -388,8 +388,9 @@ export class VlanService extends BaseService {
   }
 
   checkDeleteNetwork(networkId) {
-    return this.http.get<boolean>(this.baseUrl + this.ENDPOINT.provisions + `/vlans/checkdeletenetwork?networkId=${networkId}`, {
-      headers: this.getHeaders()
+    return this.http.get(this.baseUrl + this.ENDPOINT.provisions + `/vlans/checkdeletenetwork?networkId=${networkId}`, {
+      headers: this.getHeaders(),
+      responseType: 'text'
     }).pipe(catchError((error: HttpErrorResponse) => {
       if (error.status === 401) {
         console.error('login');
@@ -402,8 +403,9 @@ export class VlanService extends BaseService {
   }
 
   checkDeleteSubnet(subnetId) {
-    return this.http.get<boolean>(this.baseUrl + this.ENDPOINT.provisions + `/vlans/checkdeletesubnet?subnetId=${subnetId}`, {
-      headers: this.getHeaders()
+    return this.http.get(this.baseUrl + this.ENDPOINT.provisions + `/vlans/checkdeletesubnet?subnetId=${subnetId}`, {
+      headers: this.getHeaders(),
+      responseType: 'text'
     }).pipe(catchError((error: HttpErrorResponse) => {
       if (error.status === 401) {
         console.error('login');

@@ -30,6 +30,7 @@
         [regionId]="region"
         [isDetail]="true"
         (valueChanged)="onProjectChange($event)"
+        (userChanged)="onUserProjectChange($event)"
       ></project-select-dropdown>
     </div>
   </ng-template>
@@ -40,92 +41,128 @@
     Thông tin lịch Snapshot
   </div>
   <nz-spin [nzSpinning]="isLoading" nzSize="large">
+    <div *ngIf="typeProject == 1">
+      <nz-form-item>
+        <nz-form-label>{{ 'app.snapshot.schedule.name' | i18n }}</nz-form-label>
+        <input
+          nz-input
+          [(ngModel)]="scheduleName"
+          disabled="true"
+          type="text"
+          nzSize="large"
+        />
+      </nz-form-item>
+      <nz-row nzGutter="24">
+        <nz-col [nzLg]="12" [nzMd]="12" [nzSm]="24" [nzXl]="12" [nzXs]="24">
+          <nz-form-item
+          ><nz-form-label>Loại Snapshot</nz-form-label>
+            <input nz-input [(ngModel)]="typeSnapshot" disabled="true" type="text" nzSize="large"/>
+          </nz-form-item>
+        </nz-col>
+        <nz-col [nzLg]="12" [nzMd]="12" [nzSm]="24" [nzXl]="12" [nzXs]="24">
+          <nz-form-item *ngIf="data.snapshotType == 1">
+            <nz-form-label>Chọn máy ảo</nz-form-label>
+            <input nz-input [(ngModel)]="data.serviceName" disabled="true" type="text" nzSize="large"
+            /></nz-form-item>
+          <nz-form-item *ngIf="data.snapshotType != 1">
+            <nz-form-label>Chọn Volume</nz-form-label>
+            <input nz-input [(ngModel)]="data.serviceName" disabled="true" type="text" nzSize="large"
+            /></nz-form-item>
+        </nz-col>
+      </nz-row>
+    </div>
+    <div *ngIf="typeProject != 1">
+      <nz-row nzGutter="24">
+        <nz-col [nzLg]="12" [nzMd]="12" [nzSm]="24" [nzXl]="12" [nzXs]="24">
+          <nz-form-item>
+            <nz-form-label>{{ 'app.snapshot.schedule.name' | i18n }}</nz-form-label>
+            <input
+              nz-input
+              [(ngModel)]="scheduleName"
+              disabled="true"
+              type="text"
+              nzSize="large"
+            />
+          </nz-form-item>
+        </nz-col>
+        <nz-col [nzLg]="12" [nzMd]="12" [nzSm]="24" [nzXl]="12" [nzXs]="24">
+          <nz-form-item
+          ><nz-form-label>Loại Snapshot</nz-form-label>
+            <input nz-input [(ngModel)]="typeSnapshot" disabled="true" type="text" nzSize="large"/>
+          </nz-form-item>
+        </nz-col>
+      </nz-row>
+      <nz-row nzGutter="24">
+        <nz-col [nzLg]="12" [nzMd]="12" [nzSm]="24" [nzXl]="12" [nzXs]="24">
+          <nz-form-item *ngIf="data.snapshotType == 1">
+            <nz-form-label>Chọn máy ảo</nz-form-label>
+            <input nz-input [(ngModel)]="data.serviceName" disabled="true" type="text" nzSize="large"
+            /></nz-form-item>
+          <nz-form-item *ngIf="data.snapshotType != 1">
+            <nz-form-label>Chọn Volume</nz-form-label>
+            <input nz-input [(ngModel)]="data.serviceName" disabled="true" type="text" nzSize="large"
+            /></nz-form-item>
+        </nz-col>
+        <nz-col [nzLg]="12" [nzMd]="12" [nzSm]="24" [nzXl]="12" [nzXs]="24">
+          <nz-form-item>
+            <nz-form-label>Chọn gói Snapshot</nz-form-label>
+            <input nz-input [(ngModel)]="data.packageName" disabled="true" type="text" nzSize="large"
+            /></nz-form-item>
+        </nz-col>
+      </nz-row>
+    </div>
+    <nz-row nzGutter="24">
+      <nz-col [nzLg]="12" [nzMd]="12" [nzSm]="24" [nzXl]="12" [nzXs]="24">
+        <nz-form-item>
+          <nz-form-label>Chế độ Snapshot</nz-form-label>
+          <input
+            nz-input
+            [(ngModel)]="labelMode"
+            disabled="true"
+            nzSize="large"
+            type="text"
+        /></nz-form-item>
+      </nz-col>
+      <nz-col [nzLg]="12" [nzMd]="12" [nzSm]="24" [nzXl]="12" [nzXs]="24">
+        <nz-form-item
+          ><nz-form-label>Chọn thời điểm thực hiện Snapshot</nz-form-label>
+          <nz-time-picker
+            style="width: 100%; border-radius: 8px"
+            [(ngModel)]="data.runtime"
+            [disabled]="true"
+            [ngModelOptions]="{ standalone: true }"
+            nzFormat="HH:mm"
+            nzSize="large"
+          ></nz-time-picker>
+        </nz-form-item>
+      </nz-col>
+    </nz-row>
     <nz-form-item>
-      <nz-form-label>{{ 'app.snapshot.schedule.name' | i18n }}</nz-form-label>
+      <nz-form-label>Số bản Snapshot lưu trữ</nz-form-label>
       <input
         nz-input
-        [(ngModel)]="scheduleName"
+        placeholder="Chọn ngày"
+        [(ngModel)]="data.maxSnapshot"
         disabled="true"
         type="text"
         nzSize="large"
       />
     </nz-form-item>
-    <nz-row nzGutter="24">
-      <nz-col [nzLg]="12" [nzMd]="12" [nzSm]="24" [nzXl]="12" [nzXs]="24">
-        <nz-form-item>
-          <nz-form-label>Volume đã chọn</nz-form-label>
-          <input nz-input [(ngModel)]="volumeName" disabled="true" type="text"
-        /></nz-form-item>
-      </nz-col>
-      <nz-col [nzLg]="12" [nzMd]="12" [nzSm]="24" [nzXl]="12" [nzXs]="24">
-        <nz-form-item
-          ><nz-form-label>{{ 'app.snapshot.mode' | i18n }}</nz-form-label>
-          <input nz-input placeholder="Theo tuần" disabled="true" type="text" />
-        </nz-form-item>
-      </nz-col>
-    </nz-row>
-    <nz-row nzGutter="24">
-      <nz-col [nzLg]="12" [nzMd]="12" [nzSm]="24" [nzXl]="12" [nzXs]="24">
-        <nz-form-item>
-          <nz-form-label>{{ 'app.perform.snapshot.time' | i18n }}</nz-form-label>
-          <input
-            nz-input
-            [(ngModel)]="scheduleStartTime"
-            disabled="true"
-            type="text"
-        /></nz-form-item>
-      </nz-col>
-      <nz-col [nzLg]="12" [nzMd]="12" [nzSm]="24" [nzXl]="12" [nzXs]="24">
-        <nz-form-item
-          ><nz-form-label>Số tuần</nz-form-label>
-          <input nz-input placeholder="1 tuần" disabled="true" type="text" />
-        </nz-form-item>
-      </nz-col>
-    </nz-row>
-    <nz-row nzGutter="24">
-      <nz-col [nzLg]="12" [nzMd]="12" [nzSm]="24" [nzXl]="12" [nzXs]="24">
-        <nz-form-item
-          ><nz-form-label>Ngày thực hiện Snapshot</nz-form-label>
-          <input
-            nz-input
-            placeholder="Chọn ngày"
-            [(ngModel)]="dateStart"
-            disabled="true"
-            type="text"
-          />
-        </nz-form-item>
-      </nz-col>
-      <nz-col [nzLg]="12" [nzMd]="12" [nzSm]="24" [nzXl]="12" [nzXs]="24">
-        <nz-form-item>
-          <nz-form-label>{{ 'app.number.of.snapshot.copy' | i18n }}</nz-form-label>
-          <input nz-input placeholder="1" disabled="true" type="text"
-        /></nz-form-item>
-      </nz-col>
-    </nz-row>
-
-    <nz-form-item style="margin-bottom: 0px">
-      <nz-form-label>Mô tả</nz-form-label>
-      <nz-form-control>
-        <nz-textarea-count [nzMaxCharacterCount]="255">
+    <form nz-form [nzLayout]="'vertical'">
+      <nz-form-item>
+        <nz-form-label>Mô tả</nz-form-label>
+        <nz-form-control>
+          <nz-textarea-count [nzMaxCharacterCount]="255">
           <textarea
             rows="4"
             nz-input
-            [(ngModel)]="descSchedule"
+            [(ngModel)]="data.description"
             disabled="true"
             [ngModelOptions]="{ standalone: true }"
           ></textarea>
-        </nz-textarea-count>
-      </nz-form-control>
-    </nz-form-item>
+          </nz-textarea-count>
+        </nz-form-control>
+      </nz-form-item>
+    </form>
   </nz-spin>
 </nz-card>
-<div class="text-right">
-  <button nz-button (click)="goBack()">
-    <img
-      style="padding-right: 10px"
-      src="assets/imgs/arrow-left-2.svg"
-      alt=""
-    />
-    <span>{{'app.order-detail.back' | i18n}}</span>
-  </button>
-</div>

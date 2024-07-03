@@ -480,6 +480,7 @@
                              nz-input
                              class="input-custom"
                              formControlName="name"
+                             [placeholder]="'schedule.backup.placeholder.input.name'|i18n"
                              [maxLength]="50"
                              style="width: 100%;border-radius: 8px;" />
                       <ng-template #nameErrorTpl let-control>
@@ -640,7 +641,7 @@
                 </nz-col>
               </nz-row>
               <nz-row nzGutter="24" style="margin-bottom: 0;" *ngIf="modeSelected == 1">
-                <nz-col nzSpan="12">
+                <nz-col *ngIf="backupPackageList?.length > 0" nzSpan="12">
                   <nz-row nzGutter="24">
                     <nz-col nzSpan="12">
                       <span class="text-label">{{ 'app.tooltip.backup.package.storage'|i18n }}</span>
@@ -800,7 +801,7 @@
                     </ng-template>
                   </nz-form-control>
                 </nz-form-item>
-                <nz-row nzGutter="24" style="margin-bottom: 0;">
+                <nz-row *ngIf="backupPackageList.length > 0" nzGutter="24" style="margin-bottom: 0;">
                   <nz-col nzSpan="12">
                     <nz-row nzGutter="24">
                       <nz-col nzSpan="12">
@@ -997,76 +998,74 @@
               <div style="margin-bottom: 20px">
                 <span class="text-card-header">{{ 'app.config.parameters'|i18n }}</span>
               </div>
-              <div *ngIf="selectedOption == 'instance'">
-                <div class="text-value">{{ 'schedule.backup.label.name'|i18n }}</div>
-                <div style="margin-top: 10px"
-                     class="text-label">{{ validateForm.get('formInstance').get('name').value }}
-                </div>
-                <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
-                <div class="text-value">{{ 'app.instances' | i18n }}</div>
-                <div style="margin-top: 10px" class="text-label">{{ instanceName }}</div>
-                <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
-                <div class="text-value">{{ 'schedule.backup.number.save' | i18n }}</div>
-                <div style="margin-top: 10px"
-                     class="text-label">{{ validateForm.get('formInstance').get('maxBackup').value }}
-                </div>
-                <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
-                <div class="text-value">{{ 'schedule.backup.mode' | i18n }}</div>
-                <div style="margin-top: 10px" class="text-label"
-                     [ngSwitch]="validateForm.get('formInstance').get('mode').value">
-                  <span *ngSwitchCase="1">{{ 'schedule.backup.label.each.day'|i18n }}</span>
-                  <span *ngSwitchCase="2">{{ 'schedule.backup.label.each.number.day'|i18n }}</span>
-                  <span *ngSwitchCase="3">{{ 'schedule.backup.label.each.week'|i18n }}</span>
-                  <span *ngSwitchCase="4">{{ 'schedule.backup.label.each.month'|i18n }}</span>
-                </div>
-                <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
-                <div class="text-value">{{ 'app.backup.volume.backup.package' | i18n }}</div>
-                <div style="margin-top: 10px" class="text-label">{{ backupPackageDetail?.packageName }}</div>
-                <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
-                <div class="text-value">{{ 'app.cluster.action-time' | i18n }}</div>
-                <div style="margin-top: 10px"
-                     class="text-label">{{ validateForm.get('formInstance')?.get('times')?.value | date: 'HH:mm' }}
-                </div>
-                <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
-                <div *ngIf="modeSelected == 2">
-                  <div class="text-value">{{ 'app.choose.day.of.week' | i18n }}</div>
-                  <div style="margin-top: 10px" class="text-label" *ngFor="let data of daysOfWeeks">
+              <div class="card-money">
+                <div *ngIf="selectedOption == 'instance'">
+                  <div class="text-value">{{ 'schedule.backup.label.name'|i18n }}</div>
+                  <div style="margin-top: 10px"
+                       class="text-label">{{ validateForm.get('formInstance').get('name').value }}
+                  </div>
+                  <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
+                  <div class="text-value">{{ 'app.instances' | i18n }}</div>
+                  <div style="margin-top: 10px" class="text-label">{{ instanceName }}</div>
+                  <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
+                  <div class="text-value">{{ 'schedule.backup.number.save' | i18n }}</div>
+                  <div style="margin-top: 10px"
+                       class="text-label">{{ validateForm.get('formInstance').get('maxBackup').value }}
+                  </div>
+                  <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
+                  <div class="text-value">{{ 'schedule.backup.mode' | i18n }}</div>
+                  <div style="margin-top: 10px" class="text-label"
+                       [ngSwitch]="validateForm.get('formInstance').get('mode').value">
+                    <span *ngSwitchCase="1">{{ 'schedule.backup.label.each.day'|i18n }}</span>
+                    <span *ngSwitchCase="2">{{ 'schedule.backup.label.each.number.day'|i18n }}</span>
+                    <span *ngSwitchCase="3">{{ 'schedule.backup.label.each.week'|i18n }}</span>
+                    <span *ngSwitchCase="4">{{ 'schedule.backup.label.each.month'|i18n }}</span>
+                  </div>
+                  <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
+                  <div class="text-value">{{ 'app.backup.volume.backup.package' | i18n }}</div>
+                  <div style="margin-top: 10px" class="text-label">{{ backupPackageDetail?.packageName }}</div>
+                  <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
+                  <div class="text-value">{{ 'app.cluster.action-time' | i18n }}</div>
+                  <div style="margin-top: 10px"
+                       class="text-label">{{ validateForm.get('formInstance')?.get('times')?.value | date: 'HH:mm' }}
+                  </div>
+                  <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
+                  <div *ngIf="modeSelected == 2">
+                    <div class="text-value">{{ 'app.choose.day.of.week' | i18n }}</div>
+                    <div style="margin-top: 10px" class="text-label" *ngFor="let data of daysOfWeeks">
                     <span *ngFor="let i of validateForm.get('formInstance').get('daysOfWeekMultiple').value;">
                       <span *ngIf="data.value === i">{{ data.label }}</span>
                     </span>
+                    </div>
                   </div>
-                </div>
-                <div *ngIf="modeSelected == 3">
-                  <div class="text-value">{{ 'app.number.of.week.executed' | i18n }}</div>
-                  <div style="margin-top: 10px"
-                       class="text-label">{{ validateForm.get('formInstance').get('numberOfWeek').value }} {{ 'app.Week' |i18n }}
-                  </div>
-                  <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
-                  <div class="text-value">{{ 'schedule.backup.day.select' | i18n }}</div>
-                  <div style="margin-top: 10px" class="text-label" *ngFor="let data of daysOfWeeks">
+                  <div *ngIf="modeSelected == 3">
+                    <div class="text-value">{{ 'app.number.of.week.executed' | i18n }}</div>
+                    <div style="margin-top: 10px"
+                         class="text-label">{{ validateForm.get('formInstance').get('numberOfWeek').value }} {{ 'app.Week' |i18n }}
+                    </div>
+                    <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
+                    <div class="text-value">{{ 'schedule.backup.day.select' | i18n }}</div>
+                    <div style="margin-top: 10px" class="text-label" *ngFor="let data of daysOfWeeks">
                     <span
                       *ngIf="data.value === validateForm.get('formInstance').get('daysOfWeek').value">{{ data.label }}</span>
+                    </div>
                   </div>
-                  <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
+<!--                  <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>-->
+                  <div *ngIf="modeSelected == 4">
+                    <div class="text-value">{{ 'app.number.of.month.executed' | i18n }}</div>
+                    <div style="margin-top: 10px"
+                         class="text-label">{{ validateForm.get('formInstance').get('months').value }}  {{ 'app.Month'|i18n }}
+                    </div>
+                    <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
+                    <div class="text-value">{{ 'app.execution.date' | i18n }}</div>
+                    <div style="margin-top: 10px"
+                         class="text-label">{{ validateForm.get('formInstance').get('date').value }}
+                    </div>
+<!--                    <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>-->
+                  </div>
                 </div>
-                <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
-                <div *ngIf="modeSelected == 4">
-                  <div class="text-value">{{ 'app.number.of.week.executed' | i18n }}</div>
-                  <div style="margin-top: 10px"
-                       class="text-label">{{ validateForm.get('formInstance').get('numberOfWeek').value }} {{ 'app.Week' |i18n }}
-                  </div>
-                  <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
-                  <div class="text-value">{{ 'app.number.of.month.executed' | i18n }}</div>
-                  <div style="margin-top: 10px"
-                       class="text-label">{{ validateForm.get('formInstance').get('months').value }}  {{ 'app.Month'|i18n }}
-                  </div>
-                  <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
-                  <div class="text-value">{{ 'app.execution.date' | i18n }}</div>
-                  <div style="margin-top: 10px"
-                       class="text-label">{{ validateForm.get('formInstance').get('date').value }}
-                  </div>
-                  <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
-                </div>
+              </div>
+              <div *ngIf="selectedOption === 'instance'">
                 <nz-row>
                   <nz-col style="width: 100%">
                     <button style="width: 100%" nz-button nzSize="large" nzType="primary"
@@ -1082,77 +1081,76 @@
                   </nz-col>
                 </nz-row>
               </div>
-              <div *ngIf="selectedOption == 'volume'">
-                <div class="text-value">{{ 'schedule.backup.label.name'|i18n }}</div>
-                <div style="margin-top: 10px"
-                     class="text-label">{{ validateForm.get('formVolume').get('name').value }}
-                </div>
-                <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
-                <div class="text-value">{{ 'app.volume.name' | i18n }}</div>
-                <div style="margin-top: 10px"
-                     class="text-label">{{ validateForm.get('formVolume').get('volumeId').value }}
-                </div>
-                <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
-                <div class="text-value">{{ 'schedule.backup.number.save' | i18n }}</div>
-                <div style="margin-top: 10px"
-                     class="text-label">{{ validateForm.get('formVolume').get('maxBackup').value }}
-                </div>
-                <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
-                <div class="text-value">{{ 'schedule.backup.mode' | i18n }}</div>
-                <div style="margin-top: 10px" class="text-label"
-                     [ngSwitch]="validateForm.get('formVolume').get('mode').value">
-                  <span *ngSwitchCase="1">{{ 'schedule.backup.label.each.day'|i18n }}</span>
-                  <span *ngSwitchCase="2">{{ 'schedule.backup.label.each.number.day'|i18n }}</span>
-                  <span *ngSwitchCase="3">{{ 'schedule.backup.label.each.week'|i18n }}</span>
-                  <span *ngSwitchCase="4">{{ 'schedule.backup.label.each.month'|i18n }}</span>
-                </div>
-                <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
-                <div class="text-value">{{ 'app.backup.volume.backup.package' | i18n }}</div>
-                <div style="margin-top: 10px" class="text-label">{{ backupPackageDetail?.packageName }}</div>
-                <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
-                <div class="text-value">{{ 'app.cluster.action-time' | i18n }}</div>
-                <div style="margin-top: 10px"
-                     class="text-label">{{ validateForm.get('formVolume')?.get('times')?.value | date: 'HH:mm' }}
-                </div>
-                <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
-                <div *ngIf="modeSelected == 2">
-                  <div class="text-value">{{ 'app.choose.day.of.week' | i18n }}</div>
-                  <div style="margin-top: 10px" class="text-label" *ngFor="let data of daysOfWeeks">
+              <div class="card-money">
+                <div *ngIf="selectedOption == 'volume'">
+                  <div class="text-value">{{ 'schedule.backup.label.name'|i18n }}</div>
+                  <div style="margin-top: 10px"
+                       class="text-label">{{ validateForm.get('formVolume').get('name').value }}
+                  </div>
+                  <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
+                  <div class="text-value">{{ 'app.volume.name' | i18n }}</div>
+                  <div style="margin-top: 10px"
+                       class="text-label">{{ volumeName }}
+                  </div>
+                  <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
+                  <div class="text-value">{{ 'schedule.backup.number.save' | i18n }}</div>
+                  <div style="margin-top: 10px"
+                       class="text-label">{{ validateForm.get('formVolume').get('maxBackup').value }}
+                  </div>
+                  <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
+                  <div class="text-value">{{ 'schedule.backup.mode' | i18n }}</div>
+                  <div style="margin-top: 10px" class="text-label"
+                       [ngSwitch]="validateForm.get('formVolume').get('mode').value">
+                    <span *ngSwitchCase="1">{{ 'schedule.backup.label.each.day'|i18n }}</span>
+                    <span *ngSwitchCase="2">{{ 'schedule.backup.label.each.number.day'|i18n }}</span>
+                    <span *ngSwitchCase="3">{{ 'schedule.backup.label.each.week'|i18n }}</span>
+                    <span *ngSwitchCase="4">{{ 'schedule.backup.label.each.month'|i18n }}</span>
+                  </div>
+                  <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
+                  <div class="text-value">{{ 'app.backup.volume.backup.package' | i18n }}</div>
+                  <div style="margin-top: 10px" class="text-label">{{ backupPackageDetail?.packageName }}</div>
+                  <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
+                  <div class="text-value">{{ 'app.cluster.action-time' | i18n }}</div>
+                  <div style="margin-top: 10px"
+                       class="text-label">{{ validateForm.get('formVolume')?.get('times')?.value | date: 'HH:mm' }}
+                  </div>
+                  <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
+                  <div *ngIf="modeSelected == 2">
+                    <div class="text-value">{{ 'app.choose.day.of.week' | i18n }}</div>
+                    <div style="margin-top: 10px" class="text-label" *ngFor="let data of daysOfWeeks">
                     <span *ngFor="let i of validateForm.get('formVolume').get('daysOfWeekMultiple').value;">
                       <span *ngIf="data.value === i">{{ data.label }}</span>
                     </span>
+                    </div>
                   </div>
-                </div>
-                <div *ngIf="modeSelected == 3">
-                  <div class="text-value">{{ 'app.number.of.week.executed' | i18n }}</div>
-                  <div style="margin-top: 10px"
-                       class="text-label">{{ validateForm.get('formVolume').get('numberOfWeek').value }} {{ 'app.Week' |i18n }}
-                  </div>
-                  <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
-                  <div class="text-value">{{ 'schedule.backup.day.select' | i18n }}</div>
-                  <div style="margin-top: 10px" class="text-label" *ngFor="let data of daysOfWeeks">
+                  <div *ngIf="modeSelected == 3">
+                    <div class="text-value">{{ 'app.number.of.week.executed' | i18n }}</div>
+                    <div style="margin-top: 10px"
+                         class="text-label">{{ validateForm.get('formVolume').get('numberOfWeek').value }} {{ 'app.Week' |i18n }}
+                    </div>
+                    <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
+                    <div class="text-value">{{ 'schedule.backup.day.select' | i18n }}</div>
+                    <div style="margin-top: 10px" class="text-label" *ngFor="let data of daysOfWeeks">
                     <span
                       *ngIf="data.value === validateForm.get('formVolume').get('daysOfWeek').value">{{ data.label }}</span>
+                    </div>
+                    <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
                   </div>
-                  <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
+                  <div *ngIf="modeSelected == 4">
+                    <div class="text-value">{{ 'app.number.of.month.executed' | i18n }}</div>
+                    <div style="margin-top: 10px"
+                         class="text-label">{{ validateForm.get('formVolume').get('months').value }}  {{ 'app.Month'|i18n }}
+                    </div>
+                    <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
+                    <div class="text-value">{{ 'app.execution.date' | i18n }}</div>
+                    <div style="margin-top: 10px"
+                         class="text-label">{{ validateForm.get('formVolume').get('date').value }}
+                    </div>
+                  </div>
+
                 </div>
-                <div *ngIf="modeSelected == 4">
-                  <div class="text-value">{{ 'app.number.of.week.executed' | i18n }}</div>
-                  <div style="margin-top: 10px"
-                       class="text-label">{{ validateForm.get('formVolume').get('numberOfWeek').value }} {{ 'app.Week' |i18n }}
-                  </div>
-                  <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
-                  <div class="text-value">{{ 'app.number.of.month.executed' | i18n }}</div>
-                  <div style="margin-top: 10px"
-                       class="text-label">{{ validateForm.get('formVolume').get('months').value }}  {{ 'app.Month'|i18n }}
-                  </div>
-                  <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
-                  <div class="text-value">{{ 'app.execution.date' | i18n }}</div>
-                  <div style="margin-top: 10px"
-                       class="text-label">{{ validateForm.get('formVolume').get('date').value }}
-                  </div>
-                  <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
-                </div>
+              </div>
+              <div *ngIf="selectedOption === 'volume'">
                 <nz-row>
                   <nz-col style="width: 100%">
                     <button style="width: 100%" nz-button nzSize="large" nzType="primary"

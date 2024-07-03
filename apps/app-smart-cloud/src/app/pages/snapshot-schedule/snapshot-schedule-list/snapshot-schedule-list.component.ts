@@ -346,11 +346,11 @@ export class SnapshotScheduleListComponent implements OnInit {
       }))
       .subscribe(
         result => {
-          this.notification.success(this.i18n.fanyi('app.status.success'), 'Khoi phuc lịch Snapshot thành công');
+          this.notification.success(this.i18n.fanyi('app.status.success'), 'Khôi phục lịch Snapshot thành công');
           this.doGetSnapSchedules(this.pageSize, this.pageNumber, this.region, this.project, this.searchName, '', true);
         },
         error => {
-          this.notification.error(this.i18n.fanyi('app.status.fail'), 'Khoi phuc lịch Snapshot không thành công');
+          this.notification.error(this.i18n.fanyi('app.status.fail'), 'Khôi phục lịch Snapshot không thành công');
         });
   }
 

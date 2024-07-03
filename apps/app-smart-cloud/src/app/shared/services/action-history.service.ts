@@ -25,7 +25,6 @@ export class ActionHistoryService extends BaseService {
     pageNumber: number,
     fromDate: string,
     toDate: string,
-    email: string,
     action: string,
     resourceName: string,
     resourceType: string
@@ -40,8 +39,6 @@ export class ActionHistoryService extends BaseService {
         fromDate +
         '&toDate=' +
         toDate +
-        '&email=' +
-        email +
         '&action=' +
         action +
         '&resourceName=' +

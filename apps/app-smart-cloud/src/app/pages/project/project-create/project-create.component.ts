@@ -620,8 +620,8 @@ export class ProjectCreateComponent implements OnInit {
       customerId: this.tokenService.get()?.userId,
       createdByUserId: this.tokenService.get()?.userId,
       note: 'Tạo VPC',
-      totalPayment : this.total.data.totalPayment.amount,
-      totalVAT :this.total.data.totalVAT.amount,
+      totalPayment : this.total?.data?.totalPayment.amount,
+      totalVAT :this.total?.data?.totalVAT.amount,
       orderItems: [
         {
           orderItemQuantity: 1,
@@ -634,6 +634,7 @@ export class ProjectCreateComponent implements OnInit {
     };
 
     if (this.vpcType == '0') {
+      console.log("ha")
       this.vpc.createIpPublic(request).subscribe(
         data => {
           this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('project.action.creating'));
@@ -908,6 +909,7 @@ export class ProjectCreateComponent implements OnInit {
         this.price.hhdPerUnit = item.unitPrice.amount;
       }
       else if (item.typeName == 'NVIDIA-A30') {
+        console.log("huyen")
         console.log("this.gpuQuotasGobal555", this.gpuQuotasGobal)
         for (let gpu of this.gpuQuotasGobal) {
           if (gpu.GpuType == 'NVIDIA-A30') {
