@@ -2881,7 +2881,7 @@
   "app.backup.vm.intro.desc": "Giải pháp sao lưu VM nâng cao, phần mềm giúp giảm chi phí chụp nhanh và tiết kiệm thời gian của bạn bằng cách tạo các bản sao VM giống hệt nhau trực tiếp từ các bản sao lưu VM hiện có.",
   "app.backup.vm.storage.remaining": "Dung lượng còn lại gói backup",
   "app.backup.vm.delete.title.modal": "Xác nhận xóa Backup VM",
-  "app.backup.vm.title.modal.update": "Chỉnh sửa thông tin Backup VM",
+  "app.backup.vm.title.modal.update": "Chỉnh sửa thông tin Backup máy ảo",
   "app.backup.vm.name": "Tên Backup VM",
 
   "app.backup.vm.tooltip.name": "Nhập tên backup tối đa 50 ký tự và chỉ gồm ký tự chữ cái, số và dấu _",

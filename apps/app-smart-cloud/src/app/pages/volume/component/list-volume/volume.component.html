@@ -121,12 +121,7 @@
             </td>
             <td nzBreakWord>
               <div
-                *ngIf="!(data.status == 'CREATING' ||
-                data.status == 'ERROR' ||
-                data.status == 'ATTACHING' ||
-                data.status == 'DELETING' ||
-                data.status == 'ERROR_DELETING' ||
-                data.status == 'RESIZING')">
+                *ngIf="!(['CREATING', 'ERROR', 'ATTACHING', 'DELETING','ERROR_DELETING','RESIZING'].includes(data.serviceStatus))">
                 <one-portal-attach-volume [region]="region"
                                           [project]="project"
                                           [volumeId]="data.id"
@@ -304,12 +299,7 @@
             </td>
             <td>
               <div
-                *ngIf="!(i.status == 'CREATING' ||
-                i.status == 'ERROR' ||
-                i.status == 'ATTACHING' ||
-                i.status == 'DELETING' ||
-                i.status == 'ERROR_DELETING' ||
-                i.status == 'RESIZING')">
+                *ngIf="!(['CREATING', 'ERROR', 'ATTACHING', 'DELETING','ERROR_DELETING','RESIZING'].includes(i.serviceStatus))">
                 <one-portal-attach-volume [region]="region"
                                           [project]="project"
                                           [volumeId]="i.id"
