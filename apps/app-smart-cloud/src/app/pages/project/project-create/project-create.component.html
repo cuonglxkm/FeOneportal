@@ -1031,6 +1031,7 @@
                         <nz-form-control>
                           <nz-input-number style="width: 100%; margin-left: -1px" nzMin="0" nzMax="1000" nzStep="1" name="gpu"
                             [(ngModel)]="gpuQuotasGobal[i].GpuCount"
+                            (keydown)="checkPossiblePress($event)"
                             (ngModelChange)="getValues(i,gpuQuotasGobal?.[i]?.GpuCount)"
                             [ngModelOptions]="{ standalone: true }" nzSize="large"></nz-input-number>
 
@@ -1129,7 +1130,7 @@
               </div>
               <!--        Dịch vụ bổ sung-->
               <div
-                *ngIf="numberSnapshotssd!=0||numberSnapshothdd!=0|| siteToSiteId || numberLoadBalancer != 0 || numberFileSystem != 0 || numberFileScnapsshot !=0|| numberBackup != 0 ||numberIpFloating != 0|| numberIpPublic != 0|| numberIpv6 != 0"
+                *ngIf="gpuQuotasGobal.length>0||numberSnapshotssd!=0||numberSnapshothdd!=0|| siteToSiteId || numberLoadBalancer != 0 || numberFileSystem != 0 || numberFileScnapsshot !=0|| numberBackup != 0 ||numberIpFloating != 0|| numberIpPublic != 0|| numberIpv6 != 0"
                 class="text-value">{{
                 'service.bonus' | i18n }}
               </div>
