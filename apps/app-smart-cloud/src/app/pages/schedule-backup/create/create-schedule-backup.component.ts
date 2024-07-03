@@ -409,6 +409,10 @@ export class CreateScheduleBackupComponent implements OnInit {
         this.validateForm.get('formInstance').get('date').clearValidators();
         this.validateForm.get('formInstance').get('date').markAsPristine();
         this.validateForm.get('formInstance').get('date').reset();
+        //
+        // this.validateForm.get('formInstance').get('daysOfWeekMultiple').clearValidators();
+        // this.validateForm.get('formInstance').get('daysOfWeekMultiple').markAsPristine();
+        // this.validateForm.get('formInstance').get('daysOfWeekMultiple').reset();
 
         if (this.modeSelected == 4) {
           this.setInitialValues();
@@ -435,8 +439,9 @@ export class CreateScheduleBackupComponent implements OnInit {
         }
         if (this.modeSelected == 2) {
           this.validateForm.get('formInstance').get('daysOfWeekMultiple').clearValidators();
-          this.validateForm.get('formInstance').get('daysOfWeekMultiple').setValidators([Validators.required]);
           this.validateForm.get('formInstance').get('daysOfWeekMultiple').markAsDirty();
+          this.validateForm.get('formInstance').get('daysOfWeekMultiple').reset();
+          this.validateForm.get('formInstance').get('daysOfWeekMultiple').setValidators([Validators.required]);
         }
       } else {
         this.validateForm.get('formVolume').get('daysOfWeek').clearValidators();
@@ -458,6 +463,10 @@ export class CreateScheduleBackupComponent implements OnInit {
         this.validateForm.get('formVolume').get('date').clearValidators();
         this.validateForm.get('formVolume').get('date').markAsPristine();
         this.validateForm.get('formVolume').get('date').reset();
+
+        this.validateForm.get('formVolume').get('daysOfWeekMultiple').clearValidators();
+        this.validateForm.get('formVolume').get('daysOfWeekMultiple').markAsPristine();
+        this.validateForm.get('formVolume').get('daysOfWeekMultiple').reset();
 
         if (this.modeSelected == 4) {
           this.setInitialValues();
@@ -484,8 +493,8 @@ export class CreateScheduleBackupComponent implements OnInit {
         }
         if (this.modeSelected == 2) {
           this.validateForm.get('formVolume').get('daysOfWeekMultiple').clearValidators();
-          this.validateForm.get('formVolume').get('daysOfWeekMultiple').setValidators([Validators.required]);
           this.validateForm.get('formVolume').get('daysOfWeekMultiple').markAsDirty();
+          this.validateForm.get('formVolume').get('daysOfWeekMultiple').setValidators([Validators.required]);
         }
       }
     }
