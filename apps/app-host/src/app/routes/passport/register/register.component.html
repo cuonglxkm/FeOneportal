@@ -207,7 +207,8 @@
           nzShowSearch
           nzAllowClear
           nzPlaceHolder="{{'app.register.address.select' | i18n}}"
-          formControlName="province"
+          [(ngModel)]="province"
+          [ngModelOptions]="{ standalone: true }"
         >
           <nz-option *ngFor="let i of provinces" [nzLabel]="i.name" [nzValue]="i.name" />
         </nz-select>

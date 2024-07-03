@@ -1,19 +1,17 @@
 import {
-  ChangeDetectorRef,
   Component,
   EventEmitter,
   Input,
   OnInit,
-  Output,
-  SimpleChanges,
+  Output
 } from '@angular/core';
-import {
-  RegionModel,
-  RegionCoreService,
-  CoreDataService,
-} from '../../../../../../../libs/common-utils/src';
-import { environment } from '@env/environment';
 import { Router } from '@angular/router';
+import { environment } from '@env/environment';
+import {
+  CoreDataService,
+  RegionCoreService,
+  RegionModel,
+} from '../../../../../../../libs/common-utils/src';
 
 @Component({
   selector: 'region-select-dropdown',

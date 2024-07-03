@@ -76,7 +76,7 @@
   </nz-row>
   <div style="margin-bottom: 10px" class="text-label">
     {{ 'app.capacity' | i18n }}:
-    <span class="text-value">{{ usage.usage }} GB / {{ usage.total }} GB ({{totalUsage | number : '1.0-2' }}%)</span>
+    <span class="text-value">{{ usage?.usage }} GB / {{ usage?.total }} GB ({{totalUsage | number : '1.0-2' }}%)</span>
   </div>
   <div style="margin-bottom: 10px" class="text-label">
     {{ 'app.service.creation-date' | i18n }}:

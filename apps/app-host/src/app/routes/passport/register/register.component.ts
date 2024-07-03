@@ -95,6 +95,7 @@ export class UserRegisterComponent implements OnInit, OnDestroy {
       validators: MatchControl('password', 'confirm'),
     }
   );
+  province = 'Hà Nội'
   error = '';
   type = 0;
   loading = false;
