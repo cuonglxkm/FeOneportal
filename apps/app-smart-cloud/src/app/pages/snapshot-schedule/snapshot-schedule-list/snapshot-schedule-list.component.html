@@ -83,7 +83,7 @@
             <td>{{data.snapshotType == 1 ? 'Snapshot máy ảo' : 'Snapshot Volume'}}</td>
             <td>{{data.serviceName}}</td>
             <td>{{data.maxSnapshot}}</td>
-            <td>{{data.nextRuntime | date : 'THH:mm:ss dd/MM/yyyy'  : 'vi-VI'}}</td>
+            <td>{{data.nextRuntime | date : 'HH:mm:ss dd/MM/yyyy'}}</td>
             <ng-container *ngIf="data.status | ServiceStatusPipe as statusModel">
               <td nzBreakWord nzAlign="left" [ngStyle]="{ color: statusModel.color }">{{ statusModel.status }}</td>
             </ng-container>

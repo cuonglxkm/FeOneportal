@@ -202,11 +202,7 @@ export class SnapshotScheduleCreateComponent implements OnInit {
             // this.request.dates = 0;
             // this.request.duration = 0;
             // this.request.volumeId = ((this.selectedSnapshotType==0 && this.snapshotTypeCreate==2) || this.snapshotTypeCreate==0) ?  : '';
-            this.request.runtime = this.datepipe.transform(
-              this.time,
-              'yyyy-MM-ddTHH:mm:ss',
-              'vi-VI'
-            );
+            this.request.runtime = new Date();
             // this.request.intervalMonth = 0;
             // this.request.maxBaxup = 1; // fix cứng số bản
             this.request.snapshotPacketId = this.projectType == 1 ? '' :this.selectedSnapshotPackage.id;
