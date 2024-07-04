@@ -17,9 +17,9 @@ export class SubscriptionsNearExpire {
 export class PaymentCostUse {
   id: number
   paymentCode: string
-  serviceType: number
+  serviceTypes: number[]
   serviceName: string
-  serviceTypeName: string
+  serviceTypeNames: string[]
   totalAmount: number
   createdDate: string
   status: string

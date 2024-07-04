@@ -24,7 +24,7 @@ import {
   GpuUsage,
   GpuConfigRecommend,
 } from '../instances.model';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { InstancesService } from '../instances.service';
 import { Observable, Subject, debounceTime, finalize, of } from 'rxjs';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
@@ -169,6 +169,7 @@ export class InstancesCreateVpcComponent implements OnInit {
     private notification: NzNotificationService,
     private cdr: ChangeDetectorRef,
     private router: Router,
+    private activatedRoute: ActivatedRoute,
     private loadingSrv: LoadingService,
     private el: ElementRef,
     private renderer: Renderer2,
@@ -205,6 +206,13 @@ export class InstancesCreateVpcComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    if (this.activatedRoute.snapshot.paramMap.get('idSnapshot')) {
+      this.isSnapshot = true;
+      this.selectedSnapshot = Number.parseInt(
+        this.activatedRoute.snapshot.paramMap.get('idSnapshot')
+      );
+      this.changeSelectedSnapshot();
+    }
     this.userId = this.tokenService.get()?.userId;
     let regionAndProject = getCurrentRegionAndProject();
     this.region = regionAndProject.regionId;
@@ -257,16 +265,28 @@ export class InstancesCreateVpcComponent implements OnInit {
 
   //Lấy các dịch vụ hỗ trợ theo region
   isSupportEncryption: boolean = false;
+  isVmGpu: boolean = false;
+  isVolumeSnapshotHdd: boolean = false;
+  isVolumeSnapshotSsd: boolean = false;
   getActiveServiceByRegion() {
     this.catalogService
       .getActiveServiceByRegion(
-        ['Encryption', 'MultiAttachment', 'ipv6'],
+        ['Encryption', 'vm-gpu', 'volume-snapshot-hdd', 'volume-snapshot-ssd'],
         this.region
       )
       .subscribe((data) => {
         console.log('support service', data);
         this.isSupportEncryption = data.filter(
           (e) => e.productName == 'Encryption'
+        )[0].isActive;
+        this.isVmGpu = data.filter(
+          (e) => e.productName == 'vm-gpu'
+        )[0].isActive;
+        this.isVolumeSnapshotHdd = data.filter(
+          (e) => e.productName == 'volume-snapshot-hdd'
+        )[0].isActive;
+        this.isVolumeSnapshotSsd = data.filter(
+          (e) => e.productName == 'volume-snapshot-ssd'
         )[0].isActive;
       });
   }
@@ -588,7 +608,7 @@ export class InstancesCreateVpcComponent implements OnInit {
       this.infoVPC.cloudProjectResourceUsed.gpuUsages.filter(
         (e) => e.gpuOfferId == this.instanceCreate.gpuOfferId
       )[0];
-    if (gpuUsage != undefined && gpuUsage != null) {
+    if (gpuUsage) {
       this.remainingGpu = gpuProject.gpuCount - gpuUsage.gpuCount;
     } else {
       this.remainingGpu = gpuProject.gpuCount;
@@ -611,7 +631,7 @@ export class InstancesCreateVpcComponent implements OnInit {
       this.infoVPC.cloudProjectResourceUsed.gpuUsages.filter(
         (e) => e.gpuOfferId == id
       )[0];
-    if (gpuUsage != undefined && gpuUsage != null) {
+    if (gpuUsage) {
       this.remainingGpu = gpuProject.gpuCount - gpuUsage.gpuCount;
     } else {
       this.remainingGpu = gpuProject.gpuCount;

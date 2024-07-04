@@ -216,9 +216,10 @@ export class RestoreBackupVmVpcComponent implements OnInit {
   //Lấy các dịch vụ hỗ trợ theo region
   isSupportEncryption: boolean = false;
   isSupportMultiAttachment: boolean = false;
+  isVmGpu: boolean = false;
   getActiveServiceByRegion() {
     this.catalogService
-      .getActiveServiceByRegion(['Encryption', 'MultiAttachment'], this.region)
+      .getActiveServiceByRegion(['Encryption', 'MultiAttachment', 'vm-gpu'], this.region)
       .subscribe((data) => {
         console.log('support service', data);
         this.isSupportMultiAttachment = data.filter(
@@ -226,6 +227,9 @@ export class RestoreBackupVmVpcComponent implements OnInit {
         )[0].isActive;
         this.isSupportEncryption = data.filter(
           (e) => e.productName == 'Encryption'
+        )[0].isActive;
+        this.isVmGpu = data.filter(
+          (e) => e.productName == 'vm-gpu'
         )[0].isActive;
       });
   }
@@ -529,7 +533,7 @@ export class RestoreBackupVmVpcComponent implements OnInit {
       this.infoVPC.cloudProjectResourceUsed.gpuUsages.filter(
         (e) => e.gpuOfferId == this.restoreInstanceBackup.gpuTypeOfferId
       )[0];
-    if (gpuUsage != undefined && gpuUsage != null) {
+    if (gpuUsage) {
       this.remainingGpu = gpuProject.gpuCount - gpuUsage.gpuCount;
     } else {
       this.remainingGpu = gpuProject.gpuCount;
@@ -552,7 +556,7 @@ export class RestoreBackupVmVpcComponent implements OnInit {
       this.infoVPC.cloudProjectResourceUsed.gpuUsages.filter(
         (e) => e.gpuOfferId == id
       )[0];
-    if (gpuUsage != undefined && gpuUsage != null) {
+    if (gpuUsage) {
       this.remainingGpu = gpuProject.gpuCount - gpuUsage.gpuCount;
     } else {
       this.remainingGpu = gpuProject.gpuCount;

@@ -9,7 +9,6 @@ import { WelcomeComponent } from './welcome/welcome.component';
 import { ModalResetPassComponent } from '../layout/basic/widgets/modal-resetpass.component';
 import { PhoneValidatorDirective } from '../shared/directive/PhoneValidatorDirective';
 import { CreateUserComponent } from './user-profile/create-user/create-user.component';
-import { LinkHrefComponent } from './link-href/link-hrefcomponent';
 
 const COMPONENTS: Array<Type<null>> = [];
 
@@ -18,7 +17,6 @@ const COMPONENTS: Array<Type<null>> = [];
   declarations: [
     ...COMPONENTS,
     UserProfileComponent,
-    LinkHrefComponent,
     WelcomeComponent,
     ModalResetPassComponent,
     CreateUserComponent,
