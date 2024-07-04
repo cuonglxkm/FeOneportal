@@ -269,7 +269,7 @@ export class InstancesCreateComponent implements OnInit {
         this.activatedRoute.snapshot.paramMap.get('regionId')
       );
       localStorage.setItem('regionId', JSON.stringify(this.region));
-      localStorage.removeItem('projectId')
+      localStorage.removeItem('projectId');
     } else {
       let regionAndProject = getCurrentRegionAndProject();
       this.region = regionAndProject.regionId;
@@ -290,6 +290,7 @@ export class InstancesCreateComponent implements OnInit {
     this.getListGpuType();
     this.getAllImageType();
     this.getListOptionGpuValue();
+    this.checkOfferIpv6();
     this.hasRoleSI = localStorage.getItem('role').includes('SI');
 
     this.breakpointObserver
@@ -342,10 +343,22 @@ export class InstancesCreateComponent implements OnInit {
   isSupportEncryption: boolean = false;
   isSupportMultiAttachment: boolean = false;
   isSupportIpv6: boolean = false;
+  isVmFlavor: boolean = true;
+  isVmGpu: boolean = false;
+  isVolumeSnapshotHdd: boolean = false;
+  isVolumeSnapshotSsd: boolean = false;
   getActiveServiceByRegion() {
     this.catalogService
       .getActiveServiceByRegion(
-        ['Encryption', 'MultiAttachment', 'ipv6'],
+        [
+          'Encryption',
+          'MultiAttachment',
+          'ipv6',
+          'vm-flavor',
+          'vm-gpu',
+          'volume-snapshot-hdd',
+          'volume-snapshot-ssd',
+        ],
         this.region
       )
       .subscribe((data) => {
@@ -359,6 +372,22 @@ export class InstancesCreateComponent implements OnInit {
         this.isSupportIpv6 = data.filter(
           (e) => e.productName == 'ipv6'
         )[0].isActive;
+        this.isVmFlavor = data.filter(
+          (e) => e.productName == 'vm-flavor'
+        )[0].isActive;
+        if (this.isVmFlavor) {
+          this.onClickConfigPackage();
+        }
+        this.isVmGpu = data.filter(
+          (e) => e.productName == 'vm-gpu'
+        )[0].isActive;
+        this.isVolumeSnapshotHdd = data.filter(
+          (e) => e.productName == 'volume-snapshot-hdd'
+        )[0].isActive;
+        this.isVolumeSnapshotSsd = data.filter(
+          (e) => e.productName == 'volume-snapshot-ssd'
+        )[0].isActive;
+        this.cdr.detectChanges();
       });
   }
 
@@ -390,26 +419,26 @@ export class InstancesCreateComponent implements OnInit {
 
   //Kiểm tra khu vực có IPv6
   hasOfferIpv6: boolean = false;
-  // checkOfferIpv6() {
-  //   this.catalogService
-  //     .getCatalogOffer(null, this.region, null, 'ipv6')
-  //     .subscribe({
-  //       next: (data) => {
-  //         if (data) {
-  //           this.hasOfferIpv6 = true;
-  //         } else {
-  //           this.hasOfferIpv6 = false;
-  //         }
-  //       },
-  //       error: (e) => {
-  //         this.notification.error(
-  //           e.statusText,
-  //           'Lấy offer ipv6 không thành công'
-  //         );
-  //         this.hasOfferIpv6 = false;
-  //       },
-  //     });
-  // }
+  checkOfferIpv6() {
+    this.catalogService
+      .getCatalogOffer(null, this.region, null, 'ipv6')
+      .subscribe({
+        next: (data) => {
+          if (data) {
+            this.hasOfferIpv6 = true;
+          } else {
+            this.hasOfferIpv6 = false;
+          }
+        },
+        error: (e) => {
+          this.notification.error(
+            e.statusText,
+            'Lấy offer ipv6 không thành công'
+          );
+          this.hasOfferIpv6 = false;
+        },
+      });
+  }
 
   //#region Hệ điều hành
   listImageTypes: ImageTypesModel[] = [];
@@ -708,13 +737,9 @@ export class InstancesCreateComponent implements OnInit {
           : this.sizeSnapshotVL;
       this.volumeRootCapacity = this.configGPU.storage;
     }
-    this.volumeUnitPrice = 0;
     this.volumeIntoMoney = 0;
-    this.ramUnitPrice = 0;
     this.ramIntoMoney = 0;
-    this.cpuUnitPrice = 0;
     this.cpuIntoMoney = 0;
-    this.gpuUnitPrice = 0;
     this.gpuIntoMoney = 0;
     this.totalAmount = 0;
     this.totalVAT = 0;
@@ -724,12 +749,21 @@ export class InstancesCreateComponent implements OnInit {
     this.instanceCreate.volumeSize = 0;
     if (this.isSnapshot && this.isCustomconfig) {
       this.instanceCreate.volumeSize = this.configCustom.capacity;
-      this.getUnitPrice(1, 0, 0, 0, null);
       this.getTotalAmount();
     } else if (this.isSnapshot && this.isGpuConfig) {
       this.instanceCreate.volumeSize = this.configGPU.storage;
-      this.getUnitPrice(1, 0, 0, 0, null);
       this.getTotalAmount();
+    }
+    if (this.isCustomconfig) {
+      this.getUnitPrice(1, 0, 0, 0, null);
+      this.getUnitPrice(0, 1, 0, 0, null);
+      this.getUnitPrice(0, 0, 1, 0, null);
+    }
+    if (this.isGpuConfig) {
+      this.getUnitPrice(1, 0, 0, 0, null);
+      this.getUnitPrice(0, 1, 0, 0, null);
+      this.getUnitPrice(0, 0, 1, 0, null);
+      this.getUnitPrice(0, 0, 0, 1, this.listGPUType[0].id);
     }
     this.instanceCreate.gpuCount = 0;
     this.isValid = false;
@@ -1248,8 +1282,8 @@ export class InstancesCreateComponent implements OnInit {
     this.gpuTypeName = this.listGPUType.filter(
       (e) => e.id == this.configGPU.gpuOfferId
     )[0].offerName;
+    this.getUnitPrice(0, 0, 0, 1, this.configGPU.gpuOfferId);
     if (this.configGPU.GPU != 0) {
-      this.getUnitPrice(0, 0, 0, 1, this.configGPU.gpuOfferId);
       this.configRecommend = this.listGpuConfigRecommend.filter(
         (e) =>
           e.id == this.configGPU.gpuOfferId && e.gpuCount == this.configGPU.GPU

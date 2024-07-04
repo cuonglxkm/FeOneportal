@@ -613,7 +613,7 @@
               </div>
             </nz-tab>
             <nz-tab
-              *ngIf="instancesModel.volumeType != 0"
+              *ngIf="instancesModel.volumeType != 0 && isVmGpu"
               [nzTitle]="'app.gpu.configuration' | i18n"
               (nzClick)="onClickGpuConfig()"
             >

@@ -80,7 +80,7 @@
         "
         [instancesId]="id"
         [isProjectVPC]="
-          (project != undefined && project.type) == 0 ? false : true
+          (project != undefined && project.type) == 1 ? true : false
         "
         (valueChanged)="onReloadInstanceDetail($event)"
         style="margin-left: 8px"

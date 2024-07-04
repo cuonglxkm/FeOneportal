@@ -330,6 +330,7 @@
                 </div>
               </nz-tab>
               <nz-tab
+                *ngIf="isVmGpu"
                 [nzTitle]="'app.gpu.configuration' | i18n"
                 (nzClick)="onClickGpuConfig()"
               >

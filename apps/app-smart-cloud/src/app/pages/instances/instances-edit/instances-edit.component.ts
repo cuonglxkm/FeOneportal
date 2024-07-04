@@ -39,6 +39,7 @@ import { I18NService } from '@core';
 import { ConfigurationsService } from 'src/app/shared/services/configurations.service';
 import { OrderService } from 'src/app/shared/services/order.service';
 import { LoadingService } from '@delon/abc/loading';
+import { CatalogService } from 'src/app/shared/services/catalog.service';
 
 class ConfigCustom {
   //cấu hình tùy chỉnh
@@ -104,6 +105,7 @@ export class InstancesEditComponent implements OnInit {
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
     @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
     private dataService: InstancesService,
+    private catalogService: CatalogService,
     private cdr: ChangeDetectorRef,
     private notification: NzNotificationService,
     private router: Router,
@@ -191,10 +193,11 @@ export class InstancesEditComponent implements OnInit {
     let regionAndProject = getCurrentRegionAndProject();
     this.region = regionAndProject.regionId;
     this.projectId = regionAndProject.projectId;
+    this.getActiveServiceByRegion();
     this.getConfigurations();
     this.getListIpPublic();
     this.getListGpuType();
-    this.hasRoleSI = localStorage.getItem('role').includes('SI')
+    this.hasRoleSI = localStorage.getItem('role').includes('SI');
     this.breakpointObserver
       .observe([
         Breakpoints.XSmall,
@@ -237,6 +240,19 @@ export class InstancesEditComponent implements OnInit {
     this.onChangeGpu();
   }
 
+  //Lấy các dịch vụ hỗ trợ theo region
+  isVmGpu: boolean = false;
+  getActiveServiceByRegion() {
+    this.catalogService
+      .getActiveServiceByRegion(['Encryption', 'vm-gpu'], this.region)
+      .subscribe((data) => {
+        console.log('support service', data);
+        this.isVmGpu = data.filter(
+          (e) => e.productName == 'vm-gpu'
+        )[0].isActive;
+      });
+  }
+
   isPreConfigPackage = true;
   isCustomconfig = false;
   isGpuConfig = false;
@@ -271,13 +287,9 @@ export class InstancesEditComponent implements OnInit {
     this.selectedElementFlavor = null;
     this.configGPU = new ConfigGPU();
     this.configCustom = new ConfigCustom();
-    this.volumeUnitPrice = '0';
     this.volumeIntoMoney = 0;
-    this.ramUnitPrice = '0';
     this.ramIntoMoney = 0;
-    this.cpuUnitPrice = '0';
     this.cpuIntoMoney = 0;
-    this.gpuUnitPrice = '0';
     this.gpuIntoMoney = 0;
     this.totalAmount = 0;
     this.totalVAT = 0;
