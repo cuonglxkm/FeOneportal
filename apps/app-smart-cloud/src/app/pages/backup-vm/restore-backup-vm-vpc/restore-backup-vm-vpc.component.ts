@@ -23,6 +23,7 @@ import {
   RestoreFormCurrent,
   RestoreInstanceBackup,
   VolumeBackup,
+  VolumeExternalBackup,
 } from '../../../shared/models/backup-vm';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
@@ -51,11 +52,20 @@ import { VlanService } from '../../../shared/services/vlan.service';
 import { debounceTime, finalize, Subject } from 'rxjs';
 import { ConfigurationsService } from 'src/app/shared/services/configurations.service';
 import { NguCarousel, NguCarouselConfig } from '@ngu/carousel';
-import { BlockStorage } from '../../instances/instances-create/instances-create.component';
 import { CatalogService } from 'src/app/shared/services/catalog.service';
 import { LoadingService } from '@delon/abc/loading';
 import { OrderService } from 'src/app/shared/services/order.service';
 
+class BlockStorage {
+  id: number = 0;
+  type?: string = '';
+  name?: string = '';
+  newName?: string;
+  capacity?: number = 0;
+  minCapacity?: number = 0;
+  encrypt?: boolean = false;
+  multiattach?: boolean = false;
+}
 @Component({
   selector: 'one-portal-restore-backup-vm-vpc',
   templateUrl: './restore-backup-vm-vpc.component.html',
@@ -219,7 +229,10 @@ export class RestoreBackupVmVpcComponent implements OnInit {
   isVmGpu: boolean = false;
   getActiveServiceByRegion() {
     this.catalogService
-      .getActiveServiceByRegion(['Encryption', 'MultiAttachment', 'vm-gpu'], this.region)
+      .getActiveServiceByRegion(
+        ['Encryption', 'MultiAttachment', 'vm-gpu'],
+        this.region
+      )
       .subscribe((data) => {
         console.log('support service', data);
         this.isSupportMultiAttachment = data.filter(
@@ -335,7 +348,7 @@ export class RestoreBackupVmVpcComponent implements OnInit {
 
   instanceModel: InstancesModel;
   selectedIndextab: number = 0;
-  listIDAttachVolume: number[] = [];
+  listAttachVolume: VolumeBackup[] = [];
   getDetailBackupById(id) {
     this.backupSize = 0;
     this.backupService
@@ -382,11 +395,12 @@ export class RestoreBackupVmVpcComponent implements OnInit {
           );
 
         this.listExternalAttachVolume.forEach((e) => {
-          this.listIDAttachVolume.push(e.id);
+          this.listAttachVolume.push(e);
           let tempBS = new BlockStorage();
           tempBS.id = e.id;
           tempBS.name = e.name;
           tempBS.capacity = e.size;
+          tempBS.minCapacity = e.size;
           if (e.typeName.toUpperCase().includes('HDD')) {
             tempBS.type = 'HDD';
           } else {
@@ -818,11 +832,12 @@ export class RestoreBackupVmVpcComponent implements OnInit {
   changeAttachVolume() {
     this.listOfDataBlockStorage = [];
     this.listExternalAttachVolume.forEach((e) => {
-      if (this.listIDAttachVolume.includes(e.id)) {
+      if (this.listAttachVolume.includes(e)) {
         let tempBS = new BlockStorage();
         tempBS.id = e.id;
         tempBS.name = e.name;
         tempBS.capacity = e.size;
+        tempBS.minCapacity = e.size;
         if (e.typeName.toUpperCase().includes('HDD')) {
           tempBS.type = 'HDD';
         } else {
@@ -836,7 +851,15 @@ export class RestoreBackupVmVpcComponent implements OnInit {
 
   instanceInit() {
     this.restoreInstanceBackup.instanceBackupId = this.backupVmModel?.id;
-    this.restoreInstanceBackup.volumeBackupIds = this.listIDAttachVolume;
+    let selectedVolumeExternal: VolumeExternalBackup[] = [];
+    this.listOfDataBlockStorage.forEach((e) => {
+      let volumeExternal = new VolumeExternalBackup();
+      volumeExternal.id = e.id;
+      volumeExternal.name = e.newName;
+      volumeExternal.size = e.capacity;
+      selectedVolumeExternal.push(volumeExternal);
+    });
+    this.restoreInstanceBackup.volumeBackups = selectedVolumeExternal;
     this.restoreInstanceBackup.instanceName = this.backupVmModel?.instanceName;
     this.restoreInstanceBackup.keypairName = this.selectedSSHKeyName;
     this.restoreInstanceBackup.securityGroups = this.selectedSecurityGroup;

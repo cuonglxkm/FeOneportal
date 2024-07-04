@@ -2768,6 +2768,7 @@
   "app.backup.volume.title.modal.update": "Chỉnh sửa thông tin Backup Volume",
   "app.input.backup.volume.required.select": "Vui lòng chọn Volume",
   "app.backup.volume.root": "Volume gốc",
+  "app.backup.volume.restore": "Volume khôi phục",
 
   "app.backup.volume.search.tooltip": "Tìm kiếm theo tên",
   "app.backup.volume.search.status.tooltip": "Tìm kiếm theo trạng thái",
