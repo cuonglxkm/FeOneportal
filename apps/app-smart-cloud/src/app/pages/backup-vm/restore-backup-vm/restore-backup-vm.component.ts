@@ -217,9 +217,14 @@ export class RestoreBackupVmComponent implements OnInit {
   //Lấy các dịch vụ hỗ trợ theo region
   isSupportEncryption: boolean = false;
   isSupportMultiAttachment: boolean = false;
+  isVmFlavor: boolean = true;
+  isVmGpu: boolean = false;
   getActiveServiceByRegion() {
     this.catalogService
-      .getActiveServiceByRegion(['Encryption', 'MultiAttachment'], this.region)
+      .getActiveServiceByRegion(
+        ['Encryption', 'MultiAttachment', 'vm-flavor', 'vm-gpu'],
+        this.region
+      )
       .subscribe((data) => {
         console.log('support service', data);
         this.isSupportMultiAttachment = data.filter(
@@ -227,6 +232,15 @@ export class RestoreBackupVmComponent implements OnInit {
         )[0].isActive;
         this.isSupportEncryption = data.filter(
           (e) => e.productName == 'Encryption'
+        )[0].isActive;
+        this.isVmFlavor = data.filter(
+          (e) => e.productName == 'vm-flavor'
+        )[0].isActive;
+        if (this.isVmFlavor) {
+          this.onClickConfigPackage();
+        }
+        this.isVmGpu = data.filter(
+          (e) => e.productName == 'vm-gpu'
         )[0].isActive;
       });
   }
@@ -650,13 +664,9 @@ export class RestoreBackupVmComponent implements OnInit {
           ? this.stepCapacity
           : this.backupSize;
     }
-    this.volumeUnitPrice = 0;
     this.volumeIntoMoney = 0;
-    this.ramUnitPrice = 0;
     this.ramIntoMoney = 0;
-    this.cpuUnitPrice = 0;
     this.cpuIntoMoney = 0;
-    this.gpuUnitPrice = 0;
     this.gpuIntoMoney = 0;
     this.totalAmount = 0;
     this.totalVAT = 0;
@@ -667,10 +677,15 @@ export class RestoreBackupVmComponent implements OnInit {
     if (this.isCustomconfig) {
       this.restoreInstanceBackup.volumeSize = this.configCustom.capacity;
       this.getUnitPrice(1, 0, 0, 0, null);
+      this.getUnitPrice(0, 1, 0, 0, null);
+      this.getUnitPrice(0, 0, 1, 0, null);
       this.getTotalAmount();
     } else if (this.isGpuConfig) {
       this.restoreInstanceBackup.volumeSize = this.configGPU.storage;
       this.getUnitPrice(1, 0, 0, 0, null);
+      this.getUnitPrice(0, 1, 0, 0, null);
+      this.getUnitPrice(0, 0, 1, 0, null);
+      this.getUnitPrice(0, 0, 0, 1, this.listGPUType[0].id);
       this.getTotalAmount();
     }
     this.restoreInstanceBackup.gpuCount = 0;
