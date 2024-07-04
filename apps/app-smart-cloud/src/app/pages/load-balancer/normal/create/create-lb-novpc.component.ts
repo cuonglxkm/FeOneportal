@@ -173,7 +173,7 @@ export class CreateLbNovpcComponent implements OnInit {
       this.validateForm.controls.ipFloating.clearValidators();
       this.validateForm.controls.ipFloating.updateValueAndValidity();
     }
-    this.getListSubnetInternetFacing();
+    this.mapSubnetArray = [...this.mapSubnetArray1]
   }
 
   onChangeStatusInternal() {
@@ -188,7 +188,7 @@ export class CreateLbNovpcComponent implements OnInit {
       this.validateForm.controls.ipFloating.clearValidators();
       this.validateForm.controls.ipFloating.updateValueAndValidity();
     }
-    this.getListSubnetInternetFacing();
+    this.mapSubnetArray = [...this.mapSubnetArray2]
   }
 
 
@@ -380,6 +380,8 @@ export class CreateLbNovpcComponent implements OnInit {
 
   mapSubnet: Map<string, string> = new Map<string, string>();
   mapSubnetArray: { value: string, label: string }[] = [];
+  mapSubnetArray1: { value: string, label: string }[] = [];
+  mapSubnetArray2: { value: string, label: string }[] = [];
   loadingSubnet = true;
   setDataToMap(data: any) {
     // Xóa dữ liệu hiện có trong mapSubnet (nếu cần)
@@ -387,48 +389,6 @@ export class CreateLbNovpcComponent implements OnInit {
     // Lặp qua các cặp khóa/giá trị trong dữ liệu và thêm chúng vào mapSubnet
     for (const key of Object.keys(data)) {
       this.mapSubnet?.set(key, data[key]);
-    }
-  }
-
-  getListSubnetInternetFacing() {
-    this.loadingSubnet = true;
-    this.disabledSubnet = true;
-    this.mapSubnetArray = [];
-    if (this.enableInternal == true) {
-      let formSearchSubnet = new FormSearchSubnet();
-      formSearchSubnet.region = this.region;
-      formSearchSubnet.vpcId = this.project;
-      formSearchSubnet.pageSize = 9999;
-      formSearchSubnet.pageNumber = 1;
-      formSearchSubnet.customerId = this.tokenService.get()?.userId;
-      formSearchSubnet.name = '';
-      this.vlanService.getSubnetByNetwork(formSearchSubnet)
-        .pipe(finalize(() => {
-          this.loadingSubnet = false;
-          this.disabledSubnet = false;
-        }))
-        .subscribe(data => {
-        this.mapSubnet?.clear();
-        // Lặp qua các cặp khóa/giá trị trong dữ liệu và thêm chúng vào mapSubnet
-        for (const model of data.records) {
-          this.mapSubnetArray?.push({ value: model.subnetCloudId, label: model.name + '(' + model.subnetAddressRequired + ')' });
-        }
-      });
-    } else {
-      this.loadBalancerService.getListSubnetInternetFacing(this.project, this.region)
-        .pipe(finalize(() => {
-          this.loadingSubnet = false;
-          this.disabledSubnet = false;
-        }))
-        .subscribe(data => {
-        this.setDataToMap(data);
-        if (this.mapSubnet instanceof Map) {
-          // Chuyển đổi Map thành mảng các cặp khóa/giá trị
-          for (const [key, value] of this.mapSubnet.entries()) {
-            this.mapSubnetArray?.push({ value: value, label: key });
-          }
-        }
-      });
     }
   }
 
@@ -442,8 +402,8 @@ export class CreateLbNovpcComponent implements OnInit {
     this.searchProduct();
     // this.getIpBySubnet();
     this.getListLoadBalancer();
-
-    this.getListSubnetInternetFacing();
+    this.initSubnet1();
+    this.initSubnet2();
     this.validateForm.controls['ipAddress'].disable();
     this.validateIpaddress.pipe(debounceTime(this.debounceTimeMs)).subscribe((searchValue) => {
       this.onInputReal(searchValue);
@@ -476,6 +436,50 @@ export class CreateLbNovpcComponent implements OnInit {
     this.validateForm.controls['time'].setValue($event);
     this.timeSelected = $event;
     this.getTotalAmount();
+  }
+
+  initSubnet1() {
+    this.loadingSubnet = true;
+    this.disabledSubnet = true;
+    this.loadBalancerService.getListSubnetInternetFacing(this.project, this.region)
+      .pipe(finalize(() => {
+        this.loadingSubnet = false;
+        this.disabledSubnet = false;
+      }))
+      .subscribe(data => {
+        this.setDataToMap(data);
+        if (this.mapSubnet instanceof Map) {
+          // Chuyển đổi Map thành mảng các cặp khóa/giá trị
+          for (const [key, value] of this.mapSubnet.entries()) {
+            this.mapSubnetArray1?.push({ value: value, label: key });
+          }
+          this.mapSubnetArray = [...this.mapSubnetArray1]
+        }
+      });
+  }
+
+  initSubnet2() {
+    this.loadingSubnet = true;
+    this.disabledSubnet = true;
+    let formSearchSubnet = new FormSearchSubnet();
+    formSearchSubnet.region = this.region;
+    formSearchSubnet.vpcId = this.project;
+    formSearchSubnet.pageSize = 9999;
+    formSearchSubnet.pageNumber = 1;
+    formSearchSubnet.customerId = this.tokenService.get()?.userId;
+    formSearchSubnet.name = '';
+    this.vlanService.getSubnetByNetwork(formSearchSubnet)
+      .pipe(finalize(() => {
+        this.loadingSubnet = false;
+        this.disabledSubnet = false;
+      }))
+      .subscribe(data => {
+        this.mapSubnet?.clear();
+        // Lặp qua các cặp khóa/giá trị trong dữ liệu và thêm chúng vào mapSubnet
+        for (const model of data.records) {
+          this.mapSubnetArray2?.push({ value: model.subnetCloudId, label: model.name + '(' + model.subnetAddressRequired + ')' });
+        }
+      });
   }
 }
 

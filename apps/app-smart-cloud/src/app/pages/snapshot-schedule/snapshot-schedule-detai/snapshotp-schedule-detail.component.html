@@ -97,118 +97,11 @@
         <nz-col nzSpan="12">
           <nz-row style="padding: 12px 0 12px 0">
             <span *ngIf="typeProject != 1" class="text-label customSpan" style="width: 35%">Gói Snapshot:</span>
-            <span *ngIf="typeProject != 1" class="text-value-detail customSpan">{{data.packageName}}</span>
+            <a *ngIf="typeProject != 1" class="text-value-detail-href customSpan" href="/app-smart-cloud/snapshot/packages/detail/{{data.snapshotPackageId}}">{{data.packageName}}</a>
           </nz-row>
         </nz-col>
       </nz-row>
     </div>
-<!--    <div *ngIf="typeProject == 1">-->
-<!--      <nz-form-item>-->
-<!--        <nz-form-label>{{ 'app.snapshot.schedule.name' | i18n }}</nz-form-label>-->
-<!--        <input-->
-<!--          nz-input-->
-<!--          [(ngModel)]="scheduleName"-->
-<!--          disabled="true"-->
-<!--          type="text"-->
-<!--          nzSize="large"-->
-<!--        />-->
-<!--      </nz-form-item>-->
-<!--      <nz-row nzGutter="24">-->
-<!--        <nz-col [nzLg]="12" [nzMd]="12" [nzSm]="24" [nzXl]="12" [nzXs]="24">-->
-<!--          <nz-form-item-->
-<!--          ><nz-form-label>Loại Snapshot</nz-form-label>-->
-<!--            <input nz-input [(ngModel)]="typeSnapshot" disabled="true" type="text" nzSize="large"/>-->
-<!--          </nz-form-item>-->
-<!--        </nz-col>-->
-<!--        <nz-col [nzLg]="12" [nzMd]="12" [nzSm]="24" [nzXl]="12" [nzXs]="24">-->
-<!--          <nz-form-item *ngIf="data.snapshotType == 1">-->
-<!--            <nz-form-label>Chọn máy ảo</nz-form-label>-->
-<!--            <input nz-input [(ngModel)]="data.serviceName" disabled="true" type="text" nzSize="large"-->
-<!--            /></nz-form-item>-->
-<!--          <nz-form-item *ngIf="data.snapshotType != 1">-->
-<!--            <nz-form-label>Chọn Volume</nz-form-label>-->
-<!--            <input nz-input [(ngModel)]="data.serviceName" disabled="true" type="text" nzSize="large"-->
-<!--            /></nz-form-item>-->
-<!--        </nz-col>-->
-<!--      </nz-row>-->
-<!--    </div>-->
-<!--    <div *ngIf="typeProject != 1">-->
-<!--      <nz-row nzGutter="24">-->
-<!--        <nz-col [nzLg]="12" [nzMd]="12" [nzSm]="24" [nzXl]="12" [nzXs]="24">-->
-<!--          <nz-form-item>-->
-<!--            <nz-form-label>{{ 'app.snapshot.schedule.name' | i18n }}</nz-form-label>-->
-<!--            <input-->
-<!--              nz-input-->
-<!--              [(ngModel)]="scheduleName"-->
-<!--              disabled="true"-->
-<!--              type="text"-->
-<!--              nzSize="large"-->
-<!--            />-->
-<!--          </nz-form-item>-->
-<!--        </nz-col>-->
-<!--        <nz-col [nzLg]="12" [nzMd]="12" [nzSm]="24" [nzXl]="12" [nzXs]="24">-->
-<!--          <nz-form-item-->
-<!--          ><nz-form-label>Loại Snapshot</nz-form-label>-->
-<!--            <input nz-input [(ngModel)]="typeSnapshot" disabled="true" type="text" nzSize="large"/>-->
-<!--          </nz-form-item>-->
-<!--        </nz-col>-->
-<!--      </nz-row>-->
-<!--      <nz-row nzGutter="24">-->
-<!--        <nz-col [nzLg]="12" [nzMd]="12" [nzSm]="24" [nzXl]="12" [nzXs]="24">-->
-<!--          <nz-form-item *ngIf="data.snapshotType == 1">-->
-<!--            <nz-form-label>Chọn máy ảo</nz-form-label>-->
-<!--            <input nz-input [(ngModel)]="data.serviceName" disabled="true" type="text" nzSize="large"-->
-<!--            /></nz-form-item>-->
-<!--          <nz-form-item *ngIf="data.snapshotType != 1">-->
-<!--            <nz-form-label>Chọn Volume</nz-form-label>-->
-<!--            <input nz-input [(ngModel)]="data.serviceName" disabled="true" type="text" nzSize="large"-->
-<!--            /></nz-form-item>-->
-<!--        </nz-col>-->
-<!--        <nz-col [nzLg]="12" [nzMd]="12" [nzSm]="24" [nzXl]="12" [nzXs]="24">-->
-<!--          <nz-form-item>-->
-<!--            <nz-form-label>Chọn gói Snapshot</nz-form-label>-->
-<!--            <input nz-input [(ngModel)]="data.packageName" disabled="true" type="text" nzSize="large"-->
-<!--            /></nz-form-item>-->
-<!--        </nz-col>-->
-<!--      </nz-row>-->
-<!--    </div>-->
-<!--    <nz-row nzGutter="24">-->
-<!--      <nz-col [nzLg]="12" [nzMd]="12" [nzSm]="24" [nzXl]="12" [nzXs]="24">-->
-<!--        <nz-form-item>-->
-<!--          <nz-form-label>Chế độ Snapshot</nz-form-label>-->
-<!--          <input-->
-<!--            nz-input-->
-<!--            [(ngModel)]="labelMode"-->
-<!--            disabled="true"-->
-<!--            nzSize="large"-->
-<!--            type="text"-->
-<!--        /></nz-form-item>-->
-<!--      </nz-col>-->
-<!--      <nz-col [nzLg]="12" [nzMd]="12" [nzSm]="24" [nzXl]="12" [nzXs]="24">-->
-<!--        <nz-form-item-->
-<!--          ><nz-form-label>Chọn thời điểm thực hiện Snapshot</nz-form-label>-->
-<!--          <nz-time-picker-->
-<!--            style="width: 100%; border-radius: 8px"-->
-<!--            [(ngModel)]="data.runtime"-->
-<!--            [disabled]="true"-->
-<!--            [ngModelOptions]="{ standalone: true }"-->
-<!--            nzFormat="HH:mm"-->
-<!--            nzSize="large"-->
-<!--          ></nz-time-picker>-->
-<!--        </nz-form-item>-->
-<!--      </nz-col>-->
-<!--    </nz-row>-->
-<!--    <nz-form-item>-->
-<!--      <nz-form-label>Số bản Snapshot lưu trữ</nz-form-label>-->
-<!--      <input-->
-<!--        nz-input-->
-<!--        placeholder="Chọn ngày"-->
-<!--        [(ngModel)]="data.maxSnapshot"-->
-<!--        disabled="true"-->
-<!--        type="text"-->
-<!--        nzSize="large"-->
-<!--      />-->
-<!--    </nz-form-item>-->
     <form nz-form [nzLayout]="'vertical'">
       <nz-form-item>
         <nz-form-label>Mô tả</nz-form-label>
