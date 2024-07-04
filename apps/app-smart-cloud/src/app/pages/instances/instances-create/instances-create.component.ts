@@ -248,10 +248,7 @@ export class InstancesCreateComponent implements OnInit {
   hasRoleSI: boolean;
   ngOnInit(): void {
     this.userId = this.tokenService.get()?.userId;
-    if (
-      this.activatedRoute.snapshot.paramMap.get('type') != undefined ||
-      this.activatedRoute.snapshot.paramMap.get('type') != null
-    ) {
+    if (this.activatedRoute.snapshot.paramMap.get('type')) {
       let volumeType = this.activatedRoute.snapshot.paramMap.get('type');
       if (volumeType == 'hdd') {
         this.activeBlockHDD = true;
@@ -261,27 +258,29 @@ export class InstancesCreateComponent implements OnInit {
         this.activeBlockSSD = true;
       }
     }
-    if (
-      this.activatedRoute.snapshot.paramMap.get('packageId') != undefined ||
-      this.activatedRoute.snapshot.paramMap.get('packageId') != null
-    ) {
+    if (this.activatedRoute.snapshot.paramMap.get('packageId')) {
       this.packageId = Number.parseInt(
         this.activatedRoute.snapshot.paramMap.get('packageId')
       );
       this.selectedElementFlavor = 'flavor_' + this.packageId;
     }
-    if (
-      this.activatedRoute.snapshot.paramMap.get('regionId') != undefined ||
-      this.activatedRoute.snapshot.paramMap.get('regionId') != null
-    ) {
+    if (this.activatedRoute.snapshot.paramMap.get('regionId')) {
       this.region = Number.parseInt(
         this.activatedRoute.snapshot.paramMap.get('regionId')
       );
       localStorage.setItem('regionId', JSON.stringify(this.region));
+      localStorage.removeItem('projectId')
     } else {
       let regionAndProject = getCurrentRegionAndProject();
       this.region = regionAndProject.regionId;
       this.projectId = regionAndProject.projectId;
+    }
+    if (this.activatedRoute.snapshot.paramMap.get('idSnapshot')) {
+      this.isSnapshot = true;
+      this.selectedSnapshot = Number.parseInt(
+        this.activatedRoute.snapshot.paramMap.get('idSnapshot')
+      );
+      this.changeSelectedSnapshot();
     }
 
     this.getActiveServiceByRegion();
@@ -291,7 +290,7 @@ export class InstancesCreateComponent implements OnInit {
     this.getListGpuType();
     this.getAllImageType();
     this.getListOptionGpuValue();
-    this.hasRoleSI = localStorage.getItem('role').includes('SI')
+    this.hasRoleSI = localStorage.getItem('role').includes('SI');
 
     this.breakpointObserver
       .observe([
@@ -1233,9 +1232,10 @@ export class InstancesCreateComponent implements OnInit {
             this.getUnitPrice(0, 0, 0, 1, this.configGPU.gpuOfferId);
             this.configRecommend = this.listGpuConfigRecommend.filter(
               (e) =>
-                e.id == this.configGPU.gpuOfferId && e.gpuCount == this.configGPU.GPU
+                e.id == this.configGPU.gpuOfferId &&
+                e.gpuCount == this.configGPU.GPU
             )[0];
-            console.log("cấu hình đề recommend", this.configRecommend);
+            console.log('cấu hình đề recommend', this.configRecommend);
           }
           this.getTotalAmount();
         }
@@ -1254,7 +1254,7 @@ export class InstancesCreateComponent implements OnInit {
         (e) =>
           e.id == this.configGPU.gpuOfferId && e.gpuCount == this.configGPU.GPU
       )[0];
-      console.log("cấu hình đề recommend", this.configRecommend);
+      console.log('cấu hình đề recommend', this.configRecommend);
     }
     if (
       this.configGPU.GPU != 0 &&
