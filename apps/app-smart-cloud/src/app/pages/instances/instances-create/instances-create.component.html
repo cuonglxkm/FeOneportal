@@ -951,19 +951,12 @@
             style="margin-left: 10px"
             nz-popover
             [nzPopoverContent]="contentTemplateIPv6"
+            [nzPopoverOverlayStyle]="{ width: '320px' }"
             src="assets/imgs/pajamas_question.svg"
             alt=""
           /><ng-template #contentTemplateIPv6>
             <div>
-              Máy ảo sẽ được cấp thêm một địa chỉ IPv6<br />
-              chạy song song với địa chỉ IPv4 theo cơ<br />
-              chế Dual Stack. Dual-stack là cơ chế có<br />
-              khả năng thực thi đồng thời cả hai giao<br />
-              thức IPV4 và IPV6. Thiết bị này cho phép<br />
-              cả hai giao thức cùng hoạt động trên một<br />
-              máy chủ. Theo đó dual-stack sẽ cho phép <br />
-              hệ điều hành tự lựa chọn giao thức liên <br />
-              lạc phù hợp nhất. Xem thêm về IPv6
+              {{ 'app.tooltip.use.ipv6' | i18n }}
               <a
                 href="https://docs.smartcloud.vn/index.php/knowledge-base/ipv6-la-gi-va-co-che-dual-stacks-trong-chuyen-doi-ipv4-sang-ipv6/"
                 target="_blank"
