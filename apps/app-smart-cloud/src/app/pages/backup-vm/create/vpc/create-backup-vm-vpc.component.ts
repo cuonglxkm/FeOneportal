@@ -336,6 +336,7 @@ export class CreateBackupVmVpcComponent implements OnInit {
       this.projectDetail = data
     })
   }
+
   ngOnInit() {
     let regionAndProject = getCurrentRegionAndProject();
     this.region = regionAndProject.regionId;
