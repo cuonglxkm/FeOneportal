@@ -155,7 +155,7 @@ export class InstancesEditVpcComponent implements OnInit {
         this.infoVPC.cloudProjectResourceUsed.gpuUsages.filter(
           (e) => e.gpuOfferId == this.gpuOfferId
         )[0];
-      if (gpuUsage != undefined && gpuUsage != null) {
+      if (gpuUsage) {
         this.remainingGpu = gpuProject.gpuCount - gpuUsage.gpuCount;
       } else {
         this.remainingGpu = gpuProject.gpuCount;
@@ -334,7 +334,7 @@ export class InstancesEditVpcComponent implements OnInit {
         this.infoVPC.cloudProjectResourceUsed.gpuUsages.filter(
           (e) => e.gpuOfferId == this.gpuOfferId
         )[0];
-      if (gpuUsage != undefined && gpuUsage != null) {
+      if (gpuUsage) {
         this.remainingGpu = gpuProject.gpuCount - gpuUsage.gpuCount;
       } else {
         this.remainingGpu = gpuProject.gpuCount;
@@ -361,7 +361,7 @@ export class InstancesEditVpcComponent implements OnInit {
         (e) => e.gpuOfferId == id
       )[0];
 
-    if (gpuUsage != undefined && gpuUsage != null) {
+    if (gpuUsage) {
       this.remainingGpu = gpuProject.gpuCount - gpuUsage.gpuCount;
     } else {
       this.remainingGpu = gpuProject.gpuCount;
