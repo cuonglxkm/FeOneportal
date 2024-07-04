@@ -189,6 +189,7 @@
               (keydown)="handleKeyboardEvent($event)"
             >
               <nz-tab
+                *ngIf="isVmFlavor"
                 [nzTitle]="'app.Preconfigured.Package' | i18n"
                 (nzClick)="onClickConfigPackage()"
               >
@@ -486,6 +487,7 @@
                 </div>
               </nz-tab>
               <nz-tab
+                *ngIf="isVmGpu"
                 [nzTitle]="'app.gpu.configuration' | i18n"
                 (nzClick)="onClickGpuConfig()"
               >

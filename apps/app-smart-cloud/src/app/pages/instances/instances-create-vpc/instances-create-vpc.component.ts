@@ -265,16 +265,28 @@ export class InstancesCreateVpcComponent implements OnInit {
 
   //Lấy các dịch vụ hỗ trợ theo region
   isSupportEncryption: boolean = false;
+  isVmGpu: boolean = false;
+  isVolumeSnapshotHdd: boolean = false;
+  isVolumeSnapshotSsd: boolean = false;
   getActiveServiceByRegion() {
     this.catalogService
       .getActiveServiceByRegion(
-        ['Encryption', 'MultiAttachment', 'ipv6'],
+        ['Encryption', 'vm-gpu', 'volume-snapshot-hdd', 'volume-snapshot-ssd'],
         this.region
       )
       .subscribe((data) => {
         console.log('support service', data);
         this.isSupportEncryption = data.filter(
           (e) => e.productName == 'Encryption'
+        )[0].isActive;
+        this.isVmGpu = data.filter(
+          (e) => e.productName == 'vm-gpu'
+        )[0].isActive;
+        this.isVolumeSnapshotHdd = data.filter(
+          (e) => e.productName == 'volume-snapshot-hdd'
+        )[0].isActive;
+        this.isVolumeSnapshotSsd = data.filter(
+          (e) => e.productName == 'volume-snapshot-ssd'
         )[0].isActive;
       });
   }

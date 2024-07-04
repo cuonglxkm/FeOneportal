@@ -477,7 +477,7 @@
   "app.mongo": "MongoDB",
   "app.other": "Other",
   "app.change.info": "Change information",
-
+  "app.use.ipv6": "Use IPv6",
 
   "app.instances.list": "Instance list",
   "app.instances.create": "Create Instance",
