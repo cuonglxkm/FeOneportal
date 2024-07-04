@@ -22,11 +22,8 @@ import {
   BackupVm,
   RestoreFormCurrent,
   RestoreInstanceBackup,
-  SecurityGroupBackup,
   VolumeBackup,
 } from '../../../shared/models/backup-vm';
-import { PackageBackupModel } from '../../../shared/models/package-backup.model';
-import { PackageBackupService } from '../../../shared/services/package-backup.service';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
@@ -36,11 +33,11 @@ import {
   GpuProject,
   GpuUsage,
   InfoVPCModel,
+  InstancesModel,
   IPPublicModel,
   OfferItem,
   Order,
   OrderItem,
-  SecurityGroupModel,
   SHHKeyModel,
 } from '../../instances/instances.model';
 import { InstancesService } from '../../instances/instances.service';
@@ -52,27 +49,12 @@ import {
 } from '../../../shared/models/vlan.model';
 import { VlanService } from '../../../shared/services/vlan.service';
 import { debounceTime, finalize, Subject } from 'rxjs';
-import { ProjectService } from 'src/app/shared/services/project.service';
 import { ConfigurationsService } from 'src/app/shared/services/configurations.service';
 import { NguCarousel, NguCarouselConfig } from '@ngu/carousel';
 import { BlockStorage } from '../../instances/instances-create/instances-create.component';
 import { CatalogService } from 'src/app/shared/services/catalog.service';
 import { LoadingService } from '@delon/abc/loading';
 import { OrderService } from 'src/app/shared/services/order.service';
-
-class ConfigCustom {
-  //cấu hình tùy chỉnh
-  vCPU?: number = 0;
-  ram?: number = 0;
-  capacity?: number = 0;
-}
-class ConfigGPU {
-  CPU: number = 0;
-  ram: number = 0;
-  storage: number = 0;
-  GPU: number = 0;
-  gpuOfferId: number = 0;
-}
 
 @Component({
   selector: 'one-portal-restore-backup-vm-vpc',
@@ -171,8 +153,6 @@ export class RestoreBackupVmVpcComponent implements OnInit {
     private router: Router,
     private backupService: BackupVmService,
     private activatedRoute: ActivatedRoute,
-    private projectService: ProjectService,
-    private backupPackageService: PackageBackupService,
     private catalogService: CatalogService,
     private notification: NzNotificationService,
     private dataService: InstancesService,
@@ -349,6 +329,8 @@ export class RestoreBackupVmVpcComponent implements OnInit {
     }
   }
 
+  instanceModel: InstancesModel;
+  selectedIndextab: number = 0;
   listIDAttachVolume: number[] = [];
   getDetailBackupById(id) {
     this.backupSize = 0;
@@ -361,6 +343,19 @@ export class RestoreBackupVmVpcComponent implements OnInit {
       )
       .subscribe((data) => {
         this.backupVmModel = data;
+        this.dataService
+          .getById(this.backupVmModel.instanceId)
+          .subscribe((data) => {
+            this.instanceModel = data;
+            if (this.instanceModel.offerId != 0) {
+              this.selectedIndextab = 1;
+              this.onClickCustomConfig();
+            }
+            if (this.instanceModel.gpuType != null) {
+              this.selectedIndextab = 2;
+              this.onClickGpuConfig();
+            }
+          });
         this.backupVmModel.volumeBackups.forEach((e) => {
           this.backupSize += e.size;
         });
@@ -534,7 +529,7 @@ export class RestoreBackupVmVpcComponent implements OnInit {
       this.infoVPC.cloudProjectResourceUsed.gpuUsages.filter(
         (e) => e.gpuOfferId == this.restoreInstanceBackup.gpuTypeOfferId
       )[0];
-    if (gpuUsage != undefined && gpuUsage != null) {
+    if (gpuUsage) {
       this.remainingGpu = gpuProject.gpuCount - gpuUsage.gpuCount;
     } else {
       this.remainingGpu = gpuProject.gpuCount;
@@ -557,7 +552,7 @@ export class RestoreBackupVmVpcComponent implements OnInit {
       this.infoVPC.cloudProjectResourceUsed.gpuUsages.filter(
         (e) => e.gpuOfferId == id
       )[0];
-    if (gpuUsage != undefined && gpuUsage != null) {
+    if (gpuUsage) {
       this.remainingGpu = gpuProject.gpuCount - gpuUsage.gpuCount;
     } else {
       this.remainingGpu = gpuProject.gpuCount;
