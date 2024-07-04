@@ -261,6 +261,8 @@ export class SecurityComponent implements OnInit {
   handleCancelAuthenticator() {
     this.isVisibleAuthenticator = false;
     this.isVisibleOTPForAuthenticator = false;
+    console.log(this.type);
+    
     this.formAuthenticator.reset()
     if(this.type === 1 || this.type === 0){
       this.toggleSwitchGoogleAuthenticator = !this.toggleSwitchGoogleAuthenticator;
