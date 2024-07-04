@@ -336,6 +336,7 @@ export class DefaultInterceptor implements HttpInterceptor {
             // this.notification.error('Thất bại', 'Tái tạo token thất bại');
             this.isRefreshing = false;
             this.tokenSrv.clear()
+            this.toLogin();
             return throwError(err);
           })
         );

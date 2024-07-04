@@ -112,7 +112,9 @@ export class InstancesComponent implements OnInit {
         if (foundIndex > -1) {
           switch (actionType) {
             case 'SHUTOFF':
+              this.reloadTable();
             case 'START':
+              this.reloadTable();
             case 'REBOOTING':
               this.updateRowState(taskState, foundIndex);
             case 'REBOOT':
