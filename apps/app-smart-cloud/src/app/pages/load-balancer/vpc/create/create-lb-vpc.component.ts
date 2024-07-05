@@ -160,7 +160,6 @@ export class CreateLbVpcComponent implements OnInit {
   @ViewChild('selectedValueIpFloating') selectedValueIpFloating: ElementRef;
 
   updateValue(value): void {
-    // this.validateForm.controls.subnet.setValue(value);
     if (!this.validateForm.controls['subnet'].invalid) {
       this.validateForm.controls['ipAddress'].enable();
     } else {
@@ -192,6 +191,7 @@ export class CreateLbVpcComponent implements OnInit {
   onChangeStatusInternetFacing() {
     this.validateForm.controls['subnet'].setValue('');
     this.validateForm.controls['ipAddress'].setValue('');
+    this.validateForm.controls['ipAddress'].disable();
     this.enableInternetFacing = true;
     this.enableInternal = false;
     if (this.enableInternetFacing) {
@@ -207,6 +207,7 @@ export class CreateLbVpcComponent implements OnInit {
   onChangeStatusInternal() {
     this.validateForm.controls['subnet'].setValue('');
     this.validateForm.controls['ipAddress'].setValue('');
+    this.validateForm.controls['ipAddress'].disable();
     this.enableInternetFacing = false;
     this.enableInternal = true;
     if (this.enableInternetFacing) {
@@ -385,7 +386,7 @@ export class CreateLbVpcComponent implements OnInit {
     let regionAndProject = getCurrentRegionAndProject();
     this.region = regionAndProject.regionId;
     this.project = regionAndProject.projectId;
-
+    this.validateForm.controls['ipAddress'].disable();
     this.validateForm.controls.radio.setValue('floatingIp');
     this.getListVlanSubnet();
     this.searchProduct();
