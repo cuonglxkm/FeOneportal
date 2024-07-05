@@ -2869,6 +2869,7 @@
   "app.input.backup.volume.required.select": "Please select volume",
   "app.backup.volume.title.modal.update": "Edit Backup Volume information",
   "app.backup.volume.root": "Volume root",
+  "app.backup.volume.restore": "Volume restore",
 
   "app.backup.volume.search.tooltip": "Search by name",
   "app.backup.volume.search.status.tooltip": "Search by status",

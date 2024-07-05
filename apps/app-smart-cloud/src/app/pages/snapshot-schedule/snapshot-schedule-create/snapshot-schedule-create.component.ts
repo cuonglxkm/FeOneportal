@@ -252,10 +252,10 @@ export class SnapshotScheduleCreateComponent implements OnInit {
         data => {
           let total = data.cloudProject;
           let used = data.cloudProjectResourceUsed;
-          this.quotaHDDUsed = used.hdd;
-          this.quotaHDDTotal = total.quotaHddInGb;
-          this.quotaSSDUsed = used.ssd;
-          this.quotaSSDTotal = total.quotaSSDInGb;
+          this.quotaHDDUsed = used.volumeSnapshotHddInGb;
+          this.quotaHDDTotal = total.quotaVolumeSnapshotHddInGb;
+          this.quotaSSDUsed = used.volumeSnapshotSsdInGb;
+          this.quotaSSDTotal = total.quotaVolumeSnapshotSsdInGb;
         });
     }
   }

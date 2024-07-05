@@ -73,10 +73,11 @@ class ConfigGPU {
   GPU: number = 0;
   gpuOfferId: number = 0;
 }
-export class BlockStorage {
+class BlockStorage {
   id: number = 0;
   type?: string = '';
   name?: string = '';
+  newName?: string;
   capacity?: number = 0;
   encrypt?: boolean = false;
   multiattach?: boolean = false;
@@ -2435,7 +2436,6 @@ export class InstancesCreateComponent implements OnInit {
           changeBlockStorage.capacity -
           (changeBlockStorage.capacity % this.stepCapacity);
       }
-      this.volumeInit(changeBlockStorage);
       if (changeBlockStorage.type == 'hdd') {
         changeBlockStorage.price =
           changeBlockStorage.capacity * this.unitPriceVolumeHDD;
