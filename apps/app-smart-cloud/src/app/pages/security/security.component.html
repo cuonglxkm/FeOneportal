@@ -246,12 +246,12 @@
         >
         <span class="fa-text d-block mt-1">3. Chọn Quét mã vạch</span>
         <div class="d-flex justify-content-center">
-          <!-- <qrcode
+          <qrcode
             [qrdata]="authenticatorQrData"
             [width]="'150'"
             [errorCorrectionLevel]="'M'"
-          ></qrcode> -->
-          <img width="150" height="150" [src]="authenticatorQrImage" alt="" />
+          ></qrcode>
+          <!-- <img width="150" height="150" [src]="authenticatorQrImage" alt="" /> -->
         </div>
         <span class="fa-text d-block mt-1">Hoặc nhập mã sau:</span>
         <nz-alert nzBanner [nzDescription]="authenticatorKey"> </nz-alert>
