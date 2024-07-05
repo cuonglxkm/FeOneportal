@@ -42,11 +42,12 @@ export class ProjectExtendComponent implements OnInit{
   expiredDate: any;
   expiredDateOld: any;
   timeSelected:number=1;
-  
+
   loading = true;
   total: any;
   isVisiblePopupError: boolean = false;
   errorList: string[] = [];
+  hasRoleSI: boolean
   closePopupError() {
     this.isVisiblePopupError = false;
   }
@@ -64,8 +65,9 @@ export class ProjectExtendComponent implements OnInit{
     this.regionId = regionAndProject.regionId;
     const id = this.activatedRoute.snapshot.paramMap.get('id');
     this.getData(id);
+    this.hasRoleSI = localStorage.getItem('role').includes('SI')
     // this.caculate()
-    
+
     // this.onChangeTime()
   }
 
@@ -85,7 +87,7 @@ export class ProjectExtendComponent implements OnInit{
       .subscribe(
         data => {
           this.data  = data;
-         
+
           this.expiredDate = data.expireDate;
           this.today = data.createDate;
           const expiredDateOld = new Date(this.expiredDate);
@@ -224,7 +226,7 @@ export class ProjectExtendComponent implements OnInit{
           specificationType: "vpc_extend",
           price: 0,
           // serviceDuration: this.form.controls['numOfMonth'].value
-          serviceDuration: this.timeSelected 
+          serviceDuration: this.timeSelected
         }
       ]
     }
@@ -240,7 +242,7 @@ export class ProjectExtendComponent implements OnInit{
           this.totalAmount = this.total.data.totalAmount.amount;
           this.totalVAT = this.total.data.totalVAT.amount;
           this.totalPayment = this.total.data.totalPayment.amount;
-          
+
         }
       );
   }

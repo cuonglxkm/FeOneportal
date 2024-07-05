@@ -284,6 +284,23 @@ export class ExtensionComponent implements OnInit {
     return {totalRam, totalCpu, totalStorage};
   }
 
+  signature: string;
+  onValidateExtend() {
+    let specification = this.setDataExtend();
+
+    this.isSubmitting = true;
+    this.clusterService.validateExtendService({Specification: JSON.stringify(specification)})
+    .pipe(finalize(() => this.isSubmitting = false))
+    .subscribe((r: any) => {
+      if (r && r.code == 200) {
+        this.signature = r.data;
+        this.onExtendService();
+      } else {
+        this.notificationService.error(this.i18n.fanyi('app.status.fail'), r.message);
+      }
+    });
+  }
+
   onExtendService() {
     let order = new Order();
     const userId = this.tokenService.get()?.userId;
@@ -297,6 +314,19 @@ export class ExtensionComponent implements OnInit {
     orderItem.orderItemQuantity = 1;
     orderItem.specificationType = KubernetesConstant.CLUSTER_EXTEND_TYPE;
 
+    const resource = this.onCalculateResource();
+    let req = this.setDataExtend();
+    orderItem.specification = JSON.stringify(req);
+    orderItem.signature = this.signature;
+
+    order.orderItems = [...order.orderItems, orderItem];
+
+    // console.log({order: order});
+    let returnPath = window.location.pathname;
+    this.router.navigate(['/app-smart-cloud/order/cart'], {state: {data: order, path: returnPath}});
+  }
+
+  setDataExtend() {
     const resource = this.onCalculateResource();
     let req = {
       serviceName: this.detailCluster.clusterName,
@@ -316,13 +346,8 @@ export class ExtensionComponent implements OnInit {
         UserEmail: this.userInfo.email
       })
     };
-    orderItem.specification = JSON.stringify(req);
 
-    order.orderItems = [...order.orderItems, orderItem];
-
-    // console.log({order: order});
-    let returnPath = window.location.pathname;
-    this.router.navigate(['/app-smart-cloud/order/cart'], {state: {data: order, path: returnPath}});
+    return req;
   }
 
   back2list() {

@@ -13,29 +13,32 @@ import {
 } from '../../../../../../../libs/common-utils/src';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BackupVmService } from '../../../shared/services/backup-vm.service';
-import { getCurrentRegionAndProject, getUniqueObjects } from '@shared';
+import {
+  getCurrentRegionAndProject,
+  getListGpuConfigRecommend,
+  getUniqueObjects,
+} from '@shared';
 import {
   BackupVm,
   RestoreFormCurrent,
   RestoreInstanceBackup,
-  SecurityGroupBackup,
   VolumeBackup,
+  VolumeExternalBackup,
 } from '../../../shared/models/backup-vm';
-import { PackageBackupModel } from '../../../shared/models/package-backup.model';
-import { PackageBackupService } from '../../../shared/services/package-backup.service';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from '@core';
 import {
+  GpuConfigRecommend,
   GpuProject,
   GpuUsage,
   InfoVPCModel,
+  InstancesModel,
   IPPublicModel,
   OfferItem,
   Order,
   OrderItem,
-  SecurityGroupModel,
   SHHKeyModel,
 } from '../../instances/instances.model';
 import { InstancesService } from '../../instances/instances.service';
@@ -47,28 +50,22 @@ import {
 } from '../../../shared/models/vlan.model';
 import { VlanService } from '../../../shared/services/vlan.service';
 import { debounceTime, finalize, Subject } from 'rxjs';
-import { ProjectService } from 'src/app/shared/services/project.service';
 import { ConfigurationsService } from 'src/app/shared/services/configurations.service';
 import { NguCarousel, NguCarouselConfig } from '@ngu/carousel';
-import { BlockStorage } from '../../instances/instances-create/instances-create.component';
 import { CatalogService } from 'src/app/shared/services/catalog.service';
 import { LoadingService } from '@delon/abc/loading';
 import { OrderService } from 'src/app/shared/services/order.service';
 
-class ConfigCustom {
-  //cấu hình tùy chỉnh
-  vCPU?: number = 0;
-  ram?: number = 0;
+class BlockStorage {
+  id: number = 0;
+  type?: string = '';
+  name?: string = '';
+  newName?: string;
   capacity?: number = 0;
+  minCapacity?: number = 0;
+  encrypt?: boolean = false;
+  multiattach?: boolean = false;
 }
-class ConfigGPU {
-  CPU: number = 0;
-  ram: number = 0;
-  storage: number = 0;
-  GPU: number = 0;
-  gpuOfferId: number = 0;
-}
-
 @Component({
   selector: 'one-portal-restore-backup-vm-vpc',
   templateUrl: './restore-backup-vm-vpc.component.html',
@@ -166,8 +163,6 @@ export class RestoreBackupVmVpcComponent implements OnInit {
     private router: Router,
     private backupService: BackupVmService,
     private activatedRoute: ActivatedRoute,
-    private projectService: ProjectService,
-    private backupPackageService: PackageBackupService,
     private catalogService: CatalogService,
     private notification: NzNotificationService,
     private dataService: InstancesService,
@@ -231,9 +226,13 @@ export class RestoreBackupVmVpcComponent implements OnInit {
   //Lấy các dịch vụ hỗ trợ theo region
   isSupportEncryption: boolean = false;
   isSupportMultiAttachment: boolean = false;
+  isVmGpu: boolean = false;
   getActiveServiceByRegion() {
     this.catalogService
-      .getActiveServiceByRegion(['Encryption', 'MultiAttachment'], this.region)
+      .getActiveServiceByRegion(
+        ['Encryption', 'MultiAttachment', 'vm-gpu'],
+        this.region
+      )
       .subscribe((data) => {
         console.log('support service', data);
         this.isSupportMultiAttachment = data.filter(
@@ -241,6 +240,9 @@ export class RestoreBackupVmVpcComponent implements OnInit {
         )[0].isActive;
         this.isSupportEncryption = data.filter(
           (e) => e.productName == 'Encryption'
+        )[0].isActive;
+        this.isVmGpu = data.filter(
+          (e) => e.productName == 'vm-gpu'
         )[0].isActive;
       });
   }
@@ -344,7 +346,9 @@ export class RestoreBackupVmVpcComponent implements OnInit {
     }
   }
 
-  listIDAttachVolume: number[] = [];
+  instanceModel: InstancesModel;
+  selectedIndextab: number = 0;
+  listAttachVolume: VolumeBackup[] = [];
   getDetailBackupById(id) {
     this.backupSize = 0;
     this.backupService
@@ -356,6 +360,19 @@ export class RestoreBackupVmVpcComponent implements OnInit {
       )
       .subscribe((data) => {
         this.backupVmModel = data;
+        this.dataService
+          .getById(this.backupVmModel.instanceId)
+          .subscribe((data) => {
+            this.instanceModel = data;
+            if (this.instanceModel.offerId != 0) {
+              this.selectedIndextab = 1;
+              this.onClickCustomConfig();
+            }
+            if (this.instanceModel.gpuType != null) {
+              this.selectedIndextab = 2;
+              this.onClickGpuConfig();
+            }
+          });
         this.backupVmModel.volumeBackups.forEach((e) => {
           this.backupSize += e.size;
         });
@@ -378,11 +395,12 @@ export class RestoreBackupVmVpcComponent implements OnInit {
           );
 
         this.listExternalAttachVolume.forEach((e) => {
-          this.listIDAttachVolume.push(e.id);
+          this.listAttachVolume.push(e);
           let tempBS = new BlockStorage();
           tempBS.id = e.id;
           tempBS.name = e.name;
           tempBS.capacity = e.size;
+          tempBS.minCapacity = e.size;
           if (e.typeName.toUpperCase().includes('HDD')) {
             tempBS.type = 'HDD';
           } else {
@@ -461,6 +479,7 @@ export class RestoreBackupVmVpcComponent implements OnInit {
   }
 
   //#region  cấu hình
+  configRecommend: GpuConfigRecommend;
   listOptionGpuValue: number[] = [];
   getListOptionGpuValue() {
     this.configurationService
@@ -479,6 +498,7 @@ export class RestoreBackupVmVpcComponent implements OnInit {
   isGpuConfig = false;
   listGPUType: OfferItem[] = [];
   purchasedListGPUType: OfferItem[] = [];
+  listGpuConfigRecommend: GpuConfigRecommend[] = [];
   getListGpuType() {
     this.dataService
       .getListOffers(this.region, 'vm-flavor-gpu')
@@ -486,6 +506,10 @@ export class RestoreBackupVmVpcComponent implements OnInit {
         this.listGPUType = data.filter(
           (e: OfferItem) => e.status.toUpperCase() == 'ACTIVE'
         );
+        this.listGpuConfigRecommend = getListGpuConfigRecommend(
+          this.listGPUType
+        );
+        console.log('list gpu config recommend', this.listGpuConfigRecommend);
         let listGpuOfferIds: number[] = [];
         this.infoVPC.cloudProject.gpuProjects.forEach((gputype) =>
           listGpuOfferIds.push(gputype.gpuOfferId)
@@ -523,7 +547,7 @@ export class RestoreBackupVmVpcComponent implements OnInit {
       this.infoVPC.cloudProjectResourceUsed.gpuUsages.filter(
         (e) => e.gpuOfferId == this.restoreInstanceBackup.gpuTypeOfferId
       )[0];
-    if (gpuUsage != undefined && gpuUsage != null) {
+    if (gpuUsage) {
       this.remainingGpu = gpuProject.gpuCount - gpuUsage.gpuCount;
     } else {
       this.remainingGpu = gpuProject.gpuCount;
@@ -535,6 +559,7 @@ export class RestoreBackupVmVpcComponent implements OnInit {
   gpuTypeName: string = '';
   changeGpuType(id: number) {
     this.restoreInstanceBackup.gpuCount = 0;
+    this.configRecommend = null;
     this.gpuTypeName = this.purchasedListGPUType.filter(
       (e) => e.id == id
     )[0].offerName;
@@ -545,12 +570,21 @@ export class RestoreBackupVmVpcComponent implements OnInit {
       this.infoVPC.cloudProjectResourceUsed.gpuUsages.filter(
         (e) => e.gpuOfferId == id
       )[0];
-    if (gpuUsage != undefined && gpuUsage != null) {
+    if (gpuUsage) {
       this.remainingGpu = gpuProject.gpuCount - gpuUsage.gpuCount;
     } else {
       this.remainingGpu = gpuProject.gpuCount;
     }
     this.getListOptionGpuValue();
+  }
+
+  changeGpu() {
+    this.configRecommend = this.listGpuConfigRecommend.filter(
+      (e) =>
+        e.id == this.restoreInstanceBackup.gpuTypeOfferId &&
+        e.gpuCount == this.restoreInstanceBackup.gpuCount
+    )[0];
+    console.log('cấu hình đề recommend', this.configRecommend);
   }
 
   resetData() {
@@ -562,6 +596,7 @@ export class RestoreBackupVmVpcComponent implements OnInit {
     this.restoreInstanceBackup.gpuCount = 0;
     this.restoreInstanceBackup.gpuTypeOfferId = null;
     this.isValid = false;
+    this.configRecommend = null;
   }
 
   minCapacity: number;
@@ -797,11 +832,12 @@ export class RestoreBackupVmVpcComponent implements OnInit {
   changeAttachVolume() {
     this.listOfDataBlockStorage = [];
     this.listExternalAttachVolume.forEach((e) => {
-      if (this.listIDAttachVolume.includes(e.id)) {
+      if (this.listAttachVolume.includes(e)) {
         let tempBS = new BlockStorage();
         tempBS.id = e.id;
         tempBS.name = e.name;
         tempBS.capacity = e.size;
+        tempBS.minCapacity = e.size;
         if (e.typeName.toUpperCase().includes('HDD')) {
           tempBS.type = 'HDD';
         } else {
@@ -815,7 +851,15 @@ export class RestoreBackupVmVpcComponent implements OnInit {
 
   instanceInit() {
     this.restoreInstanceBackup.instanceBackupId = this.backupVmModel?.id;
-    this.restoreInstanceBackup.volumeBackupIds = this.listIDAttachVolume;
+    let selectedVolumeExternal: VolumeExternalBackup[] = [];
+    this.listOfDataBlockStorage.forEach((e) => {
+      let volumeExternal = new VolumeExternalBackup();
+      volumeExternal.id = e.id;
+      volumeExternal.name = e.newName;
+      volumeExternal.size = e.capacity;
+      selectedVolumeExternal.push(volumeExternal);
+    });
+    this.restoreInstanceBackup.volumeBackups = selectedVolumeExternal;
     this.restoreInstanceBackup.instanceName = this.backupVmModel?.instanceName;
     this.restoreInstanceBackup.keypairName = this.selectedSSHKeyName;
     this.restoreInstanceBackup.securityGroups = this.selectedSecurityGroup;

@@ -219,6 +219,7 @@ export class DefaultInterceptor implements HttpInterceptor {
     localStorage.removeItem('_token');
     localStorage.removeItem('projects');
     localStorage.removeItem('projectId');
+    localStorage.removeItem('role');
   }
 
   private getAdditionalHeaders(headers?: HttpHeaders): { [name: string]: string } {
@@ -335,6 +336,7 @@ export class DefaultInterceptor implements HttpInterceptor {
             // this.notification.error('Thất bại', 'Tái tạo token thất bại');
             this.isRefreshing = false;
             this.tokenSrv.clear()
+            this.toLogin();
             return throwError(err);
           })
         );

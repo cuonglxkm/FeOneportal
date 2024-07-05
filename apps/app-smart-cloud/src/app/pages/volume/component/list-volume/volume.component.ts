@@ -186,12 +186,12 @@ export class VolumeComponent implements OnInit, OnDestroy {
   }
 
   navigateToCreateVolume() {
-    this.router.navigate(['/app-smart-cloud/volume/create']);
-  }
+    if (this.typeVPC == 1) {
+      this.router.navigate(['/app-smart-cloud/volume/vpc/create']);
+    } else {
+      this.router.navigate(['/app-smart-cloud/volume/create']);
+    }
 
-
-  navigateToCreateVolumeVPC() {
-    this.router.navigate(['/app-smart-cloud/volume/vpc/create']);
   }
 
   //attach
@@ -217,38 +217,46 @@ export class VolumeComponent implements OnInit, OnDestroy {
     this.getListVolume(false);
   }
 
-  navigateToCreateScheduleSnapshot() {
-    this.router.navigate(['/app-smart-cloud/schedule/snapshot/create']);
+  //create schedule snapshot
+  navigateToCreateScheduleSnapshot(idVolume: number) {
+    this.router.navigate(['/app-smart-cloud/schedule/snapshot/create', { volumeId: idVolume }], { queryParams: { snapshotTypeCreate: 0 } });
   }
 
+  //create backup
   navigateToCreateBackup(idVolume) {
     if (this.typeVPC == 1) {
       this.router.navigate(['/app-smart-cloud/backup-volume/create/vpc', { volumeId: idVolume }]);
     } else {
       this.router.navigate(['/app-smart-cloud/backup-volume/create/normal', { volumeId: idVolume }]);
     }
-
-
   }
 
+  //create schedule backup
   navigateToCreateScheduleBackup(id) {
-    this.router.navigate(['/app-smart-cloud/schedule/backup/create'], {
-      queryParams: { type: 'VOLUME', idVolume: id }
-    });
+    if (this.typeVPC == 1) {
+      this.router.navigate(['/app-smart-cloud/schedule/backup/create/vpc'], {
+        queryParams: { type: 'VOLUME', idVolume: id }
+      });
+    } else {
+      this.router.navigate(['/app-smart-cloud/schedule/backup/create'], {
+        queryParams: { type: 'VOLUME', idVolume: id }
+      });
+    }
   }
 
-  navigateToCreate() {
-    this.router.navigate(['/app-smart-cloud/volume/create']);
-  }
-
+  //create snapshot
   navigateToSnapshot(idVolume: number) {
-    this.router.navigate(['/app-smart-cloud/snapshot/create', {volumeId: idVolume}], { queryParams: { navigateType: 0 } })
+    this.router.navigate(['/app-smart-cloud/snapshot/create', { volumeId: idVolume }], { queryParams: { navigateType: 0 } });
   }
+
+  hasRoleSI: boolean = false;
 
   ngOnInit() {
     let regionAndProject = getCurrentRegionAndProject();
     this.region = regionAndProject.regionId;
     this.project = regionAndProject.projectId;
+
+    this.hasRoleSI = localStorage.getItem('role').includes('SI');
     console.log('project', this.project);
     this.selectedValue = this.options[0].value;
     this.customerId = this.tokenService.get()?.userId;
@@ -273,7 +281,6 @@ export class VolumeComponent implements OnInit, OnDestroy {
           case 'RESIZED':
           case 'EXTENDING':
           case 'EXTENDED':
-          case 'DELETING':
           case 'DELETED':
           case 'DELETING':
             this.getListVolume(true);

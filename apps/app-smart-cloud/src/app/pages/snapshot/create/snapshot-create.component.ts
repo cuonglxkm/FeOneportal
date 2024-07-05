@@ -108,10 +108,10 @@ export class SnapshotCreateComponent implements OnInit, OnChanges {
         data => {
           let total = data.cloudProject;
           let used = data.cloudProjectResourceUsed;
-          this.quotaHDDUsed = used.hdd;
-          this.quotaHDDTotal = total.quotaHddInGb;
-          this.quotaSSDUsed = used.ssd;
-          this.quotaSSDTotal = total.quotaSSDInGb;
+          this.quotaHDDUsed = used.volumeSnapshotHddInGb;
+          this.quotaHDDTotal = total.quotaVolumeSnapshotHddInGb;
+          this.quotaSSDUsed = used.volumeSnapshotSsdInGb;
+          this.quotaSSDTotal = total.quotaVolumeSnapshotSsdInGb;
         });
     }
   }
@@ -139,7 +139,7 @@ export class SnapshotCreateComponent implements OnInit, OnChanges {
           this.router.navigate(['/app-smart-cloud/snapshot']);
         },
         error => {
-          this.notification.error(this.i18n.fanyi('app.status.fail'), 'Tạo thất bại');
+          this.notification.error(this.i18n.fanyi('app.status.fail'), error.error.message);
         }
       );
   }
@@ -191,6 +191,7 @@ export class SnapshotCreateComponent implements OnInit, OnChanges {
             console.log('volume array', this.volumeArray);
             this.selectedVolume = this.volumeArray?.filter(e => e.id == this.idVolume)[0];
             console.log('selected volume', this.selectedVolume);
+            this.changeVmVolume();
           } else {
             this.selectedVolume = null;
             // this.selectedSnapshotType = 1;
@@ -216,6 +217,7 @@ export class SnapshotCreateComponent implements OnInit, OnChanges {
           if (this.activatedRoute.snapshot.paramMap.get('instanceId') != undefined || this.activatedRoute.snapshot.paramMap.get('instanceId') != null) {
             // this.selectedSnapshotType = 1;
             this.selectedVM = this.vmArray.filter(e => e.id == Number.parseInt(this.activatedRoute.snapshot.paramMap.get('instanceId')))[0];
+            this.changeVmVolume();
           } else {
             this.selectedVM = null;
             // this.selectedSnapshotType = 0;
@@ -227,8 +229,8 @@ export class SnapshotCreateComponent implements OnInit, OnChanges {
   checkDisable() {
     this.disableCreate = false;
     if ((this.selectedSnapshotPackage == undefined && this.projectType != 1) ||
-      ((this.selectedSnapshotType == 0 || this.navigateType==0) && this.selectedVolume == undefined) ||
-      ((this.selectedSnapshotType == 1 || this.navigateType==1) && this.selectedVM == undefined)) {
+      (((this.navigateType == 0 || (this.selectedSnapshotType == 0 && this.navigateType == 2)) && this.selectedVolume == undefined) ||
+      (((this.navigateType == 1 || (this.selectedSnapshotType == 1 && this.navigateType == 2)) && this.selectedVM == undefined)))) {
       this.disableCreate = true;
     }
 
@@ -300,7 +302,6 @@ export class SnapshotCreateComponent implements OnInit, OnChanges {
     if ((this.selectedVolume != undefined || this.selectedVM != undefined)) {
       if (this.navigateType == 0 || (this.selectedSnapshotType == 0 && this.navigateType == 2)) {
         this.quotaType = this.selectedVolume.volumeType;
-
         this.checkDisable();
       } else {
         this.loadingCreate = true;
@@ -321,8 +322,8 @@ export class SnapshotCreateComponent implements OnInit, OnChanges {
       this.quotaType = '';
     }
 
-    if (((this.navigateType==0 || this.selectedSnapshotType==0) && this.selectedVolume == undefined) ||
-      ((this.navigateType==1 || this.selectedSnapshotType==1) && this.selectedVM == undefined)) {
+    if (((this.navigateType == 0 || (this.selectedSnapshotType == 0 && this.navigateType == 2)) && this.selectedVolume == undefined) ||
+      ((this.navigateType == 1 || (this.selectedSnapshotType == 1 && this.navigateType == 2)) && this.selectedVM == undefined)) {
       this.disableByQuota = false;
       this.disableCreate = true;
     }

@@ -45,7 +45,6 @@ export class ActionHistoryComponent implements OnInit {
         this.pageNumber,
         this.fromDate,
         this.toDate,
-        '',
         this.searchParam,
         this.searchParam,
         this.searchParam

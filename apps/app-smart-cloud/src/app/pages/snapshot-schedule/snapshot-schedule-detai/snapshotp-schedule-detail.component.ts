@@ -25,11 +25,16 @@ export class SnapshotScheduleDetailComponent implements OnInit {
   volumeName: string;
 
   userId: number;
+  timeString: any;
   scheduleStartTime: string;
   dateStart: any;
   descSchedule: string;
 
   dateList = new Map();
+  data: any;
+  typeSnapshot: any;
+  typeProject: number;
+  labelMode = 'Hằng ngày';
 
   ngOnInit(): void {
     const id = Number.parseInt(this.activatedRoute.snapshot.paramMap.get('id'));
@@ -60,10 +65,16 @@ export class SnapshotScheduleDetailComponent implements OnInit {
       .subscribe((data) => {
         if (data != null) {
           this.isLoading = false;
+          this.data = data;
           this.scheduleName = data.name;
           this.volumeId = data.serviceId;
           this.volumeName = data.volumeName;
-
+          this.timeString = Date.parse(data.runtime);
+          if (data.snapshotType == 1) {
+            this.typeSnapshot = 'VM (Máy ảo)';
+          } else {
+            this.typeSnapshot = 'Volume';
+          }
           let myRuntime: Date = new Date(data.runtime);
           this.scheduleStartTime =
             myRuntime.getHours().toString().padStart(2, '0') +
@@ -84,7 +95,7 @@ export class SnapshotScheduleDetailComponent implements OnInit {
       });
   }
   goBack() {
-    this.router.navigate(['/app-smart-cloud/schedule/snapshot/list']);
+    this.router.navigate(['/app-smart-cloud/schedule/snapshot']);
   }
   onRegionChange(region: RegionModel) {
     this.region = region.regionId;
@@ -96,5 +107,10 @@ export class SnapshotScheduleDetailComponent implements OnInit {
 
   onProjectChange(project: ProjectModel) {
     this.project = project?.id;
+    this.typeProject = project?.type;
+  }
+
+  onUserProjectChange($event: any) {
+    this.router.navigate(['/app-smart-cloud/schedule/snapshot'])
   }
 }

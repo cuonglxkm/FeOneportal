@@ -11,6 +11,7 @@ import {
 } from '@angular/core';
 import {
   DataPayment,
+  GpuConfigRecommend,
   InstanceResize,
   InstancesModel,
   ItemPayment,
@@ -27,7 +28,7 @@ import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { NguCarousel, NguCarouselConfig } from '@ngu/carousel';
 import { slider } from '../../../../../../../libs/common-utils/src/lib/slide-animation';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
-import { getCurrentRegionAndProject } from '@shared';
+import { getCurrentRegionAndProject, getListGpuConfigRecommend } from '@shared';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import {
   RegionModel,
@@ -38,6 +39,7 @@ import { I18NService } from '@core';
 import { ConfigurationsService } from 'src/app/shared/services/configurations.service';
 import { OrderService } from 'src/app/shared/services/order.service';
 import { LoadingService } from '@delon/abc/loading';
+import { CatalogService } from 'src/app/shared/services/catalog.service';
 
 class ConfigCustom {
   //cấu hình tùy chỉnh
@@ -103,6 +105,7 @@ export class InstancesEditComponent implements OnInit {
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
     @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
     private dataService: InstancesService,
+    private catalogService: CatalogService,
     private cdr: ChangeDetectorRef,
     private notification: NzNotificationService,
     private router: Router,
@@ -182,6 +185,7 @@ export class InstancesEditComponent implements OnInit {
     }
   }
 
+  hasRoleSI: boolean;
   ngOnInit(): void {
     this.userId = this.tokenService.get()?.userId;
     this.userEmail = this.tokenService.get()?.email;
@@ -189,9 +193,11 @@ export class InstancesEditComponent implements OnInit {
     let regionAndProject = getCurrentRegionAndProject();
     this.region = regionAndProject.regionId;
     this.projectId = regionAndProject.projectId;
+    this.getActiveServiceByRegion();
     this.getConfigurations();
     this.getListIpPublic();
     this.getListGpuType();
+    this.hasRoleSI = localStorage.getItem('role').includes('SI');
     this.breakpointObserver
       .observe([
         Breakpoints.XSmall,
@@ -234,6 +240,19 @@ export class InstancesEditComponent implements OnInit {
     this.onChangeGpu();
   }
 
+  //Lấy các dịch vụ hỗ trợ theo region
+  isVmGpu: boolean = false;
+  getActiveServiceByRegion() {
+    this.catalogService
+      .getActiveServiceByRegion(['Encryption', 'vm-gpu'], this.region)
+      .subscribe((data) => {
+        console.log('support service', data);
+        this.isVmGpu = data.filter(
+          (e) => e.productName == 'vm-gpu'
+        )[0].isActive;
+      });
+  }
+
   isPreConfigPackage = true;
   isCustomconfig = false;
   isGpuConfig = false;
@@ -268,13 +287,9 @@ export class InstancesEditComponent implements OnInit {
     this.selectedElementFlavor = null;
     this.configGPU = new ConfigGPU();
     this.configCustom = new ConfigCustom();
-    this.volumeUnitPrice = '0';
     this.volumeIntoMoney = 0;
-    this.ramUnitPrice = '0';
     this.ramIntoMoney = 0;
-    this.cpuUnitPrice = '0';
     this.cpuIntoMoney = 0;
-    this.gpuUnitPrice = '0';
     this.gpuIntoMoney = 0;
     this.totalAmount = 0;
     this.totalVAT = 0;
@@ -678,6 +693,7 @@ export class InstancesEditComponent implements OnInit {
   }
 
   //#region Cấu hình GPU
+  configRecommend: GpuConfigRecommend;
   listOptionGpuValue: number[] = [];
   getListOptionGpuValue() {
     this.configurationService
@@ -688,6 +704,7 @@ export class InstancesEditComponent implements OnInit {
       });
   }
 
+  listGpuConfigRecommend: GpuConfigRecommend[] = [];
   listGPUType: OfferItem[] = [];
   getListGpuType() {
     this.dataService
@@ -696,6 +713,10 @@ export class InstancesEditComponent implements OnInit {
         this.listGPUType = data.filter(
           (e: OfferItem) => e.status.toUpperCase() == 'ACTIVE'
         );
+        this.listGpuConfigRecommend = getListGpuConfigRecommend(
+          this.listGPUType
+        );
+        console.log('list gpu config recommend', this.listGpuConfigRecommend);
         this.getListOptionGpuValue();
       });
   }
@@ -791,6 +812,12 @@ export class InstancesEditComponent implements OnInit {
         debounceTime(500) // Đợi 500ms sau khi người dùng dừng nhập trước khi xử lý sự kiện
       )
       .subscribe((res) => {
+        this.configRecommend = this.listGpuConfigRecommend.filter(
+          (e) =>
+            e.id == this.configGPU.gpuOfferId &&
+            e.gpuCount == this.configGPU.GPU
+        )[0];
+        console.log('cấu hình đề recommend', this.configRecommend);
         if (this.configGPU.GPU == this.instancesModel.gpuCount) {
           this.gpuIntoMoney = 0;
           this.instanceResize.gpuCount = this.instancesModel.gpuCount;
@@ -811,6 +838,11 @@ export class InstancesEditComponent implements OnInit {
   changeGpuType() {
     if (this.configGPU.GPU != 0) {
       this.getUnitPrice(0, 0, 0, this.configGPU.GPU, this.configGPU.gpuOfferId);
+      this.configRecommend = this.listGpuConfigRecommend.filter(
+        (e) =>
+          e.id == this.configGPU.gpuOfferId && e.gpuCount == this.configGPU.GPU
+      )[0];
+      console.log('cấu hình đề recommend', this.configRecommend);
     }
     this.getTotalAmount();
   }

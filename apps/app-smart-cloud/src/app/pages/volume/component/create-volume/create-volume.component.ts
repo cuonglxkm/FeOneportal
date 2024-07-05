@@ -543,6 +543,7 @@ export class CreateVolumeComponent implements OnInit {
     });
   }
 
+  hasRoleSI: boolean;
   ngOnInit() {
     let regionAndProject = getCurrentRegionAndProject();
     this.region = regionAndProject.regionId;
@@ -551,6 +552,7 @@ export class CreateVolumeComponent implements OnInit {
     this.getConfiguration();
     this.onChangeValueStorage();
     this.getTotalAmount();
+    this.hasRoleSI = localStorage.getItem('role').includes('SI')
   }
 
   //

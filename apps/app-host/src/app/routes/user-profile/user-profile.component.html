@@ -65,7 +65,7 @@
           <nz-form-control [nzErrorTip]="phoneErrorTpl">
             <input
               nz-input
-              maxlength="11"
+              appPhoneValidator
               formControlName="phone"
               [placeholder]="'form.account.phone' | i18n"
               nzSize="large"
@@ -129,6 +129,16 @@
       </nz-col>
     </nz-row>
 
+    <nz-row nzGutter="16" *ngIf="hasRoleSI">
+      <nz-col nzLg="12" nzMd="12" nzSm="24">
+        <nz-form-item>
+          <nz-form-label>
+            <one-portal-create-user />
+          </nz-form-label>
+        </nz-form-item>
+      </nz-col>
+    </nz-row>
+
     <div nz-row class="mb-md">
       <div nz-col nzSpan="24">
         <div class="text-right">
@@ -181,7 +191,7 @@
               </ng-template>
             </nz-form-item>
           </div>
-  
+
           <div nz-col [nzSpan]="8" class="gutter-row">
             <nz-form-item>
               <nz-form-control [nzErrorTip]="emailErrorTpl">
@@ -224,7 +234,7 @@
                   type="text"
                   [placeholder]="'app.invoice.pop-up.update.phone.placeholder' | i18n"
                   class="input-custom"
-                  [maxlength]="10"
+                  appPhoneValidator
                   formControlName="phoneNumber"
                 />
               </nz-form-control>
@@ -238,7 +248,7 @@
               </ng-template>
             </nz-form-item>
           </div>
-          
+
           <div nz-col [nzSpan]="8" class="gutter-row">
             <nz-form-item>
               <nz-form-control>
@@ -410,6 +420,6 @@
         </div>
     </form>
   </ng-template>
-</nz-tab> 
+</nz-tab>
 </nz-tabset>
 </nz-card>

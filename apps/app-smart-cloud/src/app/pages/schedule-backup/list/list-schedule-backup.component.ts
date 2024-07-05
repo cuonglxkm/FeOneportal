@@ -6,7 +6,7 @@ import {
   FormSearchScheduleBackup
 } from '../../../shared/models/schedule.model';
 import { ScheduleService } from '../../../shared/services/schedule.service';
-import { BaseResponse, ProjectModel, RegionModel } from '../../../../../../../libs/common-utils/src';
+import { BaseResponse, NotificationService, ProjectModel, RegionModel } from '../../../../../../../libs/common-utils/src';
 import { getCurrentRegionAndProject } from '@shared';
 import { I18NService } from '@core';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
@@ -63,7 +63,8 @@ export class ListScheduleBackupComponent implements OnInit, OnDestroy {
               @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
               private backupScheduleService: ScheduleService,
               private backupPackageService: PackageBackupService,
-              private notification: NzNotificationService) {
+              private notification: NzNotificationService,
+              private notificationService: NotificationService) {
   }
 
   regionChanged(region: RegionModel) {
@@ -201,7 +202,7 @@ export class ListScheduleBackupComponent implements OnInit, OnDestroy {
 
   //delete
   handleDeletedOk() {
-    this.getListScheduleBackup(false);
+    this.getListScheduleBackup(true);
   }
 
   //tiep tuc
@@ -246,5 +247,16 @@ export class ListScheduleBackupComponent implements OnInit, OnDestroy {
     // this.searchDelay.pipe(debounceTime(TimeCommon.timeOutSearch)).subscribe(() => {
     //   this.getListScheduleBackup(false);
     // });
+
+    this.notificationService.connection.on('UpdateBackupSchedule', (message) => {
+      if (message) {
+        switch (message.actionType) {
+          case "PROCESSING":
+          case "COMPLETED":
+            this.getListScheduleBackup(false);
+          break;
+          }
+      }
+    });
   }
 }

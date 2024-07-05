@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, TemplateRef, ViewChild } from '@angular/core';
 import { SettingsService, User } from '@delon/theme';
 import { LayoutDefaultOptions } from '@delon/theme/layout-default';
 import { environment } from '@env/environment';
@@ -7,7 +7,7 @@ import { environment } from '@env/environment';
   selector: 'layout-basic',
   template: `
     <layout-default
-      [options]="options"
+      [options]="{logo: logoTemplate}"
       [asideUser]="asideUserTpl"
       [content]="contentTpl"
       [customError]="null"
@@ -33,6 +33,21 @@ import { environment } from '@env/environment';
       <!--      <layout-default-header-item direction="right">-->
       <!--        <header-notify />-->
       <!--      </layout-default-header-item>-->
+
+      <ng-template #logoTemplate>
+      <a href="https://vnptcloud.onsmartcloud.com/" class="alain-default__header-logo-link">
+          <img
+            class="alain-default__header-logo-expanded"
+            src="assets/imgs/logo-vnpt-cloud.svg"
+            alt="Logo VNPT"
+          />
+          <img
+            class="alain-default__header-logo-collapsed"
+            src="assets/imgs/logo-vnpt-cloud.svg"
+            alt="Logo VNPT"
+          />
+        </a>
+      </ng-template>
       <layout-default-header-item direction="right" hidden="mobile">
         <header-task />
       </layout-default-header-item>
@@ -98,7 +113,11 @@ import { environment } from '@env/environment';
       >
         <a href="https://vnpt.com.vn/" target="_blank">
           Powered by
-          <img style="margin-left: 10px" src="assets/imgs/logo-vnpt.svg" alt="" />
+          <img
+            style="margin-left: 10px"
+            src="assets/imgs/logo-vnpt.svg"
+            alt=""
+          />
         </a>
       </footer>
     </layout-default>
@@ -108,10 +127,6 @@ import { environment } from '@env/environment';
   `,
 })
 export class LayoutBasicComponent {
-  options: LayoutDefaultOptions = {
-    logoExpanded: `./assets/imgs/logo-vnpt-cloud.svg`,
-    logoCollapsed: `./assets/imgs/logo-vnpt-cloud.svg`
-  };
   searchToggleStatus = false;
   showSettingDrawer = !environment.production;
   get user(): User {

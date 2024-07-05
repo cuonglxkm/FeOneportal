@@ -225,7 +225,7 @@
                     class="input-custom"
                     appTrim
                     formControlName="phoneNumber"
-                    [maxlength]="10"
+                    appPhoneValidator
                   />
                 </nz-form-control>
                 <ng-template #phoneErrorTpl let-control>
@@ -483,7 +483,7 @@
             >{{ 'app.payment.agree.to' | i18n }}
             </label
           >
-          <a  href="https://vnptcloud.onsmartcloud.com/terms-and-conditions" target="_blank">{{ 'app.payment.service.term' | i18n }}</a>
+          <a class="text-16"  href="https://vnptcloud.onsmartcloud.com/terms-and-conditions" target="_blank">{{ 'app.payment.service.term' | i18n }}</a>
         </div>
         <div style="margin-top: 10px">
           <button
@@ -730,7 +730,7 @@
                 type="text"
                 [placeholder]="'app.invoice.pop-up.update.phone.placeholder' | i18n"
                 class="input-custom"
-                [maxlength]="10"
+                appPhoneValidator
                 formControlName="phoneNumber"
               />
             </nz-form-control>

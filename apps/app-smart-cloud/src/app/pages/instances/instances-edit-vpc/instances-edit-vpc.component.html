@@ -342,6 +342,12 @@
           <div style="margin-bottom: 20px">
             <span class="text-card-header">{{ 'app.adjust.info' | i18n }}</span>
           </div>
+          <nz-alert
+            style="margin-bottom: 20px"
+            nzType="warning"
+            [nzDescription]="'app.alert.resize.instance' | i18n"
+            nzShowIcon
+          ></nz-alert>
           <div style="margin-bottom: 20px" *ngIf="infoVPC">
             <span class="text-label"
               >{{ 'app.remain.configuration.in.vpc' | i18n }}:
@@ -540,7 +546,7 @@
               </div>
             </nz-tab>
             <nz-tab
-              *ngIf="instancesModel.volumeType != 0"
+              *ngIf="instancesModel.volumeType != 0 && isVmGpu"
               [nzTitle]="'app.gpu.configuration' | i18n"
               (nzClick)="onClickGpuConfig()"
             >
@@ -728,7 +734,7 @@
                           "
                           [nzShowSearch]="true"
                           [(ngModel)]="instanceResize.gpuCount"
-                          (ngModelChange)="checkChangeConfig()"
+                          (ngModelChange)="checkChangeConfig(); changeGpu()"
                           [ngModelOptions]="{ standalone: true }"
                           nzSize="large"
                         >
@@ -742,6 +748,23 @@
                     </tr>
                   </tbody>
                 </table>
+                <nz-alert
+                  *ngIf="configRecommend"
+                  style="margin-top: 20px"
+                  nzType="warning"
+                  [nzDescription]="
+                    'app.alert.config.gpu.recommend'
+                      | i18n
+                        : {
+                            type: gpuTypeName,
+                            gpu: configRecommend.gpuCount,
+                            ssd: configRecommend.ssd,
+                            ram: configRecommend.ram,
+                            cpu: configRecommend.cpu
+                          }
+                  "
+                  nzShowIcon
+                ></nz-alert>
               </div>
             </nz-tab>
           </nz-tabset>

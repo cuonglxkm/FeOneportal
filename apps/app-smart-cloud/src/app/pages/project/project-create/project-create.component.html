@@ -92,7 +92,7 @@
                       border: activeVpc
                     ? '1px solid #0066B3'
                     : '1px solid #DADADA',
-                    
+
                   }">
                   <nz-row nzGutter="16">
                     <nz-col nzSpan="20">
@@ -162,7 +162,7 @@
                           <span class="priceFlavor">{{ item.price.fixedPrice.amount | number:'1.0-0':'en-US' }}</span>
                           <span> {{ "app.payment-detail.month" | i18n }}</span>
 
-                        
+
                           <div style="z-index: 1;position: absolute; right: -5px; top: -5px;">
                             <img src="assets/imgs/mostpop.svg">
                           </div>
@@ -173,7 +173,7 @@
                         </div>
                       </nz-col>
                     </nz-row>
-                
+
                     <nz-row>
                       <nz-col style="width: 100%; padding-top: 5px"
                         [class.flavor-footer-active]="selectedElementFlavor === 'flavor_' + item.id"
@@ -1027,11 +1027,11 @@
                   <table *ngFor="let typeCatelog of gpuQuotasGobal;let i = index;trackBy:trackById">
                     <td style="width:60%">
                       <nz-form-item>
-                        <nz-form-label class="custom-label">Số lượng GPU (Type -
-                          {{typeCatelog?.GpuType}})</nz-form-label>
+                        <nz-form-label class="custom-label">Số lượng GPU ({{typeCatelog?.GpuType}})</nz-form-label>
                         <nz-form-control>
-                          <nz-input-number style="width: 100%; margin-left: -1px" nzMin="0" nzStep="1" name="gpu"
+                          <nz-input-number style="width: 100%; margin-left: -1px" nzMin="0" nzMax="1000" nzStep="1" name="gpu"
                             [(ngModel)]="gpuQuotasGobal[i].GpuCount"
+                            (keydown)="checkPossiblePress($event)"
                             (ngModelChange)="getValues(i,gpuQuotasGobal?.[i]?.GpuCount)"
                             [ngModelOptions]="{ standalone: true }" nzSize="large"></nz-input-number>
 
@@ -1063,7 +1063,7 @@
                     nzDescription="Vui lòng mua kèm dung lượng SSD để đảm bảo sử dụng được dịch vụ máy ảo GPU"
                     nzShowIcon></nz-alert>
                   </div>
-                  
+
                 </div>
               </div>
               <nz-alert class="ant-alert-warning-custom" nzType="warning"
@@ -1112,11 +1112,11 @@
                 </nz-row>
                 <nz-row style="display: flex;justify-content: space-between;">
                   <div style="margin-top: 10px" class="text-label">Dung lượng HDD:</div>
-                  <div style="margin-top: 10px" class="text-label">{{ hhd }}GB</div>
+                  <div style="margin-top: 10px" class="text-label">{{ hhd }} GB</div>
                 </nz-row>
                 <nz-row style="display: flex;justify-content: space-between;">
                   <div style="margin-top: 10px" class="text-label">Dung lượng SSD:</div>
-                  <div style="margin-top: 10px" class="text-label">{{ ssd }}GB</div>
+                  <div style="margin-top: 10px" class="text-label">{{ ssd }} GB</div>
                 </nz-row>
 
 
@@ -1130,7 +1130,7 @@
               </div>
               <!--        Dịch vụ bổ sung-->
               <div
-                *ngIf="numberSnapshotssd!=0||numberSnapshothdd!=0|| siteToSiteId || numberLoadBalancer != 0 || numberFileSystem != 0 || numberFileScnapsshot !=0|| numberBackup != 0 ||numberIpFloating != 0|| numberIpPublic != 0|| numberIpv6 != 0"
+                *ngIf="gpuQuotasGobal.length>0||numberSnapshotssd!=0||numberSnapshothdd!=0|| siteToSiteId || numberLoadBalancer != 0 || numberFileSystem != 0 || numberFileScnapsshot !=0|| numberBackup != 0 ||numberIpFloating != 0|| numberIpPublic != 0|| numberIpv6 != 0"
                 class="text-value">{{
                 'service.bonus' | i18n }}
               </div>
@@ -1149,15 +1149,15 @@
               </nz-row>
               <nz-row *ngIf="numberSnapshothdd != 0" style="display: flex;justify-content: space-between;">
                 <div style="margin-top: 10px" class="text-label">Dung lượng Snapshot - HDD:</div>
-                <div style="margin-top: 10px" class="text-label">{{ numberSnapshothdd }}GB</div>
+                <div style="margin-top: 10px" class="text-label">{{ numberSnapshothdd }} GB</div>
               </nz-row>
               <nz-row *ngIf="numberSnapshotssd != 0" style="display: flex;justify-content: space-between;">
                 <div style="margin-top: 10px" class="text-label">Dung lượng Snapshot - SSD:</div>
-                <div style="margin-top: 10px" class="text-label">{{ numberSnapshotssd }}GB</div>
+                <div style="margin-top: 10px" class="text-label">{{ numberSnapshotssd }} GB</div>
               </nz-row>
               <nz-row *ngIf="numberBackup != 0" style="display: flex;justify-content: space-between;">
                 <div style="margin-top: 10px" class="text-label">Backup:</div>
-                <div style="margin-top: 10px" class="text-label">{{ numberBackup }}GB</div>
+                <div style="margin-top: 10px" class="text-label">{{ numberBackup }} GB</div>
               </nz-row>
               <nz-row *ngIf="numberLoadBalancer != 0|| loadBalancerId"
                 style="display: flex;justify-content: space-between;">
@@ -1166,11 +1166,11 @@
               </nz-row>
               <nz-row *ngIf="numberFileSystem != 0" style="display: flex;justify-content: space-between;">
                 <div style="margin-top: 10px" class="text-label">Dung lượng File System:</div>
-                <div style="margin-top: 10px" class="text-label">{{ numberFileSystem }}GB</div>
+                <div style="margin-top: 10px" class="text-label">{{ numberFileSystem }} GB</div>
               </nz-row>
               <nz-row *ngIf="numberFileSystem != 0" style="display: flex;justify-content: space-between;">
                 <div style="margin-top: 10px" class="text-label">Dung lượng File System Snapshot:</div>
-                <div style="margin-top: 10px" class="text-label">{{ numberFileScnapsshot }}GB</div>
+                <div style="margin-top: 10px" class="text-label">{{ numberFileScnapsshot }} GB</div>
               </nz-row>
               <nz-row *ngIf="siteToSiteId " style="display: flex;justify-content: space-between;">
                 <div style="margin-top: 10px" class="text-label">VPN site to site:</div>
@@ -1190,45 +1190,47 @@
 
 
           </div>
-          <nz-row style="margin-bottom: 10px;padding-top:10px" nzGutter="16">
-            <nz-col nzSpan="16">
+          <div *ngIf="!hasRoleSI">
+            <nz-row style="margin-bottom: 10px;padding-top:10px" nzGutter="16">
+              <nz-col nzSpan="16">
               <span class="text-value">{{ 'app.service.cost' | i18n }} {{ numOfMonth || 0 }}
                 {{ 'app.month' | i18n }}</span>
-            </nz-col>
-            <nz-col class="text-right" nzSpan="8">
+              </nz-col>
+              <nz-col class="text-right" nzSpan="8">
               <span class="text-value" style="color: #0066b3" nzAlign="right">
                 {{ totalAmount | formatPrice}}
                 VND
               </span>
-            </nz-col>
-          </nz-row>
-          <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
-          <nz-row style="margin-bottom: 10px" nzGutter="16">
-            <nz-col nzSpan="16">
-              <span class="text-value"> Chi phí VAT (10%)</span>
-            </nz-col>
-            <nz-col class="text-right" nzSpan="8">
+              </nz-col>
+            </nz-row>
+            <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
+            <nz-row style="margin-bottom: 10px" nzGutter="16">
+              <nz-col nzSpan="16">
+                <span class="text-value"> Chi phí VAT (10%)</span>
+              </nz-col>
+              <nz-col class="text-right" nzSpan="8">
               <span class="text-value" style="color: #0066b3" nzAlign="right">
                 {{ totalVAT | formatPrice}}
                 VND
               </span>
-            </nz-col>
-          </nz-row>
-          <nz-row style="
+              </nz-col>
+            </nz-row>
+            <nz-row style="
           margin-bottom: 20px;
           background-color: #cce9ff;
           padding: 16px 0 16px 0;
           border-radius: 8px;
         " nzGutter="16">
-            <nz-col nzSpan="16">
-              <span class="text-label">{{ 'app.total.payment' | i18n }}</span><br />
-              <span class="text-note-italicized">({{ 'app.payment-detail.vat' | i18n }})</span>
-            </nz-col>
-            <nz-col class="text-right" nzSpan="8">
+              <nz-col nzSpan="16">
+                <span class="text-label">{{ 'app.total.payment' | i18n }}</span><br />
+                <span class="text-note-italicized">({{ 'app.payment-detail.vat' | i18n }})</span>
+              </nz-col>
+              <nz-col class="text-right" nzSpan="8">
               <span class="text-value" style="color: #ea3829" nzAlign="right">{{ totalPayment | formatPrice}}
                 VND</span>
-            </nz-col>
-          </nz-row>
+              </nz-col>
+            </nz-row>
+          </div>
           <nz-row>
             <nz-col style="width: 100%">
               <button style="width: 100%" nz-button nzSize="large" nzType="primary" (click)="createIpPublic()"

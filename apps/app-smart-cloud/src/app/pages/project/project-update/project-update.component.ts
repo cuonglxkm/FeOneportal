@@ -204,6 +204,8 @@ export class ProjectUpdateComponent implements OnInit {
   isLoading = false;
   isVisiblePopupError: boolean = false;
   errorList: string[] = [];
+
+  hasRoleSI: boolean
   closePopupError() {
     this.isVisiblePopupError = false;
   }
@@ -258,11 +260,13 @@ export class ProjectUpdateComponent implements OnInit {
       this.calculateReal();
     });
     this.dateNow = new Date();
-    this.calculate()
+    // this.calculate()
 
     this.catalogs.forEach(catalog => {
       this.getProductActivebyregion(catalog, this.regionId);
     });
+    this.getCatelogOffer()
+    this.hasRoleSI = localStorage.getItem('role').includes('SI')
 
   }
   openIpSubnet() {
@@ -272,14 +276,6 @@ export class ProjectUpdateComponent implements OnInit {
 
     this.refreshValue();
 
-    // if( (this.data?.offerId && this.keySSDOld==false && this.ssd==0) || (this.data?.offerId && this.keySSD==false && this.ssd==0) || (this.data?.offerId==0 && this.ssdOld ==0 && this.ssd==0 ) ){
-    //   this.isShowAlertGpu = true
-
-    // }
-    // else{
-    //   this.isShowAlertGpu = false
-
-    // }
     if (((this.offerIdOld == 0 && this.ssdOld == 0 && this.ssd == 0) || (this.offerIdOld != 0 && this.ssdOld == 0 && this.ssd == 0 && this.keySSDOld == false))) {
       this.isShowAlertGpu = true
       console.log("isShowAlertGpu 1", this.isShowAlertGpu)
@@ -309,7 +305,7 @@ export class ProjectUpdateComponent implements OnInit {
         ipName = lstIp[1];
 
       }
-
+      console.log("object this.gpu", this.gpuQuotasGobal)
       const requestBody =
       {
 
@@ -340,7 +336,9 @@ export class ProjectUpdateComponent implements OnInit {
 
         newVpnSiteToSiteOfferId: this.siteToSiteId,
 
-        gpuQuotas: this.data?.gpuProjects ? this.gpuQuotasGobal : this.newgpu,
+        // NewGpuQuotas: this.data?.gpuProjects ? this.gpuQuotasGobal : this.newgpu,
+        gpuQuotas: (this.gpuQuotasGobal && this.gpuQuotasGobal.length > 0) ?this.newgpu : this.gpuOld,
+
 
         newQuotaSecurityGroupCount: this.numberSecurityGroup,
         newQuotaNetworkCount: this.numberNetwork,
@@ -374,9 +372,9 @@ export class ProjectUpdateComponent implements OnInit {
         }))
         .subscribe(
           data => {
-            console.log("totalmont", data)
+            // console.log("totalmont", data)
             this.total = data;
-            // this.totalAmount = this.total.data.totalAmount.amount;
+            this.totalAmount = this.total.data.totalAmount.amount;
             this.totalPayment = this.total.data.totalPayment.amount;
             this.totalVAT = this.total.data.totalVAT.amount;
             this.getPriceEachComponent(data.data);
@@ -535,7 +533,7 @@ export class ProjectUpdateComponent implements OnInit {
 
         newVpnSiteToSiteOfferId: this.siteToSiteId,
 
-        gpuQuotas: this.data?.gpuProjects ? this.gpuQuotasGobal : this.newgpu,
+        gpuQuotas: (this.gpuQuotasGobal && this.gpuQuotasGobal.length > 0) ?this.newgpu : this.gpuOld,
 
         newQuotaSecurityGroupCount: this.numberSecurityGroup,
         newQuotaNetworkCount: this.numberNetwork,
@@ -551,7 +549,7 @@ export class ProjectUpdateComponent implements OnInit {
         regionId: this.regionId,
         serviceName: this.form.controls['name'].value
       }
-      
+
       const request = {
         customerId: this.tokenService.get()?.userId,
         createdByUserId: this.tokenService.get()?.userId,
@@ -582,7 +580,7 @@ export class ProjectUpdateComponent implements OnInit {
             if (result.success) {
               var returnPath: string = window.location.pathname;
               this.router.navigate(['/app-smart-cloud/order/cart'], { state: { data: request, path: returnPath } });
-             
+
             } else {
               this.isVisiblePopupError = true;
               this.errorList = result.data;
@@ -647,7 +645,7 @@ export class ProjectUpdateComponent implements OnInit {
           console.log("data vpc detail", this.data)
           this.checkConfigPackage(this.data?.offerId)
 
-          // this.price.vcpu = 
+          // this.price.vcpu =
           this.form.controls['name'].setValue(data.displayName);
           this.form.controls['description'].setValue(data.description);
           this.today = this.data.createDate;
@@ -700,6 +698,7 @@ export class ProjectUpdateComponent implements OnInit {
 
         }
       )
+      this.calculate();
   }
 
   checkPossiblePress(event: KeyboardEvent) {
@@ -889,9 +888,9 @@ export class ProjectUpdateComponent implements OnInit {
         this.price.hhd = item.totalAmount.amount;
         this.price.hhdPerUnit = item.unitPrice.amount;
       }
-      else if (item.typeName == 'Nvidia A30') {
+      else if (item.typeName == 'NVIDIA-A30') {
         for (let gpu of this.gpuQuotasGobal) {
-          if (gpu.GpuType == 'Nvidia A30') {
+          if (gpu.GpuType == 'NVIDIA-A30') {
             gpu.GpuPrice = item.totalAmount.amount;
             console.log("gpu.GpuPrice", gpu.GpuPrice)
             gpu.GpuPriceUnit = item.unitPrice.amount;
@@ -900,9 +899,9 @@ export class ProjectUpdateComponent implements OnInit {
         }
 
       }
-      else if (item.typeName == 'Nvidia A100') {
+      else if (item.typeName == 'NVIDIA-A100') {
         for (let gpu of this.gpuQuotasGobal) {
-          if (gpu.GpuType == 'Nvidia A100') {
+          if (gpu.GpuType == 'NVIDIA-A100') {
             gpu.GpuPrice = item.totalAmount.amount;
             console.log("gpu.GpuPrice 2", gpu.GpuPrice)
             gpu.GpuPriceUnit = item.unitPrice.amount;
@@ -1071,26 +1070,7 @@ export class ProjectUpdateComponent implements OnInit {
 
   // maxNumber: number[] = [8, 8];
   getValues(index: number, value: number): void {
-    // if( ((this.data?.offerId!=0 && this.keySSDOld ==false && this.ssd==0) && (this.data?.offerId && this.keySSD==false && this.ssd==0)) && this.gpuQuotasGobal[index]?.GpuCount !=0 || (this.data?.offerId==0 && this.ssdOld ==0 && this.ssd==0 && this.gpuQuotasGobal[index]?.GpuCount !=0) ){
-    //   this.isShowAlertGpu = true
-    //   console.log("isShowAlertGpu 1", this.isShowAlertGpu)
 
-    // }
-    // else{
-    //   this.isShowAlertGpu = false
-    //   console.log("isShowAlertGpu 2", this.isShowAlertGpu)
-
-    // }
-    // if( this.data?.offerId!=0 && this.keySSDOld ==false && this.ssd==0 && this.gpuQuotasGobal[index]?.GpuCount !=0 || (this.data?.offerId==0 && this.ssdOld ==0 && this.ssd==0 && this.gpuQuotasGobal[index]?.GpuCount !=0) ){
-    //   this.isShowAlertGpu = true
-    //   console.log("isShowAlertGpu 1", this.isShowAlertGpu)
-
-    // }
-    // else{
-    //   this.isShowAlertGpu = false
-    //   console.log("isShowAlertGpu 2", this.isShowAlertGpu)
-
-    // }
     if (((this.offerIdOld == 0 && this.ssdOld == 0 && this.ssd == 0) || (this.offerIdOld != 0 && this.ssdOld == 0 && this.ssd == 0 && this.keySSDOld == false)) && this.gpuQuotasGobal[index].GpuCount != 0) {
       this.isShowAlertGpu = true
       console.log("isShowAlertGpu 1", this.isShowAlertGpu)
@@ -1157,6 +1137,7 @@ export class ProjectUpdateComponent implements OnInit {
     this.activeIP = true;
     this.trashIP = true;
     this.loadListIpConnectInternet();
+    this.calculate()
     // if(this.ipNetworkAddress!=''){
     //   this.ipNetworkAddress =this.data?.publicNetworkAddress
     // }
@@ -1182,6 +1163,7 @@ export class ProjectUpdateComponent implements OnInit {
   initBackup() {
     this.activeBackup = true;
     this.trashBackup = true;
+    this.calculate()
   }
   deleteBackup() {
     this.activeBackup = false;
@@ -1235,13 +1217,13 @@ export class ProjectUpdateComponent implements OnInit {
   initVpnGpu() {
     this.activeVpnGpu = true;
     this.trashVpnGpu = true;
-    this.getCatelogOffer();
+
 
   }
   deleteVpnGpu() {
     this.activeVpnGpu = false;
     this.trashVpnGpu = false;
-    this.gpuQuotasGobal = []
+    this.getCatelogOffer();
     this.calculate()
   }
   initSnapshot() {

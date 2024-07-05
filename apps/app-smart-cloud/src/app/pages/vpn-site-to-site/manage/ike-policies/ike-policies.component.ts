@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Inject, Input, Output, SimpleChanges } from '@angular/core';
+import { Component, Inject, Input, SimpleChanges } from '@angular/core';
 import { FormSearchIKEPolicy, IKEPolicyModel} from 'src/app/shared/models/vpns2s.model';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { IkePolicyService } from 'src/app/shared/services/ike-policy.service';
@@ -14,8 +14,8 @@ import { getCurrentRegionAndProject } from '@shared';
 })
 
 export class IkePoliciesComponent {
-   region = JSON.parse(localStorage.getItem('regionId'));
-  project = JSON.parse(localStorage.getItem('projectId'));
+  @Input() project: number
+  @Input() region: number
 
   customerId: number
 
@@ -82,7 +82,7 @@ export class IkePoliciesComponent {
     this.getData()
   }
 
-  ngOnChanges(changes: SimpleChanges): void {
+  ngOnChanges(changes: SimpleChanges): void {    
     if (changes.project && !changes.project.firstChange) {
 
       this.getData();

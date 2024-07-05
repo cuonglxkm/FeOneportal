@@ -83,6 +83,11 @@ export class PaymentSuccessComponent implements OnInit {
       .getPaymentByPaymentNumber(this.paymentCode)
       .subscribe((data) => {
         this.payment = data;
+        if(this.paymentSuccess === false){
+          this.paymentService.cancelPayment(this.paymentCode).subscribe((data) => {
+            console.log(data);
+          })
+        }
         this.orderService
           .getOrderBycode(this.payment.orderNumber)
           .subscribe((result) => {
@@ -95,4 +100,5 @@ export class PaymentSuccessComponent implements OnInit {
           });
       });
   }
+
 }

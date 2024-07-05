@@ -170,6 +170,7 @@ export class SecurityComponent implements OnInit {
     this.startCountdownGgAuthen();
     this.service.getOTPForAuthenticator().subscribe((data: any) => {
       this.notification.success(this.i18n.fanyi("app.status.success"), this.i18n.fanyi("Thao tác thành công"));
+      this.form.reset()
       this.type = 1
     }, error => {
       this.notification.error(this.i18n.fanyi("app.status.fail"), this.i18n.fanyi("app.security.noti.fail2"))
@@ -187,8 +188,8 @@ export class SecurityComponent implements OnInit {
       if (data.success == true) {
         if (formeEnable2FA.enable == true) {
           this.authenticatorKey = data.key;
-          this.authenticatorQrImage = data.authenticatorQrImage;
-          //this.authenticatorQrData = 'otpauth://totp/OnePortal:' + this.email + '?secret=' + data.key + '&issuer=OnePortal';
+          //this.authenticatorQrImage = data.authenticatorQrImage;
+          this.authenticatorQrData = 'otpauth://totp/OnePortal:' + this.email + '?secret=' + data.key + '&issuer=OnePortal';
           this.isVisibleOTPForAuthenticator = false;
           this.isVisibleAuthenticator = true;
           console.log(this.authenticatorKey);
@@ -260,7 +261,8 @@ export class SecurityComponent implements OnInit {
   handleCancelAuthenticator() {
     this.isVisibleAuthenticator = false;
     this.isVisibleOTPForAuthenticator = false;
-    if(this.type === 1){
+    this.formAuthenticator.reset()
+    if(this.type === 1 || this.type === 0){
       this.toggleSwitchGoogleAuthenticator = !this.toggleSwitchGoogleAuthenticator;
     }
   }

@@ -114,7 +114,15 @@
             <td nzBreakWord>{{ data.expiredDate | date: 'dd/MM/yyyy' }}</td>
             <td nzBreakWord>{{ data.offerName }}</td>
             <td *ngIf="data.provisioningStatus == 'PENDING_CREATE'" nzBreakWord></td>
-            <td *ngIf="data.provisioningStatus !== 'PENDING_CREATE'" nzBreakWord>
+            <td *ngIf="data.provisioningStatus == 'TAMNGUNG'" nzBreakWord>
+              <one-portal-delete-load-balancer [idLoadBalancer]="data.id"
+                                               [nameLoadBalancer]="data.name" [region]="region" [project]="project"
+                                               (onOk)="handleDeleteOk()" />
+              <img *ngIf="typeVPC == 0" style="padding-right: 10px;" src="assets/imgs/calendar-tick.svg"
+                   nz-tooltip nzTooltipTitle="{{'app.extend' | i18n}} Load Balancer" nzTooltipPlacement="bottom"
+                   (click)="navigateToExtend(data.id)"/>
+            </td>
+            <td *ngIf="data.provisioningStatus !== 'PENDING_CREATE' && data.provisioningStatus != 'TAMNGUNG'" nzBreakWord>
               <span *ngIf="data.provisioningStatus !== 'ERROR'">
                 <one-portal-attach-ip-floating-lb [region]="region" (onOk)="search(false)"
                                                   [project]="project"
