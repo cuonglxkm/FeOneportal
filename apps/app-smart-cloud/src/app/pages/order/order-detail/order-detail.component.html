@@ -254,7 +254,7 @@
                 }}</a>
                 <a
                   *ngSwitchCase="'VPNSiteToSites'"
-                  [routerLink]="['/app-smart-cloud/vpn-site-to-site/manage']"
+                  [routerLink]="['/app-smart-cloud/vpn-site-to-site']"
                   >{{ item?.serviceName }}</a
                 >
                 <a
@@ -297,6 +297,11 @@
                   [routerLink]="['/app-smart-cloud/backup-volume']"
                   >{{ item?.serviceName }}</a
                 >
+                <a
+                *ngSwitchCase="'File system snapshot'"
+                [routerLink]="['/app-smart-cloud/file-system-snapshot']"
+                >{{ item?.serviceName }}</a
+              >
                 <div *ngSwitchDefault>{{ item?.serviceName }}</div>
               </td>
             </ng-container>

@@ -3101,7 +3101,7 @@
   "app.manage.site.to.site.present.des1":"VPN site to site cung cấp một kênh kết nối an toàn giữ các vị trí vật lý hoặc mạng máy tính khác nhau",
   "app.manage.site.to.site.present.des2":"Cho phép các vị trí đia lý khác nhau truy cập vào tài nguyên nội bộ",
   "app.manage.site.to.site.present.create":"Tạo mới VPN site to site",
-  "app.manage.site.to.site.delete.title":"Hủy VPN site to site",
+  "app.manage.site.to.site.delete.title":"Xóa VPN site to site",
   "app.manage.site.to.site.delete.des":"Thao tác này sẽ xóa vĩnh viễn dữ liệu trên hệ thống và <b>KHÔNG THỂ KHÔI PHỤC LẠI<b>",
   "app.manage.site.to.site.delete.confirm":"Quý khách có chắc chắn muốn xóa VPN site to site không?",
   "app.manage.site.to.site.edit": "Sửa",
