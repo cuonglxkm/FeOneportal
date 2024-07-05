@@ -7,7 +7,7 @@ import {
   ViewChild,
 } from '@angular/core';
 import { Router } from '@angular/router';
-import { concatMap, finalize, takeWhile } from 'rxjs/operators';
+import { finalize } from 'rxjs/operators';
 import { InstancesService } from '../instances.service';
 import {
   CheckIPAddressModel,
@@ -86,6 +86,7 @@ export class InstancesComponent implements OnInit {
     private vlanService: VlanService
   ) {}
 
+
   ngOnInit() {
     console.log('current language', this.i18n.currentLang);
     this.searchParam.status = '';
@@ -93,6 +94,7 @@ export class InstancesComponent implements OnInit {
     this.region = regionAndProject.regionId;
     this.projectId = regionAndProject.projectId;
     this.userId = this.tokenService.get()?.userId;
+
     this.getListNetwork();
     this.getAllSecurityGroup();
     if (this.notificationService.connection == undefined) {
@@ -147,6 +149,7 @@ export class InstancesComponent implements OnInit {
           switch (actionType) {
             case 'CREATING':
             case 'CREATED':
+              this.activeCreate = false;
               this.getDataList();
               break;
           }
@@ -156,6 +159,10 @@ export class InstancesComponent implements OnInit {
     this.checkExistName();
     this.onCheckIPAddress();
     this.onChangeSearchParam();
+  }
+
+  onRegionChanged(region: RegionModel) {
+    this.region = region.regionId;
   }
 
   dataSubjectSearchParam: Subject<any> = new Subject<any>();
@@ -855,8 +862,7 @@ export class InstancesComponent implements OnInit {
 
   createBackupSchedule(id: number) {
     this.router.navigate(
-      ['/app-smart-cloud/schedule/backup/create', { instanceId: id }],
-      { queryParams: { snapshotTypeCreate: 1 } }
+      ['/app-smart-cloud/schedule/backup/create', { instanceId: id }]
     );
   }
 
@@ -864,7 +870,7 @@ export class InstancesComponent implements OnInit {
     this.router.navigate([
       '/app-smart-cloud/snapshot/create',
       { instanceId: id },
-    ]);
+    ],{ queryParams: { navigateType: 1 } });
   }
 
   instancesModel: InstancesModel = new InstancesModel();
@@ -891,5 +897,9 @@ export class InstancesComponent implements OnInit {
     }
     this.dataList[foundIndex] = record;
     this.cdr.detectChanges();
+  }
+
+  navigateToCreateScheduleSnapshot(id: number) {
+    this.router.navigate(['/app-smart-cloud/schedule/snapshot/create', {instanceId: id}], { queryParams: { snapshotTypeCreate: 1 } });
   }
 }

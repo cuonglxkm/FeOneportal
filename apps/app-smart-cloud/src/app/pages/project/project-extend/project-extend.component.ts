@@ -11,6 +11,8 @@ import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from '@core';
 import { IpPublicService } from '../../../shared/services/ip-public.service';
 import { setDate } from 'date-fns';
+import { OrderService } from 'src/app/shared/services/order.service';
+import { NzNotificationService } from 'ng-zorro-antd/notification';
 
 @Component({
   selector: 'one-portal-project-extend',
@@ -21,6 +23,7 @@ export class ProjectExtendComponent implements OnInit{
   regionId: any;
   listOfData = [{}];
   data: VpcModel;
+  projectDetail:VpcModel;
   dataTotal: TotalVpcResource;
   percentCpu: number = 0;
   percentRam: number = 0;
@@ -30,6 +33,7 @@ export class ProjectExtendComponent implements OnInit{
   percentBackup: number = 0;
   totalAmount = 0;
   totalPayment = 0;
+  totalVAT =0;
   loadingCalculate= false;
   form = new FormGroup({
     numOfMonth: new FormControl(1, {validators: [Validators.required]}),
@@ -37,16 +41,23 @@ export class ProjectExtendComponent implements OnInit{
   today: any;
   expiredDate: any;
   expiredDateOld: any;
-  
+  timeSelected:number=1;
+
   loading = true;
   total: any;
+  isVisiblePopupError: boolean = false;
+  errorList: string[] = [];
+  hasRoleSI: boolean
+  closePopupError() {
+    this.isVisiblePopupError = false;
+  }
 
   constructor(@Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
               private service: VpcService,
               private router: Router,
               @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
               private ipService: IpPublicService,
-              private activatedRoute: ActivatedRoute,) {
+              private activatedRoute: ActivatedRoute, private orderService: OrderService,  private notification: NzNotificationService) {
   }
 
   ngOnInit() {
@@ -54,13 +65,19 @@ export class ProjectExtendComponent implements OnInit{
     this.regionId = regionAndProject.regionId;
     const id = this.activatedRoute.snapshot.paramMap.get('id');
     this.getData(id);
-    
-    this.onChangeTime()
+    this.hasRoleSI = localStorage.getItem('role').includes('SI')
+    // this.caculate()
+
+    // this.onChangeTime()
   }
 
   onRegionChange(region: RegionModel) {
     this.regionId = region.regionId;
     this.router.navigate(['/app-smart-cloud/project'])
+  }
+
+  onRegionChanged(region: RegionModel) {
+    this.regionId = region.regionId;
   }
 
   private getData(id: any) {
@@ -69,14 +86,14 @@ export class ProjectExtendComponent implements OnInit{
       .pipe(finalize(() => {this.loading = false;}))
       .subscribe(
         data => {
-          this.data = data;
-          console.log("dtaaaa", this.data)
+          this.data  = data;
+
           this.expiredDate = data.expireDate;
           this.today = data.createDate;
           const expiredDateOld = new Date(this.expiredDate);
           expiredDateOld.setDate(expiredDateOld.getDate() + Number(this.form.controls['numOfMonth'].value * 30));
           this.expiredDateOld = expiredDateOld;
-
+          this.caculate();
         }
       )
 
@@ -133,19 +150,38 @@ export class ProjectExtendComponent implements OnInit{
     const request = {
       customerId: this.tokenService.get()?.userId,
       createdByUserId: this.tokenService.get()?.userId,
-      note: "Gia hạn Ip Public",
+      note: "Gia hạn VPC",
       orderItems: [
         {
           orderItemQuantity: 1,
           specification: JSON.stringify(requestBody),
           specificationType: "vpc_extend",
-          price: this.total.data.totalAmount.amount/this.form.controls['numOfMonth'].value,
-          serviceDuration: this.form.controls['numOfMonth'].value
+          price: this.total?.data?.totalAmount.amount/this.form.controls['numOfMonth'].value,
+          // serviceDuration: this.form.controls['numOfMonth'].value
+          serviceDuration: this.timeSelected
         }
       ]
     }
-    var returnPath: string = window.location.pathname;
-    this.router.navigate(['/app-smart-cloud/order/cart'], { state: { data: request,path: returnPath } });
+    this.orderService.validaterOrder(request).subscribe(
+      (data) => {
+        if (data.success) {
+          console.log('request', request);
+           var returnPath: string = window.location.pathname;
+            this.router.navigate(['/app-smart-cloud/order/cart'], { state: { data: request,path: returnPath } });
+        } else {
+          this.isVisiblePopupError = true;
+          this.errorList = data.data;
+        }
+      },
+      (error) => {
+        this.notification.error(
+          this.i18n.fanyi('app.status.fail'),
+          error.error.detail
+        );
+      }
+    );
+    // var returnPath: string = window.location.pathname;
+    // this.router.navigate(['/app-smart-cloud/order/cart'], { state: { data: request,path: returnPath } });
   }
 
   // onChangeTime() {
@@ -157,14 +193,10 @@ export class ProjectExtendComponent implements OnInit{
   //   this.caculate();
   // }
 
-  onChangeTime() {
-    // this.expiredDateOld =
-    console.log("expiredDateOld", this.expiredDateOld)
-    const dateNow =new Date(this.expiredDate );
-   
-     dateNow.setDate(dateNow.getDate() + Number(this.form.controls['numOfMonth'].value) * 30);
-    console.log("hunnn", dateNow)
-    this.expiredDateOld  = dateNow;
+  onChangeTime(value:any) {
+
+    this.timeSelected = value
+    console.log("timeSelected", this.timeSelected)
     this.caculate();
 
 
@@ -186,14 +218,15 @@ export class ProjectExtendComponent implements OnInit{
     const request = {
       customerId: this.tokenService.get()?.userId,
       createdByUserId: this.tokenService.get()?.userId,
-      note: "Gia hạn Ip Public",
+      note: "Gia hạn VPC",
       orderItems: [
         {
           orderItemQuantity: 1,
           specificationString: JSON.stringify(requestBody),
           specificationType: "vpc_extend",
           price: 0,
-          serviceDuration: this.form.controls['numOfMonth'].value
+          // serviceDuration: this.form.controls['numOfMonth'].value
+          serviceDuration: this.timeSelected
         }
       ]
     }
@@ -205,8 +238,11 @@ export class ProjectExtendComponent implements OnInit{
       .subscribe(
         data => {
           this.total = data;
-          this.totalAmount = this.total.data.totalAmount.amount.toLocaleString();
-          this.totalPayment = this.total.data.totalPayment.amount.toLocaleString();
+          console.log("total 123", this.total)
+          this.totalAmount = this.total.data.totalAmount.amount;
+          this.totalVAT = this.total.data.totalVAT.amount;
+          this.totalPayment = this.total.data.totalPayment.amount;
+
         }
       );
   }

@@ -122,9 +122,13 @@ export class SnapshotScheduleEditComponent implements OnInit {
   }
 
   goBack() {
-    this.router.navigate(['/app-smart-cloud/schedule/snapshot/list']);
+    this.router.navigate(['/app-smart-cloud/schedule/snapshot']);
   }
   onRegionChange(region: RegionModel) {
+    this.region = region.regionId;
+  }
+
+  onRegionChanged(region: RegionModel) {
     this.region = region.regionId;
   }
 
@@ -173,7 +177,7 @@ export class SnapshotScheduleEditComponent implements OnInit {
                     'Điều chỉnh lịch Snapshot thành công'
                   );
                   this.router.navigate([
-                    '/app-smart-cloud/schedule/snapshot/list',
+                    '/app-smart-cloud/schedule/snapshot',
                   ]);
                 },
                 error: (e) => {

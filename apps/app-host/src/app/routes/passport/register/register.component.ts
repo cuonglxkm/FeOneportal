@@ -2,9 +2,9 @@ import { HttpContext } from '@angular/common/http';
 import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
-  Component,
+  Component, Inject,
   OnDestroy,
-  OnInit,
+  OnInit
 } from '@angular/core';
 import {
   AbstractControl,
@@ -14,13 +14,16 @@ import {
 } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ALLOW_ANONYMOUS } from '@delon/auth';
-import { _HttpClient } from '@delon/theme';
+import { _HttpClient, ALAIN_I18N_TOKEN, SettingsService } from '@delon/theme';
 import { MatchControl } from '@delon/util/form';
 import { NzSafeAny } from 'ng-zorro-antd/core/types';
 import { finalize } from 'rxjs';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { environment } from '@env/environment';
 import { AppValidator } from '../../../../../../../libs/common-utils/src';
+import { noAllWhitespace } from '../../user-profile/user-profile.component';
+import { I18NService } from '@core';
+import { DOCUMENT } from '@angular/common';
 
 export interface UserCreateDto {
   email: string;
@@ -49,8 +52,12 @@ export class UserRegisterComponent implements OnInit, OnDestroy {
     private router: Router,
     private http: _HttpClient,
     private cdr: ChangeDetectorRef,
-    private notification: NzNotificationService
-  ) {}
+    private notification: NzNotificationService,
+    private settings: SettingsService,
+    @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
+    @Inject(DOCUMENT) private doc: any,
+  ) {
+  }
 
   panel = {
     active: false,
@@ -65,10 +72,22 @@ export class UserRegisterComponent implements OnInit, OnDestroy {
       password: ['', [Validators.required, AppValidator.validPassword]],
       confirm: ['', [Validators.required]],
       // mobilePrefix: ['+86'],
-      firstName: ['', [Validators.required]],
-      lastName: ['', [Validators.required]],
+      firstName: ['', {
+        validators: [
+          Validators.required,
+          AppValidator.cannotContainSpecialCharactor,
+          noAllWhitespace(),
+        ],
+      }],
+      lastName: ['', {
+        validators: [
+          Validators.required,
+          AppValidator.cannotContainSpecialCharactor,
+          noAllWhitespace(),
+        ],
+      }],
       mobile: ['', [Validators.required, AppValidator.validPhoneNumber]],
-      province: ['', [Validators.required]],
+      province: ['Hà Nội', [Validators.required]],
       agreement: [true, [Validators.required]],
       recaptchaReactive: ['', [Validators.required]],
     },
@@ -96,7 +115,8 @@ export class UserRegisterComponent implements OnInit, OnDestroy {
   interval$: NzSafeAny;
 
   ngOnInit(): void {
-    this.form.controls.province.setValue('Hà Nội');
+    this.langRegister = localStorage.getItem('lang') == null ? this.i18n.defaultLang : localStorage.getItem('lang');
+    this.loadProvinces();
   }
 
   public addTokenLog(message: string, token: string | null) {
@@ -150,6 +170,10 @@ export class UserRegisterComponent implements OnInit, OnDestroy {
   // }
 
   // #endregion
+  passwordVisible = false;
+  passwordVisible1 = false;
+  langRegister: any;
+  provinces: any;
 
   submit(): void {
     console.log('submit register')
@@ -165,7 +189,7 @@ export class UserRegisterComponent implements OnInit, OnDestroy {
     }
 
     const data: UserCreateDto = {
-      email: this.form.controls.mail.value,
+      email: this.form.controls.mail.value.toLowerCase(),
       password: this.form.controls.password.value,
       accountType: 1,
       firstName: this.form.controls.firstName.value,
@@ -200,7 +224,16 @@ export class UserRegisterComponent implements OnInit, OnDestroy {
           });
         },
         error: (error) => {
-          this.notification.error(error.error.validationErrors.Password[0], '');
+          if (error?.error?.title == 'Validation errors') {
+            if (error.error.validationErrors.Password != null) {
+              this.notification.error(this.i18n.fanyi('app.status.fail'), error.error.validationErrors.Password[0]);
+            } else if (error.error.validationErrors.Email != null) {
+              this.notification.error(this.i18n.fanyi('app.status.fail'), error.error.validationErrors.Email[0]);
+            }
+
+          } else {
+            this.notification.error(this.i18n.fanyi('app.status.fail'), error.error.message);
+          }
         },
       });
   }
@@ -209,5 +242,43 @@ export class UserRegisterComponent implements OnInit, OnDestroy {
     if (this.interval$) {
       clearInterval(this.interval$);
     }
+  }
+
+
+  changelang() {
+    localStorage.setItem('lang',this.langRegister)
+    // if (this.langRegister === 'Vietnam') {
+    //
+    // } else {
+    //   this.i18n.loadLangData('en-US').subscribe(res => {
+    //     this.i18n.use('en-US', res);
+    //     this.settings.setLayout('lang', 'en-US');
+    //     setTimeout(() => this.doc.location.reload());
+    //   });
+    // }
+
+    this.i18n.loadLangData(this.langRegister).subscribe(res => {
+      this.i18n.use(this.langRegister, res);
+      this.settings.setLayout('lang', this.langRegister);
+      setTimeout(() => this.doc.location.reload());
+    });
+  }
+
+  private loadProvinces() {
+    fetch(environment.baseUrl + '/users/provinces').then(r => r.json()).then(j => {
+      this.provinces = j;
+      this.form.controls.province.setValue(j[0])
+      console.log(j)
+    });
+
+    // this.http.get<any>(environment.baseUrl + '/users/provinces').subscribe(
+    //   data => {
+    //     this.provinces = data
+    //     this.form.controls.province.setValue(data[0])
+    //   },
+    //   error => {
+    //     console.log(error)
+    //   }
+    // )
   }
 }

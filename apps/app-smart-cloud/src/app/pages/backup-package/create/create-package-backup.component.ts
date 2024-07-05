@@ -87,6 +87,10 @@ export class CreatePackageBackupComponent implements OnInit {
     this.router.navigate(['/app-smart-cloud/backup/packages'])
   }
 
+  onRegionChanged(region: RegionModel) {
+    this.region = region.regionId;
+  }
+
   projectChanged(project: ProjectModel) {
     this.project = project?.id
   }
@@ -128,7 +132,7 @@ export class CreatePackageBackupComponent implements OnInit {
   }
 
   getAllBackupPackage(){
-    this.packageBackupService.search(null, null, 9999, 1).subscribe(data => {
+    this.packageBackupService.search(null, null, this.project, this.region, 9999, 1).subscribe(data => {
       data.records.forEach((item) => {
         if (this.nameList.length > 0) {
           this.nameList.push(item.packageName);

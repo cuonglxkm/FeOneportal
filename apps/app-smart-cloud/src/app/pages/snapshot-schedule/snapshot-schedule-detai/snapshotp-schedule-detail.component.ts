@@ -84,9 +84,13 @@ export class SnapshotScheduleDetailComponent implements OnInit {
       });
   }
   goBack() {
-    this.router.navigate(['/app-smart-cloud/schedule/snapshot/list']);
+    this.router.navigate(['/app-smart-cloud/schedule/snapshot']);
   }
   onRegionChange(region: RegionModel) {
+    this.region = region.regionId;
+  }
+
+  onRegionChanged(region: RegionModel) {
     this.region = region.regionId;
   }
 

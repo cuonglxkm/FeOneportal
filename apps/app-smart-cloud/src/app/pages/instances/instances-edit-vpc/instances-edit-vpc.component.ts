@@ -6,6 +6,7 @@ import {
   OnInit,
 } from '@angular/core';
 import {
+  GpuConfigRecommend,
   GpuProject,
   GpuUsage,
   InfoVPCModel,
@@ -22,7 +23,7 @@ import { InstancesService } from '../instances.service';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { slider } from '../../../../../../../libs/common-utils/src/lib/slide-animation';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
-import { getCurrentRegionAndProject } from '@shared';
+import { getCurrentRegionAndProject, getListGpuConfigRecommend } from '@shared';
 import {
   RegionModel,
   ProjectModel,
@@ -116,9 +117,12 @@ export class InstancesEditVpcComponent implements OnInit {
     this.onChangeCapacity();
   }
 
-  isConfigGpuAtInitial: boolean = false;
+  isCurrentConfigGpu: boolean = false;
   gpuTypeNameAtIntial: string = '';
-  getCurrentInfoInstance(instanceId: number): void {
+  getCurrentInfoInstance(): void {
+    this.listOptionGpuValue = this.listOptionGpuValue.filter(
+      (e) => e >= this.instancesModel.gpuCount
+    );
     this.cloudId = this.instancesModel.cloudId;
     this.region = this.instancesModel.regionId;
     this.getListIpPublic();
@@ -126,7 +130,7 @@ export class InstancesEditVpcComponent implements OnInit {
       this.instancesModel.gpuCount != null &&
       this.instancesModel.gpuType != null
     ) {
-      this.isConfigGpuAtInitial = true;
+      this.isCurrentConfigGpu = true;
       this.isGpuConfig = true;
       this.isCustomconfig = false;
       this.gpuOfferId = this.purchasedListGPUType.filter(
@@ -157,7 +161,7 @@ export class InstancesEditVpcComponent implements OnInit {
         this.remainingGpu = gpuProject.gpuCount;
       }
     } else {
-      this.isConfigGpuAtInitial = false;
+      this.isCurrentConfigGpu = false;
     }
     this.dataService
       .getAllSecurityGroupByInstance(
@@ -170,9 +174,30 @@ export class InstancesEditVpcComponent implements OnInit {
         this.listSecurityGroupModel = datasg;
         this.cdr.detectChanges();
       });
+    console.log('so du gpu', this.remainingGpu);
+    this.listOptionGpuValue = this.listOptionGpuValue.filter(
+      (e) => e <= this.remainingGpu + this.instancesModel.gpuCount
+    );
+    this.instanceResize.gpuCount = this.instancesModel.gpuCount;
+    this.configRecommend = this.listGpuConfigRecommend.filter(
+      (e) =>
+        e.id == this.gpuOfferId && e.gpuCount == this.instanceResize.gpuCount
+    )[0];
     this.cdr.detectChanges();
   }
 
+  listOptionGpuValue: any[];
+  getListOptionGpuValue() {
+    this.configurationService
+      .getConfigurations('OPTIONGPUVALUE')
+      .subscribe((data) => {
+        this.listOptionGpuValue = data.valueString.split(', ').map(Number);
+        this.getCurrentInfoInstance();
+      });
+  }
+
+  configRecommend: GpuConfigRecommend;
+  listGpuConfigRecommend: GpuConfigRecommend[] = [];
   listGPUType: OfferItem[] = [];
   purchasedListGPUType: OfferItem[] = [];
   getListGpuType() {
@@ -182,6 +207,10 @@ export class InstancesEditVpcComponent implements OnInit {
         this.listGPUType = data.filter(
           (e: OfferItem) => e.status.toUpperCase() == 'ACTIVE'
         );
+        this.listGpuConfigRecommend = getListGpuConfigRecommend(
+          this.listGPUType
+        );
+        console.log('list gpu config recommend', this.listGpuConfigRecommend);
         let listGpuOfferIds: number[] = [];
         this.infoVPC.cloudProject.gpuProjects.forEach((gputype) =>
           listGpuOfferIds.push(gputype.gpuOfferId)
@@ -189,7 +218,7 @@ export class InstancesEditVpcComponent implements OnInit {
         this.purchasedListGPUType = this.listGPUType.filter((e) =>
           listGpuOfferIds.includes(e.id)
         );
-        this.getCurrentInfoInstance(this.id);
+        this.getListOptionGpuValue();
       });
   }
 
@@ -244,6 +273,9 @@ export class InstancesEditVpcComponent implements OnInit {
     });
   }
 
+  onRegionChanged(region: RegionModel) {
+    this.region = region.regionId;
+  }
   listIPPublicStr = '';
   listIPLanStr = '';
   getListIpPublic() {
@@ -279,10 +311,11 @@ export class InstancesEditVpcComponent implements OnInit {
     this.isCustomconfig = true;
     this.isGpuConfig = false;
     this.resetData();
+    this.checkChangeConfig();
   }
 
   onClickGpuConfig() {
-    if (this.isConfigGpuAtInitial) {
+    if (this.isCurrentConfigGpu) {
       return;
     } else {
       this.isCustomconfig = false;
@@ -306,99 +339,60 @@ export class InstancesEditVpcComponent implements OnInit {
       } else {
         this.remainingGpu = gpuProject.gpuCount;
       }
+      this.getListOptionGpuValue();
     }
+    this.checkChangeConfig();
     this.cdr.detectChanges();
   }
 
   gpuTypeName: string = '';
-  disableUpdate: boolean = false;
   changeGpuType(id: number) {
-    if (this.isConfigGpuAtInitial) {
-      this.GPU = 0;
-      let gpuOfferIdAtInitial = this.purchasedListGPUType.filter(
-        (e) =>
-          e.characteristicValues[0].charOptionValues[0] ==
-          this.instancesModel.gpuType
-      )[0].id;
+    this.gpuTypeName = this.purchasedListGPUType.filter(
+      (e) => e.id == id
+    )[0].offerName;
 
-      this.gpuTypeName = this.purchasedListGPUType.filter(
-        (e) => e.id == id
-      )[0].offerName;
+    let gpuProject: GpuProject = this.infoVPC.cloudProject.gpuProjects.filter(
+      (e) => e.gpuOfferId == id
+    )[0];
+    this.purchasedGpu = gpuProject.gpuCount;
 
-      let gpuProject: GpuProject = this.infoVPC.cloudProject.gpuProjects.filter(
+    let gpuUsage: GpuUsage =
+      this.infoVPC.cloudProjectResourceUsed.gpuUsages.filter(
         (e) => e.gpuOfferId == id
       )[0];
-      this.purchasedGpu = gpuProject.gpuCount;
 
-      let gpuUsage: GpuUsage =
-        this.infoVPC.cloudProjectResourceUsed.gpuUsages.filter(
-          (e) => e.gpuOfferId == id
-        )[0];
-
-      if (gpuUsage != undefined && gpuUsage != null) {
-        if (id != gpuOfferIdAtInitial) {
-          this.remainingGpu =
-            gpuProject.gpuCount -
-            gpuUsage.gpuCount -
-            this.instancesModel.gpuCount;
-        } else {
-          this.remainingGpu = gpuProject.gpuCount - gpuUsage.gpuCount;
-        }
-      } else {
-        if (id != gpuOfferIdAtInitial) {
-          this.remainingGpu =
-            gpuProject.gpuCount - this.instancesModel.gpuCount;
-        } else {
-          this.remainingGpu = gpuProject.gpuCount;
-        }
-      }
-      if (this.remainingGpu < 0) {
-        this.notification.warning(
-          '',
-          this.i18n.fanyi('app.notify.amount.gpu.add', {
-            num: Math.abs(this.remainingGpu),
-          })
-        );
-        this.remainingGpu = 0;
-        this.disableUpdate = true;
-      } else {
-        this.disableUpdate = false;
-      }
+    if (gpuUsage != undefined && gpuUsage != null) {
+      this.remainingGpu = gpuProject.gpuCount - gpuUsage.gpuCount;
     } else {
-      this.GPU = 0;
-      this.gpuTypeName = this.purchasedListGPUType.filter(
-        (e) => e.id == id
-      )[0].offerName;
-
-      let gpuProject: GpuProject = this.infoVPC.cloudProject.gpuProjects.filter(
-        (e) => e.gpuOfferId == id
-      )[0];
-      this.purchasedGpu = gpuProject.gpuCount;
-
-      let gpuUsage: GpuUsage =
-        this.infoVPC.cloudProjectResourceUsed.gpuUsages.filter(
-          (e) => e.gpuOfferId == id
-        )[0];
-
-      if (gpuUsage != undefined && gpuUsage != null) {
-        this.remainingGpu = gpuProject.gpuCount - gpuUsage.gpuCount;
-      } else {
-        this.remainingGpu = gpuProject.gpuCount;
-      }
+      this.remainingGpu = gpuProject.gpuCount;
     }
+    this.getListOptionGpuValue();
+    this.instanceResize.gpuCount = 0;
+    this.configRecommend = null;
+  }
+
+  changeGpu() {
+    this.configRecommend = this.listGpuConfigRecommend.filter(
+      (e) =>
+        e.id == this.gpuOfferId && e.gpuCount == this.instanceResize.gpuCount
+    )[0];
+    console.log('cấu hình đề recommend', this.configRecommend);
   }
 
   resetData() {
     this.vCPU = 0;
     this.storage = 0;
     this.ram = 0;
-    this.GPU = 0;
+    this.instanceResize.gpuCount = this.instancesModel.gpuCount;
+    this.configRecommend = this.listGpuConfigRecommend.filter(
+      (e) =>
+        e.id == this.gpuOfferId && e.gpuCount == this.instanceResize.gpuCount
+    )[0];
   }
 
   vCPU: number = 0;
   ram: number = 0;
   storage: number = 0;
-  GPU: number = 0;
   gpuOfferId: number = 0;
   instanceResize: InstanceResize = new InstanceResize();
   instanceResizeInit() {
@@ -412,7 +406,6 @@ export class InstancesEditVpcComponent implements OnInit {
       this.instanceResize.cpu = this.vCPU + this.instancesModel.cpu;
       this.instanceResize.ram = this.ram + this.instancesModel.ram;
       this.instanceResize.storage = this.storage + this.instancesModel.storage;
-      this.instanceResize.gpuCount = this.GPU + this.instancesModel.gpuCount;
       if (this.gpuOfferId) {
         this.instanceResize.gpuType = this.purchasedListGPUType.filter(
           (e) => e.id == this.gpuOfferId
@@ -420,9 +413,7 @@ export class InstancesEditVpcComponent implements OnInit {
       } else {
         this.instanceResize.gpuType = this.instancesModel.gpuType;
       }
-      if (this.gpuTypeName != this.gpuTypeNameAtIntial) {
-        this.instanceResize.newGpuOfferId = this.gpuOfferId;
-      }
+      this.instanceResize.newGpuOfferId = this.gpuOfferId;
     }
 
     this.instanceResize.addBtqt = 0;
@@ -447,13 +438,13 @@ export class InstancesEditVpcComponent implements OnInit {
     this.cdr.detectChanges();
     if (
       this.isGpuConfig == true &&
-      (this.GPU == 0 || this.gpuOfferId == 0) &&
+      (this.instanceResize.gpuCount == 0 || this.gpuOfferId == 0) &&
       (this.instancesModel.gpuCount == null ||
         this.instancesModel.gpuCount == 0)
     ) {
       this.notification.error(
         '',
-        this.i18n.fanyi('app.notify.gpu.configuration.invalid')
+        this.i18n.fanyi('app.notify.gpu.count.invalid')
       );
       return;
     }
@@ -524,29 +515,19 @@ export class InstancesEditVpcComponent implements OnInit {
         this.isChange = true;
       } else if (
         this.isGpuConfig &&
-        this.GPU + this.instancesModel.gpuCount != 0
+        this.isCurrentConfigGpu &&
+        (this.storage != 0 ||
+          this.ram != 0 ||
+          this.vCPU != 0 ||
+          this.instanceResize.gpuCount != this.instancesModel.gpuCount)
       ) {
-        if (this.instancesModel.gpuCount == 0) {
-          this.isChange = true;
-        } else if (
-          this.instancesModel.gpuCount != 0 &&
-          (this.storage != 0 ||
-            this.ram != 0 ||
-            this.vCPU != 0 ||
-            this.GPU != 0 ||
-            this.gpuTypeName != this.gpuTypeNameAtIntial)
-        ) {
-          this.isChange = true;
-        } else if (
-          this.instancesModel.gpuCount != 0 &&
-          this.storage == 0 &&
-          this.ram == 0 &&
-          this.vCPU == 0 &&
-          this.GPU == 0 &&
-          this.gpuTypeName == this.gpuTypeNameAtIntial
-        ) {
-          this.isChange = false;
-        }
+        this.isChange = true;
+      } else if (
+        this.isGpuConfig &&
+        !this.isCurrentConfigGpu &&
+        this.instanceResize.gpuCount != this.instancesModel.gpuCount
+      ) {
+        this.isChange = true;
       } else {
         this.isChange = false;
       }

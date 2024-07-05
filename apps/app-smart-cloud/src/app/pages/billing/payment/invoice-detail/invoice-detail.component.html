@@ -1,0 +1,32 @@
+<page-header [breadcrumb]="breadcrumb" title="Chi tiết hóa đơn điện tử">
+  <ng-template #breadcrumb>
+    <nz-breadcrumb [nzSeparator]="iconTemplate">
+      <nz-breadcrumb-item> <a [routerLink]="['/']" class="link_breadcrumb">{{"app.breadcrumb.home" | i18n}}</a> </nz-breadcrumb-item>
+      <nz-breadcrumb-item> <a [routerLink]="['/app-smart-cloud/billing/payments']" class="link_breadcrumb"
+        >Hóa đơn </a
+      > </nz-breadcrumb-item>
+      <nz-breadcrumb-item> <a [routerLink]="['/app-smart-cloud/billing/payments']" class="link_breadcrumb"
+        >Chi tiết hóa đơn điện tử</a> </nz-breadcrumb-item>
+    </nz-breadcrumb>
+    <ng-template #iconTemplate><one-portal-svg-icon [icon]="'icon_breadcrumb'"></one-portal-svg-icon></ng-template>
+  </ng-template>
+</page-header>
+
+<nz-card>
+  <button
+  class="d-flex align-items-center mb-3"
+  nz-button
+  nzSize="default"
+  style="cursor: pointer; margin-left: 165px"
+  (click)="downloadInvoice()"
+>
+  <one-portal-svg-icon
+    class="icon-svg"
+    [icon]="'icon_download'"
+  ></one-portal-svg-icon>
+  <span>{{ 'app.payment.download' | i18n }}</span>
+</button>
+  <div id="myScriptLoader">
+  </div>
+</nz-card>
+

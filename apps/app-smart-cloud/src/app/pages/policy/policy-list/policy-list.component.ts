@@ -12,6 +12,7 @@ import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from '@core';
 import { RegionModel, ProjectModel } from '../../../../../../../libs/common-utils/src';
 import { TimeCommon } from '../../../shared/utils/common';
+import { getCurrentRegionAndProject } from '@shared';
 @Component({
   selector: 'one-portal-policy-list',
   templateUrl: './policy-list.component.html',
@@ -59,6 +60,9 @@ export class PolicyListComponent implements OnInit{
   }
 
   ngOnInit() {
+    let regionAndProject = getCurrentRegionAndProject();
+    this.regionId = regionAndProject.regionId;
+    this.projectId = regionAndProject.projectId;
     this.selectedStatus = this.listPolicyType[0].value;
     this.selectedAction = this.listAction[0].value;
     this.searchDelay.pipe(debounceTime(TimeCommon.timeOutSearch)).subscribe(() => {
@@ -108,6 +112,10 @@ export class PolicyListComponent implements OnInit{
   }
 
   onRegionChange(region: RegionModel) {
+    this.regionId = region.regionId;
+  }
+
+  onRegionChanged(region: RegionModel) {
     this.regionId = region.regionId;
   }
 

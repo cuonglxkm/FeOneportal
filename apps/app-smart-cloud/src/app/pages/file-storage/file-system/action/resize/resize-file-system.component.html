@@ -19,7 +19,7 @@
   <ng-template #action>
     <div class="alain-custom-action text-right">
       <share-users-combobox></share-users-combobox>
-      <region-select-dropdown (valueChanged)="regionChanged($event)"></region-select-dropdown>
+      <region-select-dropdown (regionChange)="onRegionChanged($event)" (valueChanged)="regionChanged($event)"></region-select-dropdown>
       <project-select-dropdown (valueChanged)="projectChanged($event)"
                                (userChanged)="userChanged($event)"
                                [regionId]="region"></project-select-dropdown>
@@ -103,7 +103,7 @@
                     <nz-input-number style="width: 100%;; margin-left: 0;"
                                      formControlName="storage"
                                      class="input-custom"
-                                     [nzMin]="fileSystem?.size"
+                                     [nzMin]="0"
                                      [(ngModel)]="storage"
                                      (ngModelChange)="storageSelectedChange($event)"
                                      [nzStep]="stepStorage" [nzMax]="storageRemaining"></nz-input-number>
@@ -207,13 +207,13 @@
               <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
               <div style="margin-top: 10px" class="text-value">{{ 'app.capacity' | i18n }}</div>
               <div style="margin-top: 10px" class="text-label">
-                <span class="text-label">{{ validateForm.controls.storage.value }} GB</span>
+                <span class="text-label">{{ validateForm.controls.storage.value + fileSystem?.size }} GB</span>
               </div>
               <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
               <nz-row>
                 <nz-col style="width: 100%">
                   <button style="width: 100%" nz-button nzSize="large" nzType="primary"
-                          [disabled]="!validateForm.valid || (fileSystem?.size >= validateForm.controls.storage.value)"
+                          [disabled]="!validateForm.valid || (validateForm.controls.storage.value == 0)"
                           (click)="doResizeFileSystem()">
                     <i nz-icon [nzType]="'edit'" style="margin-right: 5px; padding-bottom: 5px;"></i>
                     <span

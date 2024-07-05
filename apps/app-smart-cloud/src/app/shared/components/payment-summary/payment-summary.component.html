@@ -82,7 +82,7 @@
                   <input
                     nz-input
                     type="text"
-                    placeholder="Nguyễn Văn A"
+                    [placeholder]="'app.invoice.pop-up.update.buyer.placeholder' | i18n"
                     class="input-custom"
                     formControlName="nameCustomer"
                     appTrim
@@ -120,7 +120,7 @@
                   <input
                     nz-input
                     type="text"
-                    placeholder="Công ty TNHH và đầu tư AAA"
+                    [placeholder]="'app.invoice.pop-up.update.unit.placeholder' | i18n"
                     class="input-custom"
                     appTrim
                     formControlName="nameCompany"
@@ -152,7 +152,7 @@
                   <input
                     nz-input
                     type="text"
-                    placeholder="6796784685"
+                    [placeholder]="'app.invoice.pop-up.update.tax.placeholder' | i18n"
                     class="input-custom"
                     appTrim
                     formControlName="taxCode"
@@ -189,11 +189,11 @@
                   <input
                     nz-input
                     type="text"
-                    placeholder="địa chỉ A"
+                    [placeholder]="'app.invoice.pop-up.update.address.placeholder' | i18n"
                     class="input-custom"
                     appTrim
                     formControlName="address"
-                    [maxlength]="100"
+                    [maxlength]="255"
                   />
                 </nz-form-control>
                 <ng-template #addressErrorTpl let-control>
@@ -221,11 +221,11 @@
                   <input
                     nz-input
                     type="text"
-                    placeholder="0245685679567"
+                    [placeholder]="'app.invoice.pop-up.update.phone.placeholder' | i18n"
                     class="input-custom"
                     appTrim
                     formControlName="phoneNumber"
-                    [maxlength]="10"
+                    appPhoneValidator
                   />
                 </nz-form-control>
                 <ng-template #phoneErrorTpl let-control>
@@ -252,7 +252,7 @@
                   <input
                     nz-input
                     type="text"
-                    placeholder="test@test.vn"
+                    [placeholder]="'app.invoice.pop-up.update.email.placeholder' | i18n"
                     class="input-custom"
                     formControlName="email"
                     appTrim
@@ -300,11 +300,11 @@
                 {{ userModel.email === '' ? '-' : userModel.email }}</span
               >
             </nz-row>
-            <nz-row style="height: 50px">
+            <nz-row>
               <span class="fw-600 text-16" nz-col nzSpan="4"
                 >{{ 'app.payment-detail.address' | i18n }}:</span
               >
-              <span nz-col nzSpan="20" class="text-16">{{
+              <span nz-col nzSpan="20" class="text-16" style="word-break: break-all">{{
                 userModel.address === '' ? '-' : userModel.address
               }}</span>
             </nz-row>
@@ -481,8 +481,9 @@
             [ngModelOptions]="{ standalone: true }"
             class="text-16"
             >{{ 'app.payment.agree.to' | i18n }}
-            <a>{{ 'app.payment.service.term' | i18n }}</a></label
+            </label
           >
+          <a  href="https://vnptcloud.onsmartcloud.com/terms-and-conditions" target="_blank">{{ 'app.payment.service.term' | i18n }}</a>
         </div>
         <div style="margin-top: 10px">
           <button
@@ -574,7 +575,7 @@
     <span *ngIf="!checkedExistDiscount" style="color: #ff4d4f">{{
       'app.payment.voucher.not.found' | i18n
     }}</span>
-    <nz-table
+    <!-- <nz-table
       style="margin-top: 8px"
       [nzLoading]="loading"
       [nzData]="listDiscount"
@@ -626,7 +627,8 @@
           </nz-card>
         </tr>
       </tbody>
-    </nz-table>
+    </nz-table> -->
+    <span class="text-label text-center d-block mt-3">Không có mã giảm giá</span>
   </ng-container>
   <div *nzModalFooter>
     <button nz-button (click)="handleCancelDiscount()">
@@ -636,7 +638,7 @@
         alt=""
       />{{ 'app.button.cancel' | i18n }}
     </button>
-    <button nz-button nzType="primary" (click)="handleOkDiscount()">
+    <button nz-button nzType="primary" [disabled]="true" (click)="handleOkDiscount()">
       <img
         style="padding-right: 10px; margin-top: -4px"
         src="assets/imgs/confirm.svg"
@@ -667,7 +669,7 @@
               <input
                 nz-input
                 type="text"
-                placeholder="Nguyễn Văn Thế"
+                [placeholder]="'app.invoice.pop-up.update.buyer.placeholder' | i18n"
                 formControlName="nameCustomer"
                 class="input-custom"
                 appTrim
@@ -700,7 +702,7 @@
                 type="text"
                 class="input-custom"
                 [maxlength]="50"
-                placeholder="vanthe@vnpt.com"
+                [placeholder]="'app.invoice.pop-up.update.email.placeholder' | i18n"
                 formControlName="email"
               />
             </nz-form-control>
@@ -726,9 +728,9 @@
               <input
                 nz-input
                 type="text"
-                placeholder="0941371355"
+                [placeholder]="'app.invoice.pop-up.update.phone.placeholder' | i18n"
                 class="input-custom"
-                [maxlength]="10"
+                appPhoneValidator
                 formControlName="phoneNumber"
               />
             </nz-form-control>
@@ -833,7 +835,7 @@
               <input
                 nz-input
                 type="text"
-                placeholder="036423624356"
+                [placeholder]="'app.invoice.pop-up.update.tax.placeholder' | i18n"
                 formControlName="taxCode"
                 class="input-custom"
                 appTrim
@@ -862,11 +864,11 @@
               <input
                 nz-input
                 type="text"
-                placeholder="57 Huỳnh Thúc Kháng, Đống Đa"
+                [placeholder]="'app.invoice.pop-up.update.address.placeholder' | i18n"
                 class="input-custom"
                 formControlName="address"
                 appTrim
-                [maxlength]="100"
+                [maxlength]="255"
               />
             </nz-form-control>
             <ng-template #addressErrorTpl let-control>

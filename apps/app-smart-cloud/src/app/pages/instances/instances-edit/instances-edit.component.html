@@ -33,6 +33,7 @@
       <share-users-combobox></share-users-combobox>
       <region-select-dropdown
         (valueChanged)="onRegionChange($event)"
+        (regionChange)="onRegionChanged($event)"
       ></region-select-dropdown>
       <project-select-dropdown
         [regionId]="region"
@@ -114,9 +115,48 @@
                 <span class="text-label customSpan" style="width: 35%"
                   >{{ 'app.configuration.package' | i18n }}:</span
                 >
-                <span class="text-value-detail customSpan">{{
-                  instancesModel.flavorName | slice : 3
-                }}</span>
+                <span class="text-value-detail customSpan"
+                  ><a
+                    nz-popover
+                    [nzPopoverTitle]="instancesModel.flavorName | slice : 3"
+                    [nzPopoverContent]="contentConfigPackage"
+                    [nzPopoverTrigger]="'click'"
+                    >{{ instancesModel.flavorName | slice : 3 }}</a
+                  >
+                  <ng-template #contentConfigPackage>
+                    <nz-row style="width: 320px">
+                      <nz-col nzSpan="12"
+                        >{{ instancesModel.volumeType == 1 ? 'SSD' : 'HDD' }}
+                      </nz-col>
+                      <nz-col class="text-right" nzSpan="12">
+                        {{ instancesModel.storage }} GB
+                      </nz-col>
+                    </nz-row>
+                    <nz-row style="width: 320px; margin-top: 5px">
+                      <nz-col nzSpan="12"> RAM </nz-col>
+                      <nz-col class="text-right" nzSpan="12">
+                        {{ instancesModel.ram }} GB
+                      </nz-col>
+                    </nz-row>
+                    <nz-row style="width: 320px; margin-top: 5px">
+                      <nz-col nzSpan="12"> CPU </nz-col>
+                      <nz-col class="text-right" nzSpan="12">
+                        {{ instancesModel.cpu }} vCPU
+                      </nz-col>
+                    </nz-row>
+                    <nz-row
+                      *ngIf="instancesModel.gpuType != null"
+                      style="width: 320px; margin-top: 5px"
+                    >
+                      <nz-col nzSpan="12">
+                        GPU - NVIDIA-{{ instancesModel.gpuType.toUpperCase() }}
+                      </nz-col>
+                      <nz-col class="text-right" nzSpan="12">
+                        {{ instancesModel.gpuCount }} GPU
+                      </nz-col>
+                    </nz-row>
+                  </ng-template></span
+                >
               </nz-row>
             </nz-col>
             <nz-col nzSpan="12">
@@ -305,6 +345,12 @@
           <div style="margin-bottom: 20px">
             <span class="text-card-header">{{ 'app.adjust.info' | i18n }}</span>
           </div>
+          <nz-alert
+            style="margin-bottom: 20px"
+            nzType="warning"
+            [nzDescription]="'app.alert.resize.instance' | i18n"
+            nzShowIcon
+          ></nz-alert>
           <div style="margin-bottom: 20px">
             <span class="text-label"
               >{{ 'app.current.config' | i18n }}: {{ instancesModel.cpu }} vCPU,
@@ -316,8 +362,9 @@
                   instancesModel.gpuCount != null &&
                   instancesModel.gpuType != null
                 "
-                >, {{ instancesModel.gpuCount }} GPU (Nvidia
-                {{ instancesModel.gpuType }})</span
+                >, {{ instancesModel.gpuCount }} GPU (NVIDIA-{{
+                  instancesModel.gpuType | uppercase
+                }})</span
               >
             </span>
           </div>
@@ -331,8 +378,9 @@
                 *ngIf="
                   instanceResize.gpuCount != 0 && instanceResize.gpuType != null
                 "
-                >, {{ instanceResize.gpuCount }} GPU (Nvidia
-                {{ instanceResize.gpuType | uppercase }})</span
+                >, {{ configGPU.GPU }} GPU (NVIDIA-{{
+                  instanceResize.gpuType | uppercase
+                }})</span
               >
             </span>
           </div>
@@ -435,7 +483,7 @@
             </nz-tab>
             <nz-tab
               *ngIf="
-                !isConfigGpuAtInitial &&
+                !isCurrentConfigGpu &&
                 (instancesModel.gpuCount == null ||
                   instancesModel.gpuCount == 0)
               "
@@ -454,7 +502,7 @@
                   <tbody class="ant-table-tbody">
                     <tr>
                       <td style="width: 50%">
-                        <nz-form-label style="margin-left: -12px"
+                        <nz-form-label
                           >{{ 'app.capacity' | i18n }} (<span class="text-red"
                             >*</span
                           >) - GB</nz-form-label
@@ -491,7 +539,7 @@
                     </tr>
                     <tr>
                       <td>
-                        <nz-form-label style="margin-left: -12px"
+                        <nz-form-label
                           >RAM (<span class="text-red">*</span>) -
                           GB</nz-form-label
                         >
@@ -527,7 +575,7 @@
                     </tr>
                     <tr>
                       <td>
-                        <nz-form-label style="margin-left: -12px"
+                        <nz-form-label
                           >CPU (<span class="text-red">*</span>) -
                           vCPU</nz-form-label
                         >
@@ -580,78 +628,8 @@
                   </thead>
                   <tbody class="ant-table-tbody">
                     <tr>
-                      <td>
-                        <nz-form-label style="margin-left: -12px"
-                          >CPUs (<span class="text-red">*</span>)</nz-form-label
-                        >
-                        <nz-slider
-                          [nzMin]="0"
-                          [nzMax]="62"
-                          [(ngModel)]="configGPU.CPU"
-                          (ngModelChange)="changeCpuOfGpu($event)"
-                          [ngModelOptions]="{ standalone: true }"
-                        ></nz-slider>
-                      </td>
-                      <td>
-                        <nz-input-number
-                          [(ngModel)]="configGPU.CPU"
-                          (keydown)="onKeyDown($event)"
-                          (ngModelChange)="changeCpuOfGpu($event)"
-                          [ngModelOptions]="{ standalone: true }"
-                          [nzMin]="0"
-                          [nzMax]="62"
-                          [nzStep]="1"
-                          nzSize="large"
-                        ></nz-input-number>
-                      </td>
-                      <td nzAlign="right">
-                        <label class="text-custom-price">
-                          {{ cpuIntoMoney | number }} </label
-                        ><br />
-                        <label class="text-custom-unit-price">
-                          {{ cpuUnitPrice | number }}
-                        </label>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>
-                        <nz-form-label style="margin-left: -12px"
-                          >RAM (<span class="text-red">*</span>) -
-                          GB</nz-form-label
-                        >
-                        <nz-slider
-                          [nzMin]="0"
-                          [nzMax]="62"
-                          [(ngModel)]="configGPU.ram"
-                          (ngModelChange)="changeRamOfGpu($event)"
-                          [ngModelOptions]="{ standalone: true }"
-                        ></nz-slider>
-                      </td>
-                      <td>
-                        <nz-input-number
-                          [(ngModel)]="configGPU.ram"
-                          (keydown)="onKeyDown($event)"
-                          (ngModelChange)="changeRamOfGpu($event)"
-                          [ngModelOptions]="{ standalone: true }"
-                          [nzMin]="0"
-                          [nzMax]="62"
-                          [nzStep]="1"
-                          nzSize="large"
-                        ></nz-input-number>
-                      </td>
-
-                      <td nzAlign="right">
-                        <label class="text-custom-price">
-                          {{ ramIntoMoney | number }} </label
-                        ><br />
-                        <label class="text-custom-unit-price">
-                          {{ ramUnitPrice | number }}
-                        </label>
-                      </td>
-                    </tr>
-                    <tr>
                       <td style="width: 50%">
-                        <nz-form-label style="margin-left: -12px"
+                        <nz-form-label
                           >{{ 'app.ssd.capacity' | i18n }} (<span
                             class="text-red"
                             >*</span
@@ -688,31 +666,117 @@
                       </td>
                     </tr>
                     <tr>
-                      <td style="width: 50%">
-                        <nz-form-label style="margin-left: -12px"
-                          >{{ 'app.gpu.number' | i18n }} (<span class="text-red"
-                            >*</span
-                          >)</nz-form-label
+                      <td>
+                        <nz-form-label
+                          >RAM (<span class="text-red">*</span>) -
+                          GB</nz-form-label
                         >
                         <nz-slider
                           [nzMin]="0"
-                          [nzMax]="8 - instancesModel.gpuCount"
-                          [(ngModel)]="configGPU.GPU"
-                          (ngModelChange)="changeGpu($event)"
+                          [nzMax]="62"
+                          [(ngModel)]="configGPU.ram"
+                          (ngModelChange)="changeRamOfGpu($event)"
                           [ngModelOptions]="{ standalone: true }"
                         ></nz-slider>
                       </td>
                       <td>
                         <nz-input-number
-                          [(ngModel)]="configGPU.GPU"
+                          [(ngModel)]="configGPU.ram"
                           (keydown)="onKeyDown($event)"
-                          (ngModelChange)="changeGpu($event)"
+                          (ngModelChange)="changeRamOfGpu($event)"
                           [ngModelOptions]="{ standalone: true }"
                           [nzMin]="0"
-                          [nzMax]="8 - instancesModel.gpuCount"
+                          [nzMax]="62"
                           [nzStep]="1"
                           nzSize="large"
                         ></nz-input-number>
+                      </td>
+
+                      <td nzAlign="right">
+                        <label class="text-custom-price">
+                          {{ ramIntoMoney | number }} </label
+                        ><br />
+                        <label class="text-custom-unit-price">
+                          {{ ramUnitPrice | number }}
+                        </label>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <nz-form-label
+                          >CPU (<span class="text-red">*</span>) -
+                          vCPU</nz-form-label
+                        >
+                        <nz-slider
+                          [nzMin]="0"
+                          [nzMax]="62"
+                          [(ngModel)]="configGPU.CPU"
+                          (ngModelChange)="changeCpuOfGpu($event)"
+                          [ngModelOptions]="{ standalone: true }"
+                        ></nz-slider>
+                      </td>
+                      <td>
+                        <nz-input-number
+                          [(ngModel)]="configGPU.CPU"
+                          (keydown)="onKeyDown($event)"
+                          (ngModelChange)="changeCpuOfGpu($event)"
+                          [ngModelOptions]="{ standalone: true }"
+                          [nzMin]="0"
+                          [nzMax]="62"
+                          [nzStep]="1"
+                          nzSize="large"
+                        ></nz-input-number>
+                      </td>
+                      <td nzAlign="right">
+                        <label class="text-custom-price">
+                          {{ cpuIntoMoney | number }} </label
+                        ><br />
+                        <label class="text-custom-unit-price">
+                          {{ cpuUnitPrice | number }}
+                        </label>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td style="width: 50%">
+                        <nz-form-label>{{
+                          'app.gpu.type' | i18n
+                        }}</nz-form-label>
+                        <nz-form-control>
+                          <nz-select
+                            [nzShowSearch]="true"
+                            [ngModelOptions]="{ standalone: true }"
+                            [(ngModel)]="configGPU.gpuOfferId"
+                            (ngModelChange)="changeGpuType()"
+                            nzSize="large"
+                            [nzDisabled]="isCurrentConfigGpu"
+                          >
+                            <nz-option
+                              *ngFor="let i of listGPUType"
+                              [nzLabel]="i.offerName"
+                              [nzValue]="i.id"
+                            />
+                          </nz-select>
+                        </nz-form-control>
+                      </td>
+                      <td>
+                        <nz-select
+                          style="
+                            margin-left: 8px;
+                            margin-top: 32px;
+                            width: 90px;
+                          "
+                          [nzShowSearch]="true"
+                          [(ngModel)]="configGPU.GPU"
+                          (ngModelChange)="changeGpu()"
+                          [ngModelOptions]="{ standalone: true }"
+                          nzSize="large"
+                        >
+                          <nz-option
+                            *ngFor="let i of listOptionGpuValue"
+                            [nzLabel]="i"
+                            [nzValue]="i"
+                          />
+                        </nz-select>
                       </td>
                       <td nzAlign="right">
                         <label class="text-custom-price">
@@ -726,33 +790,25 @@
                   </tbody>
                 </table>
               </div>
-              <nz-form-item style="margin-top: 20px; margin-bottom: 0px">
-                <nz-form-label
-                  >{{ 'app.choose.gpu.type' | i18n }} (<span class="text-red"
-                    >*</span
-                  >)</nz-form-label
-                >
-                <nz-form-control>
-                  <nz-select
-                    [nzPlaceHolder]="
-                      '-- ' + ('app.choose.gpu.type' | i18n) + ' --'
-                    "
-                    [nzShowSearch]="true"
-                    [ngModelOptions]="{ standalone: true }"
-                    [(ngModel)]="configGPU.gpuOfferId"
-                    (ngModelChange)="changeGpuType()"
-                    nzSize="large"
-                  >
-                    <nz-option
-                      *ngFor="let i of listGPUType"
-                      [nzLabel]="i.offerName"
-                      [nzValue]="i.id"
-                    />
-                  </nz-select>
-                </nz-form-control>
-              </nz-form-item>
             </nz-tab>
           </nz-tabset>
+          <nz-alert
+            *ngIf="configRecommend"
+            style="margin-top: 20px"
+            nzType="warning"
+            [nzDescription]="
+              'app.alert.config.gpu.recommend'
+                | i18n
+                  : {
+                      type: gpuTypeName,
+                      gpu: configRecommend.gpuCount,
+                      ssd: configRecommend.ssd,
+                      ram: configRecommend.ram,
+                      cpu: configRecommend.cpu
+                    }
+            "
+            nzShowIcon
+          ></nz-alert>
           <div style="margin-top: 20px" class="text-label">
             {{ 'app.adjust.date' | i18n }}: {{ today | date : 'dd/MM/yyyy' }}
           </div>
@@ -786,7 +842,7 @@
             style="margin-top: 10px"
             class="text-label"
           >
-            {{ instanceResize.cpu }} CPUs
+            {{ instanceResize.cpu }} vCPU
           </div>
           <div
             *ngIf="instanceResize.ram"
@@ -812,60 +868,63 @@
             style="margin-top: 10px"
             class="text-label"
           >
-            {{ instanceResize.gpuCount }} GPU (Nvidia
-            {{ instanceResize.gpuType | uppercase }})
+            {{ configGPU.GPU }} GPU (NVIDIA-{{
+              instanceResize.gpuType | uppercase
+            }})
           </div>
           <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
-          <nz-row style="margin-bottom: 10px" nzGutter="16">
-            <nz-col nzSpan="16">
+          <div *ngIf="!hasRoleSI">
+            <nz-row style="margin-bottom: 10px" nzGutter="16">
+              <nz-col nzSpan="16">
               <span class="text-value">
                 {{ 'app.fee.resize' | i18n }}
               </span>
-            </nz-col>
-            <nz-col class="text-right" nzSpan="8">
+              </nz-col>
+              <nz-col class="text-right" nzSpan="8">
               <span class="text-value" style="color: #0066b3" nzAlign="right">
                 {{ totalAmount | number }}
                 VND
               </span>
-            </nz-col>
-          </nz-row>
-          <nz-row style="margin-bottom: 10px" nzGutter="16">
-            <nz-col nzSpan="16">
+              </nz-col>
+            </nz-row>
+            <nz-row style="margin-bottom: 10px" nzGutter="16">
+              <nz-col nzSpan="16">
               <span class="text-value">
                 {{ 'app.cost.vat' | i18n }}
               </span>
-            </nz-col>
-            <nz-col class="text-right" nzSpan="8">
+              </nz-col>
+              <nz-col class="text-right" nzSpan="8">
               <span class="text-value" style="color: #0066b3" nzAlign="right">
                 {{ totalVAT | number }}
                 VND
               </span>
-            </nz-col>
-          </nz-row>
-          <nz-row
-            style="
+              </nz-col>
+            </nz-row>
+            <nz-row
+              style="
               margin-top: 16px;
               margin-bottom: 20px;
               background-color: #cce9ff;
               padding: 16px 0 16px 0;
               border-radius: 8px;
             "
-            nzGutter="16"
-          >
-            <nz-col nzSpan="16">
+              nzGutter="16"
+            >
+              <nz-col nzSpan="16">
               <span class="text-label">{{ 'app.total.payment' | i18n }}</span
               ><br />
-              <span class="text-note-italicized"
+                <span class="text-note-italicized"
                 >({{ 'app.include.vat' | i18n : { vat: '10' } }})</span
-              >
-            </nz-col>
-            <nz-col class="text-right" nzSpan="8">
+                >
+              </nz-col>
+              <nz-col class="text-right" nzSpan="8">
               <span class="text-value" style="color: #ea3829" nzAlign="right">
                 {{ totalincludesVAT | number }}
                 VND
               </span>
-            </nz-col>
-          </nz-row>
+              </nz-col>
+            </nz-row>
+          </div>
           <nz-row>
             <nz-col style="width: 100%">
               <button

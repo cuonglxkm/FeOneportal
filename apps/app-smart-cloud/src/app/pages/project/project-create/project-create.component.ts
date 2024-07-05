@@ -19,6 +19,7 @@ import { CatalogService } from 'src/app/shared/services/catalog.service';
 import { Interface } from 'readline';
 import { VpcService } from 'src/app/shared/services/vpc.service';
 import { OrderService } from 'src/app/shared/services/order.service';
+import { LoadingService } from '@delon/abc/loading';
 
 
 
@@ -176,8 +177,9 @@ export class ProjectCreateComponent implements OnInit {
   sitetositeName: string;
   listTypeCatelogOffer: any;
 
-  numbergpu: number[] = [];
-  maxTotal: number = 8;
+  // numbergpu: number[] = [];
+  // maxTotal: number = 8;
+  keySSD:boolean = true;
 
   isRequired: boolean = true;
 
@@ -187,7 +189,11 @@ export class ProjectCreateComponent implements OnInit {
   closePopupError() {
     this.isVisiblePopupError = false;
   }
+  productByRegion:any
+  catalogStatus: { [key: string]: boolean } = {};
+  catalogs: string[] = ['ip', 'ipv6','volume-snapshot-hdd', 'volume-snapshot-ssd', 'backup-volume', 'loadbalancer-sdn', 'file-storage','file-storage-snapshot', 'vpns2s','vm-gpu'];
 
+  isShowAlertGpu:boolean;
   form = new FormGroup({
     name: new FormControl('', { validators: [Validators.required, Validators.pattern(/^[A-Za-z0-9_]+$/), Validators.maxLength(50)] }),
     description: new FormControl(''),
@@ -211,13 +217,15 @@ export class ProjectCreateComponent implements OnInit {
     @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
     private ipService: IpPublicService,
     private vpc: VpcService,
-    private orderService: OrderService) {
+    private orderService: OrderService,
+    private loadingSrv: LoadingService) {
     this.inputChangeSubject.pipe(
       debounceTime(800)
     ).subscribe(data => this.checkNumberInput(data.value, data.name));
 
   }
 
+  hasRoleSI: boolean
   ngOnInit() {
     let regionAndProject = getCurrentRegionAndProject();
     this.regionId = regionAndProject.regionId;
@@ -227,6 +235,7 @@ export class ProjectCreateComponent implements OnInit {
     this.loadListIpConnectInternet();
     this.loadInforProjectNormal();
     this.calculateReal();
+    this.hasRoleSI = localStorage.getItem('role').includes('SI')
     this.searchSubject.pipe(debounceTime(this.debounceTimeMs)).subscribe((searchValue) => {
       this.calculateReal();
     });
@@ -235,6 +244,10 @@ export class ProjectCreateComponent implements OnInit {
 
     this.iconToggle = "icon_circle_minus"
     this.numOfMonth = this.form.controls['numOfMonth'].value;
+    this.catalogs.forEach(catalog => {
+      this.getProductActivebyregion(catalog, this.regionId);
+    });
+    this.getCatelogOffer();
 
   }
   offervCpu: number;
@@ -242,20 +255,20 @@ export class ProjectCreateComponent implements OnInit {
   calculateReal() {
     this.refreshValue();
     if (this.vpcType == '1') {
-      console.log("ipConnectInternet 123", this.ipConnectInternet)
-      console.log("ipConnectInternet 123", this.ipConnectInternet?.split('--'))
+      if((this.selectIndexTab==1 && this.ssd ==0) || (this.selectIndexTab==0 && this.keySSD==false ||(this.selectIndexTab==0 && !this.offerFlavor))){
+        this.isShowAlertGpu = true
+      }
+      else{
+        this.isShowAlertGpu = false
+      }
+
       let lstIp = this.ipConnectInternet?.split('--');
-      console.log("lstIp 123", lstIp)
       let ip = '';
       let ipName = '';
       if (lstIp != null && lstIp != undefined) {
         ip = lstIp[0];
       }
-      // let numOfMonth = this.form.controls['numOfMonth'].value;
-      // let IPPublicNum = this.selectIndexTab == 1 ? this.numberIpPublic : 1;
-      // let IPFloating = this.selectIndexTab == 1 && this.ipConnectInternet != null && this.ipConnectInternet != '' ? this.numberIpFloating : 0;
-      // let IPV6 = this.selectIndexTab == 1 ? this.numberIpv6 : 0;
-      // if ((this.selectIndexTab == 0 && this.offerFlavor != undefined) || (this.selectIndexTab == 1 && this.vCPU != 0 && this.ram != 0)) {
+
 
       let IPPublicNum = this.numberIpPublic;
       let IPFloating = this.ipConnectInternet != null && this.ipConnectInternet != '' ? this.numberIpFloating : 0;
@@ -373,11 +386,8 @@ export class ProjectCreateComponent implements OnInit {
       const valuestring: any = res.valueString;
       const parts = valuestring.split("#")
       this.minBlock = parseInt(parts[0]);
-      console.log("this.minBlock", this.minBlock)
       this.stepBlock = parseInt(parts[1]);
-      console.log("this.stepBlock", this.stepBlock)
       this.maxBlock = parseInt(parts[2]);
-      console.log("this.maxBlock", this.maxBlock)
     })
   }
   messageNotification: string;
@@ -454,6 +464,7 @@ export class ProjectCreateComponent implements OnInit {
     );
     this.selectedElementFlavor = 'flavor_' + event;
     console.log("objeselectedElementFlavorct", this.selectedElementFlavor)
+    this.checkFlavor()
     this.calculate(null);
   }
 
@@ -498,6 +509,10 @@ export class ProjectCreateComponent implements OnInit {
   onRegionChange(region: RegionModel) {
     this.regionId = region.regionId;
     this.router.navigate(['/app-smart-cloud/project']);
+  }
+
+  onRegionChanged(region: RegionModel) {
+    this.regionId = region.regionId;
   }
 
   onChangeTime(numberMonth: number) {
@@ -554,7 +569,7 @@ export class ProjectCreateComponent implements OnInit {
           quotaIpPublicCount: this.numberIpPublic,
           quotaIpFloatingCount: this.numberIpFloating,
           quotaIpv6Count: this.numberIpv6,
-          
+
           projectType: this.vpcType,
           quotaNetworkCount: this.numberNetwork,
           quotaRouterCount: this.numberRouter,
@@ -605,6 +620,8 @@ export class ProjectCreateComponent implements OnInit {
       customerId: this.tokenService.get()?.userId,
       createdByUserId: this.tokenService.get()?.userId,
       note: 'Tạo VPC',
+      totalPayment : this.total.data.totalPayment.amount,
+      totalVAT :this.total.data.totalVAT.amount,
       orderItems: [
         {
           orderItemQuantity: 1,
@@ -627,11 +644,13 @@ export class ProjectCreateComponent implements OnInit {
         }
       );
     } else {
+      this.loadingSrv.open({ type: 'spin', text: 'Loading...' });
       this.orderService
         .validaterOrder(request)
         .pipe(
                 finalize(() => {
-                  this.isLoading = false;
+                  this.loadingSrv.close()
+                  // this.isLoading = false;
                   this.cdr.detectChanges();
                 })
               )
@@ -695,7 +714,7 @@ export class ProjectCreateComponent implements OnInit {
   initBackup() {
     this.activeBackup = true;
     this.trashBackup = true;
-    // this.price.backupUnit= 
+    // this.price.backupUnit=
 
   }
   deleteBackup() {
@@ -753,14 +772,15 @@ export class ProjectCreateComponent implements OnInit {
   initVpnGpu() {
     this.activeVpnGpu = true;
     this.trashVpnGpu = true;
-    this.getCatelogOffer();
+   
     // this.calculate(null);
 
   }
   deleteVpnGpu() {
     this.activeVpnGpu = false;
     this.trashVpnGpu = false;
-    this.gpuQuotasGobal = []
+    this.getCatelogOffer();
+    // this.gpuQuotasGobal = []
     this.calculate(null)
   }
 
@@ -787,6 +807,7 @@ export class ProjectCreateComponent implements OnInit {
     this.totalPayment = 0;
     this.selectIndexTab = event.index;
     this.calculate(null);
+    this.isShowAlertGpu= true;
   }
 
   loadListIpConnectInternet() {
@@ -886,21 +907,25 @@ export class ProjectCreateComponent implements OnInit {
         this.price.hhd = item.totalAmount.amount;
         this.price.hhdPerUnit = item.unitPrice.amount;
       }
-      else if (item.typeName == 'Nvidia A30') {
+      else if (item.typeName == 'NVIDIA-A30') {
         console.log("this.gpuQuotasGobal555", this.gpuQuotasGobal)
         for (let gpu of this.gpuQuotasGobal) {
-          if (gpu.GpuType == 'Nvidia A30') {
+          if (gpu.GpuType == 'NVIDIA-A30') {
             gpu.GpuPrice = item.totalAmount.amount;
+            console.log("gpu.GpuPrice", gpu.GpuPrice)
             gpu.GpuPriceUnit = item.unitPrice.amount;
+            console.log("gpu.GpuPriceUnit", gpu.GpuPriceUnit)
           }
         }
 
       }
-      else if (item.typeName == 'Nvidia A100') {
+      else if (item.typeName == 'NVIDIA-A100') {
         for (let gpu of this.gpuQuotasGobal) {
-          if (gpu.GpuType == 'Nvidia A100') {
+          if (gpu.GpuType == 'NVIDIA-A100') {
             gpu.GpuPrice = item.totalAmount.amount;
+            console.log("gpu.GpuPrice 2", gpu.GpuPrice)
             gpu.GpuPriceUnit = item.unitPrice.amount;
+            console.log("gpu.GpuPriceUnit 2", gpu.GpuPriceUnit)
           }
         }
       }
@@ -972,7 +997,7 @@ export class ProjectCreateComponent implements OnInit {
     this.price.snapshotssdUnit = 0;
   }
 
-  // 
+  //
 
   findNameLoadBalance(loadBalancerId: number) {
     if (loadBalancerId) {
@@ -1000,13 +1025,17 @@ export class ProjectCreateComponent implements OnInit {
       res => {
         this.listTypeCatelogOffer = res
         console.log("listTypeCatelogOffer", res)
-        this.gpuQuotasGobal = this.listTypeCatelogOffer.map((item: any) => ({
+        this.gpuQuotasGobal = this.listTypeCatelogOffer.map((item: any) => (
+        
+          {
+         
           GpuOfferId: item.id,
           GpuCount: 0,
           GpuType: item.offerName,
           GpuPrice: null,
-          GpuPriceUnit: null
+          GpuPriceUnit: item.price?.fixedPrice?.amount
         }));
+        console.log("this.gpuQuotasGobal",this.gpuQuotasGobal)
       }
     );
   }
@@ -1014,83 +1043,27 @@ export class ProjectCreateComponent implements OnInit {
     return item.offerName;
   }
   maxNumber: number[] = [8, 8]
-  // getValues(index:number) {
-  //   const offerName = this.listTypeCatelogOffer[index]?.offerName;
-  //   this.GpuofferNames[index] = offerName; 
-  //   console.log("this.GpuofferNames[index]", this.GpuofferNames[index])
-  //   this.GpuType = this.GpuofferNames[index];
-  //   console.log("GpuType", this.GpuType)
-  //   const GpuId= this.listTypeCatelogOffer[index]?.id;
-  //   this.GpuId[index] = GpuId;
-
-  // console.log("this.GpuId[index]", this.GpuId[index])
-  // this.GpuOfferId = this.GpuId[index];
-  // console.log("GpuOfferId", this.GpuOfferId)
-
-  //   this.maxNumber=[8,8]
-  //   if(index==0){
-  //     if(this.numbergpu[0]<=this.maxTotal){
-  //       this.maxNumber[1] = this.maxTotal -this.numbergpu[0]
-  //       if(this.numbergpu[1]>0 && this.numbergpu[1]>this.maxNumber[1]){
-  //         this.notification.warning('', 'Bạn chỉ có thể mua tổng 2 loại GPU tối đa là 8');
-  //         this.numbergpu[1]= this.maxNumber[1]
-  //       }
-  //     }
-  //     this.GpuCount = this.numbergpu[index]
-  //     console.log("GpuCount", this.GpuCount)
-  //   }
-  //   else{
-  //     if(this.numbergpu[1]<=this.maxTotal){
-  //       this.maxNumber[0] = this.maxTotal -this.numbergpu[1]
-  //       if(this.numbergpu[0]>0 && this.numbergpu[0]>this.maxNumber[0]){
-  //         this.notification.warning('', 'Bạn chỉ có thể mua tổng 2 loại GPU tối đa là 8');
-  //         this.numbergpu[0]= this.maxNumber[0]
-  //       }
-  //     }
-  //     this.GpuCount = this.numbergpu[index]
-  //     console.log("GpuCount", this.GpuCount)
-  //   }
-  //   this.calculate(null);
-  // }
 
 
   getValues(index: number, value: number): void {
-
+   
     console.log("index", index)
     console.log("value", value)
     console.log("gpuQuotasGobal 123", this.gpuQuotasGobal)
-    // console.log(this.gpuQuotasGobal[index].GpuCount);
-    if (index == 0) {
-      if (this.gpuQuotasGobal[0].GpuCount <= this.maxTotal) {
-        this.maxNumber[1] = this.maxTotal - this.gpuQuotasGobal[0].GpuCount;
-        if (this.gpuQuotasGobal[1].GpuCount > 0 && this.gpuQuotasGobal[1].GpuCount > this.maxNumber[1]) {
-          this.notification.warning('', 'Bạn chỉ có thể mua tổng 2 loại GPU tối đa là 8');
-          this.gpuQuotasGobal[1].GpuCount = this.maxNumber[1]
-        }
-      }
+    if(  (this.selectIndexTab==0 && this.keySSD==false ||(this.selectIndexTab==0 && !this.offerFlavor)) || (this.selectIndexTab==1 && this.ssd==0) && this.gpuQuotasGobal[index].GpuCount !=0){
+      this.isShowAlertGpu = true
+      console.log("isShowAlertGpu iuf", this.isShowAlertGpu)
     }
-    else {
-      if (this.gpuQuotasGobal[1].GpuCount <= this.maxTotal) {
-        this.maxNumber[0] = this.maxTotal - this.gpuQuotasGobal[1].GpuCount
-        if (this.gpuQuotasGobal[0].GpuCount > 0 && this.gpuQuotasGobal[0].GpuCount > this.maxNumber[0]) {
-          this.notification.warning('', 'Bạn chỉ có thể mua tổng 2 loại GPU tối đa là 8');
-          this.gpuQuotasGobal[0].GpuCount = this.maxNumber[0]
-        }
-      }
+    else{
+      this.isShowAlertGpu = false
+      console.log("isShowAlertGpu else", this.isShowAlertGpu)
     }
     this.calculate(null)
+   
+
   }
 
-  getMaxValue(index: number): number {
-    if (this.gpuQuotasGobal[index].GpuCount < 8) {
-      return this.maxNumber[index];
-    }
-  }
-
-  isDisabled(index: number): boolean {
-    let total = this.numbergpu.reduce((sum, current) => sum + current, 0);
-    return total >= this.maxTotal && this.numbergpu[index] === 0;
-  }
+  
   refreshQuota() {
     this.vCPU = 0;
     this.ram = 0;
@@ -1108,5 +1081,33 @@ export class ProjectCreateComponent implements OnInit {
     else {
       this.isRequired = true;
     }
+  }
+  checkFlavor(){
+    this.keySSD= this.offerFlavor.characteristicValues.find((charName)=>charName.charName ==='VolumeType').charOptionValues?.[0]=='SSD'
+   console.log("keySSD", this.keySSD)
+   if(this.keySSD){
+    this.isShowAlertGpu = false
+   }
+   else{
+    this.isShowAlertGpu = true
+   }
+
+  }
+
+
+  // getProductActivebyregion(catalog:string, regionid:number){
+  //   this.vpc.getProductActivebyregion(catalog, regionid).subscribe((res: any) => {
+  //     this.productByRegion = res
+  //     this.catalogStatus[catalog] = this.productByRegion.some(product => product.isActive === true);
+
+  //   })
+  // }
+  getProductActivebyregion(catalog:any, regionid:number){
+    this.vpc.getProductActivebyregion(catalog, regionid).subscribe((res: any) => {
+      this.productByRegion = res
+      console.log("productByRegion", this.productByRegion)
+      this.catalogStatus[catalog] = this.productByRegion.some(product => product.isActive === true);
+
+    })
   }
 }

@@ -189,9 +189,9 @@ export class VolumeService extends BaseService {
     return this.http.post<any>(this.baseUrl + this.ENDPOINT.provisions + '/vlsnapshots', Object.assign(data));
   }
 
-  serchSnapshot(size: number, index: number, region: any, project: any, value: string, status: any) {
-    return this.http.get<boolean>(this.baseUrl + this.ENDPOINT.provisions + '/vlsnapshots?pageSize='+size+"&pageNumber="+index+"&regionId="+region+"&projectId="+project
-      +"&name="+value+"&status="+status);
+  serchSnapshot(size: number, index: number, region: any, project: any, value: string, status: any,ssPackageId: any) {
+    return this.http.get<any>(this.baseUrl + this.ENDPOINT.provisions + '/vlsnapshots?pageSize='+size+"&pageNumber="+index+"&regionId="+region+"&projectId="+project
+      +"&name="+value+"&status="+status+"&ssPackageId="+ssPackageId);
   }
 
   deleteSnapshot(id : any) {

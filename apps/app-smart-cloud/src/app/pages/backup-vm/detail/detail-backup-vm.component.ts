@@ -26,22 +26,22 @@ export class DetailBackupVmComponent implements OnInit {
   region = JSON.parse(localStorage.getItem('regionId'));
   project = JSON.parse(localStorage.getItem('projectId'));
 
+  isLoading: boolean = false
+
   backupVm: BackupVm;
 
   systemInfoBackups: SystemInfoBackup[] = []
   volumeBackups: VolumeBackup[] = []
 
   nameSecurityGroup = []
-  nameSecurityGroupTextUnique: string
-  nameSecurityGroupText: string[]
+  nameSecurityGroupTextUnique: string = ''
+  nameSecurityGroupText: string[] = []
 
-  nameFlavorTextUnique: string
-  nameFlavorText: string[]
+  nameFlavorTextUnique: string = ''
+  nameFlavorText: string[] = []
   nameFlavor = []
 
-  nameVolumeBackupAttach = []
-  nameVolumeBackupAttachName: string[]
-  nameVolumeBackupAttachNameUnique: string
+  volumeBackupAttach = []
 
 
   userId: number
@@ -68,6 +68,10 @@ export class DetailBackupVmComponent implements OnInit {
     // });
   }
 
+  onRegionChanged(region: RegionModel) {
+    this.region = region.regionId;
+  }
+
   projectChanged(project: ProjectModel) {
     this.project = project?.id
     this.typeVpc = project?.type
@@ -78,15 +82,20 @@ export class DetailBackupVmComponent implements OnInit {
     this.router.navigate(['/app-smart-cloud/backup-vm'])
   }
 
-  goBack() {
-    this.router.navigate(['/app-smart-cloud/backup-vm'])
+  convertString(str: string): string {
+    const parts = str?.trim().split('\n');
+    if (parts?.length === 1) {
+      return str;
+    }
+    return parts.join(', ');
   }
 
   getBackupVmById(id) {
+    this.isLoading = true
     this.backupVmService.detail(id).subscribe(data => {
+      this.isLoading = false
       this.backupVm = data
       this.systemInfoBackups = this.backupVm.systemInfoBackups
-      this.volumeBackups = this.backupVm.volumeBackups
       this.backupVm?.securityGroupBackups.forEach(item => {
         this.nameSecurityGroup?.push(item.sgName)
       })
@@ -95,35 +104,23 @@ export class DetailBackupVmComponent implements OnInit {
         this.nameFlavor?.push(item.osName)
       })
 
-      this.backupVm?.volumeBackups.forEach(item => {
-        if(item.isBootable == false) {
-          this.nameVolumeBackupAttach?.push(item.name)
-        }
-      })
-
       this.nameSecurityGroupText = Array.from(new Set(this.nameSecurityGroup))
-      this.nameSecurityGroupTextUnique = this.nameSecurityGroupText.join('\n')
-      console.log('name', this.nameSecurityGroup)
-      console.log('data', this.backupVm)
-      console.log('unique', this.nameSecurityGroupText)
+      this.nameSecurityGroupTextUnique = this.nameSecurityGroupText?.join('\n')
 
       this.nameFlavorText = Array.from(new Set(this.nameFlavor))
       this.nameFlavorTextUnique = this.nameFlavorText.join('\n')
-      console.log('name', this.nameFlavorText)
-      console.log('unique', this.nameFlavorTextUnique)
 
-      this.nameVolumeBackupAttachName = Array.from(new Set(this.nameVolumeBackupAttach))
-      this.nameVolumeBackupAttachNameUnique = this.nameVolumeBackupAttachName.join('\n')
-      console.log('name', this.nameVolumeBackupAttachName)
-      console.log('unique', this.nameVolumeBackupAttachNameUnique)
 
       this.getBackupPackage(this.backupVm?.backupPacketId);
     }, error => {
+      this.isLoading = false
       if(error.error.detail.includes('Not Found!')) {
         this.router.navigate(['/app-smart-cloud/backup-vm'])
         this.notification.error('', error.error.detail)
+      } else {
+        // this.router.navigate(['/app-smart-cloud/backup-vm'])
+        this.notification.error(error.statusText, error.error.title)
       }
-     this.notification.error('', error.error.detail)
     })
   }
 
@@ -134,7 +131,7 @@ export class DetailBackupVmComponent implements OnInit {
   }
 
   getBackupPackage(value) {
-    this.backupPackageService.detail(value).subscribe(data => {
+    this.backupPackageService.detail(value, this.project).subscribe(data => {
       this.backupPackageDetail = data;
     });
   }
@@ -148,7 +145,7 @@ export class DetailBackupVmComponent implements OnInit {
     this.project = regionAndProject.projectId
     console.log(selectedDetailBackupId);
     if (selectedDetailBackupId !== undefined || selectedDetailBackupId !== null || selectedDetailBackupId !== '') {
-      this.getInfoProjectVpc(parseInt(selectedDetailBackupId))
+      this.getInfoProjectVpc(this.project)
       this.getBackupVmById(parseInt(selectedDetailBackupId))
     }
   }

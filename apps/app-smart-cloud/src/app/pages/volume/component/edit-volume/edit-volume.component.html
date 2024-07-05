@@ -22,7 +22,7 @@
     <ng-template #iconTemplate><one-portal-svg-icon [icon]="'icon_breadcrumb'"></one-portal-svg-icon></ng-template>
     <div class="alain-custom-action text-right">
       <share-users-combobox></share-users-combobox>
-      <region-select-dropdown (valueChanged)="regionChanged($event)"></region-select-dropdown>
+      <region-select-dropdown (regionChange)="onRegionChanged($event)" (valueChanged)="regionChanged($event)"></region-select-dropdown>
       <project-select-dropdown (valueChanged)="projectChanged($event)"
                                (userChanged)="userChangeProject($event)"
                                [regionId]="region"></project-select-dropdown>
@@ -182,47 +182,49 @@
               <div class="text-value">{{'volume.table.title.iops'|i18n}}</div>
               <div style="margin-top: 10px" class="text-label">{{ volumeEdit?.iops }}</div>
               <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
-              <nz-row style="margin-bottom: 10px" nzGutter="16">
-                <nz-col nzSpan="16">
-                  <span class="text-value">{{ 'app.fee.resize' | i18n }}</span>
-                </nz-col>
-                <nz-col class="text-right" nzSpan="8">
-                  <span class="text-value" style="color: #0066b3" nzAlign="right" *ngIf="orderItem == null">0 VND</span>
-                  <span class="text-value" style="color: #0066b3" nzAlign="right" *ngIf="orderItem != undefined">
+              <div *ngIf="!hasRoleSI">
+                <nz-row style="margin-bottom: 10px" nzGutter="16">
+                  <nz-col nzSpan="16">
+                    <span class="text-value">{{ 'app.fee.resize' | i18n }}</span>
+                  </nz-col>
+                  <nz-col class="text-right" nzSpan="8">
+                    <span class="text-value" style="color: #0066b3" nzAlign="right" *ngIf="orderItem == null">0 VND</span>
+                    <span class="text-value" style="color: #0066b3" nzAlign="right" *ngIf="orderItem != undefined">
                   {{orderItem?.totalAmount?.amount | number }} {{orderItem?.totalAmount?.currency}}
                 </span>
-                </nz-col>
-              </nz-row>
-              <nz-row style="margin-bottom: 10px" nzGutter="16">
-                <nz-col nzSpan="16">
-                  <span class="text-value">{{ 'app.cost.vat' | i18n }}</span>
-                </nz-col>
-                <nz-col class="text-right" nzSpan="8">
-                  <span class="text-value" style="color: #0066b3" nzAlign="right" *ngIf="orderItem == null">0 VND</span>
-                  <span class="text-value" style="color: #0066b3" nzAlign="right" *ngIf="orderItem != undefined">
+                  </nz-col>
+                </nz-row>
+                <nz-row style="margin-bottom: 10px" nzGutter="16">
+                  <nz-col nzSpan="16">
+                    <span class="text-value">{{ 'app.cost.vat' | i18n }}</span>
+                  </nz-col>
+                  <nz-col class="text-right" nzSpan="8">
+                    <span class="text-value" style="color: #0066b3" nzAlign="right" *ngIf="orderItem == null">0 VND</span>
+                    <span class="text-value" style="color: #0066b3" nzAlign="right" *ngIf="orderItem != undefined">
                   {{orderItem?.totalVAT?.amount | number }} {{orderItem?.totalVAT?.currency}}
                 </span>
-                </nz-col>
-              </nz-row>
-              <nz-row style="
+                  </nz-col>
+                </nz-row>
+                <nz-row style="
             margin-bottom: 20px;
             background-color: #cce9ff;
             padding: 16px 0 16px 0;
             border-radius: 8px;
           " nzGutter="16">
-                <nz-col nzSpan="16">
-                  <span class="text-label">{{'app.total.payment'|i18n}}</span><br />
-                  <span class="text-note-italicized">({{'app.include.vat'|i18n: {vat:'10'} }})</span>
-                </nz-col>
-                <nz-col class="text-right" nzSpan="8">
+                  <nz-col nzSpan="16">
+                    <span class="text-label">{{'app.total.payment'|i18n}}</span><br />
+                    <span class="text-note-italicized">({{'app.include.vat'|i18n: {vat:'10'} }})</span>
+                  </nz-col>
+                  <nz-col class="text-right" nzSpan="8">
               <span *ngIf="orderItem == undefined" class="text-value" style="color: #ea3829" nzAlign="right">
               0 VND
             </span>
-                  <span *ngIf="orderItem != undefined" class="text-value" style="color: #ea3829" nzAlign="right">
+                    <span *ngIf="orderItem != undefined" class="text-value" style="color: #ea3829" nzAlign="right">
               {{ orderItem?.totalPayment?.amount | number: '1.0-0' }} {{ orderItem?.totalPayment?.currency }}
             </span>
-                </nz-col>
-              </nz-row>
+                  </nz-col>
+                </nz-row>
+              </div>
               <nz-row>
                 <nz-col style="width: 100%">
                   <button style="width: 100%" nz-button nzSize="large" nzType="primary" (click)="navigateToPaymentSummary()" [nzLoading]="isLoading"

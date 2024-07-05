@@ -9,7 +9,7 @@
         <a [routerLink]="['/']">Home</a>
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>
-        <a [routerLink]="['/app-smart-cloud/schedule/snapshot/list']"
+        <a [routerLink]="['/app-smart-cloud/schedule/snapshot']"
           >Lịch Snapshot</a
         >
       </nz-breadcrumb-item>
@@ -24,6 +24,7 @@
       <share-users-combobox></share-users-combobox>
       <region-select-dropdown
         (valueChanged)="onRegionChange($event)"
+        (regionChange)="onRegionChanged($event)"
       ></region-select-dropdown>
       <project-select-dropdown
         [regionId]="region"

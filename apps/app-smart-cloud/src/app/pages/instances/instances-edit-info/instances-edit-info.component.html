@@ -1,7 +1,7 @@
 <page-header
   [breadcrumb]="breadcrumb"
   [action]="action"
-  [title]="'app.edit.instance' | i18n"
+  [title]="'app.instances.OS.change' | i18n"
 >
   <ng-template #breadcrumb>
     <nz-breadcrumb [nzSeparator]="separatorTemplate">
@@ -16,7 +16,7 @@
           'app.instances' | i18n
         }}</a>
       </nz-breadcrumb-item>
-      <nz-breadcrumb-item>{{ 'app.edit.instance' | i18n }}</nz-breadcrumb-item>
+      <nz-breadcrumb-item>{{ 'app.instances.OS.change' | i18n }}</nz-breadcrumb-item>
     </nz-breadcrumb>
     <ng-template #separatorTemplate
       ><img src="assets/imgs/arrow-square-right.svg" alt="" />
@@ -27,6 +27,7 @@
       <share-users-combobox></share-users-combobox>
       <region-select-dropdown
         (valueChanged)="onRegionChange($event)"
+        (regionChange)="onRegionChanged($event)"
       ></region-select-dropdown>
       <project-select-dropdown
         [regionId]="region"
@@ -37,7 +38,7 @@
 </page-header>
 <nz-card [nzBordered]="false" *ngIf="currentImage">
   <div style="margin-bottom: 20px">
-    <span class="text-card-header">{{ 'app.instances.OS.change' | i18n }}</span>
+    <span class="text-card-header">{{ 'app.change.info' | i18n }}</span>
   </div>
   <span class="text-label"
     >{{ 'app.current.instances.OS' | i18n }}: {{ currentImage.name }}</span
@@ -45,7 +46,7 @@
   <br />
   <br />
   <span class="text-label"
-    >{{ 'app.choose.new.instances.OS' | i18n }} (<span class="text-red">*</span
+    >{{ 'app.instances.OS' | i18n }} (<span class="text-red">*</span
     >)</span
   >
   <ngu-carousel

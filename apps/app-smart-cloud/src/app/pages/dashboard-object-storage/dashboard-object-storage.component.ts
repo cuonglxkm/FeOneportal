@@ -63,7 +63,7 @@ export class DashboardObjectStorageComponent implements OnInit {
   hasObjectStorage() {
     this.loadingSrv.open({ type: 'spin', text: 'Loading...' });
     this.objectStorageService
-      .getUserInfo()
+      .getUserInfo(this.region)
       .pipe(finalize(() => this.loadingSrv.close()))
       .subscribe({
         next: (data) => {
@@ -83,6 +83,14 @@ export class DashboardObjectStorageComponent implements OnInit {
       });
   }
 
+  onRegionChange(region: RegionModel) {
+    this.region = region.regionId;
+  }
+
+  onRegionChanged(region: RegionModel) {
+    this.region = region.regionId;
+  }
+
   onBucketChange(value) {
     this.bucketSelected = value;
     this.getSummaryObjectStorage();
@@ -94,17 +102,10 @@ export class DashboardObjectStorageComponent implements OnInit {
   }
 
 
-  regionChanged(region: RegionModel) {
-    this.region = region.regionId;
-  }
-
-  projectChanged(project: ProjectModel) {
-    this.project = project?.id;
-  }
 
   getSummaryObjectStorage() {
     console.log('time', this.timeSelected)
-    this.objectStorageService.getMonitorObjectStorage(this.bucketSelected, this.timeSelected).subscribe(data => {
+    this.objectStorageService.getMonitorObjectStorage(this.bucketSelected, this.timeSelected, this.region).subscribe(data => {
       console.log('summary', data);
       this.summary = data;
     });
@@ -116,7 +117,7 @@ export class DashboardObjectStorageComponent implements OnInit {
     this.project = regionAndProject.projectId;
     this.hasObjectStorage();
 
-    this.bucketService.getListBucket(1, 9999, '').subscribe(data => {
+    this.bucketService.getListBucket(1, 9999, '', this.region).subscribe(data => {
       this.bucketList = data.records;
       this.bucketSelected = this.bucketList[0].bucketName
       console.log(this.bucketSelected)

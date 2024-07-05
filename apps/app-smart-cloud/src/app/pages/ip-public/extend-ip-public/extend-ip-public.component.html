@@ -13,7 +13,7 @@
   <ng-template #action>
     <div class="alain-custom-action text-right">
       <share-users-combobox></share-users-combobox>
-      <region-select-dropdown (valueChanged)="onRegionChange($event)"></region-select-dropdown>
+      <region-select-dropdown (regionChange)="onRegionChanged($event)" (valueChanged)="onRegionChange($event)"></region-select-dropdown>
       <project-select-dropdown [regionId]="regionId" (userChanged)="projectChange($event)"></project-select-dropdown>
     </div>
   </ng-template>
@@ -38,8 +38,9 @@
         </div>
       </nz-card>
       <form nz-form nzLayout="vertical">
-        <one-portal-service-time-extend *ngIf="ipInfo != undefined" [createDate]="dateString"
+        <one-portal-service-time-extend *ngIf="ipInfo != undefined && this.total?.data != undefined" [createDate]="dateString"
                                         [expiredDate]="ipInfo.expiredDate"
+                                        [newExpiredDate]="this.total.data.orderItemPrices[0].expiredDate"
                                         (valueChanged)="onChangeTime($event)"/>
       </form>
     </nz-col>

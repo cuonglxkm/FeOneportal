@@ -94,6 +94,10 @@ export class EditScheduleBackupVmComponent implements OnInit {
 
   }
 
+  onRegionChanged(region: RegionModel) {
+    this.region = region.regionId;
+  }
+
   userChanged(project: ProjectModel) {
     this.router.navigate(['/app-smart-cloud/schedule/backup/list']);
   }
@@ -189,7 +193,9 @@ export class EditScheduleBackupVmComponent implements OnInit {
     return this.formEdit;
   }
 
+  isLoadingAction: boolean = false
   submitForm() {
+    this.isLoadingAction = true;
     if (this.validateForm.valid) {
       this.formEdit = this.getData();
       this.formEdit.runtime = this.datepipe.transform(this.validateForm.controls.times.value, 'yyyy-MM-ddTHH:mm:ss', 'vi-VI');
@@ -199,12 +205,15 @@ export class EditScheduleBackupVmComponent implements OnInit {
       this.formEdit.scheduleId = this.idSchedule;
       // })
       this.scheduleService.edit(this.formEdit).subscribe(data => {
+        this.isLoadingAction = false
         this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('schedule.backup.notify.edit.success'));
         this.nameList = [];
         this.getListScheduleBackup();
         this.router.navigate(['/app-smart-cloud/schedule/backup/list']);
       }, error => {
+        this.isLoadingAction = false;
         this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('schedule.backup.notify.edit.fail'));
+        this.router.navigate(['/app-smart-cloud/schedule/backup/list']);
       });
     } else {
       console.log('invalid', this.validateForm.getRawValue());
@@ -225,6 +234,7 @@ export class EditScheduleBackupVmComponent implements OnInit {
       this.isLoading = false;
       this.validateForm.controls.backupMode.setValue(this.backupSchedule?.mode);
       this.validateForm.controls.times.setValue(this.backupSchedule?.runtime);
+      console.log('times', this.validateForm.controls.times.value)
       this.validateForm.controls.name.setValue(this.backupSchedule?.name);
       this.validateForm.controls.description.setValue(this.backupSchedule?.description);
       this.validateForm.controls.months.setValue(this.backupSchedule?.interval);
@@ -249,6 +259,8 @@ export class EditScheduleBackupVmComponent implements OnInit {
     let formSearch: FormSearchScheduleBackup = new FormSearchScheduleBackup();
     formSearch.pageSize = 9999;
     formSearch.pageIndex = 1;
+    formSearch.scheduleName = '';
+    formSearch.scheduleStatus = '';
     this.scheduleService.search(formSearch).subscribe(data => {
       data.records?.forEach(item => {
         if (!this.backupSchedule?.name.includes(item.name)) {

@@ -1,0 +1,102 @@
+<a (click)="showModal()">{{ 'form.account.create.new' | i18n }}</a>
+<nz-modal [(nzVisible)]="isVisible"
+          [nzTitle]="'form.account.create.new' | i18n"
+          (nzOnCancel)="handleCancel()" nzMark="false">
+  <div *nzModalTitle>
+    <span class="text-modal-title">{{ 'form.account.create.new' | i18n }}</span>
+  </div>
+  <div *nzModalContent>
+    <form nz-form [formGroup]="form" nzLayout="vertical">
+      <nz-form-item>
+        <nz-form-label>
+          <span>{{ 'app.register.email.label'|i18n }} (<span class="text-red">*</span>)</span>
+        </nz-form-label>
+        <nz-form-control [nzErrorTip]="mailErrorTip">
+          <input nz-input
+                 formControlName="mail"
+                 placeholder="{{'app.register.email.press' | i18n}}" />
+          <ng-template #mailErrorTip let-i>
+            <ng-container *ngIf="i.errors?.required">{{ 'validation.email.required' | i18n }}</ng-container>
+            <ng-container *ngIf="i.errors?.email">{{ 'validation.email.wrong-format' | i18n }}</ng-container>
+          </ng-template>
+        </nz-form-control>
+      </nz-form-item>
+      <div nz-row [nzGutter]="16">
+        <div nz-col nzSpan="12">
+          <nz-form-item>
+            <nz-form-label>{{ 'app.name' | i18n }}(<span style="color: red;">*</span>)</nz-form-label>
+            <nz-form-control [nzErrorTip]="'form.account.validate.name' | i18n">
+              <input nz-input
+                     [maxlength]="20"
+                     formControlName="firstName"
+                     class="input-custom"
+                     placeholder="{{'app.input.name' | i18n}}" />
+              <ng-template #nameErrorTip let-i>
+                <ng-container *ngIf="i.errors?.required">{{'form.account.validate.name' | i18n }}
+                </ng-container>
+              </ng-template>
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+        <div nz-col nzSpan="12">
+          <nz-form-item>
+            <nz-form-label [nzSm]="6" [nzXs]="24">{{ 'form.account.surname' | i18n }}(<span style="color: red;">*</span>)
+            </nz-form-label>
+            <nz-form-control [nzErrorTip]="'form.account.validate.surname' | i18n">
+              <input [maxlength]="20"
+                     nz-input
+                     formControlName="lastName"
+                     class="input-custom"
+                     placeholder="{{'app.register.surname.label' | i18n}}" />
+              <ng-template #lastNameErrorTip let-i>
+                <ng-container *ngIf="i.errors?.required">{{ 'form.account.validate.surname' | i18n }}</ng-container>
+              </ng-template>
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+      </div>
+      <nz-form-item>
+        <nz-form-label>{{ 'app.register.address.select' | i18n }}(<span style="color: red;">*</span>)</nz-form-label>
+        <nz-form-control [nzErrorTip]="provinceErrorTip">
+          <nz-select nzSize="large"
+                     nzShowSearch
+                     nzAllowClear
+                     nzPlaceHolder="{{'app.register.address.select' | i18n}}"
+                     formControlName="province">
+            <nz-option *ngFor="let i of provinceList" [nzLabel]="i.name" [nzValue]="i.name" />
+          </nz-select>
+          <ng-template #provinceErrorTip let-i>
+            <ng-container *ngIf="i.errors?.required">{{ 'validation.province.required' | i18n }}</ng-container>
+          </ng-template>
+        </nz-form-control>
+      </nz-form-item>
+
+      <nz-form-item>
+        <nz-form-label>{{ 'form.account.phone' | i18n }}(<span style="color: red;">*</span>)</nz-form-label>
+        <nz-form-control [nzErrorTip]="mobileErrorTip">
+          <input formControlName="mobile"
+                 nz-input
+                 class="input-custom"
+                 placeholder="{{'app.register.phone.babel' | i18n}}" />
+          <ng-template #mobileErrorTip let-i>
+            <ng-container *ngIf="i.hasError('required')">{{ 'validation.phone-number.required' | i18n }}</ng-container>
+            <ng-container *ngIf="i.hasError('validPhoneNumber')">{{ 'validation.phone-number.wrong-format' | i18n }}
+            </ng-container>
+          </ng-template>
+        </nz-form-control>
+      </nz-form-item>
+    </form>
+  </div>
+  <div *nzModalFooter style="padding-left: 8px; padding-right: 8px;">
+    <button nz-button nzType="default" (click)="handleCancel()" class="button-cancel">
+      <span nz-icon nzType="close" nzTheme="outline"></span>{{ 'app.button.cancel' | i18n }}
+    </button>
+    <button nz-button nzType="primary"
+            (click)="handleOk()"
+            [nzLoading]="isLoading"
+            [disabled]="form.invalid"
+            class="button-ok">
+      <span nz-icon nzType="check" nzTheme="outline"></span>{{ 'app.register.register' | i18n }}
+    </button>
+  </div>
+</nz-modal>

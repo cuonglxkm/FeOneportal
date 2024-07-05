@@ -45,7 +45,7 @@ export class CreateBackupVolumeVpcComponent implements OnInit{
 
   volumeIdParam: any;
   listName: string[] = []
-  listVolumes: BaseResponse<VolumeDTO[]>
+  listVolumes: VolumeDTO[]
   isLoading: boolean = false
   volumeInfo: VolumeDTO = new VolumeDTO()
 
@@ -68,6 +68,10 @@ export class CreateBackupVolumeVpcComponent implements OnInit{
     this.router.navigate(['/app-smart-cloud/backup-volume']);
   }
 
+  onRegionChanged(region: RegionModel) {
+    this.region = region.regionId;
+  }
+
   projectChanged(project: ProjectModel) {
     this.project = project?.id
   }
@@ -86,10 +90,17 @@ export class CreateBackupVolumeVpcComponent implements OnInit{
     }
   }
 
+  isLoadingVolume: boolean = false
   getListVolumes() {
+    this.isLoadingVolume = true
     this.volumeService.getVolumes(this.tokenService.get()?.userId, this.project, this.region, 9999, 1, '', '').subscribe(data => {
-      this.listVolumes = data;
+      this.isLoadingVolume = false
+      this.listVolumes = data.records;
+      this.listVolumes = this.listVolumes.filter(item => item.status === 'KHOITAO')
       this.validateForm.controls.volumeId.setValue(this.listVolumes[0]?.id)
+    }, error => {
+      this.isLoadingVolume = false
+      this.notification.error(error.statusText, this.i18n.fanyi('app.failData'))
     })
   }
 
@@ -175,10 +186,29 @@ export class CreateBackupVolumeVpcComponent implements OnInit{
       this.isLoading = false
     })
   }
+
+  getListBackupVolumes() {
+    this.isLoading = true
+    this.backupVolumeService.getListBackupVolume(this.region, this.project, '', '', 99999, 1).subscribe(data => {
+      this.isLoading = false
+      data?.records.forEach(item => {
+        if (this.listName.length > 0) {
+          this.listName.push(item.name);
+        } else {
+          this.listName = [item.name];
+        }
+      })
+    }, error =>  {
+      this.isLoading = false
+      this.notification.error(error.statusText, this.i18n.fanyi('app.failData'))
+    });
+  }
+
   ngOnInit() {
     let regionAndProject = getCurrentRegionAndProject();
     this.region = regionAndProject.regionId;
     this.project = regionAndProject.projectId;
+    this.getListBackupVolumes()
     if (this.activatedRoute.snapshot.paramMap.get('volumeId') != undefined || this.activatedRoute.snapshot.paramMap.get('volumeId') != null) {
       console.log('here')
       this.volumeIdParam = Number.parseInt(this.activatedRoute.snapshot.paramMap.get('volumeId'));

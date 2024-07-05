@@ -37,7 +37,7 @@ export class VlanService extends BaseService {
 
   private getHeaders() {
     return new HttpHeaders({
-      'Content-Type': 'text',
+      'Content-Type': 'application/json',
       'User-Root-Id': localStorage.getItem('UserRootId') && Number(localStorage.getItem('UserRootId')) > 0 ? Number(localStorage.getItem('UserRootId')) : this.tokenService.get()?.userId,
       'Authorization': 'Bearer ' + this.tokenService.get()?.token
     })
@@ -375,6 +375,34 @@ export class VlanService extends BaseService {
 
   checkIpAvailable(ip: string, cidr: string, networkId: string, regionId: number) {
     return this.http.get<any>(this.baseUrl + this.ENDPOINT.provisions + `/vlans/CheckIpAvailable?ip=${ip}&cidr=${cidr}&networkId=${networkId}&regionId=${regionId}`, {
+      headers: this.getHeaders()
+    }).pipe(catchError((error: HttpErrorResponse) => {
+      if (error.status === 401) {
+        console.error('login');
+      } else if (error.status === 404) {
+        // Handle 404 Not Found error
+        console.error('Resource not found');
+      }
+      return throwError(error);
+    }))
+  }
+
+  checkDeleteNetwork(networkId) {
+    return this.http.get<boolean>(this.baseUrl + this.ENDPOINT.provisions + `/vlans/checkdeletenetwork?networkId=${networkId}`, {
+      headers: this.getHeaders()
+    }).pipe(catchError((error: HttpErrorResponse) => {
+      if (error.status === 401) {
+        console.error('login');
+      } else if (error.status === 404) {
+        // Handle 404 Not Found error
+        console.error('Resource not found');
+      }
+      return throwError(error);
+    }))
+  }
+
+  checkDeleteSubnet(subnetId) {
+    return this.http.get<boolean>(this.baseUrl + this.ENDPOINT.provisions + `/vlans/checkdeletesubnet?subnetId=${subnetId}`, {
       headers: this.getHeaders()
     }).pipe(catchError((error: HttpErrorResponse) => {
       if (error.status === 401) {

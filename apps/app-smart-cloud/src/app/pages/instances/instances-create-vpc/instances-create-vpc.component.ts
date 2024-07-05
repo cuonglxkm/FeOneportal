@@ -15,7 +15,6 @@ import {
   IPPublicModel,
   ImageTypesModel,
   SHHKeyModel,
-  SecurityGroupModel,
   Order,
   OrderItem,
   OfferItem,
@@ -23,6 +22,7 @@ import {
   InfoVPCModel,
   GpuProject,
   GpuUsage,
+  GpuConfigRecommend,
 } from '../instances.model';
 import { Router } from '@angular/router';
 import { InstancesService } from '../instances.service';
@@ -34,7 +34,11 @@ import { slider } from '../../../../../../../libs/common-utils/src/lib/slide-ani
 import { SnapshotVolumeService } from 'src/app/shared/services/snapshot-volume.service';
 import { SnapshotVolumeDto } from 'src/app/shared/dto/snapshot-volume.dto';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
-import { getCurrentRegionAndProject } from '@shared';
+import {
+  getCurrentRegionAndProject,
+  getListGpuConfigRecommend,
+  getUniqueObjects,
+} from '@shared';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import {
   FormSearchNetwork,
@@ -47,10 +51,8 @@ import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from '@core';
 import { ConfigurationsService } from 'src/app/shared/services/configurations.service';
 import { OrderService } from 'src/app/shared/services/order.service';
+import { CatalogService } from 'src/app/shared/services/catalog.service';
 
-interface InstancesForm {
-  name: FormControl<string>;
-}
 @Component({
   selector: 'one-portal-instances-create-vpc',
   templateUrl: './instances-create-vpc.component.html',
@@ -66,7 +68,6 @@ export class InstancesCreateVpcComponent implements OnInit {
     'assets/logo.svg',
   ];
 
-  public carouselTileItems$: Observable<number[]>;
   public carouselTileConfig: NguCarouselConfig = {
     grid: { xs: 1, sm: 1, md: 2, lg: 4, all: 0 },
     speed: 250,
@@ -116,6 +117,7 @@ export class InstancesCreateVpcComponent implements OnInit {
   remainingVolume: number = 0;
   remainingVCPU: number = 0;
   remainingGpu: number = 0;
+  volumeRootCapacity: number = 0;
 
   onKeyDown(event: KeyboardEvent) {
     // Lấy giá trị của phím được nhấn
@@ -163,6 +165,7 @@ export class InstancesCreateVpcComponent implements OnInit {
     private dataService: InstancesService,
     private snapshotVLService: SnapshotVolumeService,
     private vlanService: VlanService,
+    private catalogService: CatalogService,
     private notification: NzNotificationService,
     private cdr: ChangeDetectorRef,
     private router: Router,
@@ -187,6 +190,10 @@ export class InstancesCreateVpcComponent implements OnInit {
     this.updateActivePoint(); // Gọi hàm này sau khi view đã được init để đảm bảo có giá trị cần thiết
   }
 
+  onRegionChanged(region: RegionModel) {
+    this.region = region.regionId;
+  }
+
   updateActivePoint(): void {
     // Gọi hàm reloadCarousel khi cần reload
     if (this.reloadCarousel) {
@@ -202,12 +209,14 @@ export class InstancesCreateVpcComponent implements OnInit {
     let regionAndProject = getCurrentRegionAndProject();
     this.region = regionAndProject.regionId;
     this.projectId = regionAndProject.projectId;
+    this.getActiveServiceByRegion();
     this.getConfigurations();
     this.getAllImageType();
     this.getAllIPPublic();
     this.getAllSecurityGroup();
     this.getListNetwork();
     this.getInfoVPC();
+    this.getListOptionGpuValue();
     this.breakpointObserver
       .observe([
         Breakpoints.XSmall,
@@ -244,6 +253,22 @@ export class InstancesCreateVpcComponent implements OnInit {
     this.checkExistName();
     this.onChangeCapacity();
     this.cdr.detectChanges();
+  }
+
+  //Lấy các dịch vụ hỗ trợ theo region
+  isSupportEncryption: boolean = false;
+  getActiveServiceByRegion() {
+    this.catalogService
+      .getActiveServiceByRegion(
+        ['Encryption', 'MultiAttachment', 'ipv6'],
+        this.region
+      )
+      .subscribe((data) => {
+        console.log('support service', data);
+        this.isSupportEncryption = data.filter(
+          (e) => e.productName == 'Encryption'
+        )[0].isActive;
+      });
   }
 
   //Kiểm tra trùng tên máy ảo
@@ -391,9 +416,17 @@ export class InstancesCreateVpcComponent implements OnInit {
   isSnapshot: boolean = false;
   listSnapshot: SnapshotVolumeDto[] = [];
   sizeSnapshotVL: number;
-  status: string;
+  disableConfigGpu: boolean = false;
+  disableSSD: boolean = false;
+  nameSnapshot: string;
+  selectedIndextab: number;
 
   initSnapshot(): void {
+    this.disableConfigGpu = false;
+    this.selectedIndextab = 0;
+    this.disableHDD = false;
+    this.disableSSD = false;
+    this.onClickCustomConfig();
     this.selectedSnapshot = null;
     if (this.isSnapshot) {
       this.snapshotVLService
@@ -407,6 +440,20 @@ export class InstancesCreateVpcComponent implements OnInit {
           );
           this.selectedSnapshot = this.listSnapshot[0].id;
           this.sizeSnapshotVL = this.listSnapshot[0].sizeInGB;
+          this.nameSnapshot = this.listSnapshot[0].name;
+          if (this.listSnapshot[0].volumeType.toUpperCase() == 'SSD') {
+            this.disableConfigGpu = false;
+            this.activeBlockHDD = false;
+            this.activeBlockSSD = true;
+            this.disableHDD = true;
+            this.disableSSD = false;
+          } else {
+            this.disableConfigGpu = true;
+            this.activeBlockHDD = true;
+            this.activeBlockSSD = false;
+            this.disableHDD = false;
+            this.disableSSD = true;
+          }
           this.changeSelectedSnapshot();
           console.log('list snapshot volume root', this.listSnapshot);
         });
@@ -414,6 +461,26 @@ export class InstancesCreateVpcComponent implements OnInit {
   }
 
   changeSelectedSnapshot() {
+    this.selectedIndextab = 0;
+    this.onClickCustomConfig();
+    let selectedSnapshotModel = this.listSnapshot.filter(
+      (e) => e.id == this.selectedSnapshot
+    )[0];
+    this.sizeSnapshotVL = selectedSnapshotModel.sizeInGB;
+    this.nameSnapshot = selectedSnapshotModel.name;
+    if (selectedSnapshotModel.volumeType.toUpperCase() == 'SSD') {
+      this.disableConfigGpu = false;
+      this.activeBlockHDD = false;
+      this.activeBlockSSD = true;
+      this.disableHDD = true;
+      this.disableSSD = false;
+    } else {
+      this.disableConfigGpu = true;
+      this.activeBlockHDD = true;
+      this.activeBlockSSD = false;
+      this.disableHDD = false;
+      this.disableSSD = true;
+    }
     if (this.instanceCreate.volumeSize <= this.sizeSnapshotVL) {
       this.instanceCreate.volumeSize =
         this.sizeSnapshotVL < this.stepCapacity
@@ -439,21 +506,37 @@ export class InstancesCreateVpcComponent implements OnInit {
     }
   }
   initSSD(): void {
-    this.activeBlockHDD = false;
-    this.activeBlockSSD = true;
-    this.remainingVolume =
-      this.infoVPC.cloudProject.quotaSSDInGb -
-      this.infoVPC.cloudProjectResourceUsed.ssd;
-    this.instanceCreate.volumeSize = 0;
-    this.cdr.detectChanges();
+    if (!this.disableSSD) {
+      this.activeBlockHDD = false;
+      this.activeBlockSSD = true;
+      this.remainingVolume =
+        this.infoVPC.cloudProject.quotaSSDInGb -
+        this.infoVPC.cloudProjectResourceUsed.ssd;
+      this.instanceCreate.volumeSize = 0;
+      this.cdr.detectChanges();
+    }
   }
   //#endregion
 
   //#region  cấu hình
+  configRecommend: GpuConfigRecommend;
+  listOptionGpuValue: number[] = [];
+  getListOptionGpuValue() {
+    this.configurationService
+      .getConfigurations('OPTIONGPUVALUE')
+      .subscribe((data) => {
+        this.listOptionGpuValue = data.valueString.split(', ').map(Number);
+        this.listOptionGpuValue = this.listOptionGpuValue.filter(
+          (e) => e <= this.remainingGpu
+        );
+      });
+  }
+
   isCustomconfig = true;
   isGpuConfig = false;
   listGPUType: OfferItem[] = [];
   purchasedListGPUType: OfferItem[] = [];
+  listGpuConfigRecommend: GpuConfigRecommend[] = [];
   getListGpuType() {
     this.dataService
       .getListOffers(this.region, 'vm-flavor-gpu')
@@ -461,6 +544,10 @@ export class InstancesCreateVpcComponent implements OnInit {
         this.listGPUType = data.filter(
           (e: OfferItem) => e.status.toUpperCase() == 'ACTIVE'
         );
+        this.listGpuConfigRecommend = getListGpuConfigRecommend(
+          this.listGPUType
+        );
+        console.log('list gpu config recommend', this.listGpuConfigRecommend);
         let listGpuOfferIds: number[] = [];
         this.infoVPC.cloudProject.gpuProjects.forEach((gputype) =>
           listGpuOfferIds.push(gputype.gpuOfferId)
@@ -506,12 +593,14 @@ export class InstancesCreateVpcComponent implements OnInit {
     } else {
       this.remainingGpu = gpuProject.gpuCount;
     }
+    this.getListOptionGpuValue();
     this.cdr.detectChanges();
   }
 
   gpuTypeName: string = '';
   changeGpuType(id: number) {
     this.instanceCreate.gpuCount = 0;
+    this.configRecommend = null;
     this.gpuTypeName = this.purchasedListGPUType.filter(
       (e) => e.id == id
     )[0].offerName;
@@ -527,6 +616,16 @@ export class InstancesCreateVpcComponent implements OnInit {
     } else {
       this.remainingGpu = gpuProject.gpuCount;
     }
+    this.getListOptionGpuValue();
+  }
+
+  changeGpu() {
+    this.configRecommend = this.listGpuConfigRecommend.filter(
+      (e) =>
+        e.id == this.instanceCreate.gpuOfferId &&
+        e.gpuCount == this.instanceCreate.gpuCount
+    )[0];
+    console.log('cấu hình đề recommend', this.configRecommend);
   }
 
   resetData() {
@@ -538,11 +637,13 @@ export class InstancesCreateVpcComponent implements OnInit {
           ? this.stepCapacity
           : this.sizeSnapshotVL;
     }
+    this.volumeRootCapacity = this.instanceCreate.volumeSize;
     this.instanceCreate.ram = 0;
     this.instanceCreate.gpuCount = 0;
     this.instanceCreate.gpuOfferId = null;
     this.instanceCreate.gpuType = null;
     this.isValid = false;
+    this.configRecommend = null;
   }
 
   minCapacity: number;
@@ -579,7 +680,10 @@ export class InstancesCreateVpcComponent implements OnInit {
           this.instanceCreate.volumeSize =
             this.instanceCreate.volumeSize -
             (this.instanceCreate.volumeSize % this.stepCapacity);
-          if (this.isSnapshot) {
+          if (
+            this.isSnapshot &&
+            this.instanceCreate.volumeSize < this.stepCapacity
+          ) {
             this.instanceCreate.volumeSize =
               this.sizeSnapshotVL < this.stepCapacity
                 ? this.stepCapacity
@@ -601,6 +705,7 @@ export class InstancesCreateVpcComponent implements OnInit {
               ? this.stepCapacity
               : this.sizeSnapshotVL;
         }
+        this.volumeRootCapacity = this.instanceCreate.volumeSize;
         this.checkValidConfig();
         this.cdr.detectChanges();
       });
@@ -609,7 +714,7 @@ export class InstancesCreateVpcComponent implements OnInit {
 
   //#region Chọn IP Public Chọn Security Group
   listIPPublic: IPPublicModel[] = [];
-  listSecurityGroup: SecurityGroupModel[] = [];
+  listSecurityGroup: any[] = [];
   selectedSecurityGroup: any[] = [];
   getAllIPPublic() {
     this.dataService
@@ -695,7 +800,7 @@ export class InstancesCreateVpcComponent implements OnInit {
         this.projectId
       )
       .subscribe((data: any) => {
-        this.listSecurityGroup = data;
+        this.listSecurityGroup = getUniqueObjects(data, 'name');
         this.listSecurityGroup.forEach((e) => {
           if (e.name.toUpperCase() == 'DEFAULT') {
             this.selectedSecurityGroup.push(e.name);
@@ -816,7 +921,6 @@ export class InstancesCreateVpcComponent implements OnInit {
     this.instanceCreate.ipPublic = this.ipPublicValue;
     this.instanceCreate.password = this.password;
     this.instanceCreate.snapshotCloudId = this.selectedSnapshot;
-    this.instanceCreate.encryption = false;
     this.instanceCreate.addRam = 0;
     this.instanceCreate.addCpu = 0;
     this.instanceCreate.addBttn = 0;

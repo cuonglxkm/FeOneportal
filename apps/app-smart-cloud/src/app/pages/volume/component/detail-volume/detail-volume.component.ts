@@ -9,6 +9,8 @@ import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from '@core';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { SizeInCloudProject } from 'src/app/shared/models/project.model';
+import { CatalogService } from '../../../../shared/services/catalog.service';
+import { SupportService } from '../../../../shared/models/catalog.model';
 
 @Component({
   selector: 'app-detail-volume',
@@ -44,6 +46,10 @@ export class DetailVolumeComponent implements OnInit {
     // });
   }
 
+  onRegionChanged(region: RegionModel) {
+    this.region = region.regionId;
+  }
+
   projectChanged(project: ProjectModel) {
     this.project = project?.id;
     this.typeVPC = project.type;
@@ -62,6 +68,7 @@ export class DetailVolumeComponent implements OnInit {
     let regionAndProject = getCurrentRegionAndProject();
     this.region = regionAndProject.regionId;
     this.project = regionAndProject.projectId;
+    this.getActiveServiceByRegion()
     // this.customerId = this.tokenService.get()?.userId
     this.getVolumeById(Number.parseInt(idVolume));
   }
@@ -116,11 +123,44 @@ export class DetailVolumeComponent implements OnInit {
 
   volumeStatus: Map<String, string>;
 
+  typeMultiple: boolean;
+  typeEncrypt: boolean;
+  typeSnapshot: boolean;
+  serviceActiveByRegion: SupportService[] = [];
+
+  getActiveServiceByRegion() {
+    this.isLoading = true
+    this.catalogService.getActiveServiceByRegion(
+      ['volume-ssd', 'volume-hdd', 'MultiAttachment', 'Encryption', 'volume-snapshot-ssd', 'volume-snapshot-hdd'], this.region)
+      .subscribe(data => {
+        this.isLoading = false
+        this.serviceActiveByRegion = data;
+        this.serviceActiveByRegion.forEach(item => {
+          if(['volume-snapshot-hdd', 'volume-snapshot-ssd'].includes(item.productName)){
+            this.typeSnapshot = item.isActive
+          }
+          if(['MultiAttachment'].includes(item.productName)){
+            this.typeMultiple = item.isActive
+          }
+          if(['Encryption'].includes(item.productName)){
+            this.typeEncrypt = item.isActive
+          }
+        })
+      }, error => {
+        this.isLoading = false
+        this.typeEncrypt = false
+        this.typeMultiple = false
+        this.typeSnapshot = false
+        this.serviceActiveByRegion = []
+      });
+  }
+
   constructor(@Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
               private volumeSevice: VolumeService,
               private router: Router,
               private activatedRoute: ActivatedRoute,
               private notification: NzNotificationService,
+              private catalogService: CatalogService,
               @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService) {
 
 

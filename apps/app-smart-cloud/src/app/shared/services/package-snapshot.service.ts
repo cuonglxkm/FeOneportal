@@ -69,9 +69,9 @@ export class PackageSnapshotService extends BaseService {
   //     {headers: this.getHeaders()})
   // }
 
-  detail(id: number) {
+  detail(id: number, projectId: any) {
     return this.http.get<PackageSnapshotModel>(this.baseUrl + this.ENDPOINT.provisions
-      + `/snapshots/packages/${id}`).pipe(
+      + `/snapshots/packages/${id}?projectId=` + projectId).pipe(
       catchError((error: HttpErrorResponse) => {
         if (error.status === 401) {
           console.error('login');
@@ -83,18 +83,9 @@ export class PackageSnapshotService extends BaseService {
       }))
   }
 
-  delete(id: number) {
+  delete(id: number, project: any, region: any) {
     return this.http.delete(this.baseUrl + this.ENDPOINT.provisions
-      + `/snapshots/packages/${id}`).pipe(
-      catchError((error: HttpErrorResponse) => {
-        if (error.status === 401) {
-          console.error('login');
-        } else if (error.status === 404) {
-          // Handle 404 Not Found error
-          console.error('Resource not found');
-        }
-        return throwError(error);
-      }))
+      + `/snapshots/packages/${id}?projectId=${project}&regionId=${region}`);
   }
 
   createOrder(request: BackupPackageRequestModel) {
@@ -111,24 +102,10 @@ export class PackageSnapshotService extends BaseService {
       }))
   }
 
-  update(form: FormUpdate) {
+  update(description: any,newPackageName: any, id: any ,regionId: any, form: any) {
     return this.http.put(this.baseUrl + this.ENDPOINT.provisions
-      + `/backups/packages/${form.packageId}`, Object.assign(form)).pipe(
+      + `/snapshots/packages/${id}?newPackageName=${newPackageName}&description=${description}&regionId=${regionId}`, Object.assign(form)).pipe(
       catchError((error: HttpErrorResponse) => {
-        if (error.status === 401) {
-          console.error('login');
-        } else if (error.status === 404) {
-          // Handle 404 Not Found error
-          console.error('Resource not found');
-        }
-        return throwError(error);
-      }))
-  }
-
-  getServiceInPackage(id: number) {
-    console.log('url', this.baseUrl + this.ENDPOINT.provisions + '/backups/packages/' +id +'/services')
-    return this.http.get<ServiceInPackage>(this.baseUrl + this.ENDPOINT.provisions + `/backups/packages/${id}/services`)
-      .pipe(catchError((error: HttpErrorResponse) => {
         if (error.status === 401) {
           console.error('login');
         } else if (error.status === 404) {

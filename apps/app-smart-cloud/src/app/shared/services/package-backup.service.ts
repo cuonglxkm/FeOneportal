@@ -33,7 +33,7 @@ export class PackageBackupService extends BaseService {
     super();
   }
 
-  search(packageName: string, status: string, pageSize: number, currentPage: number) {
+  search(packageName: string, status: string, project: number, region: number, pageSize: number, currentPage: number) {
     if (packageName == undefined) {
       packageName = ''
     }
@@ -47,7 +47,7 @@ export class PackageBackupService extends BaseService {
       currentPage = 1
     }
     return this.http.get<BaseResponse<PackageBackupModel[]>>(this.baseUrl + this.ENDPOINT.provisions
-      + `/backups/packages?packageName=${packageName}&status=${status}&pageSize=${pageSize}&currentPage=${currentPage}`, {
+      + `/backups/packages?packageName=${packageName}&status=${status}&regionId=${region}&projectId=${project}&pageSize=${pageSize}&currentPage=${currentPage}`, {
       headers: this.httpOptions.headers
     })
       .pipe(catchError((error: HttpErrorResponse) => {
@@ -68,9 +68,9 @@ export class PackageBackupService extends BaseService {
   //     {headers: this.getHeaders()})
   // }
 
-  detail(id: number) {
+  detail(id: number, projectId: number) {
     return this.http.get<PackageBackupModel>(this.baseUrl + this.ENDPOINT.provisions
-      + `/backups/packages/${id}`, {headers: this.httpOptions.headers}).pipe(
+      + `/backups/packages/${id}?projectId=${projectId}`, {headers: this.httpOptions.headers}).pipe(
       catchError((error: HttpErrorResponse) => {
         if (error.status === 401) {
           console.error('login');
@@ -82,9 +82,9 @@ export class PackageBackupService extends BaseService {
       }))
   }
 
-  delete(id: number) {
+  delete(id: number, regionId: number, projectId: number) {
     return this.http.delete(this.baseUrl + this.ENDPOINT.provisions
-      + `/backups/packages/${id}`, {headers: this.httpOptions.headers}).pipe(
+      + `/backups/packages/${id}?regionId=${regionId}&projectId=${projectId}`, {headers: this.httpOptions.headers}).pipe(
       catchError((error: HttpErrorResponse) => {
         if (error.status === 401) {
           console.error('login');

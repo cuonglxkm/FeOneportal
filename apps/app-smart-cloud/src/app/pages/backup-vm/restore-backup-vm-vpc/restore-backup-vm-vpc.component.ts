@@ -13,7 +13,11 @@ import {
 } from '../../../../../../../libs/common-utils/src';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BackupVmService } from '../../../shared/services/backup-vm.service';
-import { getCurrentRegionAndProject } from '@shared';
+import {
+  getCurrentRegionAndProject,
+  getListGpuConfigRecommend,
+  getUniqueObjects,
+} from '@shared';
 import {
   BackupVm,
   RestoreFormCurrent,
@@ -28,6 +32,7 @@ import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from '@core';
 import {
+  GpuConfigRecommend,
   GpuProject,
   GpuUsage,
   InfoVPCModel,
@@ -110,9 +115,9 @@ export class RestoreBackupVmVpcComponent implements OnInit {
   restoreInstanceBackup: RestoreInstanceBackup = new RestoreInstanceBackup();
 
   backupVmModel: BackupVm;
-  backupPackage: PackageBackupModel;
+  backupSize: number = 0;
   listExternalAttachVolume: VolumeBackup[] = [];
-  listSecurityGroupBackups: SecurityGroupBackup[] = [];
+  listSecurityGroupBackups: any[] = [];
 
   selectedOption: string = 'current';
 
@@ -223,7 +228,26 @@ export class RestoreBackupVmVpcComponent implements OnInit {
     this.getListNetwork();
     this.onChangeCapacity();
     this.getAllSSHKey();
+    this.getListOptionGpuValue();
+    this.getActiveServiceByRegion();
     this.cdr.detectChanges();
+  }
+
+  //Lấy các dịch vụ hỗ trợ theo region
+  isSupportEncryption: boolean = false;
+  isSupportMultiAttachment: boolean = false;
+  getActiveServiceByRegion() {
+    this.catalogService
+      .getActiveServiceByRegion(['Encryption', 'MultiAttachment'], this.region)
+      .subscribe((data) => {
+        console.log('support service', data);
+        this.isSupportMultiAttachment = data.filter(
+          (e) => e.productName == 'MultiAttachment'
+        )[0].isActive;
+        this.isSupportEncryption = data.filter(
+          (e) => e.productName == 'Encryption'
+        )[0].isActive;
+      });
   }
 
   //Kiểm tra trùng tên máy ảo
@@ -290,6 +314,10 @@ export class RestoreBackupVmVpcComponent implements OnInit {
     this.router.navigate(['/app-smart-cloud/backup-vm']);
   }
 
+  onRegionChanged(region: RegionModel) {
+    this.region = region.regionId;
+  }
+
   projectChanged(project: ProjectModel) {
     this.project = project?.id;
   }
@@ -323,6 +351,7 @@ export class RestoreBackupVmVpcComponent implements OnInit {
 
   listIDAttachVolume: number[] = [];
   getDetailBackupById(id) {
+    this.backupSize = 0;
     this.backupService
       .detail(id)
       .pipe(
@@ -332,6 +361,9 @@ export class RestoreBackupVmVpcComponent implements OnInit {
       )
       .subscribe((data) => {
         this.backupVmModel = data;
+        this.backupVmModel.volumeBackups.forEach((e) => {
+          this.backupSize += e.size;
+        });
         if (
           this.backupVmModel?.volumeBackups
             .filter((e) => e.isBootable == true)[0]
@@ -364,13 +396,15 @@ export class RestoreBackupVmVpcComponent implements OnInit {
           this.listOfDataBlockStorage.push(tempBS);
         });
 
-        this.listSecurityGroupBackups = this.backupVmModel.securityGroupBackups;
+        this.listSecurityGroupBackups = getUniqueObjects(
+          this.backupVmModel.securityGroupBackups,
+          'sgName'
+        );
         this.listSecurityGroupBackups.forEach((e) => {
           if (e.sgName.toUpperCase() == 'DEFAULT') {
             this.selectedSecurityGroup.push(e.sgName);
           }
         });
-        this.getBackupPackage(this.backupVmModel?.backupPacketId);
         this.cdr.detectChanges();
       });
   }
@@ -431,19 +465,27 @@ export class RestoreBackupVmVpcComponent implements OnInit {
     );
   }
 
-  getBackupPackage(value) {
-    this.backupPackageService.detail(value).subscribe((data) => {
-      this.backupPackage = data;
-    });
+  //#region  cấu hình
+  configRecommend: GpuConfigRecommend;
+  listOptionGpuValue: number[] = [];
+  getListOptionGpuValue() {
+    this.configurationService
+      .getConfigurations('OPTIONGPUVALUE')
+      .subscribe((data) => {
+        this.listOptionGpuValue = data.valueString.split(', ').map(Number);
+        this.listOptionGpuValue = this.listOptionGpuValue.filter(
+          (e) => e <= this.remainingGpu
+        );
+      });
   }
 
-  //#region  cấu hình
   activeBlockHDD: boolean = true;
   activeBlockSSD: boolean = false;
   isCustomconfig = true;
   isGpuConfig = false;
   listGPUType: OfferItem[] = [];
   purchasedListGPUType: OfferItem[] = [];
+  listGpuConfigRecommend: GpuConfigRecommend[] = [];
   getListGpuType() {
     this.dataService
       .getListOffers(this.region, 'vm-flavor-gpu')
@@ -451,6 +493,10 @@ export class RestoreBackupVmVpcComponent implements OnInit {
         this.listGPUType = data.filter(
           (e: OfferItem) => e.status.toUpperCase() == 'ACTIVE'
         );
+        this.listGpuConfigRecommend = getListGpuConfigRecommend(
+          this.listGPUType
+        );
+        console.log('list gpu config recommend', this.listGpuConfigRecommend);
         let listGpuOfferIds: number[] = [];
         this.infoVPC.cloudProject.gpuProjects.forEach((gputype) =>
           listGpuOfferIds.push(gputype.gpuOfferId)
@@ -493,12 +539,14 @@ export class RestoreBackupVmVpcComponent implements OnInit {
     } else {
       this.remainingGpu = gpuProject.gpuCount;
     }
+    this.getListOptionGpuValue();
     this.cdr.detectChanges();
   }
 
   gpuTypeName: string = '';
   changeGpuType(id: number) {
     this.restoreInstanceBackup.gpuCount = 0;
+    this.configRecommend = null;
     this.gpuTypeName = this.purchasedListGPUType.filter(
       (e) => e.id == id
     )[0].offerName;
@@ -514,15 +562,28 @@ export class RestoreBackupVmVpcComponent implements OnInit {
     } else {
       this.remainingGpu = gpuProject.gpuCount;
     }
+    this.getListOptionGpuValue();
+  }
+
+  changeGpu() {
+    this.configRecommend = this.listGpuConfigRecommend.filter(
+      (e) =>
+        e.id == this.restoreInstanceBackup.gpuTypeOfferId &&
+        e.gpuCount == this.restoreInstanceBackup.gpuCount
+    )[0];
+    console.log('cấu hình đề recommend', this.configRecommend);
   }
 
   resetData() {
     this.restoreInstanceBackup.cpu = 0;
-    this.restoreInstanceBackup.volumeSize = 0;
+    this.restoreInstanceBackup.volumeSize =
+      this.backupSize < this.stepCapacity ? this.stepCapacity : this.backupSize;
+
     this.restoreInstanceBackup.ram = 0;
     this.restoreInstanceBackup.gpuCount = 0;
     this.restoreInstanceBackup.gpuTypeOfferId = null;
     this.isValid = false;
+    this.configRecommend = null;
   }
 
   minCapacity: number;
@@ -559,9 +620,27 @@ export class RestoreBackupVmVpcComponent implements OnInit {
           this.restoreInstanceBackup.volumeSize =
             this.restoreInstanceBackup.volumeSize -
             (this.restoreInstanceBackup.volumeSize % this.stepCapacity);
-          this.checkValidConfig();
-          this.cdr.detectChanges();
+          if (this.restoreInstanceBackup.volumeSize < this.stepCapacity) {
+            this.restoreInstanceBackup.volumeSize =
+              this.backupSize < this.stepCapacity
+                ? this.stepCapacity
+                : this.backupSize;
+          }
         }
+        if (this.restoreInstanceBackup.volumeSize < this.backupSize) {
+          this.notification.warning(
+            '',
+            this.i18n.fanyi('app.notify.amount.capacity.snapshot', {
+              num: this.backupSize,
+            })
+          );
+          this.restoreInstanceBackup.volumeSize =
+            this.backupSize < this.stepCapacity
+              ? this.stepCapacity
+              : this.backupSize;
+        }
+        this.checkValidConfig();
+        this.cdr.detectChanges();
       });
   }
 
@@ -597,7 +676,7 @@ export class RestoreBackupVmVpcComponent implements OnInit {
 
   //#region Chọn IP Public Chọn Security Group
   listIPPublic: IPPublicModel[] = [];
-  listSecurityGroup: SecurityGroupModel[] = [];
+  listSecurityGroup: any[] = [];
   selectedSecurityGroup: any[] = [];
   getAllIPPublic() {
     this.dataService
@@ -675,7 +754,7 @@ export class RestoreBackupVmVpcComponent implements OnInit {
         this.project
       )
       .subscribe((data: any) => {
-        this.listSecurityGroup = data;
+        this.listSecurityGroup = getUniqueObjects(data, 'name');
         this.listSecurityGroup.forEach((e) => {
           if (e.name.toUpperCase() == 'DEFAULT') {
             this.selectedSecurityGroup.push(e.name);
@@ -772,7 +851,6 @@ export class RestoreBackupVmVpcComponent implements OnInit {
     }
     this.restoreInstanceBackup.ipPublic = this.ipPublicValue;
     this.restoreInstanceBackup.password = this.password;
-    this.restoreInstanceBackup.encryption = false;
     this.restoreInstanceBackup.projectId = this.project;
     this.restoreInstanceBackup.oneSMEAddonId = null;
     this.restoreInstanceBackup.serviceType = 1;

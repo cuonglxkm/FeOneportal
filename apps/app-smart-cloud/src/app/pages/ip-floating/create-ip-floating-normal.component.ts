@@ -97,6 +97,10 @@ export class CreateIpFloatingNormalComponent implements OnInit{
     this.dateStringExpired = dateExpired;
   }
 
+  onRegionChanged(region: RegionModel) {
+    this.regionId = region.regionId;
+  }
+
   onRegionChange(region: RegionModel) {
     this.regionId = region.regionId;
     this.router.navigate(['/app-smart-cloud/ip-public']);

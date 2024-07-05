@@ -1,6 +1,3 @@
-<h1 class="text-font text-title">{{ 'app.register.register' | i18n }}</h1>
-<p class="text-font text-des">{{ 'app.register.des' | i18n }}</p>
-
 <form
   nz-form
   [formGroup]="form"
@@ -8,6 +5,28 @@
   (ngSubmit)="submit()"
   role="form"
 >
+  <div class="text-right">
+    <nz-select [nzSuffixIcon]="langRegister == 'vi-VI' ? iconSelect : iconSelect1" title="{{'app.register.project' | i18n}}"
+               [(ngModel)]="langRegister" (ngModelChange)="changelang()" [ngModelOptions]="{ standalone: true }"
+               nzPlaceHolder="{{'app.register.project' | i18n}}" [nzShowSearch]="true" style="width: 150px">
+      <nz-option nzCustomContent nzValue="vi-VI" nzLabel="Vietnam">
+        <img src="assets/imgs/vietnam-ic.png" alt="" />
+        Vietnam
+      </nz-option>
+      <nz-option nzCustomContent nzValue="en-US" nzLabel="English">
+        <img src="assets/imgs/ang-ic.png" alt="" />
+        English
+      </nz-option>
+      <ng-template #iconSelect>
+        <img src="assets/imgs/vietnam-tron.png" alt="" />
+      </ng-template>
+      <ng-template #iconSelect1>
+        <img src="assets/imgs/ang-ic.png" alt="" />
+      </ng-template>
+    </nz-select>
+  </div>
+  <h1 class="text-font text-title">{{ 'app.register.register' | i18n }}</h1>
+  <p class="text-font text-des">{{ 'app.register.des' | i18n }}</p>
   <nz-alert
     *ngIf="error"
     [nzType]="'error'"
@@ -17,31 +36,32 @@
   />
   <nz-form-item>
     <nz-form-control [nzErrorTip]="mailErrorTip">
-      <nz-form-label [nzRequired]="true" [nzSm]="8" [nzXs]="24"
-        >Email đăng ký
-      </nz-form-label>
+      <nz-form-label>{{'app.register.email.label' | i18n}}(<span style="color: red;">*</span>)</nz-form-label>
       <nz-input-group nzSize="large" nzAddonBeforeIcon="user">
         <input
           nz-input
           formControlName="mail"
-          placeholder="Nhập e-mail đăng ký"
+          placeholder="{{'app.register.email.press' | i18n}}"
         />
       </nz-input-group>
       <ng-template #mailErrorTip let-i>
         <ng-container *ngIf="i.errors?.required">{{
-          'validation.email.required' | i18n
-        }}</ng-container>
+            'validation.email.required' | i18n
+          }}
+        </ng-container>
         <ng-container *ngIf="i.errors?.email">{{
-          'validation.email.wrong-format' | i18n
-        }}</ng-container>
+            'validation.email.wrong-format' | i18n
+          }}
+        </ng-container>
       </ng-template>
     </nz-form-control>
   </nz-form-item>
 
   <nz-form-item>
     <nz-form-control [nzErrorTip]="passErrorTpl">
-      <nz-form-label [nzRequired]="true" [nzSm]="6" [nzXs]="24"
-        >Mật khẩu</nz-form-label
+      <nz-form-label [nzSm]="6" [nzXs]="24"
+      >{{'app.password' | i18n}}(<span style="color: red;">*</span>)
+      </nz-form-label
       >
       <nz-input-group
         nzSize="large"
@@ -52,42 +72,48 @@
         [(nzPopoverVisible)]="visible"
         nzPopoverOverlayClassName="register-password-cdk"
         [nzPopoverOverlayStyle]="{ 'width.px': 240 }"
+        [nzSuffix]="suffixTemplate"
       >
         <input
           nz-input
-          type="password"
+          [type]="passwordVisible ? 'text' : 'password'"
           formControlName="password"
-          placeholder="Password"
+          [maxlength]="16"
+          placeholder="{{'app.input.password' | i18n}}"
         />
       </nz-input-group>
       <ng-template #passErrorTpl let-control>
         <ng-container *ngIf="control.hasError('required')"
-          >{{ 'validation.password.required' | i18n }}
+        >{{ 'validation.password.required' | i18n }}
         </ng-container>
         <ng-container *ngIf="control.hasError('validPassword')">{{
-          'validation.password.account.pattern' | i18n
-        }}</ng-container>
+            'validation.password.account.pattern' | i18n
+          }}
+        </ng-container>
       </ng-template>
     </nz-form-control>
   </nz-form-item>
   <nz-form-item>
     <nz-form-control [nzErrorTip]="confirmErrorTip">
-      <nz-form-label [nzRequired]="true">Nhập lại mật mật khẩu</nz-form-label>
-      <nz-input-group nzSize="large" nzAddonBeforeIcon="lock">
+      <nz-form-label>{{'app.register.pass.try' | i18n}}(<span style="color: red;">*</span>)</nz-form-label>
+      <nz-input-group nzSize="large" nzAddonBeforeIcon="lock" [nzSuffix]="suffixTemplate1">
         <input
           nz-input
-          type="password"
+          [type]="passwordVisible1 ? 'text' : 'password'"
           formControlName="confirm"
-          placeholder="Nhập lại mật mật khẩu"
+          [maxlength]="16"
+          placeholder="{{'app.register.pass.try' | i18n}}"
         />
       </nz-input-group>
       <ng-template #confirmErrorTip let-i>
         <ng-container *ngIf="i.errors?.required">{{
-          'validation.confirm-password.required' | i18n
-        }}</ng-container>
+            'validation.confirm-password.required' | i18n
+          }}
+        </ng-container>
         <ng-container *ngIf="i.errors?.matchControl">{{
-          'validation.password.twice' | i18n
-        }}</ng-container>
+            'validation.password.twice' | i18n
+          }}
+        </ng-container>
       </ng-template>
     </nz-form-control>
   </nz-form-item>
@@ -129,73 +155,75 @@
   <div nz-row [nzGutter]="16">
     <div nz-col nzSpan="12">
       <nz-form-item>
-        <nz-form-control [nzErrorTip]="nameErrorTip">
-          <nz-form-label [nzRequired]="true" [nzSm]="6" [nzXs]="24"
-            >Tên</nz-form-label
+        <nz-form-control [nzErrorTip]="'form.account.validate.name' | i18n">
+          <nz-form-label
+          >{{'app.name' | i18n}}(<span style="color: red;">*</span>)
+          </nz-form-label
           >
           <nz-input-group nzSize="large">
             <input
               nz-input
+              [maxlength]="20"
               formControlName="firstName"
-              placeholder="Nhập tên"
+              placeholder="{{'app.input.name' | i18n}}"
             />
           </nz-input-group>
           <ng-template #nameErrorTip let-i>
             <ng-container *ngIf="i.errors?.required">{{
-              'validation.firstName.required' | i18n
-            }}</ng-container>
+                'form.account.validate.name' | i18n
+              }}
+            </ng-container>
           </ng-template>
         </nz-form-control>
       </nz-form-item>
     </div>
     <div nz-col nzSpan="12">
       <nz-form-item>
-        <nz-form-control [nzErrorTip]="lastNameErrorTip">
-          <nz-form-label [nzRequired]="true" [nzSm]="6" [nzXs]="24"
-            >Họ</nz-form-label
+        <nz-form-control [nzErrorTip]="'form.account.validate.surname' | i18n">
+          <nz-form-label [nzSm]="6" [nzXs]="24"
+          >{{'form.account.surname' | i18n}}(<span style="color: red;">*</span>)
+          </nz-form-label
           >
           <nz-input-group nzSize="large">
-            <input nz-input formControlName="lastName" placeholder="Nhập họ" />
+            <input [maxlength]="20" nz-input formControlName="lastName" placeholder="{{'app.register.surname.label' | i18n}}" />
           </nz-input-group>
           <ng-template #lastNameErrorTip let-i>
             <ng-container *ngIf="i.errors?.required">{{
-              'validation.lastName.required' | i18n
-            }}</ng-container>
+                'form.account.validate.surname' | i18n
+              }}
+            </ng-container>
           </ng-template>
         </nz-form-control>
       </nz-form-item>
     </div>
   </div>
 
-  <nz-form-item>
+  <nz-form-item >
     <nz-form-control [nzErrorTip]="provinceErrorTip">
-      <nz-form-label [nzRequired]="true">Chọn Tỉnh/Thành</nz-form-label>
+      <nz-form-label>{{'app.register.address.select' | i18n}}(<span style="color: red;">*</span>)</nz-form-label>
       <nz-input-group nzSize="large">
         <nz-select
           nzSize="large"
           nzShowSearch
           nzAllowClear
-          nzPlaceHolder="Chọn tỉnh thành"
+          nzPlaceHolder="{{'app.register.address.select' | i18n}}"
           formControlName="province"
         >
-          <nz-option [nzLabel]="'Hà Nội'" [nzValue]="'Hà Nội'" />
-          <nz-option
-            [nzLabel]="'TP. Hồ Chí Minh'"
-            [nzValue]="'TP. Hồ Chí Minh'"
-          />
+          <nz-option *ngFor="let i of provinces" [nzLabel]="i.name" [nzValue]="i.name" />
         </nz-select>
       </nz-input-group>
       <ng-template #provinceErrorTip let-i>
         <ng-container *ngIf="i.errors?.required">{{
-          'validation.province.required' | i18n
-        }}</ng-container>
+            'validation.province.required' | i18n
+          }}
+        </ng-container>
       </ng-template>
     </nz-form-control>
   </nz-form-item>
 
   <nz-form-item>
     <nz-form-control [nzErrorTip]="mobileErrorTip">
-      <nz-form-label [nzRequired]="true">Số điện thoại</nz-form-label>
+      <nz-form-label>{{'form.account.phone' | i18n}}(<span style="color: red;">*</span>)</nz-form-label>
       <nz-input-group nzSize="large">
         <!--              <nz-input-group nzSize="large" [nzAddOnBefore]="addOnBeforeTemplate">-->
         <!--                <ng-template #addOnBeforeTemplate>-->
@@ -204,15 +232,16 @@
         <!--&lt;!&ndash;                    <nz-option [nzLabel]="'+87'" [nzValue]="'+87'"/>&ndash;&gt;-->
         <!--                  </nz-select>-->
         <!--                </ng-template>-->
-        <input formControlName="mobile" nz-input placeholder="Số điện thoại" />
+        <input formControlName="mobile" nz-input placeholder="{{'app.register.phone.babel' | i18n}}" />
       </nz-input-group>
       <ng-template #mobileErrorTip let-i>
         <ng-container *ngIf="i.hasError('required')"
-          >{{ 'validation.phone-number.required' | i18n }}
+        >{{ 'validation.phone-number.required' | i18n }}
         </ng-container>
         <ng-container *ngIf="i.hasError('validPhoneNumber')">{{
-          'validation.phone-number.wrong-format' | i18n
-        }}</ng-container>
+            'validation.phone-number.wrong-format' | i18n
+          }}
+        </ng-container>
       </ng-template>
     </nz-form-control>
   </nz-form-item>
@@ -232,7 +261,7 @@
     <re-captcha
       formControlName="recaptchaReactive"
       key="publicKey"
-      lang="en"
+      [lang]="'vi'"
       (resolved)="addTokenLog('Reactive form mode resolved', $event)"
     >
     </re-captcha>
@@ -243,8 +272,8 @@
       <label nz-checkbox formControlName="agreement">
         <!--        <span>{{ 'app.register.agreement' | i18n }}</span>-->
         <span class="text-agreement">
-          Tôi đồng ý với
-          <a href="https://vnpt.vn" target="_blank">các điều khoản</a></span
+          {{'app.register.1' | i18n}}
+          <a href="https://vnpt.vn" target="_blank">{{'app.register.2' | i18n}}</a></span
         >
       </label>
     </nz-form-control>
@@ -264,9 +293,39 @@
   </nz-form-item>
 
   <nz-form-item style="margin-top: 30px; justify-content: center">
-    <a class="login" routerLink="/passport/login">
-      <span style="color: #555555">Bạn đã có tài khoản,</span>
-      {{ 'app.register.sign-in' | i18n }}</a
-    >
+<!--    <a class="login" routerLink="/passport/login" style="color: #0066b0">-->
+<!--      <span style="color: #555555">{{'app.register.3' | i18n}},</span>-->
+<!--      {{ 'app.register.sign-in' | i18n }}-->
+<!--    </a>-->
+    <div class="login">
+      {{'app.register.3' | i18n}},
+      <b><a href="/passport/login" style="color: #0066b0;text-decoration: underline;">{{ 'app.register.sign-in' | i18n }}</a></b>
+    </div>
   </nz-form-item>
+
+
+  <ng-template #suffixTemplate>
+    <img
+      style="margin-top: -4px"
+      [src]="
+                        passwordVisible
+                          ? 'assets/imgs/eye-close.svg'
+                          : 'assets/imgs/eye1.svg'
+                      "
+      alt=""
+      (click)="passwordVisible = !passwordVisible"
+    />
+  </ng-template>
+  <ng-template #suffixTemplate1>
+    <img
+      style="margin-top: -4px"
+      [src]="
+                        passwordVisible1
+                          ? 'assets/imgs/eye-close.svg'
+                          : 'assets/imgs/eye1.svg'
+                      "
+      alt=""
+      (click)="passwordVisible1 = !passwordVisible1"
+    />
+  </ng-template>
 </form>

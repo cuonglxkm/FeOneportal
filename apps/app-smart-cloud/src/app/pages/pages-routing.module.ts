@@ -161,6 +161,8 @@ import {
   RestoreBackupVolumeVpcComponent
 } from './volume/component/backup-volume/restore-backup-volume-vpc/restore-backup-volume-vpc.component';
 import { SnapshotDetailComponent } from './snapshot/detail/snapshot-detail.component';
+import { InvoiceDetailComponent } from './billing/payment/invoice-detail/invoice-detail.component';
+import { CreateScheduleBackupVpcComponent } from './schedule-backup/create-vpc/create-schedule-backup-vpc.component';
 
 // import { BlankVolumeComponent } from './volume/component/blank/blank-volume.component';
 
@@ -180,6 +182,14 @@ const routes: Routes = [
   },
   {
     path: 'volumes',
+    component: VolumeComponent,
+    canActivate: [PermissionGuard],
+    data: {
+      permission: 'volume:List'
+    }
+  },
+  {
+    path: 'volumesadvance',
     component: VolumeComponent,
     canActivate: [PermissionGuard],
     data: {
@@ -220,6 +230,18 @@ const routes: Routes = [
   },
   {
     path: 'instances',
+    loadChildren: () =>
+      import('../pages/instances/instances.module').then(
+        (m) => m.InstancesModule
+      ),
+    canActivate: [PermissionGuard],
+    data: {
+      permission: 'instance:List'
+    }
+
+  },
+  {
+    path: 'instanceadvance',
     loadChildren: () =>
       import('../pages/instances/instances.module').then(
         (m) => m.InstancesModule
@@ -569,6 +591,15 @@ const routes: Routes = [
 
   },
   {
+    path: 'schedule/backup/create/vpc',
+    component: CreateScheduleBackupVpcComponent,
+    canActivate: [PermissionGuard],
+    data: {
+      permission: 'order:create'
+    }
+
+  },
+  {
     path: 'schedule/backup/edit/vm/:id',
     component: EditScheduleBackupVmComponent,
     canActivate: [PermissionGuard],
@@ -585,7 +616,7 @@ const routes: Routes = [
     }
   },
   {
-    path: 'schedule/snapshot/list',
+    path: 'schedule/snapshot',
     component: SnapshotScheduleListComponent,
     canActivate: [PermissionGuard],
     data: {
@@ -624,6 +655,10 @@ const routes: Routes = [
       permission: 'payment:Get'
     }
 
+  },
+  {
+    path: 'billing/invoice/:id',
+    component: InvoiceDetailComponent
   },
   {
     path: 'billing/payments/success',
@@ -971,6 +1006,14 @@ const routes: Routes = [
   },
   {
     path: 'object-storage/bucket',
+    component: BucketListComponent,
+    canActivate: [PermissionGuard],
+    data: {
+      permission: 'objectstorages:ObjectStorageUser'
+    }
+  },
+  {
+    path: 'object-storage/bucketadvance',
     component: BucketListComponent,
     canActivate: [PermissionGuard],
     data: {

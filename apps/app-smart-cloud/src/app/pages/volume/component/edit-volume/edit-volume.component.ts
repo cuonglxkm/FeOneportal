@@ -102,6 +102,10 @@ export class EditVolumeComponent implements OnInit {
     // });
   }
 
+  onRegionChanged(region: RegionModel) {
+    this.region = region.regionId;
+  }
+
   projectChanged(project: ProjectModel) {
     this.project = project.id;
     // this.router.navigate(['/app-smart-cloud/volumes'])
@@ -185,6 +189,7 @@ export class EditVolumeComponent implements OnInit {
     })
   }
 
+  hasRoleSI: boolean;
   ngOnInit() {
     this.volumeId = Number.parseInt(this.route.snapshot.paramMap.get('id'));
     this.getConfiguration();
@@ -194,7 +199,7 @@ export class EditVolumeComponent implements OnInit {
       this.getVolumeById(this.volumeId);
       this.getTotalAmountFirst();
     }
-
+    this.hasRoleSI = localStorage.getItem('role').includes('SI')
     this.changeValueInput();
 
     // const idVolume = this.activatedRoute.snapshot.paramMap.get('id');

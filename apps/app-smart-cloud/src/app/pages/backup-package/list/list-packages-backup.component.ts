@@ -4,7 +4,12 @@ import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { PackageBackupService } from '../../../shared/services/package-backup.service';
 import { PackageBackupModel, ServiceInPackage } from '../../../shared/models/package-backup.model';
-import { BaseResponse, ProjectModel, RegionModel } from '../../../../../../../libs/common-utils/src';
+import {
+  BaseResponse,
+  NotificationService,
+  ProjectModel,
+  RegionModel
+} from '../../../../../../../libs/common-utils/src';
 import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
 import { getCurrentRegionAndProject } from '@shared';
 import { ProjectService } from 'src/app/shared/services/project.service';
@@ -68,12 +73,15 @@ export class ListPackagesBackupComponent implements OnInit, OnDestroy {
   private searchSubscription: Subscription;
   private enterPressed: boolean = false;
 
+  projectName: string;
+
   constructor(private router: Router,
               private packageBackupService: PackageBackupService,
               @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
               private notification: NzNotificationService,
               private fb: NonNullableFormBuilder,
               private projectService: ProjectService,
+              private notificationService: NotificationService,
               @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService) {
   }
 
@@ -81,8 +89,14 @@ export class ListPackagesBackupComponent implements OnInit, OnDestroy {
     this.region = region.regionId;
   }
 
+  onRegionChanged(region: RegionModel) {
+    this.region = region.regionId;
+  }
+
   projectChanged(project: ProjectModel) {
     this.project = project?.id;
+    this.typeVPC = project?.type
+    this.projectName = project?.projectName
     this.getListPackageBackups(true);
   }
 
@@ -140,7 +154,7 @@ export class ListPackagesBackupComponent implements OnInit, OnDestroy {
   getListPackageBackups(isBegin) {
     this.isLoading = true;
 
-    this.packageBackupService.search(this.value, this.selectedValue, this.pageSize, this.pageIndex).subscribe(data => {
+    this.packageBackupService.search(this.value, this.selectedValue, this.project, this.region, this.pageSize, this.pageIndex).subscribe(data => {
       this.isLoading = false;
       this.response = data;
 
@@ -158,14 +172,17 @@ export class ListPackagesBackupComponent implements OnInit, OnDestroy {
     this.router.navigate(['/app-smart-cloud/backup/packages/resize/' + id]);
   }
 
-  serviceInPackage: ServiceInPackage = new ServiceInPackage();
+  navigateToExtend(id) {
+    this.router.navigate(['/app-smart-cloud/backup/packages/extend/' + id])
+  }
 
   handleDeletedOk() {
-    this.getListPackageBackups(true);
+    setTimeout(() => {this.getListPackageBackups(true);}, 2000)
+
   }
 
   handleUpdateOk() {
-    this.getListPackageBackups(true);
+    setTimeout(() => {this.getListPackageBackups(false);}, 2000)
   }
 
   ngOnInit() {
@@ -175,6 +192,38 @@ export class ListPackagesBackupComponent implements OnInit, OnDestroy {
     this.project = regionAndProject.projectId;
     this.selectedValue = this.options[0].value;
     this.onChangeInputChange();
+    if (!this.region && !this.project) {
+      this.router.navigate(['/exception/500']);
+    }
+
+    if (this.notificationService.connection == undefined) {
+      this.notificationService.initiateSignalrConnection();
+    }
+    this.notificationService.connection.on('UpdateStateBackupPackage', (message) => {
+      if (message) {
+        switch (message.actionType) {
+          case 'CREATED':
+            this.getListPackageBackups(true);
+            break;
+          //case "CREATED":
+          // let volumeId = message.serviceId;
+          // var foundIndex = this.response.records.findIndex(x => x.id == volumeId);
+          // if (foundIndex > -1) {
+          //   var record = this.response.records[foundIndex];
+          //   record.serviceStatus = message.data?.serviceStatus;
+          //   record.createDate = message.data?.creationDate;
+          //   record.expirationDate = message.data?.expirationDate;
+          //   this.response.records[foundIndex] = record;
+          //   this.cdr.detectChanges();
+          // }
+          // else
+          // {
+          // this.getListVolume(true);
+          //}
+          //break;
+        }
+      }
+    });
   }
 
   ngOnDestroy(): void {

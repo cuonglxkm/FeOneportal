@@ -3,17 +3,17 @@
              [title]="'app.backup.package.breadcrumb.detail'|i18n">
   <ng-template #breadcrumb>
     <nz-breadcrumb [nzSeparator]="iconTemplate">
-      <nz-breadcrumb-item [routerLink]="['/']">{{ 'app.breadcrumb.home' | i18n }}</nz-breadcrumb-item>
+      <nz-breadcrumb-item><a [routerLink]="['/']">{{ 'app.breadcrumb.home' | i18n }}</a></nz-breadcrumb-item>
       <nz-breadcrumb-item>
         {{ 'app.breadcrumb.infrastructure.service' | i18n }}
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>
         {{ 'app.backup.package.breadcrumb.backup' | i18n }}
       </nz-breadcrumb-item>
-      <nz-breadcrumb-item [routerLink]="'/app-smart-cloud/backup/packages'">
-        {{ 'app.backup.package.breadcrumb.management' | i18n }}
+      <nz-breadcrumb-item>
+        <a routerLink="/app-smart-cloud/backup/packages">{{ 'app.backup.volume.backup.package'|i18n }}</a>
       </nz-breadcrumb-item>
-      <nz-breadcrumb-item >
+      <nz-breadcrumb-item>
         {{ 'app.backup.package.breadcrumb.detail'|i18n }}
       </nz-breadcrumb-item>
     </nz-breadcrumb>
@@ -24,14 +24,15 @@
   <ng-template #action>
     <div class="alain-custom-action text-right">
       <share-users-combobox></share-users-combobox>
-      <region-select-dropdown (valueChanged)="regionChanged($event)"></region-select-dropdown>
+      <region-select-dropdown (regionChange)="onRegionChanged($event)" (valueChanged)="regionChanged($event)"></region-select-dropdown>
       <project-select-dropdown (valueChanged)="projectChanged($event)"
+                               (userChanged)="userChanged($event)"
                                [regionId]="region"></project-select-dropdown>
     </div>
 
   </ng-template>
-  <div style="display:flex;">
-    <div style="margin-right: 15px;">
+  <div *ngIf="typeVPC != 1" style="display:flex;">
+    <div style="margin-right: 15px;" *ngIf="packageBackupModel?.status === 'AVAILABLE'">
       <div nz-col nzSpan="4">
         <button nz-button nzType="primary"
                 nzSize="default" style="cursor: pointer;" (click)="navigateToExtend()">
@@ -40,7 +41,7 @@
         </button>
       </div>
     </div>
-    <div>
+    <div *ngIf="packageBackupModel?.status === 'AVAILABLE'">
       <div nz-col nzSpan="4">
         <button nz-button nzType="primary"
                 nzSize="default" style="cursor: pointer;" (click)="navigateToResize()">
@@ -52,50 +53,69 @@
     </div>
   </div>
 </page-header>
-<nz-content>
-  <nz-card>
-    <form nz-form nzLayout="vertical">
+<nz-spin [nzSpinning]="isLoading">
+  <nz-content>
+    <nz-card>
       <span class="text-card-header">{{ 'app.backup.package.information'|i18n }}</span>
-      <nz-form-item>
-        <nz-form-label style="margin-top: 25px;">
-          <span>{{'app.backup.package.name'|i18n}}</span>
-        </nz-form-label>
-        <nz-form-control>
-          <input nz-input
-                 class="input-custom"
-                 [value]="packageBackupModel?.packageName"
-                 [disabled]="true" />
-        </nz-form-control>
-      </nz-form-item>
-      <nz-form-item>
-        <nz-form-label>
-          <span>{{'app.backup.package.storage'|i18n}}</span>
-        </nz-form-label>
-        <nz-form-control>
-          <input nz-input
-                 class="input-custom"
-                 [value]="packageBackupModel?.sizeInGB"
-                 [disabled]="true" />
-        </nz-form-control>
-      </nz-form-item>
-      <nz-form-item>
-        <nz-form-label>
-          <span>{{'app.backup.package.description'|i18n}}</span>
-        </nz-form-label>
-        <nz-form-control>
-          <nz-textarea-count [nzMaxCharacterCount]="255">
-            <textarea nz-input
-                      class="input-custom"
-                      [value]="packageBackupModel?.description"
-                      [disabled]="true"></textarea>
-          </nz-textarea-count>
-
-        </nz-form-control>
-      </nz-form-item>
-      <div style="display: grid;">
-        <span class="text-label">{{'app.backup.package.create.date'|i18n}}: {{ packageBackupModel?.creationDate | date: 'dd/MM/yyyy' }} </span>
-        <span class="text-label" style="color:#FC1010; margin-top: 15px;">{{'app.backup.package.expire.date'|i18n}}: {{ packageBackupModel?.expirationDate | date: 'dd/MM/yyyy' }} </span>
+      <div class="customRow" style="margin-top: 25px;">
+        <nz-row>
+          <nz-col nzSpan="12">
+            <nz-row style="padding: 12px 0 12px 0">
+                    <span class="text-label customSpan"
+                          style="width: 35%">{{ 'app.backup.package.name'|i18n }}</span>
+              <span class="text-value-detail customSpan">{{ packageBackupModel?.packageName }}</span>
+            </nz-row>
+          </nz-col>
+          <nz-col nzSpan="12">
+            <nz-row style="padding: 12px 0 12px 0">
+              <span class="text-label" style="width: 35%">{{ 'app.backup.package.storage'|i18n }}</span>
+              <span class="text-value-detail">{{ packageBackupModel?.sizeInGB }} GB</span>
+            </nz-row>
+          </nz-col>
+        </nz-row>
+        <nz-row style="background-color: #e2e2e9">
+          <nz-col nzSpan="12">
+            <nz-row style="padding: 12px 0 12px 0">
+                      <span class="text-label customSpan"
+                            style="width: 35%">{{ 'app.backup.package.create.date'|i18n }}</span>
+              <span
+                class="text-value-detail customSpan">{{ packageBackupModel?.creationDate | date: 'HH:mm:ss dd/MM/yyyy' }} </span>
+            </nz-row>
+          </nz-col>
+          <nz-col nzSpan="12">
+            <nz-row style="padding: 12px 0 12px 0">
+              <span class="text-label" style="width: 35%">{{ 'app.backup.package.storage.used' | i18n }}</span>
+              <span class="text-value-detail">{{ packageBackupModel?.usedSize }} GB</span>
+            </nz-row>
+          </nz-col>
+        </nz-row>
+        <nz-row>
+          <nz-col nzSpan="12">
+            <nz-row style="padding: 12px 0 12px 0">
+              <span class="text-label"
+                    style="width: 35%; margin-left: 2%; color: #EA3829;">{{ 'app.backup.package.expire.date'|i18n }}</span>
+              <span class="text-value-detail"
+                    style="margin-left: 2%; color: #EA3829;">{{ packageBackupModel?.expirationDate | date: 'HH:mm:ss dd/MM/yyyy' }}</span>
+            </nz-row>
+          </nz-col>
+          <nz-col nzSpan="12">
+            <nz-row style="padding: 12px 0 12px 0">
+              <span class="text-label" style="width: 35%">{{ 'app.backup.package.storage.remaining'|i18n }}</span>
+              <span class="text-value-detail">{{ packageBackupModel?.availableSize }} GB</span>
+            </nz-row>
+          </nz-col>
+        </nz-row>
       </div>
-    </form>
-  </nz-card>
-</nz-content>
+      <div style="margin-top: 15px;">
+        <nz-descriptions>
+          <nz-descriptions-item [nzTitle]="titleDescription">
+            <span class="text-label">{{ packageBackupModel?.description }}</span>
+          </nz-descriptions-item>
+        </nz-descriptions>
+      </div>
+      <ng-template #titleDescription>
+        <span class="text-label">{{ 'app.backup.package.description'|i18n }}:</span>
+      </ng-template>
+    </nz-card>
+  </nz-content>
+</nz-spin>

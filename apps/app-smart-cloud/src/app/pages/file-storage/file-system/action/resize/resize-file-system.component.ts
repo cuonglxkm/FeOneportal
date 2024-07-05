@@ -66,6 +66,10 @@ export class ResizeFileSystemComponent implements OnInit {
     this.router.navigate(['/app-smart-cloud/file-storage/file-system/list']);
   }
 
+  onRegionChanged(region: RegionModel) {
+    this.region = region.regionId;
+  }
+
   projectChanged(project: ProjectModel) {
     this.project = project?.id;
   }
@@ -90,8 +94,8 @@ export class ResizeFileSystemComponent implements OnInit {
     this.fileSystemService.getFileSystemById(id, this.region, this.project).subscribe(data => {
       this.fileSystem = data;
       this.isLoading = false;
-      this.storage = this.fileSystem?.size;
-      this.validateForm.controls.storage.setValue(this.fileSystem.size);
+      // this.storage = this.fileSystem?.size;
+      // this.validateForm.controls.storage.setValue(this.fileSystem.size);
     }, error => {
       this.fileSystem = null;
       this.isLoading = false;

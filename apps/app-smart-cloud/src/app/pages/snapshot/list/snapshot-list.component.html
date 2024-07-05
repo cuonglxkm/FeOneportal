@@ -16,7 +16,7 @@
   <ng-template #action>
     <div class="alain-custom-action text-right">
       <share-users-combobox></share-users-combobox>
-      <region-select-dropdown (valueChanged)="regionChanged($event)"></region-select-dropdown>
+      <region-select-dropdown (regionChange)="onRegionChanged($event)" (valueChanged)="regionChanged($event)"></region-select-dropdown>
       <project-select-dropdown (valueChanged)="projectChanged($event)"
                                (userChanged)="projectChanged($event)"
                                [regionId]="region"></project-select-dropdown>
@@ -53,11 +53,12 @@
           </nz-col>
         </nz-row>
         <nz-table #fixedTable
+                  nzShowSizeChanger
                   style="margin-top: 20px;"
                   [nzData]="response?.records || []"
-                  [nzPageSize]="response?.pageSize"
+                  [nzPageSize]="size"
                   (nzPageSizeChange)="onPageSizeChange($event)"
-                  [nzPageIndex]="response?.currentPage"
+                  [nzPageIndex]="index"
                   (nzPageIndexChange)="onPageIndexChange($event)"
                   [nzTotal]="response?.totalCount"
                   [nzFrontPagination]="false"
@@ -67,7 +68,7 @@
           <tr>
             <th nzLeft>{{ 'app.snapshot.name' | i18n }}</th>
             <th nzLeft>Gói Snapshot</th>
-            <th nzLeft>{{ 'app.capacity' | i18n }} GB</th>
+            <th nzLeft>{{ 'app.capacity' | i18n }} (GB)</th>
             <th nzLeft>Volume/VM</th>
             <th nzLeft>Loại Snapshot</th>
             <th nzLeft>{{ 'app.service.status' | i18n }}</th>
@@ -80,19 +81,20 @@
             <td><a href="/app-smart-cloud/snapshot/detail/{{data.id}}">{{data.name}}</a></td>
             <td><a href="/app-smart-cloud/snapshot/packages/detail/{{data.snapshotPackageId}}">{{data.packageName}}</a></td>
             <td style="text-align: right">{{data.sizeInGB}}</td>
-            <td>{{data.volumeName}}</td>
+            <td>{{data.fromRootVolume == true ? data.instanceName : data.volumeName}}</td>
             <td>{{data.fromRootVolume == true ? 'Snapshot máy ảo' : 'Snapshot Volume'}}</td>
             <ng-container *ngIf="data.serviceStatus | ServiceStatusPipe as statusModel">
               <td nzBreakWord nzAlign="left" [ngStyle]="{ color: statusModel.color }">{{ statusModel.status }}</td>
             </ng-container>
-            <td>{{data.startDate | date : 'HH:mm:ss dd/MM/yyyy'}}</td>
+            <td>{{data.startDate | date : 'dd/MM/yyyy'}}</td>
             <td>
               <img (click)="enableEdit(data)" src="assets/imgs/edit-2.svg" alt="" nzTooltipTitle="{{'app.text.edit' | i18n}}"
                    style="cursor: pointer; width: 20px; height: 20px; margin-bottom: 3px;" />
               <img nz-dropdown [nzDropdownMenu]="opMenu" src="assets/imgs/more1.svg" alt="" style="margin-left: 5px; cursor:pointer;" />
               <nz-dropdown-menu #opMenu="nzDropdownMenu">
               <ul nz-menu>
-                <li *ngIf="data.fromRootVolume == false" nz-menu-item (click)="navigateToCreateVolume(data.id)">{{ 'volume.notification.request.create' | i18n}}</li>
+                <li *ngIf="data.fromRootVolume == false" nz-menu-item (click)="navigateToCreateVolumeVM(data.id,0)">{{ 'volume.notification.request.create' | i18n}}</li>
+                <li *ngIf="data.fromRootVolume == true" nz-menu-item (click)="navigateToCreateVolumeVM(data.id,1)">{{ 'app.instances.create1' | i18n}}</li>
                 <li nz-menu-item (click)="enableDelete(data)" style="color: red">{{ 'app.delete' | i18n}}</li>
               </ul>
             </nz-dropdown-menu>
@@ -154,7 +156,7 @@
   <nz-modal [(nzVisible)]="isVisibleEdit" nzTitle="Chỉnh sửa Snapshot " [nzStyle]="modalStyle" (nzOnCancel)="handleCancel()">
     <ng-container *nzModalContent>
       <div class="text-label" style="margin-bottom: 10px">
-        Tên Snapshot (<span class="text-red">*</span>)<img style="margin-left: 5px;" nz-tooltip="Cho phép chứa ký tự số, chữ, dấu gạch dưới, tối đa 50 ký tự, không chứa ký tự đặc   biệt, không chứa dấu tiếng việt, không chứa dấu cách (kí tự đặc biệt: @,   #, $, %, &, *, +, -, arrow, star, biểu tượng cảm xúc, dấu câu, dấu ngoặc,   hình tròn, hình vuông, hình chữ nhật...)"
+        Tên Snapshot (<span class="text-red">*</span>)<img style="margin-left: 5px;" nz-tooltip="Cho phép chứa ký tự số, chữ, dấu gạch dưới, tối đa 50 ký tự, không chứa ký tự đặc   biệt, không chứa dấu tiếng việt, không chứa dấu cách (ký tự đặc biệt: @,   #, $, %, &, *, +, -, arrow, star, biểu tượng cảm xúc, dấu câu, dấu ngoặc,   hình tròn, hình vuông, hình chữ nhật...)"
                                                            src="assets/imgs/pajamas_question.svg" alt="" />
         <input class="input-custom" nz-input placeholder="{{ 'project.note17' | i18n }}" style="width: 100%"
                formControlName="name">

@@ -15,7 +15,7 @@ import { ALLOW_ANONYMOUS, DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { environment } from '@env/environment';
 import { Order, OrderItem } from 'src/app/pages/instances/instances.model';
 import { InstancesService } from 'src/app/pages/instances/instances.service';
-import { finalize, filter } from 'rxjs';
+import { finalize } from 'rxjs';
 import { PaymentSummaryService } from '../../services/payment-summary.service';
 import { LoadingService } from '@delon/abc/loading';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
@@ -88,6 +88,7 @@ export class PaymentSummaryComponent implements OnInit {
     { label: this.i18n.fanyi('app.invoice.export.customer2'), value: 2 },
   ];
 
+
   constructor(
     private service: InstancesService,
     private psService: PaymentSummaryService,
@@ -108,9 +109,7 @@ export class PaymentSummaryComponent implements OnInit {
 
     if (state) {
       this.returnPath = state.path;
-      console.log({ path: this.returnPath });
       const myOrder = state.data;
-      console.log(state.data);
 
       this.order.customerId = myOrder.customerId;
       this.order.createdByUserId = myOrder.createdByUserId;
@@ -120,12 +119,8 @@ export class PaymentSummaryComponent implements OnInit {
       this.totalVAT = myOrder.totalVAT;
       console.log('order summary', this.order);
       this.order.orderItems.forEach((e: OrderItem) => {
-        console.log(e);
-
         var serviceItem = new ServiceInfo();
         const specificationObj = JSON.parse(e.specification);
-        console.log(specificationObj);
-
         switch (e.specificationType) {
           case 'instance_create':
             serviceItem.name =
@@ -273,6 +268,37 @@ export class PaymentSummaryComponent implements OnInit {
           case 'vpc_extend':
             serviceItem.name = `VPC - ${specificationObj.serviceName}`;
             serviceItem.type = this.i18n.fanyi('app.button.extend');
+            break;
+          case 'k8s_prem_create':
+            this.serviceType = 'k8s_prem';
+            serviceItem.name = `VAK - ${specificationObj.serviceName}`;
+            serviceItem.type = this.i18n.fanyi('app.label.create');
+            break;
+          case 'k8s_prem_resize':
+            this.serviceType = 'k8s_prem';
+            serviceItem.name = `VAK - ${specificationObj.serviceName}`;
+            serviceItem.type = this.i18n.fanyi('app.text.upgrade');
+            break;
+          case 'k8s_prem_extend':
+            this.serviceType = 'k8s_prem';
+            serviceItem.name = `VAK - ${specificationObj.serviceName}`;
+            serviceItem.type = this.i18n.fanyi('app.button.extend');
+            break;
+          case 'backuppackage_create':
+            serviceItem.name = `Backup Package - ${specificationObj.serviceName}`;
+            serviceItem.type = this.i18n.fanyi('app.label.create')
+            break;
+          case 'backuppacket_resize':
+            serviceItem.name = `Backup Package - ${specificationObj.serviceName}`;
+            serviceItem.type = this.i18n.fanyi('app.button.resize')
+            break;
+          case 'backuppacket_extend':
+            serviceItem.name = `Backup Package - ${specificationObj.serviceName}`;
+            serviceItem.type = this.i18n.fanyi('app.button.extend')
+            break;
+          case 'restore_volumebackup':
+            serviceItem.name = `Backup Volume - ${specificationObj.serviceName}`;
+            serviceItem.type = this.i18n.fanyi('app.restore')
             break;
           default:
             serviceItem.name = '';
@@ -496,7 +522,7 @@ export class PaymentSummaryComponent implements OnInit {
         this.customerTypes = customerGroupFilter[0].customerTypes;
         this.customerType = this.customerTypes[0].id;
         console.log(this.customerType);
-        
+
         if (this.customerType === 1) {
           this.formCustomerInvoice.controls.taxCode.setValidators([
             Validators.pattern(TAX_CODE_REGEX),
@@ -657,7 +683,7 @@ export class PaymentSummaryComponent implements OnInit {
     this.formCreatUserInvoice.customerId = this.tokenService.get()?.userId;
     console.log(this.formCreatUserInvoice);
 
-    this.invoiceService.create(this.formCreatUserInvoice).subscribe({
+    this.invoiceService.createInvoice(this.formCreatUserInvoice).subscribe({
       next: (data) => {
         this.isLoadingUpdateInfo = false;
         this.notification.success(

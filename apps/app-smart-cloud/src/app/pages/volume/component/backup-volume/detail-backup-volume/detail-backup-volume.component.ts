@@ -44,6 +44,10 @@ export class DetailBackupVolumeComponent implements OnInit{
     this.router.navigate(['/app-smart-cloud/backup-volume'])
   }
 
+  onRegionChanged(region: RegionModel) {
+    this.region = region.regionId;
+  }
+
   projectChanged(project: ProjectModel) {
     this.project = project?.id;
     this.typeVpc = project?.type
@@ -60,7 +64,7 @@ export class DetailBackupVolumeComponent implements OnInit{
       this.backupVolume = data;
       this.isLoading = false
       if(this.backupVolume?.backupPackageId != null) {
-        this.backupPackageService.detail(this.backupVolume?.backupPackageId).subscribe(data => {
+        this.backupPackageService.detail(this.backupVolume?.backupPackageId, this.project).subscribe(data => {
           this.backupPackageDetail = data;
         });
       }

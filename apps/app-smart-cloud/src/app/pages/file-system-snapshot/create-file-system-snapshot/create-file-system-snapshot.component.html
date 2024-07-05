@@ -9,13 +9,13 @@
         <a [routerLink]="['/']">{{ 'app.breadcrumb.home' | i18n }}</a>
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>
-        <a [routerLink]="['/app-smart-cloud/schedule/snapshot/list']">{{
+        {{
           'app.breadcrumb.infrastructure.service' | i18n
-        }}</a>
+        }}
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>File Storage</nz-breadcrumb-item>
       <nz-breadcrumb-item
-        ><a [routerLink]="['/app-smart-cloud/file-system-snapshot/list']"
+        ><a [routerLink]="['/app-smart-cloud/file-system-snapshot']"
           >File System Snapshot</a
         ></nz-breadcrumb-item
       >
@@ -32,6 +32,7 @@
       <share-users-combobox></share-users-combobox>
       <region-select-dropdown
         (valueChanged)="onRegionChange($event)"
+        (regionChange)="onRegionChanged($event)"
       ></region-select-dropdown>
       <project-select-dropdown
         [regionId]="region"
@@ -83,7 +84,7 @@
           </nz-form-control>
         </nz-form-item>
         <nz-row nzGutter="40">
-          <nz-col [nzSpan]="typeVpc === 0 ? '24' : '12'">
+          <nz-col [nzSpan]="typeVpc !== 1 ? '24' : '12'">
             <nz-form-item>
               <nz-form-control [nzErrorTip]="nameErrorTpl">
                 <nz-form-label nzFor="name">
@@ -126,9 +127,9 @@
           <nz-col *ngIf="typeVpc === 1" nzSpan="12">
             <nz-row>
               <nz-col nzSpan="18">
-                <span class="text-label">{{'app.file.system.total.size'|i18n}}:</span>
+                <span class="text-label">{{'app.file.system.snapshot.total.size'|i18n}}:</span>
                 <img nz-popover
-                     [nzPopoverContent]="'app.file.system.capacity.vpc' | i18n"
+                     [nzPopoverContent]="'app.file.system.snapshot.capacity.vpc' | i18n"
                      nzPopoverPlacement="bottom" style="margin-left: 6px; margin-bottom: 3px;"
                      src="assets/imgs/pajamas_question.svg" alt="" />
               </nz-col>
@@ -182,7 +183,7 @@
         </nz-textarea-count>
 
       </nz-card>
-        <ng-container *ngIf="typeVpc === 0">
+        <ng-container *ngIf="typeVpc !== 1">
           <one-portal-service-usage-period [nameService]="'file-system-snapshot'" (valueChanged)="onChangeTime($event)"/>
           <!-- <nz-form-item class="mt-5">
             <nz-form-label nzFor="time">
@@ -295,7 +296,7 @@
       </nz-card>
     </nz-affix>
     </ng-container>
-    <ng-container *ngIf="typeVpc === 0">
+    <ng-container *ngIf="typeVpc === 0 || typeVpc === 2">
       <nz-affix nzOffsetTop="72">
       <nz-card class="right-form card-price">
         <div class="right-title">

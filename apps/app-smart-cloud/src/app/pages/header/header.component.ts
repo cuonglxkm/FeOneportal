@@ -24,6 +24,10 @@ export class HeaderComponent {
         this.onRegionChanged.emit(region)
     }
 
+    onRegionChange(region: RegionModel) {
+        this.regionId = region.regionId;
+      }
+
     projectChanged(project: ProjectModel) {
         this.onProjectChanged.emit(project)
     }

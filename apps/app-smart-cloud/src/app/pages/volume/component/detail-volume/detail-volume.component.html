@@ -21,7 +21,7 @@
   <ng-template #action>
     <div class="alain-custom-action text-right">
       <share-users-combobox></share-users-combobox>
-      <region-select-dropdown (valueChanged)="regionChanged($event)"></region-select-dropdown>
+      <region-select-dropdown (regionChange)="onRegionChanged($event)" (valueChanged)="regionChanged($event)"></region-select-dropdown>
       <project-select-dropdown (valueChanged)="projectChanged($event)"
                                (userChanged)="userChangeProject($event)"
                                [regionId]="region"></project-select-dropdown>
@@ -125,10 +125,10 @@
           </nz-col>
         </nz-row>
       </div>
-      <div>
+      <div *ngIf="typeEncrypt">
         <label class="text-label" nz-checkbox [nzChecked]="volumeInfo?.isEncryption" nzDisabled style="font-size: 16px;">{{ 'volume.info.type.encrypt'|i18n }}</label>
       </div>
-      <div style="margin-top: 15px;">
+      <div *ngIf="typeMultiple" style="margin-top: 15px;">
         <label  class="text-label" nz-checkbox [nzChecked]="volumeInfo?.isMultiAttach" nzDisabled style="font-size: 16px;">{{ 'volume.info.type.multiAttach'|i18n }}</label>
       </div>
       <div style="margin-top: 15px;">

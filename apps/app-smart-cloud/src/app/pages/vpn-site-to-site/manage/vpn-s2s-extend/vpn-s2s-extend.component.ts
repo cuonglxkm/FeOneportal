@@ -29,6 +29,7 @@ export class VpnS2sExtendComponent implements OnInit{
   offer: any;
   dateString = new Date();
   expiredDate: Date = addDays(this.dateString, 30);
+  newExpiredDate: any
   isEnable = false;
   spec: any;
   vatNumber = 0;
@@ -64,6 +65,10 @@ export class VpnS2sExtendComponent implements OnInit{
   }
 
   regionChanged(region: RegionModel) {
+    this.region = region.regionId;
+  }
+
+  onRegionChanged(region: RegionModel) {
     this.region = region.regionId;
   }
 
@@ -149,6 +154,7 @@ export class VpnS2sExtendComponent implements OnInit{
           this.vatDisplay = result.data.totalVAT.amount;
           this.totalincludesVAT = Number.parseFloat(result.data.totalPayment.amount);
           this.totalAmount = Number.parseFloat(result.data.totalAmount.amount);
+          this.newExpiredDate = result.data.orderItemPrices[0].expiredDate
         }
       });
     

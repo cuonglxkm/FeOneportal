@@ -81,6 +81,10 @@ export class SnapshotListComponent implements OnInit{
     this.region = region.regionId;
   }
 
+  onRegionChanged(region: RegionModel) {
+    this.region = region.regionId;
+  }
+
   projectChanged(project: ProjectModel) {
     this.project = project?.id;
     this.search(true)
@@ -88,12 +92,14 @@ export class SnapshotListComponent implements OnInit{
   }
 
   navigateToCreate() {
-    this.router.navigate(['/app-smart-cloud/snapshot/create'])
+    this.router.navigate(['/app-smart-cloud/snapshot/create',  {
+      navigateType: 2
+    }])
   }
 
   search(isBegin: boolean) {
     this.isLoading = true;
-    this.service.serchSnapshot(this.size, this.index, this.region, this.project, this.value, this.status)
+    this.service.serchSnapshot(this.size, this.index, this.region, this.project, this.value, this.status, '')
       .pipe(finalize(() => {
         this.isLoading = false;
       }))
@@ -123,11 +129,19 @@ export class SnapshotListComponent implements OnInit{
   }
 
 
-  navigateToCreateVolume(idSnapshot) {
-    if(this.typeVpc == 1) {
-      this.router.navigate(['/app-smart-cloud/volume/vpc/create', {idSnapshot: idSnapshot}])
-    } else {
-      this.router.navigate(['/app-smart-cloud/volume/create', {idSnapshot: idSnapshot}])
+  navigateToCreateVolumeVM(idSnapshot, type: any) {
+    if (type == 0) {
+      if(this.typeVpc == 1) {
+        this.router.navigate(['/app-smart-cloud/volume/vpc/create', {idSnapshot: idSnapshot}])
+      } else {
+        this.router.navigate(['/app-smart-cloud/volume/create', {idSnapshot: idSnapshot}])
+      }
+    } else if (type == 1) {
+      if(this.typeVpc == 1) {
+        this.router.navigate(['/app-smart-cloud/instances/instances-create-vpc', {idSnapshot: idSnapshot}])
+      } else {
+        this.router.navigate(['/app-smart-cloud/instances/instances-create', {idSnapshot: idSnapshot}])
+      }
     }
   }
 

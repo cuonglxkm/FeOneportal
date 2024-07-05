@@ -8,11 +8,12 @@ import { formDeleteS3Key, s3KeyCreate, s3KeyGenerate } from 'src/app/shared/mode
 import { ObjectStorageService } from 'src/app/shared/services/object-storage.service';
 import { ObjectObjectStorageService } from '../../../shared/services/object-object-storage.service';
 import { SubUserService } from '../../../shared/services/sub-user.service';
-import { BaseResponse } from '../../../../../../../libs/common-utils/src';
+import { BaseResponse, RegionModel } from '../../../../../../../libs/common-utils/src';
 import { I18NService } from '@core';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { Subject } from 'rxjs';
 import { TimeCommon } from 'src/app/shared/utils/common';
+import { getCurrentRegionAndProject } from '@shared';
 
 @Component({
   selector: 'one-portal-s3-key',
@@ -41,6 +42,7 @@ export class S3KeyComponent implements OnInit {
   formDeleteS3Key: formDeleteS3Key = new formDeleteS3Key();
   value: string = ''
   searchDelay = new Subject<boolean>();
+  region = JSON.parse(localStorage.getItem('regionId'));
   constructor(
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
     @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
@@ -54,11 +56,21 @@ export class S3KeyComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    let regionAndProject = getCurrentRegionAndProject();
+    this.region = regionAndProject.regionId;
     this.hasObjectStorage();
     this.getData()
     this.searchDelay.pipe(debounceTime(TimeCommon.timeOutSearch)).subscribe(() => {     
       this.getData();
     });
+  }
+
+  onRegionChange(region: RegionModel) {
+    this.region = region.regionId;
+  }
+
+  onRegionChanged(region: RegionModel) {
+    this.region = region.regionId;
   }
 
   search(search: string) {  
@@ -70,7 +82,7 @@ export class S3KeyComponent implements OnInit {
   hasObjectStorage() {
     this.loadingSrv.open({ type: 'spin', text: 'Loading...' });
     this.objectSevice
-      .getUserInfo()
+      .getUserInfo(this.region)
       .pipe(finalize(() => this.loadingSrv.close()))
       .subscribe({
         next: (data) => {
@@ -96,7 +108,7 @@ export class S3KeyComponent implements OnInit {
     this.loadingDropdown = true;
     this.disableDropdown = true;
     this.subUserService
-      .getListSubUser(null, 99999, 1)
+      .getListSubUser(null, 99999, 1, this.region)
       .pipe(
         finalize(() => {
           this.loadingDropdown = false;
@@ -120,7 +132,7 @@ export class S3KeyComponent implements OnInit {
 
   getData() {
     this.isLoading = true
-    this.service.getDataS3Key(this.value.trim(), this.size, this.index).subscribe((data) => {
+    this.service.getDataS3Key(this.value.trim(), this.size, this.index, this.region).subscribe((data) => {
       this.isLoading = false
       this.total = data.totalCount;
       this.response = data
@@ -137,7 +149,8 @@ export class S3KeyComponent implements OnInit {
    this.formDeleteS3Key = {
       access_key: this.key,
       customerId: this.tokenService.get().userId,
-      actorEmail: ''
+      actorEmail: '',
+      regionId: this.region
     };
     this.service
       .deleteS3key(this.formDeleteS3Key)
@@ -176,7 +189,7 @@ export class S3KeyComponent implements OnInit {
       this.isLoadingCreateS3key = false;
       this.notification.warning(this.i18n.fanyi('app.status.warning'), this.i18n.fanyi('app.notification.enter.user.subUser'));
     } else {
-      this.service.createS3Key(subuser).subscribe({
+      this.service.createS3Key(subuser, this.region).subscribe({
         next: (data) => {
           this.isLoadingCreateS3key = false;
           this.isVisibleCreate = false;
@@ -210,7 +223,7 @@ export class S3KeyComponent implements OnInit {
     this.isLoadingReCreateS3key = true;
     console.log(this.formGenerateS3Key);
     
-    this.service.generateS3Key(this.formGenerateS3Key).subscribe({
+    this.service.generateS3Key(this.formGenerateS3Key, this.region).subscribe({
       next: (data) => {
         this.isLoadingReCreateS3key = false;
         this.isVisibleReCreate = false;

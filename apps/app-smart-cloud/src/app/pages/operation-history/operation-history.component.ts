@@ -70,6 +70,10 @@ export class OperationHistoryComponent implements OnInit {
     // this.getSshKeys();
   }
 
+  onRegionChanged(region: RegionModel) {
+    this.regionId = region.regionId;
+  }
+
   projectChange(project: ProjectModel) {
     // this.projectId = project.id;
     // this.getSshKeys();

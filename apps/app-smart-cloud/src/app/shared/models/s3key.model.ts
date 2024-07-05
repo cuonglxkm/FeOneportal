@@ -10,5 +10,6 @@ export class s3KeyGenerate {
 export class formDeleteS3Key {
     customerId: number;
     access_key: string;
-    actorEmail: string
+    actorEmail: string;
+    regionId: number;
   }

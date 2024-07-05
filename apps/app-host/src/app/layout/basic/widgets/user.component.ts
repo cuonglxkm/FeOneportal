@@ -69,29 +69,23 @@ export class HeaderUserComponent {
   private readonly mh = inject(ModalHelper);
 
   openResetPass() {
-    this.mh.create(ModalResetPassComponent).subscribe({});
+    this.mh.create(ModalResetPassComponent, '', {size: 'md'}).subscribe({});
   }
 
   logout(): void {
     let id_token = this.tokenService.get()!['id_token'];
     console.log('logout host');
     sessionStorage.clear();
-    this.cookieService.delete('TOKEN_USER', "/",".onsmartcloud.com",true,"None");
+    this.cookieService.deleteAll( "/",".onsmartcloud.com",true,"None");
     this.tokenService.clear();
-    // this.httpClient.get(environment['sso'].issuer
-    //   + `/connect/logout?post_logout_redirect_uri=${decodeURIComponent(environment['sso'].logout_callback)}`/* + '/logout'*/)
-    //   .subscribe(data => {
-    //     console.log(data)
-    //   }, error => {
-    //     console.log(error)
-    //   });
+
     localStorage.removeItem('UserRootId');
     localStorage.removeItem('ShareUsers');
     localStorage.removeItem('PermissionOPA');
     localStorage.removeItem('user');
     localStorage.removeItem('_token');
     localStorage.removeItem('projects');
-
+    localStorage.removeItem('projectId');
     window.location.href =
       environment['sso'].issuer +
       `/connect/logout?oi_au_id=${id_token}&post_logout_redirect_uri=${decodeURIComponent(

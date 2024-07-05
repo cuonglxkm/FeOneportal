@@ -15,8 +15,8 @@ export class SecurityService extends BaseService {
         super();
     }
 
-    authenticatorKey() {
-      return this.http.get<any>(environment.issuer + "/account/mfa/authenticator-key")
+    getTwoFactorSetting() {
+      return this.http.get<any>(environment.issuer+ "/account/mfa/setting")
         .pipe(catchError((error: HttpErrorResponse) => {
           if (error.status === 401) {
             console.error('login');
@@ -28,9 +28,22 @@ export class SecurityService extends BaseService {
       }))
     }
 
-    enable2fa(form: FormEnable2FA) {
+    getOneTimePassword() {
+      return this.http.get<any>(environment.issuer+ "/account/mfa/otp")
+        .pipe(catchError((error: HttpErrorResponse) => {
+          if (error.status === 401) {
+            console.error('login');
+          } else if (error.status === 404) {
+            // Handle 404 Not Found error
+            console.error('Resource not found');
+          }
+          return throwError(error);
+      }))
+    }
+
+    updateTwoFactorSetting(form: FormEnable2FA) {
       console.log(form);
-      return this.http.post<Enable2FAResponseModel>(environment.issuer + "/account/mfa/enable", Object.assign(form))
+      return this.http.post<Enable2FAResponseModel>(environment.issuer + "/account/mfa/setting", Object.assign(form))
         .pipe(catchError((error: HttpErrorResponse) => {
         if (error.status === 401) {
           console.error('login');
@@ -42,8 +55,21 @@ export class SecurityService extends BaseService {
       }))
     }
 
-    twoFactorProviders() {
-      return this.http.get<any>(environment.issuer+ "/account/mfa/providers")
+    getOTPForAuthenticator() {
+      return this.http.get<any>(environment.issuer + "/account/mfa/authenticator")
+        .pipe(catchError((error: HttpErrorResponse) => {
+          if (error.status === 401) {
+            console.error('login');
+          } else if (error.status === 404) {
+            // Handle 404 Not Found error
+            console.error('Resource not found');
+          }
+          return throwError(error);
+      }))
+    }
+
+    submitOTPForAuthenticator(form: FormEnable2FA) {
+      return this.http.post<any>(environment.issuer + "/account/mfa/authenticator", form)
         .pipe(catchError((error: HttpErrorResponse) => {
           if (error.status === 401) {
             console.error('login');

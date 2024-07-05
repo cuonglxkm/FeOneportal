@@ -116,6 +116,10 @@ export class InstancesEditInfoComponent implements OnInit {
     this.updateActivePoint(); // Gọi hàm này sau khi view đã được init để đảm bảo có giá trị cần thiết
   }
 
+  onRegionChanged(region: RegionModel) {
+    this.region = region.regionId;
+  }
+
   updateActivePoint(): void {
     // Gọi hàm reloadCarousel khi cần reload
     if (this.reloadCarousel) {

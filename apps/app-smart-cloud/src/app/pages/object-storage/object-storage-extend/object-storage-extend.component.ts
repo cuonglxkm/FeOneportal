@@ -26,6 +26,8 @@ import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { ConfigurationsService } from 'src/app/shared/services/configurations.service';
 import { OrderItemObject } from 'src/app/shared/models/price';
 import { OrderService } from 'src/app/shared/services/order.service';
+import { getCurrentRegionAndProject } from '@shared';
+import { RegionModel } from '../../../../../../../libs/common-utils/src';
 
 @Component({
   selector: 'one-portal-object-storage-extend',
@@ -45,6 +47,7 @@ export class ObjectStorageExtendComponent implements OnInit {
   orderObject: OrderItemObject = new OrderItemObject();
   isVisiblePopupError: boolean = false;
   errorList: string[] = [];
+  region = JSON.parse(localStorage.getItem('regionId'));
   closePopupError() {
     this.isVisiblePopupError = false;
   }
@@ -63,6 +66,8 @@ export class ObjectStorageExtendComponent implements OnInit {
 
   ngOnInit(): void {
     this.id = this.activatedRoute.snapshot.paramMap.get('id');
+    let regionAndProject = getCurrentRegionAndProject();
+    this.region = regionAndProject.regionId;
     this.getObjectStorage();
     this.getTotalAmount();
     this.onChangeTime();
@@ -116,6 +121,14 @@ export class ObjectStorageExtendComponent implements OnInit {
       });
   }
 
+  onRegionChange(region: RegionModel) {
+    this.region = region.regionId;
+  }
+
+  onRegionChanged(region: RegionModel) {
+    this.region = region.regionId;
+  }
+
   objectStorageExtend: ObjectStorageExtend = new ObjectStorageExtend();
   initobjectStorageExtend() {
     this.objectStorageExtend.newExpireDate = this.newExpiredDate;
@@ -124,7 +137,7 @@ export class ObjectStorageExtendComponent implements OnInit {
     this.objectStorageExtend.actorEmail = this.tokenService.get()?.email;
     this.objectStorageExtend.typeName =
       'SharedKernel.IntegrationEvents.Orders.Specifications.UserObjectStorageExtendSpecification,SharedKernel.IntegrationEvents, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null';
-    this.objectStorageExtend.regionId = 0;
+    this.objectStorageExtend.regionId = this.region;
     this.objectStorageExtend.serviceType = 13;
     this.objectStorageExtend.actionType = 3;
     this.objectStorageExtend.serviceInstanceId = this.id;

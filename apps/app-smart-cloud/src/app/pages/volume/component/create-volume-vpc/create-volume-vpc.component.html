@@ -24,7 +24,7 @@
   <ng-template #action>
     <div class="alain-custom-action text-right">
       <share-users-combobox></share-users-combobox>
-      <region-select-dropdown (valueChanged)="regionChanged($event)"></region-select-dropdown>
+      <region-select-dropdown (regionChange)="onRegionChanged($event)" (valueChanged)="regionChanged($event)"></region-select-dropdown>
       <project-select-dropdown (valueChanged)="projectChanged($event)"
                                (userChanged)="userChangeProject($event)"
                                [regionId]="region"></project-select-dropdown>
@@ -66,8 +66,8 @@
               </ng-template>
             </nz-form-control>
           </nz-form-item>
-          <nz-form-item>
-            <div style="display: flex;">
+          <nz-form-item *ngIf="typeSnapshot">
+            <div style="display: flex;" >
               <nz-switch formControlName="isSnapshot" [(ngModel)]="isInitSnapshot" (ngModelChange)="onSwitchSnapshot($event)"></nz-switch>
               <span style="margin-left: 10px; margin-top: 1px;"
                     class="text-label">{{ 'app.instances.from.snapshot'|i18n }}</span>
@@ -224,7 +224,7 @@
           </nz-form-item>
           <nz-form-item style="margin-bottom: 0;">
             <nz-form-control style="margin-top: -6px;" nzDisableAutoTips>
-              <label *ngIf="typeEncrypt == true"
+              <label *ngIf="typeEncrypt"
                      nz-checkbox
                      [nzDisabled]="isInitSnapshot"
                      formControlName="isEncryption" (nzCheckedChange)="onChangeStatusEncrypt($event)">
@@ -236,7 +236,7 @@
               </label>
             </nz-form-control>
             <nz-form-control style="margin-top: -6px;" nzDisableAutoTips>
-              <label *ngIf="typeMultiple == true"
+              <label *ngIf="typeMultiple"
                      nz-checkbox
                      style="margin-top: 10px;"
                      [nzDisabled]="isInitSnapshot"

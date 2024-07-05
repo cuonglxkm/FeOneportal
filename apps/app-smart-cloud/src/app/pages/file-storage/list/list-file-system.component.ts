@@ -93,6 +93,10 @@ export class ListFileSystemComponent implements OnInit, OnDestroy {
     this.region = region.regionId;
   }
 
+  onRegionChanged(region: RegionModel) {
+    this.region = region.regionId;
+  }
+
   projectChanged(project: ProjectModel) {
     this.project = project?.id;
     this.typeVpc = project?.type;
@@ -107,10 +111,13 @@ export class ListFileSystemComponent implements OnInit, OnDestroy {
   }
 
   navigateToCreateFileSystem(typeVpc) {
+    let hasRoleSI = localStorage.getItem('role').includes('SI')
+    this.isLoading = true
     this.fileSystemService.checkRouter(this.region, this.project).subscribe({
       next: (data) => {
+        this.isLoading = false
         //in vpc
-        if (typeVpc == 1) {
+        if (typeVpc == 1 || hasRoleSI) {
           this.router.navigate([
             '/app-smart-cloud/file-storage/file-system/create'
           ]);
@@ -121,6 +128,7 @@ export class ListFileSystemComponent implements OnInit, OnDestroy {
         }
       },
       error: (error) => {
+        this.isLoading = false
         if (error.error.detail.includes('Vui lòng kiểm tra Router')) {
           this.notification.error(
             this.i18n.fanyi('app.status.fail'),
@@ -216,11 +224,12 @@ export class ListFileSystemComponent implements OnInit, OnDestroy {
     this.router.navigate(['/app-smart-cloud/file-storage/file-system/' + cloudFileSystem + '/access-rule/list', { fileSystem: id }]);
   }
 
-  ngOnInit() {
+  onRegionInitComplete() {
     let regionAndProject = getCurrentRegionAndProject();
-    this.region = regionAndProject.regionId;
-    this.project = regionAndProject.projectId;
+    this.region = regionAndProject.regionId;;
+  }
 
+  ngOnInit() {
     // this.getProject();
 
     console.log('project', this.project);
@@ -240,6 +249,7 @@ export class ListFileSystemComponent implements OnInit, OnDestroy {
           case 'DELETED':
           case 'EXTENDING':
           case 'DELETING':
+          case 'ERROR':
           case 'AVAILABLE':
             this.getListFileSystem(true);
             break;

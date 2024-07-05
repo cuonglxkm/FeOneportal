@@ -72,6 +72,10 @@ export class VpnS2sCreateComponent implements OnInit {
     this.region = region.regionId;
   }
 
+  onRegionChanged(region: RegionModel) {
+    this.region = region.regionId;
+  }
+
   projectChanged(project: ProjectModel) {
     this.project = project.id;
 

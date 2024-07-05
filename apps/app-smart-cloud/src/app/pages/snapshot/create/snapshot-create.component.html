@@ -17,7 +17,7 @@
   <ng-template #action>
     <div class="alain-custom-action text-right">
       <share-users-combobox></share-users-combobox>
-      <region-select-dropdown (valueChanged)="regionChanged($event)"></region-select-dropdown>
+      <region-select-dropdown (regionChange)="onRegionChanged($event)" (valueChanged)="regionChanged($event)"></region-select-dropdown>
       <project-select-dropdown (valueChanged)="projectChanged($event)"
                                (userChanged)="userChanged($event)"
                                [regionId]="region"></project-select-dropdown>
@@ -30,20 +30,21 @@
       <nz-col nzSpan="16">
         <nz-card style="border-radius: 8px;">
           <span class="text-card-header">Thông tin Snapshot Volume</span>
-          <nz-alert  nzBanner *ngIf="disableByQuota == false"
+          <nz-alert  nzBanner *ngIf="disableCreate == false"
                      style="margin-bottom: 10px;margin-top: 15px"
                      [nzMessage]="nzMessage"
                      nzShowIcon></nz-alert>
           <ng-template #nzMessage>
             <div>
-              Dung lượng Snapshot {{selectedSnapshotType == 1 ? 'Volume' : 'Máy ảo'}} đã dùng: {{quotaUsed}} GB / {{quotaTotal}} GB. Quý khách còn lại {{quotaRemain}} GB dung lượng Snapshot
+              Dung lượng Snapshot {{navigateType == 0 || (selectedSnapshotType==0 && navigateType==2) ? 'Volume' : 'Máy ảo'}} đã dùng: {{quotaUsed}}GB / {{quotaTotal}}GB. Quý khách còn lại {{quotaRemain}}GB dung lượng Snapshot
             </div>
           </ng-template>
+<!--          name-->
           <nz-form-item style="margin-top: 15px;">
             <nz-form-label>
               <span> {{ 'app.snapshot.name' | i18n }} (<span style="color: red;">*</span>) </span>
               <img nz-popover
-                   [nzPopoverContent]="'Cho phép chứa ký tự số, chữ, dấu gạch dưới, tối đa 50 ký tự, không chứa ký tự đặc   biệt, không chứa dấu tiếng việt, không chứa dấu cách (kí tự đặc biệt: @,   #, $, %, &, *, +, -, arrow, star, biểu tượng cảm xúc, dấu câu, dấu ngoặc,   hình tròn, hình vuông, hình chữ nhật...)'"
+                   [nzPopoverContent]="'Cho phép chứa ký tự số, chữ, dấu gạch dưới, tối đa 50 ký tự, không chứa ký tự đặc   biệt, không chứa dấu tiếng việt, không chứa dấu cách (ký tự đặc biệt: @,   #, $, %, &, *, +, -, arrow, star, biểu tượng cảm xúc, dấu câu, dấu ngoặc,   hình tròn, hình vuông, hình chữ nhật...)'"
                    nzPopoverPlacement="bottom" style="margin-left: 5px;"
                    src="assets/imgs/pajamas_question.svg" alt="" />
             </nz-form-label>
@@ -62,9 +63,10 @@
               </ng-template>
             </nz-form-control>
           </nz-form-item>
-          <div *ngIf="snapshotTypeCreate == undefined">
+          <div *ngIf="navigateType == 2">
             <nz-row>
               <div nz-col nzSpan="12">
+                <!--          type VM/VL-->
                 <nz-form-item>
                   <nz-form-label>
                   <span>Loại Snapshot (<span style="color: red;">*</span>)
@@ -74,7 +76,7 @@
                        src="assets/imgs/pajamas_question.svg" alt="" /></span>
                   </nz-form-label>
                   <nz-form-control nzDisableAutoTips>
-                    <nz-select [nzPlaceHolder]="'Người dùng có thể chọn Snapshot Volume hoặc máy ảo'" nzAllowClear
+                    <nz-select [nzPlaceHolder]="'Người dùng có thể chọn Snapshot Volume hoặc máy ảo'" [nzAllowClear]="false"
                                [(ngModel)]="selectedSnapshotType" (ngModelChange)="changeTypeSnaphot()" [ngModelOptions]="{ standalone: true }" nzSize="large" style="width: 95%">
                       <nz-option *ngFor="let index of snapShotArray" [nzValue]="index.value"
                                  [nzLabel]="index.label"></nz-option>
@@ -83,6 +85,7 @@
                 </nz-form-item>
               </div>
               <div nz-col nzSpan="12">
+                <!--          VL selectedSnapshotType==0-->
                 <nz-form-item *ngIf="selectedSnapshotType == 0">
                   <nz-form-label>
                     <span>{{'schedule.backup.volume.select' | i18n}} (<span style="color: red;">*</span>)
@@ -95,10 +98,11 @@
                     <nz-select nzPlaceHolder="{{'schedule.backup.volume.select' | i18n}}" nzAllowClear
                                [(ngModel)]="selectedVolume" [disabled] = "volumeLoading" [nzLoading]="volumeLoading" (ngModelChange)="changeVmVolume()" [ngModelOptions]="{ standalone: true }" nzSize="large">
                       <nz-option *ngFor="let index of volumeArray" [nzValue]="index"
-                                 [nzLabel]="index.name"></nz-option>
+                                 nzLabel="{{index.name}}"></nz-option>
                     </nz-select>
                   </nz-form-control>
                 </nz-form-item>
+                <!--          VM selectedSnapshotType==1-->
                 <nz-form-item *ngIf="selectedSnapshotType == 1">
                   <nz-form-label>
                   <span>{{'wan.label.instance.select' | i18n}} (<span style="color: red;">*</span>)
@@ -119,6 +123,7 @@
             </nz-row>
             <nz-row  *ngIf="projectType != 1">
               <div nz-col nzSpan="12">
+                <!--          quota-->
                 <nz-form-item>
                   <nz-form-label>
                     <span>Dung lượng Snapshot (<span style="color: red;">*</span>)</span>
@@ -133,6 +138,7 @@
                 </nz-form-item>
               </div>
               <div nz-col nzSpan="12">
+                <!--          package-->
                 <nz-form-item>
                   <nz-form-label>
                     <span>Chọn gói Snapshot (<span style="color: red;">*</span>)</span>
@@ -151,6 +157,7 @@
                 </nz-form-item>
               </div>
             </nz-row>
+            <!--          quota projectype==1-->
             <nz-form-item *ngIf="projectType == 1">
               <nz-form-label>
                 <span>Dung lượng Snapshot (<span style="color: red;">*</span>)</span>
@@ -164,7 +171,8 @@
               </nz-form-control>
             </nz-form-item>
           </div>
-          <div *ngIf="snapshotTypeCreate == 1">
+          <!--          VL navigateType==0-->
+          <div *ngIf="navigateType == 1">
             <nz-row>
               <div nz-col nzSpan="12">
                 <nz-form-item>
@@ -216,7 +224,8 @@
               </nz-form-control>
             </nz-form-item>
           </div>
-          <div *ngIf="snapshotTypeCreate == 0">
+          <!--          VM navigateType==1-->
+          <div *ngIf="navigateType == 0">
             <nz-row>
               <div nz-col nzSpan="12">
                 <nz-form-item>
@@ -268,10 +277,10 @@
               </nz-form-control>
             </nz-form-item>
           </div>
-          <nz-alert  *ngIf="this.snapshotTypeCreate == 2 && this.selectedSnapshotType == 0 && this.volumeArray.length == 0 && volumeLoading == false" nzBanner
-                     style="margin-bottom: 10px;"
-                     [nzMessage]="nzMessage"
-                     nzShowIcon></nz-alert>
+          <nz-alert *ngIf="this.navigateType == 2 && this.selectedSnapshotType == 0 && this.volumeArray.length == 0 && volumeLoading == false" nzBanner
+                    style="margin-bottom: 10px;"
+                    [nzMessage]="nzMessage"
+                    nzShowIcon></nz-alert>
           <ng-template #nzMessage>
             <div>
               Quý khách chưa có gói Snapshot nào, để có thể sử dụng dịch vụ Snapshot, vui lòng tạo gói Snapshot
@@ -301,13 +310,16 @@
             <div style="margin-top: 10px" class="text-value">Tên Snapshot</div>
             <div style="margin-top: 10px" class="text-label">{{validateForm.controls['name'].value}}</div>
             <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
-            <div *ngIf="selectedSnapshotType == 0" style="margin-top: 10px" class="text-value">Volume</div>
-            <div *ngIf="selectedSnapshotType == 0" style="margin-top: 10px" class="text-label">{{selectedVolume?.name}}</div>
-            <div *ngIf="selectedSnapshotType == 1" style="margin-top: 10px" class="text-value">{{'app.instances' | i18n}}</div>
-            <div *ngIf="selectedSnapshotType == 1" style="margin-top: 10px" class="text-label">{{selectedVM?.name}}</div>
+            <div *ngIf="navigateType == 0 || (navigateType == 2 && selectedSnapshotType == 0)" style="margin-top: 10px" class="text-value">Volume</div>
+            <div *ngIf="navigateType == 0 || (navigateType == 2 && selectedSnapshotType == 0)" style="margin-top: 10px" class="text-label">{{selectedVolume?.name}}</div>
+            <div *ngIf="navigateType == 1 || (navigateType == 2 && selectedSnapshotType == 1)" style="margin-top: 10px" class="text-value">{{'app.instances' | i18n}}</div>
+            <div *ngIf="navigateType == 1 || (navigateType == 2 && selectedSnapshotType == 1)" style="margin-top: 10px" class="text-label">{{selectedVM?.name}}</div>
             <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
             <div style="margin-top: 10px" class="text-value">{{'app.capacity' | i18n}}</div>
             <div style="margin-top: 10px" class="text-label">{{validateForm.controls['quota'].value}}</div>
+            <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
+            <div style="margin-top: 10px" class="text-value">Loại Snapshot</div>
+            <div style="margin-top: 10px" class="text-label">{{quotaType?.toUpperCase()}}</div>
             <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
             <div *ngIf="projectType != 1">
               <div style="margin-top: 10px" class="text-value">Gói Snapshot</div>
@@ -317,9 +329,9 @@
             <nz-row>
               <nz-col style="width: 100%">
                 <button style="width: 100%" nz-button nzSize="large" nzType="primary" (click)="navigateToPaymentSummary()" [nzLoading]="loadingCreate"
-                        [disabled]="validateForm.invalid || disableCreate || loadingCreate">
+                        [disabled]="validateForm.invalid || disableCreate || loadingCreate || disableByQuota">
                   <img src="assets/imgs/wallet.svg" style="margin-right: 5px; padding-bottom: 5px;" />
-                  <span [style.color]="validateForm.invalid || disableCreate || loadingCreate? 'gray' : 'white'">{{ 'app.button.create' | i18n }}</span>
+                  <span [style.color]="validateForm.invalid || disableCreate || loadingCreate || disableByQuota? 'gray' : 'white'">{{ 'app.button.create' | i18n }}</span>
                 </button>
               </nz-col>
             </nz-row>

@@ -1,4 +1,4 @@
-<page-header [breadcrumb]="breadcrumb" [title]="'Quản lý Object'">
+<page-header [breadcrumb]="breadcrumb" [action]="action" [title]="'Quản lý Object'">
   <ng-template #breadcrumb>
     <nz-breadcrumb [nzSeparator]="separatorTemplate">
       <nz-breadcrumb-item
@@ -18,6 +18,14 @@
     <ng-template #separatorTemplate
       ><img src="assets/imgs/arrow-square-right.svg" alt="" />
     </ng-template>
+  </ng-template>
+  <ng-template #action>
+    <div class="alain-custom-action text-right">
+      <region-select-dropdown
+        (valueChanged)="onRegionChange($event)"
+        (regionChange)="onRegionChanged($event)"
+      ></region-select-dropdown>
+    </div>
   </ng-template>
 </page-header>
 
@@ -41,9 +49,7 @@
       {{ 'app.storage.usage' | i18n }}:
     </div>
     <div style="font-weight: bold">
-      {{ bucket ? bucket.bucketSize : '' }} Bytes /
-      {{ bucket ? bucket.bucketItemCount : '' }}
-      objects
+      {{usage}}
     </div>
   </nz-row>
   <nz-row>

@@ -24,6 +24,8 @@ import { OrderService } from 'src/app/shared/services/order.service';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { I18NService } from '@core';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
+import { getCurrentRegionAndProject } from '@shared';
+import { RegionModel } from '../../../../../../../libs/common-utils/src';
 
 @Component({
   selector: 'one-portal-object-storage-create',
@@ -43,6 +45,7 @@ export class ObjectStorageCreateComponent implements OnInit {
   unitPrice = 0;
   dataSubject: Subject<any> = new Subject<any>();
   timeSelected: any;
+  region = JSON.parse(localStorage.getItem('regionId'));
   constructor(
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
     private service: ObjectStorageService,
@@ -61,7 +64,17 @@ export class ObjectStorageCreateComponent implements OnInit {
     this.isVisiblePopupError = false;
   }
 
+  onRegionChange(region: RegionModel) {
+    this.region = region.regionId;
+  }
+
+  onRegionChanged(region: RegionModel) {
+    this.region = region.regionId;
+  }
+
   ngOnInit(): void {
+    let regionAndProject = getCurrentRegionAndProject();
+    this.region = regionAndProject.regionId;
     this.dataSubject.next(1);
     this.onChangeCapacity();
     this.getConfigurations();
@@ -91,7 +104,7 @@ export class ObjectStorageCreateComponent implements OnInit {
     this.objectStorageCreate.userEmail = this.tokenService.get()?.email;
     this.objectStorageCreate.actorEmail = this.tokenService.get()?.email;
     this.objectStorageCreate.projectId = 0;
-    this.objectStorageCreate.regionId = 0;
+    this.objectStorageCreate.regionId = this.region;
     this.objectStorageCreate.serviceType = 13;
     this.objectStorageCreate.actionType = 0;
     this.objectStorageCreate.serviceInstanceId = 0;

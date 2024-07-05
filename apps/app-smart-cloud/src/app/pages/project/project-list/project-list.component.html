@@ -9,7 +9,7 @@
   <ng-template #action>
     <div class="alain-custom-action text-right">
       <share-users-combobox></share-users-combobox>
-      <region-select-dropdown (valueChanged)="onRegionChange($event)"></region-select-dropdown>
+      <region-select-dropdown (regionChange)="onRegionChanged($event)" (valueChanged)="onRegionChange($event)"></region-select-dropdown>
     </div>
   </ng-template>
 </page-header>
@@ -80,8 +80,8 @@
           <td >{{ item.type == 'VPC' ? ('project.note4' | i18n) : (item.type == 'Default' ? ('project.default' | i18n) :('project.note5' | i18n))}}</td>
           <td>
             <div>
-              <!----Chỉnh sửa----->
-              <img style="cursor: pointer;; margin-right: 10px;" *ngIf="item.resourceStatus != 'CREATING' && item.resourceStatus != 'RESIZING'&& item.resourceStatus != 'DELETING'"
+              <!----Chỉnh sửa    && item.serviceStatus != 'TAMNGUNG'    ----->
+              <img style="cursor: pointer;; margin-right: 10px;" *ngIf="item.resourceStatus != 'CREATING' && item.resourceStatus != 'RESIZING'&& item.resourceStatus != 'DELETING' "
                     src="assets/imgs/edit-2.svg"
                     nz-tooltip
                     nzTooltipTitle="{{ 'app.text.edit' | i18n }}" nzTooltipPlacement="bottom"
@@ -110,7 +110,7 @@
           <p class="text-intro-desc" style="opacity: 0.5">{{ 'project.note6' | i18n }}</p>
         </ng-template>
         <ng-template #customIcon>
-          <img src="assets/imgs/VPC-init.png" alt="Custom Icon">
+          <img src="assets/imgs/vpc.svg" alt="Custom Icon">
         </ng-template>
         <div nz-result-extra>
           <button (click)="createProject()" nz-button nzSize="large" nzType="primary" style="margin-bottom: 20px;">
@@ -175,7 +175,7 @@
     <ng-container *nzModalContent>
       <div class="text-label" style="margin-bottom: 10px">
         {{ 'project.note19' | i18n }}(<span class="text-red">*</span>)<img style="margin-left: 5px;" nz-tooltip="{{ 'project.note16' | i18n }}" src="assets/imgs/pajamas_question.svg" alt="" />
-        <input class="input-custom" nz-input placeholder="{{ 'project.note17' | i18n }}" style="width: 100%"
+        <input maxlength="50" class="input-custom" nz-input placeholder="{{ 'project.note17' | i18n }}" style="width: 100%"
                formControlName="name">
       </div>
       <div class="text-label mt-5">

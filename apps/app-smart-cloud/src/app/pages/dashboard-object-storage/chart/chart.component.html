@@ -4,7 +4,7 @@
           [nzDropdownMenu]="opMenuStorageUse"></span>
     <nz-dropdown-menu #opMenuStorageUse="nzDropdownMenu">
       <ul nz-menu>
-        <li nz-menu-item (click)="viewFullscreen('storage-use')">View in fullscreen</li>
+        <li nz-menu-item  (click)="viewFullscreen('storage-use')">View in fullscreen</li>
         <li nz-menu-item (click)="printChartStorageUse('storage-use')">Print chart</li>
         <li nz-menu-item (click)="downloadImage('storage-use', 'png')">Download PNG image</li>
         <li nz-menu-item (click)="downloadImage('storage-use', 'jpg')">Download JPG image</li>
@@ -12,6 +12,9 @@
         <li nz-menu-item (click)="downloadImage('storage-use', 'svg')">Download SVG vector image</li>
       </ul>
     </nz-dropdown-menu>
+    <div id="fullscreen-container" #fullscreenContainer style="display:none;">
+      <img id="fullscreen-image" #fullscreenImage>
+    </div>
     <div #storageUse>
       <div class="title">
         <span class="text-card-header">{{ 'app.storage.usage' | i18n }}</span> <br>
@@ -80,7 +83,7 @@
     </nz-dropdown-menu>
     <div #storageDownload>
       <div class="title">
-        <span class="text-card-header">{{ 'app.upload.capacity' | i18n }}</span> <br>
+        <span class="text-card-header">{{ 'app.upload.download' | i18n }}</span> <br>
         <span>{{ summary[0]?.startDate * 1000 | date: 'dd/MM/yyyy hh:mm' }} {{ 'app.to' | i18n }} {{ newDate | date: 'dd/MM/yyyy hh:mm' }}</span>
       </div>
       <div #chartStorageDownload style="padding-bottom: 20px; padding-left: 10px; "></div>
