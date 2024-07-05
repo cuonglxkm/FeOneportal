@@ -163,6 +163,8 @@ export class CreateLbVpcComponent implements OnInit {
     // this.validateForm.controls.subnet.setValue(value);
     if (!this.validateForm.controls['subnet'].invalid) {
       this.validateForm.controls['ipAddress'].enable();
+    } else {
+      this.validateForm.controls['ipAddress'].disable();
     }
     if (this.listSubnets) {
       const selected = this.listSubnets?.find(option => option.cloudId === value);
