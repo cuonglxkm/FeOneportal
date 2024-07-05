@@ -86,7 +86,6 @@ export class InstancesComponent implements OnInit {
     private vlanService: VlanService
   ) {}
 
-
   ngOnInit() {
     console.log('current language', this.i18n.currentLang);
     this.searchParam.status = '';
@@ -277,6 +276,7 @@ export class InstancesComponent implements OnInit {
               this.dataList = data.records;
               this.total = data.totalCount;
             } else {
+              this.dataList = [];
               this.activeCreate = true;
             }
             this.cdr.detectChanges();
@@ -395,8 +395,7 @@ export class InstancesComponent implements OnInit {
     this.isChoosePort = true;
     this.instanceAction = new InstanceAction();
     this.instanceAction.networkId = this.vlanCloudId;
-    this.getListPort(this.vlanCloudId);
-    this.getVlanSubnets(this.vlanCloudId);
+    this.getListNetwork();
     this.instanceAction.id = id;
     this.instanceAction.command = 'attachinterface';
     this.instanceAction.customerId = this.userId;
@@ -863,16 +862,17 @@ export class InstancesComponent implements OnInit {
   }
 
   createBackupSchedule(id: number) {
-    this.router.navigate(
-      ['/app-smart-cloud/schedule/backup/create', { instanceId: id }]
-    );
+    this.router.navigate([
+      '/app-smart-cloud/schedule/backup/create',
+      { instanceId: id },
+    ]);
   }
 
   createSnapshot(id: number) {
-    this.router.navigate([
-      '/app-smart-cloud/snapshot/create',
-      { instanceId: id },
-    ],{ queryParams: { navigateType: 1 } });
+    this.router.navigate(
+      ['/app-smart-cloud/snapshot/create', { instanceId: id }],
+      { queryParams: { navigateType: 1 } }
+    );
   }
 
   instancesModel: InstancesModel = new InstancesModel();
@@ -902,6 +902,9 @@ export class InstancesComponent implements OnInit {
   }
 
   navigateToCreateScheduleSnapshot(id: number) {
-    this.router.navigate(['/app-smart-cloud/schedule/snapshot/create', {instanceId: id}], { queryParams: { snapshotTypeCreate: 1 } });
+    this.router.navigate(
+      ['/app-smart-cloud/schedule/snapshot/create', { instanceId: id }],
+      { queryParams: { snapshotTypeCreate: 1 } }
+    );
   }
 }
