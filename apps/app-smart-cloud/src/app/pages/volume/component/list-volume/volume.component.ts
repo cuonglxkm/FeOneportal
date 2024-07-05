@@ -94,9 +94,7 @@ export class VolumeComponent implements OnInit, OnDestroy {
     this.project = project?.id;
     this.typeVPC = project?.type;
     this.isLoading = true;
-    setTimeout(() => {
-      this.getListVolume(true);
-    }, 2000);
+    this.getListVolume(true);
   }
 
   ngOnDestroy(): void {
@@ -152,7 +150,6 @@ export class VolumeComponent implements OnInit, OnDestroy {
   getListVolume(isBegin) {
     this.isLoading = true;
     this.customerId = this.tokenService.get()?.userId;
-
     this.volumeService.getVolumes(this.customerId, this.project,
       this.region, this.pageSize, this.pageIndex, this.selectedValue, this.value)
       .pipe(debounceTime(500))

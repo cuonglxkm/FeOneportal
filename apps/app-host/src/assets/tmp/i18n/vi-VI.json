@@ -527,6 +527,9 @@
   "app.notify.amount.gpu.add": "Không đủ quota chuyển đổi loại GPU, cần cấp thêm {{num}} GPU",
   "app.notify.create.instances.success": "Khởi tạo máy ảo {{name}} thành công",
   "app.notify.create.instances.fail": "Khởi tạo máy ảo {{name}} không thành công",
+  "app.notify.extend.instance.success": "Yêu cầu gia hạn máy ảo thành công",
+  "app.notify.extend.instance.fail": "Yêu cầu gia hạn máy ảo không thành công",
+
 
   "app.choose.snapshot": "Chọn Snapshot",
   "app.choose.volume.type": "Chọn loại Volume",
@@ -982,6 +985,7 @@
   "app.file.system.detail": "Chi tiết File System",
   "app.file.system.extend": "Gia hạn File System",
   "app.file.system.create": "Khởi tạo File System",
+  "app.file.system.resize.title": "Điều chỉnh dung lượng File System",
   "app.file.system.create.button": "Tạo mới File System",
   "app.file.system.resize": "Điều chỉnh File System",
   "app.file.system.create.confirm": "Xác nhận khởi tạo File System",
@@ -999,7 +1003,11 @@
   "app.file.system.total.size": "Tổng dung lượng File System",
   "app.file.system.snapshot.total.size": "Tổng dung lượng Snapshot",
   "app.file.system.notification.require.create.success": "Yêu cầu tạo File System thành công.",
+  "app.file.system.notification.require.resize.success": "Yêu cầu điều chỉnh File System thành công.",
+  "app.file.system.notification.require.extend.success": "Yêu cầu gia hạn File System thành công.",
   "app.file.system.notification.require.create.fail": "Yêu cầu tạo File System thất bại.",
+  "app.file.system.notification.require.resize.fail": "Yêu cầu điều chỉnh File System thất bại.",
+  "app.file.system.notification.require.extend.fail": "Yêu cầu gia hạn File System thất bại.",
 
   "app.choose.file.system.to.perform.snapshot": "Chọn File System để thực hiện Snapshot",
   "validation.snapshot.info.required": "Vui lòng nhập tên File System Snapshot",
@@ -1927,7 +1935,7 @@
   "mongodb.upgrade.vat": "Chi phí VAT(10%)",
   "mongodb.upgrade.include-vat": "Đã bao gồm 10% VAT",
   "mongodb.upgrade.per-month": "VNĐ/tháng",
-  
+
   "mongodb.upgrade.mongodb.node.validation-1": "Giá trị không được để trống",
   "mongodb.upgrade.mongodb.node.validation-2": "Giá trị Node tối thiểu là 3",
   "mongodb.upgrade.mongodb.node.validation-3":"Giá trị phải cao hơn mức hiện tại sử dụng",
@@ -1937,12 +1945,12 @@
   "mongodb.upgrade.mongodb.cpu.validation-2":"Giá trị vCPU tối thiểu là 2",
   "mongodb.upgrade.mongodb.cpu.validation-3":"Giá trị phải cao hơn mức hiện tại sử dụng",
   "mongodb.upgrade.mongodb.cpu.validation-4":"Giá trị vCPU tối đa là 32",
-  
+
   "mongodb.upgrade.mongodb.ram.validation-1": "Giá trị không được để trống",
   "mongodb.upgrade.mongodb.ram.validation-2":"Giá trị RAM tối thiểu là 2",
   "mongodb.upgrade.mongodb.ram.validation-3":"Giá trị phải cao hơn mức hiện tại sử dụng",
   "mongodb.upgrade.mongodb.ram.validation-4":"Giá trị RAM tối đa là 64",
- 
+
   "mongodb.upgrade.mongodb.storage.validation-1": "Storage không được để trống",
   "mongodb.upgrade.mongodb.storage.validation-2": "Giá trị Storage phải cao hơn mức hiện tại sử dụng",
 
@@ -2724,7 +2732,11 @@
   "volume.notification.input.select.snapshot": "Vui lòng chọn Snapshot",
   "volume.notification.request.create": "Tạo Volume",
   "volume.notification.require.create.success": "Yêu cầu tạo Volume thành công.",
+  "volume.notification.require.resize.success": "Yêu cầu điều chỉnh Volume thành công.",
+  "volume.notification.require.renew.success": "Yêu cầu gia hạn Volume thành công.",
   "volume.notification.request.create.fail": "Yêu cầu tạo Volume thất bại",
+  "volume.notification.request.resize.fail": "Yêu cầu điều chỉnh Volume thất bại",
+  "volume.notification.request.renew.fail": "Yêu cầu gia hạn Volume thất bại",
   "volume.notification.resize.success": "Điều chỉnh Volume thành công.",
   "volume.notification.resize.fail": "Điều chỉnh Volume thất bại.",
   "volume.notification.access.denied": "Volume không tồn tại!",

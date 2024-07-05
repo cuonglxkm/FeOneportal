@@ -254,6 +254,57 @@ export class InstancesExtendComponent implements OnInit {
       });
   }
 
+  doExtend(): void {
+    this.isLoading = true;
+    this.cdr.detectChanges();
+    this.orderItem = [];
+    this.instanceExtendInit();
+    let specificationInstance = JSON.stringify(this.instanceExtend);
+    let orderItemInstanceResize = new OrderItem();
+    orderItemInstanceResize.orderItemQuantity = 1;
+    orderItemInstanceResize.specification = specificationInstance;
+    orderItemInstanceResize.specificationType = 'instance_extend';
+    orderItemInstanceResize.price = this.totalAmount;
+    orderItemInstanceResize.serviceDuration = this.numberMonth;
+    this.orderItem.push(orderItemInstanceResize);
+
+    this.order.customerId = this.customerId;
+    this.order.createdByUserId = this.customerId;
+    this.order.note = 'instance extend';
+    console.log('order instance resize', this.order);
+
+    this.orderService.validaterOrder(this.order)
+      .pipe(finalize(() => {
+          this.isLoading = false;
+          this.cdr.detectChanges();
+        })
+      ).subscribe({
+        next: (result) => {
+          if (result.success) {
+            this.service.create(this.order).subscribe(data => {
+              this.isLoading = false;
+              if (data != null) {
+                if (data.code == 200) {
+                  this.isLoading = false;
+                  this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('app.notify.extend.instance.success'));
+                  this.router.navigate(['/app-smart-cloud/volumes']);
+                }
+              } else {
+                this.isLoading = false;
+              }
+            })
+          } else {
+            this.isVisiblePopupError = true;
+            this.errorList = result.data;
+          }
+        },
+        error: (error) => {
+          this.isLoading = false
+          this.notification.error(this.i18n.fanyi('app.status.fail'), error.error.detail)
+        },
+      });
+  }
+
   onRegionChange(region: any) {
     this.router.navigate(['/app-smart-cloud/instances']);
   }
