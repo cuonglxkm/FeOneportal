@@ -477,7 +477,7 @@
   "app.mongo": "MongoDB",
   "app.other": "Other",
   "app.change.info": "Change information",
-
+  "app.use.ipv6": "Use IPv6",
 
   "app.instances.list": "Instance list",
   "app.instances.create": "Create Instance",
@@ -559,6 +559,7 @@
   "app.tooltip.access.method.instance": "Customer can use a password or keypair to access the instance",
   "app.tooltip.usage.time": "The period of time a customer purchases {{name}} for use, calculated on a monthly basis",
   "app.tooltip.instance.volume.encypt": "HDD: Fixed IOPS is 300<br>- SSD: IOPS scales with volume size according to the formula IOPS = Volume Size * 10. However, the minimum IOPS is 400, so for volumes ≤ 40 GB, the IOPS is always 400. For volumes ≥ 41 GB, the formula IOPS = Volume Size * 10 applies",
+  "app.tooltip.use.ipv6": "The virtual machine will be assigned an additional IPv6 address running concurrently with the IPv4 address using the Dual Stack mechanism. Dual Stack is a mechanism that can implement both IPv4 and IPv6 protocols simultaneously. This setup allows both protocols to operate on a single server. Consequently, the operating system will automatically choose the most appropriate communication protocol. Learn more about IPv6",
 
   "validation.exist.instance.name": "This instance name has already been used, please choose another name",
   "validation.instance.password.required": "Please enter the password",
@@ -2859,6 +2860,7 @@
   "app.input.backup.volume.required.select": "Please select volume",
   "app.backup.volume.title.modal.update": "Edit Backup Volume information",
   "app.backup.volume.root": "Volume root",
+  "app.backup.volume.restore": "Volume restore",
 
   "app.backup.volume.search.tooltip": "Search by name",
   "app.backup.volume.search.status.tooltip": "Search by status",

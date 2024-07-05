@@ -330,6 +330,7 @@
                 </div>
               </nz-tab>
               <nz-tab
+                *ngIf="isVmGpu"
                 [nzTitle]="'app.gpu.configuration' | i18n"
                 (nzClick)="onClickGpuConfig()"
               >
@@ -957,7 +958,7 @@
                     'app.choose.backup.vm.external.volume' | i18n
                   "
                   [nzShowSearch]="true"
-                  [(ngModel)]="listIDAttachVolume"
+                  [(ngModel)]="listAttachVolume"
                   (ngModelChange)="changeAttachVolume()"
                   [ngModelOptions]="{ standalone: true }"
                   nzSize="large"
@@ -965,24 +966,31 @@
                   <nz-option
                     *ngFor="let e of listExternalAttachVolume"
                     [nzLabel]="e.name"
-                    [nzValue]="e.id"
+                    [nzValue]="e"
                   />
                 </nz-select>
               </nz-form-control>
             </nz-form-item>
           </nz-col>
         </nz-row>
-        <div class="text-center" style="margin-bottom: 20px">
+        <div
+          *ngIf="listOfDataBlockStorage.length > 0"
+          class="text-center"
+          style="margin-bottom: 20px"
+        >
           <span class="text-header-attach-volume"
             >{{ 'app.backup.config.vm.attach' | i18n }}
           </span>
         </div>
-        <div>
+        <div *ngIf="listOfDataBlockStorage.length > 0">
           <div class="ant-table">
             <table>
               <thead class="ant-table-thead">
                 <tr>
-                  <th>{{ 'app.volume.name' | i18n }}</th>
+                  <th>{{ 'app.backup.volume.root' | i18n }}</th>
+                  <th *ngIf="selectedOption == 'new'">
+                    {{ 'app.backup.volume.restore' | i18n }}
+                  </th>
                   <th>{{ 'app.volume.type' | i18n }}</th>
                   <th>{{ 'app.capacity' | i18n }} (GB)</th>
                   <th *ngIf="isSupportEncryption">
@@ -1000,7 +1008,16 @@
                       [ngModelOptions]="{ standalone: true }"
                       nz-input
                       [(ngModel)]="data.name"
-                      [id]="'name_' + data.id"
+                    />
+                  </td>
+                  <td *ngIf="selectedOption == 'new'">
+                    <input
+                      class="input-custom"
+                      type="text"
+                      [placeholder]="'app.input.name' | i18n"
+                      [ngModelOptions]="{ standalone: true }"
+                      nz-input
+                      [(ngModel)]="data.newName"
                     />
                   </td>
                   <td>
@@ -1014,14 +1031,17 @@
                     />
                   </td>
                   <td>
-                    <input
-                      class="input-custom"
-                      type="text"
-                      [ngModelOptions]="{ standalone: true }"
-                      nz-input
+                    <nz-input-number
                       [(ngModel)]="data.capacity"
-                      [disabled]="true"
-                    />
+                      (keydown)="onKeyDown($event)"
+                      [ngModelOptions]="{ standalone: true }"
+                      [id]="'capacity_' + data.id"
+                      [nzMin]="data.minCapacity"
+                      [nzMax]="maxCapacity"
+                      [nzStep]="stepCapacity"
+                      [disabled]="selectedOption == 'current'"
+                      nzSize="large"
+                    ></nz-input-number>
                   </td>
                   <td nzAlign="center">
                     <label

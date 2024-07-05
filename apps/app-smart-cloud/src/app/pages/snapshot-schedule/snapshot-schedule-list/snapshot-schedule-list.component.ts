@@ -63,7 +63,7 @@ export class SnapshotScheduleListComponent implements OnInit {
   isVisibleDelete = false;
   dataAction: any;
   nameDelete: any;
-  disableDelete: boolean;
+  disableDelete = true;
   loadingDelete = false;
   isVisibleRestart = false;
   loadingRestart: any;

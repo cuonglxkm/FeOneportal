@@ -79,6 +79,7 @@
                     />
                   </nz-col>
                   <nz-col
+                    *ngIf="isVolumeSnapshotHdd || isVolumeSnapshotSsd"
                     style="display: flex; align-items: center"
                     nzSpan="12"
                   >
@@ -515,6 +516,7 @@
             </div>
           </nz-tab>
           <nz-tab
+            *ngIf="isVmGpu"
             [nzTitle]="'app.gpu.configuration' | i18n"
             (nzClick)="onClickGpuConfig()"
           >

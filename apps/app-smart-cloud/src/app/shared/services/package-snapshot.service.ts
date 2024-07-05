@@ -116,4 +116,7 @@ export class PackageSnapshotService extends BaseService {
       }))
   }
 
+  getExistedSchedule(project: number) {
+    return this.http.get<any>(this.baseUrl + this.ENDPOINT.provisions + `/vlsnapshots/schedule/existservice?projectId=${project}`)
+  }
 }
