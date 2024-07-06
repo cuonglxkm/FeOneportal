@@ -22,10 +22,10 @@ RUN #cp ./apps/app-host/src/assets/module-federation-prod.manifest.json ./apps/a
 RUN npx nx build app-host --configuration=production
 
 
-#stage 3
-FROM nginx:alpine
+# #stage 3
+FROM nginxinc/nginx-unprivileged
 COPY ./apps/app-host/nginx.conf /etc/nginx/nginx.conf
 COPY --from=node app/dist/apps/app-host /usr/share/nginx/html
-# When the container starts, replace the env.js with values from environment variables
-#CMD ["/bin/sh",  "-c",  "envsubst < /usr/share/nginx/html/assets/module-federation-prod.manifest.json > /usr/share/nginx/html/assets/module-federation.manifest.json"]
-CMD ["/bin/sh",  "-c",  "envsubst < /usr/share/nginx/html/assets/env.prod.js > /usr/share/nginx/html/assets/env.js && envsubst < /usr/share/nginx/html/assets/module-federation-prod.manifest.json > /usr/share/nginx/html/assets/module-federation.manifest.json && exec nginx -g 'daemon off;'"]
+# # When the container starts, replace the env.js with values from environment variables
+# #CMD ["/bin/sh",  "-c",  "envsubst < /usr/share/nginx/html/assets/module-federation-prod.manifest.json > /usr/share/nginx/html/assets/module-federation.manifest.json"]
+`# CMD ["/bin/sh",  "-c",  "envsubst < /usr/share/nginx/html/assets/env.prod.js > /usr/share/nginx/html/assets/env.js && envsubst < /usr/share/nginx/html/assets/module-federation-prod.manifest.json > /usr/share/nginx/html/assets/module-federation.manifest.json && exec nginx -g 'daemon off;'"]

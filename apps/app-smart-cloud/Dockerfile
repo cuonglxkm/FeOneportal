@@ -26,6 +26,6 @@ RUN npx nx build app-smart-cloud --configuration=production
 #RUN pwd && ls
 
 #stage 3 nginx 
-FROM nginx:alpine
+FROM nginxinc/nginx-unprivileged 
 COPY ./apps/app-smart-cloud/nginx.conf /etc/nginx/nginx.conf
 COPY --from=node app/dist/apps/app-smart-cloud /usr/share/nginx/html
