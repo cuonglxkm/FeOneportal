@@ -1091,6 +1091,7 @@
   "app.file.system.create": "Create File System",
   "app.file.system.create.button": "Create new File System",
   "app.file.system.resize": "Resize File System",
+  "app.file.system.resize.title": "Adjusting File System Capacity",
   "app.file.system.create.confirm": "Confirm creation of new File System",
   "app.file.system.create.from.snapshot": "Initialize from Snapshot",
   "app.file.system.capacity": "Your File System capacity",
@@ -1107,7 +1108,11 @@
   "app.item.switch.file.system.snapshot": "-Select Snapshot-",
   "app.file.storage.snapshot.required.select": "Please select Snapshot File System for me",
   "app.file.system.notification.require.create.success": "File System creation request successful.",
+  "app.file.system.notification.require.resize.success": "File System resize request successful.",
+  "app.file.system.notification.require.extend.success": "File System extend request successful.",
   "app.file.system.notification.require.create.fail": "File System creation request failed.",
+  "app.file.system.notification.require.resize.fail": "File System resize request failed.",
+  "app.file.system.notification.require.extend.fail": "File System extend request failed.",
 
   "app.file.system.tooltip.access.to": "The specific IP address (the instance's IP address) or CIDR range allowed to access this filesystem",
   "app.file.system.access.to.create.success": "Create access rule success",
@@ -1945,12 +1950,12 @@
   "mongodb.upgrade.mongodb.cpu.validation-2":"Minimum vCPU value is 2",
   "mongodb.upgrade.mongodb.cpu.validation-3":"Value must be higher than the current usage level.",
   "mongodb.upgrade.mongodb.cpu.validation-4":"Maximum vCPU value is 32",
-  
+
   "mongodb.upgrade.mongodb.ram.validation-1": "Value cannot be blank",
   "mongodb.upgrade.mongodb.ram.validation-2":"Minimum RAM value is 2",
   "mongodb.upgrade.mongodb.ram.validation-3":"Value must be higher than the current usage level.",
   "mongodb.upgrade.mongodb.ram.validation-4":"Maximum RAM value is 64",
- 
+
   "mongodb.upgrade.mongodb.storage.validation-1": "Value cannot be blank",
   "mongodb.upgrade.mongodb.storage.validation-2": "Storage must be higher than the current usage level.",
 
@@ -2822,7 +2827,11 @@
   "volume.notification.input.select.snapshot": "Please select a instance",
   "volume.notification.request.create": "Create Volume",
   "volume.notification.require.create.success": "Volume creation request successful",
+  "volume.notification.require.resize.success": "Volume resize request successful",
+  "volume.notification.require.renew.success": "Volume renew request successful",
   "volume.notification.request.create.fail": "Request to create Volume failed. ",
+  "volume.notification.request.resize.fail": "Request to resize Volume failed. ",
+  "volume.notification.request.renew.fail": "Request to renew Volume failed. ",
   "volume.notification.resize.success": "Volume adjustment successful.",
   "volume.notification.resize.fail": "Volume adjustment failed",
   "volume.notification.access.denied": "Volume does not exist!",

@@ -123,7 +123,8 @@
             </td>
             <td nzBreakWord>
               <div
-                *ngIf="!(['CREATING', 'ERROR', 'ATTACHING', 'DELETING','ERROR_DELETING','RESIZING'].includes(data.serviceStatus)) && !['DELETING'].includes(data.status)">
+                *ngIf="!(['CREATING', 'ERROR', 'ATTACHING', 'DELETING','ERROR_DELETING','RESIZING'].includes(data.serviceStatus))
+                && !['DELETING', 'CREATING', 'ERROR_DELETING','RESIZING'].includes(data.status)">
                 <one-portal-attach-volume [region]="region"
                                           [project]="project"
                                           [volumeId]="data.id"
