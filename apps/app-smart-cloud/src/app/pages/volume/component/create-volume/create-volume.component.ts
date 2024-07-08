@@ -145,32 +145,32 @@ export class CreateVolumeComponent implements OnInit {
     }
   }
 
-  isLoading: boolean = false
+  isLoading: boolean = false;
 
   getActiveServiceByRegion() {
-    this.isLoading = true
+    this.isLoading = true;
     this.catalogService.getActiveServiceByRegion(
       ['volume-ssd', 'volume-hdd', 'MultiAttachment', 'Encryption', 'volume-snapshot-ssd', 'volume-snapshot-hdd'], this.region)
       .subscribe(data => {
-        this.isLoading = false
+        this.isLoading = false;
         this.serviceActiveByRegion = data;
         this.serviceActiveByRegion.forEach(item => {
-          if(['volume-snapshot-hdd', 'volume-snapshot-ssd'].includes(item.productName)){
-            this.typeSnapshot = item.isActive
+          if (['volume-snapshot-hdd', 'volume-snapshot-ssd'].includes(item.productName)) {
+            this.typeSnapshot = item.isActive;
           }
-          if(['MultiAttachment'].includes(item.productName)){
-            this.typeMultiple = item.isActive
+          if (['MultiAttachment'].includes(item.productName)) {
+            this.typeMultiple = item.isActive;
           }
-          if(['Encryption'].includes(item.productName)){
-            this.typeEncrypt = item.isActive
+          if (['Encryption'].includes(item.productName)) {
+            this.typeEncrypt = item.isActive;
           }
-        })
+        });
       }, error => {
-        this.isLoading = false
-        this.typeEncrypt = false
-        this.typeMultiple = false
-        this.typeSnapshot = false
-        this.serviceActiveByRegion = []
+        this.isLoading = false;
+        this.typeEncrypt = false;
+        this.typeMultiple = false;
+        this.typeSnapshot = false;
+        this.serviceActiveByRegion = [];
       });
   }
 
@@ -464,6 +464,50 @@ export class CreateVolumeComponent implements OnInit {
     });
   }
 
+  createOrderVolume() {
+    this.isLoadingAction = true;
+    let request: CreateVolumeRequestModel = new CreateVolumeRequestModel();
+    request.customerId = this.volumeCreate.customerId;
+    request.createdByUserId = this.volumeCreate.customerId;
+    request.note = this.i18n.fanyi('volume.notification.request.create');
+    request.totalPayment = this.orderItem?.totalPayment?.amount;
+    request.totalVAT = this.orderItem?.totalVAT?.amount;
+    request.orderItems = [
+      {
+        orderItemQuantity: 1,
+        specification: JSON.stringify(this.volumeCreate),
+        specificationType: 'volume_create',
+        price: this.orderItem?.totalAmount.amount,
+        serviceDuration: this.validateForm.controls.time.value
+      }
+    ];
+    this.orderService.validaterOrder(request).subscribe(data => {
+      if (data.success) {
+        this.volumeService.createNewVolume(request).subscribe(data => {
+            this.isLoadingAction = false;
+            if (data != null) {
+              if (data.code == 200) {
+                this.isLoadingAction = false;
+                this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('volume.notification.require.create.success'));
+                this.router.navigate(['/app-smart-cloud/volumes']);
+              }
+            } else {
+              this.isLoadingAction = false;
+            }
+          },
+          error => {
+            this.isLoadingAction = false;
+            this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('volume.notification.request.create.fail'));
+          });
+      } else {
+        this.isVisiblePopupError = true;
+        this.errorList = data.data;
+      }
+    }, error => {
+      this.notification.error(this.i18n.fanyi('app.status.fail'), error.error.detail);
+    });
+  }
+
   getTotalAmount() {
     this.isLoadingAction = true;
     this.volumeInit();
@@ -544,6 +588,7 @@ export class CreateVolumeComponent implements OnInit {
   }
 
   hasRoleSI: boolean;
+
   ngOnInit() {
     let regionAndProject = getCurrentRegionAndProject();
     this.region = regionAndProject.regionId;
@@ -552,7 +597,7 @@ export class CreateVolumeComponent implements OnInit {
     this.getConfiguration();
     this.onChangeValueStorage();
     this.getTotalAmount();
-    this.hasRoleSI = localStorage.getItem('role').includes('SI')
+    this.hasRoleSI = localStorage.getItem('role').includes('SI');
   }
 
   //

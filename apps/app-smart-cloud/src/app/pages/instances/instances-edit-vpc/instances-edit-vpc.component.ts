@@ -124,10 +124,7 @@ export class InstancesEditVpcComponent implements OnInit {
   isVmGpu: boolean = false;
   getActiveServiceByRegion() {
     this.catalogService
-      .getActiveServiceByRegion(
-        ['Encryption', 'vm-gpu'],
-        this.region
-      )
+      .getActiveServiceByRegion(['Encryption', 'vm-gpu'], this.region)
       .subscribe((data) => {
         console.log('support service', data);
         this.isVmGpu = data.filter(
@@ -573,7 +570,7 @@ export class InstancesEditVpcComponent implements OnInit {
   }
   onChangeCapacity() {
     this.dataSubjectCapacity.pipe(debounceTime(700)).subscribe((res) => {
-      if (res % this.stepCapacity > 0) {
+      if (this.storage % this.stepCapacity > 0) {
         this.notification.warning(
           '',
           this.i18n.fanyi('app.notify.amount.capacity', {
@@ -581,6 +578,8 @@ export class InstancesEditVpcComponent implements OnInit {
           })
         );
         this.storage = this.storage - (this.storage % this.stepCapacity);
+        this.checkChangeConfig();
+        this.cdr.detectChanges();
       }
     });
   }

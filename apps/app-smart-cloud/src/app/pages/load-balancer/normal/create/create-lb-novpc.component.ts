@@ -147,7 +147,11 @@ export class CreateLbNovpcComponent implements OnInit {
 
 
   updateValue(value): void {
-
+    if (!this.validateForm.controls['subnet'].invalid) {
+      this.validateForm.controls['ipAddress'].enable();
+    } else{
+      this.validateForm.controls['ipAddress'].disable();
+    }
     if (this.listSubnets) {
       const selected = this.listSubnets?.find(option => option.cloudId === value);
       if(selected){
@@ -455,7 +459,10 @@ export class CreateLbNovpcComponent implements OnInit {
           }
           this.mapSubnetArray = [...this.mapSubnetArray1]
         }
-      });
+      },
+        error => {
+          this.notification.error(this.i18n.fanyi('app.status.fail'), 'Lấy danh sách Subnet thộc Internet Facing lỗi');
+        });
   }
 
   initSubnet2() {
