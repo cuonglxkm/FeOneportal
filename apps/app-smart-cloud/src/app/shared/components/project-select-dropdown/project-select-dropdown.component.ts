@@ -18,6 +18,8 @@ import { ProjectService } from '../../services/project.service';
 export class ProjectSelectDropdownComponent implements OnInit, OnChanges {
   selectedProject: ProjectModel;
   @Input() isDetail = false;
+  @Input() disabledProject = false;
+  @Input() isFirstVisit = true;
   @Input() regionId: number;
   @Output() valueChanged = new EventEmitter();
   @Output() userChanged = new EventEmitter();
@@ -99,6 +101,9 @@ export class ProjectSelectDropdownComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
+    if (changes.disabledProject && !this.isFirstVisit) {
+      return;
+    }
     if (changes.regionId) {
       this.loadProjects(true);
     } else {

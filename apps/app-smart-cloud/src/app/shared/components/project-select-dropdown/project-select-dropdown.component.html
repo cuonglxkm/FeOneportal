@@ -1,6 +1,6 @@
 <nz-select
   style="width: 150px"
-  [nzDisabled]="isDetail"
+  [nzDisabled]="isDetail || disabledProject"
   (ngModelChange)="projectChange($event)"
   [nzSuffixIcon]="'icon-project'"
   title="Dự án"

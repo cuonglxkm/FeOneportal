@@ -30,6 +30,8 @@
       ></region-select-dropdown>
       <project-select-dropdown
         [regionId]="region"
+        [isFirstVisit]="isFirstVisit"
+        [disabledProject]="loading"
         (valueChanged)="onProjectChange($event)"
         (userChanged)="onProjectChange($event)"
       ></project-select-dropdown>
