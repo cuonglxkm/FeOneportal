@@ -21,14 +21,15 @@
   <ng-template #action>
     <div class="alain-custom-action text-right">
       <share-users-combobox></share-users-combobox>
-      <region-select-dropdown (regionChange)="onRegionChanged($event)" (valueChanged)="regionChanged($event)"></region-select-dropdown>
+      <region-select-dropdown (regionChange)="onRegionChanged($event)"
+                              (valueChanged)="regionChanged($event)"></region-select-dropdown>
       <project-select-dropdown (valueChanged)="projectChanged($event)"
                                (userChanged)="projectChanged($event)"
                                [regionId]="region"></project-select-dropdown>
     </div>
   </ng-template>
 </page-header>
-<nz-content *ngIf="typeVPC == 0 || typeVPC == 2">
+<nz-content>
   <nz-card>
     <ng-container [ngSwitch]="isBegin">
       <ng-container *ngSwitchCase="false">
@@ -44,10 +45,9 @@
                        nz-tooltip>
               <nz-option *ngFor="let item of options" [nzValue]="item.value" [nzLabel]="item.label"></nz-option>
             </nz-select>
-            <nz-input-group
-              style="width: 300px;"
-              [nzPrefix]="prefixIconSearch"
-              nzSize="large">
+            <nz-input-group style="width: 300px;"
+                            [nzPrefix]="prefixIconSearch"
+                            nzSize="large">
               <input name="name"
                      nz-input
                      placeholder="{{ 'volume.placeholder.filter.name' | i18n }}"
@@ -60,15 +60,13 @@
             </ng-template>
           </nz-col>
           <nz-col nzSpan="8" style="flex:none;">
-            <button
-              nz-button
-              nzType="primary"
-              nzSize="large"
-              (click)="navigateToCreateVolume()">
-              <img
-                style="padding-right: 10px; margin-top: -4px"
-                src="assets/imgs/add-circle.svg"
-                alt="" />
+            <button nz-button
+                    nzType="primary"
+                    nzSize="large"
+                    (click)="navigateToCreateVolume()">
+              <img style="padding-right: 10px; margin-top: -4px"
+                   src="assets/imgs/add-circle.svg"
+                   alt="" />
               <span class="button-text-primary">{{ 'volume.button.create' | i18n }}</span>
             </button>
           </nz-col>
@@ -104,8 +102,12 @@
               <span *ngIf="data.volumeType == 'ssd'">SSD</span>
             </td>
             <td nzBreakWord nzAlign="right">{{ data.sizeInGB }}</td>
-            <td nzBreakWord nzAlign="right">
-              <div *ngIf="data.iops == null">200</div>
+            <td nzBreakWord nzAlign="right" *ngIf="typeVPC != 1 ">
+              <div *ngIf="data.iops == null">300</div>
+              <div *ngIf="data.iops != null">{{ data.iops }}</div>
+            </td>
+            <td nzBreakWord nzAlign="right" *ngIf="typeVPC == 1 ">
+              <div *ngIf="data.iops == null">300</div>
               <div *ngIf="data.iops != null">{{ data.iops }}</div>
             </td>
             <ng-container *ngIf="data.status | ServiceStatusPipe as statusModel">
@@ -114,14 +116,15 @@
             <td nzBreakWord nzAlign="left">{{ data.serviceStatus }}</td>
             <td nzBreakWord nzAlign="left">
               <div *ngIf="data.attachedInstances == null || data.attachedInstances.length <= 0">-</div>
-              <div *ngIf="data.attachedInstances != null || data.attachedInstances.length > 0">
+              <div *ngIf="data.attachedInstances.length > 0">
                 <div *ngFor="let index of data.attachedInstances; let last = last">{{ index.instanceName }}<br
                   *ngIf="!last"></div>
               </div>
             </td>
             <td nzBreakWord>
               <div
-                *ngIf="!(['CREATING', 'ERROR', 'ATTACHING', 'DELETING','ERROR_DELETING','RESIZING'].includes(data.serviceStatus))">
+                *ngIf="!(['CREATING', 'ERROR', 'ATTACHING', 'DELETING','ERROR_DELETING','RESIZING'].includes(data.serviceStatus))
+                && !['DELETING', 'CREATING', 'ERROR_DELETING','RESIZING'].includes(data.status)">
                 <one-portal-attach-volume [region]="region"
                                           [project]="project"
                                           [volumeId]="data.id"
@@ -192,186 +195,7 @@
               <span class="text-intro-desc">{{ 'volume.intro.subtitle' | i18n }}</span>
             </nz-col>
           </nz-row>
-          <button style="margin-top: 20px" nz-button [nzType]="'primary'" (click)="navigateToCreate()" nzSize="large">
-            <img style="padding-right: 10px; margin-top: -4px" src="assets/imgs/cloud-plus-bold.svg" alt="" />
-            {{ 'volume.button.create' | i18n }}
-          </button>
-        </result>
-      </ng-container>
-    </ng-container>
-  </nz-card>
-</nz-content>
-<nz-content *ngIf="typeVPC == 1 || hasRoleSI">
-  <nz-card>
-    <ng-container [ngSwitch]="isBegin">
-      <ng-container *ngSwitchCase="false">
-        <nz-row nzJustify="space-between">
-          <nz-col nzSpan="16">
-            <nz-select [(ngModel)]="selectedValue"
-                       nzSize="large"
-                       style="margin-right: 15px; width: 200px;"
-                       (ngModelChange)="onChange($event)"
-                       nzPlaceHolder="{{'volume.placeholder.filter.status' | i18n}}"
-                       nzTooltipTitle="{{'volume.tooltip.title.filter.status' | i18n}}"
-                       nzTooltipPlacement="bottom"
-                       nz-tooltip>
-              <nz-option *ngFor="let item of options" [nzValue]="item.value" [nzLabel]="item.label"></nz-option>
-            </nz-select>
-            <nz-input-group
-              style="width: 300px;"
-              [nzPrefix]="prefixIconSearch"
-              nzSize="large">
-              <input
-                name="name"
-                nz-input
-                placeholder="{{'volume.placeholder.filter.name' | i18n}}"
-                [(ngModel)]="value"
-                (input)="changeInputChange($event)"
-                (keydown.enter)="onEnter($event)" />
-            </nz-input-group>
-            <ng-template #prefixIconSearch>
-              <img
-                src="assets/imgs/search.svg"
-                alt=""
-                style="cursor: pointer"
-                nz-tooltip="{{'volume.tooltip.title.filter.img' | i18n}}" />
-            </ng-template>
-          </nz-col>
-          <nz-col nzSpan="8" style="flex:none;">
-            <button
-              nz-button
-              nzType="primary"
-              nzSize="large"
-              (click)="navigateToCreateVolumeVPC()">
-              <img
-                style="padding-right: 10px; margin-top: -4px"
-                src="assets/imgs/add-circle.svg"
-                alt="" />
-              <span class="button-text-primary">{{ 'volume.button.create' | i18n }}</span>
-            </button>
-          </nz-col>
-        </nz-row>
-        <nz-table #fixedTable2
-                  style="margin-top: 20px;"
-                  nzShowSizeChanger
-                  [nzData]="response?.records"
-                  [nzPageSize]="response?.pageSize"
-                  (nzPageSizeChange)="onPageSizeChange($event)"
-                  [nzPageIndex]="response?.currentPage"
-                  (nzPageIndexChange)="onPageIndexChange($event)"
-                  [nzTotal]="response?.totalCount"
-                  [nzFrontPagination]="false"
-                  [nzLoading]="isLoading">
-          <thead>
-          <tr>
-            <th nzLeft>{{ 'volume.table.title.name.volume' | i18n }}</th>
-            <th nzBreakWord>{{ 'volume.table.title.type.volume' | i18n }}</th>
-            <th nzBreakWord>{{ 'volume.table.title.storage' | i18n }} (GB)</th>
-            <th nzBreakWord>{{ 'volume.table.title.iops' | i18n }}</th>
-            <th nzBreakWord>{{ 'volume.table.title.status.volume' | i18n }}</th>
-            <th nzBreakWord>{{ 'volume.table.title.task.status' | i18n }}</th>
-            <th nzBreakWord>{{ 'volume.table.title.instance' | i18n }}</th>
-            <th nzBreakWord>{{ 'volume.table.title.action' | i18n }}</th>
-          </tr>
-          </thead>
-          <tbody>
-          <tr *ngFor="let i of fixedTable2.data">
-            <td nzLeft><a [routerLink]="'/app-smart-cloud/volume/detail/' + i.id">{{ i.name }}</a></td>
-            <td nzBreakWord>
-              <span *ngIf="i.volumeType == 'hdd'">HDD</span>
-              <span *ngIf="i.volumeType == 'ssd'">SSD</span>
-            </td>
-            <td nzBreakWord nzAlign="right">{{ i.sizeInGB }}</td>
-            <td nzBreakWord nzAlign="right">
-              <div *ngIf="i.iops == null">300</div>
-              <div *ngIf="i.iops != null">{{ i.iops }}</div>
-            </td>
-            <ng-container *ngIf="i.status | ServiceStatusPipe as statusModel">
-              <td nzBreakWord nzAlign="left" [ngStyle]="{color: statusModel.color}">{{ statusModel.status }}</td>
-            </ng-container>
-            <td nzBreakWord>{{ i.serviceStatus }}</td>
-            <td nzBreakWord>
-              <div *ngIf="i.attachedInstances.length <= 0">-</div>
-              <div *ngIf="i.attachedInstances.length > 0">
-                <div *ngFor="let index of i.attachedInstances; let last = last">{{ index.instanceName }}<br
-                  *ngIf="!last"></div>
-              </div>
-            </td>
-            <td>
-              <div
-                *ngIf="!(['CREATING', 'ERROR', 'ATTACHING', 'DELETING','ERROR_DELETING','RESIZING'].includes(i.serviceStatus))">
-                <one-portal-attach-volume [region]="region"
-                                          [project]="project"
-                                          [volumeId]="i.id"
-                                          [multiple]="i.isMultiAttach"
-                                          [instanceInVolume]="i.attachedInstances"
-                                          (onOk)="handleOkAttachVm()" />
-                <one-portal-detach-volume [region]="region"
-                                          [project]="project"
-                                          [volumeId]="i.id"
-                                          [isMultiple]="i.isMultiAttach"
-                                          [instanceInVolume]="i.attachedInstances"
-                                          (onOk)="handleOkDetachVm()" />
-                <img style="padding-right: 10px; margin-left: 3px; cursor: pointer;"
-                     src="assets/imgs/calendar-tick.svg" alt=""
-                     nz-popover
-                     [nzPopoverContent]="'volume.tooltip.content.create.backup' | i18n"
-                     nzPopoverPlacement="bottom"
-                     (click)="navigateToCreateBackup(i.id)" />
-                <one-portal-delete-volume [region]="region"
-                                          [project]="project"
-                                          [volumeId]="i.id"
-                                          [volumeName]="i.name"
-                                          (onOk)="handleOkDelete()" />
-                <img nz-dropdown
-                     [nzDropdownMenu]="opMenu"
-                     src="assets/imgs/more1.svg" alt="" style="cursor: pointer; margin-left: 5px;" />
-                <nz-dropdown-menu #opMenu="nzDropdownMenu">
-                  <ul nz-menu>
-                    <li nz-menu-item>{{ 'volume.menu.create.snapshot' | i18n }}</li>
-                    <li nz-menu-item
-                        (click)="navigateToCreateScheduleBackup(i.id)">{{ 'volume.menu.create.schedule.backup' | i18n }}
-                    </li>
-                    <li nz-menu-item (click)="navigateToSnapshot(i.id)">{{ 'app.snapshot.create' | i18n }}</li>
-                    <li nz-menu-item
-                        (click)="navigateToCreateScheduleSnapshot(i.id)">{{ 'volume.menu.create.schedule.snapshot' | i18n }}
-                    </li>
-                    <one-portal-update-volume [region]="region" [project]="project" [volume]="i"
-                                              (onOk)="handleOkUpdate()" />
-                  </ul>
-                </nz-dropdown-menu>
-              </div>
-              <div *ngIf="i.serviceStatus == 'ERROR'">
-                <one-portal-delete-volume [region]="region"
-                                          [project]="project"
-                                          [volumeId]="i.id"
-                                          [volumeName]="i.name"
-                                          (onOk)="handleOkDelete()" />
-              </div>
-            </td>
-          </tr>
-          </tbody>
-        </nz-table>
-      </ng-container>
-      <ng-container *ngSwitchDefault>
-        <result>
-          <nz-row>
-            <nz-col class="text-center" style="width: 100%">
-              <img src="/assets/imgs/volume.png" alt="" />
-            </nz-col>
-          </nz-row>
-          <nz-row style="margin-top: 20px">
-            <nz-col class="text-center" style="width: 100%">
-                <span class="text-intro-title" style="color: #0066b3">{{ 'volume.intro.title' | i18n }}
-                  <br>{{ 'volume.intro.title2' | i18n }}</span>
-            </nz-col>
-          </nz-row>
-          <nz-row style="margin-top: 20px">
-            <nz-col class="text-center" style="width: 100%">
-              <span class="text-intro-desc">{{ 'volume.intro.subtitle' | i18n }}</span>
-            </nz-col>
-          </nz-row>
-          <button style="margin-top: 20px" nz-button [nzType]="'primary'" (click)="navigateToCreateVolumeVPC()"
+          <button style="margin-top: 20px" nz-button [nzType]="'primary'" (click)="navigateToCreateVolume()"
                   nzSize="large">
             <img style="padding-right: 10px; margin-top: -4px" src="assets/imgs/cloud-plus-bold.svg" alt="" />
             {{ 'volume.button.create' | i18n }}
@@ -381,4 +205,5 @@
     </ng-container>
   </nz-card>
 </nz-content>
+
 

@@ -11,7 +11,6 @@ import {LayoutBlankComponent} from '../layout/blank/blank.component';
 import {loadRemoteModule} from "@nx/angular/mf";
 import {UserProfileComponent} from "./user-profile/user-profile.component";
 import {WelcomeComponent} from "./welcome/welcome.component";
-import { LinkHrefComponent } from './link-href/link-hrefcomponent';
 
 const routes: Routes = [
   {
@@ -36,7 +35,6 @@ const routes: Routes = [
       {path: 'delon', loadChildren: () => import('./delon/delon.module').then(m => m.DelonModule)},
       {path: 'extras', loadChildren: () => import('./extras/extras.module').then(m => m.ExtrasModule)},
       {path: 'pro', loadChildren: () => import('./pro/pro.module').then(m => m.ProModule)},
-      {path: 'linkhref', component: LinkHrefComponent},
       {
         path: 'app-smart-cloud',
         loadChildren: () =>

@@ -108,10 +108,10 @@ export class SnapshotCreateComponent implements OnInit, OnChanges {
         data => {
           let total = data.cloudProject;
           let used = data.cloudProjectResourceUsed;
-          this.quotaHDDUsed = used.hdd;
-          this.quotaHDDTotal = total.quotaHddInGb;
-          this.quotaSSDUsed = used.ssd;
-          this.quotaSSDTotal = total.quotaSSDInGb;
+          this.quotaHDDUsed = used.volumeSnapshotHddInGb;
+          this.quotaHDDTotal = total.quotaVolumeSnapshotHddInGb;
+          this.quotaSSDUsed = used.volumeSnapshotSsdInGb;
+          this.quotaSSDTotal = total.quotaVolumeSnapshotSsdInGb;
         });
     }
   }
@@ -139,7 +139,7 @@ export class SnapshotCreateComponent implements OnInit, OnChanges {
           this.router.navigate(['/app-smart-cloud/snapshot']);
         },
         error => {
-          this.notification.error(this.i18n.fanyi('app.status.fail'), 'Tạo thất bại');
+          this.notification.error(this.i18n.fanyi('app.status.fail'), error.error.message);
         }
       );
   }

@@ -358,8 +358,14 @@
             </div>
             <nz-row>
               <nz-col style="width: 100%">
-                <button style="width: 100%" nz-button nzSize="large" nzType="primary"
+                <button *ngIf="!hasRoleSI" style="width: 100%" nz-button nzSize="large" nzType="primary"
                         (click)="navigateToPaymentSummary()" [nzLoading]="isLoadingAction"
+                        [disabled]="validateForm.invalid || (validateForm.controls.storage.value == 0)">
+                  <img src="assets/imgs/wallet.svg" style="margin-right: 5px; padding-bottom: 5px;" />
+                  <span [style.color]="validateForm.invalid ? 'gray' : 'white'">{{ 'app.button.create'|i18n }}</span>
+                </button>
+                <button *ngIf="hasRoleSI" style="width: 100%" nz-button nzSize="large" nzType="primary"
+                        (click)="createOrderVolume()" [nzLoading]="isLoadingAction"
                         [disabled]="validateForm.invalid || (validateForm.controls.storage.value == 0)">
                   <img src="assets/imgs/wallet.svg" style="margin-right: 5px; padding-bottom: 5px;" />
                   <span [style.color]="validateForm.invalid ? 'gray' : 'white'">{{ 'app.button.create'|i18n }}</span>
@@ -376,6 +382,3 @@
   [isVisible]="isVisiblePopupError"
   [errorList]="errorList"
   (onCancel)="closePopupError()" />
-<!--<nz-content *ngIf="typeVPC == 1">-->
-<!--  <one-portal-create-volume-vpc />-->
-<!--</nz-content>-->

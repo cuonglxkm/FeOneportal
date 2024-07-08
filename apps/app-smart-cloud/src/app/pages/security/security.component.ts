@@ -188,8 +188,8 @@ export class SecurityComponent implements OnInit {
       if (data.success == true) {
         if (formeEnable2FA.enable == true) {
           this.authenticatorKey = data.key;
-          this.authenticatorQrImage = data.authenticatorQrImage;
-          //this.authenticatorQrData = 'otpauth://totp/OnePortal:' + this.email + '?secret=' + data.key + '&issuer=OnePortal';
+          //this.authenticatorQrImage = data.authenticatorQrImage;
+          this.authenticatorQrData = 'otpauth://totp/OnePortal:' + this.email + '?secret=' + data.key + '&issuer=OnePortal';
           this.isVisibleOTPForAuthenticator = false;
           this.isVisibleAuthenticator = true;
           console.log(this.authenticatorKey);

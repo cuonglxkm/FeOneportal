@@ -202,7 +202,7 @@ export class ListScheduleBackupComponent implements OnInit, OnDestroy {
 
   //delete
   handleDeletedOk() {
-    this.getListScheduleBackup(false);
+    this.getListScheduleBackup(true);
   }
 
   //tiep tuc
