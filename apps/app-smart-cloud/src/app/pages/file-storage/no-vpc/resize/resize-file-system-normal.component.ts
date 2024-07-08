@@ -259,12 +259,16 @@ export class ResizeFileSystemNormalComponent implements OnInit {
   }
 
 
+  hasRoleSI: boolean
   ngOnInit() {
     let regionAndProject = getCurrentRegionAndProject();
     this.region = regionAndProject.regionId;
     this.project = regionAndProject.projectId;
 
     this.idFileSystem = Number.parseInt(this.activatedRoute.snapshot.paramMap.get('idFileSystem'));
+
+    this.hasRoleSI = localStorage.getItem('role').includes('SI')
+
     this.getFileSystemById(this.idFileSystem);
     this.onChangeStorage();
     this.getConfigurations();
