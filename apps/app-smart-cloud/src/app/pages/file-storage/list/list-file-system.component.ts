@@ -46,6 +46,7 @@ export class ListFileSystemComponent implements OnInit, OnDestroy {
   dataSubjectInputSearch: Subject<any> = new Subject<any>();
   private searchSubscription: Subscription;
   private enterPressed: boolean = false;
+  isFirstVisit: boolean = true;
 
   constructor(
     private router: Router,
@@ -98,8 +99,10 @@ export class ListFileSystemComponent implements OnInit, OnDestroy {
   }
 
   projectChanged(project: ProjectModel) {
+    this.isFirstVisit = false;
     this.project = project?.id;
     this.typeVpc = project?.type;
+    this.isLoading = true
     setTimeout(() => {
       this.getListFileSystem(true);
       this.getProject();

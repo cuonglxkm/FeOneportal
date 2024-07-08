@@ -44,7 +44,7 @@ export class RegionSelectDropdownComponent implements OnInit {
             item.regionId == JSON.parse(localStorage.getItem('regionId'))
         );
         if (this.selectedRegion.regionId === 7) {
-          this.selectedRegion = this.listRegion[1];
+          this.selectedRegion = this.listRegion[0];
           this.setSelectedRegionFromLocalStorage();
         } else {
           return;
@@ -53,7 +53,7 @@ export class RegionSelectDropdownComponent implements OnInit {
         localStorage.getItem('regionId') != null &&
         this.url.includes('advance')
       ) {
-        this.selectedRegion = this.listRegion[2];
+        this.selectedRegion = this.listRegion[1];
         this.setSelectedRegionFromLocalStorage();
       }
     } else {
@@ -72,30 +72,30 @@ export class RegionSelectDropdownComponent implements OnInit {
 
   setSelectedRegionFromLocalStorage() {
     if (this.url.includes('advance')) {
-      this.selectedRegion = this.listRegion[2];
-      localStorage.setItem(
-        'regionId',
-        JSON.stringify(this.listRegion[2].regionId)
-      );
-      this.regionChange.emit(this.listRegion[2]);
-    } else {
       this.selectedRegion = this.listRegion[1];
       localStorage.setItem(
         'regionId',
         JSON.stringify(this.listRegion[1].regionId)
       );
       this.regionChange.emit(this.listRegion[1]);
+    } else {
+      this.selectedRegion = this.listRegion[0];
+      localStorage.setItem(
+        'regionId',
+        JSON.stringify(this.listRegion[0].regionId)
+      );
+      this.regionChange.emit(this.listRegion[0]);
     }
   }
 
   updateSelectedRegion() {
     if (this.url.includes('advance')) {
-      this.selectedRegion = this.listRegion[2];
+      this.selectedRegion = this.listRegion[1];
       localStorage.setItem(
         'regionId',
-        JSON.stringify(this.listRegion[2].regionId)
+        JSON.stringify(this.listRegion[1].regionId)
       );
-      this.regionChange.emit(this.listRegion[2]);
+      this.regionChange.emit(this.listRegion[1]);
     } else {
       this.setSelectedRegionFromLocalStorage();
     }

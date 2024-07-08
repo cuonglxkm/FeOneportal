@@ -196,8 +196,10 @@ export class InstancesComponent implements OnInit {
     }
   }
 
+  isFirstVisit: boolean = true;
   onRegionChange(region: RegionModel) {
     // Handle the region change event
+    this.isFirstVisit = false;
     this.activeCreate = false;
     this.loading = true;
     this.region = region?.regionId;
@@ -205,6 +207,7 @@ export class InstancesComponent implements OnInit {
   }
 
   onProjectChange(project: ProjectModel) {
+    this.isFirstVisit = false;
     this.project = project;
     this.activeCreate = false;
     this.loading = true;

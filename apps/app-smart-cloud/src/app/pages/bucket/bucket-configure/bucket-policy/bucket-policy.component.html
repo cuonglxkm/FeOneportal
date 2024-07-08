@@ -91,15 +91,19 @@
   </tbody>
 </nz-table>
 
+<!-- Create -->
 <nz-modal
   [(nzVisible)]="isVisibleCreate"
   [nzTitle]="'app.create.bucket.policy' | i18n"
   (nzOnCancel)="handleCancelCreate()"
 >
+<form nz-form [formGroup]="formCreate">
   <ng-container *nzModalContent>
     <nz-radio-group
       style="width: 100%; margin-bottom: 16px"
       [(ngModel)]="isUserOther"
+      [ngModelOptions]="{standalone: true}"
+      (ngModelChange)="changeUser()"
     >
       <div style="display: flex">
         <div style="flex: 1">
@@ -120,6 +124,7 @@
       [nzPlaceHolder]="'-- ' + ('app.choose.user' | i18n) + ' --'"
       [nzShowSearch]="true"
       [nzLoading]="loadingSubuser"
+      formControlName="emailUser"
       [(ngModel)]="emailUser"
       nzSize="large"
     >
@@ -140,6 +145,7 @@
       [nzPlaceHolder]="'-- ' + ('app.choose.permission' | i18n) + ' --'"
       [nzShowSearch]="true"
       [(ngModel)]="permission"
+      formControlName="permission"
       nzSize="large"
     >
       <nz-option
@@ -164,6 +170,7 @@
       [(ngModel)]="listActionPermission"
       [nzShowSearch]="true"
       nzSize="large"
+      formControlName="listActionPermission"
       [nzMaxTagCount]="1"
       [nzMaxTagPlaceholder]="tagPlaceHolder"
     >
@@ -358,7 +365,7 @@
         alt=""
       />{{ 'app.button.cancel' | i18n }}
     </button>
-    <button nz-button nzType="primary" (click)="handleOkCreate()" [nzLoading]="isLoadingCreate">
+    <button [disabled]="formCreate.invalid" nz-button nzType="primary" (click)="handleOkCreate()" [nzLoading]="isLoadingCreate">
       <img
         *ngIf="isLoadingCreate === false"
         style="padding-right: 10px; margin-top: -4px"
@@ -367,8 +374,10 @@
       />{{ 'app.button.confirm' | i18n }}
     </button>
   </div>
+  </form>
 </nz-modal>
 
+<!-- Update -->
 <nz-modal
   [(nzVisible)]="isVisibleUpdate"
   [nzTitle]="('app.text.edit' | i18n) + ' Bucket Policy'"
@@ -639,7 +648,7 @@
     </button>
     <button nz-button nzType="primary" (click)="handleOkUpdate()" [nzLoading]="isLoadingUpdate">
       <img
-      *ngIf="isLoadingUpdate === false"
+        *ngIf="isLoadingUpdate === false"
         style="padding-right: 10px; margin-top: -4px"
         src="assets/imgs/confirm.svg"
         alt=""
@@ -649,6 +658,7 @@
 </form>
 </nz-modal>
 
+<!-- Delete -->
 <nz-modal
   [(nzVisible)]="isVisibleDelete"
   [nzTitle]="'app.delete.policy' | i18n"

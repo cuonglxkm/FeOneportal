@@ -27,7 +27,7 @@ import { BucketService } from 'src/app/shared/services/bucket.service';
 })
 export class StaticWebHostingComponent implements OnInit {
   @Input() bucketName: string;
-  bucketDetail: BucketDetail = new BucketDetail();
+  @Input() bucketDetail: any;
   bucketWebsitecreate: BucketWebsite = new BucketWebsite();
   isLoading: boolean = false;
   region = JSON.parse(localStorage.getItem('regionId'));
@@ -44,10 +44,6 @@ export class StaticWebHostingComponent implements OnInit {
   ngOnInit(): void {
     let regionAndProject = getCurrentRegionAndProject();
     this.region = regionAndProject.regionId;
-    this.bucketService.getBucketDetail(this.bucketName, this.region).subscribe((data) => {
-      this.bucketDetail = data;
-      this.cdr.detectChanges();
-    });
   }
 
   copyText(endPoint: string) {
