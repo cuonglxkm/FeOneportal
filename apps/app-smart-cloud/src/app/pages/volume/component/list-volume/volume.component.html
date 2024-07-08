@@ -25,7 +25,9 @@
                               (valueChanged)="regionChanged($event)"></region-select-dropdown>
       <project-select-dropdown (valueChanged)="projectChanged($event)"
                                (userChanged)="projectChanged($event)"
-                               [regionId]="region"></project-select-dropdown>
+                               [regionId]="region"
+                               [isFirstVisit]="isFirstVisit"
+                               [disabledProject]="isLoading"></project-select-dropdown>
     </div>
   </ng-template>
 </page-header>
