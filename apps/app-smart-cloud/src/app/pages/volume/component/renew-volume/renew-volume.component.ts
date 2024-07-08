@@ -137,7 +137,8 @@ export class RenewVolumeComponent implements OnInit {
     this.extendsDto.serviceInstanceId = this.volumeInfo?.id;
     this.extendsDto.regionId = this.volumeInfo?.regionId;
     this.extendsDto.serviceName = this.volumeInfo?.name;
-    this.extendsDto.projectId = this.volumeInfo?.vpcId;
+    this.extendsDto.projectId = this.project;
+    // this.extendsDto.vpcId = this.project
     this.extendsDto.customerId = this.tokenService?.get()?.userId;
     this.extendsDto.typeName = 'SharedKernel.IntegrationEvents.Orders.Specifications.VolumeExtendSpecification,SharedKernel.IntegrationEvents, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null';
     const userString = localStorage.getItem('user');
@@ -179,42 +180,6 @@ export class RenewVolumeComponent implements OnInit {
     this.isVisiblePopupError = false;
   }
 
-  doExtend() {
-    // this.volumeInit()
-    this.getTotalAmount();
-    let request = new EditSizeVolumeModel();
-    request.customerId = this.extendsDto.customerId;
-    request.createdByUserId = this.extendsDto.customerId;
-    request.note = this.i18n.fanyi('volume.note.extend');
-    request.totalPayment = this.orderItem?.totalPayment?.amount;
-    request.totalVAT = this.orderItem?.totalVAT?.amount;
-    request.orderItems = [
-      {
-        orderItemQuantity: 1,
-        specification: JSON.stringify(this.extendsDto),
-        specificationType: 'volume_extend',
-        price: this.orderItem?.totalAmount.amount,
-        serviceDuration: this.validateForm.controls.time.value
-      }
-    ];
-    console.log('request', request);
-    console.log('unit', this.orderItem?.orderItemPrices[0]?.unitPrice.amount);
-    this.orderService.validaterOrder(request).subscribe(data => {
-      if (data.success) {
-        var returnPath: string = '/app-smart-cloud/volume/detail/' + this.idVolume;
-        this.router.navigate(['/app-smart-cloud/order/cart'], {
-          state: { data: request, path: returnPath }
-        });
-      } else {
-        this.isVisiblePopupError = true;
-        this.errorList = data.data;
-      }
-
-    }, error => {
-      this.notification.error(this.i18n.fanyi('app.status.fail'), error.error.detail);
-    });
-  }
-
   showModalConfirmRenew() {
     this.isVisibleConfirmRenew = true;
   }
@@ -223,13 +188,8 @@ export class RenewVolumeComponent implements OnInit {
     this.isVisibleConfirmRenew = false;
   }
 
-  submitForm() {
-    if (this.validateForm.valid) {
-      this.doExtend();
-    }
-  }
-
   navigateToPaymentSummary() {
+    this.isLoadingAction = true
     if (this.validateForm.valid) {
       this.getTotalAmount();
       let request = new EditSizeVolumeModel();
@@ -245,15 +205,61 @@ export class RenewVolumeComponent implements OnInit {
           serviceDuration: this.validateForm.controls.time.value
         }
       ];
-      var returnPath: string = '/app-smart-cloud/volumes/renew/' + this.idVolume;
-      console.log('request', request);
-      this.router.navigate(['/app-smart-cloud/order/cart'], { state: { data: request, path: returnPath } });
+      this.orderService.validaterOrder(request).subscribe(data => {
+        if(data.success) {
+          this.isLoadingAction = false
+          var returnPath: string = '/app-smart-cloud/volumes/renew/' + this.idVolume;
+          console.log('request', request);
+          this.router.navigate(['/app-smart-cloud/order/cart'], { state: { data: request, path: returnPath } });
+        } else {
+          this.isVisiblePopupError = true;
+          this.errorList = data.data;
+          this.isLoadingAction = false
+        }
+      } , error => {
+        this.isLoadingAction = false
+        this.notification.error(this.i18n.fanyi('app.status.fail'), error.error.detail)
+      })
+
     }
   }
 
-  handleOk() {
-    this.isVisibleConfirmRenew = false;
-    this.submitForm();
+  isLoadingAction: boolean = false
+  doRenew() {
+    this.isLoadingAction = true
+    if (this.validateForm.valid) {
+      this.getTotalAmount();
+      let request = new EditSizeVolumeModel();
+      request.customerId = this.extendsDto.customerId;
+      request.createdByUserId = this.extendsDto.customerId;
+      request.note = this.i18n.fanyi('volume.note.extend');
+      request.orderItems = [
+        {
+          orderItemQuantity: 1,
+          specification: JSON.stringify(this.extendsDto),
+          specificationType: 'volume_extend',
+          price: 0,
+          serviceDuration: this.validateForm.controls.time.value
+        }
+      ];
+      console.log('request',request)
+      this.orderService.validaterOrder(request).subscribe(data => {
+        if(data.success) {
+          this.volumeService.editSizeVolume(request).subscribe(data => {
+            this.isLoadingAction = false;
+            if (data != null) {
+              if (data.code == 200) {
+                this.isLoadingAction = false;
+                this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('volume.notification.require.renew.success'));
+                this.router.navigate(['/app-smart-cloud/volumes']);
+              }
+            } else {
+              this.isLoadingAction = false;
+            }
+          })
+        }
+      })
+    }
   }
 
   goBack() {

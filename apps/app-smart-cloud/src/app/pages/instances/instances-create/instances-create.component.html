@@ -1354,101 +1354,100 @@
                   </tr>
                 </thead>
                 <tbody class="ant-table-tbody">
-                  <tr
-                    *ngFor="let data of listOfDataBlockStorage; let i = index"
-                  >
-                    <td>
-                      <nz-select
-                        [nzPlaceHolder]="'app.choose' | i18n"
-                        name="inputBlockStorage"
-                        [ngModelOptions]="{ standalone: true }"
-                        [(ngModel)]="data.type"
-                        [id]="'type_' + data.id"
-                        (ngModelChange)="onInputBlockStorage(data.id, $event)"
-                        nzSize="large"
-                      >
-                        <nz-option
-                          *ngFor="let p of typeBlockStorage"
-                          [nzValue]="p.value"
-                          [nzLabel]="p.label"
-                        ></nz-option>
-                      </nz-select>
-                    </td>
-                    <td>
-                      <input
-                        [nzPlaceHolder]="'app.input.name' | i18n"
-                        class="input-custom"
-                        type="text"
-                        [ngModelOptions]="{ standalone: true }"
-                        nz-input
-                        [(ngModel)]="data.name"
-                        [id]="'name_' + data.id"
-                      />
-                    </td>
-                    <td>
-                      <nz-input-number
-                        [(ngModel)]="data.capacity"
-                        (keydown)="onKeyDown($event)"
-                        (ngModelChange)="
+                <tr
+                  *ngFor="let data of listOfDataBlockStorage; let i = index"
+                >
+                  <td>
+                    <nz-select
+                      [nzPlaceHolder]="'app.choose' | i18n"
+                      name="inputBlockStorage"
+                      [ngModelOptions]="{ standalone: true }"
+                      [(ngModel)]="data.type"
+                      [id]="'type_' + data.id"
+                      (ngModelChange)="onInputBlockStorage(data.id, $event)"
+                      nzSize="large"
+                    >
+                      <nz-option
+                        *ngFor="let p of typeBlockStorage"
+                        [nzValue]="p.value"
+                        [nzLabel]="p.label"
+                      ></nz-option>
+                    </nz-select>
+                  </td>
+                  <td>
+                    <input
+                      [nzPlaceHolder]="'app.input.name' | i18n"class="input-custom"
+                      type="text"
+                      [ngModelOptions]="{ standalone: true }"
+                      nz-input
+                      [(ngModel)]="data.name"
+                      [id]="'name_' + data.id"
+                    />
+                  </td>
+                  <td>
+                    <nz-input-number
+                      [(ngModel)]="data.capacity"
+                      (keydown)="onKeyDown($event)"
+                      (ngModelChange)="
                           changeTotalAmountBlockStorage(data.id, $event);
                           externalVolume()
                         "
-                        [ngModelOptions]="{ standalone: true }"
-                        [id]="'capacity_' + data.id"
-                        [nzMin]="minCapacity"
-                        [nzMax]="maxCapacity"
-                        [nzStep]="stepCapacity"
-                        nzSize="large"
-                      ></nz-input-number>
-                    </td>
-                    <td>
-                      <span *ngIf="data.type == 'hdd'">300</span>
-                      <span *ngIf="data.type == 'ssd' && data.capacity <= 40"
-                        >400</span
-                      >
-                      <span *ngIf="data.type == 'ssd' && data.capacity > 40">{{
+                      [ngModelOptions]="{ standalone: true }"
+                      [id]="'capacity_' + data.id"
+                      [nzMin]="minCapacity"
+                      [nzMax]="maxCapacity"
+                      [nzStep]="stepCapacity"
+                      nzSize="large"
+                    ></nz-input-number>
+                  </td>
+                  <td>
+                    <span *ngIf="data.type == 'hdd'">300</span>
+                    <span *ngIf="data.type == 'ssd' && data.capacity <= 40"
+                    >400</span
+                    >
+                    <span *ngIf="data.type == 'ssd' && data.capacity > 40">{{
                         data.capacity * 10
                       }}</span>
-                    </td>
-                    <td>
-                      <label
-                        *ngIf="isSupportEncryption"
-                        nz-checkbox
-                        [(ngModel)]="data.encrypt"
-                        (ngModelChange)="changeEncrypt($event, i)"
-                        [ngModelOptions]="{ standalone: true }"
-                        [id]="'encrypt_' + data.id"
-                      ></label>
-                    </td>
-                    <td>
-                      <label
-                        *ngIf="isSupportMultiAttachment"
-                        nz-checkbox
-                        [(ngModel)]="data.multiattach"
-                        (ngModelChange)="changeMultiAttach($event, i)"
-                        [ngModelOptions]="{ standalone: true }"
-                        [id]="'multiattach_' + data.id"
-                      ></label>
-                    </td>
-                    <td>
-                      <label class="text-custom-price">
-                        {{ data.price | number }}
-                      </label>
-                    </td>
-                    <td>
-                      <button
-                        *ngIf="data.type != ''"
-                        style="border: none"
-                        nz-button
-                        (click)="deleteRowBlockStorage(data.id)"
-                      >
-                        <img
-                          style="margin-top: -4px"
-                          src="assets/imgs/trash1.svg"
-                        />
-                      </button>
-                    </td>
-                  </tr>
+                  </td>
+                  <td>
+                    <label
+                      *ngIf="isSupportEncryption"
+                      nz-checkbox
+                      [(ngModel)]="data.encrypt"
+                      (ngModelChange)="changeEncrypt($event, i)"
+                      [ngModelOptions]="{ standalone: true }"
+                      [id]="'encrypt_' + data.id"
+                    ></label>
+                  </td>
+                  <td>
+                    <label
+                      *ngIf="isSupportMultiAttachment"
+                      nz-checkbox
+                      [(ngModel)]="data.multiattach"
+                      (ngModelChange)="changeMultiAttach($event, i)"
+                      [ngModelOptions]="{ standalone: true }"
+                      [id]="'multiattach_' + data.id"
+                    ></label>
+                  </td>
+                  <td>
+                    <label class="text-custom-price">
+                      {{ data.price | number }}
+                    </label>
+                  </td>
+                  <td>
+                    <button
+                      *ngIf="data.type != ''"
+                      style="border: none"
+                      nz-button
+                      (click)="deleteRowBlockStorage(data.id)"
+                    >
+                      <img
+                        style="margin-top: -4px"
+                        src="assets/imgs/trash1.svg"
+                      />
+                    </button>
+                  </td>
+                </tr>
                 </tbody>
               </table>
             </div>
@@ -1486,62 +1485,62 @@
             <div class="ant-table">
               <table>
                 <thead class="ant-table-thead">
-                  <tr>
-                    <th>{{ 'app.ip.range' | i18n }}</th>
-                    <th>{{ 'app.amount' | i18n }}</th>
-                    <th>{{ 'app.monthly.price' | i18n }} (VND)</th>
-                  </tr>
+                <tr>
+                  <th>{{ 'app.ip.range' | i18n }}</th>
+                  <th>{{ 'app.amount' | i18n }}</th>
+                  <th>{{ 'app.monthly.price' | i18n }} (VND)</th>
+                </tr>
                 </thead>
                 <tbody class="ant-table-tbody">
-                  <tr *ngFor="let data of listOfDataIPv4">
-                    <td>
-                      <nz-select
-                        style="width: 85%"
-                        [nzPlaceHolder]="'app.choose' | i18n"
-                        name="inputNetwork"
-                        [ngModelOptions]="{ standalone: true }"
-                        [(ngModel)]="data.ip"
-                        [id]="'ip_' + data.id"
-                        (ngModelChange)="onInputIPv4($event, data.id)"
-                        nzSize="large"
-                      >
-                        <nz-option
-                          *ngFor="let p of listIPSubnetModel"
-                          [nzValue]="p.networkId"
-                          [nzLabel]="p.displayName"
-                        ></nz-option>
-                      </nz-select>
-                    </td>
-                    <td>
-                      <nz-input-number
-                        [(ngModel)]="data.amount"
-                        (keydown)="onKeyDown($event)"
-                        (ngModelChange)="onInputIPv4($event)"
-                        [ngModelOptions]="{ standalone: true }"
-                        [id]="'amount_' + data.id"
-                        [nzMin]="0"
-                        [nzMax]="7"
-                        nzSize="large"
-                      ></nz-input-number>
-                    </td>
-                    <td>
-                      <label class="text-custom-price">
-                        {{ data.price | number }}
-                      </label>
-                    </td>
-                    <td>
-                      <button
-                        style="border: none"
-                        nz-button
-                        (click)="deleteRowIPv4(data.id)"
-                      >
-                        <img
-                          style="margin-top: -4px"
-                          src="assets/imgs/trash1.svg"
-                        />
-                      </button>
-                    </td>
-                  </tr>
+                <tr *ngFor="let data of listOfDataIPv4">
+                  <td>
+                    <nz-select
+                      style="width: 85%"
+                      [nzPlaceHolder]="'app.choose' | i18n"
+                      name="inputNetwork"
+                      [ngModelOptions]="{ standalone: true }"
+                      [(ngModel)]="data.ip"
+                      [id]="'ip_' + data.id"
+                      (ngModelChange)="onInputIPv4($event, data.id)"
+                      nzSize="large"
+                    >
+                      <nz-option
+                        *ngFor="let p of listIPSubnetModel"
+                        [nzValue]="p.networkId"
+                        [nzLabel]="p.displayName"
+                      ></nz-option>
+                    </nz-select>
+                  </td>
+                  <td>
+                    <nz-input-number
+                      [(ngModel)]="data.amount"
+                      (keydown)="onKeyDown($event)"
+                      (ngModelChange)="onInputIPv4($event)"
+                      [ngModelOptions]="{ standalone: true }"
+                      [id]="'amount_' + data.id"
+                      [nzMin]="0"
+                      [nzMax]="7"
+                      nzSize="large"
+                    ></nz-input-number>
+                  </td>
+                  <td>
+                    <label class="text-custom-price">
+                      {{ data.price | number }}
+                    </label>
+                  </td>
+                  <td>
+                    <button
+                      style="border: none"
+                      nz-button
+                      (click)="deleteRowIPv4(data.id)"
+                    >
+                      <img
+                        style="margin-top: -4px"
+                        src="assets/imgs/trash1.svg"
+                      />
+                    </button>
+                  </td>
+                </tr>
                 </tbody>
               </table>
             </div>
@@ -1566,62 +1565,62 @@
             <div class="ant-table">
               <table>
                 <thead class="ant-table-thead">
-                  <tr>
-                    <th>{{ 'app.ip.range' | i18n }}</th>
-                    <th>{{ 'app.amount' | i18n }}</th>
-                    <th>{{ 'app.monthly.price' | i18n }} (VND)</th>
-                  </tr>
+                <tr>
+                  <th>{{ 'app.ip.range' | i18n }}</th>
+                  <th>{{ 'app.amount' | i18n }}</th>
+                  <th>{{ 'app.monthly.price' | i18n }} (VND)</th>
+                </tr>
                 </thead>
                 <tbody class="ant-table-tbody">
-                  <tr *ngFor="let data of listOfDataIPv6">
-                    <td>
-                      <nz-select
-                        style="width: 85%"
-                        nzPlaceHolder="Chọn"
-                        name="inputNetwork"
-                        [ngModelOptions]="{ standalone: true }"
-                        [(ngModel)]="data.ip"
-                        [id]="'ip_' + data.id"
-                        (ngModelChange)="onInputIPv6($event, data.id)"
-                        nzSize="large"
-                      >
-                        <nz-option
-                          *ngFor="let p of listIPSubnetModel"
-                          [nzValue]="p.networkId"
-                          [nzLabel]="p.displayName"
-                        ></nz-option>
-                      </nz-select>
-                    </td>
-                    <td>
-                      <nz-input-number
-                        [(ngModel)]="data.amount"
-                        (keydown)="onKeyDown($event)"
-                        (ngModelChange)="onInputIPv6($event)"
-                        [ngModelOptions]="{ standalone: true }"
-                        [id]="'amount_' + data.id"
-                        [nzMin]="0"
-                        [nzMax]="7"
-                        nzSize="large"
-                      ></nz-input-number>
-                    </td>
-                    <td>
-                      <label class="text-custom-price">
-                        {{ data.price | number }}
-                      </label>
-                    </td>
-                    <td>
-                      <button
-                        style="border: none"
-                        nz-button
-                        (click)="deleteRowIPv6(data.id)"
-                      >
-                        <img
-                          style="margin-top: -4px"
-                          src="assets/imgs/trash1.svg"
-                        />
-                      </button>
-                    </td>
-                  </tr>
+                <tr *ngFor="let data of listOfDataIPv6">
+                  <td>
+                    <nz-select
+                      style="width: 85%"
+                      nzPlaceHolder="Chọn"
+                      name="inputNetwork"
+                      [ngModelOptions]="{ standalone: true }"
+                      [(ngModel)]="data.ip"
+                      [id]="'ip_' + data.id"
+                      (ngModelChange)="onInputIPv6($event, data.id)"
+                      nzSize="large"
+                    >
+                      <nz-option
+                        *ngFor="let p of listIPSubnetModel"
+                        [nzValue]="p.networkId"
+                        [nzLabel]="p.displayName"
+                      ></nz-option>
+                    </nz-select>
+                  </td>
+                  <td>
+                    <nz-input-number
+                      [(ngModel)]="data.amount"
+                      (keydown)="onKeyDown($event)"
+                      (ngModelChange)="onInputIPv6($event)"
+                      [ngModelOptions]="{ standalone: true }"
+                      [id]="'amount_' + data.id"
+                      [nzMin]="0"
+                      [nzMax]="7"
+                      nzSize="large"
+                    ></nz-input-number>
+                  </td>
+                  <td>
+                    <label class="text-custom-price">
+                      {{ data.price | number }}
+                    </label>
+                  </td>
+                  <td>
+                    <button
+                      style="border: none"
+                      nz-button
+                      (click)="deleteRowIPv6(data.id)"
+                    >
+                      <img
+                        style="margin-top: -4px"
+                        src="assets/imgs/trash1.svg"
+                      />
+                    </button>
+                  </td>
+                </tr>
                 </tbody>
               </table>
             </div>
@@ -1647,8 +1646,8 @@
         <nz-card class="card-border" style="border-radius: 8px; width: 100%">
           <div style="margin-bottom: 20px">
             <span class="text-card-header">{{
-              'app.estimated.cost' | i18n
-            }}</span>
+                'app.estimated.cost' | i18n
+              }}</span>
           </div>
           <div class="card-money">
             <div class="text-value">{{ 'app.instances.name' | i18n }}</div>
@@ -1682,7 +1681,7 @@
               {{ instanceCreate.volumeSize }} GB Root Disk (<span>{{
                 activeBlockHDD ? 'HDD' : 'SSD'
               }}</span
-              >)
+            >)
             </div>
             <div
               *ngIf="isGpuConfig"
@@ -1735,58 +1734,34 @@
                 </span>
               </nz-col>
               <nz-col class="text-right" nzSpan="8">
-                <span class="text-value" style="color: #0066b3" nzAlign="right">
-                  {{
-                    totalAmount +
-                      totalAmountVolume +
-                      totalAmountIPv4 +
-                      totalAmountIPv6 | number
-                  }}
-                  VND
-                </span>
+                <span class="text-value" style="color: #0066b3"
+                      nzAlign="right">{{ totalAmount + totalAmountVolume + totalAmountIPv4 + totalAmountIPv6 | number }}
+                  VND</span>
               </nz-col>
             </nz-row>
             <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
             <nz-row style="margin-bottom: 10px" nzGutter="16">
               <nz-col nzSpan="16">
-                <span class="text-value">
-                  {{ 'app.cost.vat' | i18n }}
-                </span>
+                <span class="text-value">{{ 'app.cost.vat' | i18n }}</span>
               </nz-col>
               <nz-col class="text-right" nzSpan="8">
-                <span class="text-value" style="color: #0066b3" nzAlign="right">
-                  {{
-                    totalVAT + totalVATVolume + totalVATIPv4 + totalVATIPv6
-                      | number
-                  }}
-                  VND
-                </span>
+                <span class="text-value" style="color: #0066b3"
+                      nzAlign="right">{{ totalVAT + totalVATVolume + totalVATIPv4 + totalVATIPv6| number }}VND</span>
               </nz-col>
             </nz-row>
-            <nz-row
-              style="
+            <nz-row style="
                 margin-bottom: 20px;
                 background-color: #cce9ff;
                 padding: 16px 0 16px 0;
                 border-radius: 8px;
-              "
-              nzGutter="16"
-            >
+              " nzGutter="16">
               <nz-col nzSpan="16">
-                <span class="text-label">{{ 'app.total.payment' | i18n }}</span
-                ><br />
-                <span class="text-note-italicized"
-                  >({{ 'app.include.vat' | i18n : { vat: '10' } }})</span
-                >
+                <span class="text-label">{{ 'app.total.payment' | i18n }}</span><br />
+                <span class="text-note-italicized">({{ 'app.include.vat' | i18n : { vat: '10' } }})</span>
               </nz-col>
               <nz-col class="text-right" nzSpan="8">
                 <span class="text-value" style="color: #ea3829" nzAlign="right">
-                  {{
-                    totalincludesVAT +
-                      totalPaymentVolume +
-                      totalPaymentIPv4 +
-                      totalPaymentIPv6 | number : '1.0-0'
-                  }}
+                  {{ totalincludesVAT + totalPaymentVolume + totalPaymentIPv4 + totalPaymentIPv6 | number : '1.0-0' }}
                   VND
                 </span>
               </nz-col>
@@ -1794,40 +1769,33 @@
           </div>
           <nz-row>
             <nz-col style="width: 100%">
-              <button
-                style="width: 100%"
-                nz-button
-                nzSize="large"
-                nzType="primary"
-                [nzLoading]="isLoading"
-                (click)="save()"
-                [disabled]="
-                  !isValid ||
-                  form.invalid ||
-                  isExistName ||
-                  totalincludesVAT +
-                    totalPaymentVolume +
-                    totalPaymentIPv4 +
-                    totalPaymentIPv6 ==
-                    0
-                "
-              >
+              <button *ngIf="!hasRoleSI"
+                      style="width: 100%"
+                      nz-button
+                      nzSize="large"
+                      nzType="primary"
+                      [nzLoading]="isLoading"
+                      (click)="save()"
+                      [disabled]="!isValid || form.invalid || isExistName || totalincludesVAT + totalPaymentVolume + totalPaymentIPv4 + totalPaymentIPv6 == 0">
                 <span nz-icon nzType="wallet" nzTheme="outline"></span>
-                <span
-                  [style.color]="
-                    !isValid ||
-                    form.invalid ||
-                    isExistName ||
-                    totalincludesVAT +
-                      totalPaymentVolume +
-                      totalPaymentIPv4 +
-                      totalPaymentIPv6 ==
-                      0
-                      ? 'gray'
-                      : 'white'
-                  "
-                  >{{ 'app.button.create' | i18n }}</span
-                >
+                <span [style.color]="!isValid
+                || form.invalid
+                || isExistName
+                || totalincludesVAT + totalPaymentVolume + totalPaymentIPv4 + totalPaymentIPv6 == 0 ? 'gray' : 'white'">{{ 'app.button.create' | i18n }}</span>
+              </button>
+              <button *ngIf="hasRoleSI"
+                      style="width: 100%"
+                      nz-button
+                      nzSize="large"
+                      nzType="primary"
+                      [nzLoading]="isLoading"
+                      (click)="create()"
+                      [disabled]="!isValid || form.invalid || isExistName || totalincludesVAT + totalPaymentVolume + totalPaymentIPv4 + totalPaymentIPv6 == 0">
+                <span nz-icon nzType="wallet" nzTheme="outline"></span>
+                <span [style.color]="!isValid
+                || form.invalid
+                || isExistName
+                || totalincludesVAT + totalPaymentVolume + totalPaymentIPv4 + totalPaymentIPv6 == 0 ? 'gray' : 'white'">{{ 'app.button.create' | i18n }}</span>
               </button>
             </nz-col>
           </nz-row>
