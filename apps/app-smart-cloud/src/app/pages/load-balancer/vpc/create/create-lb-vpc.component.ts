@@ -343,16 +343,14 @@ export class CreateLbVpcComponent implements OnInit {
               } else {
                 this.isLoading = false;
                 this.notification.error(
-                  '',
-                  this.i18n.fanyi('app.notification.request.create.LB.fail')
+                  this.i18n.fanyi('app.status.fail'),'error'
                 );
               }
             },
             error => {
               this.isLoading = false;
               this.notification.error(
-                '',
-                this.i18n.fanyi('app.notification.request.create.LB.fail')
+                this.i18n.fanyi('app.status.fail'),error.error.message
               );
             });
       },
@@ -429,7 +427,8 @@ export class CreateLbVpcComponent implements OnInit {
         this.loadingSubnet = false;
         this.disabledSubnet = false;
       }))
-      .subscribe(data => {
+      .subscribe(
+        data => {
         this.setDataToMap(data);
         if (this.mapSubnet instanceof Map) {
           // Chuyển đổi Map thành mảng các cặp khóa/giá trị
@@ -438,7 +437,10 @@ export class CreateLbVpcComponent implements OnInit {
           }
           this.mapSubnetArray = [...this.mapSubnetArray1]
         }
-      });
+      },
+        error => {
+          this.notification.error(this.i18n.fanyi('app.status.fail'), 'Lấy danh sách Subnet thộc Internet Facing lỗi');
+        });
   }
 
   initSubnet2() {
