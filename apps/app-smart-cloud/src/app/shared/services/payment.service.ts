@@ -121,7 +121,7 @@ export class PaymentService extends BaseService {
 
   cancelPayment(paymentNumber: string): Observable<any> {
     return this.http.put<any>(
-      this.baseUrl + this.ENDPOINT.orders + `/cancel?paymentNumber=${paymentNumber}`, this.httpOptions
+      this.baseUrl + this.ENDPOINT.payments + `/cancel?paymentNumber=${paymentNumber}`, this.httpOptions
     );
   }
 }
