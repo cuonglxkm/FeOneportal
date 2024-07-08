@@ -237,7 +237,7 @@ export class CreateLbVpcComponent implements OnInit {
         this.flavorId = this.offerDetail?.characteristicValues[1].charOptionValues[0];
       },
         error => {
-          this.notification.error(this.i18n.fanyi('app.status.fail'),'Loading Falvor')
+          this.notification.error(this.i18n.fanyi('app.status.fail'),'Lấy thông tin Flavor lỗi')
         });
 
     });
