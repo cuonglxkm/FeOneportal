@@ -716,6 +716,12 @@
                             [nzValue]="i"
                           /> </nz-select
                       ></nz-form-control>
+                      <div
+                        *ngIf="remainingGpu == 0"
+                        style="font-size: 14px; color: #fff"
+                      >
+                        white
+                      </div>
                     </td>
                   </tr>
                 </tbody>

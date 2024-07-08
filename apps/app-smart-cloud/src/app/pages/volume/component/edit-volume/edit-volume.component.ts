@@ -175,6 +175,52 @@ export class EditVolumeComponent implements OnInit {
     }
   }
 
+  doResize() {
+    this.isLoadingAction = true
+    if (this.validateForm.valid) {
+      this.nameList = [];
+      this.getTotalAmount();
+      let request = new EditSizeVolumeModel();
+      request.customerId = this.volumeEdit.customerId;
+      request.createdByUserId = this.volumeEdit.customerId;
+      request.note = 'update volume';
+      request.totalPayment = this.orderItem?.totalPayment?.amount
+      request.totalVAT = this.orderItem?.totalVAT?.amount
+      request.orderItems = [
+        {
+          orderItemQuantity: 1,
+          specification: JSON.stringify(this.volumeEdit),
+          specificationType: 'volume_resize',
+          price: this.orderItem?.totalAmount.amount,
+          serviceDuration: this.expiryTime
+        }
+      ];
+      this.orderService.validaterOrder(request).subscribe(data => {
+        this.isLoadingAction = false
+        if(data.success) {
+          this.volumeService.editSizeVolume(request).subscribe(data => {
+            this.isLoadingAction = false;
+            if (data != null) {
+              if (data.code == 200) {
+                this.isLoadingAction = false;
+                this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('volume.notification.require.resize.success'));
+                this.router.navigate(['/app-smart-cloud/volumes']);
+              }
+            } else {
+              this.isLoadingAction = false;
+            }
+          })
+        } else {
+          this.isVisiblePopupError = true;
+          this.errorList = data.data;
+        }
+      }, error => {
+        this.notification.error(this.i18n.fanyi('app.status.fail'), error.error.detail)
+      })
+    }
+  }
+
+
   minStorage: number = 0;
   stepStorage: number = 0;
   valueString: string;
