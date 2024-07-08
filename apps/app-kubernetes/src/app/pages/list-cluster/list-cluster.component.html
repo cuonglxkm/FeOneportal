@@ -149,7 +149,7 @@
               </button>
 
               <button nz-button nzType="text" [nzTooltipTitle]="'app.cluster.download-config' | i18n" nzTooltipPlacement="top" nz-tooltip
-                class="borderless marleft-0 action-btn" [disabled]="item.serviceStatus == 3" (click)="handleDownloadKubeConfig(item)">
+                class="borderless marleft-0 action-btn" [disabled]="item.serviceStatus == 3">
                 <img src="assets/imgs/download.svg" class="icon-action" (click)="handleDownloadKubeConfig(item)" />
               </button>
 

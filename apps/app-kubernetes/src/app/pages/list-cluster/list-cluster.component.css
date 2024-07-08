@@ -116,13 +116,13 @@ img {
 
 .action-btn {
   padding: 0;
-  height: 24px;
   padding-left: 3px;
 }
 
 .icon-action {
   cursor: pointer;
-  width: fit-content;
+  width: 24px;
+  height: 24px;
 }
 
 /* dark theme */
