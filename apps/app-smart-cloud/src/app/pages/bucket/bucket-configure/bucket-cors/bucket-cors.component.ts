@@ -6,6 +6,7 @@ import {
   Input,
   OnInit,
 } from '@angular/core';
+import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
 import { I18NService } from '@core';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
@@ -56,7 +57,8 @@ export class BucketCorsComponent implements OnInit {
     private bucketService: BucketService,
     private notification: NzNotificationService,
     private cdr: ChangeDetectorRef,
-    @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService
+    @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
+    private fb: NonNullableFormBuilder,
   ) {}
 
   ngOnInit(): void {
@@ -67,29 +69,24 @@ export class BucketCorsComponent implements OnInit {
       this.searchBucketCors();
     });
   }
-  // searchBucketCors() {
-  //   this.loading = true;
-  //   this.bucketService
-  //     .getListBucketCORS(this.bucketName)
-  //     .pipe(
-  //       finalize(() => {
-  //         this.loading = false;
-  //         this.cdr.detectChanges();
-  //       })
-  //     )
-  //     .subscribe({
-  //       next: (data) => {
-  //         this.listBucketCors = data;
-  //       },
-  //       error: (e) => {
-  //         this.listBucketCors = [];
-  //         this.notification.error(
-  //           this.i18n.fanyi('app.status.fail'),
-  //           this.i18n.fanyi('app.get.bucket.cors.fail')
-  //         );
-  //       },
-  //     });
-  // }
+
+
+  formCreate: FormGroup<{
+    domain: FormControl<string>;
+    maxAgeSeconds: FormControl<number>;
+  }> = this.fb.group({
+    domain: ['', Validators.required],
+    maxAgeSeconds: [3600, Validators.required],
+  });
+
+  formUpdate: FormGroup<{
+    domain: FormControl<string>;
+    maxAgeSeconds: FormControl<number>;
+  }> = this.fb.group({
+    domain: ['', Validators.required],
+    maxAgeSeconds: [3600, Validators.required],
+  });
+  
 
   searchBucketCors() {
     this.loading = true;
@@ -110,8 +107,6 @@ export class BucketCorsComponent implements OnInit {
       .subscribe({
         next: (data) => {
           this.listBucketCors = data.records;
-          console.log(this.listBucketCors);
-
           this.total = data.totalCount;
         },
         error: (e) => {
@@ -148,6 +143,10 @@ export class BucketCorsComponent implements OnInit {
 
   handleCancelCreate() {
     this.isVisibleCreate = false;
+    this.formCreate.reset()
+    this.listHeaderName = [];
+    this.bucketCorsCreate.maxAgeSeconds = 3600
+
   }
 
   handleOkCreate() {
@@ -178,6 +177,7 @@ export class BucketCorsComponent implements OnInit {
         this.isLoadingCreate = false
         this.isVisibleCreate = false;
         this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('app.create.bucket.cors.success'));
+        this.formCreate.reset()
         this.searchBucketCors();
         this.cdr.detectChanges()
       },
@@ -251,6 +251,7 @@ export class BucketCorsComponent implements OnInit {
       headerName.name = e;
       this.listHeaderName.push(headerName);
     });
+    this.formUpdate.controls.maxAgeSeconds.setValue(this.bucketCorsUpdate.maxAgeSeconds)
     this.bucketCorsUpdate.allowedMethods.forEach((e) => {
       if (e.toUpperCase() == 'GET') {
         this.get = true;

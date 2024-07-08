@@ -157,9 +157,7 @@ export class StartupService {
 
   load(): Observable<void> {
     const defaultLang = this.i18n.defaultLang;
-    console.log(defaultLang);
     const baseUrl = environment['baseUrl'];
-    console.log(baseUrl);
 
     return zip(
       this.i18n.loadLangData(defaultLang),
@@ -193,7 +191,6 @@ export class StartupService {
           .subscribe(
             (data) => {
               this.menuData = data;
-              console.log(this.menuData);
               this.menuService.add(this.menuData.menu);
               this.regionProjectService.getCoreData(baseUrl);
               if (localStorage?.getItem('PermissionOPA')) {
