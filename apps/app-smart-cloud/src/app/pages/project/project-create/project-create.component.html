@@ -11,7 +11,8 @@
   <ng-template #action>
     <div class="alain-custom-action text-right">
       <share-users-combobox></share-users-combobox>
-      <region-select-dropdown (regionChange)="onRegionChanged($event)" (valueChanged)="onRegionChange($event)"></region-select-dropdown>
+      <region-select-dropdown (regionChange)="onRegionChanged($event)"
+        (valueChanged)="onRegionChange($event)"></region-select-dropdown>
     </div>
   </ng-template>
 </page-header>
@@ -545,7 +546,7 @@
           </div>
 
           <div *ngIf="activeBonusService">
-            <div class="bonus-services" *ngIf="catalogStatus['ip'] || catalogStatus['ipv6']">
+            <div class="bonus-services" *ngIf="typeIp || typeIpv6">
               <div class="title-bonus-services">
                 <div><span class="text-card-header">IP</span></div>
                 <one-portal-svg-icon *ngIf="trashIP" [icon]="'icon_trash'" class="icon-trash"
@@ -577,7 +578,7 @@
 
                 </nz-form-item>
                 <div>
-                  <nz-row *ngIf="ipConnectInternet != '' && catalogStatus['ip']">
+                  <nz-row *ngIf="ipConnectInternet != '' && typeIp">
                     <!-- <nz-row *ngIf="ipConnectInternet != null && ipConnectInternet != ''"> -->
                     <nz-form-item style="width: 60%">
                       <nz-form-label class="custom-label">{{ "app.order-detail.quantity" | i18n }} IP
@@ -605,7 +606,7 @@
                       </nz-form-control>
                     </nz-form-item>
                   </nz-row>
-                  <nz-row *ngIf="catalogStatus['ip']">
+                  <nz-row *ngIf="typeIp">
                     <nz-form-item style="width: 60%">
                       <nz-form-label class="custom-label">{{ "app.order-detail.quantity" | i18n }} IP
                         Public</nz-form-label>
@@ -632,7 +633,7 @@
                       </nz-form-control>
                     </nz-form-item>
                   </nz-row>
-                  <nz-row *ngIf="catalogStatus['ipv6']">
+                  <nz-row *ngIf="typeIpv6">
                     <nz-form-item style="width: 60%">
                       <nz-form-label class="custom-label">{{ "app.order-detail.quantity" | i18n }} IPv6</nz-form-label>
                       <nz-form-control>
@@ -665,8 +666,7 @@
                 nzDescription="Mua bổ sung IP giúp thuận tiện hơn trong quá trình sử dụng các dịch vụ của VNPT Cloud"
                 nzShowIcon></nz-alert>
             </div>
-            <div class="bonus-services"
-              *ngIf="catalogStatus['volume-snapshot-hdd'] || catalogStatus['volume-snapshot-ssd']">
+            <div class="bonus-services" *ngIf="typeVolume_snapshot_hdd || typeVolume_snapshot_ssd">
               <div class="title-bonus-services">
                 <div><span class="text-card-header">Snapshot</span></div>
                 <one-portal-svg-icon *ngIf="trashSnapshot" [icon]="'icon_trash'" class="icon-trash"
@@ -680,7 +680,7 @@
               </div>
               <div *ngIf="activeSnapshot">
                 <div class="ant-table">
-                  <table *ngIf="catalogStatus['volume-snapshot-hdd']">
+                  <table *ngIf="typeVolume_snapshot_hdd">
                     <td style="width:60%">
                       <nz-form-item>
                         <nz-form-label class="custom-label">Dung lượng HDD (GB)</nz-form-label>
@@ -711,7 +711,7 @@
                       </nz-form-item>
                     </td>
                   </table>
-                  <table *ngIf="catalogStatus['volume-snapshot-ssd']">
+                  <table *ngIf="typeVolume_snapshot_ssd">
                     <td style="width:60%">
                       <nz-form-item>
                         <nz-form-label class="custom-label">Dung lượng SSD (GB)</nz-form-label>
@@ -749,7 +749,7 @@
                 nzDescription="Giúp người dùng lưu lại trạng thái hiện tại của Volume/VM. Người dùng có thể sử dụng để sao lưu volume trước khi thực hiện 1 thao tác rủi ro đến dữ liệu trên VM."
                 nzShowIcon></nz-alert>
             </div>
-            <div class="bonus-services" *ngIf="catalogStatus['backup-volume']">
+            <div class="bonus-services" *ngIf="typeBackup_volume">
               <div class="title-bonus-services">
                 <div><span class="text-card-header">Backup</span></div>
                 <one-portal-svg-icon *ngIf="trashBackup" [icon]="'icon_trash'" class="icon-trash"
@@ -803,7 +803,7 @@
             </div>
 
 
-            <div class="bonus-services" *ngIf="catalogStatus['loadbalancer-sdn']">
+            <div class="bonus-services" *ngIf="typeLoadbalancer_sdn">
               <div class="title-bonus-services">
                 <div><span class="text-card-header">Load Balancer</span></div>
                 <one-portal-svg-icon *ngIf="trashLoadBalancer" [icon]="'icon_trash'" class="icon-trash"
@@ -869,7 +869,7 @@
                 nzShowIcon></nz-alert>
             </div>
 
-            <div class="bonus-services" *ngIf="catalogStatus['file-storage'] || catalogStatus['file-storage-snapshot']">
+            <div class="bonus-services" *ngIf="typeFile_storage || typeFile_storage_snapshot">
               <div class="title-bonus-services">
                 <div><span class="text-card-header">File Storage</span></div>
                 <one-portal-svg-icon *ngIf="trashFileStorage" [icon]="'icon_trash'" class="icon-trash"
@@ -883,7 +883,7 @@
               </div>
               <div *ngIf="activeFileStorage">
                 <div class="ant-table">
-                  <table *ngIf="catalogStatus['file-storage']">
+                  <table *ngIf="typeFile_storage">
                     <td style="width:60%">
                       <nz-form-item>
                         <nz-form-label class="custom-label">{{ "volume.table.title.storage" | i18n }} File System
@@ -916,7 +916,7 @@
                       </nz-form-item>
                     </td>
                   </table>
-                  <table *ngIf="catalogStatus['file-storage-snapshot']">
+                  <table *ngIf="typeFile_storage_snapshot">
                     <td style="width:60%">
                       <nz-form-item>
                         <nz-form-label class="custom-label">{{ "volume.table.title.storage" | i18n }} File System
@@ -956,7 +956,7 @@
                 nzShowIcon></nz-alert>
             </div>
 
-            <div class="bonus-services" *ngIf="catalogStatus['vpns2s']">
+            <div class="bonus-services" *ngIf="typeVpns2s">
               <div class="title-bonus-services">
                 <div><span class="text-card-header">VPN site to site</span></div>
                 <one-portal-svg-icon *ngIf="trashVpnSiteToSite" [icon]="'icon_trash'" class="icon-trash"
@@ -1008,7 +1008,7 @@
                 nzDescription="{{'project.note46' | i18n}}" nzShowIcon></nz-alert>
             </div>
 
-            <div class="bonus-services" *ngIf="catalogStatus['vm-gpu']" [nzSeparator]="alertTemplate">
+            <div class="bonus-services" *ngIf="typeVm_gpu" [nzSeparator]="alertTemplate">
               <div class="title-bonus-services">
                 <div><span class="text-card-header">VM GPU</span></div>
                 <one-portal-svg-icon *ngIf="trashVpnGpu" [icon]="'icon_trash'" class="icon-trash"
@@ -1029,9 +1029,8 @@
                       <nz-form-item>
                         <nz-form-label class="custom-label">Số lượng GPU ({{typeCatelog?.GpuType}})</nz-form-label>
                         <nz-form-control>
-                          <nz-input-number style="width: 100%; margin-left: -1px" nzMin="0" nzMax="1000" nzStep="1" name="gpu"
-                            [(ngModel)]="gpuQuotasGobal[i].GpuCount"
-                            (keydown)="checkPossiblePress($event)"
+                          <nz-input-number style="width: 100%; margin-left: -1px" nzMin="0" nzMax="1000" nzStep="1"
+                            name="gpu" [(ngModel)]="gpuQuotasGobal[i].GpuCount" (keydown)="checkPossiblePress($event)"
                             (ngModelChange)="getValues(i,gpuQuotasGobal?.[i]?.GpuCount)"
                             [ngModelOptions]="{ standalone: true }" nzSize="large"></nz-input-number>
 
@@ -1059,9 +1058,9 @@
                     </td>
                   </table>
                   <div *ngIf="isShowAlertGpu">
-                    <nz-alert   id="alertTemplate" class="ant-alert-warning-custom-alertTemplate" nzType="warning"
-                    nzDescription="Vui lòng mua kèm dung lượng SSD để đảm bảo sử dụng được dịch vụ máy ảo GPU"
-                    nzShowIcon></nz-alert>
+                    <nz-alert id="alertTemplate" class="ant-alert-warning-custom-alertTemplate" nzType="warning"
+                      nzDescription="Vui lòng mua kèm dung lượng SSD để đảm bảo sử dụng được dịch vụ máy ảo GPU"
+                      nzShowIcon></nz-alert>
                   </div>
 
                 </div>
@@ -1091,7 +1090,10 @@
       <nz-affix [nzOffsetTop]="72">
         <nz-card style="border-radius: 8px" class="information-card card-border">
           <div style="margin-bottom: 20px">
-            <span class="text-card-header">{{ 'app.estimated.cost' | i18n }}</span>
+            <span *ngIf="vpcType == '1'" class="text-card-header">{{ 'app.estimated.cost' | i18n }}</span>
+            <span *ngIf="vpcType == '0'" class="text-card-header">Thông tin dự án</span>
+
+
           </div>
           <div class="card-money">
             <div class="text-value">{{ 'project.note19' | i18n }}</div>
@@ -1190,17 +1192,17 @@
 
 
           </div>
-          <div *ngIf="!hasRoleSI">
+          <div *ngIf="!hasRoleSI && vpcType == '1'">
             <nz-row style="margin-bottom: 10px;padding-top:10px" nzGutter="16">
               <nz-col nzSpan="16">
-              <span class="text-value">{{ 'app.service.cost' | i18n }} {{ numOfMonth || 0 }}
-                {{ 'app.month' | i18n }}</span>
+                <span class="text-value">{{ 'app.service.cost' | i18n }} {{ numOfMonth || 0 }}
+                  {{ 'app.month' | i18n }}</span>
               </nz-col>
               <nz-col class="text-right" nzSpan="8">
-              <span class="text-value" style="color: #0066b3" nzAlign="right">
-                {{ totalAmount | formatPrice}}
-                VND
-              </span>
+                <span class="text-value" style="color: #0066b3" nzAlign="right">
+                  {{ totalAmount | formatPrice}}
+                  VND
+                </span>
               </nz-col>
             </nz-row>
             <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
@@ -1209,10 +1211,10 @@
                 <span class="text-value"> Chi phí VAT (10%)</span>
               </nz-col>
               <nz-col class="text-right" nzSpan="8">
-              <span class="text-value" style="color: #0066b3" nzAlign="right">
-                {{ totalVAT | formatPrice}}
-                VND
-              </span>
+                <span class="text-value" style="color: #0066b3" nzAlign="right">
+                  {{ totalVAT | formatPrice}}
+                  VND
+                </span>
               </nz-col>
             </nz-row>
             <nz-row style="
@@ -1226,8 +1228,8 @@
                 <span class="text-note-italicized">({{ 'app.payment-detail.vat' | i18n }})</span>
               </nz-col>
               <nz-col class="text-right" nzSpan="8">
-              <span class="text-value" style="color: #ea3829" nzAlign="right">{{ totalPayment | formatPrice}}
-                VND</span>
+                <span class="text-value" style="color: #ea3829" nzAlign="right">{{ totalPayment | formatPrice}}
+                  VND</span>
               </nz-col>
             </nz-row>
           </div>
