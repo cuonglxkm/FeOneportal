@@ -641,6 +641,7 @@
   "app.static.web.hosting.intro.next": "Trên bucket chỉ chứa các dữ liệu tĩnh của website: HTML, CSS, JS, ảnh...",
   "app.file.static.web.hosting": "File chứa nội dung hiển thị trang chủ của website có link là Endpoint bên dưới",
   "app.file.static.web.hosting.error": "File chứa nội dung hiển thị lỗi của website",
+  "app.file.static.web.space.error": "Tên File không được chứa dấu cách",
   "app.note.static.web.hosting": "Lưu ý: Để website hoạt động hãy đảm bảo file đã được public",
   "app.label.static.web.hosting": "Chuyển hướng đến một địa chỉ web khác",
   "app.static.web.hosting": "Chuyển hướng đến một địa chỉ web khác",
