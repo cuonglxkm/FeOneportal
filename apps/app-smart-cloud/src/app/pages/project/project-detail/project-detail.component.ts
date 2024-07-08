@@ -10,6 +10,8 @@ import {finalize} from "rxjs";
 import { RegionModel } from '../../../../../../../libs/common-utils/src';
 import { I18NService } from '@core';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
+import { SupportService } from 'src/app/shared/models/catalog.model';
+import { CatalogService } from 'src/app/shared/services/catalog.service';
 
 @Component({
   selector: 'one-portal-project-detail',
@@ -35,16 +37,28 @@ export class ProjectDetailComponent implements OnInit{
   totalLimit:TotalLimitModel;
   totalGpu: { gpuOfferId: number, totalLimitGpu: number, totalUsedGpu: number,gpuType: string}[] = [];
 
-  productByRegion:any
-  catalogStatus: { [key: string]: boolean } = {};
-  catalogs: string[] = ['ip', 'ipv6','volume-snapshot-hdd', 'volume-snapshot-ssd', 'backup-volume', 'loadbalancer-sdn', 'file-storage','file-storage-snapshot', 'vpns2s','vm-gpu'];
+  serviceActiveByRegion: SupportService[] = [];
+  typeIp: boolean;
+  typeIpv6: boolean;
+  typeVolume_snapshot_hdd: boolean;
+  typeVolume_snapshot_ssd: boolean;
+  typeBackup_volume: boolean;
+  typeLoadbalancer_sdn: boolean;
+  typeFile_storage: boolean;
+  typeFile_storage_snapshot: boolean;
+  typeVpns2s: boolean;
+  typeVm_gpu: boolean;
+  
 
   formatDone = (): string => `100%`;
   constructor(@Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
               private service: VpcService,
               private router: Router,
               @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
-              private activatedRoute: ActivatedRoute,private vpc:VpcService) {
+              private activatedRoute: ActivatedRoute,
+              private vpc:VpcService,
+              private catalogService: CatalogService
+            ) {
   }
 
   ngOnInit() {
@@ -55,9 +69,7 @@ export class ProjectDetailComponent implements OnInit{
     this.todayNow = new Date();
     this.checkExpireDate()
 
-    this.catalogs.forEach(catalog => {
-      this.getProductActivebyregion(catalog, this.regionId);
-    });
+    this.getProductActivebyregion();
    
   }
 
@@ -225,12 +237,52 @@ isAdjust:boolean= true;
     };
     return date.toLocaleString('en-US', options);
 }
-getProductActivebyregion(catalog:string, regionid:number){
-  this.vpc.getProductActivebyregion(catalog, regionid).subscribe((res: any) => {
-    this.productByRegion = res
-    this.catalogStatus[catalog] = this.productByRegion.some(product => product.isActive === true);
+// getProductActivebyregion(catalog:string, regionid:number){
+//   this.vpc.getProductActivebyregion(catalog, regionid).subscribe((res: any) => {
+//     this.productByRegion = res
+//     this.catalogStatus[catalog] = this.productByRegion.some(product => product.isActive === true);
 
-  })
+//   })
+// }
+
+getProductActivebyregion() {
+  const catalogs = ['ip', 'ipv6', 'volume-snapshot-hdd', 'volume-snapshot-ssd', 'backup-volume', 'loadbalancer-sdn', 'file-storage', 'file-storage-snapshot', 'vpns2s', 'vm-gpu']
+  this.catalogService.getActiveServiceByRegion(catalogs, this.regionId).subscribe(data => {
+    this.serviceActiveByRegion = data;
+    this.serviceActiveByRegion.forEach((item: any) => {
+      if (['ip'].includes(item.productName)) {
+        this.typeIp = item.isActive;
+      }
+      if (['ipv6'].includes(item.productName)) {
+        this.typeIpv6 = item.isActive;
+      }
+      if (['volume-snapshot-hdd'].includes(item.productName)) {
+        this.typeVolume_snapshot_hdd = item.isActive;
+      }
+      if (['volume-snapshot-ssd'].includes(item.productName)) {
+        this.typeVolume_snapshot_ssd = item.isActive;
+      }
+      if (['backup-volume'].includes(item.productName)) {
+        this.typeBackup_volume = item.isActive;
+        console.log("typeBackup_volume", this.typeBackup_volume);
+      }
+      if (['loadbalancer-sdn'].includes(item.productName)) {
+        this.typeLoadbalancer_sdn = item.isActive;
+      }
+      if (['file-storage'].includes(item.productName)) {
+        this.typeFile_storage = item.isActive;
+      }
+      if (['file-storage-snapshot'].includes(item.productName)) {
+        this.typeFile_storage_snapshot = item.isActive;
+      }
+      if (['vpns2s'].includes(item.productName)) {
+        this.typeVpns2s = item.isActive;
+      }
+      if (['vm-gpu'].includes(item.productName)) {
+        this.typeVm_gpu = item.isActive;
+      }
+    });
+  });
 }
 
 }

@@ -459,7 +459,10 @@ export class CreateLbNovpcComponent implements OnInit {
           }
           this.mapSubnetArray = [...this.mapSubnetArray1]
         }
-      });
+      },
+        error => {
+          this.notification.error(this.i18n.fanyi('app.status.fail'), 'Lấy danh sách Subnet thộc Internet Facing lỗi');
+        });
   }
 
   initSubnet2() {

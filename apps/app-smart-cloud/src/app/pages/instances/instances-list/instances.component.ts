@@ -202,7 +202,7 @@ export class InstancesComponent implements OnInit {
     this.isFirstVisit = false;
     this.activeCreate = false;
     this.loading = true;
-    this.region = region.regionId;
+    this.region = region?.regionId;
     console.log(this.tokenService.get()?.userId);
   }
 
@@ -211,7 +211,7 @@ export class InstancesComponent implements OnInit {
     this.project = project;
     this.activeCreate = false;
     this.loading = true;
-    this.projectId = project.id;
+    this.projectId = project?.id;
     this.typeVpc = project?.type;
     this.getDataList();
     this.getListNetwork();
