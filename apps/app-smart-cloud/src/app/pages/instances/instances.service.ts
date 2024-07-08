@@ -202,7 +202,8 @@ export class InstancesService extends BaseService {
   }
 
   changePassword(id: number, newPassword: string) {
-    let url_ = `/instances/${id}/change_password?newPassword=${newPassword}`;
+    const encodedPassword = encodeURIComponent(newPassword);
+    let url_ = `/instances/${id}/change_password?newPassword=${encodedPassword}`;
     return this.http.post(this.baseUrl + this.ENDPOINT.provisions + url_, '', {
       headers: this.httpOptions.headers,
       responseType: 'text',
