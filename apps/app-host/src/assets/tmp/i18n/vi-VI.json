@@ -626,6 +626,8 @@
   "app.create.bucket.cors": "Tạo mới Bucket CORS",
   "app.create.bucket.cors.fail": "Tạo mới Bucket CORS thất bại",
   "app.create.bucket.cors.success": "Tạo mới Bucket CORS thành công",
+  "app.bucket.cors.domain.require": "Domain không được để trống",
+  "app.bucket.cors.accessControlMaxAge.require": "Access Control Max Age không được để trống",
   "app.delete.bucket.cors.success": "Xóa Bucket CORS thành công",
   "app.delete.bucket.cors.fail": "Xóa Bucket CORS thất bại",
   "app.update.bucket.cors.success": "Cập nhật Bucket CORS thành công",
@@ -648,6 +650,7 @@
   "app.lifeCycle.get.fail": "Lấy danh sách Bucket Lifecycle không thành công",
   "app.lifeCycle.create.success": "Tạo mới Bucket Lifecycle thành công",
   "app.lifeCycle.create.fail": "Tạo mới Bucket Lifecycle không thành công",
+  "app.lifeCycle.prefix.require": "Tiền tố không được để trống",
   "app.lifeCycle.delete.success": "Xóa Lifecycle thành công",
   "app.lifeCycle.delete.fail": "Xóa Bucket Lifecycle thành công",
   "app.lifeCycle.edit.success": "Chỉnh sửa Bucket Lifecycle không thành công",
@@ -3089,6 +3092,8 @@
   "listner.create.duplicate.port.weight": "Các member có cùng IP không được trùng Port và Weight",
 
   "app.validate.order.fail": "Lỗi khi kiểm tra order",
+
+  
 
 
   "app.manage.site.to.site.title":"Quản lý VPN site to site",
