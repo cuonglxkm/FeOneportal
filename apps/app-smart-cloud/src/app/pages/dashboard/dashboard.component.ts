@@ -48,6 +48,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   @ViewChild('pieChart', { static: true }) private pieChart: ElementRef;
 
+  breadcrumb: boolean = true;
+
   constructor(private dashboardService: DashboardService,
               private router: Router,
               private paymentService: PaymentService,

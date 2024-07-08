@@ -233,7 +233,18 @@ export class ExtendFileSystemNormalComponent implements OnInit {
     this.orderService.validaterOrder(request).subscribe(data => {
       this.isLoadingAction = false
       if(data.success) {
-
+        this.fileSystemService.resize(request).subscribe(item => {
+          if (data != null) {
+            if (data.code == 200) {
+              this.isLoading = false;
+              this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('app.file.system.notification.require.extend.success'));
+              setTimeout(() => {this.router.navigate(['/app-smart-cloud/file-storage/file-system/list']);}, 1500)
+            }
+          } else {
+            this.isLoading = false;
+            this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.file.system.notification.require.extend.fail'));
+          }
+        })
       } else {
         this.isVisiblePopupError = true;
         this.errorList = data.data;
