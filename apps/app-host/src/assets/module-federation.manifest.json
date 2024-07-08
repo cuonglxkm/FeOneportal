@@ -1,8 +1,8 @@
 {
-  "app-smart-cloud": "${APP_SMART_CLOUD_URL}",
-  "app-kubernetes": "${APP_KUBERNETES_URL}",
-  "app-kafka": "${APP_KAFKA_URL}",
-  "app-mongodb-replicaset": "${APP_MONGODB_REPLICASET_URL}",
-  "app-k8s-premium": "${APP_K8S_PREMIUM_URL}",
-  "app-ecr": "${APP_ECR_URL}"
+  "app-smart-cloud": "http://localhost:4203",
+  "app-kafka": "http://localhost:4201",
+  "app-kubernetes": "http://localhost:4205",
+  "app-mongodb-replicaset": "http://localhost:4206",
+  "app-k8s-premium": "http://localhost:4208",
+  "app-ecr": "http://localhost:4210"
 }
