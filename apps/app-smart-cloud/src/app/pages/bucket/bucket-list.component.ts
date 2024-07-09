@@ -70,8 +70,6 @@ export class BucketListComponent implements OnInit {
       this.region = 7;
     }
     this.hasObjectStorageInfo();
-    this.hasObjectStorage();
-    this.getUsageOfUser();
     this.searchDelay
       .pipe(debounceTime(TimeCommon.timeOutSearch))
       .subscribe(() => {
@@ -88,6 +86,8 @@ export class BucketListComponent implements OnInit {
         next: (data) => {
           if (data) {
             this.hasOS = true;
+            this.hasObjectStorage();
+            this.getUsageOfUser();
             this.search();
           } else {
             this.hasOS = false;
@@ -124,23 +124,23 @@ export class BucketListComponent implements OnInit {
 
   getUsageOfUser() {
     this.loadingSrv.open({ type: 'spin', text: 'Loading...' });
-    this.objectSevice
-      .getUsageOfUser(this.region)
-      .pipe(finalize(() => this.loadingSrv.close()))
-      .subscribe({
-        next: (data) => {
-          this.usage = data;
-          this.totalUsage =
-            (parseFloat(this.usage.usage) / parseInt(this.usage.total)) * 100;
-          this.cdr.detectChanges();
-        },
-        error: (e) => {
-          this.notification.error(
-            this.i18n.fanyi('app.status.fail'),
-            this.i18n.fanyi('app.bucket.getObject.fail')
-          );
-        },
-      });
+      this.objectSevice
+        .getUsageOfUser(this.region)
+        .pipe(finalize(() => this.loadingSrv.close()))
+        .subscribe({
+          next: (data) => {
+            this.usage = data;
+            this.totalUsage =
+              (parseFloat(this.usage.usage) / parseInt(this.usage.total)) * 100;
+            this.cdr.detectChanges();
+          },
+          // error: (e) => {
+          //   this.notification.error(
+          //     this.i18n.fanyi('app.status.fail'),
+          //     this.i18n.fanyi('app.bucket.getObject.fail')
+          //   );
+          // },
+        });
   }
 
   onRegionChange(region: RegionModel) {
@@ -151,7 +151,7 @@ export class BucketListComponent implements OnInit {
     this.region = region.regionId;
   }
 
-  private getUserById(id: number) {
+  getUserById(id: number) {
     this.bucketService.getUserById(id).subscribe({
       next: (data) => {
         this.objectStorage = data;

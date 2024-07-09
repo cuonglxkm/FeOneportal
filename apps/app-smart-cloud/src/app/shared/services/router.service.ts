@@ -18,6 +18,14 @@ export class RouterService extends BaseService {
     }),
   };
 
+  private getHeaders() {
+    return new HttpHeaders({
+      'Content-Type': 'application/json',
+      'User-Root-Id': localStorage.getItem('UserRootId') && Number(localStorage.getItem('UserRootId')) > 0 ? Number(localStorage.getItem('UserRootId')) : this.tokenService.get()?.userId,
+      'Authorization': 'Bearer ' + this.tokenService.get()?.token
+    })
+  }
+
   constructor(
     private http: HttpClient,
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService
@@ -47,7 +55,8 @@ export class RouterService extends BaseService {
       params = params.append('status', formSearch.status)
     }
     return this.http.get<BaseResponse<RouterModel[]>>(this.baseUrl + this.ENDPOINT.provisions + '/routers/list_router', {
-      params: params
+      params: params,
+      headers: this.getHeaders()
     }).pipe(
       catchError((error: HttpErrorResponse) => {
         if (error.status === 401) {

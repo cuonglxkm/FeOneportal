@@ -268,7 +268,7 @@
                   >{{ item?.serviceName }}</a
                 >
                 <a
-                  *ngSwitchCase="'Vpc'"
+                  *ngSwitchCase="'VPC'"
                   [routerLink]="['/app-smart-cloud/project']"
                   >{{ item?.serviceName }}</a
                 >
@@ -293,8 +293,13 @@
                   >{{ item?.serviceName }}</a
                 >
                 <a
-                  *ngSwitchCase="'Backup volume'"
-                  [routerLink]="['/app-smart-cloud/backup-volume']"
+                  *ngSwitchCase="'Backup Package'"
+                  [routerLink]="['/app-smart-cloud/backup/packages']"
+                  >{{ item?.serviceName }}</a
+                >
+                <a
+                  *ngSwitchCase="'Backup vm'"
+                  [routerLink]="['/app-smart-cloud/backup-vm']"
                   >{{ item?.serviceName }}</a
                 >
                 <a

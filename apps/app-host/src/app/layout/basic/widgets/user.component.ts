@@ -84,8 +84,6 @@ export class HeaderUserComponent {
     localStorage.removeItem('PermissionOPA');
     localStorage.removeItem('user');
     localStorage.removeItem('_token');
-    localStorage.removeItem('projects');
-    localStorage.removeItem('projectId');
     window.location.href =
       environment['sso'].issuer +
       `/connect/logout?oi_au_id=${id_token}&post_logout_redirect_uri=${decodeURIComponent(
