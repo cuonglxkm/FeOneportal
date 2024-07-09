@@ -364,7 +364,7 @@
   "app.auto.generated": "Auto-generated",
   "app.adjust.info": "Adjustment Information",
   "app.current.config": "Current Configuration",
-  "app.adjust.config": "Adjustment Configuration",
+  "app.adjust.config": "Configuration after adjustment",
   "app.adjust.date": "Adjustment Date",
   "app.extension.info": "Extension Information",
   "app.service.start.date": "Start Date",

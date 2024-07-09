@@ -342,9 +342,11 @@ export class CreateLbVpcComponent implements OnInit {
                 }
               } else {
                 this.isLoading = false;
-                this.notification.error(
-                  this.i18n.fanyi('app.status.fail'),'error'
-                );
+                this.isVisiblePopupError = true;
+                this.errorList = data.data;
+                // this.notification.error(
+                //   this.i18n.fanyi('app.status.fail'),'error'
+                // );
               }
             },
             error => {
@@ -370,6 +372,11 @@ export class CreateLbVpcComponent implements OnInit {
   messageFail = '';
   loadingFloating = true;
   disabledFloating= true;
+  isVisiblePopupError: boolean = false;
+  errorList: string[] = [];
+  closePopupError() {
+    this.isVisiblePopupError = false;
+  }
 
   setDataToMap(data: any) {
     // Xóa dữ liệu hiện có trong mapSubnet (nếu cần)
