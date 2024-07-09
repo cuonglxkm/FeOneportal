@@ -1,8 +1,8 @@
 {
-  "app-smart-cloud": "${APP_SMART_CLOUD_URL}",
-  "app-kubernetes": "${APP_KUBERNETES_URL}",
-  "app-kafka": "${APP_KAFKA_URL}",
-  "app-mongodb-replicaset": "${APP_MONGODB_REPLICASET_URL}",
-  "app-k8s-premium": "${APP_K8S_PREMIUM_URL}",
-  "app-ecr": "${APP_ECR_URL}"
+  "app-smart-cloud": "https://appsmartcloud.onsmartcloud.com",
+  "app-kafka": "https://appkafka.onsmartcloud.com",
+  "app-kubernetes": "https://appkubernetes.onsmartcloud.com",
+  "app-mongodb-replicaset": "https://appmongodb.onsmartcloud.com",
+  "app-k8s-premium": "https://appk8spre.onsmartcloud.com",
+  "app-ecr": "https://apperc.onsmartcloud.com"
 }

@@ -39,6 +39,11 @@ export class ExtendLoadBalancerNormalComponent implements OnInit{
   unitPrice = 0;
   estimateExpireDate: Date = null;
   loadingCaCulate = true;
+  isVisiblePopupError: boolean = false;
+  errorList: string[] = [];
+  closePopupError() {
+    this.isVisiblePopupError = false;
+  }
 
   constructor(private activatedRoute: ActivatedRoute,
               private router: Router,
@@ -136,7 +141,12 @@ export class ExtendLoadBalancerNormalComponent implements OnInit{
       console.log('request', request)
       this.orderService.validaterOrder(request).subscribe(
         data => {
-          this.router.navigate(['/app-smart-cloud/order/cart'], {state: {data: request, path: returnPath}});
+          if (data.success) {
+            this.router.navigate(['/app-smart-cloud/order/cart'], {state: {data: request, path: returnPath}});
+          } else {
+            this.isVisiblePopupError = true;
+            this.errorList = data.data;
+          }
         },
         error => {
           this.notification.error(this.i18n.fanyi('app.status.fail'),this.i18n.fanyi('app.validate.order.fail'))
