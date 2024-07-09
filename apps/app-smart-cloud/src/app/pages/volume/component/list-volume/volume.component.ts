@@ -26,7 +26,7 @@ export class VolumeComponent implements OnInit, OnDestroy {
   region = JSON.parse(localStorage.getItem('regionId'));
   project = JSON.parse(localStorage.getItem('projectId'));
 
-  isLoading: boolean = false;
+  isLoading: boolean = true;
 
   selectedValue: string;
   customerId: number;
@@ -79,6 +79,7 @@ export class VolumeComponent implements OnInit, OnDestroy {
   }
 
 
+  isFirstVisit: boolean = true;
   regionChanged(region: RegionModel) {
     this.region = region.regionId;
     setTimeout(() => {
@@ -91,12 +92,11 @@ export class VolumeComponent implements OnInit, OnDestroy {
   }
 
   projectChanged(project: ProjectModel) {
+    this.isFirstVisit = false;
     this.project = project?.id;
     this.typeVPC = project?.type;
     this.isLoading = true;
-    setTimeout(() => {
-      this.getListVolume(true);
-    }, 2000);
+    this.getListVolume(true);
   }
 
   ngOnDestroy(): void {
@@ -152,7 +152,6 @@ export class VolumeComponent implements OnInit, OnDestroy {
   getListVolume(isBegin) {
     this.isLoading = true;
     this.customerId = this.tokenService.get()?.userId;
-
     this.volumeService.getVolumes(this.customerId, this.project,
       this.region, this.pageSize, this.pageIndex, this.selectedValue, this.value)
       .pipe(debounceTime(500))

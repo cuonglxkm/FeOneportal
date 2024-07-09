@@ -160,9 +160,10 @@ export class CreateLbVpcComponent implements OnInit {
   @ViewChild('selectedValueIpFloating') selectedValueIpFloating: ElementRef;
 
   updateValue(value): void {
-    // this.validateForm.controls.subnet.setValue(value);
     if (!this.validateForm.controls['subnet'].invalid) {
       this.validateForm.controls['ipAddress'].enable();
+    } else {
+      this.validateForm.controls['ipAddress'].disable();
     }
     if (this.listSubnets) {
       const selected = this.listSubnets?.find(option => option.cloudId === value);
@@ -190,6 +191,7 @@ export class CreateLbVpcComponent implements OnInit {
   onChangeStatusInternetFacing() {
     this.validateForm.controls['subnet'].setValue('');
     this.validateForm.controls['ipAddress'].setValue('');
+    this.validateForm.controls['ipAddress'].disable();
     this.enableInternetFacing = true;
     this.enableInternal = false;
     if (this.enableInternetFacing) {
@@ -205,6 +207,7 @@ export class CreateLbVpcComponent implements OnInit {
   onChangeStatusInternal() {
     this.validateForm.controls['subnet'].setValue('');
     this.validateForm.controls['ipAddress'].setValue('');
+    this.validateForm.controls['ipAddress'].disable();
     this.enableInternetFacing = false;
     this.enableInternal = true;
     if (this.enableInternetFacing) {
@@ -234,7 +237,7 @@ export class CreateLbVpcComponent implements OnInit {
         this.flavorId = this.offerDetail?.characteristicValues[1].charOptionValues[0];
       },
         error => {
-          this.notification.error(this.i18n.fanyi('app.status.fail'),'Loading Falvor')
+          this.notification.error(this.i18n.fanyi('app.status.fail'),'Lấy thông tin Flavor lỗi')
         });
 
     });
@@ -339,17 +342,17 @@ export class CreateLbVpcComponent implements OnInit {
                 }
               } else {
                 this.isLoading = false;
-                this.notification.error(
-                  '',
-                  this.i18n.fanyi('app.notification.request.create.LB.fail')
-                );
+                this.isVisiblePopupError = true;
+                this.errorList = data.data;
+                // this.notification.error(
+                //   this.i18n.fanyi('app.status.fail'),'error'
+                // );
               }
             },
             error => {
               this.isLoading = false;
               this.notification.error(
-                '',
-                this.i18n.fanyi('app.notification.request.create.LB.fail')
+                this.i18n.fanyi('app.status.fail'),error.error.message
               );
             });
       },
@@ -369,6 +372,11 @@ export class CreateLbVpcComponent implements OnInit {
   messageFail = '';
   loadingFloating = true;
   disabledFloating= true;
+  isVisiblePopupError: boolean = false;
+  errorList: string[] = [];
+  closePopupError() {
+    this.isVisiblePopupError = false;
+  }
 
   setDataToMap(data: any) {
     // Xóa dữ liệu hiện có trong mapSubnet (nếu cần)
@@ -383,7 +391,7 @@ export class CreateLbVpcComponent implements OnInit {
     let regionAndProject = getCurrentRegionAndProject();
     this.region = regionAndProject.regionId;
     this.project = regionAndProject.projectId;
-
+    this.validateForm.controls['ipAddress'].disable();
     this.validateForm.controls.radio.setValue('floatingIp');
     this.getListVlanSubnet();
     this.searchProduct();
@@ -426,7 +434,8 @@ export class CreateLbVpcComponent implements OnInit {
         this.loadingSubnet = false;
         this.disabledSubnet = false;
       }))
-      .subscribe(data => {
+      .subscribe(
+        data => {
         this.setDataToMap(data);
         if (this.mapSubnet instanceof Map) {
           // Chuyển đổi Map thành mảng các cặp khóa/giá trị
@@ -435,7 +444,10 @@ export class CreateLbVpcComponent implements OnInit {
           }
           this.mapSubnetArray = [...this.mapSubnetArray1]
         }
-      });
+      },
+        error => {
+          this.notification.error(this.i18n.fanyi('app.status.fail'), 'Lấy danh sách Subnet thộc Internet Facing lỗi');
+        });
   }
 
   initSubnet2() {

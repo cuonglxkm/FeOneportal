@@ -153,6 +153,7 @@ export class ListBackupVmComponent implements OnInit, OnDestroy {
     }, error => {
       this.isLoading = true
       this.collection = null
+      this.notification.error(error.statusText, this.i18n.fanyi('app.failData'));
     })
 
   }

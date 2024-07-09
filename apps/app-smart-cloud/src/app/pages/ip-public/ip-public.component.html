@@ -66,7 +66,7 @@
           <!--          <td>{{ item.ipAddress === null || item.ipAddress === '' ? 'IPv6' : 'IPv4' }}</td>-->
           <td>{{ item.attachedVm }}</td>
           <td *ngIf="item.serviceStatus === 'KHOITAO'" style="color: #0066B0">{{'app.status.running' | i18n}}</td>
-          <td *ngIf="item.serviceStatus === 'TAMNGUNG'" style="color: red">{{item.SuspendType}}</td>
+          <td *ngIf="item.serviceStatus === 'TAMNGUNG'" style="color: red">{{item.suspendReason}}</td>
           <td *ngIf="item.status === 0">-</td>
           <td *ngIf="item.status === 2">IN-USE</td>
           <td *ngIf="item.status === 3">ERROR</td>

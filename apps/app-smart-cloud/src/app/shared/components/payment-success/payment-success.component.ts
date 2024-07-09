@@ -43,35 +43,56 @@ export class PaymentSuccessComponent implements OnInit {
     } else {
       this.paymentSuccess = false;
       switch (resultCode) {
-        case '01':
+        case '02':
           this.causeOfFail = this.i18n.fanyi('app.transaction.fail');
           break;
-        case '02':
-          this.causeOfFail = this.i18n.fanyi('app.data.format.not.correct');
-          break;
-        case '03':
-          this.causeOfFail = this.i18n.fanyi('app.transaction.code.exist');
-          break;
         case '04':
-          this.causeOfFail = 'Timeout';
+          this.causeOfFail = this.i18n.fanyi('app.transaction.exceed.time');
           break;
-        case '05':
-          this.causeOfFail = this.i18n.fanyi('app.data.not.found');
+        case '16':
+          this.causeOfFail = this.i18n.fanyi('app.transaction.procress');
           break;
-        case '06':
-          this.causeOfFail = this.i18n.fanyi('app.system.error');
+        case '17':
+          this.causeOfFail = this.i18n.fanyi('app.transaction.card.not.correct');;
           break;
-        case '07':
-          this.causeOfFail = this.i18n.fanyi('app.signature.incorrect');
+        case '23':
+          this.causeOfFail = this.i18n.fanyi('app.transaction.card.not.correct');
           break;
-        case '08':
-          this.causeOfFail = this.i18n.fanyi('app.merchant.service.locked');
+        case '24':
+          this.causeOfFail = this.i18n.fanyi('app.transaction.card.not.correct');
           break;
-        case '09':
-          this.causeOfFail = this.i18n.fanyi('app.merchant.service.not.exist');
+        case '18':
+          this.causeOfFail = this.i18n.fanyi('app.transaction.card.not.block');
           break;
-        case '96':
-          this.causeOfFail = this.i18n.fanyi('app.system.maintenance');
+        case '19':
+          this.causeOfFail = this.i18n.fanyi('app.transaction.card.not.block');
+          break;
+        case '25':
+          this.causeOfFail = this.i18n.fanyi('app.transaction.card.not.block');
+          break;
+        case '20':
+          this.causeOfFail = this.i18n.fanyi('app.transaction.card.not.money');
+          break;
+        case '22':
+          this.causeOfFail = this.i18n.fanyi('app.transaction.otp.not.correct');
+          break;
+        case '70':
+          this.causeOfFail = this.i18n.fanyi('app.transaction.cancel');
+          break;
+        case '111':
+          this.causeOfFail = this.i18n.fanyi('app.transaction.max.money');
+          break;
+        case '112':
+          this.causeOfFail = this.i18n.fanyi('app.transaction.max.money');
+          break;
+        case '113':
+          this.causeOfFail = this.i18n.fanyi('app.transaction.max.money');
+          break;
+        case '114':
+          this.causeOfFail = this.i18n.fanyi('app.transaction.max.money');
+          break;
+        case '97':
+          this.causeOfFail = this.i18n.fanyi('app.transaction.bank.error');
           break;
         default:
           this.causeOfFail = this.i18n.fanyi('app.undefined.error');
@@ -83,10 +104,17 @@ export class PaymentSuccessComponent implements OnInit {
       .getPaymentByPaymentNumber(this.paymentCode)
       .subscribe((data) => {
         this.payment = data;
+        if (this.paymentSuccess === false) {
+          this.paymentService
+            .cancelPayment(this.paymentCode)
+            .subscribe((data) => {
+              console.log(data);
+            });
+        }
         this.orderService
           .getOrderBycode(this.payment.orderNumber)
           .subscribe((result) => {
-            this.orderId = result.id;   
+            this.orderId = result.id;
             setTimeout(() => {
               this.router.navigate([
                 `/app-smart-cloud/order/detail/${this.orderId}`,

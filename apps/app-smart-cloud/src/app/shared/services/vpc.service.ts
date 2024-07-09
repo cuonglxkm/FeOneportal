@@ -88,7 +88,8 @@ export class VpcService extends BaseService {
   }
 
   
-  getProductActivebyregion(catelog:string, regionid:number): Observable<any> {
-    return this.http.get<any>(this.baseUrl + this.ENDPOINT.catalogs +'/products/activebyregion?catalogs=' +catelog + '&regionid=' + regionid);
+  getProductActivebyregion(catalog:string[], regionid:number): Observable<any> {
+    const catalogString = catalog.join(',');
+    return this.http.get<any>(this.baseUrl + this.ENDPOINT.catalogs +'/products/activebyregion?catalogs=' +catalogString + '&regionid=' + regionid);
   }
 }

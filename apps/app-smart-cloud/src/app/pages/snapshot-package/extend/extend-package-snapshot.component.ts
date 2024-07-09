@@ -18,6 +18,7 @@ import { ProjectModel, RegionModel } from '../../../../../../../libs/common-util
 import { OrderItem } from '../../../shared/models/price';
 import { DataPayment, ItemPayment } from '../../instances/instances.model';
 import { getCurrentRegionAndProject } from '@shared';
+import { OrderService } from '../../../shared/services/order.service';
 
 @Component({
   selector: 'one-portal-extend-package-snapshot',
@@ -43,6 +44,11 @@ export class ExtendPackageSnapshotComponent implements OnInit{
 
   loadingCalculate = false;
   numOfMonth: any = 1;
+  isVisiblePopupError: boolean = false;
+  errorList: string[] = [];
+  closePopupError() {
+    this.isVisiblePopupError = false;
+  }
 
   constructor(private router: Router,
               private packageSnapshotService: PackageSnapshotService,
@@ -51,6 +57,7 @@ export class ExtendPackageSnapshotComponent implements OnInit{
               private instanceService: InstancesService,
               private route: ActivatedRoute,
               private fb: NonNullableFormBuilder,
+              private orderService: OrderService,
               private projectService: ProjectService) {
   }
 
@@ -177,9 +184,21 @@ export class ExtendPackageSnapshotComponent implements OnInit{
         serviceDuration: this.numOfMonth
       }
     ];
-    var returnPath: string = `/app-smart-cloud/snapshot/packages/extend/${this.idSnapshotPackage}`;
-    console.log('request', request);
-    this.router.navigate(['/app-smart-cloud/order/cart'], { state: { data: request, path: returnPath } });
+    this.orderService.validaterOrder(request).subscribe(
+      data => {
+        if (data.success) {
+          var returnPath: string = `/app-smart-cloud/snapshot/packages/extend/${this.idSnapshotPackage}`;
+          this.router.navigate(['/app-smart-cloud/order/cart'], { state: { data: request, path: returnPath } });
+        } else {
+          this.isVisiblePopupError = true;
+          this.errorList = data.data;
+        }
+      },
+      error => {
+
+      }
+    );
+
   }
 
   totalAmount: number;

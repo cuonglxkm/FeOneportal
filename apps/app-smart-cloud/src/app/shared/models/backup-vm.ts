@@ -198,7 +198,7 @@ export class FormUpdateBackupVm {
 
 export class RestoreInstanceBackup {
   instanceBackupId: number
-  volumeBackupIds: any
+  volumeBackups: VolumeExternalBackup[]
   instanceName: any
   securityGroups: any
   subnetCloudId: any
@@ -246,7 +246,7 @@ export class RestoreInstanceBackup {
   typeName: string
 }
 
-export class VolumeBackup {
+export class VolumeExternalBackup {
   id: number
   name: string
   size: number

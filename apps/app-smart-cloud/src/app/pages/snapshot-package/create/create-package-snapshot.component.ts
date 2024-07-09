@@ -54,6 +54,11 @@ export class CreatePackageSnapshotComponent implements OnInit {
   totalAmount: number;
   totalPayment: number;
   totalVat: number;
+  isVisiblePopupError: boolean = false;
+  errorList: string[] = [];
+  closePopupError() {
+    this.isVisiblePopupError = false;
+  }
 
   constructor(private router: Router,
               private orderService: OrderService,
@@ -132,8 +137,13 @@ export class CreatePackageSnapshotComponent implements OnInit {
 
     this.orderService.validaterOrder(request).subscribe(
       data => {
-        var returnPath: string = window.location.pathname;
-        this.router.navigate(['/app-smart-cloud/order/cart'], { state: { data: request, path: returnPath } });
+        if (data.success) {
+          var returnPath: string = window.location.pathname;
+          this.router.navigate(['/app-smart-cloud/order/cart'], { state: { data: request, path: returnPath } });
+        } else {
+          this.isVisiblePopupError = true;
+          this.errorList = data.data;
+        }
       },
       error => {
         this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.validate.order.fail'));

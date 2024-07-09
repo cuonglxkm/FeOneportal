@@ -15,6 +15,7 @@ import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { ProjectService } from 'src/app/shared/services/project.service';
 import { debounceTime, Subject } from 'rxjs';
 import { ConfigurationsService } from '../../../../../shared/services/configurations.service';
+import { OrderService } from '../../../../../shared/services/order.service';
 
 @Component({
   selector: 'one-portal-resize-file-system',
@@ -58,6 +59,7 @@ export class ResizeFileSystemComponent implements OnInit {
               @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
               private notification: NzNotificationService,
               private projectService: ProjectService,
+              private orderService: OrderService,
               private configurationsService: ConfigurationsService) {
   }
 
@@ -122,13 +124,20 @@ export class ResizeFileSystemComponent implements OnInit {
     this.resizeFileSystem.actorEmail = this.tokenService.get()?.email;
   }
 
+  isVisiblePopupError: boolean = false;
+  errorList: string[] = [];
+
+  closePopupError() {
+    this.isVisiblePopupError = false;
+  }
+
   doResizeFileSystem() {
     this.isLoading = true;
     this.initFileSystem();
     let request = new ResizeFileSystemRequestModel();
     request.customerId = this.resizeFileSystem.customerId;
     request.createdByUserId = this.resizeFileSystem.customerId;
-    request.note = 'Điều chỉnh dung lượng File System';
+    request.note = this.i18n.fanyi('app.file.system.resize.title');
     request.orderItems = [
       {
         orderItemQuantity: 1,
@@ -139,20 +148,30 @@ export class ResizeFileSystemComponent implements OnInit {
       }
     ];
     console.log('request', request);
-    this.fileSystemService.resize(request).subscribe(data => {
-      if (data != null) {
-        if (data.code == 200) {
+    this.orderService.validaterOrder(request).subscribe(data => {
+      this.isLoading = false;
+      if (data.success) {
+        this.fileSystemService.resize(request).subscribe(data => {
+          if (data != null) {
+            if (data.code == 200) {
+              this.isLoading = false;
+              this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('app.file.system.notification.require.resize.success'));
+              setTimeout(() => {this.router.navigate(['/app-smart-cloud/file-storage/file-system/list']);}, 1500)
+            }
+          } else {
+            this.isLoading = false;
+            this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.file.system.notification.require.resize.fail'));
+          }
+        }, error => {
           this.isLoading = false;
-          this.notification.success(this.i18n.fanyi('app.status.success'), 'Yêu cầu điều chỉnh File System thành công.');
-          setTimeout(() => {this.router.navigate(['/app-smart-cloud/file-storage/file-system/list']);}, 1500)
-        }
+          this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.file.system.notification.require.resize.fail'));
+        });
       } else {
-        this.isLoading = false;
-        this.notification.error(this.i18n.fanyi('app.status.fail'), 'Yêu cầu điều chỉnh File System thất bại.');
+        this.isVisiblePopupError = true;
+        this.errorList = data.data;
       }
     }, error => {
-      this.isLoading = false;
-      this.notification.error(this.i18n.fanyi('app.status.fail'), 'Yêu cầu điều chỉnh File System thất bại.');
+      this.notification.error(this.i18n.fanyi('app.status.fail'), error.error.detail);
     });
 
   }

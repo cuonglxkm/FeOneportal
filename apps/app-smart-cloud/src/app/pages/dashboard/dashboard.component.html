@@ -1,5 +1,8 @@
 <page-header class="class" [title]="'Dashboard'" xmlns="http://www.w3.org/1999/html"
-             breadcrumb="unset"></page-header>
+             [breadcrumb]="breadcrumb ? breadcrumbTemplate : null"></page-header>
+<ng-template #breadcrumbTemplate>
+  <!-- Breadcrumb content here -->
+</ng-template>
 <nz-spin [nzSpinning]="isLoading">
   <nz-content>
     <nz-row [nzGutter]="6" style="padding-top: 24px;">

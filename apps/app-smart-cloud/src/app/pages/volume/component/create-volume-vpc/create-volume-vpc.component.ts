@@ -19,6 +19,7 @@ import { SizeInCloudProject } from 'src/app/shared/models/project.model';
 import { ConfigurationsService } from '../../../../shared/services/configurations.service';
 import { getCurrentRegionAndProject } from '@shared';
 import { SupportService } from '../../../../shared/models/catalog.model';
+import { OrderService } from '../../../../shared/services/order.service';
 
 @Component({
   selector: 'one-portal-create-volume-vpc',
@@ -114,6 +115,7 @@ export class CreateVolumeVpcComponent implements OnInit {
     private projectService: ProjectService,
     @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
     private configurationsService: ConfigurationsService,
+    private orderService: OrderService,
     private activatedRoute: ActivatedRoute
   ) {
     this.validateForm.get('isMultiAttach').valueChanges.subscribe((value) => {
@@ -529,6 +531,8 @@ export class CreateVolumeVpcComponent implements OnInit {
     this.volumeCreate.actorEmail = this.tokenService.get()?.email;
   }
 
+  isVisiblePopupError: boolean = false;
+  errorList: string[] = [];
   doCreateVolumeVPC() {
     this.isLoadingCreate = true;
     if (this.validateForm.valid) {
@@ -547,23 +551,33 @@ export class CreateVolumeVpcComponent implements OnInit {
         }
       ];
       console.log(request);
-      this.volumeService.createNewVolume(request).subscribe(data => {
-          if (data != null) {
-            if (data.code == 200) {
+      this.orderService.validaterOrder(request).subscribe(data => {
+        if (data.success) {
+          this.volumeService.createNewVolume(request).subscribe(data => {
+              if (data != null) {
+                if (data.code == 200) {
+                  this.isLoadingAction = false;
+                  this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('volume.notification.require.create.success'));
+                  setTimeout(() => {
+                    this.router.navigate(['/app-smart-cloud/volumes']);
+                  }, 2500);
+                }
+              } else {
+                this.isLoadingAction = false;
+              }
+            },
+            error => {
               this.isLoadingAction = false;
-              this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('volume.notification.require.create.success'));
-              setTimeout(() => {
-                this.router.navigate(['/app-smart-cloud/volumes']);
-              }, 2500);
-            }
-          } else {
-            this.isLoadingAction = false;
+              this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('volume.notification.request.create.fail'));
+            });
+        } else {
+            this.isVisiblePopupError = true;
+            this.errorList = data.data;
           }
-        },
-        error => {
-          this.isLoadingAction = false;
-          this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('volume.notification.request.create.fail'));
-        });
+      }, error => {
+        this.notification.error(this.i18n.fanyi('app.status.fail'), error.error.detail);
+      })
+
     }
   }
 }
