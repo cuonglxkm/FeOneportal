@@ -87,6 +87,11 @@ export class CreateLbNovpcComponent implements OnInit {
   disabledSubnet: boolean;
   messageFail: any;
   offerId: number;
+  isVisiblePopupError: boolean = false;
+  errorList: string[] = [];
+  closePopupError() {
+    this.isVisiblePopupError = false;
+  }
   constructor(private router: Router,
               private fb: NonNullableFormBuilder,
               @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
@@ -374,7 +379,12 @@ export class CreateLbNovpcComponent implements OnInit {
     console.log('service name', this.formCreateLoadBalancer.serviceName);
     this.orderService.validaterOrder(request).subscribe(
       data => {
-        this.router.navigate(['/app-smart-cloud/order/cart'], {state: {data: request, path: returnPath}});
+        if (data.success) {
+          this.router.navigate(['/app-smart-cloud/order/cart'], {state: {data: request, path: returnPath}});
+        } else {
+          this.isVisiblePopupError = true;
+          this.errorList = data.data;
+        }
       },
       error => {
         this.notification.error(this.i18n.fanyi('app.status.fail'),error.error.message)

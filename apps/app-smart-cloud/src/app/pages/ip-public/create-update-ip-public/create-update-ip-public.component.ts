@@ -54,6 +54,11 @@ export class CreateUpdateIpPublicComponent implements OnInit {
   ipId = '';
   VMId = '';
   unitPrice: any;
+  isVisiblePopupError: boolean = false;
+  errorList: string[] = [];
+  closePopupError() {
+    this.isVisiblePopupError = false;
+  }
   constructor(private service: IpPublicService, private instancService: InstancesService,
               @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
               private notification: NzNotificationService,
@@ -183,7 +188,13 @@ export class CreateUpdateIpPublicComponent implements OnInit {
     var returnPath: string = window.location.pathname;
     this.orderService.validaterOrder(request).subscribe(
       data => {
-        this.router.navigate(['/app-smart-cloud/order/cart'], {state: {data: request, path: returnPath}});
+        if (data.success) {
+          this.router.navigate(['/app-smart-cloud/order/cart'], {state: {data: request, path: returnPath}});
+        } else {
+          this.isVisiblePopupError = true;
+          this.errorList = data.data;
+
+        }
       },
       error => {
         this.notification.error(this.i18n.fanyi('app.status.fail'),this.i18n.fanyi('app.validate.order.fail'))
