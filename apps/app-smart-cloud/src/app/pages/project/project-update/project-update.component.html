@@ -780,8 +780,10 @@
               <one-portal-svg-icon *ngIf="trashVpnGpu" [icon]="'icon_trash'" class="icon-trash"
                 (click)="deleteVpnGpu()"></one-portal-svg-icon>
             </div>
-
-            <p class="label-fontsize label-color" *ngFor="let gpu of gpuOld"> Số lượng GPU (Type-{{gpu?.gpuType}}): {{gpu?.gpuCount}}</p>
+            <div *ngFor="let gpu of gpuOld">
+              <p *ngIf="gpu?.gpuCount !=0" class="label-fontsize label-color" > Số lượng GPU ({{gpu?.gpuType}}): {{gpu?.gpuCount}}</p>
+            </div>
+           
             <div *ngIf="!activeVpnGpu">
               <button class="h-btn" nz-button nzType="default" (click)="initVpnGpu()">
                 <img style="padding-right: 10px; margin-top: -4px" src="assets/imgs/add.svg" alt="" />{{ "app.bonus" |
@@ -1159,6 +1161,17 @@
         </nz-row> -->
         <nz-divider *ngIf="siteToSiteId||numberSnapshotssd!=0||numberSnapshothdd!=0||numberLoadBalancer != 0 || numberFileSystem != 0 || numberFileScnapsshot !=0|| numberBackup != 0 ||numberIpFloating != 0|| numberIpPublic != 0|| numberIpv6 != 0" style="margin: 10px 0" nzType="horizontal"></nz-divider>
         <div *ngIf="!hasRoleSI">
+          <nz-row style="margin-bottom: 10px" nzGutter="16">
+            <nz-col nzSpan="16">
+              <span class="text-value"> Chi phí điều chỉnh</span>
+            </nz-col>
+            <nz-col class="text-right" nzSpan="8">
+            <span class="text-value" style="color: #0066b3" nzAlign="right">
+              {{ totalAmount | formatPrice}}
+              VND
+            </span>
+            </nz-col>
+          </nz-row>
           <nz-row style="margin-bottom: 10px" nzGutter="16">
             <nz-col nzSpan="16">
               <span class="text-value"> Chi phí VAT (10%)</span>
