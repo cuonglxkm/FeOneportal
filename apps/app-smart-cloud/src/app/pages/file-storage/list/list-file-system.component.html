@@ -17,6 +17,8 @@
       <region-select-dropdown (regionChange)="onRegionChanged($event)" (valueChanged)="regionChanged($event)"></region-select-dropdown>
       <project-select-dropdown (valueChanged)="projectChanged($event)"
                                (userChanged)="projectChanged($event)"
+                               [isFirstVisit]="isFirstVisit"
+                               [disabledProject]="isLoading"
                                [regionId]="region"></project-select-dropdown>
     </div>
   </ng-template>

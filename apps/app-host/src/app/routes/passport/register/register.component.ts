@@ -266,11 +266,13 @@ export class UserRegisterComponent implements OnInit, OnDestroy {
   }
 
   private loadProvinces() {
-    fetch(environment.baseUrl + '/users/provinces').then(r => r.json()).then(j => {
+    fetch(environment.baseUrl + '/users/provinces').then(r => r.json())
+      .then(j => {
       this.provinces = j;
-      this.form.controls.province.setValue(j[0])
+        this.cdr.detectChanges();
       console.log(j)
-    });
+    })
+
 
     // this.http.get<any>(environment.baseUrl + '/users/provinces').subscribe(
     //   data => {

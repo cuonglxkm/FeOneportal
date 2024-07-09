@@ -39,6 +39,7 @@
       <nz-form-label>{{'app.register.email.label' | i18n}}(<span style="color: red;">*</span>)</nz-form-label>
       <nz-input-group nzSize="large" nzAddonBeforeIcon="user">
         <input
+          [autofocus]="true"
           nz-input
           formControlName="mail"
           placeholder="{{'app.register.email.press' | i18n}}"
@@ -261,8 +262,6 @@
   <nz-form-item>
     <re-captcha
       formControlName="recaptchaReactive"
-      key="publicKey"
-      [lang]="'vi'"
       (resolved)="addTokenLog('Reactive form mode resolved', $event)"
     >
     </re-captcha>
