@@ -103,7 +103,8 @@
     <nz-tabset nzSelectedIndex nzSize="large">
       <nz-tab nzTitle="IKE Policies" class="label-fontsize">
         <ng-template nz-tab>
-          <one-portal-ike-policies></one-portal-ike-policies
+          <one-portal-ike-policies [region]="region"
+          [project]="project"></one-portal-ike-policies
         ></ng-template>
       </nz-tab>
       <nz-tab nzTitle="IPsec Policies" class="label-fontsize">

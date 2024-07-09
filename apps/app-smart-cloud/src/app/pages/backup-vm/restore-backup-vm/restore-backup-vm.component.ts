@@ -24,6 +24,7 @@ import {
   RestoreFormCurrent,
   RestoreInstanceBackup,
   VolumeBackup,
+  VolumeExternalBackup,
 } from '../../../shared/models/backup-vm';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
@@ -52,7 +53,6 @@ import { VlanService } from '../../../shared/services/vlan.service';
 import { debounceTime, finalize, Subject } from 'rxjs';
 import { ConfigurationsService } from 'src/app/shared/services/configurations.service';
 import { NguCarousel, NguCarouselConfig } from '@ngu/carousel';
-import { BlockStorage } from '../../instances/instances-create/instances-create.component';
 import { CatalogService } from 'src/app/shared/services/catalog.service';
 import { LoadingService } from '@delon/abc/loading';
 import { OrderService } from 'src/app/shared/services/order.service';
@@ -69,6 +69,19 @@ class ConfigGPU {
   storage: number = 0;
   GPU: number = 0;
   gpuOfferId: number = 0;
+}
+class BlockStorage {
+  id: number = 0;
+  type?: string = '';
+  name?: string = '';
+  newName?: string;
+  capacity?: number = 0;
+  minCapacity?: number = 0;
+  encrypt?: boolean = false;
+  multiattach?: boolean = false;
+  price?: number = 0;
+  VAT?: number = 0;
+  priceAndVAT?: number = 0;
 }
 @Component({
   selector: 'one-portal-restore-backup-vm',
@@ -211,6 +224,7 @@ export class RestoreBackupVmComponent implements OnInit {
     this.onChangeGpu();
     this.getAllSSHKey();
     this.checkExistName();
+    this.getTotalAmountBlockStorage();
     this.cdr.detectChanges();
   }
 
@@ -316,7 +330,15 @@ export class RestoreBackupVmComponent implements OnInit {
   restoreInstanceBackup: RestoreInstanceBackup = new RestoreInstanceBackup();
   instanceInit() {
     this.restoreInstanceBackup.instanceBackupId = this.backupVmModel?.id;
-    this.restoreInstanceBackup.volumeBackupIds = this.listIDAttachVolume;
+    let selectedVolumeExternal: VolumeExternalBackup[] = [];
+    this.listOfDataBlockStorage.forEach((e) => {
+      let volumeExternal = new VolumeExternalBackup();
+      volumeExternal.id = e.id;
+      volumeExternal.name = e.newName;
+      volumeExternal.size = e.capacity;
+      selectedVolumeExternal.push(volumeExternal);
+    });
+    this.restoreInstanceBackup.volumeBackups = selectedVolumeExternal;
     this.restoreInstanceBackup.instanceName = this.backupVmModel?.instanceName;
     this.restoreInstanceBackup.keypairName = this.selectedSSHKeyName;
     this.restoreInstanceBackup.securityGroups = this.selectedSecurityGroup;
@@ -343,24 +365,26 @@ export class RestoreBackupVmComponent implements OnInit {
       this.restoreInstanceBackup.gpuCount = this.configGPU.GPU;
       this.restoreInstanceBackup.gpuTypeOfferId = this.configGPU.gpuOfferId;
     } else {
-      this.restoreInstanceBackup.offerId = this.offerFlavor.id;
-      this.offerFlavor.characteristicValues.forEach((e) => {
-        if (e.charOptionValues[0] == 'RAM') {
-          this.restoreInstanceBackup.ram = Number.parseInt(
-            e.charOptionValues[1]
-          );
-        }
-        if (e.charOptionValues[0] == 'CPU') {
-          this.restoreInstanceBackup.cpu = Number.parseInt(
-            e.charOptionValues[1]
-          );
-        }
-        if (e.charOptionValues[0] == 'HDD') {
-          this.restoreInstanceBackup.volumeSize = Number.parseInt(
-            e.charOptionValues[1]
-          );
-        }
-      });
+      if (this.offerFlavor) {
+        this.restoreInstanceBackup.offerId = this.offerFlavor.id;
+        this.offerFlavor.characteristicValues.forEach((e) => {
+          if (e.charOptionValues[0] == 'RAM') {
+            this.restoreInstanceBackup.ram = Number.parseInt(
+              e.charOptionValues[1]
+            );
+          }
+          if (e.charOptionValues[0] == 'CPU') {
+            this.restoreInstanceBackup.cpu = Number.parseInt(
+              e.charOptionValues[1]
+            );
+          }
+          if (e.charOptionValues[0] == 'HDD') {
+            this.restoreInstanceBackup.volumeSize = Number.parseInt(
+              e.charOptionValues[1]
+            );
+          }
+        });
+      }
     }
     this.restoreInstanceBackup.projectId = this.project;
     this.restoreInstanceBackup.oneSMEAddonId = null;
@@ -419,7 +443,7 @@ export class RestoreBackupVmComponent implements OnInit {
 
   instanceModel: InstancesModel;
   selectedIndextab: number = 0;
-  listIDAttachVolume: number[] = [];
+  listAttachVolume: VolumeBackup[] = [];
   getDetailBackupById(id) {
     this.backupSize = 0;
     this.backupService
@@ -467,7 +491,7 @@ export class RestoreBackupVmComponent implements OnInit {
           );
 
         this.listExternalAttachVolume.forEach((e) => {
-          this.listIDAttachVolume.push(e.id);
+          this.listAttachVolume.push(e);
           let tempBS = new BlockStorage();
           tempBS.id = e.id;
           tempBS.name = e.name;
@@ -485,6 +509,7 @@ export class RestoreBackupVmComponent implements OnInit {
           }
           this.listOfDataBlockStorage.push(tempBS);
         });
+        this.getTotalAmount();
 
         if (this.backupVmModel.securityGroupBackups != null) {
           this.listSecurityGroupBackups = getUniqueObjects(
@@ -518,11 +543,12 @@ export class RestoreBackupVmComponent implements OnInit {
 
   submitFormCurrent() {
     this.isLoadingCurrent = true;
-    console.log('current', 'confirm click');
     let formRestoreCurrent = new RestoreFormCurrent();
     formRestoreCurrent.instanceBackupId = this.backupVmModel?.id;
     formRestoreCurrent.securityGroups = this.selectedSecurityGroup;
-    formRestoreCurrent.volumeBackupIds = this.listIDAttachVolume;
+    let listIDAttachVolume: number[] = [];
+    this.listAttachVolume.forEach((e) => listIDAttachVolume.push(e.id));
+    formRestoreCurrent.volumeBackupIds = listIDAttachVolume;
     this.backupService.restoreCurrentBackupVm(formRestoreCurrent).subscribe({
       next: (data) => {
         this.isLoadingCurrent = false;
@@ -1195,11 +1221,12 @@ export class RestoreBackupVmComponent implements OnInit {
   changeAttachVolume() {
     this.listOfDataBlockStorage = [];
     this.listExternalAttachVolume.forEach((e) => {
-      if (this.listIDAttachVolume.includes(e.id)) {
+      if (this.listAttachVolume.includes(e)) {
         let tempBS = new BlockStorage();
         tempBS.id = e.id;
         tempBS.name = e.name;
         tempBS.capacity = e.size;
+        tempBS.minCapacity = e.size;
         if (e.typeName.toUpperCase().includes('HDD')) {
           tempBS.type = 'HDD';
           tempBS.price = e.size * this.unitPriceVolumeHDD;
@@ -1213,6 +1240,68 @@ export class RestoreBackupVmComponent implements OnInit {
         }
         this.listOfDataBlockStorage.push(tempBS);
       }
+      this.getTotalAmount();
+    });
+  }
+
+  dataBSSubject: Subject<any> = new Subject<any>();
+  changeTotalAmountBlockStorage(id: number, value: any) {
+    this.loadingSrv.open({ type: 'spin', text: 'Loading...' });
+    this.dataBSSubject.next({
+      id: id,
+      value: value,
+    });
+  }
+
+  getTotalAmountBlockStorage() {
+    let id: number, value: any;
+    this.dataBSSubject.pipe(debounceTime(500)).subscribe((res) => {
+      id = res.id;
+      value = res.value;
+      this.totalAmountVolume = 0;
+      this.totalVATVolume = 0;
+      this.totalPaymentVolume = 0;
+      let index = this.listOfDataBlockStorage.findIndex((obj) => obj.id == id);
+      let changeBlockStorage: BlockStorage = this.listOfDataBlockStorage[index];
+      if (changeBlockStorage.capacity % this.stepCapacity > 0) {
+        this.notification.warning(
+          '',
+          this.i18n.fanyi('app.notify.amount.capacity', {
+            number: this.stepCapacity,
+          })
+        );
+        changeBlockStorage.capacity =
+          changeBlockStorage.capacity -
+          (changeBlockStorage.capacity % this.stepCapacity);
+      }
+      if (changeBlockStorage.type.toUpperCase() == 'HDD') {
+        changeBlockStorage.price =
+          changeBlockStorage.capacity * this.unitPriceVolumeHDD;
+        changeBlockStorage.VAT = Math.round(changeBlockStorage.price * 0.1);
+        changeBlockStorage.priceAndVAT =
+          changeBlockStorage.price + changeBlockStorage.VAT;
+        this.listOfDataBlockStorage[index] = changeBlockStorage;
+        this.listOfDataBlockStorage.forEach((e: BlockStorage) => {
+          this.totalAmountVolume += e.price * this.numberMonth;
+          this.totalVATVolume += e.VAT * this.numberMonth;
+          this.totalPaymentVolume += e.priceAndVAT * this.numberMonth;
+        });
+      } else if (changeBlockStorage.type.toUpperCase() == 'SSD') {
+        changeBlockStorage.price =
+          changeBlockStorage.capacity * this.unitPriceVolumeSSD;
+        changeBlockStorage.VAT = Math.round(changeBlockStorage.price * 0.1);
+        changeBlockStorage.priceAndVAT =
+          changeBlockStorage.price + changeBlockStorage.VAT;
+        this.listOfDataBlockStorage[index] = changeBlockStorage;
+        this.listOfDataBlockStorage.forEach((e: BlockStorage) => {
+          this.totalAmountVolume += e.price * this.numberMonth;
+          this.totalVATVolume += e.VAT * this.numberMonth;
+          this.totalPaymentVolume += e.priceAndVAT * this.numberMonth;
+        });
+      }
+      this.getTotalAmount();
+      this.loadingSrv.close();
+      this.cdr.detectChanges();
     });
   }
   //#endregion

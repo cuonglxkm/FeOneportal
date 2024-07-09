@@ -1,12 +1,5 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import {
-  AbstractControl,
-  FormControl,
-  FormGroup,
-  NonNullableFormBuilder,
-  ValidatorFn,
-  Validators
-} from '@angular/forms';
+import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
 import {
   CreateFileSystemRequestModel,
   FormSearchFileSystem,
@@ -21,12 +14,7 @@ import { DataPayment, ItemPayment } from '../../../instances/instances.model';
 import { debounceTime, Subject } from 'rxjs';
 import { InstancesService } from '../../../instances/instances.service';
 import { OrderItem } from '../../../../shared/models/price';
-import {
-  AppValidator,
-  ProjectModel,
-  RegionModel,
-  storageValidator
-} from '../../../../../../../../libs/common-utils/src';
+import { ProjectModel, RegionModel, storageValidator } from '../../../../../../../../libs/common-utils/src';
 import { FormSearchFileSystemSnapshot } from 'src/app/shared/models/filesystem-snapshot';
 import { FileSystemSnapshotService } from 'src/app/shared/services/filesystem-snapshot.service';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
@@ -34,7 +22,6 @@ import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from '@core';
 import { ConfigurationsService } from '../../../../shared/services/configurations.service';
 import { OrderService } from '../../../../shared/services/order.service';
-
 
 
 @Component({
@@ -375,6 +362,50 @@ export class CreateFileSystemNormalComponent implements OnInit {
     });
   }
 
+  doCreate() {
+    this.isLoadingAction = true;
+    this.fileSystemInit();
+    let request: CreateFileSystemRequestModel = new CreateFileSystemRequestModel();
+    request.customerId = this.formCreate.customerId;
+    request.createdByUserId = this.formCreate.customerId;
+    request.note = 'tạo file system';
+    request.totalPayment = this.orderItem?.totalPayment?.amount;
+    request.totalVAT = this.orderItem?.totalVAT?.amount;
+    request.orderItems = [
+      {
+        orderItemQuantity: 1,
+        specification: JSON.stringify(this.formCreate),
+        specificationType: 'filestorage_create',
+        price: this.orderItem?.totalAmount.amount,
+        serviceDuration: this.validateForm.controls.time.value
+      }
+    ];
+    this.orderService.validaterOrder(request).subscribe(item => {
+      this.isLoadingAction = false;
+      if (item.success) {
+        this.fileSystemService.create(request).subscribe(data => {
+          this.isLoadingAction = false;
+          if (data != null) {
+            if (data.code == 200) {
+              this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('app.file.system.notification.require.create.success'));
+              this.router.navigate(['/app-smart-cloud/file-storage/file-system/list']);
+            }
+          } else {
+            this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.file.system.notification.require.create.fail'));
+          }
+        }, error => {
+          this.isLoading = false;
+          this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.file.system.notification.require.create.fail'));
+        });
+      } else {
+        this.isVisiblePopupError = true;
+        this.errorList = item.data;
+      }
+    }, error => {
+      this.notification.error(this.i18n.fanyi('app.status.fail'), error.error.detail);
+    });
+  }
+
   getConfigurations() {
     this.configurationsService.getConfigurations('BLOCKSTORAGE').subscribe(data => {
       this.valueStringConfiguration = data.valueString;
@@ -385,10 +416,13 @@ export class CreateFileSystemNormalComponent implements OnInit {
     });
   }
 
+  hasRoleSI: boolean
   ngOnInit() {
     let regionAndProject = getCurrentRegionAndProject();
     this.region = regionAndProject.regionId;
     this.project = regionAndProject.projectId;
+
+    this.hasRoleSI = localStorage.getItem('role').includes('SI')
 
     this.getListSnapshot();
 

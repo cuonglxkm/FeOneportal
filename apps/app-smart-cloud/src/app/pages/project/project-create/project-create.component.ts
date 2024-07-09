@@ -9,7 +9,7 @@ import { Router } from '@angular/router';
 import { finalize } from 'rxjs/operators';
 import { RegionModel, slider } from '../../../../../../../libs/common-utils/src';
 import { IpPublicService } from '../../../shared/services/ip-public.service';
-import { OfferDetail } from '../../../shared/models/catalog.model';
+import { OfferDetail, SupportService } from '../../../shared/models/catalog.model';
 import { da } from 'date-fns/locale';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { debounceTime, Subject } from 'rxjs';
@@ -179,7 +179,7 @@ export class ProjectCreateComponent implements OnInit {
 
   // numbergpu: number[] = [];
   // maxTotal: number = 8;
-  keySSD:boolean = true;
+  keySSD: boolean = true;
 
   isRequired: boolean = true;
 
@@ -189,11 +189,25 @@ export class ProjectCreateComponent implements OnInit {
   closePopupError() {
     this.isVisiblePopupError = false;
   }
-  productByRegion:any
-  catalogStatus: { [key: string]: boolean } = {};
-  catalogs: string[] = ['ip', 'ipv6','volume-snapshot-hdd', 'volume-snapshot-ssd', 'backup-volume', 'loadbalancer-sdn', 'file-storage','file-storage-snapshot', 'vpns2s','vm-gpu'];
+  productByRegion: any
+  // catalogStatus: { [key: string]: boolean } = {};
 
-  isShowAlertGpu:boolean;
+  typeIp: boolean;
+  typeIpv6: boolean;
+  typeVolume_snapshot_hdd: boolean;
+  typeVolume_snapshot_ssd: boolean;
+  typeBackup_volume: boolean;
+  typeLoadbalancer_sdn: boolean;
+  typeFile_storage: boolean;
+  typeFile_storage_snapshot: boolean;
+  typeVpns2s: boolean;
+  typeVm_gpu: boolean;
+
+
+  serviceActiveByRegion: SupportService[] = [];
+  // catalogs: string[] = ['ip', 'ipv6','volume-snapshot-hdd', 'volume-snapshot-ssd', 'backup-volume', 'loadbalancer-sdn', 'file-storage','file-storage-snapshot', 'vpns2s','vm-gpu'];
+
+  isShowAlertGpu: boolean;
   form = new FormGroup({
     name: new FormControl('', { validators: [Validators.required, Validators.pattern(/^[A-Za-z0-9_]+$/), Validators.maxLength(50)] }),
     description: new FormControl(''),
@@ -213,12 +227,14 @@ export class ProjectCreateComponent implements OnInit {
     private cdr: ChangeDetectorRef,
     private router: Router,
     private notification: NzNotificationService,
-    private catelogService: CatalogService,
+    private catalogService: CatalogService,
     @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
     private ipService: IpPublicService,
     private vpc: VpcService,
     private orderService: OrderService,
-    private loadingSrv: LoadingService) {
+    private loadingSrv: LoadingService,
+
+  ) {
     this.inputChangeSubject.pipe(
       debounceTime(800)
     ).subscribe(data => this.checkNumberInput(data.value, data.name));
@@ -244,9 +260,9 @@ export class ProjectCreateComponent implements OnInit {
 
     this.iconToggle = "icon_circle_minus"
     this.numOfMonth = this.form.controls['numOfMonth'].value;
-    this.catalogs.forEach(catalog => {
-      this.getProductActivebyregion(catalog, this.regionId);
-    });
+   
+    this.getProductActivebyregion();
+
     this.getCatelogOffer();
 
   }
@@ -255,10 +271,10 @@ export class ProjectCreateComponent implements OnInit {
   calculateReal() {
     this.refreshValue();
     if (this.vpcType == '1') {
-      if((this.selectIndexTab==1 && this.ssd ==0) || (this.selectIndexTab==0 && this.keySSD==false ||(this.selectIndexTab==0 && !this.offerFlavor))){
+      if ((this.selectIndexTab == 1 && this.ssd == 0) || (this.selectIndexTab == 0 && this.keySSD == false || (this.selectIndexTab == 0 && !this.offerFlavor))) {
         this.isShowAlertGpu = true
       }
-      else{
+      else {
         this.isShowAlertGpu = false
       }
 
@@ -620,8 +636,8 @@ export class ProjectCreateComponent implements OnInit {
       customerId: this.tokenService.get()?.userId,
       createdByUserId: this.tokenService.get()?.userId,
       note: 'Tạo VPC',
-      totalPayment : this.total?.data?.totalPayment.amount,
-      totalVAT :this.total?.data?.totalVAT.amount,
+      totalPayment: this.total?.data?.totalPayment.amount,
+      totalVAT: this.total?.data?.totalVAT.amount,
       orderItems: [
         {
           orderItemQuantity: 1,
@@ -649,12 +665,12 @@ export class ProjectCreateComponent implements OnInit {
       this.orderService
         .validaterOrder(request)
         .pipe(
-                finalize(() => {
-                  this.loadingSrv.close()
-                  // this.isLoading = false;
-                  this.cdr.detectChanges();
-                })
-              )
+          finalize(() => {
+            this.loadingSrv.close()
+            // this.isLoading = false;
+            this.cdr.detectChanges();
+          })
+        )
         .subscribe({
           next: (result) => {
             if (result.success) {
@@ -773,7 +789,7 @@ export class ProjectCreateComponent implements OnInit {
   initVpnGpu() {
     this.activeVpnGpu = true;
     this.trashVpnGpu = true;
-   
+
     // this.calculate(null);
 
   }
@@ -808,7 +824,7 @@ export class ProjectCreateComponent implements OnInit {
     this.totalPayment = 0;
     this.selectIndexTab = event.index;
     this.calculate(null);
-    this.isShowAlertGpu= true;
+    this.isShowAlertGpu = true;
   }
 
   loadListIpConnectInternet() {
@@ -1028,16 +1044,16 @@ export class ProjectCreateComponent implements OnInit {
         this.listTypeCatelogOffer = res
         console.log("listTypeCatelogOffer", res)
         this.gpuQuotasGobal = this.listTypeCatelogOffer.map((item: any) => (
-        
+
           {
-         
-          GpuOfferId: item.id,
-          GpuCount: 0,
-          GpuType: item.offerName,
-          GpuPrice: null,
-          GpuPriceUnit: item.price?.fixedPrice?.amount
-        }));
-        console.log("this.gpuQuotasGobal",this.gpuQuotasGobal)
+
+            GpuOfferId: item.id,
+            GpuCount: 0,
+            GpuType: item.offerName,
+            GpuPrice: null,
+            GpuPriceUnit: item.price?.fixedPrice?.amount
+          }));
+        console.log("this.gpuQuotasGobal", this.gpuQuotasGobal)
       }
     );
   }
@@ -1048,24 +1064,24 @@ export class ProjectCreateComponent implements OnInit {
 
 
   getValues(index: number, value: number): void {
-   
+
     console.log("index", index)
     console.log("value", value)
     console.log("gpuQuotasGobal 123", this.gpuQuotasGobal)
-    if(  (this.selectIndexTab==0 && this.keySSD==false ||(this.selectIndexTab==0 && !this.offerFlavor)) || (this.selectIndexTab==1 && this.ssd==0) && this.gpuQuotasGobal[index].GpuCount !=0){
+    if ((this.selectIndexTab == 0 && this.keySSD == false || (this.selectIndexTab == 0 && !this.offerFlavor)) || (this.selectIndexTab == 1 && this.ssd == 0) && this.gpuQuotasGobal[index].GpuCount != 0) {
       this.isShowAlertGpu = true
       console.log("isShowAlertGpu iuf", this.isShowAlertGpu)
     }
-    else{
+    else {
       this.isShowAlertGpu = false
       console.log("isShowAlertGpu else", this.isShowAlertGpu)
     }
     this.calculate(null)
-   
+
 
   }
 
-  
+
   refreshQuota() {
     this.vCPU = 0;
     this.ram = 0;
@@ -1084,15 +1100,15 @@ export class ProjectCreateComponent implements OnInit {
       this.isRequired = true;
     }
   }
-  checkFlavor(){
-    this.keySSD= this.offerFlavor.characteristicValues.find((charName)=>charName.charName ==='VolumeType').charOptionValues?.[0]=='SSD'
-   console.log("keySSD", this.keySSD)
-   if(this.keySSD){
-    this.isShowAlertGpu = false
-   }
-   else{
-    this.isShowAlertGpu = true
-   }
+  checkFlavor() {
+    this.keySSD = this.offerFlavor.characteristicValues.find((charName) => charName.charName === 'VolumeType').charOptionValues?.[0] == 'SSD'
+    console.log("keySSD", this.keySSD)
+    if (this.keySSD) {
+      this.isShowAlertGpu = false
+    }
+    else {
+      this.isShowAlertGpu = true
+    }
 
   }
 
@@ -1104,12 +1120,43 @@ export class ProjectCreateComponent implements OnInit {
 
   //   })
   // }
-  getProductActivebyregion(catalog:any, regionid:number){
-    this.vpc.getProductActivebyregion(catalog, regionid).subscribe((res: any) => {
-      this.productByRegion = res
-      console.log("productByRegion", this.productByRegion)
-      this.catalogStatus[catalog] = this.productByRegion.some(product => product.isActive === true);
-
-    })
+  getProductActivebyregion() {
+    const catalogs = ['ip', 'ipv6', 'volume-snapshot-hdd', 'volume-snapshot-ssd', 'backup-volume', 'loadbalancer-sdn', 'file-storage', 'file-storage-snapshot', 'vpns2s', 'vm-gpu']
+    this.catalogService.getActiveServiceByRegion(catalogs, this.regionId).subscribe(data => {
+      this.serviceActiveByRegion = data;
+      this.serviceActiveByRegion.forEach((item: any) => {
+        if (['ip'].includes(item.productName)) {
+          this.typeIp = item.isActive;
+        }
+        if (['ipv6'].includes(item.productName)) {
+          this.typeIpv6 = item.isActive;
+        }
+        if (['volume-snapshot-hdd'].includes(item.productName)) {
+          this.typeVolume_snapshot_hdd = item.isActive;
+        }
+        if (['volume-snapshot-ssd'].includes(item.productName)) {
+          this.typeVolume_snapshot_ssd = item.isActive;
+        }
+        if (['backup-volume'].includes(item.productName)) {
+          this.typeBackup_volume = item.isActive;
+          console.log("typeBackup_volume", this.typeBackup_volume);
+        }
+        if (['loadbalancer-sdn'].includes(item.productName)) {
+          this.typeLoadbalancer_sdn = item.isActive;
+        }
+        if (['file-storage'].includes(item.productName)) {
+          this.typeFile_storage = item.isActive;
+        }
+        if (['file-storage-snapshot'].includes(item.productName)) {
+          this.typeFile_storage_snapshot = item.isActive;
+        }
+        if (['vpns2s'].includes(item.productName)) {
+          this.typeVpns2s = item.isActive;
+        }
+        if (['vm-gpu'].includes(item.productName)) {
+          this.typeVm_gpu = item.isActive;
+        }
+      });
+    });
   }
 }

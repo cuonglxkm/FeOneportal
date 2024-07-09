@@ -26,7 +26,7 @@ import {
 } from '../instances.model';
 import { ActivatedRoute, Router } from '@angular/router';
 import { InstancesService } from '../instances.service';
-import { Observable, Subject, debounceTime, finalize, of } from 'rxjs';
+import { Subject, debounceTime, finalize } from 'rxjs';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { LoadingService } from '@delon/abc/loading';
 import { NguCarousel, NguCarouselConfig } from '@ngu/carousel';
@@ -206,17 +206,14 @@ export class InstancesCreateVpcComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    if (this.activatedRoute.snapshot.paramMap.get('idSnapshot')) {
-      this.isSnapshot = true;
-      this.selectedSnapshot = Number.parseInt(
-        this.activatedRoute.snapshot.paramMap.get('idSnapshot')
-      );
-      this.changeSelectedSnapshot();
-    }
     this.userId = this.tokenService.get()?.userId;
     let regionAndProject = getCurrentRegionAndProject();
     this.region = regionAndProject.regionId;
     this.projectId = regionAndProject.projectId;
+    if (this.activatedRoute.snapshot.paramMap.get('idSnapshot')) {
+      this.isSnapshot = true;
+      this.initSnapshot();
+    }
     this.getActiveServiceByRegion();
     this.getConfigurations();
     this.getAllImageType();
@@ -458,9 +455,20 @@ export class InstancesCreateVpcComponent implements OnInit {
               (e.resourceStatus.toUpperCase() == 'AVAILABLE' ||
                 e.resourceStatus.toUpperCase() == 'IN-USE')
           );
-          this.selectedSnapshot = this.listSnapshot[0].id;
-          this.sizeSnapshotVL = this.listSnapshot[0].sizeInGB;
-          this.nameSnapshot = this.listSnapshot[0].name;
+          if (this.activatedRoute.snapshot.paramMap.get('idSnapshot')) {
+            this.selectedSnapshot = Number.parseInt(
+              this.activatedRoute.snapshot.paramMap.get('idSnapshot')
+            );
+            let selectedTemp = this.listSnapshot.filter(
+              (e) => (e.id = this.selectedSnapshot)
+            )[0];
+            this.sizeSnapshotVL = selectedTemp.sizeInGB;
+            this.nameSnapshot = selectedTemp.name;
+          } else {
+            this.selectedSnapshot = this.listSnapshot[0].id;
+            this.sizeSnapshotVL = this.listSnapshot[0].sizeInGB;
+            this.nameSnapshot = this.listSnapshot[0].name;
+          }
           if (this.listSnapshot[0].volumeType.toUpperCase() == 'SSD') {
             this.disableConfigGpu = false;
             this.activeBlockHDD = false;
@@ -919,7 +927,7 @@ export class InstancesCreateVpcComponent implements OnInit {
 
   instanceInit() {
     this.instanceCreate.description = null;
-    this.instanceCreate.imageId = this.hdh;
+    this.instanceCreate.imageId = this.isSnapshot ? 0 : this.hdh;;
     this.instanceCreate.iops = 0;
     this.instanceCreate.vmType = this.activeBlockHDD ? 'hdd' : 'ssd';
     this.instanceCreate.keypairName = this.selectedSSHKeyName;
@@ -940,7 +948,7 @@ export class InstancesCreateVpcComponent implements OnInit {
     }
     this.instanceCreate.ipPublic = this.ipPublicValue;
     this.instanceCreate.password = this.password;
-    this.instanceCreate.snapshotCloudId = this.selectedSnapshot;
+    this.instanceCreate.snapshotId = this.selectedSnapshot;
     this.instanceCreate.addRam = 0;
     this.instanceCreate.addCpu = 0;
     this.instanceCreate.addBttn = 0;
@@ -1058,7 +1066,7 @@ export class InstancesCreateVpcComponent implements OnInit {
                 error: (error) => {
                   this.notification.error(
                     this.i18n.fanyi('app.status.fail'),
-                    error.error.detail
+                    error.error.message
                   );
                 },
               });
@@ -1135,7 +1143,7 @@ export class InstancesCreateVpcComponent implements OnInit {
           error: (error) => {
             this.notification.error(
               this.i18n.fanyi('app.status.fail'),
-              error.error.detail
+              error.error.message
             );
           },
         });
