@@ -273,7 +273,7 @@ export class ProjectUpdateComponent implements OnInit {
       this.calculateReal();
     });
     this.dateNow = new Date();
-    // this.calculate()
+    this.calculate()
 
  
       this.getProductActivebyregion();
@@ -318,7 +318,7 @@ export class ProjectUpdateComponent implements OnInit {
         ipName = lstIp[1];
 
       }
-      console.log("object this.gpu", this.gpuQuotasGobal)
+
       const requestBody =
       {
 
@@ -350,7 +350,7 @@ export class ProjectUpdateComponent implements OnInit {
         newVpnSiteToSiteOfferId: this.siteToSiteId,
 
         // NewGpuQuotas: this.data?.gpuProjects ? this.gpuQuotasGobal : this.newgpu,
-        gpuQuotas: (this.gpuQuotasGobal && this.gpuQuotasGobal.length > 0) ?this.newgpu : this.gpuOld,
+        gpuQuotas: this.newgpu  ?this.newgpu : this.gpuOld,
 
 
         newQuotaSecurityGroupCount: this.numberSecurityGroup,
@@ -1065,7 +1065,7 @@ export class ProjectUpdateComponent implements OnInit {
     this.calculate();
   }
   getCatelogOffer() {
-    this.isLoading = true;
+    
     this.instancesService.getTypeCatelogOffers(this.regionId, 'vm-gpu').subscribe(
       res => {
         this.listTypeCatelogOffer = res
@@ -1073,10 +1073,11 @@ export class ProjectUpdateComponent implements OnInit {
           GpuOfferId: item.id,
           GpuCount: 0,
           GpuType: item.offerName,
-          GpuPrice: 0,
+          GpuPrice: null,
           GpuPriceUnit: item?.price?.fixedPrice?.amount
         }));
-        this.isLoading = false;
+       
+        console.log("this.gpuQuotasGobal", this.gpuQuotasGobal)
       }
     );
   }
@@ -1123,6 +1124,11 @@ export class ProjectUpdateComponent implements OnInit {
     });
     console.log("object this.newgpu", this.newgpu)
   }
+  // checkValueGpu(index:number){
+  //   for(let item of this.gpuQuotasGobal){
+
+  //   }
+  // }
   // getProductActivebyregion(catalog: string, regionid: number) {
   //   // this.vpc.getProductActivebyregion(catalog, regionid).subscribe((res: any) => {
   //   //   this.productByRegion = res
