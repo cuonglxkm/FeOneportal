@@ -29,6 +29,7 @@ import { getCurrentRegionAndProject } from '@shared';
 import { RegionModel } from '../../../../../../../libs/common-utils/src';
 import { LoadingService } from '@delon/abc/loading';
 import { ObjectStorageService } from 'src/app/shared/services/object-storage.service';
+import { FOLDER_NAME_REGEX } from 'src/app/shared/constants/constants';
 
 @Component({
   selector: 'one-portal-bucket-detail',
@@ -132,6 +133,12 @@ export class BucketDetailComponent extends BaseService implements OnInit {
   ) {
     super();
   }
+
+  formCreateFolder: FormGroup<{
+    folderName: FormControl<string>;
+  }> = this.fb.group({
+    folderName: ['', [Validators.required, Validators.pattern(FOLDER_NAME_REGEX)]],
+  });
 
   range(start: number, end: number): number[] {
     const result: number[] = [];
@@ -256,6 +263,11 @@ export class BucketDetailComponent extends BaseService implements OnInit {
     }
   }
 
+  handleCancelCreateFolder(){
+    this.isVisibleCreateFolder = false
+    this.formCreateFolder.reset()
+  }
+
   createFolder() {
     this.isLoadingCreateFolder = true
     let data = {
@@ -277,6 +289,7 @@ export class BucketDetailComponent extends BaseService implements OnInit {
             this.i18n.fanyi('app.status.success'),
             this.i18n.fanyi('app.bucket.detail.createFolder.name.success')
           );
+          this.formCreateFolder.reset() 
           this.loadData();
         },
         (error) => {
@@ -407,7 +420,6 @@ export class BucketDetailComponent extends BaseService implements OnInit {
         })
       )
       .subscribe((data) => {
-        console.log(data);
         this.pageSize = data.paginationObjectList.pageSize;
         this.pageIndex = data.paginationObjectList.draw;
         this.listOfData = data.paginationObjectList.items;
