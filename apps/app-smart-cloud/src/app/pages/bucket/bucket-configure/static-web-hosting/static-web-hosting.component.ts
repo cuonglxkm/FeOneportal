@@ -6,6 +6,7 @@ import {
   Input,
   OnInit,
 } from '@angular/core';
+import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { I18NService } from '@core';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
@@ -13,9 +14,9 @@ import { getCurrentRegionAndProject } from '@shared';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { ClipboardService } from 'ngx-clipboard';
+import { FILE_NO_SPACE_REGEX } from 'src/app/shared/constants/constants';
 import {
-  BucketDetail,
-  BucketWebsite,
+  BucketWebsite
 } from 'src/app/shared/models/bucket.model';
 import { BucketService } from 'src/app/shared/services/bucket.service';
 
@@ -38,13 +39,22 @@ export class StaticWebHostingComponent implements OnInit {
     private message: NzMessageService,
     private notification: NzNotificationService,
     private router: Router,
-    @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService
+    @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
+    private fb: NonNullableFormBuilder
   ) {}
 
   ngOnInit(): void {
     let regionAndProject = getCurrentRegionAndProject();
     this.region = regionAndProject.regionId;
   }
+
+  formUpdate: FormGroup<{
+    errorDocument: FormControl<string>;
+    indexDocumentSuffix: FormControl<string>;
+  }> = this.fb.group({
+    errorDocument: ['', Validators.pattern(FILE_NO_SPACE_REGEX)],
+    indexDocumentSuffix: ['', Validators.pattern(FILE_NO_SPACE_REGEX)],
+  });
 
   copyText(endPoint: string) {
     this.clipboardService.copyFromContent(endPoint);
