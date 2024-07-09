@@ -211,15 +211,11 @@ export class DefaultInterceptor implements HttpInterceptor {
     sessionStorage.clear();
     this.cookieService.deleteAll( "/",".onsmartcloud.com",true,"None");
     this.tokenService.clear();
-
     localStorage.removeItem('UserRootId');
     localStorage.removeItem('ShareUsers');
     localStorage.removeItem('PermissionOPA');
     localStorage.removeItem('user');
     localStorage.removeItem('_token');
-    localStorage.removeItem('projects');
-    localStorage.removeItem('projectId');
-    localStorage.removeItem('role');
   }
 
   private getAdditionalHeaders(headers?: HttpHeaders): { [name: string]: string } {

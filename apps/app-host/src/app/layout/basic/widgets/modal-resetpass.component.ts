@@ -358,7 +358,6 @@ export class ModalResetPassComponent implements OnInit {
     localStorage.removeItem('PermissionOPA');
     localStorage.removeItem('user');
     localStorage.removeItem('_token');
-    localStorage.removeItem('projects');
 
     window.location.href =
       environment['sso'].issuer +
