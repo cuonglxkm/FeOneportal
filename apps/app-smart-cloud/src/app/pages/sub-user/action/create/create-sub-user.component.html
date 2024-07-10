@@ -36,9 +36,16 @@
                 <div>
                   <span>{{ 'app.sub.user.name' | i18n }}</span>
                   (<span style="color: rgba(252, 16, 16, 1)">*</span>)
-                </div>
-                <div>
-                  <span>{{ 'app.sub.user.into.permission' | i18n }}</span>
+                  <img
+                  nz-popover
+                  [nzPopoverContent]="
+                    'app.sub.user.into.permission' | i18n
+                  "
+                  nzPopoverPlacement="bottom"
+                  style="margin-left: 5px"
+                  src="assets/imgs/pajamas_question.svg"
+                  alt=""
+                />
                 </div>
               </div>
             </nz-form-label>
@@ -63,11 +70,21 @@
                 <div>
                   <span>{{ 'app.access.rights' | i18n }}</span>
                   (<span style="color: rgba(252, 16, 16, 1)">*</span>)
+                  <img
+                  nz-popover
+                  [nzPopoverContent]="
+                    perrmission
+                  "
+                  nzPopoverPlacement="bottom"
+                  style="margin-left: 5px"
+                  src="assets/imgs/pajamas_question.svg"
+                  alt=""
+                />
                 </div>
-                <div>
+                <ng-template #perrmission>
                   <span>{{ 'app.sub.user.into.permission' | i18n }}
                     <br />{{ 'app.sub.user.note.permission' | i18n }}</span>
-                </div>
+                </ng-template>
               </div>
             </nz-form-label>
             <nz-form-control nzDisableAutoTips [nzErrorTip]="accessErrorTpl">

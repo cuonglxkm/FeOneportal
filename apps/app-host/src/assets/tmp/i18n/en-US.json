@@ -868,6 +868,12 @@
   "app.s3.key.create": "Create new S3 Key",
   "app.s3.key.choose": "Choose User/SubUser",
   "app.s3.key.search": "Search by User name",
+  "app.s3.key.delete.alert": "You are deleting the SecretKey.",
+  "app.s3.key.delete.des": "Are you sure to delete the S3 Key?",
+  "app.s3.key.delete.confirm": "Confirm deletion of S3 Key",
+  "app.s3.key.recreate.confirm": "Confirm re-generation of SecretKey",
+  "app.s3.key.recreate.alert": "You are regenerating the SecretKey.",
+  "app.s3.key.recreate.des": "Are you sure you want to re-create SecretKey?",
 
   "validation.bucket.name": "The Bucket name can only use lowercase letters a-z, numbers 0-9, hyphens (-), and periods (.), with a minimum of 3 characters and a maximum of 63 characters",
   "validation.bucket.name.invalid": "The Bucket name is invalid",
