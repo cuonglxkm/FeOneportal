@@ -9,13 +9,19 @@ import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from '@core';
 import { debounceTime, Subject } from 'rxjs';
 import { TimeCommon } from '../../../shared/utils/common';
+import { ProjectService } from '../../../shared/services/project.service';
+import { CatalogService } from '../../../shared/services/catalog.service';
+import { NzNotificationService } from 'ng-zorro-antd/notification';
+import { finalize } from 'rxjs/operators';
+import { da } from 'date-fns/locale';
+import { VpcService } from '../../../shared/services/vpc.service';
 
 @Component({
   selector: 'one-portal-list-load-balancer',
   templateUrl: './list-load-balancer.component.html',
-  styleUrls: ['./list-load-balancer.component.less'],
+  styleUrls: ['./list-load-balancer.component.less']
 })
-export class ListLoadBalancerComponent implements OnInit{
+export class ListLoadBalancerComponent implements OnInit {
   region = JSON.parse(localStorage.getItem('regionId'));
   project = JSON.parse(localStorage.getItem('projectId'));
 
@@ -28,10 +34,17 @@ export class ListLoadBalancerComponent implements OnInit{
   pageSize: number = 10;
   pageIndex: number = 1;
   loadBalancerStatus: Map<String, string>;
+  createNewLB: boolean = false;
+  projectName: any;
+  noneQuota: boolean;
 
   constructor(@Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
               private router: Router,
               private loadBalancerService: LoadBalancerService,
+              private projectService: ProjectService,
+              private vpcService: VpcService,
+              private catalogService: CatalogService,
+              private notification: NzNotificationService,
               @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService) {
     this.loadBalancerStatus = new Map<String, string>();
     this.loadBalancerStatus.set('KHOITAO', this.i18n.fanyi('app.status.running'));
@@ -40,7 +53,7 @@ export class ListLoadBalancerComponent implements OnInit{
 
   regionChanged(region: RegionModel) {
     this.region = region.regionId;
-    this.search(true)
+    this.search(true);
   }
 
   onRegionChanged(region: RegionModel) {
@@ -48,86 +61,126 @@ export class ListLoadBalancerComponent implements OnInit{
   }
 
   projectChanged(project: ProjectModel) {
+    this.isLoading = true;
+    this.createNewLB = false;
     this.project = project?.id;
     this.typeVPC = project?.type;
-    this.search(true)
+    this.projectName = project?.projectName;
+
+    if (this.typeVPC == 1) {
+      this.projectService.getProjectVpc(this.project)
+        .pipe(finalize(() => {
+          this.search(true);
+        }))
+        .subscribe(data => {
+          const LBId = data?.cloudProject?.offerIdLBSDN;
+          if (LBId != undefined && LBId != null) {
+            this.catalogService.getDetailOffer(LBId).subscribe(
+              data2 => {
+                this.createNewLB = false;
+              },
+              error => {
+                this.createNewLB = true;
+                this.notification.error(this.i18n.fanyi('app.status.fail'), 'Lấy thông tin Flavor lỗi');
+              });
+          } else {
+            this.createNewLB = true;
+          }
+        });
+
+      this.vpcService.getTotalResouce(this.project)
+        .pipe(finalize(() => {
+          // this.pushTable();
+        }))
+        .subscribe(
+          data => {
+            if (data.cloudProject?.quotaLoadBalancerSDNCount-data.cloudProjectResourceUsed?.loadBalancerSdnCount <= 0) {
+              this.noneQuota = true;
+            } else {
+              this.noneQuota = false;
+            }
+          }
+        )
+    } else {
+      this.search(true);
+    }
   }
 
-  // onInputChange(value) {
-  //   this.value = value
-  //   this.search(false)
-  // }
-
   onPageSizeChange(value) {
-    this.pageSize = value
-    this.search(false)
+    this.pageSize = value;
+    this.search(false);
   }
 
   onPageIndexChange(value) {
-    this.pageIndex = value
-    this.search(false)
+    this.pageIndex = value;
+    this.search(false);
   }
 
   navigateToCreate(typeVpc) {
-    console.log(typeVpc)
-    let hasRoleSI = localStorage.getItem('role').includes('SI')
-    if(typeVpc === 1 || hasRoleSI) {
-      this.router.navigate(['/app-smart-cloud/load-balancer/create/vpc'])
+    console.log(typeVpc);
+    let hasRoleSI = localStorage.getItem('role').includes('SI');
+    if (typeVpc === 1 || hasRoleSI) {
+      if (this.noneQuota) {
+        this.notification.warning('Cảnh báo','Quý khách vui lòng mua thêm quota cho Load Balancer')
+      } else {
+        this.router.navigate(['/app-smart-cloud/load-balancer/create/vpc']);
+      }
     }
-    if(typeVpc !== 1) {
-      this.router.navigate(['/app-smart-cloud/load-balancer/create'])
+    if (typeVpc !== 1) {
+      this.router.navigate(['/app-smart-cloud/load-balancer/create']);
     }
   }
 
   handleUpdateNoVpcOk() {
-    this.search(false)
+    this.search(false);
   }
 
   navigateToUpdateVpc(id) {
-    this.router.navigate(['/app-smart-cloud/load-balancer/update/vpc/'+id])
+    this.router.navigate(['/app-smart-cloud/load-balancer/update/vpc/' + id]);
   }
 
   navigateToExtend(id) {
-    this.router.navigate(['/app-smart-cloud/load-balancer/extend/normal/'+id])
+    this.router.navigate(['/app-smart-cloud/load-balancer/extend/normal/' + id]);
   }
 
   search(isBegin) {
-    this.isLoading = true
-    let formSearch = new FormSearchListBalancer()
-    formSearch.vpcId = this.project
-    formSearch.regionId = this.region
-    formSearch.name = this.value
-    formSearch.pageSize = this.pageSize
-    formSearch.currentPage = this.pageIndex
+    this.isLoading = true;
+    let formSearch = new FormSearchListBalancer();
+    formSearch.vpcId = this.project;
+    formSearch.regionId = this.region;
+    formSearch.name = this.value;
+    formSearch.pageSize = this.pageSize;
+    formSearch.currentPage = this.pageIndex;
 
     this.loadBalancerService.search(formSearch).subscribe(data => {
-      this.isLoading = false
-      this.response = data
+      this.isLoading = false;
+      this.response = data;
 
       if (isBegin) {
         this.isBegin = this.response.records.length < 1 || this.response.records === null ? true : false;
       }
     }, error => {
-      this.isLoading = false
-      this.response = null
-    })
+      this.isLoading = false;
+      this.response = null;
+    });
   }
 
   handleDeleteOk() {
-    this.search(true)
+    this.search(true);
   }
 
   navigateToCreateListener(idLb: number) {
-    this.router.navigate(['/app-smart-cloud/load-balancer/' + idLb + '/listener/create'])
+    this.router.navigate(['/app-smart-cloud/load-balancer/' + idLb + '/listener/create']);
   }
 
   searchDelay = new Subject<boolean>();
+
   ngOnInit(): void {
     let regionAndProject = getCurrentRegionAndProject();
     this.region = regionAndProject.regionId;
     this.project = regionAndProject.projectId;
-    if(!this.region || !this.project) {
-      this.isLoading = true
+    if (!this.region || !this.project) {
+      this.isLoading = true;
     }
     console.log('project', this.project);
     this.customerId = this.tokenService.get()?.userId;
