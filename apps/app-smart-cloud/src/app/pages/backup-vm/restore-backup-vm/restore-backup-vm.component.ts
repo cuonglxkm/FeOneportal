@@ -496,6 +496,7 @@ export class RestoreBackupVmComponent implements OnInit {
           tempBS.id = e.id;
           tempBS.name = e.name;
           tempBS.capacity = e.size;
+          tempBS.minCapacity = e.size;
           if (e.typeName.toUpperCase().includes('HDD')) {
             tempBS.type = 'HDD';
             tempBS.price = e.size * this.unitPriceVolumeHDD;
