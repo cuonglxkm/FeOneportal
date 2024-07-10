@@ -631,6 +631,10 @@
   "app.notify.amount.gpu.add": "Insufficient GPU type conversion quota, need to allocate an additional {{num}} GPUs",
   "app.notify.create.instances.success": "Successfully created instance {{name}}",
   "app.notify.create.instances.fail": "Failed to create instance {{name}}",
+  "app.notify.extend.instance.success": "Successful request for virtual machine extension.",
+  "app.notify.extend.instance.fail": "Unsuccessful request for virtual machine extension.",
+  "app.notify.resize.instance.success": "Successful request for virtual machine adjustment.",
+  "app.notify.resize.instance.fail": "Unsuccessful request for virtual machine adjustment.",
 
   "app.choose.snapshot": "Choose Snapshot",
   "app.choose.volume.type": "Choose Volume type",
@@ -2726,7 +2730,11 @@
   "project.note48": "Load Balancer helps distribute the load efficiently, improve system scalability, and enhance user experience.",
   "project.note49": "Select Load Balancer Package",
   "project.action.creating": "The project creation request has been sent",
+  "project.action.extend": "The project extend request has been sent",
+  "project.action.resize": "The project resize request has been sent",
   "project.note51": "Create project fail",
+  "project.note52": "Extend project fail",
+  "project.note53": "Resize project fail",
   "project.create":"Create Project",
   "app.project.price": "Total Amount",
 
