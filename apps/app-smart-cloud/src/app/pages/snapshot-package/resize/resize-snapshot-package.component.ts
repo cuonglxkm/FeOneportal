@@ -275,6 +275,7 @@ export class ResizeSnapshotPackageComponent implements OnInit {
   totalVat: number;
   hddPrice = 0;
   ssdPrice = 0;
+  today = new Date();
 
   loadProjects() {
     this.projectService.getByRegion(this.region).subscribe(data => {

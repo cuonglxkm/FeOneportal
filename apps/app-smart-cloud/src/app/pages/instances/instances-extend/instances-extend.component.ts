@@ -80,7 +80,7 @@ export class InstancesExtendComponent implements OnInit {
     this.customerId = this.tokenService.get()?.userId;
     this.email = this.tokenService.get()?.email;
     this.id = Number.parseInt(this.activatedRoute.snapshot.paramMap.get('id'));
-    this.hasRoleSI = localStorage.getItem('role').includes('SI')
+    this.hasRoleSI = localStorage.getItem('role').includes('SI');
     this.service.getById(this.id, true).subscribe({
       next: (data) => {
         this.loadingSrv.open({ type: 'spin', text: 'Loading...' });
@@ -234,10 +234,28 @@ export class InstancesExtendComponent implements OnInit {
       .subscribe({
         next: (result) => {
           if (result.success) {
-            var returnPath: string = window.location.pathname;
-            this.router.navigate(['/app-smart-cloud/order/cart'], {
-              state: { data: this.order, path: returnPath },
-            });
+            if (this.hasRoleSI) {
+              this.service.create(this.order).subscribe((data) => {
+                this.isLoading = false;
+                if (data != null) {
+                  if (data.code == 200) {
+                    this.isLoading = false;
+                    this.notification.success(
+                      this.i18n.fanyi('app.status.success'),
+                      this.i18n.fanyi('app.notify.extend.instance.success')
+                    );
+                    this.router.navigate(['/app-smart-cloud/volumes']);
+                  }
+                } else {
+                  this.isLoading = false;
+                }
+              });
+            } else {
+              var returnPath: string = window.location.pathname;
+              this.router.navigate(['/app-smart-cloud/order/cart'], {
+                state: { data: this.order, path: returnPath },
+              });
+            }
           } else {
             this.isVisiblePopupError = true;
             this.errorList = result.data;
@@ -248,57 +266,6 @@ export class InstancesExtendComponent implements OnInit {
             this.i18n.fanyi('app.status.fail'),
             error.error.detail
           );
-        },
-      });
-  }
-
-  doExtend(): void {
-    this.isLoading = true;
-    this.cdr.detectChanges();
-    this.orderItem = [];
-    this.instanceExtendInit();
-    let specificationInstance = JSON.stringify(this.instanceExtend);
-    let orderItemInstanceResize = new OrderItem();
-    orderItemInstanceResize.orderItemQuantity = 1;
-    orderItemInstanceResize.specification = specificationInstance;
-    orderItemInstanceResize.specificationType = 'instance_extend';
-    orderItemInstanceResize.price = this.totalAmount;
-    orderItemInstanceResize.serviceDuration = this.numberMonth;
-    this.orderItem.push(orderItemInstanceResize);
-
-    this.order.customerId = this.customerId;
-    this.order.createdByUserId = this.customerId;
-    this.order.note = 'instance extend';
-    console.log('order instance resize', this.order);
-
-    this.orderService.validaterOrder(this.order)
-      .pipe(finalize(() => {
-          this.isLoading = false;
-          this.cdr.detectChanges();
-        })
-      ).subscribe({
-        next: (result) => {
-          if (result.success) {
-            this.service.create(this.order).subscribe(data => {
-              this.isLoading = false;
-              if (data != null) {
-                if (data.code == 200) {
-                  this.isLoading = false;
-                  this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('app.notify.extend.instance.success'));
-                  this.router.navigate(['/app-smart-cloud/volumes']);
-                }
-              } else {
-                this.isLoading = false;
-              }
-            })
-          } else {
-            this.isVisiblePopupError = true;
-            this.errorList = result.data;
-          }
-        },
-        error: (error) => {
-          this.isLoading = false
-          this.notification.error(this.i18n.fanyi('app.status.fail'), error.error.detail)
         },
       });
   }
