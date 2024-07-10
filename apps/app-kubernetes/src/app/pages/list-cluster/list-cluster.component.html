@@ -40,7 +40,7 @@
             <div class="mleft-16 w-35">
               <nz-input-group nzSearch nzSize="default" [nzPrefix]="prefixButton" class="w-100" nzSize="large">
                 <input type="text" nz-input [placeholder]="'app.cluster.filter' | i18n" [(ngModel)]="keySearch"
-                  (ngModelChange)="searchCluster()" />
+                  (ngModelChange)="searchCluster()" [maxlength]="255" />
               </nz-input-group>
               <ng-template #prefixButton>
                 <img src="assets/imgs/search.svg" alt="" style="cursor: pointer" [nz-tooltip]="'app.button.search' | i18n" />
