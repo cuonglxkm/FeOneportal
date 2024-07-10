@@ -3197,7 +3197,6 @@
   "app.vpn.connection-create.deadpeer.timeout.tooltip": "Dead peer detection timeout: Thời gian xác định trạng thái là timeout khi không nhận được gói tin phản hồi trạng thái.",
   "app.vpn.connection-create.initstate.tooltip": "Initiator state: Là trạng thái khởi tạo: bao gồm bi-directional và response-only.",
   "vlan.title":"Mạng LAN (VLAN)",
-  "app.vpn.connection-create.initstate.tooltip": "Initiator state: Là trạng thái khởi tạo: bao gồm bi-directional và response-only.",
   "app.ike.policy-detail": "Xem chi tiết IKE Policy",
   "app.ipsec.policy-detail": "Xem chi tiết Ipsec Policy",
   "app.vpn.service.policy-detail": "Xem chi tiết VPN Service",
