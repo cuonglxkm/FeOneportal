@@ -508,6 +508,7 @@
             [(ngModel)]="instanceAction.networkId"
             (ngModelChange)="changeVlanNetwork($event)"
             [ngModelOptions]="{ standalone: true }"
+            [nzLoading]="isLoadingNetwork"
             nzSize="large"
           >
             <nz-option

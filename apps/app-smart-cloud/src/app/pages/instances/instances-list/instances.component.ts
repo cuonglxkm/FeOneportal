@@ -304,7 +304,9 @@ export class InstancesComponent implements OnInit {
 
   listVlanNetwork: NetWorkModel[] = [];
   vlanCloudId: string;
+  isLoadingNetwork: boolean = true;
   getListNetwork(): void {
+    this.isLoadingNetwork = true;
     let formSearchNetwork: FormSearchNetwork = new FormSearchNetwork();
     formSearchNetwork.region = this.region;
     formSearchNetwork.project = this.projectId;
@@ -315,6 +317,7 @@ export class InstancesComponent implements OnInit {
       .getVlanNetworks(formSearchNetwork)
       .subscribe((data: any) => {
         this.listVlanNetwork = data.records;
+        this.isLoadingNetwork = false;
         this.vlanCloudId = this.listVlanNetwork[0].cloudId;
         this.instanceAction.networkId = this.vlanCloudId;
         this.getListPort(this.vlanCloudId);
