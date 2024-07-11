@@ -162,9 +162,24 @@ export class EditVolumeComponent implements OnInit {
       this.orderService.validaterOrder(request).subscribe(data => {
         this.isLoadingAction = false
         if(data.success) {
-          var returnPath: string = '/app-smart-cloud/volume/edit/' + this.volumeId;
-          console.log('request', request);
-          this.router.navigate(['/app-smart-cloud/order/cart'], { state: { data: request, path: returnPath } });
+          if(this.hasRoleSI) {
+            this.volumeService.editSizeVolume(request).subscribe(data => {
+              this.isLoadingAction = false;
+              if (data != null) {
+                if (data.code == 200) {
+                  this.isLoadingAction = false;
+                  this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('volume.notification.require.resize.success'));
+                  this.router.navigate(['/app-smart-cloud/volumes']);
+                }
+              } else {
+                this.isLoadingAction = false;
+              }
+            })
+          } else {
+            var returnPath: string = '/app-smart-cloud/volume/edit/' + this.volumeId;
+            console.log('request', request);
+            this.router.navigate(['/app-smart-cloud/order/cart'], { state: { data: request, path: returnPath } });
+          }
         } else {
           this.isVisiblePopupError = true;
           this.errorList = data.data;
@@ -198,18 +213,7 @@ export class EditVolumeComponent implements OnInit {
       this.orderService.validaterOrder(request).subscribe(data => {
         this.isLoadingAction = false
         if(data.success) {
-          this.volumeService.editSizeVolume(request).subscribe(data => {
-            this.isLoadingAction = false;
-            if (data != null) {
-              if (data.code == 200) {
-                this.isLoadingAction = false;
-                this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('volume.notification.require.resize.success'));
-                this.router.navigate(['/app-smart-cloud/volumes']);
-              }
-            } else {
-              this.isLoadingAction = false;
-            }
-          })
+
         } else {
           this.isVisiblePopupError = true;
           this.errorList = data.data;
