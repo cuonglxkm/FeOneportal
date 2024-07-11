@@ -246,16 +246,9 @@
               </div>
               <nz-row>
                 <nz-col style="width: 100%">
-                  <button *ngIf="!hasRoleSI" style="width: 100%" nz-button nzSize="large" nzType="primary"
+                  <button style="width: 100%" nz-button nzSize="large" nzType="primary"
                           [disabled]="!validateForm.valid || storage == 0"
                           (click)="navigateToPaymentSummary()"
-                          [nzLoading]="isLoadingAction">
-                    <img src="assets/imgs/wallet.svg" style="margin-right: 5px; padding-bottom: 5px;" />
-                    <span [style.color]="validateForm.invalid ? 'gray' : 'white'">{{ 'app.button.extend' | i18n }}</span>
-                  </button>
-                  <button *ngIf="hasRoleSI" style="width: 100%" nz-button nzSize="large" nzType="primary"
-                          [disabled]="!validateForm.valid || storage == 0"
-                          (click)="doExtend()"
                           [nzLoading]="isLoadingAction">
                     <img src="assets/imgs/wallet.svg" style="margin-right: 5px; padding-bottom: 5px;" />
                     <span [style.color]="validateForm.invalid ? 'gray' : 'white'">{{ 'app.button.extend' | i18n }}</span>

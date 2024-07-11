@@ -183,55 +183,28 @@ export class ResizeFileSystemNormalComponent implements OnInit {
     this.orderService.validaterOrder(request).subscribe(data => {
       this.isLoadingAction = false;
       if (data.success) {
-        var returnPath: string = '/app-smart-cloud/file-storage/file-system/resize/normal/' + this.idFileSystem;
-        console.log('request', request);
-        this.router.navigate(['/app-smart-cloud/order/cart'], { state: { data: request, path: returnPath } });
-      } else {
-        this.isVisiblePopupError = true;
-        this.errorList = data.data;
-      }
-    }, error => {
-      this.notification.error(this.i18n.fanyi('app.status.fail'), error.error.detail);
-    });
-  }
-
-  doResize() {
-    this.isLoadingAction = true;
-    this.initFileSystem();
-    let request = new ResizeFileSystemRequestModel();
-    request.customerId = this.resizeFileSystem.customerId;
-    request.createdByUserId = this.resizeFileSystem.customerId;
-    request.note = this.i18n.fanyi('app.file.system.resize.title');
-    request.totalPayment = this.orderItem?.totalPayment?.amount;
-    request.totalVAT = this.orderItem?.totalVAT?.amount;
-    request.orderItems = [
-      {
-        orderItemQuantity: 1,
-        specification: JSON.stringify(this.resizeFileSystem),
-        specificationType: 'filestorage_resize',
-        price: this.orderItem?.totalAmount.amount,
-        serviceDuration: 1
-      }
-    ];
-    console.log('request', request);
-    this.orderService.validaterOrder(request).subscribe(data => {
-      this.isLoadingAction = false;
-      if (data.success) {
-        this.fileSystemService.resize(request).subscribe(data => {
-          if (data != null) {
-            if (data.code == 200) {
+        if(this.hasRoleSI) {
+          this.fileSystemService.resize(request).subscribe(data => {
+            if (data != null) {
+              if (data.code == 200) {
+                this.isLoading = false;
+                this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('app.file.system.notification.require.resize.success'));
+                setTimeout(() => {this.router.navigate(['/app-smart-cloud/file-storage/file-system/list']);}, 1500)
+              }
+            } else {
               this.isLoading = false;
-              this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('app.file.system.notification.require.resize.success'));
-              setTimeout(() => {this.router.navigate(['/app-smart-cloud/file-storage/file-system/list']);}, 1500)
+              this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.file.system.notification.require.resize.fail'));
             }
-          } else {
+          }, error => {
             this.isLoading = false;
             this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.file.system.notification.require.resize.fail'));
-          }
-        }, error => {
-          this.isLoading = false;
-          this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.file.system.notification.require.resize.fail'));
-        });
+          });
+        } else {
+          var returnPath: string = '/app-smart-cloud/file-storage/file-system/resize/normal/' + this.idFileSystem;
+          console.log('request', request);
+          this.router.navigate(['/app-smart-cloud/order/cart'], { state: { data: request, path: returnPath } });
+        }
+
       } else {
         this.isVisiblePopupError = true;
         this.errorList = data.data;
