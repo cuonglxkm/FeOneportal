@@ -94,10 +94,8 @@ export class ListPaymentComponent implements OnInit {
       .subscribe(() => {
         this.refreshParams();
         this.getListInvoices();
-      });
-    if (this.notificationService.connection == undefined) {
-      this.notificationService.initiateSignalrConnection();
-    }
+    });
+
     this.notificationService.connection.on('UpdateStatePayment', (data) => {
       this.getListInvoices();
     });

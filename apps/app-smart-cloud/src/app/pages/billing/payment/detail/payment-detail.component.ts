@@ -68,10 +68,6 @@ export class PaymentDetailComponent implements OnInit {
     this.getPaymentDetail();
     this.getOrderDetail(this.orderNumber);
     
-
-    if (this.notificationService.connection == undefined) {
-      this.notificationService.initiateSignalrConnection();
-    }
     this.notificationService.connection.on('UpdateStatePayment', (data) => {
       if(data && data["serviceId"] && Number(data["serviceId"]) == this.id){
         setTimeout(() => {

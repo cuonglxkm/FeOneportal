@@ -96,10 +96,7 @@ export class InstancesComponent implements OnInit {
 
     this.getListNetwork();
     this.getAllSecurityGroup();
-    if (this.notificationService.connection == undefined) {
-      this.notificationService.initiateSignalrConnection();
-    }
-
+    
     this.notificationService.connection.on('UpdateInstance', (data) => {
       if (data) {
         let instanceId = data.serviceId;
