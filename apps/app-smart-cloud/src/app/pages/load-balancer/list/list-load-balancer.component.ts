@@ -35,8 +35,8 @@ export class ListLoadBalancerComponent implements OnInit {
   pageIndex: number = 1;
   loadBalancerStatus: Map<String, string>;
   createNewLB: boolean = false;
-  projectName: any;
   noneQuota: boolean;
+  projectCurrentModel: any= undefined;
 
   constructor(@Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
               private router: Router,
@@ -61,11 +61,11 @@ export class ListLoadBalancerComponent implements OnInit {
   }
 
   projectChanged(project: ProjectModel) {
+    this.projectCurrentModel = project;
     this.isLoading = true;
     this.createNewLB = false;
     this.project = project?.id;
     this.typeVPC = project?.type;
-    this.projectName = project?.projectName;
 
     if (this.typeVPC == 1) {
       this.projectService.getProjectVpc(this.project)
@@ -166,7 +166,11 @@ export class ListLoadBalancerComponent implements OnInit {
   }
 
   handleDeleteOk() {
-    this.search(true);
+    if (this.typeVPC == 1) {
+      this.projectChanged(this.projectCurrentModel);
+    } else {
+      this.search(true);
+    }
   }
 
   navigateToCreateListener(idLb: number) {
