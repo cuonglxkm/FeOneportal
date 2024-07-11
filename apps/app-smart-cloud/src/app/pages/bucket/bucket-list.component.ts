@@ -298,7 +298,7 @@ export class BucketListComponent implements OnInit {
     this.bucketService.deleteOS(this.user.id).subscribe({
       next: (data) => {
         console.log(data);
-        this.notification.success('', 'Xóa Object Storage thành công');
+        this.notification.success(this.i18n.fanyi('app.status.success'), 'Xóa Object Storage thành công');
         this.isVisibleDeleteOS = false;
         this.isLoadingDeleteOS = false;
         this.hasObjectStorageInfo();
@@ -306,7 +306,7 @@ export class BucketListComponent implements OnInit {
       },
       error: (error) => {
         console.log(error.error);
-        this.notification.error('', 'Xóa Object Storage không thành công');
+        this.notification.error(this.i18n.fanyi('app.status.fail'), 'Xóa Object Storage không thành công');
         this.isLoadingDeleteOS = false;
         this.cdr.detectChanges();
       },

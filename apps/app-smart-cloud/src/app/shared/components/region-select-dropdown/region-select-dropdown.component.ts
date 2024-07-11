@@ -106,7 +106,13 @@ export class RegionSelectDropdownComponent implements OnInit {
     const regionId = region.regionId;
 
     const bucketPath = '/app-smart-cloud/object-storage/bucket';
-    const bucketAdvancePath = '/app-smart-cloud/object-storage/bucketadvance';
+    const bucketAdvancePath = '/app-smart-cloud/object-storage/bucket-advance';
+    const subUserPath = '/app-smart-cloud/object-storage/sub-user/list';
+    const subUserAdvancePath = '/app-smart-cloud/object-storage/sub-user-advance/list';
+    const s3KeyPath = '/app-smart-cloud/object-storage/s3-key';
+    const s3KeyAdvancePath = '/app-smart-cloud/object-storage/s3-key-advance';
+    const dashboardPath = '/app-smart-cloud/object-storage/dashboard';
+    const dashboardAdvancePath = '/app-smart-cloud/object-storage/dashboard-advance';
     const volumesPath = '/app-smart-cloud/volumes';
     const volumesAdvancePath = '/app-smart-cloud/volumesadvance';
     const instancesPath = '/app-smart-cloud/instances';
@@ -116,6 +122,18 @@ export class RegionSelectDropdownComponent implements OnInit {
       this.router.navigate([bucketPath]);
     } else if (this.url === bucketPath && regionId === 7) {
       this.router.navigate([bucketAdvancePath]);
+    } if (this.url === subUserAdvancePath && regionId !== 7) {
+      this.router.navigate([subUserPath]);
+    } else if (this.url === subUserPath && regionId === 7) {
+      this.router.navigate([subUserAdvancePath]);
+    } if (this.url === s3KeyAdvancePath && regionId !== 7) {
+      this.router.navigate([s3KeyPath]);
+    } else if (this.url === s3KeyPath && regionId === 7) {
+      this.router.navigate([s3KeyAdvancePath]);
+    } if (this.url === dashboardAdvancePath && regionId !== 7) {
+      this.router.navigate([dashboardPath]);
+    } else if (this.url === dashboardPath && regionId === 7) {
+      this.router.navigate([dashboardAdvancePath]);
     } else if (this.url === volumesAdvancePath && regionId !== 7) {
       this.router.navigate([volumesPath]);
     } else if (this.url === volumesPath && regionId === 7) {
