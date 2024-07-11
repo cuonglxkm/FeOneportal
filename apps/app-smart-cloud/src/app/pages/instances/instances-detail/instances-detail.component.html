@@ -73,6 +73,7 @@
       <one-portal-instances-btn
         *ngIf="
           instancesModel &&
+          instancesModel.status.toUpperCase() == 'KHOITAO' &&
           instancesModel.taskState.toUpperCase() != 'REBUILDING' &&
           !instancesModel.taskState.toUpperCase().includes('RESIZING') &&
           instancesModel.taskState.toUpperCase() != 'POWERING-OFF' &&
