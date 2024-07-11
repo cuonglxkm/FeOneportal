@@ -908,6 +908,14 @@ const routes: Routes = [
     }
   },
   {
+    path: 'object-storage/sub-user-advance/list',
+    component: ListSubUserComponent,
+    canActivate: [PermissionGuard],
+    data: {
+      permission: 'objectstorages:ObjectStorageUser'
+    }
+  },
+  {
     path: 'object-storage/sub-user/list',
     component: ListSubUserComponent,
     canActivate: [PermissionGuard],
@@ -925,6 +933,14 @@ const routes: Routes = [
   },
   {
     path: 'object-storage/dashboard',
+    component: DashboardObjectStorageComponent,
+    canActivate: [PermissionGuard],
+    data: {
+      permission: 'objectstorages:ObjectStorageMonitor'
+    }
+  },
+  {
+    path: 'object-storage/dashboard-advance',
     component: DashboardObjectStorageComponent,
     canActivate: [PermissionGuard],
     data: {
@@ -1013,7 +1029,7 @@ const routes: Routes = [
     }
   },
   {
-    path: 'object-storage/bucketadvance',
+    path: 'object-storage/bucket-advance',
     component: BucketListComponent,
     canActivate: [PermissionGuard],
     data: {
@@ -1088,6 +1104,14 @@ const routes: Routes = [
   },
   {
     path: 'object-storage/s3-key',
+    component: S3KeyComponent,
+    canActivate: [PermissionGuard],
+    data: {
+      permission: 'objectstorages:Search'
+    }
+  },
+  {
+    path: 'object-storage/s3-key-advance',
     component: S3KeyComponent,
     canActivate: [PermissionGuard],
     data: {

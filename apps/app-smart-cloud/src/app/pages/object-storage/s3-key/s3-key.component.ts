@@ -43,6 +43,7 @@ export class S3KeyComponent implements OnInit {
   value: string = ''
   searchDelay = new Subject<boolean>();
   region = JSON.parse(localStorage.getItem('regionId'));
+  url = window.location.pathname;
   constructor(
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
     @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
@@ -56,10 +57,16 @@ export class S3KeyComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    let regionAndProject = getCurrentRegionAndProject();
-    this.region = regionAndProject.regionId;
+    if (!this.url.includes('advance')) {
+      if(Number(localStorage.getItem('regionId')) === 7) {
+        this.region = 5
+      }else{
+        this.region = Number(localStorage.getItem('regionId'));
+      }
+    } else {
+      this.region = 7;
+    }
     this.hasObjectStorage();
-    this.getData()
     this.searchDelay.pipe(debounceTime(TimeCommon.timeOutSearch)).subscribe(() => {     
       this.getData();
     });

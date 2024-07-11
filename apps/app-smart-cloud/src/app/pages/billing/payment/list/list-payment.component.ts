@@ -89,10 +89,10 @@ export class ListPaymentComponent implements OnInit {
 
   ngOnInit(): void {
     this.customerId = this.tokenService.get()?.userId;
+    this.getListInvoices()
     this.searchDelay
       .pipe(debounceTime(TimeCommon.timeOutSearch))
       .subscribe(() => {
-        this.refreshParams();
         this.getListInvoices();
       });
     if (this.notificationService.connection == undefined) {
@@ -118,7 +118,24 @@ export class ListPaymentComponent implements OnInit {
 
   search(search: string) {
     this.value = search.toUpperCase().trim();
-    this.refreshParams();
+    this.getListInvoices();
+  }
+
+  onPageSizeChange(event: any) {
+    this.pageSize = event;
+    this.checked = false
+    this.setOfCheckedId.clear()
+    this.downloadList = []
+    this.getListInvoices();
+  }
+
+  onPageIndexChange(event: any) {
+    this.pageIndex = event;
+    this.checked = false
+    this.setOfCheckedId.clear()
+    this.downloadList = []
+    console.log(this.checked);
+    
     this.getListInvoices();
   }
 
@@ -135,13 +152,6 @@ export class ListPaymentComponent implements OnInit {
     }
   }
 
-  onQueryParamsChange(params: NzTableQueryParams) {
-    const { pageSize, pageIndex } = params;
-    this.pageSize = pageSize;
-    this.pageIndex = pageIndex;
-    this.getListInvoices();
-    this.refreshCheckedStatus();
-  }
 
   refreshCheckedStatus(): void {
     if (!this.response?.records) {
