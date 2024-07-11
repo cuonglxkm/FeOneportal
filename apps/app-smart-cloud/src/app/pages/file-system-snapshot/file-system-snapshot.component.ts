@@ -120,9 +120,6 @@ export class FileSystemSnapshotComponent {
       this.getData();
     });
 
-    if (this.notificationService.connection == undefined) {
-      this.notificationService.initiateSignalrConnection();
-    }
     this.notificationService.connection.on('UpdateStateShareSnapshot', (data) => {
       console.log(data);
       

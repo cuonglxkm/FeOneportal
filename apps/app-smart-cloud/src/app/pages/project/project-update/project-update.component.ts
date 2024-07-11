@@ -223,7 +223,7 @@ export class ProjectUpdateComponent implements OnInit {
   typeVpns2s: boolean;
   typeVm_gpu: boolean;
 
-  
+
   isShowAlertGpu: boolean;
   keySSD: boolean;
 
@@ -275,7 +275,7 @@ export class ProjectUpdateComponent implements OnInit {
     this.dateNow = new Date();
     this.calculate()
 
- 
+
       this.getProductActivebyregion();
 
     this.getCatelogOffer()
@@ -591,9 +591,20 @@ export class ProjectUpdateComponent implements OnInit {
         .subscribe({
           next: (result) => {
             if (result.success) {
-              var returnPath: string = window.location.pathname;
-              this.router.navigate(['/app-smart-cloud/order/cart'], { state: { data: request, path: returnPath } });
-
+              if(this.hasRoleSI) {
+                this.vpc.createIpPublic(request).subscribe(
+                  data => {
+                    this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('project.action.resize'));
+                    this.router.navigate(['/app-smart-cloud/project']);
+                  },
+                  error => {
+                    this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('project.note53'));
+                  }
+                );
+              } else {
+                var returnPath: string = window.location.pathname;
+                this.router.navigate(['/app-smart-cloud/order/cart'], { state: { data: request, path: returnPath } });
+              }
             } else {
               this.isVisiblePopupError = true;
               this.errorList = result.data;
@@ -1065,7 +1076,7 @@ export class ProjectUpdateComponent implements OnInit {
     this.calculate();
   }
   getCatelogOffer() {
-    
+
     this.instancesService.getTypeCatelogOffers(this.regionId, 'vm-gpu').subscribe(
       res => {
         this.listTypeCatelogOffer = res
@@ -1076,7 +1087,7 @@ export class ProjectUpdateComponent implements OnInit {
           GpuPrice: null,
           GpuPriceUnit: item?.price?.fixedPrice?.amount
         }));
-       
+
         console.log("this.gpuQuotasGobal", this.gpuQuotasGobal)
       }
     );

@@ -144,7 +144,7 @@
       </nz-card> -->
       <nz-card class="text-label" nzTitle="" style="border-radius: 8px;" [nzLoading]="loading">
         <one-portal-service-time-extend *ngIf="data"  [createDate]="data?.createDate"
-        [expiredDate]="data?.expireDate"  (valueChanged)="onChangeTime($event)" [newExpireDate]="total?.data?.orderItemPrices[0]?.expiredDate"></one-portal-service-time-extend>
+        [expiredDate]="data?.expireDate"  (valueChanged)="onChangeTime($event)" [newExpiredDate]="total?.data?.orderItemPrices[0]?.expiredDate"></one-portal-service-time-extend>
         <!-- <div style="margin-bottom: 20px">
           <span class="text-card-header">{{'app.extension.info' | i18n}}</span>
         </div>

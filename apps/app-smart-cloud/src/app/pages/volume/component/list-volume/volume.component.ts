@@ -267,10 +267,6 @@ export class VolumeComponent implements OnInit, OnDestroy {
       this.router.navigate(['/exception/500']);
     }
 
-    if (this.notificationService.connection == undefined) {
-      this.notificationService.initiateSignalrConnection();
-    }
-
     this.notificationService.connection.on('UpdateVolume', (message) => {
       if (message) {
         switch (message.actionType) {

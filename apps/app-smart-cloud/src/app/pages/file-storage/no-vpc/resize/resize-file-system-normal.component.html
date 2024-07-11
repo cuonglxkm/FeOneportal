@@ -16,7 +16,7 @@
   </ng-template>
   <ng-template #action>
     <div class="alain-custom-action text-right">
-      <region-select-dropdown (regionChange)="onRegionChanged($event)" (valueChanged)="regionChanged($event)"></region-select-dropdown>
+      <region-select-dropdown (regionChange)="regionChanged($event)" (valueChanged)="regionChanged($event)"></region-select-dropdown>
       <project-select-dropdown (valueChanged)="projectChanged($event)"
                                (userChanged)="userChanged($event)"
                                [regionId]="region"></project-select-dropdown>
@@ -232,16 +232,9 @@
               </div>
               <nz-row>
                 <nz-col style="width: 100%">
-                  <button *ngIf="!hasRoleSI" style="width: 100%" nz-button nzSize="large" nzType="primary"
+                  <button style="width: 100%" nz-button nzSize="large" nzType="primary"
                           [disabled]="!validateForm.valid || (storage == 0)"
                           (click)="navigateToPaymentSummary()"
-                          [nzLoading]="isLoadingAction">
-                    <img src="assets/imgs/wallet.svg" style="margin-right: 5px; padding-bottom: 5px;" />
-                    <span [style.color]="validateForm.invalid ? 'gray' : 'white'">{{ 'app.button.resize' | i18n }}</span>
-                  </button>
-                  <button *ngIf="hasRoleSI" style="width: 100%" nz-button nzSize="large" nzType="primary"
-                          [disabled]="!validateForm.valid || (storage == 0)"
-                          (click)="doResize()"
                           [nzLoading]="isLoadingAction">
                     <img src="assets/imgs/wallet.svg" style="margin-right: 5px; padding-bottom: 5px;" />
                     <span [style.color]="validateForm.invalid ? 'gray' : 'white'">{{ 'app.button.resize' | i18n }}</span>

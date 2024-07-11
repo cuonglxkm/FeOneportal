@@ -1,8 +1,8 @@
 {
-  "app-smart-cloud": "http://localhost:4203",
-  "app-kafka": "http://localhost:4201",
-  "app-kubernetes": "http://localhost:4205",
-  "app-mongodb-replicaset": "http://localhost:4206",
-  "app-k8s-premium": "http://localhost:4208",
-  "app-ecr": "http://localhost:4210"
+  "app-smart-cloud": "https://appsmartcloud-dev.onsmartcloud.com",
+  "app-kafka": "https://appkafka-dev.onsmartcloud.com",
+  "app-kubernetes": "https://appkubernetes-dev.onsmartcloud.com",
+  "app-mongodb-replicaset": "https://appmongodb-dev.onsmartcloud.com",
+  "app-k8s-premium": "https://appk8spre-dev.onsmartcloud.com",
+  "app-ecr": "https://apperc-dev.onsmartcloud.com"
 }

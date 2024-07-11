@@ -15,12 +15,12 @@ export const environment = {
     refreshTokenEnabled: true,
     refreshTokenType: 'auth-refresh'
   },
-  baseUrl: 'https://api-dev.onsmartcloud.com',
+  baseUrl: 'https://idg-api-gw-dev.onsmartcloud.com',
   sso: {
     issuer: 'https://identity-dev.onsmartcloud.com',
     clientId: 'frontend-client',
-    callback: 'http://localhost:4200/passport/callback/oneportal',
-    logout_callback: 'http://localhost:4200',
+    callback: 'https://oneportal-dev.onsmartcloud.com/passport/callback/oneportal',
+    logout_callback: 'https://oneportal-dev.onsmartcloud.com',
     scope: 'openid email roles offline_access',
   },
   recaptcha: {

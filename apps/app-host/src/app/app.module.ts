@@ -37,6 +37,7 @@ import {
 import { enUS as dateLang } from 'date-fns/locale';
 // import { default as ngLang } from '@angular/common/locales/zh';
 import { default as ngLang } from '@angular/common/locales/en';
+import { environment } from '@env/environment';
 
 const customLanguagePack = {
   ...vi_VN,
@@ -98,7 +99,7 @@ const APPINIT_PROVIDES = [
   {
     provide: APP_INITIALIZER,
     useFactory: (notificationService: NotificationService) => () =>
-      notificationService.initiateSignalrConnection(true),
+      notificationService.initiateSignalrConnection(environment.baseUrl, true),
     deps: [NotificationService],
     multi: true,
   },
