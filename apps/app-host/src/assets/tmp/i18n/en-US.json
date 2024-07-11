@@ -2981,7 +2981,11 @@
 
   "app.notification.warning.input": "Please enter the full information.",
   "app.notification.request.create.success": "The backup package creation request has success.",
-  "app.notification.request.create.fail": "The backup package creation request has failed. {{error}}",
+  "app.notification.request.resize.success": "The request to adjust the backup package was successful.",
+  "app.notification.request.extend.success": "The request to extend the backup package was successful.",
+  "app.notification.request.create.fail": "The backup package creation request has failed.",
+  "app.notification.request.resize.fail": "The request to adjust the backup package was failed.",
+  "app.notification.request.extend.fail": "The request to adjust the backup package was failed.",
   "app.notification.delete.package.success": "Successful deletion of the backup package.",
   "app.notification.delete.package.fail": "Failed to delete the backup package. {{error}}",
   "app.notification.delete.confirm": "Please enter the correct Backup Package name.",
