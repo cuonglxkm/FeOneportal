@@ -11,11 +11,10 @@ COPY --from=installer /app /app
 #COPY package*.json .
 #RUN yarn install
 COPY . .
-
 RUN pwd && ls
 RUN yarn global add @nrwl/cli
 #RUN yarn install
-RUN npx nx build app-smart-cloud --configuration=staging
+RUN npx nx build app-smart-cloud --configuration=prod
 #RUN pwd && ls
 
 #stage 3 nginx 
