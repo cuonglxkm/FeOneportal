@@ -185,10 +185,6 @@ export class ListBackupVolumeComponent implements OnInit, OnDestroy{
       this.router.navigate(['/exception/500']);
     }
 
-    if (this.notificationService.connection == undefined) {
-      this.notificationService.initiateSignalrConnection();
-    }
-
     this.notificationService.connection.on('UpdateVolumeBackup', (message) => {
       if (message) {
         switch (message.actionType) {

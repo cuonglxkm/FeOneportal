@@ -13,7 +13,7 @@ export const environment = {
     refreshTokenType: 'auth-refresh'
   },
   // @ts-ignore
-  baseUrl: '',
+  baseUrl: 'https://idg-api-gw.onsmartcloud.com',
   sso: {
     issuer: 'https://identity.onsmartcloud.com',
     clientId: 'frontend-client',

@@ -59,10 +59,6 @@ export class OrderDetailComponent {
     this.getUser()
     this.getOrderDetail()
 
-    if (this.notificationService.connection == undefined) {
-      this.notificationService.initiateSignalrConnection();
-    }
-
     this.notificationService.connection.on('UpdateOrder', (data) => {
       if (data.statusCode) {
         this.data.statusCode = data.statusCode;

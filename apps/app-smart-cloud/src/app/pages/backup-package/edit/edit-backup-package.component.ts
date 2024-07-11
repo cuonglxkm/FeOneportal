@@ -13,7 +13,6 @@ import { OrderItem } from '../../../shared/models/price';
 import { DataPayment, ItemPayment } from '../../instances/instances.model';
 import { getCurrentRegionAndProject } from '@shared';
 import { ProjectModel, RegionModel } from '../../../../../../../libs/common-utils/src';
-import { ProjectService } from 'src/app/shared/services/project.service';
 import { ConfigurationsService } from '../../../shared/services/configurations.service';
 import { debounceTime, Subject } from 'rxjs';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
@@ -97,12 +96,12 @@ export class EditBackupPackageComponent implements OnInit {
 
   getFormattedDateDifference(expireDate: string, createdDate: string): string {
     const diff = this.getMonthDifference(expireDate, createdDate);
-    if(diff.months == 0) {
-      return `${diff.days} ` +  this.i18n.fanyi('app.day')
+    if (diff.months == 0) {
+      return `${diff.days} ` + this.i18n.fanyi('app.day');
     } else if (diff.days == 0) {
-      return `${diff.months} ` +  this.i18n.fanyi('app.months')
+      return `${diff.months} ` + this.i18n.fanyi('app.months');
     } else {
-      return `${diff.months} ` + this.i18n.fanyi('app.months') +  ` ${diff.days} ` +  this.i18n.fanyi('app.day');
+      return `${diff.months} ` + this.i18n.fanyi('app.months') + ` ${diff.days} ` + this.i18n.fanyi('app.day');
     }
   }
 
@@ -152,11 +151,11 @@ export class EditBackupPackageComponent implements OnInit {
 
   backupPackageInit() {
     this.formUpdateBackupPackageModel.packageName = this.packageBackupModel.packageName;
-    console.log('size', this.packageBackupModel.sizeInGB)
-    if(this.packageBackupModel?.sizeInGB != null) {
-      this.formUpdateBackupPackageModel.newSize = this.storage + this.packageBackupModel?.sizeInGB
+    console.log('size', this.packageBackupModel.sizeInGB);
+    if (this.packageBackupModel?.sizeInGB != null) {
+      this.formUpdateBackupPackageModel.newSize = this.storage + this.packageBackupModel?.sizeInGB;
     } else {
-      this.formUpdateBackupPackageModel.newSize = this.storage
+      this.formUpdateBackupPackageModel.newSize = this.storage;
     }
     this.formUpdateBackupPackageModel.description = this.packageBackupModel.description;
     this.formUpdateBackupPackageModel.vpcId = this.project.toString();
@@ -196,6 +195,7 @@ export class EditBackupPackageComponent implements OnInit {
 
   isVisiblePopupError: boolean = false;
   errorList: string[] = [];
+
   closePopupError() {
     this.isVisiblePopupError = false;
   }
@@ -205,8 +205,8 @@ export class EditBackupPackageComponent implements OnInit {
     request.customerId = this.formUpdateBackupPackageModel.customerId;
     request.createdByUserId = this.formUpdateBackupPackageModel.customerId;
     request.note = this.i18n.fanyi('app.backup.package.resize');
-    request.totalPayment = this.orderItem?.totalPayment?.amount
-    request.totalVAT = this.orderItem?.totalVAT?.amount
+    request.totalPayment = this.orderItem?.totalPayment?.amount;
+    request.totalVAT = this.orderItem?.totalVAT?.amount;
     request.orderItems = [
       {
         orderItemQuantity: 1,
@@ -227,7 +227,24 @@ export class EditBackupPackageComponent implements OnInit {
       console.log('data', data);
       if (data.success) {
         console.log('request', request);
-        this.navigateToPaymentSummary(request);
+        if(this.hasRoleSI) {
+          this.packageBackupService.createOrder(request).subscribe(data => {
+              if (data != null) {
+                if (data.code == 200) {
+                  this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('app.notification.request.resize.success'));
+                  this.router.navigate(['/app-smart-cloud/volumes']);
+                }
+              } else {
+                this.isLoadingButton = false;
+              }
+            },
+            error => {
+              this.isLoadingButton = false;
+              this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.notification.request.resize.fail'));
+            });
+        } else {
+          this.navigateToPaymentSummary(request);
+        }
       } else {
         this.isVisiblePopupError = true;
         this.errorList = data.data;
@@ -247,12 +264,14 @@ export class EditBackupPackageComponent implements OnInit {
   }
 
 
+  hasRoleSI: boolean;
   ngOnInit() {
     this.getConfiguration();
     this.idBackupPackage = Number.parseInt(this.route.snapshot.paramMap.get('id'));
     let regionAndProject = getCurrentRegionAndProject();
     this.region = regionAndProject.regionId;
     this.project = regionAndProject.projectId;
+    this.hasRoleSI = localStorage.getItem('role').includes('SI');
     this.onChangeStorage();
     if (this.idBackupPackage) {
       this.getDetailPackageBackup(this.idBackupPackage);
