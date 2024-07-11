@@ -713,6 +713,7 @@ export class InstancesComponent implements OnInit {
   instanceEdit: InstancesModel;
   modalEdit(data: InstancesModel) {
     this.instanceEdit = data;
+    this.isVisibleEdit = true
     this.updateInstances.name = data.name;
     this.updateInstances.customerId = this.userId;
     this.updateInstances.id = data.id;
