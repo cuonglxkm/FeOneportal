@@ -189,7 +189,7 @@ export class RenewVolumeComponent implements OnInit {
   }
 
   navigateToPaymentSummary() {
-    this.isLoadingAction = true
+    this.isLoadingAction = true;
     if (this.validateForm.valid) {
       this.getTotalAmount();
       let request = new EditSizeVolumeModel();
@@ -206,27 +206,43 @@ export class RenewVolumeComponent implements OnInit {
         }
       ];
       this.orderService.validaterOrder(request).subscribe(data => {
-        if(data.success) {
-          this.isLoadingAction = false
-          var returnPath: string = '/app-smart-cloud/volumes/renew/' + this.idVolume;
-          console.log('request', request);
-          this.router.navigate(['/app-smart-cloud/order/cart'], { state: { data: request, path: returnPath } });
+        if (data.success) {
+          this.isLoadingAction = false;
+          if (this.hasRoleSI) {
+            this.volumeService.editSizeVolume(request).subscribe(data => {
+              this.isLoadingAction = false;
+              if (data != null) {
+                if (data.code == 200) {
+                  this.isLoadingAction = false;
+                  this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('volume.notification.require.renew.success'));
+                  this.router.navigate(['/app-smart-cloud/volumes']);
+                }
+              } else {
+                this.isLoadingAction = false;
+              }
+            });
+          } else {
+            var returnPath: string = '/app-smart-cloud/volumes/renew/' + this.idVolume;
+            console.log('request', request);
+            this.router.navigate(['/app-smart-cloud/order/cart'], { state: { data: request, path: returnPath } });
+          }
         } else {
           this.isVisiblePopupError = true;
           this.errorList = data.data;
-          this.isLoadingAction = false
+          this.isLoadingAction = false;
         }
-      } , error => {
-        this.isLoadingAction = false
-        this.notification.error(this.i18n.fanyi('app.status.fail'), error.error.detail)
-      })
+      }, error => {
+        this.isLoadingAction = false;
+        this.notification.error(this.i18n.fanyi('app.status.fail'), error.error.detail);
+      });
 
     }
   }
 
-  isLoadingAction: boolean = false
+  isLoadingAction: boolean = false;
+
   doRenew() {
-    this.isLoadingAction = true
+    this.isLoadingAction = true;
     if (this.validateForm.valid) {
       this.getTotalAmount();
       let request = new EditSizeVolumeModel();
@@ -242,23 +258,12 @@ export class RenewVolumeComponent implements OnInit {
           serviceDuration: this.validateForm.controls.time.value
         }
       ];
-      console.log('request',request)
+      console.log('request', request);
       this.orderService.validaterOrder(request).subscribe(data => {
-        if(data.success) {
-          this.volumeService.editSizeVolume(request).subscribe(data => {
-            this.isLoadingAction = false;
-            if (data != null) {
-              if (data.code == 200) {
-                this.isLoadingAction = false;
-                this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('volume.notification.require.renew.success'));
-                this.router.navigate(['/app-smart-cloud/volumes']);
-              }
-            } else {
-              this.isLoadingAction = false;
-            }
-          })
+        if (data.success) {
+
         }
-      })
+      });
     }
   }
 
@@ -273,10 +278,11 @@ export class RenewVolumeComponent implements OnInit {
   }
 
   hasRoleSI: boolean;
+
   ngOnInit(): void {
     this.idVolume = Number.parseInt(this.activatedRoute.snapshot.paramMap.get('id'));
     this.getVolumeById(this.idVolume);
-    this.hasRoleSI = localStorage.getItem('role').includes('SI')
+    this.hasRoleSI = localStorage.getItem('role').includes('SI');
   }
 
 

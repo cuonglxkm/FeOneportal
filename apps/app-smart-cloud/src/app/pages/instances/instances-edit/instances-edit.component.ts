@@ -976,10 +976,19 @@ export class InstancesEditComponent implements OnInit {
       .subscribe({
         next: (result) => {
           if (result.success) {
-            var returnPath: string = window.location.pathname;
-            this.router.navigate(['/app-smart-cloud/order/cart'], {
-              state: { data: this.order, path: returnPath },
-            });
+            if(this.hasRoleSI) {
+              this.dataService.create(this.order).subscribe(data => {
+                this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('app.notify.resize.instance.success'));
+                this.router.navigate(['/app-smart-cloud/volumes']);
+              }, error => {
+                this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('app.notify.resize.instance.fail'));
+              })
+            } else {
+              var returnPath: string = window.location.pathname;
+              this.router.navigate(['/app-smart-cloud/order/cart'], {
+                state: { data: this.order, path: returnPath },
+              });
+            }
           } else {
             this.isVisiblePopupError = true;
             this.errorList = result.data;

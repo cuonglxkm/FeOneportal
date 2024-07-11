@@ -205,9 +205,26 @@ export class CreatePackageBackupComponent implements OnInit {
       this.orderService.validaterOrder(request).subscribe(data => {
         this.isLoadingAction = false
         if(data.success) {
-          var returnPath: string = '/app-smart-cloud/backup/packages/create'
-          console.log('request', request)
-          this.router.navigate(['/app-smart-cloud/order/cart'], {state: {data: request, path: returnPath}});
+          if(this.hasRoleSI) {
+            this.packageBackupService.createOrder(request).subscribe(data => {
+                if (data != null) {
+                  if (data.code == 200) {
+                    this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('app.notification.request.create.success'));
+                    this.router.navigate(['/app-smart-cloud/volumes']);
+                  }
+                } else {
+                  this.isLoadingAction = false;
+                }
+              },
+              error => {
+                this.isLoadingAction = false;
+                this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.notification.request.create.fail'));
+              });
+          } else {
+            var returnPath: string = '/app-smart-cloud/backup/packages/create'
+            console.log('request', request)
+            this.router.navigate(['/app-smart-cloud/order/cart'], {state: {data: request, path: returnPath}});
+          }
         } else {
           this.isVisiblePopupError = true;
           this.errorList = data.data;
@@ -240,10 +257,12 @@ export class CreatePackageBackupComponent implements OnInit {
     });
   }
 
+  hasRoleSI: boolean;
   ngOnInit() {
     let regionAndProject = getCurrentRegionAndProject()
     this.region = regionAndProject.regionId
     this.project = regionAndProject.projectId
+    this.hasRoleSI = localStorage.getItem('role').includes('SI');
     this.getTotalAmount();
     this.getConfiguration();
     this.onChangeStorage();

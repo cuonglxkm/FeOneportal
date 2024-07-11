@@ -529,6 +529,8 @@
   "app.notify.create.instances.fail": "Khởi tạo máy ảo {{name}} không thành công",
   "app.notify.extend.instance.success": "Yêu cầu gia hạn máy ảo thành công",
   "app.notify.extend.instance.fail": "Yêu cầu gia hạn máy ảo không thành công",
+  "app.notify.resize.instance.success": "Yêu cầu điều chỉnh máy ảo thành công",
+  "app.notify.resize.instance.fail": "Yêu cầu điều chỉnh máy ảo không thành công",
 
 
   "app.choose.snapshot": "Chọn Snapshot",
@@ -2637,7 +2639,11 @@
   "project.note48": "Load Balancer giúp nhân phối tải hiệu quả, nâng cao khả năng chịu tải của hệ thống và tăng trải nghiệm người dùng",
   "project.note49": "Chọn gói Load Balancer",
   "project.action.creating": "Yêu cầu tạo dự án đã được gửi đi",
+  "project.action.extend": "Yêu cầu gia hạn dự án đã được gửi đi",
+  "project.action.resize": "Yêu cầu điều chỉnh dự án đã được gửi đi",
   "project.note51": "Tạo dự án thất bại",
+  "project.note52": "Gia hạn dự án thất bại",
+  "project.note53": "Điều chỉnh dự án thất bại",
   "project.create":"Khởi tạo dự án",
   "app.project.price": "Thành tiền",
   "status.enable":"Cho phép",
@@ -2885,7 +2891,11 @@
   "app.backup.package.placeholder.search.name": "Tìm kiếm theo tên",
   "app.notification.warning.input": "Vui lòng nhập đầy đủ thông tin",
   "app.notification.request.create.success": "Yêu cầu tạo gói backup thành công.",
-  "app.notification.request.create.fail": "Yêu cầu tạo gói backup thất bại. {{error}}",
+  "app.notification.request.resize.success": "Yêu cầu điều chỉnh gói backup thành công.",
+  "app.notification.request.extend.success": "Yêu cầu gia hạn gói backup thành công.",
+  "app.notification.request.create.fail": "Yêu cầu tạo gói backup thất bại.",
+  "app.notification.request.resize.fail": "Yêu cầu điều chỉnh gói backup thất bại.",
+  "app.notification.request.extend.fail": "Yêu cầu gia hạn gói backup thất bại.",
   "app.notification.delete.package.success": "Yêu cầu xóa gói backup thành công",
   "app.notification.delete.package.fail": "Yêu cầu xóa gói backup thất bại. {{ error }}",
   "app.notification.delete.confirm": "Vui lòng nhập đúng tên Backup Package",
@@ -3116,7 +3126,7 @@
 
   "app.validate.order.fail": "Lỗi khi kiểm tra order",
 
-  
+
 
 
   "app.manage.site.to.site.title":"Quản lý VPN site to site",
