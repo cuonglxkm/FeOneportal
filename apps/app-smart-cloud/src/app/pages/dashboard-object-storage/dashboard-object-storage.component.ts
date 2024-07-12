@@ -12,6 +12,7 @@ import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { finalize } from 'rxjs';
 import { I18NService } from '@core';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
+import { RegionID } from 'src/app/shared/enums/common.enum';
 
 @Component({
   selector: 'one-portal-dashboard-object-storage',
@@ -115,13 +116,13 @@ export class DashboardObjectStorageComponent implements OnInit {
 
   ngOnInit() {
     if (!this.url.includes('advance')) {
-      if(Number(localStorage.getItem('regionId')) === 7) {
-        this.region = 5
+      if(Number(localStorage.getItem('regionId')) === RegionID.ADVANCE) {
+        this.region = RegionID.NORMAL
       }else{
         this.region = Number(localStorage.getItem('regionId'));
       }
     } else {
-      this.region = 7;
+      this.region = RegionID.ADVANCE;
     }
     this.hasObjectStorage();
 
