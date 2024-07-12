@@ -100,17 +100,18 @@
       #rowSelectionTable
       nzShowSizeChanger
       [nzData]="response?.records"
-      [nzPageIndex]="response?.currentPage"
+      (nzPageSizeChange)="onPageSizeChange($event)"
+      (nzPageIndexChange)="onPageIndexChange($event)"
+      [nzPageSize]="pageSize" 
+      [nzPageIndex]="pageIndex"
       [nzTotal]="response?.totalCount"
-      (nzQueryParams)="onQueryParamsChange($event)"
       [nzLoading]="isLoading"
       [nzFrontPagination]="false"
-      (nzCurrentPageDataChange)="onCurrentPageDataChange($event)"
     >
       <thead>
         <tr>
           <th
-            [nzChecked]="checked"
+            [(nzChecked)]="checked"
             [nzIndeterminate]="indeterminate"
             (nzCheckedChange)="onAllChecked($event)"
             nzLeft

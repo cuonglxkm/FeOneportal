@@ -449,56 +449,31 @@ export class CreateVolumeComponent implements OnInit {
     ];
     this.orderService.validaterOrder(request).subscribe(data => {
       if (data.success) {
-        var returnPath: string = '/app-smart-cloud/volume/create';
-        console.log('request', request);
-        console.log('service name', this.volumeCreate.serviceName);
-        this.router.navigate(['/app-smart-cloud/order/cart'], {
-          state: { data: request, path: returnPath }
-        });
-      } else {
-        this.isVisiblePopupError = true;
-        this.errorList = data.data;
-      }
-    }, error => {
-      this.notification.error(this.i18n.fanyi('app.status.fail'), error.error.detail);
-    });
-  }
-
-  createOrderVolume() {
-    this.isLoadingAction = true;
-    let request: CreateVolumeRequestModel = new CreateVolumeRequestModel();
-    request.customerId = this.volumeCreate.customerId;
-    request.createdByUserId = this.volumeCreate.customerId;
-    request.note = this.i18n.fanyi('volume.notification.request.create');
-    request.totalPayment = this.orderItem?.totalPayment?.amount;
-    request.totalVAT = this.orderItem?.totalVAT?.amount;
-    request.orderItems = [
-      {
-        orderItemQuantity: 1,
-        specification: JSON.stringify(this.volumeCreate),
-        specificationType: 'volume_create',
-        price: this.orderItem?.totalAmount.amount,
-        serviceDuration: this.validateForm.controls.time.value
-      }
-    ];
-    this.orderService.validaterOrder(request).subscribe(data => {
-      if (data.success) {
-        this.volumeService.createNewVolume(request).subscribe(data => {
-            this.isLoadingAction = false;
-            if (data != null) {
-              if (data.code == 200) {
-                this.isLoadingAction = false;
-                this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('volume.notification.require.create.success'));
-                this.router.navigate(['/app-smart-cloud/volumes']);
-              }
-            } else {
+        if(this.hasRoleSI) {
+          this.volumeService.createNewVolume(request).subscribe(data => {
               this.isLoadingAction = false;
-            }
-          },
-          error => {
-            this.isLoadingAction = false;
-            this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('volume.notification.request.create.fail'));
+              if (data != null) {
+                if (data.code == 200) {
+                  this.isLoadingAction = false;
+                  this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('volume.notification.require.create.success'));
+                  this.router.navigate(['/app-smart-cloud/volumes']);
+                }
+              } else {
+                this.isLoadingAction = false;
+              }
+            },
+            error => {
+              this.isLoadingAction = false;
+              this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('volume.notification.request.create.fail'));
+            });
+        } else {
+          var returnPath: string = '/app-smart-cloud/volume/create';
+          console.log('request', request);
+          console.log('service name', this.volumeCreate.serviceName);
+          this.router.navigate(['/app-smart-cloud/order/cart'], {
+            state: { data: request, path: returnPath }
           });
+        }
       } else {
         this.isVisiblePopupError = true;
         this.errorList = data.data;
