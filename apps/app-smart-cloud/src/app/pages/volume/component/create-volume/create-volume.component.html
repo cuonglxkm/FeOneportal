@@ -134,6 +134,7 @@
                                      [ngModel]="selectedValueHDD"
                                      [ngModelOptions]="{ standalone: true }"
                                      (click)="onChangeStatusHDD()"
+                                     [disabled]="disableHDD"
                                      (keyup.enter)="onChangeStatusHDD()"></label>
                             </ng-template>
                             <ng-template #nzTitleselectedHDDorSSD1><b>{{ 'volume.hdd' | i18n }}</b></ng-template>
@@ -157,6 +158,7 @@
                                      [ngModel]="selectedValueSSD"
                                      [ngModelOptions]="{ standalone: true }"
                                      (click)="onChangeStatusSSD()"
+                                     [disabled]="disableSSD"
                                      (keyup.enter)="onChangeStatusSSD()"></label>
                             </ng-template>
                             <ng-template #nzTitleselectedHDDorSSD2><b>{{ 'volume.ssd'|i18n }}</b></ng-template>

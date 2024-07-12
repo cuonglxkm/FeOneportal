@@ -240,7 +240,12 @@ export class CreateVolumeComponent implements OnInit {
     console.log('snap shot', this.isInitSnapshot);
     if (this.isInitSnapshot) {
       this.validateForm.controls.snapshot.setValidators(Validators.required);
+      this.disableSSD = true
+      this.disableHDD = true
     } else {
+      this.disableSSD = false
+      this.disableHDD = false
+
       this.validateForm.controls.snapshot.clearValidators();
       this.validateForm.controls.snapshot.updateValueAndValidity();
 
@@ -536,14 +541,16 @@ export class CreateVolumeComponent implements OnInit {
     this.volumeService.getVolumeById(idVolume, this.project).subscribe(data => {
       this.onChangeStatusEncrypt(data.isEncryption);
       this.onChangeStatusMultiAttach(data.isMultiAttach);
-      console.log('instance', data?.attachedInstances[0].instanceId);
-      this.instanceSelectedChange(data?.attachedInstances[0].instanceId);
-      this.validateForm.controls.instanceId.setValue(data?.attachedInstances[0].instanceId);
+      console.log('instance', data?.attachedInstances[0]?.instanceId);
+      this.instanceSelectedChange(data?.attachedInstances[0]?.instanceId);
+      this.validateForm.controls.instanceId.setValue(data?.attachedInstances[0]?.instanceId);
     });
   }
 
+  disableHDD: boolean
+  disableSSD: boolean
   getDetailSnapshotVolume(id) {
-    this.snapshotvlService.getDetailSnapshotSchedule(id).subscribe(data => {
+    this.snapshotvlService.getSnapshotVolumeById(id).subscribe(data => {
       this.snapshot = data;
       console.log('data', data);
       this.validateForm.controls.storage.setValue(data.sizeInGB);
@@ -554,10 +561,12 @@ export class CreateVolumeComponent implements OnInit {
       if (data.volumeType == 'hdd') {
         this.selectedValueHDD = true;
         this.selectedValueSSD = false;
+        this.disableHDD = true
       }
       if (data.volumeType == 'ssd') {
         this.selectedValueSSD = true;
         this.selectedValueHDD = false;
+        this.disableSSD = true
       }
     });
   }
