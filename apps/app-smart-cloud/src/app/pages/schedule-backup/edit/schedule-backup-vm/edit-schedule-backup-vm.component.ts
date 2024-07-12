@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ScheduleService } from '../../../../shared/services/schedule.service';
@@ -10,6 +10,7 @@ import { ProjectModel, RegionModel } from '../../../../../../../../libs/common-u
 import { I18NService } from '@core';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { getCurrentRegionAndProject } from '@shared';
+import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
 
 @Component({
   selector: 'one-portal-extend-schedule-backup-vm',
@@ -75,7 +76,7 @@ export class EditScheduleBackupVmComponent implements OnInit {
     daysOfWeekMultiple: [[] as string[]]
   });
 
-
+  @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
 
   constructor(private fb: NonNullableFormBuilder,
               private router: Router,
@@ -90,6 +91,9 @@ export class EditScheduleBackupVmComponent implements OnInit {
 
   regionChanged(region: RegionModel) {
     this.region = region.regionId;
+    if(this.projectCombobox){
+      this.projectCombobox.loadProjects(true, region.regionId);
+    }
     this.router.navigate(['/app-smart-cloud/schedule/backup/list']);
 
   }

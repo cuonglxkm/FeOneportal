@@ -74,4 +74,8 @@ export enum ServiceActionType {
     CANCEL = 45
 }
 
+export enum RegionID {
+    NORMAL = 5,
+    ADVANCE = 7,
+}    
 

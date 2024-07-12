@@ -59,6 +59,7 @@ import { I18NService } from '@core';
 import { ConfigurationsService } from 'src/app/shared/services/configurations.service';
 import { OrderService } from 'src/app/shared/services/order.service';
 import { VolumeService } from 'src/app/shared/services/volume.service';
+import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
 
 class ConfigCustom {
   //cấu hình tùy chỉnh
@@ -150,7 +151,7 @@ export class InstancesCreateComponent implements OnInit {
   selectedSnapshot: number;
   cardHeight: string = '160px';
   selectedIndextab: number;
-
+  @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
   constructor(
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
     @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
@@ -1585,6 +1586,9 @@ export class InstancesCreateComponent implements OnInit {
   //#endregion
 
   onRegionChange(region: RegionModel) {
+    if(this.projectCombobox){
+      this.projectCombobox.loadProjects(true, region.regionId);
+    }
     this.router.navigate(['/app-smart-cloud/instances']);
   }
 
@@ -1689,8 +1693,6 @@ export class InstancesCreateComponent implements OnInit {
     this.instanceCreate.dSubscriptionType = null;
     this.instanceCreate.oneSME_SubscriptionId = null;
     this.instanceCreate.regionId = this.region;
-    // this.instanceCreate.userEmail = this.tokenService.get()['email'];
-    // this.instanceCreate.actorEmail = this.tokenService.get()['email'];
   }
 
   volumeCreate: VolumeCreate = new VolumeCreate();
@@ -1707,13 +1709,6 @@ export class InstancesCreateComponent implements OnInit {
     this.volumeCreate.serviceType = 2;
     this.volumeCreate.serviceInstanceId = 0;
     this.volumeCreate.customerId = this.tokenService.get()?.userId;
-
-    // let currentDate = new Date();
-    // let lastDate = new Date();
-    // lastDate.setDate(currentDate.getDate() + this.numberMonth * 30);
-    // this.volumeCreate.createDate = currentDate.toISOString().substring(0, 19);
-    // this.volumeCreate.expireDate = lastDate.toISOString().substring(0, 19);
-
     this.volumeCreate.saleDept = null;
     this.volumeCreate.saleDeptCode = null;
     this.volumeCreate.contactPersonEmail = null;
@@ -1746,13 +1741,6 @@ export class InstancesCreateComponent implements OnInit {
     this.ipCreate.serviceType = 4;
     this.ipCreate.serviceInstanceId = 0;
     this.ipCreate.customerId = this.tokenService.get()?.userId;
-
-    // let currentDate = new Date();
-    // let lastDate = new Date();
-    // lastDate.setDate(currentDate.getDate() + this.numberMonth * 30);
-    // this.ipCreate.createDate = currentDate.toISOString().substring(0, 19);
-    // this.ipCreate.expireDate = lastDate.toISOString().substring(0, 19);
-
     this.ipCreate.saleDept = null;
     this.ipCreate.saleDeptCode = null;
     this.ipCreate.contactPersonEmail = null;
@@ -1930,11 +1918,39 @@ export class InstancesCreateComponent implements OnInit {
               .subscribe({
                 next: (result) => {
                   if (result.success) {
-                    var returnPath: string = window.location.pathname;
-                    console.log('instance create', this.instanceCreate);
-                    this.router.navigate(['/app-smart-cloud/order/cart'], {
-                      state: { data: this.order, path: returnPath },
-                    });
+                    if (this.hasRoleSI) {
+                      this.dataService.create(this.order).subscribe({
+                        next: (data: any) => {
+                          this.notification.success(
+                            '',
+                            this.i18n.fanyi(
+                              'app.notify.create.instances.success',
+                              {
+                                name: this.instanceCreate.serviceName,
+                              }
+                            )
+                          );
+                          this.router.navigate(['/app-smart-cloud/instances']);
+                        },
+                        error: (e) => {
+                          this.notification.error(
+                            e.statusText,
+                            this.i18n.fanyi(
+                              'app.notify.create.instances.fail',
+                              {
+                                name: this.instanceCreate.serviceName,
+                              }
+                            )
+                          );
+                        },
+                      });
+                    } else {
+                      var returnPath: string = window.location.pathname;
+                      console.log('instance create', this.instanceCreate);
+                      this.router.navigate(['/app-smart-cloud/order/cart'], {
+                        state: { data: this.order, path: returnPath },
+                      });
+                    }
                   } else {
                     this.isVisiblePopupError = true;
                     this.errorList = result.data;
@@ -2048,318 +2064,33 @@ export class InstancesCreateComponent implements OnInit {
         .subscribe({
           next: (result) => {
             if (result.success) {
-              var returnPath: string = window.location.pathname;
-              console.log('instance create', this.instanceCreate);
-              this.router.navigate(['/app-smart-cloud/order/cart'], {
-                state: { data: this.order, path: returnPath },
-              });
-            } else {
-              this.isVisiblePopupError = true;
-              this.errorList = result.data;
-            }
-          },
-          error: (error) => {
-            this.notification.error(
-              this.i18n.fanyi('app.status.fail'),
-              error.error.detail
-            );
-          },
-        });
-    }
-  }
-
-  create(): void {
-    this.isLoading = true;
-    if (!this.isSnapshot && (this.hdh == null || this.hdh == 0)) {
-      this.notification.error(
-        '',
-        this.i18n.fanyi('app.notify.choose.os.required')
-      );
-      return;
-    }
-    if (this.isSnapshot && this.selectedSnapshot == null) {
-      this.notification.error(
-        '',
-        this.i18n.fanyi('app.notify.choose.snapshot.required')
-      );
-      return;
-    }
-    if (this.isPreConfigPackage == true && this.offerFlavor == null) {
-      this.notification.error(
-        '',
-        this.i18n.fanyi('app.notify.choose.config.package.required')
-      );
-      return;
-    }
-    if (
-      this.isCustomconfig == true &&
-      (this.configCustom.vCPU == 0 ||
-        this.configCustom.ram == 0 ||
-        this.configCustom.capacity == 0)
-    ) {
-      this.notification.error(
-        '',
-        this.i18n.fanyi('app.notify.optional.configuration.invalid')
-      );
-      return;
-    }
-    if (
-      this.isGpuConfig == true &&
-      (this.configGPU.CPU == 0 ||
-        this.configGPU.ram == 0 ||
-        this.configGPU.storage == 0 ||
-        this.configGPU.GPU == 0 ||
-        this.configGPU.gpuOfferId == 0)
-    ) {
-      this.notification.error(
-        '',
-        this.i18n.fanyi('app.notify.gpu.configuration.invalid')
-      );
-      return;
-    }
-    // if (
-    //   this.isCustomconfig == true &&
-    //   (this.configCustom.vCPU / this.configCustom.ram <= 0.5 ||
-    //     this.configCustom.vCPU / this.configCustom.ram >= 1)
-    // ) {
-    //   this.notification.error(
-    //     'Cấu hình chưa hợp lệ',
-    //     'Tỷ lệ CPU/RAM nằm trong khoảng 0.5 < CPU/RAM < 1'
-    //   );
-    //   return;
-    // }
-
-    this.instanceInit();
-    this.orderItem = [];
-    if (!this.isSnapshot) {
-      this.dataService
-        .checkflavorforimage(
-          this.hdh,
-          this.instanceCreate.volumeSize,
-          this.instanceCreate.ram,
-          this.instanceCreate.cpu
-        )
-        .subscribe({
-          next: (data) => {
-            let specificationInstance = JSON.stringify(this.instanceCreate);
-            let orderItemInstance = new OrderItem();
-            orderItemInstance.orderItemQuantity = 1;
-            orderItemInstance.specification = specificationInstance;
-            orderItemInstance.specificationType = 'instance_create';
-            orderItemInstance.price = this.totalAmount;
-            orderItemInstance.serviceDuration = this.numberMonth;
-            this.orderItem.push(orderItemInstance);
-            console.log('order instance', orderItemInstance);
-
-            this.listOfDataBlockStorage.forEach((e: BlockStorage) => {
-              if (e.type != '' && e.capacity > 0) {
-                this.volumeInit(e);
-                let specificationVolume = JSON.stringify(this.volumeCreate);
-                let orderItemVolume = new OrderItem();
-                orderItemVolume.orderItemQuantity = 1;
-                orderItemVolume.specification = specificationVolume;
-                orderItemVolume.specificationType = 'volume_create';
-                orderItemVolume.price = e.price * this.numberMonth;
-                orderItemVolume.serviceDuration = this.numberMonth;
-                this.orderItem.push(orderItemVolume);
+              if (this.hasRoleSI) {
+                this.dataService.create(this.order).subscribe({
+                  next: (data: any) => {
+                    this.notification.success(
+                      '',
+                      this.i18n.fanyi('app.notify.create.instances.success', {
+                        name: this.instanceCreate.serviceName,
+                      })
+                    );
+                    this.router.navigate(['/app-smart-cloud/instances']);
+                  },
+                  error: (e) => {
+                    this.notification.error(
+                      e.statusText,
+                      this.i18n.fanyi('app.notify.create.instances.fail', {
+                        name: this.instanceCreate.serviceName,
+                      })
+                    );
+                  },
+                });
+              } else {
+                var returnPath: string = window.location.pathname;
+                console.log('instance create', this.instanceCreate);
+                this.router.navigate(['/app-smart-cloud/order/cart'], {
+                  state: { data: this.order, path: returnPath },
+                });
               }
-            });
-
-            this.listOfDataIPv4.forEach((e: Network) => {
-              if (e.ip != '' && e.amount > 0) {
-                this.ipInit(e, false);
-                let specificationIP = JSON.stringify(this.ipCreate);
-                let orderItemIP = new OrderItem();
-                orderItemIP.orderItemQuantity = e.amount;
-                orderItemIP.specification = specificationIP;
-                orderItemIP.specificationType = 'ip_create';
-                orderItemIP.price = e.price * this.numberMonth;
-                orderItemIP.serviceDuration = this.numberMonth;
-                this.orderItem.push(orderItemIP);
-              }
-            });
-
-            this.listOfDataIPv6.forEach((e: Network) => {
-              if (e.ip != '' && e.amount > 0) {
-                this.ipInit(e, true);
-                this.ipCreate.useIPv6 = true;
-                let specificationIP = JSON.stringify(this.ipCreate);
-                let orderItemIP = new OrderItem();
-                orderItemIP.orderItemQuantity = e.amount;
-                orderItemIP.specification = specificationIP;
-                orderItemIP.specificationType = 'ip_create';
-                orderItemIP.price = e.price * this.numberMonth;
-                orderItemIP.serviceDuration = this.numberMonth;
-                this.orderItem.push(orderItemIP);
-              }
-            });
-
-            this.order.customerId = this.tokenService.get()?.userId;
-            this.order.createdByUserId = this.tokenService.get()?.userId;
-            this.order.note = 'tạo vm';
-            this.order.totalVAT =
-              this.totalVAT +
-              this.totalVATVolume +
-              this.totalVATIPv4 +
-              this.totalVATIPv6;
-            this.order.totalPayment =
-              this.totalincludesVAT +
-              this.totalPaymentVolume +
-              this.totalPaymentIPv4 +
-              this.totalPaymentIPv6;
-            this.order.orderItems = this.orderItem;
-
-            this.orderService
-              .validaterOrder(this.order)
-              .pipe(
-                finalize(() => {
-                  this.isLoading = false;
-                  this.cdr.detectChanges();
-                })
-              )
-              .subscribe({
-                next: (result) => {
-                  if (result.success) {
-                    this.dataService.create(this.order).subscribe({
-                      next: (data: any) => {
-                        this.notification.success(
-                          '',
-                          this.i18n.fanyi(
-                            'app.notify.create.instances.success',
-                            {
-                              name: this.instanceCreate.serviceName,
-                            }
-                          )
-                        );
-                        this.router.navigate(['/app-smart-cloud/instances']);
-                      },
-                      error: (e) => {
-                        this.notification.error(
-                          e.statusText,
-                          this.i18n.fanyi('app.notify.create.instances.fail', {
-                            name: this.instanceCreate.serviceName,
-                          })
-                        );
-                      },
-                    });
-                  } else {
-                    this.isVisiblePopupError = true;
-                    this.errorList = result.data;
-                  }
-                },
-                error: (error) => {
-                  this.notification.error(
-                    this.i18n.fanyi('app.status.fail'),
-                    error.error.detail
-                  );
-                },
-              });
-          },
-          error: (e) => {
-            this.isLoading = false;
-            this.cdr.detectChanges();
-            let numbers: number[] = [];
-            const regex = /\d+/g;
-            const matches = e.error.match(regex);
-            if (matches) {
-              numbers = matches.map((match) => parseInt(match));
-              this.notification.error(
-                '',
-                this.i18n.fanyi('app.notify.check.config.for.os', {
-                  nameHdh: this.nameHdh,
-                  volume: numbers[0],
-                  ram: numbers[1],
-                  cpu: numbers[2],
-                })
-              );
-            }
-          },
-        });
-    } else {
-      let specificationInstance = JSON.stringify(this.instanceCreate);
-      let orderItemInstance = new OrderItem();
-      orderItemInstance.orderItemQuantity = 1;
-      orderItemInstance.specification = specificationInstance;
-      orderItemInstance.specificationType = 'instance_create';
-      orderItemInstance.price = this.totalAmount;
-      orderItemInstance.serviceDuration = this.numberMonth;
-      this.orderItem.push(orderItemInstance);
-      console.log('order instance', orderItemInstance);
-
-      this.listOfDataBlockStorage.forEach((e: BlockStorage) => {
-        if (e.type != '' && e.capacity > 0) {
-          this.volumeInit(e);
-          let specificationVolume = JSON.stringify(this.volumeCreate);
-          let orderItemVolume = new OrderItem();
-          orderItemVolume.orderItemQuantity = 1;
-          orderItemVolume.specification = specificationVolume;
-          orderItemVolume.specificationType = 'volume_create';
-          orderItemVolume.price = e.price * this.numberMonth;
-          orderItemVolume.serviceDuration = this.numberMonth;
-          this.orderItem.push(orderItemVolume);
-        }
-      });
-
-      this.listOfDataIPv4.forEach((e: Network) => {
-        if (e.ip != '' && e.amount > 0) {
-          this.ipInit(e, false);
-          let specificationIP = JSON.stringify(this.ipCreate);
-          let orderItemIP = new OrderItem();
-          orderItemIP.orderItemQuantity = e.amount;
-          orderItemIP.specification = specificationIP;
-          orderItemIP.specificationType = 'ip_create';
-          orderItemIP.price = e.price * this.numberMonth;
-          orderItemIP.serviceDuration = this.numberMonth;
-          this.orderItem.push(orderItemIP);
-        }
-      });
-
-      this.listOfDataIPv6.forEach((e: Network) => {
-        if (e.ip != '' && e.amount > 0) {
-          this.ipInit(e, true);
-          this.ipCreate.useIPv6 = true;
-          let specificationIP = JSON.stringify(this.ipCreate);
-          let orderItemIP = new OrderItem();
-          orderItemIP.orderItemQuantity = e.amount;
-          orderItemIP.specification = specificationIP;
-          orderItemIP.specificationType = 'ip_create';
-          orderItemIP.price = e.price * this.numberMonth;
-          orderItemIP.serviceDuration = this.numberMonth;
-          this.orderItem.push(orderItemIP);
-        }
-      });
-
-      this.order.customerId = this.tokenService.get()?.userId;
-      this.order.createdByUserId = this.tokenService.get()?.userId;
-      this.order.note = 'tạo vm';
-      this.order.totalVAT =
-        this.totalVAT +
-        this.totalVATVolume +
-        this.totalVATIPv4 +
-        this.totalVATIPv6;
-      this.order.totalPayment =
-        this.totalincludesVAT +
-        this.totalPaymentVolume +
-        this.totalPaymentIPv4 +
-        this.totalPaymentIPv6;
-      this.order.orderItems = this.orderItem;
-
-      this.orderService
-        .validaterOrder(this.order)
-        .pipe(
-          finalize(() => {
-            this.isLoading = false;
-            this.cdr.detectChanges();
-          })
-        )
-        .subscribe({
-          next: (result) => {
-            if (result.success) {
-              var returnPath: string = window.location.pathname;
-              console.log('instance create', this.instanceCreate);
-              this.router.navigate(['/app-smart-cloud/order/cart'], {
-                state: { data: this.order, path: returnPath },
-              });
             } else {
               this.isVisiblePopupError = true;
               this.errorList = result.data;

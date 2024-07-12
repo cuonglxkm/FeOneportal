@@ -31,7 +31,7 @@
         (valueChanged)="onRegionChange($event)"
         (regionChange)="onRegionChanged($event)"
       ></region-select-dropdown>
-      <project-select-dropdown
+      <project-select-dropdown #projectCombobox
         [regionId]="regionId"
         (valueChanged)="onProjectChange($event)"
         (userChanged)="userChangeProject()"
@@ -73,6 +73,7 @@
       <one-portal-instances-btn
         *ngIf="
           instancesModel &&
+          instancesModel.status.toUpperCase() == 'KHOITAO' &&
           instancesModel.taskState.toUpperCase() != 'REBUILDING' &&
           !instancesModel.taskState.toUpperCase().includes('RESIZING') &&
           instancesModel.taskState.toUpperCase() != 'POWERING-OFF' &&

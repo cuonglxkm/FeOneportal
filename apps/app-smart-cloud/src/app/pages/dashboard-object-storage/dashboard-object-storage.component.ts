@@ -12,6 +12,7 @@ import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { finalize } from 'rxjs';
 import { I18NService } from '@core';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
+import { RegionID } from 'src/app/shared/enums/common.enum';
 
 @Component({
   selector: 'one-portal-dashboard-object-storage',
@@ -37,7 +38,7 @@ export class DashboardObjectStorageComponent implements OnInit {
 
   bucketSelected: any;
   timeSelected: any = 5;
-
+  url = window.location.pathname;
   summary: Summary[];
 
   times = [
@@ -105,24 +106,28 @@ export class DashboardObjectStorageComponent implements OnInit {
 
   getSummaryObjectStorage() {
     console.log('time', this.timeSelected)
-    this.objectStorageService.getMonitorObjectStorage(this.bucketSelected, this.timeSelected, this.region).subscribe(data => {
-      console.log('summary', data);
+    this.loadingSrv.open({ type: 'spin', text: 'Loading...' });
+    this.objectStorageService.getMonitorObjectStorage(this.bucketSelected, this.timeSelected, this.region)
+    .pipe(finalize(() => this.loadingSrv.close()))
+    .subscribe(data => {
       this.summary = data;
     });
   }
 
   ngOnInit() {
-    let regionAndProject = getCurrentRegionAndProject();
-    this.region = regionAndProject.regionId;
-    this.project = regionAndProject.projectId;
+    if (!this.url.includes('advance')) {
+      if(Number(localStorage.getItem('regionId')) === RegionID.ADVANCE) {
+        this.region = RegionID.NORMAL
+      }else{
+        this.region = Number(localStorage.getItem('regionId'));
+      }
+    } else {
+      this.region = RegionID.ADVANCE;
     this.hasObjectStorage();
-
-    this.bucketService.getListBucket(1, 9999, '', this.region).subscribe(data => {
-      this.bucketList = data.records;
       this.bucketSelected = this.bucketList[0].bucketName
       console.log(this.bucketSelected)
       console.log(this.bucketList)
       this.getSummaryObjectStorage()
-    });
+    };
   }
 }

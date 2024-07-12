@@ -38,10 +38,13 @@ export class ProjectSelectDropdownComponent implements OnInit, OnChanges {
       this.regionId = JSON.parse(localStorage.getItem('regionId'));
       // this.valueChanged.emit(this.selectedRegion)
     }
-    // this.loadProjects(false);
+    this.loadProjects(false);
   }
 
-  loadProjects(reload: boolean) {
+  loadProjects(reload: boolean, regionId = 0) {
+    if(regionId){
+      this.regionId = regionId;
+    }
     if (this.regionId == null) return;
     if (localStorage.getItem('projects') && reload == false) {
       this.listProject = JSON.parse(localStorage.getItem('projects'));
@@ -68,6 +71,7 @@ export class ProjectSelectDropdownComponent implements OnInit, OnChanges {
           this.listProject = data;
 
           if (this.listProject.length > 0) {
+            localStorage.setItem('projects', JSON.stringify(this.listProject));
             if (localStorage.getItem('projectId') != null) {
               this.selectedProject = this.listProject.find(
                 (item) =>
@@ -87,14 +91,16 @@ export class ProjectSelectDropdownComponent implements OnInit, OnChanges {
             this.listProject = [];
             this.selectedProject = null;
             this.valueChanged.emit(null);
-            localStorage.removeItem('projectId');
+            localStorage.removeItem("projects");
+            localStorage.removeItem("projectId");
           }
         },
         (error) => {
           this.listProject = [];
           this.selectedProject = null;
           this.valueChanged.emit(null);
-          localStorage.removeItem('projectId');
+          localStorage.removeItem("projects");
+          localStorage.removeItem("projectId");
         }
       );
     }
@@ -104,11 +110,11 @@ export class ProjectSelectDropdownComponent implements OnInit, OnChanges {
     if (changes.disabledProject && !this.isFirstVisit) {
       return;
     }
-    if (changes.regionId) {
-      this.loadProjects(true);
-    } else {
-      this.selectedProject = null;
-      this.loadProjects(true);
-    }
+    // if (changes.regionId) {
+    //   this.loadProjects(true);
+    // } else {
+    //   this.selectedProject = null;
+    //   this.loadProjects(true);
+    // }
   }
 }

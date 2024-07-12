@@ -1,4 +1,4 @@
-import {Component, Inject, OnInit} from '@angular/core';
+import {Component, Inject, OnInit, ViewChild} from '@angular/core';
 import {Router} from "@angular/router";
 import {PackageBackupService} from "../../../shared/services/package-backup.service";
 import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
@@ -15,6 +15,7 @@ import { I18NService } from '@core';
 import { ConfigurationsService } from '../../../shared/services/configurations.service';
 import { debounceTime, Subject } from 'rxjs';
 import { OrderService } from '../../../shared/services/order.service';
+import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
 
 @Component({
   selector: 'one-portal-create-package-backup',
@@ -60,7 +61,7 @@ export class CreatePackageBackupComponent implements OnInit {
 
   nameList: string[] = [];
 
-
+  @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
   constructor(private router: Router,
               private packageBackupService: PackageBackupService,
               @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
@@ -83,7 +84,10 @@ export class CreatePackageBackupComponent implements OnInit {
   }
 
   regionChanged(region: RegionModel) {
-    this.region = region.regionId
+    this.region = region.regionId;
+    if(this.projectCombobox){
+      this.projectCombobox.loadProjects(true, region.regionId);
+    }
     this.router.navigate(['/app-smart-cloud/backup/packages'])
   }
 
@@ -205,9 +209,26 @@ export class CreatePackageBackupComponent implements OnInit {
       this.orderService.validaterOrder(request).subscribe(data => {
         this.isLoadingAction = false
         if(data.success) {
-          var returnPath: string = '/app-smart-cloud/backup/packages/create'
-          console.log('request', request)
-          this.router.navigate(['/app-smart-cloud/order/cart'], {state: {data: request, path: returnPath}});
+          if(this.hasRoleSI) {
+            this.packageBackupService.createOrder(request).subscribe(data => {
+                if (data != null) {
+                  if (data.code == 200) {
+                    this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('app.notification.request.create.success'));
+                    this.router.navigate(['/app-smart-cloud/volumes']);
+                  }
+                } else {
+                  this.isLoadingAction = false;
+                }
+              },
+              error => {
+                this.isLoadingAction = false;
+                this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.notification.request.create.fail'));
+              });
+          } else {
+            var returnPath: string = '/app-smart-cloud/backup/packages/create'
+            console.log('request', request)
+            this.router.navigate(['/app-smart-cloud/order/cart'], {state: {data: request, path: returnPath}});
+          }
         } else {
           this.isVisiblePopupError = true;
           this.errorList = data.data;
@@ -240,10 +261,12 @@ export class CreatePackageBackupComponent implements OnInit {
     });
   }
 
+  hasRoleSI: boolean;
   ngOnInit() {
     let regionAndProject = getCurrentRegionAndProject()
     this.region = regionAndProject.regionId
     this.project = regionAndProject.projectId
+    this.hasRoleSI = localStorage.getItem('role').includes('SI');
     this.getTotalAmount();
     this.getConfiguration();
     this.onChangeStorage();

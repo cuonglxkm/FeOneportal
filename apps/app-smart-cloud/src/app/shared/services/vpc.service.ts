@@ -68,10 +68,14 @@ export class VpcService extends BaseService {
   }
 
   delete(id: any):Observable<HttpResponse<any>> {
+    localStorage.removeItem("projects");
+    localStorage.removeItem("projectId");
     return this.http.delete<HttpResponse<any>>(this.baseUrl + this.ENDPOINT.provisions + "/vpcs/"+ id);
   }
 
   updateVpc(request: any, id: any) {
+    localStorage.removeItem("projects");
+    localStorage.removeItem("projectId");
     return this.http.put<HttpResponse<any>>(this.baseUrl + this.ENDPOINT.provisions + "/vpcs/" + id, request, this.httpOptions);
   }
   createIpPublic(IP: any): Observable<any>  {

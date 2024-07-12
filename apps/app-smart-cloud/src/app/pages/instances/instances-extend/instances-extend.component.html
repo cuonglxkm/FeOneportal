@@ -13,15 +13,15 @@
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>
         <a [routerLink]="['/app-smart-cloud/instances']">{{
-            'app.instances' | i18n
-          }}</a>
+          'app.instances' | i18n
+        }}</a>
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>
         <a
           [routerLink]="[
             '/app-smart-cloud/instances/instances-detail/' + this.id
           ]"
-        >{{ 'app.instances.detail' | i18n }}</a
+          >{{ 'app.instances.detail' | i18n }}</a
         >
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>
@@ -29,7 +29,7 @@
       </nz-breadcrumb-item>
     </nz-breadcrumb>
     <ng-template #separatorTemplate
-    ><img src="assets/imgs/arrow-square-right.svg" alt="" />
+      ><img src="assets/imgs/arrow-square-right.svg" alt="" />
     </ng-template>
   </ng-template>
   <ng-template #action>
@@ -39,7 +39,7 @@
         (valueChanged)="onRegionChange($event)"
         (regionChange)="onRegionChanged($event)"
       ></region-select-dropdown>
-      <project-select-dropdown
+      <project-select-dropdown #projectCombobox
         [regionId]="regionId"
         (userChanged)="onProjectChange($event)"
       ></project-select-dropdown>
@@ -49,8 +49,7 @@
 
 <div>
   <nz-row *ngIf="instancesModel" nzGutter="24">
-    <nz-col nzSpan="16"
-    >
+    <nz-col nzSpan="16">
       <nz-card
         style="border-radius: 8px"
         [nzBordered]="false"
@@ -58,56 +57,55 @@
       >
         <div style="margin-bottom: 20px">
           <span class="text-card-header">{{
-              'app.instances.info' | i18n
-            }}</span>
+            'app.instances.info' | i18n
+          }}</span>
         </div>
         <div class="customRow">
           <nz-row>
             <nz-col nzSpan="12">
               <nz-row style="padding: 12px 0 12px 0">
                 <span class="text-label customSpan" style="width: 35%"
-                >{{ 'app.instances.name' | i18n }}:</span
+                  >{{ 'app.instances.name' | i18n }}:</span
                 >
                 <span class="text-value-detail customSpan">{{
-                    instancesModel.name || ''
-                  }}</span>
+                  instancesModel.name || ''
+                }}</span>
               </nz-row>
             </nz-col>
             <nz-col nzSpan="12">
               <nz-row style="padding: 12px 0 12px 0">
                 <span class="text-label" style="width: 35%"
-                >{{ 'app.instances.OS' | i18n }}:</span
+                  >{{ 'app.instances.OS' | i18n }}:</span
                 >
                 <span class="text-value-detail"
-                >{{ instancesModel.imageName }}
+                  >{{ instancesModel.imageName }}
                   <img
                     style="cursor: pointer; margin-left: 10px"
                     [nz-tooltip]="'app.change' | i18n"
                     src="assets/imgs/refresh.svg"
                     alt=""
-                    (click)="navigateToChangeImage()"
-                  /></span></nz-row
-              >
+                    (click)="navigateToChangeImage()" /></span
+              ></nz-row>
             </nz-col>
           </nz-row>
           <nz-row style="background-color: #e2e2e9">
             <nz-col nzSpan="12">
               <nz-row style="padding: 12px 0 12px 0">
                 <span class="text-label customSpan" style="width: 35%"
-                >{{ 'app.configuration.package' | i18n }}:</span
+                  >{{ 'app.configuration.package' | i18n }}:</span
                 >
                 <span class="text-value-detail customSpan"
-                ><a
-                  nz-popover
-                  [nzPopoverTitle]="instancesModel.flavorName | slice : 3"
-                  [nzPopoverContent]="contentConfigPackage"
-                  [nzPopoverTrigger]="'click'"
-                >{{ instancesModel.flavorName | slice : 3 }}</a
-                >
+                  ><a
+                    nz-popover
+                    [nzPopoverTitle]="instancesModel.flavorName | slice : 3"
+                    [nzPopoverContent]="contentConfigPackage"
+                    [nzPopoverTrigger]="'click'"
+                    >{{ instancesModel.flavorName | slice : 3 }}</a
+                  >
                   <ng-template #contentConfigPackage>
                     <nz-row style="width: 320px">
                       <nz-col nzSpan="12"
-                      >{{ instancesModel.volumeType == 1 ? 'SSD' : 'HDD' }}
+                        >{{ instancesModel.volumeType == 1 ? 'SSD' : 'HDD' }}
                       </nz-col>
                       <nz-col class="text-right" nzSpan="12">
                         {{ instancesModel.storage }} GB
@@ -143,28 +141,27 @@
             <nz-col nzSpan="12">
               <nz-row style="padding: 12px 0 12px 0">
                 <span class="text-label" style="width: 35%"
-                >{{ 'app.alert.access.security' | i18n }}:</span
+                  >{{ 'app.alert.access.security' | i18n }}:</span
                 >
                 <span
                   class="text-value-detail"
                   *ngFor="let item of listSecurityGroupModel; let first = first"
-                >{{ !first ? ', ' : '' }}{{ item.name }}
+                  >{{ !first ? ', ' : '' }}{{ item.name }}
                 </span>
               </nz-row>
-            </nz-col
-            >
+            </nz-col>
           </nz-row>
           <nz-row>
             <nz-col nzSpan="12">
               <nz-row style="padding: 12px 0 12px 0">
                 <span class="text-label customSpan" style="width: 35%"
-                >{{ 'app.task.status' | i18n }}:</span
+                  >{{ 'app.task.status' | i18n }}:</span
                 >
                 <span
                   *ngIf="instancesModel.taskState.toUpperCase() == 'SHUTOFF'"
                   class="text-value-detail customSpan"
                   style="color: #ea3829"
-                >{{ instancesModel.taskState.toUpperCase() }}</span
+                  >{{ instancesModel.taskState.toUpperCase() }}</span
                 >
                 <span
                   *ngIf="
@@ -172,13 +169,13 @@
                   "
                   class="text-value-detail customSpan"
                   style="color: #ea3829"
-                >{{ instancesModel.taskState.toUpperCase() }}</span
+                  >{{ instancesModel.taskState.toUpperCase() }}</span
                 >
                 <span
                   *ngIf="instancesModel.taskState.toUpperCase() == 'REBUILDING'"
                   class="text-value-detail customSpan"
                   style="color: #ea3829"
-                >{{ instancesModel.taskState.toUpperCase() }}</span
+                  >{{ instancesModel.taskState.toUpperCase() }}</span
                 >
                 <span
                   *ngIf="
@@ -186,19 +183,19 @@
                   "
                   class="text-value-detail customSpan"
                   style="color: #ea3829"
-                >{{ instancesModel.taskState.toUpperCase() }}</span
+                  >{{ instancesModel.taskState.toUpperCase() }}</span
                 >
                 <span
                   *ngIf="instancesModel.taskState.toUpperCase() == 'REBOOTING'"
                   class="text-value-detail customSpan"
                   style="color: #ea3829"
-                >{{ instancesModel.taskState.toUpperCase() }}</span
+                  >{{ instancesModel.taskState.toUpperCase() }}</span
                 >
                 <span
                   *ngIf="instancesModel.taskState.toUpperCase() == 'ACTIVE'"
                   class="text-value-detail customSpan"
                   style="color: #008d47"
-                >{{ instancesModel.taskState.toUpperCase() }}</span
+                  >{{ instancesModel.taskState.toUpperCase() }}</span
                 >
                 <span
                   *ngIf="
@@ -206,70 +203,67 @@
                   "
                   class="text-value-detail customSpan"
                   style="color: #008d47"
-                >{{ instancesModel.taskState.toUpperCase() }}</span
+                  >{{ instancesModel.taskState.toUpperCase() }}</span
                 >
               </nz-row>
             </nz-col>
             <nz-col nzSpan="12">
               <nz-row style="padding: 12px 0 12px 0">
                 <span class="text-label" style="width: 35%"
-                >{{ 'app.ip.public' | i18n }}:</span
+                  >{{ 'app.ip.public' | i18n }}:</span
                 >
                 <span class="text-value-detail">{{ listIPPublicStr }}</span>
               </nz-row>
-            </nz-col
-            >
+            </nz-col>
           </nz-row>
           <nz-row style="background-color: #e2e2e9">
             <nz-col nzSpan="12">
               <nz-row style="padding: 12px 0 12px 0">
                 <span class="text-label customSpan" style="width: 35%"
-                >{{ 'app.hard.drive.type' | i18n }}:</span
+                  >{{ 'app.hard.drive.type' | i18n }}:</span
                 >
                 <span
                   *ngIf="instancesModel.volumeType == 0"
                   class="text-value-detail customSpan"
-                >HDD</span
+                  >HDD</span
                 >
                 <span
                   *ngIf="instancesModel.volumeType == 1"
                   class="text-value-detail customSpan"
-                >SSD</span
+                  >SSD</span
                 >
               </nz-row>
             </nz-col>
             <nz-col nzSpan="12">
               <nz-row style="padding: 12px 0 12px 0">
                 <span class="text-label" style="width: 35%"
-                >{{ 'app.ip.lan' | i18n }}:</span
+                  >{{ 'app.ip.lan' | i18n }}:</span
                 >
                 <span class="text-value-detail">{{ listIPLanStr }}</span>
               </nz-row>
-            </nz-col
-            >
+            </nz-col>
           </nz-row>
           <nz-row>
             <nz-col nzSpan="12">
               <nz-row style="padding: 12px 0 12px 0">
                 <span class="text-label customSpan" style="width: 35%"
-                >{{ 'app.domestic.bandwidth' | i18n }}:</span
+                  >{{ 'app.domestic.bandwidth' | i18n }}:</span
                 >
                 <span class="text-value-detail customSpan"
-                >{{ instancesModel.bttn || '' }}{{ ' Mbps' }}</span
+                  >{{ instancesModel.bttn || '' }}{{ ' Mbps' }}</span
                 >
               </nz-row>
             </nz-col>
             <nz-col nzSpan="12">
               <nz-row style="padding: 12px 0 12px 0">
                 <span class="text-label" style="width: 35%"
-                >{{ 'app.international.bandwidth' | i18n }}:</span
+                  >{{ 'app.international.bandwidth' | i18n }}:</span
                 >
                 <span class="text-value-detail"
-                >{{ instancesModel.btqt }}{{ ' Mbps' }}</span
+                  >{{ instancesModel.btqt }}{{ ' Mbps' }}</span
                 >
               </nz-row>
-            </nz-col
-            >
+            </nz-col>
           </nz-row>
         </div>
       </nz-card>
@@ -285,8 +279,8 @@
       <nz-card class="card-border" style="border-radius: 8px">
         <div style="margin-bottom: 20px">
           <span class="text-card-header">{{
-              'app.estimated.cost' | i18n
-            }}</span>
+            'app.estimated.cost' | i18n
+          }}</span>
         </div>
         <div class="text-value">{{ 'app.instances.name' | i18n }}</div>
         <div style="margin-top: 10px" class="text-label">
@@ -315,26 +309,26 @@
         </div>
         <div style="margin-top: 10px" class="text-label">
           {{ instancesModel.storage }} GB Root Disk (<span
-          *ngIf="instancesModel.volumeType == 0"
-        >HDD</span
-        >
+            *ngIf="instancesModel.volumeType == 0"
+            >HDD</span
+          >
           <span *ngIf="instancesModel.volumeType == 1">SSD</span>)
         </div>
         <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
         <div *ngIf="!hasRoleSI">
           <nz-row style="margin-bottom: 10px" nzGutter="16">
             <nz-col nzSpan="16">
-            <span *ngIf="numberMonth == 1" class="text-value">
-              {{ 'app.cost.a.month' | i18n }}
-            </span>
+              <span *ngIf="numberMonth == 1" class="text-value">
+                {{ 'app.cost.a.month' | i18n }}
+              </span>
               <span *ngIf="numberMonth > 1" class="text-value">
-              {{ 'app.cost.n.month' | i18n : { numberMonth: numberMonth } }}
-            </span>
+                {{ 'app.cost.n.month' | i18n : { numberMonth: numberMonth } }}
+              </span>
             </nz-col>
             <nz-col class="text-right" nzSpan="8">
-            <span class="text-value" style="color: #0066b3" nzAlign="right">
-              {{ totalAmount | number }} VND
-            </span>
+              <span class="text-value" style="color: #0066b3" nzAlign="right">
+                {{ totalAmount | number }} VND
+              </span>
             </nz-col>
           </nz-row>
           <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
@@ -343,41 +337,46 @@
               <span class="text-value">{{ 'app.cost.vat' | i18n }}</span>
             </nz-col>
             <nz-col class="text-right" nzSpan="8">
-              <span class="text-value" style="color: #0066b3" nzAlign="right">{{ totalVAT | number }}VND</span>
+              <span class="text-value" style="color: #0066b3" nzAlign="right"
+                >{{ totalVAT | number }}VND</span
+              >
             </nz-col>
           </nz-row>
-          <nz-row style="
-            margin-bottom: 20px;
-            background-color: #cce9ff;
-            padding: 16px 0 16px 0;
-            border-radius: 8px;
-          " nzGutter="16">
+          <nz-row
+            style="
+              margin-bottom: 20px;
+              background-color: #cce9ff;
+              padding: 16px 0 16px 0;
+              border-radius: 8px;
+            "
+            nzGutter="16"
+          >
             <nz-col nzSpan="16">
-              <span class="text-label">{{ 'app.total.payment' | i18n }}</span><br />
-              <span class="text-note-italicized">({{ 'app.include.vat' | i18n : { vat: '10' } }})</span>
+              <span class="text-label">{{ 'app.total.payment' | i18n }}</span
+              ><br />
+              <span class="text-note-italicized"
+                >({{ 'app.include.vat' | i18n : { vat: '10' } }})</span
+              >
             </nz-col>
             <nz-col class="text-right" nzSpan="8">
-              <span class="text-value" style="color: #ea3829" nzAlign="right">{{ totalincludesVAT | number }}VND</span>
+              <span class="text-value" style="color: #ea3829" nzAlign="right"
+                >{{ totalincludesVAT | number }}VND</span
+              >
             </nz-col>
           </nz-row>
         </div>
         <nz-row>
           <nz-col style="width: 100%">
-            <button *ngIf="!hasRoleSI" style="width: 100%"
-                    nz-button
-                    nzSize="large"
-                    nzType="primary"
-                    [nzLoading]="isLoading"
-                    (click)="handleOkExtend()">
-              <span nz-icon nzType="wallet" nzTheme="outline"></span>{{ 'app.button.extend' | i18n }}
-            </button>
-            <button *ngIf="hasRoleSI" style="width: 100%"
-                    nz-button
-                    nzSize="large"
-                    nzType="primary"
-                    [nzLoading]="isLoading"
-                    (click)="doExtend()">
-              <span nz-icon nzType="wallet" nzTheme="outline"></span>{{ 'app.button.extend' | i18n }}
+            <button
+              style="width: 100%"
+              nz-button
+              nzSize="large"
+              nzType="primary"
+              [nzLoading]="isLoading"
+              (click)="handleOkExtend()"
+            >
+              <span nz-icon nzType="wallet" nzTheme="outline"></span
+              >{{ 'app.button.extend' | i18n }}
             </button>
           </nz-col>
         </nz-row>
@@ -388,4 +387,5 @@
 <one-portal-popup-list-error
   [isVisible]="isVisiblePopupError"
   [errorList]="errorList"
-  (onCancel)="closePopupError()" />
+  (onCancel)="closePopupError()"
+/>

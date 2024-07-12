@@ -8,3 +8,4 @@ export const PEER_VPN_REGEX =/^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|
 export const CIDR_REGEX = '^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}0\\/24(,\\s*((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}0\\/24)*$';
 export const FILE_NO_SPACE_REGEX = /^[a-zA-Z0-9_\-\.]+$/;
 export const FOLDER_NAME_REGEX = /^[A-Za-z0-9!_.*'()-]{3,}$/;
+

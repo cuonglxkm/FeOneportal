@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { PackageBackupService } from '../../../shared/services/package-backup.service';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
@@ -19,6 +19,7 @@ import { I18NService } from '@core';
 import { ProjectService } from 'src/app/shared/services/project.service';
 import { Subject } from 'rxjs';
 import { OrderService } from '../../../shared/services/order.service';
+import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
 
 @Component({
   selector: 'one-portal-extend-backup-package',
@@ -49,6 +50,8 @@ export class ExtendBackupPackageComponent implements OnInit {
 
   timeSelected: any;
 
+  @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
+
   constructor(private router: Router,
               private packageBackupService: PackageBackupService,
               @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
@@ -63,6 +66,9 @@ export class ExtendBackupPackageComponent implements OnInit {
 
   regionChanged(region: RegionModel) {
     this.region = region.regionId;
+    if(this.projectCombobox){
+      this.projectCombobox.loadProjects(true, region.regionId);
+    }
     this.router.navigate(['/app-smart-cloud/backup/packages']);
   }
 
@@ -129,9 +135,26 @@ export class ExtendBackupPackageComponent implements OnInit {
     this.orderService.validaterOrder(request).subscribe(data => {
       this.isLoadingAction = false;
       if (data.success) {
-        var returnPath: string = '/app-smart-cloud/backup/packages/extend/' + this.idBackupPackage;
-        console.log('request', request);
-        this.router.navigate(['/app-smart-cloud/order/cart'], { state: { data: request, path: returnPath } });
+        if(this.hasRoleSI) {
+          this.packageBackupService.createOrder(request).subscribe(data => {
+              if (data != null) {
+                if (data.code == 200) {
+                  this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('app.notification.request.extend.success'));
+                  this.router.navigate(['/app-smart-cloud/volumes']);
+                }
+              } else {
+                this.isLoadingAction = false;
+              }
+            },
+            error => {
+              this.isLoadingAction = false;
+              this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.notification.request.extend.fail'));
+            });
+        } else {
+          var returnPath: string = '/app-smart-cloud/backup/packages/extend/' + this.idBackupPackage;
+          console.log('request', request);
+          this.router.navigate(['/app-smart-cloud/order/cart'], { state: { data: request, path: returnPath } });
+        }
       } else {
         this.isVisiblePopupError = true;
         this.errorList = data.data;
@@ -142,31 +165,6 @@ export class ExtendBackupPackageComponent implements OnInit {
       this.notification.error(this.i18n.fanyi('app.status.fail'), error.error.detail);
     });
   }
-
-  // doExtend() {
-  //   this.isLoading = true;
-  //
-  //   console.log('request', request);
-  //   this.packageBackupService.createOrder(request).subscribe(data => {
-  //     if (data != undefined || data != null) {
-  //       //Case du tien trong tai khoan => thanh toan thanh cong : Code = 200
-  //       if (data.code == 200) {
-  //         this.isLoading = false;
-  //         this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('app.notification.extend.success'));
-  //         this.router.navigate(['/app-smart-cloud/backup/packages']);
-  //       }
-  //       //Case ko du tien trong tai khoan => chuyen sang trang thanh toan VNPTPay : Code = 310
-  //       else if (data.code == 310) {
-  //         this.isLoading = false;
-  //         // this.router.navigate([data.data]);
-  //         window.location.href = data.data;
-  //       }
-  //     } else {
-  //       this.isLoading = false;
-  //       this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.notification.extend.fail'));
-  //     }
-  //   });
-  // }
 
   formExtendBackupPackage: FormExtendBackupPackageModel = new FormExtendBackupPackageModel();
 
@@ -238,6 +236,8 @@ export class ExtendBackupPackageComponent implements OnInit {
     }
   }
 
+
+  hasRoleSI: boolean;
   ngOnInit() {
     this.idBackupPackage = Number.parseInt(this.route.snapshot.paramMap.get('id'));
     let regionAndProject = getCurrentRegionAndProject();
@@ -245,7 +245,7 @@ export class ExtendBackupPackageComponent implements OnInit {
     this.project = regionAndProject.projectId;
     // this.customerId = this.tokenService.get()?.userId
     // this.onChangeTime();
-
+    this.hasRoleSI = localStorage.getItem('role').includes('SI');
     if (this.idBackupPackage) {
       this.getDetailPackageBackup(this.idBackupPackage);
 

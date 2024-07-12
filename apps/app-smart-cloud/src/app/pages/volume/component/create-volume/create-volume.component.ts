@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, Inject, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, Inject, OnInit, ViewChild } from '@angular/core';
 import { CreateVolumeRequestModel } from '../../../../shared/models/volume.model';
 import { VolumeService } from '../../../../shared/services/volume.service';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
@@ -18,6 +18,7 @@ import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { ConfigurationsService } from '../../../../shared/services/configurations.service';
 import { OrderService } from '../../../../shared/services/order.service';
 import { SupportService } from '../../../../shared/models/catalog.model';
+import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
 
 @Component({
   selector: 'app-create-volume',
@@ -100,7 +101,7 @@ export class CreateVolumeComponent implements OnInit {
   // snapshot: any;
 
   serviceActiveByRegion: SupportService[] = [];
-
+  @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
   constructor(
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
     private volumeService: VolumeService,
@@ -208,6 +209,9 @@ export class CreateVolumeComponent implements OnInit {
 
   regionChanged(region: RegionModel) {
     this.region = region.regionId;
+    if(this.projectCombobox){
+      this.projectCombobox.loadProjects(true, region.regionId);
+    }
     this.router.navigate(['/app-smart-cloud/volumes']);
   }
 
@@ -449,56 +453,31 @@ export class CreateVolumeComponent implements OnInit {
     ];
     this.orderService.validaterOrder(request).subscribe(data => {
       if (data.success) {
-        var returnPath: string = '/app-smart-cloud/volume/create';
-        console.log('request', request);
-        console.log('service name', this.volumeCreate.serviceName);
-        this.router.navigate(['/app-smart-cloud/order/cart'], {
-          state: { data: request, path: returnPath }
-        });
-      } else {
-        this.isVisiblePopupError = true;
-        this.errorList = data.data;
-      }
-    }, error => {
-      this.notification.error(this.i18n.fanyi('app.status.fail'), error.error.detail);
-    });
-  }
-
-  createOrderVolume() {
-    this.isLoadingAction = true;
-    let request: CreateVolumeRequestModel = new CreateVolumeRequestModel();
-    request.customerId = this.volumeCreate.customerId;
-    request.createdByUserId = this.volumeCreate.customerId;
-    request.note = this.i18n.fanyi('volume.notification.request.create');
-    request.totalPayment = this.orderItem?.totalPayment?.amount;
-    request.totalVAT = this.orderItem?.totalVAT?.amount;
-    request.orderItems = [
-      {
-        orderItemQuantity: 1,
-        specification: JSON.stringify(this.volumeCreate),
-        specificationType: 'volume_create',
-        price: this.orderItem?.totalAmount.amount,
-        serviceDuration: this.validateForm.controls.time.value
-      }
-    ];
-    this.orderService.validaterOrder(request).subscribe(data => {
-      if (data.success) {
-        this.volumeService.createNewVolume(request).subscribe(data => {
-            this.isLoadingAction = false;
-            if (data != null) {
-              if (data.code == 200) {
-                this.isLoadingAction = false;
-                this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('volume.notification.require.create.success'));
-                this.router.navigate(['/app-smart-cloud/volumes']);
-              }
-            } else {
+        if(this.hasRoleSI) {
+          this.volumeService.createNewVolume(request).subscribe(data => {
               this.isLoadingAction = false;
-            }
-          },
-          error => {
-            this.isLoadingAction = false;
-            this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('volume.notification.request.create.fail'));
+              if (data != null) {
+                if (data.code == 200) {
+                  this.isLoadingAction = false;
+                  this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('volume.notification.require.create.success'));
+                  this.router.navigate(['/app-smart-cloud/volumes']);
+                }
+              } else {
+                this.isLoadingAction = false;
+              }
+            },
+            error => {
+              this.isLoadingAction = false;
+              this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('volume.notification.request.create.fail'));
+            });
+        } else {
+          var returnPath: string = '/app-smart-cloud/volume/create';
+          console.log('request', request);
+          console.log('service name', this.volumeCreate.serviceName);
+          this.router.navigate(['/app-smart-cloud/order/cart'], {
+            state: { data: request, path: returnPath }
           });
+        }
       } else {
         this.isVisiblePopupError = true;
         this.errorList = data.data;

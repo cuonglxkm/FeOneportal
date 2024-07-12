@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Inject, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Inject, OnInit, Output, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { getCurrentRegionAndProject } from '@shared';
 import { LoadBalancerService } from '../../../shared/services/load-balancer.service';
@@ -9,6 +9,7 @@ import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from '@core';
 import { CatalogService } from '../../../shared/services/catalog.service';
 import { OfferDetail } from '../../../shared/models/catalog.model';
+import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
 
 @Component({
   selector: 'one-portal-detail-load-balancer',
@@ -22,7 +23,7 @@ export class DetailLoadBalancerComponent implements OnInit{
   idLoadBalancer: number
   loadBalancer: LoadBalancerModel = new LoadBalancerModel()
   dataOffer: OfferDetail;
-
+  @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
   constructor(@Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
               private router: Router,
               private activatedRoute: ActivatedRoute,
@@ -33,6 +34,9 @@ export class DetailLoadBalancerComponent implements OnInit{
 
   regionChanged(region: RegionModel) {
     this.region = region.regionId;
+    if(this.projectCombobox){
+      this.projectCombobox.loadProjects(true, region.regionId);
+    }
     this.router.navigate(['/app-smart-cloud/load-balancer/list'])
   }
 

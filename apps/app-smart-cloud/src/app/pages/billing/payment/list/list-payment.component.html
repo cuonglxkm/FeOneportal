@@ -23,7 +23,7 @@
     <div class="alain-custom-action text-right">
       <share-users-combobox></share-users-combobox>
       <!-- <region-select-dropdown (valueChanged)="regionChanged($event)"></region-select-dropdown> -->
-      <!-- <project-select-dropdown (valueChanged)="projectChanged($event)" [regionId]="region"></project-select-dropdown> -->
+      <!-- <project-select-dropdown #projectCombobox (valueChanged)="projectChanged($event)" [regionId]="region"></project-select-dropdown> -->
     </div>
   </ng-template>
 </page-header>
@@ -100,17 +100,18 @@
       #rowSelectionTable
       nzShowSizeChanger
       [nzData]="response?.records"
-      [nzPageIndex]="response?.currentPage"
+      (nzPageSizeChange)="onPageSizeChange($event)"
+      (nzPageIndexChange)="onPageIndexChange($event)"
+      [nzPageSize]="pageSize" 
+      [nzPageIndex]="pageIndex"
       [nzTotal]="response?.totalCount"
-      (nzQueryParams)="onQueryParamsChange($event)"
       [nzLoading]="isLoading"
       [nzFrontPagination]="false"
-      (nzCurrentPageDataChange)="onCurrentPageDataChange($event)"
     >
       <thead>
         <tr>
           <th
-            [nzChecked]="checked"
+            [(nzChecked)]="checked"
             [nzIndeterminate]="indeterminate"
             (nzCheckedChange)="onAllChecked($event)"
             nzLeft
@@ -201,11 +202,12 @@
             "
             (click)="serviceDownload(data.eInvoiceCode)"
             style="cursor: pointer; text-align: center; color: #0066b0"
-            class=""
+            class=""           
             nzBreakWord
           >
             <one-portal-svg-icon
               class="icon-svg justify-center-icon"
+              [tooltip]="'app.payment.download' | i18n"
               [icon]="'icon_download'"
             ></one-portal-svg-icon>
           </td>
@@ -218,6 +220,7 @@
           >
             <one-portal-svg-icon
               class="icon-svg justify-center-icon"
+              [tooltip]="'app.payment.download' | i18n"
               [icon]="'icon_download'"
             ></one-portal-svg-icon>
           </td>
