@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject, OnInit, ViewChild } from '@angular/core';
 import { ProjectModel, RegionModel } from '../../../../../../../../libs/common-utils/src';
 import { BackupVmService } from '../../../../shared/services/backup-vm.service';
 import { InstancesService } from '../../../instances/instances.service';
@@ -24,6 +24,7 @@ import { VolumeDTO } from '../../../../shared/dto/volume.dto';
 import { CatalogService } from '../../../../shared/services/catalog.service';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from '@core';
+import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
 
 @Component({
   selector: 'one-portal-create-backup-vm-normal',
@@ -82,6 +83,8 @@ export class CreateBackupVmNormalComponent implements OnInit{
   volumeAttachSelected: VolumeDTO[] = [];
   formCreateBackup: FormCreateBackup = new FormCreateBackup();
 
+  @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
+
   constructor(private backupVmService: BackupVmService,
               private instanceService: InstancesService,
               private backupPackageService: PackageBackupService,
@@ -108,6 +111,9 @@ export class CreateBackupVmNormalComponent implements OnInit{
 
   regionChanged(region: RegionModel) {
     this.region = region.regionId;
+    if(this.projectCombobox){
+      this.projectCombobox.loadProjects(true, region.regionId);
+    }
     this.router.navigate(['/app-smart-cloud/backup-vm']);
   }
   onRegionChanged(region: RegionModel) {

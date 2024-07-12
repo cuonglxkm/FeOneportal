@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject, OnInit, ViewChild } from '@angular/core';
 import { AbstractControl, FormControl, FormGroup, ValidationErrors, Validators } from '@angular/forms';
 import { IpPublicService } from '../../shared/services/ip-public.service';
 import { InstancesService } from '../instances/instances.service';
@@ -11,6 +11,7 @@ import { finalize } from 'rxjs/operators';
 import { RegionModel, ProjectModel } from '../../../../../../libs/common-utils/src';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from '@core';
+import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
 
 @Component({
   selector: 'one-portal-create-ip-floating-normal',
@@ -46,6 +47,7 @@ export class CreateIpFloatingNormalComponent implements OnInit{
   ipId = '';
   VMId = '';
   unitPrice: any;
+  @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
   constructor(private service: IpPublicService, private instancService: InstancesService,
               @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
               private notification: NzNotificationService,
@@ -103,6 +105,9 @@ export class CreateIpFloatingNormalComponent implements OnInit{
 
   onRegionChange(region: RegionModel) {
     this.regionId = region.regionId;
+    if(this.projectCombobox){
+      this.projectCombobox.loadProjects(true, region.regionId);
+    }
     this.router.navigate(['/app-smart-cloud/ip-public']);
   }
 

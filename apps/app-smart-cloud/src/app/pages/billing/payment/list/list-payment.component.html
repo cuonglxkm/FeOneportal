@@ -23,7 +23,7 @@
     <div class="alain-custom-action text-right">
       <share-users-combobox></share-users-combobox>
       <!-- <region-select-dropdown (valueChanged)="regionChanged($event)"></region-select-dropdown> -->
-      <!-- <project-select-dropdown (valueChanged)="projectChanged($event)" [regionId]="region"></project-select-dropdown> -->
+      <!-- <project-select-dropdown #projectCombobox (valueChanged)="projectChanged($event)" [regionId]="region"></project-select-dropdown> -->
     </div>
   </ng-template>
 </page-header>
@@ -202,11 +202,12 @@
             "
             (click)="serviceDownload(data.eInvoiceCode)"
             style="cursor: pointer; text-align: center; color: #0066b0"
-            class=""
+            class=""           
             nzBreakWord
           >
             <one-portal-svg-icon
               class="icon-svg justify-center-icon"
+              [tooltip]="'app.payment.download' | i18n"
               [icon]="'icon_download'"
             ></one-portal-svg-icon>
           </td>
@@ -219,6 +220,7 @@
           >
             <one-portal-svg-icon
               class="icon-svg justify-center-icon"
+              [tooltip]="'app.payment.download' | i18n"
               [icon]="'icon_download'"
             ></one-portal-svg-icon>
           </td>

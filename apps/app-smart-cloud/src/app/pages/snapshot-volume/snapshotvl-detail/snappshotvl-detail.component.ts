@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
 import { SnapshotVolumeService } from '../../../shared/services/snapshot-volume.service';
@@ -6,6 +6,8 @@ import { EditSnapshotVolume } from '../../../shared/models/snapshotvl.model';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
+import { RegionModel } from '../../../../../../../libs/common-utils/src';
 
 @Component({
   selector: 'app-snapshot-volume-detail',
@@ -36,7 +38,7 @@ export class SnappshotvlDetailComponent implements OnInit {
       ],
     }),
   });
-
+  @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
   constructor(
     private router: Router,
     private snapshotVlService: SnapshotVolumeService,
@@ -92,7 +94,10 @@ export class SnappshotvlDetailComponent implements OnInit {
     this.backToListPage();
   }
 
-  getRegionId(regionId: number) {
+  getRegionId(region: RegionModel) {
+    if(this.projectCombobox){
+      this.projectCombobox.loadProjects(true, region.regionId);
+    }
     this.backToListPage();
   }
 

@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject, OnInit, ViewChild } from '@angular/core';
 import { AttachedDto, VolumeDTO } from '../../../../shared/dto/volume.dto';
 import { VolumeService } from '../../../../shared/services/volume.service';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -11,6 +11,7 @@ import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { SizeInCloudProject } from 'src/app/shared/models/project.model';
 import { CatalogService } from '../../../../shared/services/catalog.service';
 import { SupportService } from '../../../../shared/models/catalog.model';
+import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
 
 @Component({
   selector: 'app-detail-volume',
@@ -35,12 +36,15 @@ export class DetailVolumeComponent implements OnInit {
 
 
   sizeInCloudProject: SizeInCloudProject = new SizeInCloudProject();
-
+  @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
   regionChanged(region: RegionModel) {
     this.region = region.regionId;
     // this.projectService.getByRegion(this.region).subscribe(data => {
     //   if (data.length){
     //     localStorage.setItem("projectId", data[0].id.toString())
+    if(this.projectCombobox){
+      this.projectCombobox.loadProjects(true, region.regionId);
+    }
     this.router.navigate(['/app-smart-cloud/volumes']);
     //   }
     // });

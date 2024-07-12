@@ -253,4 +253,8 @@ export class OrderListComponent implements OnInit {
     this.project = project?.id;
     this.searchSnapshotScheduleList();
   }
+
+  handleNavigateToContact(){
+    window.location.href = 'tel:19008198';
+  }
 }
