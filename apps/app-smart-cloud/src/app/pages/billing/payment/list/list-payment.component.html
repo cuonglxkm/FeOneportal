@@ -202,11 +202,12 @@
             "
             (click)="serviceDownload(data.eInvoiceCode)"
             style="cursor: pointer; text-align: center; color: #0066b0"
-            class=""
+            class=""           
             nzBreakWord
           >
             <one-portal-svg-icon
               class="icon-svg justify-center-icon"
+              [tooltip]="'app.payment.download' | i18n"
               [icon]="'icon_download'"
             ></one-portal-svg-icon>
           </td>
@@ -219,6 +220,7 @@
           >
             <one-portal-svg-icon
               class="icon-svg justify-center-icon"
+              [tooltip]="'app.payment.download' | i18n"
               [icon]="'icon_download'"
             ></one-portal-svg-icon>
           </td>

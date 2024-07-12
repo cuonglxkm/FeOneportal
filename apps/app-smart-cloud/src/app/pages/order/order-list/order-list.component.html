@@ -57,7 +57,6 @@
     [nzLoading]="isLoadingEntities" (nzQueryParams)="onQueryParamsChange($event)">
     <thead>
       <tr>
-        <th>{{"app.order.ordinalNumber" | i18n}}</th>
         <th>{{"app.order.ordercode" | i18n}}</th>
         <th>{{"app.order.name.service" | i18n}}</th>
        
@@ -68,7 +67,6 @@
     </thead>
     <tbody>
       <tr *ngFor="let data of rowSelectionTable.data; let i = index">
-        <td>{{ i + 1 }}</td>
         <td>
           <a (click)="navigateToDetail(data.id)">{{ data.orderCode }}</a>
         </td>
