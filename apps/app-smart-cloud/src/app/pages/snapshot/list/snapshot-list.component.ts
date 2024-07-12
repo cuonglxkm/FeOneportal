@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject, OnInit, ViewChild } from '@angular/core';
 import { ProjectModel, RegionModel } from '../../../../../../../libs/common-utils/src';
 import { getCurrentRegionAndProject } from '@shared';
 import { debounceTime, finalize, Subject } from 'rxjs';
@@ -10,6 +10,7 @@ import { I18NService } from '@core';
 import { data } from 'vis-network';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
+import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
 
 @Component({
   selector: 'one-portal-snapshot-list',
@@ -57,6 +58,7 @@ export class SnapshotListComponent implements OnInit{
   disableDelete = true;
   loadingDelete = false;
   isVisibleEdit: boolean;
+  @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
   constructor(private router: Router,
               private fb: NonNullableFormBuilder,
               @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
@@ -78,6 +80,9 @@ export class SnapshotListComponent implements OnInit{
   }
 
   regionChanged(region: RegionModel) {
+    if(this.projectCombobox){
+      this.projectCombobox.loadProjects(true, region.regionId);
+    }
     this.region = region.regionId;
   }
 

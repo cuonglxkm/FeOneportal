@@ -1,4 +1,4 @@
-import { Component, ElementRef, Inject, OnInit, Renderer2 } from '@angular/core';
+import { Component, ElementRef, Inject, OnInit, Renderer2, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { environment } from '@env/environment';
@@ -12,6 +12,7 @@ import { FormControl, FormGroup, NonNullableFormBuilder } from '@angular/forms';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from '../../../../../../../app-kafka/src/app/core/i18n/i18n.service';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
+import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
 @Component({
   selector: 'one-portal-vpn-s2s-create',
   templateUrl: './vpn-s2s-create.component.html',
@@ -38,6 +39,7 @@ export class VpnS2sCreateComponent implements OnInit {
   isLoadingCreate: boolean = false;
   isVisiblePopupError: boolean = false;
   errorList: string[] = [];
+  @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
   /**
    *
    */
@@ -70,6 +72,9 @@ export class VpnS2sCreateComponent implements OnInit {
 
   regionChanged(region: RegionModel) {
     this.region = region.regionId;
+    if(this.projectCombobox){
+      this.projectCombobox.loadProjects(true, region.regionId);
+    }
   }
 
   onRegionChanged(region: RegionModel) {
