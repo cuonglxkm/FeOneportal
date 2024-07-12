@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject, OnInit, ViewChild } from '@angular/core';
 import {
   FormControl,
   FormGroup,
@@ -40,6 +40,7 @@ import { OrderService } from 'src/app/shared/services/order.service';
 import { ConfigurationsService } from 'src/app/shared/services/configurations.service';
 import { ProjectService } from 'src/app/shared/services/project.service';
 import { NAME_SNAPSHOT_REGEX } from 'src/app/shared/constants/constants';
+import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
 
 @Component({
   selector: 'one-portal-create-file-system-snapshot',
@@ -79,6 +80,7 @@ export class CreateFileSystemSnapshotComponent implements OnInit {
 
   isVisiblePopupError: boolean = false;
   errorList: string[] = [];
+  @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
   closePopupError() {
     this.isVisiblePopupError = false;
   }

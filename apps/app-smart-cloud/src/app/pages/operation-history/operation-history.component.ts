@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, Inject, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, Inject, OnInit, ViewChild } from '@angular/core';
 import { RegionModel } from '../../shared/models/region.model';
 import { ProjectModel } from '../../shared/models/project.model';
 import { BaseResponse } from '../../../../../../libs/common-utils/src';
@@ -8,6 +8,7 @@ import { FormControl, FormGroup } from '@angular/forms';
 import { OperationHistoryModel } from 'src/app/shared/models/operation-history.model';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { finalize } from 'rxjs';
+import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
 
 @Component({
   selector: 'one-portal-operation-history',
@@ -30,7 +31,7 @@ export class OperationHistoryComponent implements OnInit {
   status: number =0;
   ipAddress: string = '';
   loading: boolean = true;
-
+  @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
   paymentData = ['Tất cả', 'Tạo mới', 'Sửa', 'Xóa'];
   constructor(private service: OperationHistoryService, 
     private router: Router, 
@@ -66,6 +67,9 @@ export class OperationHistoryComponent implements OnInit {
 
   onRegionChange(region: RegionModel) {
     this.regionId = region.regionId;
+    if(this.projectCombobox){
+      this.projectCombobox.loadProjects(true, region.regionId);
+    }
     this.getData()
     // this.getSshKeys();
   }

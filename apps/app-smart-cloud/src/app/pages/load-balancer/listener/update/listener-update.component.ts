@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, Inject, OnChanges, OnInit, SimpleChanges } from '@angular/core';
+import { ChangeDetectorRef, Component, Inject, OnChanges, OnInit, SimpleChanges, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ListenerService } from '../../../../shared/services/listener.service';
@@ -12,6 +12,7 @@ import { finalize } from 'rxjs/operators';
 import { RegionModel, ProjectModel, AppValidator } from '../../../../../../../../libs/common-utils/src';
 import { I18NService } from '@core';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
+import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
 
 @Component({
   selector: 'one-portal-listener-update',
@@ -66,6 +67,7 @@ export class ListenerUpdateComponent implements OnInit, OnChanges {
   data: any;
   listCert: any = null;
   certId: any;
+  @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
   constructor(private router: Router,
               private fb: NonNullableFormBuilder,
               private service: ListenerService,
@@ -126,6 +128,9 @@ export class ListenerUpdateComponent implements OnInit, OnChanges {
 
   onRegionChange(region: RegionModel) {
     this.regionId = region.regionId;
+    if(this.projectCombobox){
+      this.projectCombobox.loadProjects(true, region.regionId);
+    }
   }
 
   projectChange(project: ProjectModel) {

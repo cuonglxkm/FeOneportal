@@ -20,7 +20,7 @@ xmlns="http://www.w3.org/1999/html"
     (regionChange)="onRegionChanged($event)"
       (valueChanged)="regionChanged($event)"
     ></region-select-dropdown>
-    <project-select-dropdown
+    <project-select-dropdown #projectCombobox
       (valueChanged)="projectChanged($event)"
       (userChanged)="projectChanged($event)"
       [regionId]="region"

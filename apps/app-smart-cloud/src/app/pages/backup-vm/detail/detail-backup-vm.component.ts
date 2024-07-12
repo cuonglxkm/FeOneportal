@@ -1,4 +1,4 @@
-import {Component, Inject, OnInit} from '@angular/core';
+import {Component, Inject, OnInit, ViewChild} from '@angular/core';
 import {BackupVmService} from "../../../shared/services/backup-vm.service";
 import {BackupVm, SystemInfoBackup, VolumeBackup} from "../../../shared/models/backup-vm";
 import {ActivatedRoute, Router} from "@angular/router";
@@ -15,6 +15,7 @@ import { PackageBackupModel } from '../../../shared/models/package-backup.model'
 import { PackageBackupService } from '../../../shared/services/package-backup.service';
 import { SizeInCloudProject } from 'src/app/shared/models/project.model';
 import { ProjectService } from 'src/app/shared/services/project.service';
+import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
 
 @Component({
   selector: 'one-portal-detail-backup-vm',
@@ -48,6 +49,7 @@ export class DetailBackupVmComponent implements OnInit {
   typeVpc: number
   projectDetail: SizeInCloudProject
   backupPackageDetail: PackageBackupModel = new PackageBackupModel();
+  @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
   constructor(private backupVmService: BackupVmService,
               private route: ActivatedRoute,
               @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
@@ -60,6 +62,9 @@ export class DetailBackupVmComponent implements OnInit {
 
   regionChanged(region: RegionModel) {
     this.region = region.regionId
+    if(this.projectCombobox){
+      this.projectCombobox.loadProjects(true, region.regionId);
+    }
     // this.projectService.getByRegion(this.region).subscribe(data => {
     //   if (data.length) {
     //     localStorage.setItem("projectId", data[0].id.toString())

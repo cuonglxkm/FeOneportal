@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { PackageBackupService } from '../../../shared/services/package-backup.service';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
@@ -18,6 +18,7 @@ import { debounceTime, Subject } from 'rxjs';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from '@core';
 import { OrderService } from '../../../shared/services/order.service';
+import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
 
 @Component({
   selector: 'one-portal-extend-backup-package',
@@ -49,6 +50,7 @@ export class EditBackupPackageComponent implements OnInit {
   stepStorage: number = 0;
 
   dataSubjectStorage: Subject<any> = new Subject<any>();
+  @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
 
   constructor(private router: Router,
               private packageBackupService: PackageBackupService,
@@ -62,6 +64,9 @@ export class EditBackupPackageComponent implements OnInit {
   }
 
   regionChanged(region: RegionModel) {
+    if(this.projectCombobox){
+      this.projectCombobox.loadProjects(true, region.regionId);
+    }
     this.router.navigate(['/app-smart-cloud/backup/packages']);
   }
 

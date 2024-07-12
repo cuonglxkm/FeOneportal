@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject, OnInit, ViewChild } from '@angular/core';
 import { getCurrentRegionAndProject } from '@shared';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { Router } from '@angular/router';
@@ -9,6 +9,7 @@ import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from '@core';
 import { debounceTime, Subject } from 'rxjs';
 import { TimeCommon } from '../../../shared/utils/common';
+import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
 import { ProjectService } from '../../../shared/services/project.service';
 import { CatalogService } from '../../../shared/services/catalog.service';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
@@ -34,6 +35,7 @@ export class ListLoadBalancerComponent implements OnInit {
   pageSize: number = 10;
   pageIndex: number = 1;
   loadBalancerStatus: Map<String, string>;
+  @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
   createNewLB: boolean = false;
   noneQuota: boolean;
   projectCurrentModel: any= undefined;
@@ -53,6 +55,9 @@ export class ListLoadBalancerComponent implements OnInit {
 
   regionChanged(region: RegionModel) {
     this.region = region.regionId;
+    if(this.projectCombobox){
+      this.projectCombobox.loadProjects(true, region.regionId);
+    }
     this.search(true);
   }
 

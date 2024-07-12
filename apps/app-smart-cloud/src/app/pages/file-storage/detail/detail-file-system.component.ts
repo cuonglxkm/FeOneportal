@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject, OnInit, ViewChild } from '@angular/core';
 import { FileSystemService } from '../../../shared/services/file-system.service';
 import { FileSystemDetail } from '../../../shared/models/file-system.model';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -7,6 +7,7 @@ import { ProjectModel, RegionModel } from '../../../../../../../libs/common-util
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from '@core';
+import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
 
 @Component({
   selector: 'one-portal-detail-file-system',
@@ -25,7 +26,7 @@ export class DetailFileSystemComponent implements OnInit {
   fileSystem: FileSystemDetail = new FileSystemDetail();
 
   typeVpc: number;
-
+  @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
 
   constructor(private fileSystemService: FileSystemService,
               private router: Router,
@@ -36,6 +37,9 @@ export class DetailFileSystemComponent implements OnInit {
   }
 
   regionChanged(region: RegionModel) {
+    if(this.projectCombobox){
+      this.projectCombobox.loadProjects(true, region.regionId);
+    }
     this.router.navigate(['/app-smart-cloud/file-storage/file-system/list']);
   }
 

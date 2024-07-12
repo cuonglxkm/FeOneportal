@@ -1,4 +1,4 @@
-import {Component, Inject, OnInit} from '@angular/core';
+import {Component, Inject, OnInit, ViewChild} from '@angular/core';
 import {NzSelectOptionInterface} from "ng-zorro-antd/select";
 import {ActivatedRoute, Router} from "@angular/router";
 import {NzModalRef, NzModalService} from "ng-zorro-antd/modal";
@@ -13,6 +13,7 @@ import {FormSearchUserGroup} from "../../../shared/models/user-group.model";
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from '@core';
 import { ProjectModel, RegionModel } from '../../../../../../../libs/common-utils/src';
+import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
 
 
 
@@ -49,7 +50,7 @@ export class PolicyAttachComponent implements OnInit {
   totalData: number;
   currentPage: number = 1;
   pageSize: number = 5;
-
+  @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
 
   searchEntities(){
     this.doGetAttachedEntities(this.policyName, this.entitiesNameSearch, this.typeSearch, this.pageSize, this.currentPage);
@@ -151,7 +152,10 @@ export class PolicyAttachComponent implements OnInit {
     this.project = project?.id
   }
   regionChanged(region: RegionModel) {
-    this.region = region.regionId
+    this.region = region.regionId;
+    if(this.projectCombobox){
+      this.projectCombobox.loadProjects(true, region.regionId);
+    }
   }
 
   onRegionChanged(region: RegionModel) {

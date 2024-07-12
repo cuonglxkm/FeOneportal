@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FileSystemService } from '../../../../shared/services/file-system.service';
@@ -19,6 +19,7 @@ import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from '@core';
 import { ConfigurationsService } from '../../../../shared/services/configurations.service';
 import { OrderService } from '../../../../shared/services/order.service';
+import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
 
 @Component({
   selector: 'one-portal-resize-file-system-normal',
@@ -59,7 +60,7 @@ export class ResizeFileSystemNormalComponent implements OnInit {
 
   isVisiblePopupError: boolean = false;
   errorList: string[] = [];
-
+  @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
   closePopupError() {
     this.isVisiblePopupError = false;
   }
@@ -79,6 +80,9 @@ export class ResizeFileSystemNormalComponent implements OnInit {
 
   regionChanged(region: RegionModel) {
     // this.region = region.regionId
+    if(this.projectCombobox){
+      this.projectCombobox.loadProjects(true, region.regionId);
+    }
     this.router.navigate(['/app-smart-cloud/file-storage/file-system/list']);
   }
 

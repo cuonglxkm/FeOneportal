@@ -52,6 +52,7 @@ import { I18NService } from '@core';
 import { ConfigurationsService } from 'src/app/shared/services/configurations.service';
 import { OrderService } from 'src/app/shared/services/order.service';
 import { CatalogService } from 'src/app/shared/services/catalog.service';
+import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
 
 @Component({
   selector: 'one-portal-instances-create-vpc',
@@ -118,7 +119,7 @@ export class InstancesCreateVpcComponent implements OnInit {
   remainingVCPU: number = 0;
   remainingGpu: number = 0;
   volumeRootCapacity: number = 0;
-
+  @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
   onKeyDown(event: KeyboardEvent) {
     // Lấy giá trị của phím được nhấn
     const key = event.key;
@@ -889,6 +890,9 @@ export class InstancesCreateVpcComponent implements OnInit {
   //#endregion
 
   onRegionChange(region: RegionModel) {
+    if(this.projectCombobox){
+      this.projectCombobox.loadProjects(true, region.regionId);
+    }
     this.router.navigate(['/app-smart-cloud/instances']);
   }
 

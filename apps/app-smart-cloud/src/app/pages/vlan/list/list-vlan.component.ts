@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormSearchNetwork, NetWorkModel } from '../../../shared/models/vlan.model';
 import { AppValidator, BaseResponse, ProjectModel, RegionModel } from '../../../../../../../libs/common-utils/src';
 import { VlanService } from '../../../shared/services/vlan.service';
@@ -8,6 +8,7 @@ import { debounceTime, Subject, Subscription } from 'rxjs';
 import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { add } from 'date-fns';
+import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
 
 @Component({
   selector: 'one-portal-list-vlan',
@@ -44,7 +45,7 @@ export class ListVlanComponent implements OnInit, OnDestroy {
   dataSubjectInputSearch: Subject<any> = new Subject<any>();
   private searchSubscription: Subscription;
   private enterPressed: boolean = false;
-
+  @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
   constructor(private vlanService: VlanService,
               private router: Router,
               private route: ActivatedRoute,
@@ -54,6 +55,9 @@ export class ListVlanComponent implements OnInit, OnDestroy {
 
   regionChanged(region: RegionModel) {
     this.region = region.regionId
+    if(this.projectCombobox){
+      this.projectCombobox.loadProjects(true, region.regionId);
+    }
     // this.getListVlanNetwork()
   }
 

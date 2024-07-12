@@ -31,6 +31,7 @@ import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@ang
 import { TimeCommon } from 'src/app/shared/utils/common';
 import { Subject } from 'rxjs';
 import { NAME_REGEX } from 'src/app/shared/constants/constants';
+import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
 
 @Component({
   selector: 'one-portal-router-list',
@@ -103,6 +104,7 @@ export class RouterListComponent implements OnInit {
   value: string = ''
 
   searchDelay = new Subject<boolean>();
+  @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
   constructor(
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
     private dataService: RouterService,
@@ -131,6 +133,9 @@ export class RouterListComponent implements OnInit {
     // Handle the region change event
     this.loading = true;
     this.region = region.regionId;
+    if(this.projectCombobox){
+      this.projectCombobox.loadProjects(true, region.regionId);
+    }
     console.log(this.tokenService.get()?.userId);
   }
 
