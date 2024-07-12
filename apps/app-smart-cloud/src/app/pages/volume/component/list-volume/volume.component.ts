@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, Inject, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, Inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { VolumeDTO } from '../../../../shared/dto/volume.dto';
 import { VolumeService } from '../../../../shared/services/volume.service';
@@ -15,6 +15,7 @@ import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from '@core';
 import { debounceTime, Subject, Subscription } from 'rxjs';
+import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
 
 @Component({
   selector: 'app-volume',
@@ -66,7 +67,7 @@ export class VolumeComponent implements OnInit, OnDestroy {
   dataSubjectInputSearch: Subject<any> = new Subject<any>();
   private searchSubscription: Subscription;
   private enterPressed: boolean = false;
-
+  @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
 
   constructor(@Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
               private router: Router,
@@ -82,6 +83,9 @@ export class VolumeComponent implements OnInit, OnDestroy {
   isFirstVisit: boolean = true;
   regionChanged(region: RegionModel) {
     this.region = region.regionId;
+    if(this.projectCombobox){
+      this.projectCombobox.loadProjects(true, region.regionId);
+    }
     setTimeout(() => {
       this.getListVolume(true);
     }, 2500);
@@ -265,10 +269,6 @@ export class VolumeComponent implements OnInit, OnDestroy {
     });
     if (!this.region && !this.project) {
       this.router.navigate(['/exception/500']);
-    }
-
-    if (this.notificationService.connection == undefined) {
-      this.notificationService.initiateSignalrConnection();
     }
 
     this.notificationService.connection.on('UpdateVolume', (message) => {

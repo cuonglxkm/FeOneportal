@@ -23,6 +23,7 @@ import { ObjectStorageService } from 'src/app/shared/services/object-storage.ser
 import { TimeCommon } from 'src/app/shared/utils/common';
 import { RegionModel } from '../../../../../../libs/common-utils/src';
 import { RegionSelectDropdownComponent } from 'src/app/shared/components/region-select-dropdown/region-select-dropdown.component';
+import { RegionID } from 'src/app/shared/enums/common.enum';
 
 @Component({
   selector: 'one-portal-bucket-list',
@@ -61,13 +62,13 @@ export class BucketListComponent implements OnInit {
 
   ngOnInit(): void {
     if (!this.url.includes('advance')) {
-      if(Number(localStorage.getItem('regionId')) === 7) {
-        this.region = 5
+      if(Number(localStorage.getItem('regionId')) === RegionID.ADVANCE) {
+        this.region = RegionID.NORMAL
       }else{
         this.region = Number(localStorage.getItem('regionId'));
       }
     } else {
-      this.region = 7;
+      this.region = RegionID.ADVANCE;
     }
     this.hasObjectStorageInfo();
     this.searchDelay
@@ -298,7 +299,7 @@ export class BucketListComponent implements OnInit {
     this.bucketService.deleteOS(this.user.id).subscribe({
       next: (data) => {
         console.log(data);
-        this.notification.success('', 'Xóa Object Storage thành công');
+        this.notification.success(this.i18n.fanyi('app.status.success'), 'Xóa Object Storage thành công');
         this.isVisibleDeleteOS = false;
         this.isLoadingDeleteOS = false;
         this.hasObjectStorageInfo();
@@ -306,7 +307,7 @@ export class BucketListComponent implements OnInit {
       },
       error: (error) => {
         console.log(error.error);
-        this.notification.error('', 'Xóa Object Storage không thành công');
+        this.notification.error(this.i18n.fanyi('app.status.fail'), 'Xóa Object Storage không thành công');
         this.isLoadingDeleteOS = false;
         this.cdr.detectChanges();
       },

@@ -28,7 +28,7 @@
         (valueChanged)="onRegionChange($event)"
         (regionChange)="onRegionChanged($event)"
       ></region-select-dropdown>
-      <project-select-dropdown
+      <project-select-dropdown #projectCombobox
         [regionId]="region"
         [isFirstVisit]="isFirstVisit"
         [disabledProject]="loading"
@@ -508,6 +508,7 @@
             [(ngModel)]="instanceAction.networkId"
             (ngModelChange)="changeVlanNetwork($event)"
             [ngModelOptions]="{ standalone: true }"
+            [nzLoading]="isLoadingNetwork"
             nzSize="large"
           >
             <nz-option

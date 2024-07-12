@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject, OnInit, ViewChild } from '@angular/core';
 import { getCurrentRegionAndProject } from '@shared';
 import { ActivatedRoute, Router } from '@angular/router';
 import { LoadBalancerService } from '../../../../shared/services/load-balancer.service';
@@ -15,6 +15,7 @@ import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { fi } from 'date-fns/locale';
 import { finalize } from 'rxjs/operators';
+import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
 
 @Component({
   selector: 'one-portal-extend-load-balancer-normal',
@@ -44,7 +45,7 @@ export class ExtendLoadBalancerNormalComponent implements OnInit{
   closePopupError() {
     this.isVisiblePopupError = false;
   }
-
+  @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
   constructor(private activatedRoute: ActivatedRoute,
               private router: Router,
               private loadBalancerService: LoadBalancerService,
@@ -60,6 +61,9 @@ export class ExtendLoadBalancerNormalComponent implements OnInit{
 
   regionChanged(region: RegionModel) {
     this.region = region.regionId;
+    if(this.projectCombobox){
+      this.projectCombobox.loadProjects(true, region.regionId);
+    }
     this.router.navigate(['/app-smart-cloud/load-balancer/list']);
   }
 

@@ -25,7 +25,7 @@
         (regionChange)="onRegionChanged($event)"
           (valueChanged)="regionChanged($event)"
         ></region-select-dropdown>
-        <project-select-dropdown
+        <project-select-dropdown #projectCombobox
           (valueChanged)="projectChanged($event)"
           (userChanged)="projectChanged($event)"
           [regionId]="region"
@@ -56,7 +56,7 @@
         [nzXs]="24"
         [nzXXl]="12"
       >
-        <button nz-button nzType="primary" (click)="extendVpn()" *ngIf="('order:Create' | IsPermissionPipe) && (projectObject && projectObject.type == 0 || projectObject.type == 2)">
+        <button nz-button nzType="primary" (click)="extendVpn()" *ngIf="('order:Create' | IsPermissionPipe) && (projectObject && (projectObject.type == 0 || projectObject.type == 2))">
           <img
             style="padding-right: 10px; margin-top: -4px"
             src="assets/imgs/calendar-tick2.svg"
@@ -73,7 +73,7 @@
           <img src="assets/imgs/dots.svg" alt="" />
           <nz-dropdown-menu #opMenu="nzDropdownMenu">
             <ul nz-menu>
-              <li nz-menu-item (click)="resizeVpn()" *ngIf="('order:Create' | IsPermissionPipe) && (projectObject && projectObject.type == 0 || projectObject.type == 2)">{{'app.manage.site.to.site.Adjust' |i18n}}</li>
+              <li nz-menu-item (click)="resizeVpn()" *ngIf="('order:Create' | IsPermissionPipe) && (projectObject && (projectObject.type == 0 || projectObject.type == 2))">{{'app.manage.site.to.site.Adjust' |i18n}}</li>
               <li nz-menu-item (click)="modalDelete()" *ngIf="('VpnSiteToSites:Delete' | IsPermissionPipe)">{{'app.manage.site.to.site.delete' |i18n}}</li>
             </ul>
           </nz-dropdown-menu>
@@ -162,7 +162,7 @@ xmlns="http://www.w3.org/1999/html"
     <region-select-dropdown
       (valueChanged)="regionChanged($event)"
     ></region-select-dropdown>
-    <project-select-dropdown
+    <project-select-dropdown #projectCombobox
       (valueChanged)="projectChanged($event)"
       (userChanged)="projectChanged($event)"
       [regionId]="region"
@@ -183,7 +183,7 @@ xmlns="http://www.w3.org/1999/html"
     <div class="text-subtitle" style="text-align: center;">{{'app.manage.site.to.site.present.des1' |i18n}} <br /> {{'app.manage.site.to.site.present.des2' |i18n}}</div>
   </nz-row>
   <nz-row nzJustify="center" class="pb-15">
-    <button style="text-align: center; margin-top: 10px" nz-button nzType="primary" *ngIf="('order:Create' | IsPermissionPipe) && (projectObject && projectObject.type == 0 || projectObject.type == 2)" (click)="createVpn()">{{'app.manage.site.to.site.present.create' |i18n}}</button>
+    <button style="text-align: center; margin-top: 10px" nz-button nzType="primary" *ngIf="('order:Create' | IsPermissionPipe) && (projectObject && (projectObject.type == 0 || projectObject.type == 2))" (click)="createVpn()">{{'app.manage.site.to.site.present.create' |i18n}}</button>
   </nz-row>
 </nz-card>
 </nz-content>

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import {
   FormControl,
   FormGroup,
@@ -10,6 +10,7 @@ import { FormDetailEndpointGroup } from 'src/app/shared/models/endpoint-group';
 import { EndpointGroupService } from 'src/app/shared/services/endpoint-group.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RegionModel, ProjectModel } from '../../../../../../../../../libs/common-utils/src';
+import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
 
 @Component({
   selector: 'one-portal-detail-endpoint-group',
@@ -23,7 +24,7 @@ export class DetailEndpointGroupComponent implements OnInit {
   isLoading: boolean = false;
 
   endpointGroup: FormDetailEndpointGroup = new FormDetailEndpointGroup();
-
+  @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
   constructor(
     private endpointGroupService: EndpointGroupService,
     private router: Router,
@@ -32,6 +33,9 @@ export class DetailEndpointGroupComponent implements OnInit {
 
   onRegionChange(region: RegionModel) {
     this.region = region.regionId;
+    if(this.projectCombobox){
+      this.projectCombobox.loadProjects(true, region.regionId);
+    }
     this.router.navigate(['/app-smart-cloud/vpn-site-to-site']);
   }
 

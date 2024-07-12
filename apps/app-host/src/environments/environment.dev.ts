@@ -15,7 +15,7 @@ export const environment = {
     refreshTokenEnabled: true,
     refreshTokenType: 'auth-refresh'
   },
-  baseUrl: 'https://api-dev.onsmartcloud.com',
+  baseUrl: 'https://idg-api-gw-dev.onsmartcloud.com',
   sso: {
     issuer: 'https://identity-dev.onsmartcloud.com',
     clientId: 'frontend-client',

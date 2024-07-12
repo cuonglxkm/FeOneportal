@@ -12,10 +12,14 @@ export class NotificationService {
   constructor(private notification: NzNotificationService, @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService) {
   }
 
-  public async initiateSignalrConnection(isRegisterGlobalMessage = false): Promise<void> {
+  public async initiateSignalrConnection(gatewayUrl, isRegisterGlobalMessage = false): Promise<void> {
 
-    let hubUrl = 'https://idg-api-gw.onsmartcloud.com/notify';
+    if (!gatewayUrl) {
+      console.error(`No hub connection found`);
+    }
+    //let hubUrl = 'https://idg-api-gw.onsmartcloud.com/notify';
     //let hubUrl = 'http://localhost:1019/notify';
+    let hubUrl = gatewayUrl + '/notify';
     var tokenModel = this.tokenService.get();
 
     if (tokenModel == null || Object.keys(tokenModel).length === 0) {
@@ -39,7 +43,7 @@ export class NotificationService {
       if (isRegisterGlobalMessage == true) {
         this.registerGlobalNotification();
       }
-      console.log(`Connected to hub`);
+      console.log(`Connected to hub: ` + hubUrl);
     }
     catch (error) {
       //console.log(`SignalR connection error: ${error}`);

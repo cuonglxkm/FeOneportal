@@ -1,4 +1,4 @@
-import {Component, Inject, OnInit} from '@angular/core';
+import {Component, Inject, OnInit, ViewChild} from '@angular/core';
 import {Router} from "@angular/router";
 import {PackageBackupService} from "../../../shared/services/package-backup.service";
 import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
@@ -15,6 +15,7 @@ import { I18NService } from '@core';
 import { ConfigurationsService } from '../../../shared/services/configurations.service';
 import { debounceTime, Subject } from 'rxjs';
 import { OrderService } from '../../../shared/services/order.service';
+import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
 
 /**
  *  Khởi tạo gói backup: Chỉ tạo ở dự án mặc định hoặc dự án ngoài vpc
@@ -64,7 +65,7 @@ export class CreatePackageBackupComponent implements OnInit {
 
   nameList: string[] = [];
 
-
+  @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
   constructor(private router: Router,
               private packageBackupService: PackageBackupService,
               @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
@@ -89,7 +90,10 @@ export class CreatePackageBackupComponent implements OnInit {
 
 
   regionChanged(region: RegionModel) {
-    this.region = region.regionId
+    this.region = region.regionId;
+    if(this.projectCombobox){
+      this.projectCombobox.loadProjects(true, region.regionId);
+    }
     this.router.navigate(['/app-smart-cloud/backup/packages'])
   }
 

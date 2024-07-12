@@ -1201,10 +1201,10 @@
         <nz-row>
           <nz-col style="width: 100%">
             <button style="width: 100%" nz-button nzSize="large" nzType="primary" (click)="updateVpc()"
-              [disabled]="(((selectIndexTab == 0 ||(selectIndexTab==1 && (vCPU==0&& ram==0 && hhd==0 && ssd==0))) && (numberIpPublic==0 && numberIpFloating==0 && numberIpv6==0 && numberBackup==0 && numberSnapshothdd==0 && numberSnapshotssd==0 && numberFileScnapsshot==0 && numberFileSystem==0 && numberLoadBalancer==0 && !siteToSiteId ) || totalPayment ==0) ) || disisable == true">
+              [disabled]="(((selectIndexTab == 0 ||(selectIndexTab==1 && (vCPU==0&& ram==0 && hhd==0 && ssd==0))) && (numberIpPublic==0 && numberIpFloating==0 && numberIpv6==0 && numberBackup==0 && numberSnapshothdd==0 && numberSnapshotssd==0 && numberFileScnapsshot==0 && numberFileSystem==0 && numberLoadBalancer==0 && !siteToSiteId && gpuQuotasGobal.length<0 ) || totalPayment ==0) ) || disisable == true">
               <span nz-icon nzType="wallet" nzTheme="outline"></span>
               <span
-                [style.color]="(((selectIndexTab == 0 ||(selectIndexTab==1 && (vCPU==0&& ram==0 && hhd==0 && ssd==0))) && (numberIpPublic==0 && numberIpFloating==0 && numberIpv6==0 && numberBackup==0 && numberSnapshothdd==0 && numberSnapshotssd==0 && numberFileScnapsshot==0 && numberFileSystem==0 && numberLoadBalancer==0 && !siteToSiteId ) || totalPayment ==0) ) || disisable == true ? 'gray' : 'white'">Điều chỉnh</span>
+                [style.color]="(((selectIndexTab == 0 ||(selectIndexTab==1 && (vCPU==0&& ram==0 && hhd==0 && ssd==0))) && (numberIpPublic==0 && numberIpFloating==0 && numberIpv6==0 && numberBackup==0 && numberSnapshothdd==0 && numberSnapshotssd==0 && numberFileScnapsshot==0 && numberFileSystem==0 && numberLoadBalancer==0 && !siteToSiteId && gpuQuotasGobal.length<0  ) || totalPayment ==0) ) || disisable == true ? 'gray' : 'white'">Điều chỉnh</span>
             </button>
           </nz-col>
         </nz-row>

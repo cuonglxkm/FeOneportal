@@ -135,7 +135,7 @@ export class CallbackComponent implements OnInit {
           });
           this.socialService.callback(response);
           if (this.notificationService.connection == undefined) {
-            this.notificationService.initiateSignalrConnection(true);
+            this.notificationService.initiateSignalrConnection(environment.baseUrl, true);
           }
           this.coreDataService.getCoreData(baseUrl);
         },

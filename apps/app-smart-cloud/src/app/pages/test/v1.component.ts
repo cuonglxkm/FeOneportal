@@ -17,6 +17,7 @@ import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
 import {HttpClient} from "@angular/common/http";
 import { JsonEditorOptions } from '@maaxgr/ang-jsoneditor';
 import { RegionModel, ProjectModel } from '../../../../../../libs/common-utils/src';
+import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
 @Component({
   selector: 'app-dashboard-v1',
   templateUrl: 'v1.component.html',
@@ -35,7 +36,7 @@ export class V1Component implements OnInit {
   public editorOptions: JsonEditorOptions;
   public initialData: any;
   public visibleData: any;
-
+  @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
   constructor(@Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
               private http: HttpClient) {
 
@@ -53,6 +54,9 @@ export class V1Component implements OnInit {
 
   onRegionChange(region: RegionModel) {
     this.selectedRegion = region.regionId;
+    if(this.projectCombobox){
+      this.projectCombobox.loadProjects(true, region.regionId);
+    }
     console.log(region)
   }
 
