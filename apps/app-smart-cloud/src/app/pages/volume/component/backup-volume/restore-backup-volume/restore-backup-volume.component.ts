@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, Inject, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, Inject, OnInit, ViewChild } from '@angular/core';
 import { ProjectModel, RegionModel } from '../../../../../../../../../libs/common-utils/src';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BackupVolumeService } from '../../../../../shared/services/backup-volume.service';
@@ -28,6 +28,7 @@ import { OrderItem } from '../../../../../shared/models/price';
 import { OrderService } from '../../../../../shared/services/order.service';
 import { CatalogService } from '../../../../../shared/services/catalog.service';
 import { SupportService } from '../../../../../shared/models/catalog.model';
+import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
 
 @Component({
   selector: 'one-portal-restore-backup-volume',
@@ -95,7 +96,7 @@ export class RestoreBackupVolumeComponent implements OnInit {
   dataSubjectStorage: Subject<any> = new Subject<any>();
 
   offerId: number = 0;
-
+  @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
   constructor(private router: Router,
               private backupVolumeService: BackupVolumeService,
               private activatedRoute: ActivatedRoute,
@@ -132,6 +133,9 @@ export class RestoreBackupVolumeComponent implements OnInit {
   }
 
   regionChanged(region: RegionModel) {
+    if(this.projectCombobox){
+      this.projectCombobox.loadProjects(true, region.regionId);
+    }
     this.router.navigate(['/app-smart-cloud/backup-volume']);
   }
 

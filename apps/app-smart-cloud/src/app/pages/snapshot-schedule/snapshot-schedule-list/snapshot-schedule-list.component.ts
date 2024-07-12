@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { SnapshotVolumeService } from '../../../shared/services/snapshot-volume.service';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
@@ -15,6 +15,7 @@ import { I18NService } from '@core';
 import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
 import { time } from 'echarts';
 import { DatePipe } from '@angular/common';
+import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
 
 @Component({
   selector: 'one-portal-list-schedule-snapshot',
@@ -67,7 +68,7 @@ export class SnapshotScheduleListComponent implements OnInit {
   loadingDelete = false;
   isVisibleRestart = false;
   loadingRestart: any;
-
+  @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
   searchSnapshotScheduleList(checkBegin: any) {
     this.doGetSnapSchedules(this.pageSize, this.pageNumber, this.region, this.project, this.searchName, '', checkBegin);
   }
@@ -279,6 +280,9 @@ export class SnapshotScheduleListComponent implements OnInit {
 
   onRegionChange(region: RegionModel) {
     this.region = region.regionId;
+    if(this.projectCombobox){
+      this.projectCombobox.loadProjects(true, region.regionId);
+    }
   }
 
   onRegionChanged(region: RegionModel) {

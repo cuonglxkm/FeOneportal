@@ -1,4 +1,4 @@
-import { Component, Inject, Input, OnInit } from '@angular/core';
+import { Component, Inject, Input, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { SnapshotVolumeService } from '../../../shared/services/snapshot-volume.service';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
@@ -25,6 +25,7 @@ import { checkPossiblePressNumber } from '../../../shared/utils/common';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from '@core';
 import { VpcService } from '../../../shared/services/vpc.service';
+import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
 
 @Component({
   selector: 'one-portal-create-schedule-snapshot',
@@ -57,6 +58,7 @@ export class SnapshotScheduleCreateComponent implements OnInit {
   loadingCreate: boolean;
   dataVolumeExisted: number[] = [];
   dataVmExisted: number[] = [];
+  @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
   constructor(
     private vpcService: VpcService,
     private router: Router,
@@ -237,6 +239,9 @@ export class SnapshotScheduleCreateComponent implements OnInit {
   }
   onRegionChange(region: RegionModel) {
     this.region = region.regionId;
+    if(this.projectCombobox){
+      this.projectCombobox.loadProjects(true, region.regionId);
+    }
   }
 
   onRegionChanged(region: RegionModel) {

@@ -69,6 +69,7 @@ export class EditSubUserComponent {
       if(data) {
         this.isLoading = false
         this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('app.edit.subuser.success'))
+        this.validateForm.controls.access.setValue('none')
         this.onOk.emit()
       } else {
         this.isLoading = false

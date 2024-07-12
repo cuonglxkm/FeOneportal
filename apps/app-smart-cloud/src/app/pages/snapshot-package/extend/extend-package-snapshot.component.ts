@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, NonNullableFormBuilder } from '@angular/forms';
 import { PackageBackupModel } from '../../../shared/models/package-backup.model';
 import {
@@ -19,6 +19,7 @@ import { OrderItem } from '../../../shared/models/price';
 import { DataPayment, ItemPayment } from '../../instances/instances.model';
 import { getCurrentRegionAndProject } from '@shared';
 import { OrderService } from '../../../shared/services/order.service';
+import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
 
 @Component({
   selector: 'one-portal-extend-package-snapshot',
@@ -49,7 +50,7 @@ export class ExtendPackageSnapshotComponent implements OnInit{
   closePopupError() {
     this.isVisiblePopupError = false;
   }
-
+  @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
   constructor(private router: Router,
               private packageSnapshotService: PackageSnapshotService,
               @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
@@ -63,6 +64,9 @@ export class ExtendPackageSnapshotComponent implements OnInit{
 
   regionChanged(region: RegionModel) {
     this.region = region.regionId;
+    if(this.projectCombobox){
+      this.projectCombobox.loadProjects(true, region.regionId);
+    }
     this.projectService.getByRegion(this.region).subscribe(data => {
       if (data.length) {
         localStorage.setItem('projectId', data[0].id.toString());

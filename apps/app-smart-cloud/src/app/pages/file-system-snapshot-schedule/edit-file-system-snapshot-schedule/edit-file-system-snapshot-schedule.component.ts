@@ -1,5 +1,5 @@
 import { DatePipe } from '@angular/common';
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
@@ -12,6 +12,7 @@ import { FileSystemSnapshotScheduleService } from 'src/app/shared/services/file-
 import { FileSystemService } from 'src/app/shared/services/file-system.service';
 import { BaseResponse, ProjectModel, RegionModel } from '../../../../../../../libs/common-utils/src';
 import { ProjectService } from 'src/app/shared/services/project.service';
+import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
 
 interface SelectedFileSystem {
   id: number;
@@ -37,7 +38,7 @@ export class EditFileSystemSnapshotScheduleComponent implements OnInit{
   pageIndex: number = 1;
   response: BaseResponse<FileSystemModel[]>;
   selectedFileSystemName: SelectedFileSystem[];
-
+  @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
   formEditFileSystemSsSchedule: FormEditFileSystemSsSchedule =new FormEditFileSystemSsSchedule();
   fileSystemSnapshotScheduleDetail: FileSystemSnapshotScheduleDetail = new FileSystemSnapshotScheduleDetail();
 
@@ -144,6 +145,9 @@ export class EditFileSystemSnapshotScheduleComponent implements OnInit{
 
   regionChange(region: RegionModel) {
     this.region = region.regionId;
+    if(this.projectCombobox){
+      this.projectCombobox.loadProjects(true, region.regionId);
+    }
     this.projectService.getByRegion(this.region).subscribe((data) => {
       if (data.length) {
         localStorage.setItem('projectId', data[0].id.toString());

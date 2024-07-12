@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject, OnInit, ViewChild } from '@angular/core';
 import { getCurrentRegionAndProject } from '@shared';
 import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -15,6 +15,7 @@ import { BaseResponse, ProjectModel, RegionModel } from '../../../../../../../..
 import { VolumeDTO } from '../../../../../../shared/dto/volume.dto';
 import { CreateBackupVolumeOrderData, FormCreateBackupVolume } from '../../backup-volume.model';
 import { SizeInCloudProject } from '../../../../../../shared/models/project.model';
+import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
 
 @Component({
   selector: 'one-portal-create-backup-volume-vpc',
@@ -49,7 +50,7 @@ export class CreateBackupVolumeVpcComponent implements OnInit{
   isLoading: boolean = false
   volumeInfo: VolumeDTO = new VolumeDTO()
 
-
+  @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
 
   constructor(private activatedRoute: ActivatedRoute,
               private router: Router,
@@ -65,6 +66,9 @@ export class CreateBackupVolumeVpcComponent implements OnInit{
   }
 
   regionChanged(region: RegionModel) {
+    if(this.projectCombobox){
+      this.projectCombobox.loadProjects(true, region.regionId);
+    }
     this.router.navigate(['/app-smart-cloud/backup-volume']);
   }
 

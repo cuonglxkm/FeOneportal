@@ -23,6 +23,7 @@ import { I18NService } from '@core';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { finalize } from 'rxjs/operators';
 import { OrderService } from '../../../../shared/services/order.service';
+import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
 
 @Component({
   selector: 'one-portal-create-lb-novpc',
@@ -92,6 +93,7 @@ export class CreateLbNovpcComponent implements OnInit {
   closePopupError() {
     this.isVisiblePopupError = false;
   }
+  @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
   constructor(private router: Router,
               private fb: NonNullableFormBuilder,
               @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
@@ -105,6 +107,9 @@ export class CreateLbNovpcComponent implements OnInit {
 
   regionChanged(region: RegionModel) {
     this.region = region.regionId;
+    if(this.projectCombobox){
+      this.projectCombobox.loadProjects(true, region.regionId);
+    }
     this.router.navigate(['/app-smart-cloud/load-balancer/list']);
   }
 

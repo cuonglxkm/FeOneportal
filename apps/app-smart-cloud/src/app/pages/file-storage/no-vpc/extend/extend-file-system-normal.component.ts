@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FileSystemService } from '../../../../shared/services/file-system.service';
@@ -20,6 +20,7 @@ import { ConfigurationsService } from '../../../../shared/services/configuration
 import { OrderService } from '../../../../shared/services/order.service';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from '@core';
+import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
 
 
 @Component({
@@ -71,6 +72,8 @@ export class ExtendFileSystemNormalComponent implements OnInit {
   closePopupError() {
     this.isVisiblePopupError = false;
   }
+
+  @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
   constructor(private fb: NonNullableFormBuilder,
               private router: Router,
               private activatedRoute: ActivatedRoute,
@@ -197,54 +200,25 @@ export class ExtendFileSystemNormalComponent implements OnInit {
     this.orderService.validaterOrder(request).subscribe(data => {
       this.isLoadingAction = false
       if(data.success) {
-        var returnPath: string = '/app-smart-cloud/file-storage/file-system/' + this.idFileSystem + '/extend';
-        console.log('request', request);
-        this.router.navigate(['/app-smart-cloud/order/cart'], { state: { data: request, path: returnPath } });
-      } else {
-        this.isVisiblePopupError = true;
-        this.errorList = data.data;
-      }
-
-    }, error => {
-      this.notification.error(this.i18n.fanyi('app.status.fail'), error.error.detail)
-    })
-  }
-
-  doExtend() {
-    this.isLoadingAction = true
-    this.fileSystemInit();
-    this.getTotalAmount()
-    let request = new ResizeFileSystemRequestModel();
-    request.customerId = this.extendFileSystem.customerId;
-    request.createdByUserId = this.extendFileSystem.customerId;
-    request.note = 'Gia hạn File System';
-    request.totalPayment = this.orderItem?.totalPayment?.amount
-    request.totalVAT = this.orderItem?.totalVAT?.amount
-    request.orderItems = [
-      {
-        orderItemQuantity: 1,
-        specification: JSON.stringify(this.extendFileSystem),
-        specificationType: 'filestorage_extend',
-        price: this.orderItem?.totalAmount.amount,
-        serviceDuration: this.validateForm.controls.time.value
-      }
-    ];
-    console.log('request', request);
-    this.orderService.validaterOrder(request).subscribe(data => {
-      this.isLoadingAction = false
-      if(data.success) {
-        this.fileSystemService.resize(request).subscribe(item => {
-          if (data != null) {
-            if (data.code == 200) {
+        if(this.hasRoleSI) {
+          this.fileSystemService.resize(request).subscribe(item => {
+            if (data != null) {
+              if (data.code == 200) {
+                this.isLoading = false;
+                this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('app.file.system.notification.require.extend.success'));
+                setTimeout(() => {this.router.navigate(['/app-smart-cloud/file-storage/file-system/list']);}, 1500)
+              }
+            } else {
               this.isLoading = false;
-              this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('app.file.system.notification.require.extend.success'));
-              setTimeout(() => {this.router.navigate(['/app-smart-cloud/file-storage/file-system/list']);}, 1500)
+              this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.file.system.notification.require.extend.fail'));
             }
-          } else {
-            this.isLoading = false;
-            this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.file.system.notification.require.extend.fail'));
-          }
-        })
+          })
+        } else {
+          var returnPath: string = '/app-smart-cloud/file-storage/file-system/' + this.idFileSystem + '/extend';
+          console.log('request', request);
+          this.router.navigate(['/app-smart-cloud/order/cart'], { state: { data: request, path: returnPath } });
+        }
+
       } else {
         this.isVisiblePopupError = true;
         this.errorList = data.data;

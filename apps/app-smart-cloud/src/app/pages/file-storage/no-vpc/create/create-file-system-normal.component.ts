@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
 import {
   CreateFileSystemRequestModel,
@@ -22,6 +22,7 @@ import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from '@core';
 import { ConfigurationsService } from '../../../../shared/services/configurations.service';
 import { OrderService } from '../../../../shared/services/order.service';
+import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
 
 
 @Component({
@@ -93,7 +94,7 @@ export class CreateFileSystemNormalComponent implements OnInit {
   snapshotCloudId: string;
 
   snapshot: any;
-
+  @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
   constructor(private fb: NonNullableFormBuilder,
               private snapshotvlService: SnapshotVolumeService,
               @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
@@ -120,6 +121,9 @@ export class CreateFileSystemNormalComponent implements OnInit {
 
   regionChanged(region: RegionModel) {
     this.region = region.regionId;
+    if(this.projectCombobox){
+      this.projectCombobox.loadProjects(true, region.regionId);
+    }
     this.router.navigate(['/app-smart-cloud/file-storage/file-system/list']);
   }
 
@@ -347,59 +351,33 @@ export class CreateFileSystemNormalComponent implements OnInit {
     this.orderService.validaterOrder(request).subscribe(data => {
       this.isLoadingAction = false;
       if (data.success) {
-        var returnPath: string = '/app-smart-cloud/file-storage/file-system/create/normal';
-        console.log('request', request);
-        console.log('service name', this.formCreate.serviceName);
-        this.router.navigate(['/app-smart-cloud/order/cart'], {
-          state: { data: request, path: returnPath }
-        });
+        if(this.hasRoleSI) {
+          this.fileSystemService.create(request).subscribe(data => {
+            this.isLoadingAction = false;
+            if (data != null) {
+              if (data.code == 200) {
+                this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('app.file.system.notification.require.create.success'));
+                this.router.navigate(['/app-smart-cloud/file-storage/file-system/list']);
+              }
+            } else {
+              this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.file.system.notification.require.create.fail'));
+            }
+          }, error => {
+            this.isLoading = false;
+            this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.file.system.notification.require.create.fail'));
+          });
+        } else {
+          var returnPath: string = '/app-smart-cloud/file-storage/file-system/create/normal';
+          console.log('request', request);
+          console.log('service name', this.formCreate.serviceName);
+          this.router.navigate(['/app-smart-cloud/order/cart'], {
+            state: { data: request, path: returnPath }
+          });
+        }
+
       } else {
         this.isVisiblePopupError = true;
         this.errorList = data.data;
-      }
-    }, error => {
-      this.notification.error(this.i18n.fanyi('app.status.fail'), error.error.detail);
-    });
-  }
-
-  doCreate() {
-    this.isLoadingAction = true;
-    this.fileSystemInit();
-    let request: CreateFileSystemRequestModel = new CreateFileSystemRequestModel();
-    request.customerId = this.formCreate.customerId;
-    request.createdByUserId = this.formCreate.customerId;
-    request.note = 'tạo file system';
-    request.totalPayment = this.orderItem?.totalPayment?.amount;
-    request.totalVAT = this.orderItem?.totalVAT?.amount;
-    request.orderItems = [
-      {
-        orderItemQuantity: 1,
-        specification: JSON.stringify(this.formCreate),
-        specificationType: 'filestorage_create',
-        price: this.orderItem?.totalAmount.amount,
-        serviceDuration: this.validateForm.controls.time.value
-      }
-    ];
-    this.orderService.validaterOrder(request).subscribe(item => {
-      this.isLoadingAction = false;
-      if (item.success) {
-        this.fileSystemService.create(request).subscribe(data => {
-          this.isLoadingAction = false;
-          if (data != null) {
-            if (data.code == 200) {
-              this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('app.file.system.notification.require.create.success'));
-              this.router.navigate(['/app-smart-cloud/file-storage/file-system/list']);
-            }
-          } else {
-            this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.file.system.notification.require.create.fail'));
-          }
-        }, error => {
-          this.isLoading = false;
-          this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.file.system.notification.require.create.fail'));
-        });
-      } else {
-        this.isVisiblePopupError = true;
-        this.errorList = item.data;
       }
     }, error => {
       this.notification.error(this.i18n.fanyi('app.status.fail'), error.error.detail);

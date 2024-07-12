@@ -7,6 +7,7 @@ import {Component, EventEmitter, Input, OnInit, Output} from "@angular/core";
 
 export class SvgIconComponent implements OnInit{
   @Input() icon!: string;
+  @Input() tooltip: string;
   
   constructor() {
   }

@@ -16,6 +16,7 @@ import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { I18NService } from '@core';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { TimeCommon } from 'src/app/shared/utils/common';
+import { RegionID } from 'src/app/shared/enums/common.enum';
 
 @Component({
   selector: 'one-portal-list-sub-user',
@@ -38,7 +39,7 @@ export class ListSubUserComponent implements OnInit {
   isCheckBegin: boolean = false;
 
   listSubuser: any
-
+  url = window.location.pathname;
   isExpand: number | null = null;
 
   searchDelay = new Subject<boolean>();
@@ -59,6 +60,19 @@ export class ListSubUserComponent implements OnInit {
     );
   }
 
+  ngOnInit() {
+    if (!this.url.includes('advance')) {
+      if(Number(localStorage.getItem('regionId')) === RegionID.ADVANCE) {
+        this.region = RegionID.NORMAL
+      }else{
+        this.region = Number(localStorage.getItem('regionId'));
+      }
+    } else {
+      this.region = RegionID.ADVANCE;
+    this.hasObjectStorage();
+    };
+  }
+
   hasOS: boolean = undefined;
   hasObjectStorage() {
     this.loadingSrv.open({ type: 'spin', text: 'Loading...' });
@@ -69,6 +83,7 @@ export class ListSubUserComponent implements OnInit {
         next: (data) => {
           if (data) {
             this.hasOS = true;
+            this.getListSubUsers(false);
           } else {
             this.hasOS = false;
           }
@@ -176,17 +191,6 @@ export class ListSubUserComponent implements OnInit {
 
   handleCloseExpand(event: MouseEvent){
     this.isExpand = null;
-  }
-
-  ngOnInit() {
-    let regionAndProject = getCurrentRegionAndProject();
-    this.region = regionAndProject.regionId;
-    this.project = regionAndProject.projectId;
-    this.hasObjectStorage();
-    this.renderer.listen('document', 'click', this.handleCloseExpand.bind(this));
-    this.searchDelay.pipe(debounceTime(TimeCommon.timeOutSearch)).subscribe(() => {     
-      this.getListSubUsers(false);
-    });
   }
 
   search(search: string) {  

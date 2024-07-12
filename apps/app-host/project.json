@@ -49,7 +49,49 @@
         }
       },
       "configurations": {
-        "production": {
+        "dev": {
+          "fileReplacements": [
+            {
+              "replace": "apps/app-host/src/environments/environment.ts",
+              "with": "apps/app-host/src/environments/environment.dev.ts"
+            }
+          ],
+          "budgets": [
+            {
+              "type": "initial",
+              "maximumWarning": "500kb",
+              "maximumError": "2mb"
+            },
+            {
+              "type": "anyComponentStyle",
+              "maximumWarning": "20kb",
+              "maximumError": "100kb"
+            }
+          ],
+          "outputHashing": "all"
+        },
+        "test": {
+          "fileReplacements": [
+            {
+              "replace": "apps/app-host/src/environments/environment.ts",
+              "with": "apps/app-host/src/environments/environment.test.ts"
+            }
+          ],
+          "budgets": [
+            {
+              "type": "initial",
+              "maximumWarning": "500kb",
+              "maximumError": "2mb"
+            },
+            {
+              "type": "anyComponentStyle",
+              "maximumWarning": "20kb",
+              "maximumError": "100kb"
+            }
+          ],
+          "outputHashing": "all"
+        },
+        "prod": {
           "fileReplacements": [
             {
               "replace": "apps/app-host/src/environments/environment.ts",
@@ -88,9 +130,6 @@
         "publicHost": "http://localhost:4200"
       },
       "configurations": {
-        "production": {
-          "browserTarget": "app-host:build:production"
-        },
         "development": {
           "browserTarget": "app-host:build:development"
         }

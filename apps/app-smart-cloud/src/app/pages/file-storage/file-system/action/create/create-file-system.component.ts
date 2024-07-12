@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit, Renderer2 } from '@angular/core';
+import { Component, Inject, OnInit, Renderer2, ViewChild } from '@angular/core';
 import {
   AbstractControl,
   FormControl,
@@ -27,6 +27,7 @@ import { ProjectService } from 'src/app/shared/services/project.service';
 import { debounceTime, Subject } from 'rxjs';
 import { ConfigurationsService } from '../../../../../shared/services/configurations.service';
 import { OrderService } from '../../../../../shared/services/order.service';
+import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
 
 @Component({
   selector: 'one-portal-create-file-system',
@@ -97,6 +98,8 @@ export class CreateFileSystemComponent implements OnInit {
 
   snapshot: any;
 
+  @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
+
   constructor(private fb: NonNullableFormBuilder,
               private snapshotvlService: SnapshotVolumeService,
               @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
@@ -136,6 +139,9 @@ export class CreateFileSystemComponent implements OnInit {
 
   regionChanged(region: RegionModel) {
     this.region = region.regionId;
+    if(this.projectCombobox){
+      this.projectCombobox.loadProjects(true, region.regionId);
+    }
     this.router.navigate(['/app-smart-cloud/file-storage/file-system/list']);
   }
 

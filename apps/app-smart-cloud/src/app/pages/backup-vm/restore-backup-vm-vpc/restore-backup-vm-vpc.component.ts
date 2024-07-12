@@ -55,6 +55,7 @@ import { NguCarousel, NguCarouselConfig } from '@ngu/carousel';
 import { CatalogService } from 'src/app/shared/services/catalog.service';
 import { LoadingService } from '@delon/abc/loading';
 import { OrderService } from 'src/app/shared/services/order.service';
+import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
 
 class BlockStorage {
   id: number = 0;
@@ -126,7 +127,7 @@ export class RestoreBackupVmVpcComponent implements OnInit {
   remainingVolume: number = 0;
   remainingVCPU: number = 0;
   remainingGpu: number = 0;
-
+  @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
   validateForm = new FormGroup({
     formCurrent: new FormGroup({
       securityGroupIds: new FormControl(null as string[]),
@@ -308,6 +309,9 @@ export class RestoreBackupVmVpcComponent implements OnInit {
 
   regionChanged(region: RegionModel) {
     this.region = region.regionId;
+    if(this.projectCombobox){
+      this.projectCombobox.loadProjects(true, region.regionId);
+    }
     this.router.navigate(['/app-smart-cloud/backup-vm']);
   }
 

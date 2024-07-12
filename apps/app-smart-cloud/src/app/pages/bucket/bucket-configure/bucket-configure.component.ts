@@ -43,14 +43,17 @@ export class BucketConfigureComponent implements OnInit {
     let regionAndProject = getCurrentRegionAndProject();
     this.region = regionAndProject.regionId;
     this.bucketName = this.activatedRoute.snapshot.paramMap.get('bucketName');
+    this.getBucketDetail()
+  }
+
+  getBucketDetail(){
     this.bucketService
       .getBucketDetail(this.bucketName, this.region)
       .pipe(finalize(() => this.loadingSrv.close()))
       .subscribe((data) => {
-        console.log(data);
-        
+        console.log(data);     
         this.bucketDetail = data;
-        
+        this.cdr.detectChanges()
       });
   }
 

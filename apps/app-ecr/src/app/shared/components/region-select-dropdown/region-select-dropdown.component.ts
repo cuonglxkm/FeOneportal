@@ -19,7 +19,7 @@ export class RegionSelectDropdownComponent implements OnInit {
 
   ngOnInit() {
     this.regionService.getAll().subscribe(data => {
-      console.log(data);
+      //console.log(data);
       this.listRegion = data;
       if (this.listRegion.length > 0) {
         if (localStorage.getItem('regionId') != null) {
