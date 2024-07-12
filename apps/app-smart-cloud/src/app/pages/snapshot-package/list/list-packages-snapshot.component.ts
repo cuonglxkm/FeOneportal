@@ -1,4 +1,4 @@
-import {Component, Inject, OnInit} from '@angular/core';
+import {Component, Inject, OnInit, ViewChild} from '@angular/core';
 import {Router} from "@angular/router";
 import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
 import {NzNotificationService} from "ng-zorro-antd/notification";
@@ -15,6 +15,7 @@ import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from '@core';
 import { VolumeService } from '../../../shared/services/volume.service';
 import { SnapshotVolumeService } from '../../../shared/services/snapshot-volume.service';
+import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
 
 
 @Component({
@@ -72,7 +73,7 @@ export class ListPackagesSnapshotComponent implements OnInit {
   snapshotArray: any;
   snapshotSchefuleArray: any[];
   isLoadingSnapshotSchedule = false;
-
+  @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
   constructor(private router: Router,
               private packageSnapshotService: PackageSnapshotService,
               @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
@@ -85,7 +86,10 @@ export class ListPackagesSnapshotComponent implements OnInit {
   }
 
   regionChanged(region: RegionModel) {
-    this.region = region.regionId
+    this.region = region.regionId;
+    if(this.projectCombobox){
+      this.projectCombobox.loadProjects(true, region.regionId);
+    }
   }
 
   onRegionChanged(region: RegionModel) {

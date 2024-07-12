@@ -145,8 +145,9 @@ export class RegionSelectDropdownComponent implements OnInit {
     }
     
     localStorage.setItem('regionId', JSON.stringify(regionId));
-    this.coreDataService.getProjects(baseUrl, regionId);
-    localStorage.removeItem('projectId');
+    // this.coreDataService.getProjects(baseUrl, regionId);
+    localStorage.removeItem("projects");
+    localStorage.removeItem("projectId");
     this.valueChanged.emit(region);
   }
 }

@@ -94,10 +94,8 @@ export class ListPaymentComponent implements OnInit {
       .pipe(debounceTime(TimeCommon.timeOutSearch))
       .subscribe(() => {
         this.getListInvoices();
-      });
-    if (this.notificationService.connection == undefined) {
-      this.notificationService.initiateSignalrConnection();
-    }
+    });
+
     this.notificationService.connection.on('UpdateStatePayment', (data) => {
       this.getListInvoices();
     });

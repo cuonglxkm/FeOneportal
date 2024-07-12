@@ -1,10 +1,11 @@
-import { Component } from '@angular/core';
+import { Component, QueryList, ViewChildren } from '@angular/core';
 import { Router } from '@angular/router';
 import { getCurrentRegionAndProject } from '@shared';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { VpnSiteToSiteDTO } from 'src/app/shared/models/vpn-site-to-site';
 import { VpnSiteToSiteService } from 'src/app/shared/services/vpn-site-to-site.service';
 import { ProjectModel, RegionModel } from '../../../../../../../libs/common-utils/src';
+import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
 
 @Component({
   selector: 'one-portal-vpn-site-to-site-manage',
@@ -20,7 +21,7 @@ export class VpnSiteToSiteManage {
   isLoading: boolean = false
   response: any
   isVisibleDelete: boolean = false;
-
+  @ViewChildren('projectCombobox') projectComboboxs:  QueryList<ProjectSelectDropdownComponent>;
   constructor(
     private vpnSiteToSiteService: VpnSiteToSiteService, 
     private router: Router, 
@@ -30,6 +31,11 @@ export class VpnSiteToSiteManage {
 
   regionChanged(region: RegionModel) {
     this.region = region.regionId;
+    if(this.projectComboboxs && this.projectComboboxs.length > 0){
+      this.projectComboboxs.forEach(element => {
+        element.loadProjects(true, region.regionId);
+    })
+    }
   }
 
   onRegionChanged(region: RegionModel) {
@@ -38,7 +44,7 @@ export class VpnSiteToSiteManage {
 
   projectChanged(project: ProjectModel) {
     this.projectObject = project;
-    this.project = project.id;
+    this.project = project ? project.id : 0;
     this.getData(true)
   }
   

@@ -1,28 +1,20 @@
 # stage 1 cache node_modules
 FROM node:lts-alpine3.18 AS installer
 WORKDIR /app
-
 COPY package.json .
-
 RUN yarn install
-
 
 # stage 2 build image
 FROM node:lts-alpine3.18 as node
 WORKDIR /app
-
 COPY --from=installer /app /app
-
 #COPY package*.json .
-
 #RUN yarn install
-
 COPY . .
-
 RUN pwd && ls
 RUN yarn global add @nrwl/cli
 #RUN yarn install
-RUN npx nx build app-smart-cloud --configuration=production
+RUN npx nx build app-smart-cloud --configuration=dev
 #RUN pwd && ls
 
 #stage 3 nginx 

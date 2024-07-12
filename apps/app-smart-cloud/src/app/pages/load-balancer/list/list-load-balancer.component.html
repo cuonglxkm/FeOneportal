@@ -25,7 +25,7 @@
     <div class="alain-custom-action text-right">
       <share-users-combobox></share-users-combobox>
       <region-select-dropdown (regionChange)="onRegionChanged($event)" (valueChanged)="regionChanged($event)"></region-select-dropdown>
-      <project-select-dropdown (valueChanged)="projectChanged($event)"
+      <project-select-dropdown #projectCombobox (valueChanged)="projectChanged($event)"
                                (userChanged)="projectChanged($event)"
                                [regionId]="region"></project-select-dropdown>
     </div>
@@ -210,7 +210,7 @@
           </nz-row>
           <nz-row style="margin-top: 20px">
             <nz-col class="text-center" style="width: 100%">
-                <span class="text-intro-desc">Đối với VPC tùy biến <a href="/app-smart-cloud/project/detail/{{project}}">{{projectName}}</a>,quý khách vui lòng mua kèm dịch vụ Load Balancer tại dịch vụ bổ sung</span>
+                <span class="text-intro-desc">Đối với VPC tùy biến <a href="/app-smart-cloud/project/detail/{{project}}">{{projectCurrentModel?.projectName}}</a>,quý khách vui lòng mua kèm dịch vụ Load Balancer tại dịch vụ bổ sung</span>
             </nz-col>
           </nz-row>
         </result>

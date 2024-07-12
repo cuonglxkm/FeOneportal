@@ -69,12 +69,8 @@ export class ListSubUserComponent implements OnInit {
       }
     } else {
       this.region = RegionID.ADVANCE;
-    }
     this.hasObjectStorage();
-    this.renderer.listen('document', 'click', this.handleCloseExpand.bind(this));
-    this.searchDelay.pipe(debounceTime(TimeCommon.timeOutSearch)).subscribe(() => {     
-      this.getListSubUsers(false);
-    });
+    };
   }
 
   hasOS: boolean = undefined;

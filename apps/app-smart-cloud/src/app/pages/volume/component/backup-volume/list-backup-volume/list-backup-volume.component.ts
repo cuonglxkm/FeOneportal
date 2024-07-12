@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, Inject, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, Inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { BackupVolume } from '../backup-volume.model';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { NzMessageService } from 'ng-zorro-antd/message';
@@ -16,6 +16,7 @@ import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from '@core';
 import { debounceTime, Subject, Subscription } from 'rxjs';
+import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
 
 @Component({
   selector: 'one-portal-list-backup-volume',
@@ -49,7 +50,7 @@ export class ListBackupVolumeComponent implements OnInit, OnDestroy{
   dataSubjectInputSearch: Subject<any> = new Subject<any>();
   private searchSubscription: Subscription;
   private enterPressed: boolean = false;
-
+  @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
   //child component
   // @ViewChild('container', { read: ViewContainerRef }) container: ViewContainerRef;
   // private detailComponent: ComponentRef<DetailBackupVolumeComponent>;
@@ -65,6 +66,9 @@ export class ListBackupVolumeComponent implements OnInit, OnDestroy{
 
   regionChanged(region: RegionModel) {
     this.region = region.regionId;
+    if(this.projectCombobox){
+      this.projectCombobox.loadProjects(true, region.regionId);
+    }
     // this.getListBackupVolumes(true)
     // this.getListVolume(true);
   }
@@ -183,10 +187,6 @@ export class ListBackupVolumeComponent implements OnInit, OnDestroy{
     this.onChangeInputChange();
     if (!this.region && !this.project) {
       this.router.navigate(['/exception/500']);
-    }
-
-    if (this.notificationService.connection == undefined) {
-      this.notificationService.initiateSignalrConnection();
     }
 
     this.notificationService.connection.on('UpdateVolumeBackup', (message) => {

@@ -123,15 +123,11 @@ export class DashboardObjectStorageComponent implements OnInit {
       }
     } else {
       this.region = RegionID.ADVANCE;
-    }
     this.hasObjectStorage();
-
-    this.bucketService.getListBucket(1, 9999, '', this.region).subscribe(data => {
-      this.bucketList = data.records;
       this.bucketSelected = this.bucketList[0].bucketName
       console.log(this.bucketSelected)
       console.log(this.bucketList)
       this.getSummaryObjectStorage()
-    });
+    };
   }
 }

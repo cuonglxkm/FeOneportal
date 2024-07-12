@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject, OnInit, ViewChild } from '@angular/core';
 import { getCurrentRegionAndProject } from '@shared';
 import { SecurityGroupService } from '../../../shared/services/security-group.service';
 import { SecurityGroup, SecurityGroupSearchCondition } from '../../../shared/models/security-group';
@@ -8,6 +8,7 @@ import SecurityGroupRule from '../../../shared/models/security-group-rule';
 import { InstancesService } from '../../instances/instances.service';
 import Pagination from '../../../shared/models/pagination';
 import { RegionModel, ProjectModel } from '../../../../../../../libs/common-utils/src';
+import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
 
 @Component({
   selector: 'one-portal-list-security-group',
@@ -34,7 +35,7 @@ export class ListSecurityGroupComponent implements OnInit {
 
   listInstances: InstancesModel[];
   collection: Pagination<Instance>;
-
+  @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
   constructor(private securityGroupService: SecurityGroupService,
               @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
               private instanceService: InstancesService) {
@@ -42,6 +43,9 @@ export class ListSecurityGroupComponent implements OnInit {
 
   regionChanged(region: RegionModel) {
     this.region = region.regionId;
+    if(this.projectCombobox){
+      this.projectCombobox.loadProjects(true, region.regionId);
+    }
     this.getListSG(true);
   }
 

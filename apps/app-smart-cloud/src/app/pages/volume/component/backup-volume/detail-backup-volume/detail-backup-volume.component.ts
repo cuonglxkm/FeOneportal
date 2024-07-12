@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject, OnInit, ViewChild } from '@angular/core';
 import {BackupVolume} from "../backup-volume.model";
 import { ActivatedRoute, Router } from '@angular/router';
 import {BackupVolumeService} from "../../../../../shared/services/backup-volume.service";
@@ -11,6 +11,7 @@ import { SizeInCloudProject } from '../../../../../shared/models/project.model';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from '@core';
+import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
 
 @Component({
   selector: 'one-portal-detail-backup-volume',
@@ -28,7 +29,7 @@ export class DetailBackupVolumeComponent implements OnInit{
 
   isLoading: boolean = true;
   typeVpc: number
-
+  @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
   constructor(private router: Router,
               private backupVolumeService: BackupVolumeService,
               private activatedRoute: ActivatedRoute,
@@ -41,6 +42,9 @@ export class DetailBackupVolumeComponent implements OnInit{
 
 
   regionChanged(region: RegionModel) {
+    if(this.projectCombobox){
+      this.projectCombobox.loadProjects(true, region.regionId);
+    }
     this.router.navigate(['/app-smart-cloud/backup-volume'])
   }
 
