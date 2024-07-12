@@ -8,7 +8,7 @@
       *ngIf="
         !isProjectVPC &&
         instancesModel.taskState.toUpperCase() != 'REBUILDING' &&
-        !instancesModel.taskState.toUpperCase().includes('ING')
+        !instancesModel.taskState.toUpperCase().includes('RESIZING')
       "
       nz-menu-item
       (click)="continue()"
@@ -18,11 +18,9 @@
     <li
       *ngIf="
         instancesModel.status.toUpperCase() == 'KHOITAO' &&
-        instancesModel.taskState.toUpperCase() != 'REBUILDING' &&
         !instancesModel.taskState.toUpperCase().includes('ING') &&
         instancesModel.taskState.toUpperCase() != 'ERROR' &&
         instancesModel.taskState.toUpperCase() != 'SHUTOFF' &&
-        instancesModel.taskState.toUpperCase() != 'POWERING-OFF' &&
         instancesModel.taskState.toUpperCase() != 'RESCUE'
       "
       nz-menu-item
@@ -33,11 +31,9 @@
     <li
       *ngIf="
         instancesModel.status.toUpperCase() == 'KHOITAO' &&
-        instancesModel.taskState.toUpperCase() != 'REBUILDING' &&
         !instancesModel.taskState.toUpperCase().includes('ING') &&
         instancesModel.taskState.toUpperCase() != 'ERROR' &&
-        instancesModel.taskState.toUpperCase() != 'SHUTOFF' &&
-        instancesModel.taskState.toUpperCase() != 'POWERING-OFF'
+        instancesModel.taskState.toUpperCase() != 'SHUTOFF'
       "
       nz-menu-item
       (click)="showModalRestart()"
@@ -47,11 +43,9 @@
     <li
       *ngIf="
         instancesModel.status.toUpperCase() == 'KHOITAO' &&
-        instancesModel.taskState.toUpperCase() != 'REBUILDING' &&
         !instancesModel.taskState.toUpperCase().includes('ING') &&
         instancesModel.taskState.toUpperCase() != 'ERROR' &&
-        instancesModel.taskState.toUpperCase() != 'SHUTOFF' &&
-        instancesModel.taskState.toUpperCase() != 'POWERING-OFF'
+        instancesModel.taskState.toUpperCase() != 'SHUTOFF'
       "
       nz-menu-item
       (click)="showModalShutdown()"
@@ -71,7 +65,6 @@
     <li
       *ngIf="
         instancesModel.status.toUpperCase() == 'KHOITAO' &&
-        instancesModel.taskState.toUpperCase() != 'REBUILDING' &&
         !instancesModel.taskState.toUpperCase().includes('ING') &&
         instancesModel.taskState.toUpperCase() != 'ERROR' &&
         instancesModel.taskState.toUpperCase() != 'SHUTOFF' &&
@@ -85,7 +78,6 @@
     <li
       *ngIf="
         instancesModel.status.toUpperCase() == 'KHOITAO' &&
-        instancesModel.taskState.toUpperCase() != 'REBUILDING' &&
         !instancesModel.taskState.toUpperCase().includes('ING') &&
         instancesModel.taskState.toUpperCase() != 'ERROR' &&
         instancesModel.taskState.toUpperCase() != 'SHUTOFF' &&
