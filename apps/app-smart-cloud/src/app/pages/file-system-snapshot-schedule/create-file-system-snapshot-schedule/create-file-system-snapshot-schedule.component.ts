@@ -1,5 +1,5 @@
 import { DatePipe } from '@angular/common';
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject, OnInit, ViewChild } from '@angular/core';
 import {
   FormControl,
   FormGroup,
@@ -25,6 +25,7 @@ import {
   RegionModel
 } from '../../../../../../../libs/common-utils/src';
 import { ProjectService } from 'src/app/shared/services/project.service';
+import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
 
 @Component({
   selector: 'one-portal-create-file-system-snapshot',
@@ -53,7 +54,7 @@ export class CreateFileSystemSnapshotScheduleComponent implements OnInit {
   pageIndex: number = 1;
   response: BaseResponse<FileSystemModel[]>;
   selectedFileSystemName: string[];
-
+  @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
   formCreateFileSystemSsSchedule: FormCreateFileSystemSsSchedule =new FormCreateFileSystemSsSchedule();
 
   dateOptions: NzSelectOptionInterface[] = [
@@ -154,6 +155,9 @@ export class CreateFileSystemSnapshotScheduleComponent implements OnInit {
 
   regionChange(region: RegionModel) {
     this.region = region.regionId;
+    if(this.projectCombobox){
+      this.projectCombobox.loadProjects(true, region.regionId);
+    }
     this.projectService.getByRegion(this.region).subscribe((data) => {
       if (data.length) {
         localStorage.setItem('projectId', data[0].id.toString());

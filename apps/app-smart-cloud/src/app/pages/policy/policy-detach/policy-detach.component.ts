@@ -1,4 +1,4 @@
-import {Component, OnInit, Inject} from '@angular/core';
+import {Component, OnInit, Inject, ViewChild} from '@angular/core';
 import {NzSelectOptionInterface} from "ng-zorro-antd/select";
 import {ActivatedRoute, Router} from "@angular/router";
 import {NzModalRef, NzModalService} from "ng-zorro-antd/modal";
@@ -10,6 +10,7 @@ import {AttachOrDetachRequest} from "../../../shared/models/policy.model";
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from '@core';
 import { ProjectModel, RegionModel } from '../../../../../../../libs/common-utils/src';
+import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
 @Component({
   selector: 'one-portal-policy-detach',
   templateUrl: './policy-detach.component.html',
@@ -43,7 +44,7 @@ export class PolicyDetachComponent implements OnInit {
   totalData: number;
   currentPage: number = 1;
   pageSize: number = 5;
-
+  @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
 
   searchEntities() {
     this.doGetAttachedEntities(this.policyName, this.entitiesNameSearch, this.typeSearch, this.pageSize, this.currentPage);
@@ -137,7 +138,10 @@ export class PolicyDetachComponent implements OnInit {
   }
 
   regionChanged(region: RegionModel) {
-    this.region = region.regionId
+    this.region = region.regionId;
+    if(this.projectCombobox){
+      this.projectCombobox.loadProjects(true, region.regionId);
+    }
   }
 
   onRegionChanged(region: RegionModel) {

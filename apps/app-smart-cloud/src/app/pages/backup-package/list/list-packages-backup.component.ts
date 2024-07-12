@@ -1,4 +1,4 @@
-import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
+import { Component, Inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
@@ -16,6 +16,7 @@ import { ProjectService } from 'src/app/shared/services/project.service';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from '@core';
 import { debounceTime, Subject, Subscription } from 'rxjs';
+import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
 
 @Component({
   selector: 'one-portal-list-packages-backup',
@@ -45,6 +46,7 @@ export class ListPackagesBackupComponent implements OnInit, OnDestroy {
   isLoadingUpdate: boolean = false;
 
   selectedValue: string;
+  @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
 
   validateForm: FormGroup<{
     namePackage: FormControl<string>
@@ -86,6 +88,9 @@ export class ListPackagesBackupComponent implements OnInit, OnDestroy {
   }
 
   regionChanged(region: RegionModel) {
+    if(this.projectCombobox){
+      this.projectCombobox.loadProjects(true, region.regionId);
+    }
     this.region = region.regionId;
   }
 

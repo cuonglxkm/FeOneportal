@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { getCurrentRegionAndProject } from '@shared';
@@ -6,6 +6,7 @@ import { FormCreateFileSystemSnapShot } from 'src/app/shared/models/filesystem-s
 import { IKEPolicyModel } from 'src/app/shared/models/vpns2s.model';
 import { RegionModel, ProjectModel } from '../../../../../../../../../libs/common-utils/src';
 import { IkePolicyService } from 'src/app/shared/services/ike-policy.service';
+import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
 
 
 @Component({
@@ -20,7 +21,7 @@ export class DetailIkePoliciesComponent implements OnInit{
   isLoading: boolean = false
 
   ikePolicy: IKEPolicyModel = new IKEPolicyModel();
-
+  @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
 
   constructor(private ikePolicyService: IkePolicyService,
               private router: Router,
@@ -30,6 +31,9 @@ export class DetailIkePoliciesComponent implements OnInit{
 
   onRegionChange(region: RegionModel) {
     this.region = region.regionId;
+    if(this.projectCombobox){
+      this.projectCombobox.loadProjects(true, region.regionId);
+    }
     this.router.navigate(['/app-smart-cloud/vpn-site-to-site']);
   }
 

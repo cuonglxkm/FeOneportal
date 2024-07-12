@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
@@ -12,6 +12,7 @@ import { VpnSiteToSiteService } from 'src/app/shared/services/vpn-site-to-site.s
 import { I18NService } from '@core';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { NAME_SPECIAL_REGEX } from 'src/app/shared/constants/constants';
+import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
 
 
 @Component({
@@ -32,7 +33,7 @@ export class CreateVpnServiceComponent implements OnInit{
   }> = this.fb.group({
     name: ['', [Validators.required, Validators.pattern(NAME_SPECIAL_REGEX)]],
   });
-
+  @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
 
   getData(): any {
     this.formCreateVpnService.customerId =
@@ -109,6 +110,9 @@ export class CreateVpnServiceComponent implements OnInit{
 
   onRegionChange(region: RegionModel) {
     this.region = region.regionId;
+    if(this.projectCombobox){
+      this.projectCombobox.loadProjects(true, region.regionId);
+    }
     this.router.navigate(['/app-smart-cloud/vpn-site-to-site']);
   }
 

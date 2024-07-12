@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject, OnInit, ViewChild } from '@angular/core';
 import { getCurrentRegionAndProject } from '@shared';
 import { IpFloatingService } from '../../shared/services/ip-floating.service';
 import { FormSearchIpFloating, IpFloating } from '../../shared/models/ip-floating.model';
@@ -6,6 +6,7 @@ import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { BaseResponse, ProjectModel, RegionModel } from '../../../../../../libs/common-utils/src';
 import { debounceTime, Subject } from 'rxjs';
 import { TimeCommon } from '../../shared/utils/common';
+import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
 
 @Component({
   selector: 'one-portal-list-ip-floating',
@@ -29,7 +30,7 @@ export class ListIpFloatingComponent implements OnInit {
 
   isBegin: boolean = false
   searchDelay = new Subject<boolean>();
-
+  @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
   constructor(private ipFloatingService: IpFloatingService,
               @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService) {
   }
@@ -41,6 +42,9 @@ export class ListIpFloatingComponent implements OnInit {
 
   onRegionChange(region: RegionModel) {
     this.region = region.regionId;
+    if(this.projectCombobox){
+      this.projectCombobox.loadProjects(true, region.regionId);
+    }
     this.refreshParams();
   }
 

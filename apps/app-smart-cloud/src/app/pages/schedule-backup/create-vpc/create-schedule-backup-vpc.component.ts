@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, Inject, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, Inject, OnInit, ViewChild } from '@angular/core';
 import { getCurrentRegionAndProject } from '@shared';
 import { ProjectModel, RegionModel } from '../../../../../../../libs/common-utils/src';
 import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
@@ -20,6 +20,7 @@ import { InstancesModel } from '../../instances/instances.model';
 import { BackupSchedule, FormCreateSchedule, FormSearchScheduleBackup } from '../../../shared/models/schedule.model';
 import { VolumeDTO } from '../../../shared/dto/volume.dto';
 import { BackupVolume } from '../../volume/component/backup-volume/backup-volume.model';
+import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
 
 @Component({
   selector: 'one-portal-create-schedule-backup-vpc',
@@ -157,7 +158,7 @@ export class CreateScheduleBackupVpcComponent implements OnInit {
   sizeOfVlAttach: number = 0;
 
   projectName: string;
-
+  @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
   constructor(private fb: NonNullableFormBuilder,
               private location: Location,
               private router: Router,
@@ -177,6 +178,9 @@ export class CreateScheduleBackupVpcComponent implements OnInit {
 
   regionChanged(region: RegionModel) {
     this.region = region.regionId;
+    if(this.projectCombobox){
+      this.projectCombobox.loadProjects(true, region.regionId);
+    }
     this.router.navigate(['/app-smart-cloud/schedule/backup/list']);
 
   }

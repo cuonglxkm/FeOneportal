@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject, OnInit, ViewChild } from '@angular/core';
 import { IpPublicModel } from '../../../shared/models/ip-public.model';
 import { AttachedDto } from '../../../shared/dto/volume.dto';
 import { getCurrentRegionAndProject } from '@shared';
@@ -10,6 +10,7 @@ import { IpPublicService } from '../../../shared/services/ip-public.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { RegionModel, ProjectModel } from '../../../../../../../libs/common-utils/src';
+import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
 
 @Component({
   selector: 'one-portal-extend-ip-floating',
@@ -34,7 +35,7 @@ export class ExtendIpFloatingComponent implements OnInit{
   total: any;
   dateString: any;
   dateStringExpired: any;
-
+  @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
   ngOnInit(): void {
     const id = this.activatedRoute.snapshot.paramMap.get('id');
     this.getIPPublicById(id);
@@ -91,6 +92,9 @@ export class ExtendIpFloatingComponent implements OnInit{
 
   onRegionChange(region: RegionModel) {
     this.regionId = region.regionId;
+    if(this.projectCombobox){
+      this.projectCombobox.loadProjects(true, region.regionId);
+    }
   }
 
   projectChange(project: ProjectModel) {

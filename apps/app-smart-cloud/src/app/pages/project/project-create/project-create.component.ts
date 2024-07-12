@@ -674,6 +674,10 @@ export class ProjectCreateComponent implements OnInit {
         .subscribe({
           next: (result) => {
             if (result.success) {
+              var returnPath: string = window.location.pathname;
+              localStorage.removeItem("projects");
+              localStorage.removeItem("projectId");
+              this.router.navigate(['/app-smart-cloud/order/cart'], { state: { data: request, path: returnPath } });
               if(this.hasRoleSI) {
                 this.vpc.createIpPublic(request).subscribe(
                   data => {
