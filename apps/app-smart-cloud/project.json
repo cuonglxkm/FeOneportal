@@ -34,11 +34,11 @@
         }
       },
       "configurations": {
-        "staging": {
+        "dev": {
           "fileReplacements": [
             {
               "replace": "apps/app-smart-cloud/src/environments/environment.ts",
-              "with": "apps/app-smart-cloud/src/environments/environment.staging.ts"
+              "with": "apps/app-smart-cloud/src/environments/environment.dev.ts"
             }
           ],
           "budgets": [
@@ -58,7 +58,31 @@
             "path": "apps/app-smart-cloud/webpack.prod.config.ts"
           }
         },
-        "production": {
+        "test": {
+          "fileReplacements": [
+            {
+              "replace": "apps/app-smart-cloud/src/environments/environment.ts",
+              "with": "apps/app-smart-cloud/src/environments/environment.test.ts"
+            }
+          ],
+          "budgets": [
+            {
+              "type": "initial",
+              "maximumWarning": "500kb",
+              "maximumError": "5mb"
+            },
+            {
+              "type": "anyComponentStyle",
+              "maximumWarning": "10kb",
+              "maximumError": "100kb"
+            }
+          ],
+          "outputHashing": "all",
+          "customWebpackConfig": {
+            "path": "apps/app-smart-cloud/webpack.prod.config.ts"
+          }
+        },
+        "prod": {
           "fileReplacements": [
             {
               "replace": "apps/app-smart-cloud/src/environments/environment.ts",
@@ -100,9 +124,6 @@
         "publicHost": "http://localhost:4203"
       },
       "configurations": {
-        "production": {
-          "browserTarget": "app-smart-cloud:build:production"
-        },
         "development": {
           "browserTarget": "app-smart-cloud:build:development"
         }

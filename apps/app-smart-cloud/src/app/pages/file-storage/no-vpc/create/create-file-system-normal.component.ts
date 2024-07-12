@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
 import {
   CreateFileSystemRequestModel,
@@ -22,6 +22,7 @@ import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from '@core';
 import { ConfigurationsService } from '../../../../shared/services/configurations.service';
 import { OrderService } from '../../../../shared/services/order.service';
+import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
 
 
 @Component({
@@ -93,7 +94,7 @@ export class CreateFileSystemNormalComponent implements OnInit {
   snapshotCloudId: string;
 
   snapshot: any;
-
+  @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
   constructor(private fb: NonNullableFormBuilder,
               private snapshotvlService: SnapshotVolumeService,
               @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
@@ -120,6 +121,9 @@ export class CreateFileSystemNormalComponent implements OnInit {
 
   regionChanged(region: RegionModel) {
     this.region = region.regionId;
+    if(this.projectCombobox){
+      this.projectCombobox.loadProjects(true, region.regionId);
+    }
     this.router.navigate(['/app-smart-cloud/file-storage/file-system/list']);
   }
 

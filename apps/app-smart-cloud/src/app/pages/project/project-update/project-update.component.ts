@@ -275,7 +275,6 @@ export class ProjectUpdateComponent implements OnInit {
     this.dateNow = new Date();
     this.calculate()
 
-
       this.getProductActivebyregion();
 
     this.getCatelogOffer()
@@ -546,7 +545,8 @@ export class ProjectUpdateComponent implements OnInit {
 
         newVpnSiteToSiteOfferId: this.siteToSiteId,
 
-        gpuQuotas: (this.gpuQuotasGobal && this.gpuQuotasGobal.length > 0) ?this.newgpu : this.gpuOld,
+        gpuQuotas: this.newgpu  ?this.newgpu : this.gpuOld,
+        // gpuQuotas: (this.gpuQuotasGobal && this.gpuQuotasGobal.length > 0) ?this.newgpu : this.gpuOld,
 
         newQuotaSecurityGroupCount: this.numberSecurityGroup,
         newQuotaNetworkCount: this.numberNetwork,
@@ -740,7 +740,8 @@ export class ProjectUpdateComponent implements OnInit {
             .getListOffersByProductId(data[0].id, this.regionId)
             .subscribe((data: any) => {
               this.listLoadbalancer = data;
-              // this.loadBalancerId = this.listLoadbalancer[0].id
+              // this.listLoadbalancer = data.filter()
+              
             });
         }
       );
@@ -1076,19 +1077,22 @@ export class ProjectUpdateComponent implements OnInit {
     this.calculate();
   }
   getCatelogOffer() {
-
+    
     this.instancesService.getTypeCatelogOffers(this.regionId, 'vm-gpu').subscribe(
       res => {
         this.listTypeCatelogOffer = res
-        this.gpuQuotasGobal = this.listTypeCatelogOffer.map((item: any) => ({
+        this.newgpu =  this.gpuQuotasGobal = this.listTypeCatelogOffer.map((item: any) => ({
           GpuOfferId: item.id,
           GpuCount: 0,
           GpuType: item.offerName,
           GpuPrice: null,
           GpuPriceUnit: item?.price?.fixedPrice?.amount
         }));
-
-        console.log("this.gpuQuotasGobal", this.gpuQuotasGobal)
+       
+        console.log("this.gpuQuotasGobal dc", this.gpuQuotasGobal)
+        console.log("this.newgpu dc", this.newgpu)
+       
+        
       }
     );
   }
@@ -1245,14 +1249,14 @@ export class ProjectUpdateComponent implements OnInit {
   initLoadBalancer() {
     this.activeLoadBalancer = true;
     this.trashLoadBalancer = true;
-    this.loadBalancerId = this.listLoadbalancer[0].id;
+    this.loadBalancerId = this.data?.offerIdLBSDN;
     this.findNameLoadBalance(this.loadBalancerId);
   }
   deleteLoadBalancer() {
     this.activeLoadBalancer = false;
     this.trashLoadBalancer = false
     this.numberLoadBalancer = 0;
-    this.loadBalancerId = null;
+    this.loadBalancerId = this.data?.offerIdLBSDN;;
     this.calculate()
   }
 

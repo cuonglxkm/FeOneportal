@@ -14,6 +14,7 @@ import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { Subject } from 'rxjs';
 import { TimeCommon } from 'src/app/shared/utils/common';
 import { getCurrentRegionAndProject } from '@shared';
+import { RegionID } from 'src/app/shared/enums/common.enum';
 
 @Component({
   selector: 'one-portal-s3-key',
@@ -58,13 +59,13 @@ export class S3KeyComponent implements OnInit {
 
   ngOnInit(): void {
     if (!this.url.includes('advance')) {
-      if(Number(localStorage.getItem('regionId')) === 7) {
-        this.region = 5
+      if(Number(localStorage.getItem('regionId')) === RegionID.ADVANCE) {
+        this.region = RegionID.NORMAL
       }else{
         this.region = Number(localStorage.getItem('regionId'));
       }
     } else {
-      this.region = 7;
+      this.region = RegionID.ADVANCE;
     }
     this.hasObjectStorage();
     this.searchDelay.pipe(debounceTime(TimeCommon.timeOutSearch)).subscribe(() => {     

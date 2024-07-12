@@ -4,6 +4,7 @@ import {
   Component,
   Inject,
   OnInit,
+  ViewChild,
 } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { UserService } from 'src/app/shared/services/user.service';
@@ -15,6 +16,7 @@ import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { RegionModel } from '../../../../../../../../libs/common-utils/src';
 import { I18NService } from '@core';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
+import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
 
 @Component({
   selector: 'one-portal-add-to-group',
@@ -36,7 +38,7 @@ export class AddToGroupComponent implements OnInit {
   loading = true;
   typePolicy: string = '';
   checkedAllInPage = false;
-
+  @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
   constructor(
     private service: UserService,
     private router: Router,
@@ -198,6 +200,9 @@ export class AddToGroupComponent implements OnInit {
   onRegionChange(region: RegionModel) {
     // Handle the region change event
     this.regionId = region.regionId;
+    if(this.projectCombobox){
+      this.projectCombobox.loadProjects(true, region.regionId);
+    }
     this.cdr.detectChanges();
   }
 

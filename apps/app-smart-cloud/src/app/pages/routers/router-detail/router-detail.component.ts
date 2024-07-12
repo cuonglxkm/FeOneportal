@@ -35,6 +35,7 @@ import {
   ProjectModel,
   RegionModel,
 } from '../../../../../../../libs/common-utils/src';
+import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
 
 @Component({
   selector: 'one-portal-router-detail',
@@ -81,7 +82,7 @@ export class RouterDetailComponent implements OnInit {
     ],
     nextHop: ['', [Validators.required]],
   });
-
+  @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
   constructor(
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
     private service: RouterService,
@@ -458,6 +459,9 @@ export class RouterDetailComponent implements OnInit {
 
   onRegionChange(region: RegionModel) {
     this.regionId = region.regionId;
+    if(this.projectCombobox){
+      this.projectCombobox.loadProjects(true, region.regionId);
+    }
     this.router.navigate(['/app-smart-cloud/network/router']);
   }
 

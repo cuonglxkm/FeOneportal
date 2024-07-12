@@ -35,6 +35,7 @@ import {
 import { VlanService } from 'src/app/shared/services/vlan.service';
 import { I18NService } from '@core';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
+import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
 
 class SearchParam {
   status: string = '';
@@ -71,7 +72,7 @@ export class InstancesComponent implements OnInit {
   activeCreate: boolean = false;
   isVisibleGanVLAN: boolean = false;
   isVisibleGoKhoiVLAN: boolean = false;
-
+  @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
   typeVpc: number;
 
   constructor(
@@ -195,6 +196,9 @@ export class InstancesComponent implements OnInit {
     this.activeCreate = false;
     this.loading = true;
     this.region = region?.regionId;
+    if(this.projectCombobox){
+      this.projectCombobox.loadProjects(true, region.regionId);
+    }
     console.log(this.tokenService.get()?.userId);
   }
 

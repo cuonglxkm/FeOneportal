@@ -4,6 +4,7 @@ import {
   Component,
   Inject,
   OnInit,
+  ViewChild,
 } from '@angular/core';
 import {
   DataPayment,
@@ -25,6 +26,7 @@ import { OrderService } from 'src/app/shared/services/order.service';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from '../../../../../../app-kafka/src/app/core/i18n/i18n.service';
 import { RegionModel } from '../../../../../../../libs/common-utils/src';
+import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
 
 @Component({
   selector: 'one-portal-instances-extend',
@@ -45,7 +47,7 @@ export class InstancesExtendComponent implements OnInit {
   newExpiredDate: string;
   order: Order = new Order();
   orderItem: OrderItem[] = [];
-
+  @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
   constructor(
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
     @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
@@ -271,6 +273,9 @@ export class InstancesExtendComponent implements OnInit {
   }
 
   onRegionChange(region: any) {
+    if(this.projectCombobox){
+      this.projectCombobox.loadProjects(true, region.regionId);
+    }
     this.router.navigate(['/app-smart-cloud/instances']);
   }
 

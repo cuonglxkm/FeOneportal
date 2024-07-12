@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject, OnInit, ViewChild } from '@angular/core';
 import { IpPublicModel } from '../../../shared/models/ip-public.model';
 import { AttachedDto } from '../../../shared/dto/volume.dto';
 import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
@@ -13,6 +13,7 @@ import { RegionModel, ProjectModel } from '../../../../../../../libs/common-util
 import { OrderService } from '../../../shared/services/order.service';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from '../../../../../../app-kafka/src/app/core/i18n/i18n.service';
+import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
 
 @Component({
   selector: 'one-portal-extend-ip-public',
@@ -31,7 +32,7 @@ export class ExtendIpPublicComponent implements OnInit{
   total: any;
   dateString: any;
   dateStringExpired: any;
-
+  @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
   ngOnInit(): void {
     const id = this.activatedRoute.snapshot.paramMap.get('id');
     this.getIPPublicById(id);
@@ -81,6 +82,9 @@ export class ExtendIpPublicComponent implements OnInit{
 
   onRegionChange(region: RegionModel) {
     this.regionId = region.regionId;
+    if(this.projectCombobox){
+      this.projectCombobox.loadProjects(true, region.regionId);
+    }
   }
 
   onRegionChanged(region: RegionModel) {

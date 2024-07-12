@@ -13,6 +13,7 @@ import qrcodegen from "ng-zorro-antd/qr-code/qrcodegen";
 import {NzNotificationService} from "ng-zorro-antd/notification";
 import { I18NService } from '@core';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
+import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
 
 @Component({
   selector: 'one-portal-policy-create',
@@ -66,7 +67,7 @@ export class PolicyCreateComponent implements OnInit{
     name: new FormControl('', {validators: [Validators.required, AppValidator.validPolicyName]}),
     description: new FormControl('', {validators: [AppValidator.validPolicyDescription]}),
   });
-
+  @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
   constructor(private service: PolicyService, private router: Router,
               private clipboardService: ClipboardService,
               @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
@@ -93,6 +94,9 @@ export class PolicyCreateComponent implements OnInit{
 
   onRegionChange(region: RegionModel) {
     this.regionId = region.regionId;
+    if(this.projectCombobox){
+      this.projectCombobox.loadProjects(true, region.regionId);
+    }
   }
 
   onRegionChanged(region: RegionModel) {

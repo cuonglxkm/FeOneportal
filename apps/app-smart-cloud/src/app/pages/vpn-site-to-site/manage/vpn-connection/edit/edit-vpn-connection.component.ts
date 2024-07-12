@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject, OnInit, ViewChild } from '@angular/core';
 import {
   FormControl,
   FormGroup,
@@ -15,6 +15,7 @@ import { RegionModel, ProjectModel } from '../../../../../../../../../libs/commo
 import { I18NService } from '@core';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { NAME_SPECIAL_REGEX, PEER_VPN_REGEX } from 'src/app/shared/constants/constants';
+import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
 
 @Component({
   selector: 'one-portal-edit-vpn-connection',
@@ -30,7 +31,7 @@ export class EditVpnConnectionComponent implements OnInit {
 
   preSharedKeyVisible: boolean = false;
   isLoading: boolean = false
-
+  @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
   form: FormGroup<{
     name: FormControl<string>;
     peerRemoteIp: FormControl<string>;
@@ -151,6 +152,9 @@ export class EditVpnConnectionComponent implements OnInit {
 
   onRegionChange(region: RegionModel) {
     this.region = region.regionId;
+    if(this.projectCombobox){
+      this.projectCombobox.loadProjects(true, region.regionId);
+    }
     this.router.navigate(['/app-smart-cloud/vpn-site-to-site']);
   }
 
