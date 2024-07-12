@@ -8,7 +8,7 @@ export const environment = {
     refreshTokenEnabled: true,
     refreshTokenType: 'auth-refresh'
   },
-  baseUrl: 'https://api-cloud.vnpt.vn',
-  issuer: 'https://identity-cloud.vnpt.vn',
+  baseUrl: 'https://idg-api-gw.onsmartcloud.com',
+  issuer: 'https://identity.onsmartcloud.com',
   unitOfMeasureVpn: 'vpns2s',
 } as Environment;
