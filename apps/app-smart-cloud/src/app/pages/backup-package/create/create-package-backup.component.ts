@@ -17,6 +17,10 @@ import { debounceTime, Subject } from 'rxjs';
 import { OrderService } from '../../../shared/services/order.service';
 import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
 
+/**
+ *  Khởi tạo gói backup: Chỉ tạo ở dự án mặc định hoặc dự án ngoài vpc
+ *
+ * **/
 @Component({
   selector: 'one-portal-create-package-backup',
   templateUrl: './create-package-backup.component.html',
@@ -73,6 +77,7 @@ export class CreatePackageBackupComponent implements OnInit {
               private orderService: OrderService) {
   }
 
+  //check trung ten cua goi backup
   duplicateNameValidator(control) {
     const value = control.value;
     // Check if the input name is already in the list
@@ -82,6 +87,7 @@ export class CreatePackageBackupComponent implements OnInit {
       return null; // Name is unique
     }
   }
+
 
   regionChanged(region: RegionModel) {
     this.region = region.regionId;
@@ -103,6 +109,7 @@ export class CreatePackageBackupComponent implements OnInit {
     this.router.navigate(['/app-smart-cloud/backup/packages'])
   }
 
+  //Lay config tao voi block
   getConfiguration() {
     this.configurationsService.getConfigurations('BLOCKSTORAGE').subscribe(data => {
       let valueString = data.valueString;
@@ -113,6 +120,7 @@ export class CreatePackageBackupComponent implements OnInit {
     })
   }
 
+  //change storage
   changeValueStorage(value) {
     this.dataSubjectStorage.next(value);
   }
@@ -128,6 +136,7 @@ export class CreatePackageBackupComponent implements OnInit {
       });
   }
 
+  //change time
   timeSelectedChange(value) {
     this.timeSelected = value;
     this.validateForm.controls.time.setValue(this.timeSelected)
@@ -135,6 +144,7 @@ export class CreatePackageBackupComponent implements OnInit {
     this.getTotalAmount();
   }
 
+  // lay danh sach goi backup de check trùng tên
   getAllBackupPackage(){
     this.packageBackupService.search(null, null, this.project, this.region, 9999, 1).subscribe(data => {
       data.records.forEach((item) => {
@@ -148,6 +158,8 @@ export class CreatePackageBackupComponent implements OnInit {
       this.nameList = []
     })
   }
+
+  //init du lieu spec tao goi backup
   packageBackupInit() {
     this.formCreateBackupPackage.packageName = this.validateForm.get('namePackage').value
     this.formCreateBackupPackage.sizeInGB = this.validateForm.get('storage').value
@@ -242,6 +254,7 @@ export class CreatePackageBackupComponent implements OnInit {
     }
   }
 
+  //Lay gia tien
   getTotalAmount() {
     this.isLoadingAction = true
     this.packageBackupInit()
