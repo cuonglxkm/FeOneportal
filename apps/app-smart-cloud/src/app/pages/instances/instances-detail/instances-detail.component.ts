@@ -96,7 +96,7 @@ export class InstancesDetailComponent implements OnInit {
             if (e.error.status == 404) {
               this.notification.error(e.error.status, '');
             } else {
-              this.notification.error(e.error.detail, '');
+              this.notification.error(e.error.message, '');
             }
             this.returnPage();
           },
