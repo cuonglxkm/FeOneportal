@@ -15,7 +15,7 @@ services:
       - APP_KUBERNETES_URL=https://appkubernetes.onsmartcloud.com
       - APP_KAFKA_URL=https://appkafka.onsmartcloud.com
       - APP_K8S_PREMIUM_URL=https://appk8spre.onsmartcloud.com
-      - APP_ECR_URL=https://apperc.onsmartcloud.com
+      - APP_ECR_URL=https://appecr.onsmartcloud.com
       - BASE_URL=https://api.onsmartcloud.com
       - ISSUER=https://identity.onsmartcloud.com
       - CLIENT_ID=frontend-client

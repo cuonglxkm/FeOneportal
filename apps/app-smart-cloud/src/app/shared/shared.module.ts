@@ -32,6 +32,7 @@ import { PopupListErrorComponent } from './components/popup-list-error/popup-lis
 import { ServiceTimeExtendComponent } from './components/service-time-extend/service-time-extend.component';
 import { TrimDirective } from '../pages/file-storage/TrimDirective';
 import { PhoneValidatorDirective } from './directive/PhoneValidatorDirective';
+import { ServiceTaskStatePipe } from './pipes/task-state.pipe';
 
 const antDesignIcons = AllIcons as {
   [key: string]: any;
@@ -91,6 +92,7 @@ const DIRECTIVES: Array<Type<any>> = [];
     PaymentSummaryComponent,
     IsPermissionPipe,
     ServiceStatusPipe,
+    ServiceTaskStatePipe,
     formatPrice,
 
   ],
@@ -111,6 +113,7 @@ const DIRECTIVES: Array<Type<any>> = [];
     ...DIRECTIVES,
     IsPermissionPipe,
     ServiceStatusPipe,
+    ServiceTaskStatePipe,
     formatPrice,
   ],
   providers: [{ provide: NZ_ICONS, useValue: icons }],
