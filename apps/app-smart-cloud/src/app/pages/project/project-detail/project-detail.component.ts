@@ -12,6 +12,8 @@ import { I18NService } from '@core';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { SupportService } from 'src/app/shared/models/catalog.model';
 import { CatalogService } from 'src/app/shared/services/catalog.service';
+import { error } from 'console';
+import { NzNotificationService } from 'ng-zorro-antd/notification';
 
 @Component({
   selector: 'one-portal-project-detail',
@@ -57,7 +59,8 @@ export class ProjectDetailComponent implements OnInit{
               @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
               private activatedRoute: ActivatedRoute,
               private vpc:VpcService,
-              private catalogService: CatalogService
+              private catalogService: CatalogService,
+              private notification: NzNotificationService
             ) {
   }
 
@@ -109,8 +112,17 @@ isAdjust:boolean= true;
           this.isAdjust= true
         }
         this.loading = false;
+        // console.log("eee", error)
 
+      },error =>{
+       
+        if(error.status===500){
+          this.router.navigate(['/app-smart-cloud/project']);
+        this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi(error.error.message));
+        }
+        this.loading = false;
       }
+      
     )
    
     this.service.getTotalResouce(id)
