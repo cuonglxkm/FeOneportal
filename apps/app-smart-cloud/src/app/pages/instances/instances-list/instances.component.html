@@ -220,7 +220,18 @@
             {{ statusModel.status }}
           </td>
         </ng-container>
-        <td nzBreakWord>{{ data.taskState }}</td>
+        <td
+          *ngIf="data.taskState && data.taskState.toUpperCase() != 'DELETED'"
+          nzBreakWord
+        >
+          {{ data.taskState }}
+        </td>
+        <td
+          *ngIf="data.taskState && data.taskState.toUpperCase() == 'DELETED'"
+          nzBreakWord
+        >
+          {{ 'app.disconnected' | i18n }}
+        </td>
         <td nzBreakWord nzAlign="left">
           <div *ngIf="data.ipPrivate == ''">{{ data.ipPrivate }}</div>
           <div *ngIf="data.ipPrivate != null">
@@ -241,9 +252,10 @@
           <img
             *ngIf="
               data.status.toUpperCase() == 'KHOITAO' &&
-              data.taskState.toUpperCase() != 'REBUILDING' &&
-              !data.taskState.toUpperCase().includes('RESIZING') &&
-              data.taskState.toUpperCase() != 'ERROR'
+              !data.taskState.toUpperCase().includes('ING') &&
+              data.taskState.toUpperCase() != 'REBOOT_STARTED' &&
+              data.taskState.toUpperCase() != 'ERROR' &&
+              data.taskState.toUpperCase() != 'DELETED'
             "
             src="assets/imgs/create-backup.svg"
             alt=""
@@ -254,9 +266,10 @@
           <img
             *ngIf="
               data.status.toUpperCase() == 'KHOITAO' &&
-              data.taskState.toUpperCase() != 'REBUILDING' &&
-              !data.taskState.toUpperCase().includes('RESIZING') &&
-              data.taskState.toUpperCase() != 'ERROR'
+              !data.taskState.toUpperCase().includes('ING') &&
+              data.taskState.toUpperCase() != 'REBOOT_STARTED' &&
+              data.taskState.toUpperCase() != 'ERROR' &&
+              data.taskState.toUpperCase() != 'DELETED'
             "
             src="assets/imgs/edit-2.svg"
             alt=""
@@ -267,9 +280,10 @@
           <img
             *ngIf="
               data.status.toUpperCase() == 'KHOITAO' &&
-              data.taskState.toUpperCase() != 'REBUILDING' &&
-              !data.taskState.toUpperCase().includes('RESIZING') &&
-              data.taskState.toUpperCase() != 'ERROR'
+              !data.taskState.toUpperCase().includes('ING') &&
+              data.taskState.toUpperCase() != 'REBOOT_STARTED' &&
+              data.taskState.toUpperCase() != 'ERROR' &&
+              data.taskState.toUpperCase() != 'DELETED'
             "
             src="assets/imgs/calendar-tick.svg"
             alt=""
@@ -282,7 +296,9 @@
             *ngIf="
               data.status.toUpperCase() == 'KHOITAO' &&
               !data.taskState.toUpperCase().includes('ING') &&
-              data.taskState.toUpperCase() != 'ERROR'
+              data.taskState.toUpperCase() != 'REBOOT_STARTED' &&
+              data.taskState.toUpperCase() != 'ERROR' &&
+              data.taskState.toUpperCase() != 'DELETED'
             "
             nz-dropdown
             [nzDropdownMenu]="opMenu"
@@ -295,7 +311,9 @@
                 *ngIf="
                   data.status.toUpperCase() == 'KHOITAO' &&
                   !data.taskState.toUpperCase().includes('ING') &&
-                  data.taskState.toUpperCase() != 'ERROR'
+                  data.taskState.toUpperCase() != 'REBOOT_STARTED' &&
+                  data.taskState.toUpperCase() != 'ERROR' &&
+                  data.taskState.toUpperCase() != 'DELETED'
                 "
                 nz-menu-item
                 (click)="createSnapshot(data.id)"
@@ -306,7 +324,9 @@
                 *ngIf="
                   data.status.toUpperCase() == 'KHOITAO' &&
                   !data.taskState.toUpperCase().includes('ING') &&
-                  data.taskState.toUpperCase() != 'ERROR'
+                  data.taskState.toUpperCase() != 'REBOOT_STARTED' &&
+                  data.taskState.toUpperCase() != 'ERROR' &&
+                  data.taskState.toUpperCase() != 'DELETED'
                 "
                 nz-menu-item
                 (click)="navigateToCreateScheduleSnapshot(data.id)"
@@ -317,9 +337,10 @@
                 *ngIf="
                   data.status.toUpperCase() == 'KHOITAO' &&
                   !data.taskState.toUpperCase().includes('ING') &&
+                  data.taskState.toUpperCase() != 'REBOOT_STARTED' &&
                   data.taskState.toUpperCase() != 'ERROR' &&
                   data.taskState.toUpperCase() != 'SHUTOFF' &&
-                  data.taskState.toUpperCase() != 'REBOOT_STARTED'
+                  data.taskState.toUpperCase() != 'DELETED'
                 "
                 nz-menu-item
                 (click)="showHandleGanVLAN(data.id)"
@@ -330,9 +351,10 @@
                 *ngIf="
                   data.status.toUpperCase() == 'KHOITAO' &&
                   !data.taskState.toUpperCase().includes('ING') &&
+                  data.taskState.toUpperCase() != 'REBOOT_STARTED' &&
                   data.taskState.toUpperCase() != 'ERROR' &&
                   data.taskState.toUpperCase() != 'SHUTOFF' &&
-                  data.taskState.toUpperCase() != 'REBOOT_STARTED'
+                  data.taskState.toUpperCase() != 'DELETED'
                 "
                 nz-menu-item
                 (click)="showHandleGoKhoiVLAN(data.id)"
@@ -343,8 +365,10 @@
                 *ngIf="
                   data.status.toUpperCase() == 'KHOITAO' &&
                   !data.taskState.toUpperCase().includes('ING') &&
+                  data.taskState.toUpperCase() != 'REBOOT_STARTED' &&
                   data.taskState.toUpperCase() != 'ERROR' &&
-                  data.taskState.toUpperCase() != 'SHUTOFF'
+                  data.taskState.toUpperCase() != 'SHUTOFF' &&
+                  data.taskState.toUpperCase() != 'DELETED'
                 "
                 nz-menu-item
                 (click)="showModalRestart(data.id)"
@@ -355,8 +379,10 @@
                 *ngIf="
                   data.status.toUpperCase() == 'KHOITAO' &&
                   !data.taskState.toUpperCase().includes('ING') &&
+                  data.taskState.toUpperCase() != 'REBOOT_STARTED' &&
                   data.taskState.toUpperCase() != 'ERROR' &&
-                  data.taskState.toUpperCase() != 'SHUTOFF'
+                  data.taskState.toUpperCase() != 'SHUTOFF' &&
+                  data.taskState.toUpperCase() != 'DELETED'
                 "
                 nz-menu-item
                 (click)="showModalShutdown(data.id)"
@@ -377,9 +403,11 @@
                 *ngIf="
                   data.status.toUpperCase() == 'KHOITAO' &&
                   !data.taskState.toUpperCase().includes('ING') &&
+                  data.taskState.toUpperCase() != 'REBOOT_STARTED' &&
                   data.taskState.toUpperCase() != 'ERROR' &&
                   data.taskState.toUpperCase() != 'SHUTOFF' &&
-                  data.taskState.toUpperCase() != 'RESCUE'
+                  data.taskState.toUpperCase() != 'RESCUE' &&
+                  data.taskState.toUpperCase() != 'DELETED'
                 "
                 nz-menu-item
                 (click)="showModalRescue(data.id)"
@@ -400,9 +428,11 @@
                 *ngIf="
                   data.status.toUpperCase() == 'KHOITAO' &&
                   !data.taskState.toUpperCase().includes('ING') &&
+                  data.taskState.toUpperCase() != 'REBOOT_STARTED' &&
                   data.taskState.toUpperCase() != 'ERROR' &&
                   data.taskState.toUpperCase() != 'SHUTOFF' &&
-                  data.taskState.toUpperCase() != 'RESCUE'
+                  data.taskState.toUpperCase() != 'RESCUE' &&
+                  data.taskState.toUpperCase() != 'DELETED'
                 "
                 nz-menu-item
                 (click)="openConsole(data.id)"
