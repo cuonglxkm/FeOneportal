@@ -2018,6 +2018,16 @@
   "mongodb.log.role-update": "Cập nhật vai trò",
   "mongodb.log.role-delete": "Xóa vai trò",
 
+  "ecr.log.resource-name-is":"Tên Resource",
+  "ecr.overview.service-infor":"Thông tin chung",
+  "ecr.overview.name":"Tên dự án",
+  "ecr.overview.status":"Trạng thái dự án",
+  "ecr.overview.storage.usage":"Dung lượng sử dụng",
+  "ecr.overview.description":"Mô tả",
+  "ecr.overview.chart":"Biểu đồ theo dõi",
+  "ecr.overview.choose.time":"Chọn thời gian",
+  
+
   "app.cluster.summary": "VNPT Kubernetes Service là một nền tảng dựa trên Kubernetes đảm bảo hiệu quả cao cho doanh nghiệp bằng cách chạy các ứng dụng được đóng gói container trên đám mây, an toàn bảo mật, ổn định và hiệu năng cao",
   "app.cluster.platform-service": "Dịch vụ nền tảng",
   "app.cluster.create-service": "Tạo mới Kubernetes",
@@ -3211,7 +3221,6 @@
   "app.vpn.connection-create.deadpeer.timeout.tooltip": "Dead peer detection timeout: Thời gian xác định trạng thái là timeout khi không nhận được gói tin phản hồi trạng thái.",
   "app.vpn.connection-create.initstate.tooltip": "Initiator state: Là trạng thái khởi tạo: bao gồm bi-directional và response-only.",
   "vlan.title":"Mạng LAN (VLAN)",
-  "app.vpn.connection-create.initstate.tooltip": "Initiator state: Là trạng thái khởi tạo: bao gồm bi-directional và response-only.",
   "app.ike.policy-detail": "Xem chi tiết IKE Policy",
   "app.ipsec.policy-detail": "Xem chi tiết Ipsec Policy",
   "app.vpn.service.policy-detail": "Xem chi tiết VPN Service",

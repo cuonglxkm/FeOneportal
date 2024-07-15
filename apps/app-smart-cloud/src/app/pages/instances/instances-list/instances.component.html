@@ -28,7 +28,8 @@
         (valueChanged)="onRegionChange($event)"
         (regionChange)="onRegionChanged($event)"
       ></region-select-dropdown>
-      <project-select-dropdown #projectCombobox
+      <project-select-dropdown
+        #projectCombobox
         [regionId]="region"
         [isFirstVisit]="isFirstVisit"
         [disabledProject]="loading"
@@ -280,10 +281,8 @@
           <img
             *ngIf="
               data.status.toUpperCase() == 'KHOITAO' &&
-              data.taskState.toUpperCase() != 'REBUILDING' &&
-              !data.taskState.toUpperCase().includes('RESIZING') &&
-              data.taskState.toUpperCase() != 'ERROR' &&
-              data.taskState.toUpperCase() != 'POWERING-OFF'
+              !data.taskState.toUpperCase().includes('ING') &&
+              data.taskState.toUpperCase() != 'ERROR'
             "
             nz-dropdown
             [nzDropdownMenu]="opMenu"
@@ -295,10 +294,8 @@
               <li
                 *ngIf="
                   data.status.toUpperCase() == 'KHOITAO' &&
-                  data.taskState.toUpperCase() != 'REBUILDING' &&
-                  !data.taskState.toUpperCase().includes('RESIZING') &&
-                  data.taskState.toUpperCase() != 'ERROR' &&
-                  data.taskState.toUpperCase() != 'POWERING-OFF'
+                  !data.taskState.toUpperCase().includes('ING') &&
+                  data.taskState.toUpperCase() != 'ERROR'
                 "
                 nz-menu-item
                 (click)="createSnapshot(data.id)"
@@ -308,10 +305,8 @@
               <li
                 *ngIf="
                   data.status.toUpperCase() == 'KHOITAO' &&
-                  data.taskState.toUpperCase() != 'REBUILDING' &&
-                  !data.taskState.toUpperCase().includes('RESIZING') &&
-                  data.taskState.toUpperCase() != 'ERROR' &&
-                  data.taskState.toUpperCase() != 'POWERING-OFF'
+                  !data.taskState.toUpperCase().includes('ING') &&
+                  data.taskState.toUpperCase() != 'ERROR'
                 "
                 nz-menu-item
                 (click)="navigateToCreateScheduleSnapshot(data.id)"
@@ -321,11 +316,9 @@
               <li
                 *ngIf="
                   data.status.toUpperCase() == 'KHOITAO' &&
-                  data.taskState.toUpperCase() != 'REBUILDING' &&
-                  !data.taskState.toUpperCase().includes('RESIZING') &&
+                  !data.taskState.toUpperCase().includes('ING') &&
                   data.taskState.toUpperCase() != 'ERROR' &&
                   data.taskState.toUpperCase() != 'SHUTOFF' &&
-                  data.taskState.toUpperCase() != 'POWERING-OFF' &&
                   data.taskState.toUpperCase() != 'REBOOT_STARTED'
                 "
                 nz-menu-item
@@ -336,11 +329,9 @@
               <li
                 *ngIf="
                   data.status.toUpperCase() == 'KHOITAO' &&
-                  data.taskState.toUpperCase() != 'REBUILDING' &&
-                  !data.taskState.toUpperCase().includes('RESIZING') &&
+                  !data.taskState.toUpperCase().includes('ING') &&
                   data.taskState.toUpperCase() != 'ERROR' &&
                   data.taskState.toUpperCase() != 'SHUTOFF' &&
-                  data.taskState.toUpperCase() != 'POWERING-OFF' &&
                   data.taskState.toUpperCase() != 'REBOOT_STARTED'
                 "
                 nz-menu-item
@@ -351,11 +342,9 @@
               <li
                 *ngIf="
                   data.status.toUpperCase() == 'KHOITAO' &&
-                  data.taskState.toUpperCase() != 'REBUILDING' &&
-                  !data.taskState.toUpperCase().includes('RESIZING') &&
+                  !data.taskState.toUpperCase().includes('ING') &&
                   data.taskState.toUpperCase() != 'ERROR' &&
-                  data.taskState.toUpperCase() != 'SHUTOFF' &&
-                  data.taskState.toUpperCase() != 'POWERING-OFF'
+                  data.taskState.toUpperCase() != 'SHUTOFF'
                 "
                 nz-menu-item
                 (click)="showModalRestart(data.id)"
@@ -365,11 +354,9 @@
               <li
                 *ngIf="
                   data.status.toUpperCase() == 'KHOITAO' &&
-                  data.taskState.toUpperCase() != 'REBUILDING' &&
-                  !data.taskState.toUpperCase().includes('RESIZING') &&
+                  !data.taskState.toUpperCase().includes('ING') &&
                   data.taskState.toUpperCase() != 'ERROR' &&
-                  data.taskState.toUpperCase() != 'SHUTOFF' &&
-                  data.taskState.toUpperCase() != 'POWERING-OFF'
+                  data.taskState.toUpperCase() != 'SHUTOFF'
                 "
                 nz-menu-item
                 (click)="showModalShutdown(data.id)"
@@ -389,11 +376,9 @@
               <li
                 *ngIf="
                   data.status.toUpperCase() == 'KHOITAO' &&
-                  data.taskState.toUpperCase() != 'REBUILDING' &&
-                  !data.taskState.toUpperCase().includes('RESIZING') &&
+                  !data.taskState.toUpperCase().includes('ING') &&
                   data.taskState.toUpperCase() != 'ERROR' &&
                   data.taskState.toUpperCase() != 'SHUTOFF' &&
-                  data.taskState.toUpperCase() != 'POWERING-OFF' &&
                   data.taskState.toUpperCase() != 'RESCUE'
                 "
                 nz-menu-item
@@ -414,11 +399,9 @@
               <li
                 *ngIf="
                   data.status.toUpperCase() == 'KHOITAO' &&
-                  data.taskState.toUpperCase() != 'REBUILDING' &&
-                  !data.taskState.toUpperCase().includes('RESIZING') &&
+                  !data.taskState.toUpperCase().includes('ING') &&
                   data.taskState.toUpperCase() != 'ERROR' &&
                   data.taskState.toUpperCase() != 'SHUTOFF' &&
-                  data.taskState.toUpperCase() != 'POWERING-OFF' &&
                   data.taskState.toUpperCase() != 'RESCUE'
                 "
                 nz-menu-item

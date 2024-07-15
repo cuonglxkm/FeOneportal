@@ -155,7 +155,8 @@
                                      [(ngModel)]="storage"
                                      (ngModelChange)="storageSelectedChange($event)"
                                      [nzMin]="minStorage"
-                                     [nzStep]="stepStorage" [nzMax]="storageRemaining"></nz-input-number>
+                                     [nzStep]="stepStorage"
+                                     [nzMax]="storageRemaining"></nz-input-number>
                     <ng-template #storageErrorTpl let-control>
                       <ng-container *ngIf="control.hasError('required')">{{ 'validation.info.required' | i18n }}
                       </ng-container>
