@@ -3,7 +3,9 @@
              [title]="'app.load.balancer.manage' | i18n" xmlns="http://www.w3.org/1999/html">
   <ng-template #breadcrumb>
     <nz-breadcrumb [nzSeparator]="iconTemplate">
-      <ng-template #iconTemplate><one-portal-svg-icon [icon]="'icon_breadcrumb'"></one-portal-svg-icon></ng-template>
+      <ng-template #iconTemplate>
+        <one-portal-svg-icon [icon]="'icon_breadcrumb'"></one-portal-svg-icon>
+      </ng-template>
       <nz-breadcrumb-item>{{
           'app.breadcrumb.home' | i18n
         }}
@@ -18,13 +20,14 @@
       </nz-breadcrumb-item>
     </nz-breadcrumb>
     <ng-template #separatorTemplate
-      ><img src="assets/imgs/arrow-square-right.svg" alt="" />
+    ><img src="assets/imgs/arrow-square-right.svg" alt="" />
     </ng-template>
   </ng-template>
   <ng-template #action>
     <div class="alain-custom-action text-right">
       <share-users-combobox></share-users-combobox>
-      <region-select-dropdown (regionChange)="onRegionChanged($event)" (valueChanged)="regionChanged($event)"></region-select-dropdown>
+      <region-select-dropdown (regionChange)="onRegionChanged($event)"
+                              (valueChanged)="regionChanged($event)"></region-select-dropdown>
       <project-select-dropdown #projectCombobox (valueChanged)="projectChanged($event)"
                                (userChanged)="projectChanged($event)"
                                [isFirstVisit]="isFirstVisit"
@@ -48,7 +51,7 @@
                          [(ngModel)]="value"
                          (ngModelChange)="searchDelay.next(false)"
                          [placeholder]="'app.load.balancer.search' | i18n"
-                         (keydown.enter)="search(false)"/>
+                         (keydown.enter)="search(false)" />
                 </nz-input-group>
                 <ng-template #prefixIconSearch>
                   <img src="assets/imgs/search.svg" alt="" style="cursor: pointer" />
@@ -122,27 +125,36 @@
                   <one-portal-delete-load-balancer [idLoadBalancer]="data.id"
                                                    [nameLoadBalancer]="data.name" [region]="region" [project]="project"
                                                    (onOk)="handleDeleteOk()" />
-                  <img *ngIf="typeVPC == 0" style="padding-right: 10px;" src="assets/imgs/calendar-tick.svg"
+                  <img *ngIf="typeVPC != 1" style="padding-right: 10px;" src="assets/imgs/calendar-tick.svg"
                        nz-tooltip nzTooltipTitle="{{'app.extend' | i18n}} Load Balancer" nzTooltipPlacement="bottom"
-                       (click)="navigateToExtend(data.id)"/>
+                       (click)="navigateToExtend(data.id)" />
                 </td>
-                <td *ngIf="data.provisioningStatus !== 'PENDING_CREATE' && data.provisioningStatus != 'TAMNGUNG'" nzBreakWord>
+                <td *ngIf="data.provisioningStatus !== 'PENDING_CREATE' && data.provisioningStatus != 'TAMNGUNG'"
+                    nzBreakWord>
               <span *ngIf="data.provisioningStatus !== 'ERROR'">
                 <one-portal-attach-ip-floating-lb [region]="region" (onOk)="search(false)"
                                                   [project]="project"
-                                                  [data]="data"/>
+                                                  [data]="data" />
                 <one-portal-detach-ip-floating-lb [region]="region" (onOk)="search(false)"
                                                   [project]="project"
                                                   [IsFloatingIP]="data.isFloatingIP"
                                                   [vipPortIp]="data.vipPortId"
                                                   [ipId]="data.ipId"
                                                   [idLb]="data.id"
-                                                  [ipFloatingAddress]="data.floatingIPAddress"/>
+                                                  [ipFloatingAddress]="data.floatingIPAddress" />
                 </span>
                   <!---Gia Han------>
-                  <img *ngIf="typeVPC == 0" style="padding-right: 10px;" src="assets/imgs/calendar-tick.svg"
+                  <img *ngIf="typeVPC != 1" style="padding-right: 10px;" src="assets/imgs/calendar-tick.svg"
                        nz-tooltip nzTooltipTitle="{{'app.extend' | i18n}} Load Balancer" nzTooltipPlacement="bottom"
-                       (click)="navigateToExtend(data.id)"/>
+                       (click)="navigateToExtend(data.id)" />
+                  <span *ngIf="typeVPC != 1">
+                  <img nz-popover src="assets/imgs/edit-2.svg"
+                       alt=""
+                       nzPopoverPlacement="bottom"
+                       (click)="navigateToUpdateNormal(data.id)"
+                       style="cursor: pointer; margin-right: 10px"
+                       [nzPopoverContent]="'app.text.edit' | i18n" />
+                  </span>
                   <span *ngIf="typeVPC == 1">
                   <img nz-popover src="assets/imgs/edit-2.svg"
                        alt=""
@@ -157,10 +169,12 @@
                   <one-portal-delete-load-balancer [idLoadBalancer]="data.id"
                                                    [nameLoadBalancer]="data.name" [region]="region" [project]="project"
                                                    (onOk)="handleDeleteOk()" />
-                  <img nz-dropdown [nzDropdownMenu]="opMenu" src="assets/imgs/more1.svg" alt="" style="margin-left: 5px; cursor:pointer;" />
+                  <img nz-dropdown [nzDropdownMenu]="opMenu" src="assets/imgs/more1.svg" alt=""
+                       style="margin-left: 5px; cursor:pointer;" />
                   <nz-dropdown-menu #opMenu="nzDropdownMenu">
                     <ul nz-menu>
-                      <li nz-menu-item (click)="navigateToCreateListener(data.id)">{{ 'app.listener.create' | i18n}}</li>
+                      <li nz-menu-item (click)="navigateToCreateListener(data.id)">{{ 'app.listener.create' | i18n }}
+                      </li>
                     </ul>
                   </nz-dropdown-menu>
 
@@ -168,6 +182,11 @@
               </tr>
               </tbody>
             </nz-table>
+            <nz-alert *ngIf="alertLB" nzShowIcon nzType="warning" [nzDescription]="des" style="margin-left: 10%;margin-right: 10%;margin-top: 10px">
+              <ng-template #des>
+                <span class="text-intro-desc">VPC <a href="/app-smart-cloud/project/detail/{{project}}">{{ projectCurrentModel?.projectName }}</a> {{'app.lb.note.1' | i18n}}</span>
+              </ng-template>
+            </nz-alert>
           </ng-container>
           <ng-container *ngSwitchDefault>
             <result>
@@ -184,8 +203,7 @@
               </nz-row>
               <nz-row style="margin-top: 20px">
                 <nz-col class="text-center" style="width: 100%">
-                <span class="text-intro-desc">{{ 'app.load.balancing.intro' | i18n }}<br>
-                  {{ 'app.load.balancing.intro.next' | i18n }}</span>
+                <span class="text-intro-desc">{{ 'app.load.balancing.intro' | i18n }}</span>
                 </nz-col>
               </nz-row>
               <button style="margin-top: 20px" nz-button [nzType]="'primary'" (click)="navigateToCreate(typeVPC)"
@@ -212,7 +230,8 @@
           </nz-row>
           <nz-row style="margin-top: 20px">
             <nz-col class="text-center" style="width: 100%">
-                <span class="text-intro-desc">Đối với VPC tùy biến <a href="/app-smart-cloud/project/detail/{{project}}">{{projectCurrentModel?.projectName}}</a>,quý khách vui lòng mua kèm dịch vụ Load Balancer tại dịch vụ bổ sung</span>
+              <span class="text-intro-desc">{{'app.lb.note.2' | i18n}} <a
+                href="/app-smart-cloud/project/detail/{{project}}">{{ projectCurrentModel?.projectName }}</a> {{'app.lb.note.3' | i18n}}</span>
             </nz-col>
           </nz-row>
         </result>
