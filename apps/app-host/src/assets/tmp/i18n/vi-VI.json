@@ -818,9 +818,12 @@
   "app.load.balancer.list": "Danh sách Load Balancer",
   "app.load.balancer.search": "Tìm kiếm theo tên, IP Address...",
   "app.load.balancing.service": "Dịch vụ cân bằng tải",
-  "app.load.balancing.intro": "Đối với dự án VPC, quý khách có thể mua kèm dịch vụ Load Balancer tại dịch vụ bổ sung",
+  "app.load.balancing.intro": "Giải pháp phân phối lưu lượng truy cập mạng nhằm tối ưu hóa việc sử dụng nguồn lực, nâng cao hiệu suất hệ thống và đảm bảo tính sẵn sàng của ứng dụng",
   "app.load.balancing.intro.next": "Đối với dự án thường, quý khách có thể khởi tạo Load Balancer tại đây",
   "app.listener.create": "Tạo Listener",
+  "app.lb.note.1": "đã hết quota Load Balancer, vui lòng điều chỉnh VPC để tiếp tục sử dụng dịch vụ",
+  "app.lb.note.2": "Quý khách chưa mua dịch vụ Load Balancer trong VPC tùy biến. Xin vui lòng nhấn vào đây",
+  "app.lb.note.3": "thực hiện mua dịch vụ",
   "app.load.balancer.attach.ipfloating": "Gắn IP Floating",
   "app.load.balancer.detach.ipfloating": "Gỡ IP Floating",
   "app.listener.create.button": "Tạo mới Listener",
@@ -2027,7 +2030,7 @@
   "ecr.overview.description":"Mô tả",
   "ecr.overview.chart":"Biểu đồ theo dõi",
   "ecr.overview.choose.time":"Chọn thời gian",
-  
+
 
   "app.cluster.summary": "VNPT Kubernetes Service là một nền tảng dựa trên Kubernetes đảm bảo hiệu quả cao cho doanh nghiệp bằng cách chạy các ứng dụng được đóng gói container trên đám mây, an toàn bảo mật, ổn định và hiệu năng cao",
   "app.cluster.platform-service": "Dịch vụ nền tảng",
