@@ -30,7 +30,7 @@
   <div *ngIf="!volumeInfo?.bootable">
     <div *ngIf="typeVPC != 1" style="display: flex">
       <div style="margin-right: 8px;" *ngIf="!['CREATING', 'ATTACHING', 'DELETING', 'ERROR_DELETING', 'ERROR'].includes(volumeInfo?.serviceStatus)">
-        <div nz-col nzSpan="4">
+        <div nz-col nzSpan="4" *ngIf="!['SUSPENDED'].includes(volumeInfo?.status)">
           <button class="button-fee"
                   nz-button
                   nzType="primary" (click)="navigateEditVolume(volumeInfo.id)">

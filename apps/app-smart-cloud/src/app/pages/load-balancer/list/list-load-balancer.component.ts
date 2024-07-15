@@ -130,12 +130,14 @@ export class ListLoadBalancerComponent implements OnInit {
   }
 
   navigateToCreate(typeVpc) {
+    this.alertLB = false;
     if (!this.isLoading) {
       console.log(typeVpc);
       let hasRoleSI = localStorage.getItem('role').includes('SI');
       if (typeVpc === 1 || hasRoleSI) {
         if (this.noneQuota) {
           this.notification.warning('Cảnh báo','Quý khách vui lòng mua thêm quota cho Load Balancer')
+          this.alertLB = true;
         } else {
           this.router.navigate(['/app-smart-cloud/load-balancer/create/vpc']);
         }
@@ -199,6 +201,7 @@ export class ListLoadBalancerComponent implements OnInit {
   searchDelay = new Subject<boolean>();
   isFirstVisit: boolean = true;
   loading = true;
+  alertLB = false;
 
   ngOnInit(): void {
     let regionAndProject = getCurrentRegionAndProject();
@@ -213,5 +216,9 @@ export class ListLoadBalancerComponent implements OnInit {
     this.searchDelay.pipe(debounceTime(TimeCommon.timeOutSearch)).subscribe(() => {
       this.search(false);
     });
+  }
+
+  navigateToUpdateNormal(id: number) {
+    this.router.navigate(['/app-smart-cloud/load-balancer/update/normal/' + id]);
   }
 }
