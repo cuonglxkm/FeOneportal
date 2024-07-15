@@ -222,7 +222,7 @@ export class CreateVolumeVpcComponent implements OnInit {
   }
 
   getDetailSnapshotVolume(id) {
-    this.snapshotvlService.getDetailSnapshotSchedule(id).subscribe(data => {
+    this.snapshotvlService.getSnapshotVolumeById(id).subscribe(data => {
       console.log('data', data);
       this.snapshot = data;
       this.validateForm.controls.storage.setValue(data.sizeInGB);
