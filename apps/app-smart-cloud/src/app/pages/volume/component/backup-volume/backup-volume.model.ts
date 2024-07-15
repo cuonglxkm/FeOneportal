@@ -9,7 +9,9 @@ export interface BackupVolume {
   customerId: number
   scheduleId: number
   instanceBackupId: number
-  isBootable: true
+  isBootable: boolean
+  isEncryption: boolean
+  isMultiAttach: boolean
   iops: number
   offerId: number
   cloudIdentity: number
@@ -27,6 +29,7 @@ export interface BackupVolume {
   vpcName: string
   customerEmail: string
   backupPackageName: string
+  volumeType: string
 }
 
 export class FormCreateBackupVolume {
@@ -86,4 +89,65 @@ export class FormUpdateBackupVolume {
   volumeBackupId: number
   name: string
   description: string
+}
+
+export class FormRestoreCurrentBackupVolume {
+  volumeBackupId: number
+  volumeId: number
+}
+
+export class FormRestoreNewBackupVolume {
+  volumeBackupId: number
+  volumeName: string
+  volumeSize: number
+  instanceToAttachId: number
+  customerId: number
+  userEmail: string
+  actorEmail: string
+  projectId: number
+  vpcId: number
+  regionId: number
+  serviceName: string
+  serviceType: number
+  actionType: number
+  serviceInstanceId: number
+  createDate: Date
+  expireDate: Date
+  createDateInContract: string
+  saleDept: string
+  saleDeptCode: string
+  contactPersonEmail: string
+  contactPersonPhone: string
+  contactPersonName: string
+  am: string
+  amManager: string
+  note: string
+  isTrial: boolean
+  offerId: number
+  couponCode: string
+  dhsxkd_SubscriptionId: string
+  dSubscriptionNumber: string
+  dSubscriptionType: string
+  oneSMEAddonId: string
+  oneSME_SubscriptionId: string
+  isSendMail: true
+  typeName: "SharedKernel.IntegrationEvents.Orders.Specifications.BackupVolumeRestoreSpecification,SharedKernel.IntegrationEvents, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null"
+}
+
+
+export class FormOrderRestoreBackupVolume {
+  customerId: number
+  createdByUserId: number
+  note: string
+  couponCode: string
+  invoiceInfo: string
+  orderItems: [
+    {
+      orderItemQuantity: number
+      specification: string
+      specificationType: string
+      price: number
+      serviceDuration: number
+    }
+  ]
 }

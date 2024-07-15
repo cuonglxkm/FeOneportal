@@ -7,7 +7,7 @@
       <nz-breadcrumb-item>{{ 'app.breadcrumb.infrastructure.service'|i18n }}</nz-breadcrumb-item>
       <nz-breadcrumb-item>{{ 'app.breadcrumb.block.storage'|i18n }}</nz-breadcrumb-item>
       <nz-breadcrumb-item><a
-        [routerLink]="'/app-smart-cloud/backup-volume'">{{ 'app.breadcrumb.list.backup.volume'|i18n }}</a>
+        [routerLink]="'/app-smart-cloud/backup-volume'">Backup Volume</a>
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>{{ 'app.backup.volume.detail'|i18n }}</nz-breadcrumb-item>
     </nz-breadcrumb>
@@ -18,8 +18,8 @@
   <ng-template #action>
     <div class="alain-custom-action text-right">
       <share-users-combobox></share-users-combobox>
-      <region-select-dropdown (valueChanged)="regionChanged($event)"></region-select-dropdown>
-      <project-select-dropdown [regionId]="region"
+      <region-select-dropdown (regionChange)="onRegionChanged($event)" (valueChanged)="regionChanged($event)"></region-select-dropdown>
+      <project-select-dropdown #projectCombobox [regionId]="region"
                                (valueChanged)="projectChanged($event)"
                                (userChanged)="userChanged($event)"></project-select-dropdown>
     </div>
@@ -40,7 +40,7 @@
           <nz-col nzSpan="12" *ngIf="typeVpc == 0">
             <nz-row style="padding: 12px 0 12px 0">
               <span class="text-label" style="width: 35%">{{ 'app.backup.volume.backup.package' | i18n }}</span>
-              <span class="text-value-detail">{{ backupVolume?.backupPackageName }}</span>
+              <span class="text-value-detail">{{ backupPackageDetail?.packageName }}</span>
             </nz-row>
           </nz-col>
         </nz-row>
@@ -71,7 +71,7 @@
               <span class="text-label"
                     style="width: 35%; margin-left: 2%;">{{ 'app.service.creation-date' | i18n }}</span>
               <span class="text-value-detail"
-                    style="margin-left: 2%;">{{ backupVolume?.creationDate | date: 'dd/MM/yyyy' }} </span>
+                    style="margin-left: 2%;">{{ backupVolume?.creationDate | date: 'HH:mm:ss dd/MM/yyyy' }} </span>
             </nz-row>
           </nz-col>
           <nz-col nzSpan="12">
@@ -89,7 +89,7 @@
               <span class="text-label customSpan"
                     style="width: 35%; margin-left: 2%; color: #EA3829;">{{ 'app.service.expiration-date' | i18n }}</span>
               <span class="text-value-detail"
-                    style="margin-left: 2%; color: #EA3829;">{{ backupVolume?.expirationDate | date: 'dd/MM/yyyy' }}</span>
+                    style="margin-left: 2%; color: #EA3829;">{{ backupVolume?.expirationDate | date: 'HH:mm:ss dd/MM/yyyy' }}</span>
             </nz-row>
           </nz-col>
           <nz-col nzSpan="12">

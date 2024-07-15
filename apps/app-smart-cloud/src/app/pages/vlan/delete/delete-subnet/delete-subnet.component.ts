@@ -66,16 +66,25 @@ export class DeleteSubnetComponent implements AfterViewInit {
     if (this.value == this.nameSubnet) {
       this.isInput = false;
       this.isLoadingDeleteSubnet = true;
-      this.vlanService.deleteSubnet(this.id).subscribe(item => {
+      this.vlanService.checkDeleteSubnet(this.id).subscribe(data => {
+        this.vlanService.deleteSubnet(this.id).subscribe(item => {
+          this.isVisibleDeleteSubnet = false;
+          this.isLoadingDeleteSubnet = false;
+          this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('app.vlan.note53'));
+          this.onOk.emit(item)
+        }, error => {
+          this.isVisibleDeleteSubnet = false;
+          this.isLoadingDeleteSubnet = false;
+          this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.vlan.note54') + error.error);
+        });
+      }, error =>  {
+        console.log(error)
         this.isVisibleDeleteSubnet = false;
         this.isLoadingDeleteSubnet = false;
-        this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('app.vlan.note53'));
-        this.onOk.emit(item)
-      }, error => {
-        this.isVisibleDeleteSubnet = false;
-        this.isLoadingDeleteSubnet = false;
-        this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.vlan.note54'), error.error.detail);
-      });
+        this.notification.error(this.i18n.fanyi('app.status.fail'),  error.error);
+        this.value = null
+      })
+
 
     } else {
       this.isInput = true;

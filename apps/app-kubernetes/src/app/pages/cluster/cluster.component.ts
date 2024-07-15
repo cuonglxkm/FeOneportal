@@ -6,9 +6,9 @@ import { NguCarousel, NguCarouselConfig } from '@ngu/carousel';
 import { overlapCidr } from "cidr-tools";
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
-import { EMPTY, catchError, finalize, forkJoin, map } from 'rxjs';
+import { EMPTY, Subject, catchError, debounceTime, distinctUntilChanged, finalize, forkJoin, map } from 'rxjs';
 import { KubernetesConstant } from '../../constants/kubernetes.constant';
-import { CreateClusterReqDto, KubernetesCluster, NetworkingModel, Order, OrderItem } from '../../model/cluster.model';
+import { CreateClusterReqDto, KubernetesCluster, NetworkingModel, Order, OrderItem, OrderItemPayment, OrderPayment } from '../../model/cluster.model';
 import { K8sVersionModel } from '../../model/k8s-version.model';
 import { PackModel } from '../../model/pack.model';
 import { PriceModel } from '../../model/price.model';
@@ -23,6 +23,7 @@ import { RegionModel } from '../../shared/models/region.model';
 import { UserInfo } from '../../model/user.model';
 import { I18NService } from '../../core/i18n/i18n.service';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
+import { CostService } from '../../services/cost.service';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -81,11 +82,10 @@ export class ClusterComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private clusterService: ClusterService,
-    private modalService: NzModalService,
     private notificationService: NzNotificationService,
     private vlanService: VlanService,
     private router: Router,
-    private shareService: ShareService,
+    private costService: CostService,
     private cdr: ChangeDetectorRef,
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
     @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService
@@ -308,35 +308,35 @@ export class ClusterComponent implements OnInit {
     .subscribe((r: any) => {
       if (r && r.code == 200) {
         this.listOfPriceItem = r.data;
-        this.initPrice();
+        // this.initPrice();
       } else {
         this.notificationService.error(this.i18n.fanyi('app.status.fail'), r.message);
       }
     });
   }
 
-  priceOfCpu: number;
-  priceOfRam: number;
-  priceOfSsd: number;
-  priceOfHdd: number;
-  initPrice() {
-    this.listOfPriceItem.forEach(data => {
-      switch (data.item) {
-        case 'cpu':
-          this.priceOfCpu = data.price;
-          break;
-        case 'ram':
-          this.priceOfRam = data.price;
-          break;
-        case 'storage_ssd':
-          this.priceOfSsd = data.price;
-          break;
-        case 'storage_hdd':
-          this.priceOfHdd = data.price;
-          break;
-      }
-    });
-  }
+  // priceOfCpu: number;
+  // priceOfRam: number;
+  // priceOfSsd: number;
+  // priceOfHdd: number;
+  // initPrice() {
+  //   this.listOfPriceItem.forEach(data => {
+  //     switch (data.item) {
+  //       case 'cpu':
+  //         this.priceOfCpu = data.price;
+  //         break;
+  //       case 'ram':
+  //         this.priceOfRam = data.price;
+  //         break;
+  //       case 'storage_ssd':
+  //         this.priceOfSsd = data.price;
+  //         break;
+  //       case 'storage_hdd':
+  //         this.priceOfHdd = data.price;
+  //         break;
+  //     }
+  //   });
+  // }
 
   totalRam: number;
   totalCpu: number;
@@ -346,35 +346,113 @@ export class ClusterComponent implements OnInit {
   onCalculatePrice() {
     this.totalPrice = 0;
     this.workerPrice = 0;
+    this.vatCost = 0;
     this.totalCpu = 0; this.totalRam = 0; this.totalStorage = 0;
-
-    const wg = this.myform.get('workerGroup').value;
-    for (let i = 0; i < wg.length; i++) {
-      const cpu = wg[i].cpu ? wg[i].cpu : 0;
-      const ram = wg[i].ram ? wg[i].ram : 0;
-      const storage = +wg[i].volumeStorage ? +wg[i].volumeStorage : 0;
-      const autoScale = wg[i].autoScalingWorker;
-      let nodeNumber: number;
-      if (autoScale) {
-        // TODO: ...
-
-      } else {
-        nodeNumber = wg[i].nodeNumber ? wg[i].nodeNumber : 0;
-      }
-
-      this.totalCpu += nodeNumber * cpu;
-      this.totalRam += nodeNumber * ram;
-      this.totalStorage += nodeNumber * storage;
-    }
 
     const usageTime = this.myform.get('usageTime').value;
     if (!usageTime) return;
 
-    this.workerCostPerMonth = this.priceOfCpu * this.totalCpu + this.priceOfRam * this.totalRam + this.priceOfSsd * this.totalStorage;
-    this.workerPrice = usageTime * this.workerCostPerMonth;
-    this.volumePrice = 0;   // fix for now
-    this.vatCost = (this.workerPrice + this.volumePrice) * this.vatPercent;
-    this.totalPrice = this.workerPrice + this.volumePrice + this.vatCost;
+    if (this.chooseItem) {
+
+      this.volumePrice = 0;
+      this.workerCostPerMonth = this.chooseItem.price;
+      this.workerPrice = this.chooseItem.price * Number(usageTime);
+
+      this.vatCost = (this.workerPrice + this.volumePrice) * this.vatPercent;
+      this.totalPrice = this.workerPrice + this.volumePrice + this.vatCost;
+      this.offerId = this.chooseItem.offerId;
+
+    } else {
+      const wg = this.myform.get('workerGroup').value;
+      for (let i = 0; i < wg.length; i++) {
+        const cpu = wg[i].cpu ? wg[i].cpu : 0;
+        const ram = wg[i].ram ? wg[i].ram : 0;
+        const storage = +wg[i].volumeStorage ? +wg[i].volumeStorage : 0;
+        const autoScale = wg[i].autoScalingWorker;
+        let nodeNumber: number;
+        if (autoScale) {
+          // TODO: ...
+
+        } else {
+          nodeNumber = wg[i].nodeNumber ? wg[i].nodeNumber : 0;
+        }
+
+        this.totalCpu += nodeNumber * cpu;
+        this.totalRam += nodeNumber * ram;
+        this.totalStorage += nodeNumber * storage;
+      }
+
+      if (this.totalRam > 0 && this.totalStorage > 0 && this.totalCpu > 0)
+        this.onHandleGetTotalAmount();
+    }
+
+    // this.workerCostPerMonth = this.priceOfCpu * this.totalCpu + this.priceOfRam * this.totalRam + this.priceOfSsd * this.totalStorage;
+    // this.workerPrice = usageTime * this.workerCostPerMonth;
+    // this.volumePrice = 0;   // fix for now
+    // this.vatCost = (this.workerPrice + this.volumePrice) * this.vatPercent;
+    // this.totalPrice = this.workerPrice + this.volumePrice + this.vatCost;
+  }
+
+  private calculateCostRequest = new Subject<any>();
+  isCalculating: boolean = false;
+  onHandleGetTotalAmount() {
+    let orderPayment: OrderPayment = new OrderPayment();
+    orderPayment.projectId = this.projectInfraId;
+    orderPayment.orderItems = [];
+
+    let orderItem: OrderItemPayment = new OrderItemPayment();
+    orderItem.orderItemQuantity = 1;
+    orderItem.sortItem = 0;
+    orderItem.specificationType = KubernetesConstant.CLUSTER_CREATE_TYPE;
+    orderItem.serviceDuration = this.usageTime;
+    orderItem.specificationString = JSON.stringify({
+      offerId: this.offerId,
+      regionId: this.regionId,
+      totalRam: this.totalRam,
+      totalCpu: this.totalCpu,
+      totalStorage: this.totalStorage
+    });
+
+    orderPayment.orderItems = [...orderPayment.orderItems, orderItem];
+
+    this.getTotalAmount(orderPayment);
+
+    // this.calculateCostRequest.pipe(
+    //   debounceTime(500),
+    //   distinctUntilChanged(),
+    // ).subscribe((data: any) => {
+    //   console.log(data);
+    // });
+  }
+
+  getTotalAmount(data: OrderPayment) {
+    this.isCalculating = true;
+    this.costService.getTotalAmount(data)
+    .pipe(
+      finalize(() => {
+        this.isCalculating = false;
+        this.cdr.detectChanges();
+      }),
+      map((r: any) => r.data)
+    )
+    .subscribe((r: any) => {
+      if (r) {
+        this.workerPrice = r.totalAmount.amount;
+        this.vatCost = r.totalVAT.amount;
+        this.totalPrice = r.totalPayment.amount;
+        this.workerCostPerMonth = r.orderItemPrices[0].totalAmount.amount;
+      } else {
+        this.notificationService.error(this.i18n.fanyi('app.status.fail'), r.message);
+      }
+    });
+  }
+
+  clusterParams: any;
+  onChangeParams(event: any, field: string) {
+    if (this.clusterParams[field] === event) return;
+
+    this.clusterParams[field] = event;
+    this.calculateCostRequest.next(this.clusterParams);
   }
 
   // catch event region change and reload data
@@ -601,6 +679,7 @@ export class ClusterComponent implements OnInit {
     this.workerPrice = 0;
     this.volumePrice = 0;
     this.totalPrice = 0;
+    this.vatCost = 0;
   }
 
   onInputUsage(event: any) {
@@ -648,12 +727,16 @@ export class ClusterComponent implements OnInit {
 
     if (podCidr && serviceCidr) {
       if (overlapCidr(podCidr, serviceCidr)) {
+        this.myform.get('serviceCidr').markAsDirty();
         this.myform.get('serviceCidr').setErrors({overlapPodCidr: true});
       } else {
         delete this.myform.get('serviceCidr').errors?.overlapPodCidr;
       }
+    }
 
+    if (serviceCidr && subnet) {
       if (overlapCidr(serviceCidr, subnet)) {
+        this.myform.get('serviceCidr').markAsDirty();
         this.myform.get('serviceCidr').setErrors({overlapSubnet: true});
       } else {
         delete this.myform.get('serviceCidr').errors?.overlapSubnet;
@@ -810,6 +893,7 @@ export class ClusterComponent implements OnInit {
     }
   }
 
+  signature: string;
   validateClusterInfo = () => {
     this.validateForm();
 
@@ -842,6 +926,7 @@ export class ClusterComponent implements OnInit {
     // this.onSubmitOrder(cluster);
 
     const data: CreateClusterReqDto = new CreateClusterReqDto(cluster);
+    data.Specification = JSON.stringify(cluster);
     // console.log({data: data});
     // console.log({cluster: cluster});
     this.isSubmitting = true;
@@ -849,6 +934,7 @@ export class ClusterComponent implements OnInit {
     .pipe(finalize(() => this.isSubmitting = false))
     .subscribe((r: any) => {
       if (r && r.code == 200) {
+        this.signature = r.data;
         this.onSubmitOrder(cluster);
       } else {
         this.isSubmitting = false;
@@ -871,6 +957,7 @@ export class ClusterComponent implements OnInit {
     orderItem.specificationType = KubernetesConstant.CLUSTER_CREATE_TYPE;
     orderItem.specification = JSON.stringify(cluster);
     orderItem.serviceDuration = this.usageTime;
+    orderItem.signature = this.signature;
 
     data.orderItems = [...data.orderItems, orderItem];
 

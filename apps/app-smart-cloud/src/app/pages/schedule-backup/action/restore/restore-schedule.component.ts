@@ -13,6 +13,7 @@ import { I18NService } from '@core';
 })
 export class RestoreScheduleComponent {
   @Input() id: number
+  @Input() nameScheduleBackup: string
   @Output() onCancel = new EventEmitter<void>()
   @Output() onOk = new EventEmitter<void>()
 
@@ -36,6 +37,7 @@ export class RestoreScheduleComponent {
   }
 
   handleOk() {
+    this.isLoading = true
     let formAction = new FormAction()
     formAction.scheduleId = this.id
     formAction.customerId = this.tokenService.get()?.userId

@@ -14,11 +14,10 @@ import {
   Validators,
 } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { STIcon } from '@delon/abc/st';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { getCurrentRegionAndProject } from '@shared';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
-import { debounceTime, finalize, Subject } from 'rxjs';
+import { debounceTime, distinctUntilChanged, finalize } from 'rxjs';
 import {
   RouterInteface,
   RouterIntefaceCreate,
@@ -26,18 +25,17 @@ import {
   Subnet,
 } from 'src/app/shared/models/router.model';
 
-import { RouterService } from 'src/app/shared/services/router.service';
-import {
-  ProjectModel,
-  RegionModel,
-  ipAddressValidatorRouter,
-} from '../../../../../../../libs/common-utils/src';
 import { I18NService } from '@core';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
+import { IP_ADDRESS_REGEX } from 'src/app/shared/constants/constants';
+import { RouterService } from 'src/app/shared/services/router.service';
 import {
-  IP_ADDRESS_REGEX,
-  NEXTHOP_REGEX,
-} from 'src/app/shared/constants/constants';
+  AppValidator,
+  ipAddressValidatorRouter,
+  ProjectModel,
+  RegionModel,
+} from '../../../../../../../libs/common-utils/src';
+import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
 
 @Component({
   selector: 'one-portal-router-detail',
@@ -84,7 +82,7 @@ export class RouterDetailComponent implements OnInit {
     ],
     nextHop: ['', [Validators.required]],
   });
-
+  @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
   constructor(
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
     private service: RouterService,
@@ -97,10 +95,9 @@ export class RouterDetailComponent implements OnInit {
   ) {
     this.formRouterInterface = this.fb.group({
       subnetId: ['', Validators.required],
-      ipAddress: ['', {
-        validators: [Validators.required],
-        updateOn: 'blur' 
-      }],
+      ipAddress: [
+        '',Validators.required,
+      ],
     });
 
     this.formRouterInterface
@@ -120,18 +117,7 @@ export class RouterDetailComponent implements OnInit {
           this.formRouterInterface.get('ipAddress').updateValueAndValidity();
         }
       });
-
-      this.formRouterInterface.get('ipAddress').valueChanges
-      .pipe(debounceTime(100))
-      .subscribe(() => {
-        const inputField = document.getElementById('ipAdress');
-        if (inputField) {
-          inputField.blur();
-        }
-      });
-
   }
-
 
   ngOnInit(): void {
     this.routerId = this.activatedRoute.snapshot.paramMap.get('id');
@@ -142,6 +128,7 @@ export class RouterDetailComponent implements OnInit {
     this.getRouterInterfaces();
     this.getRouterStatic();
   }
+
 
   getRouterInterfaces() {
     this.isLoadingListRouterInterface = true;
@@ -273,10 +260,10 @@ export class RouterDetailComponent implements OnInit {
         },
         (error) => {
           console.log(error);
-          
+
           this.isLoadingRouterInterface = false;
           this.cdr.detectChanges();
-          if (error.status === 400) {
+          if (error.error.detail.includes('CIDR của subnet vừa chọn')) {
             this.notification.error(
               this.i18n.fanyi('app.status.fail'),
               this.i18n.fanyi('router.alert.cidr.wrong')
@@ -286,7 +273,7 @@ export class RouterDetailComponent implements OnInit {
               this.i18n.fanyi('app.status.fail'),
               this.i18n.fanyi('router.alert.ip.existed')
             );
-            this.ipAdress.nativeElement.focus()
+            this.ipAdress.nativeElement.focus();
           } else if (
             error.error.detail === 'Địa chỉ IP không hợp lệ với Subnet đã chọn!'
           ) {
@@ -301,7 +288,7 @@ export class RouterDetailComponent implements OnInit {
               this.i18n.fanyi('app.status.fail'),
               this.i18n.fanyi('router.alert.wrong.format')
             );
-          }else {
+          } else {
             this.notification.error(
               this.i18n.fanyi('app.status.fail'),
               this.i18n.fanyi('router.nofitacation.create.fail')
@@ -353,23 +340,26 @@ export class RouterDetailComponent implements OnInit {
             this.i18n.fanyi('app.status.fail'),
             this.i18n.fanyi('router.alert.wrong.format')
           );
-        } else if (error.error.detail.includes('NextHop không được nhập trùng với địa')) {
+        } else if (
+          error.error.detail.includes('NextHop không được nhập trùng với địa')
+        ) {
           this.notification.error(
             this.i18n.fanyi('app.status.fail'),
             this.i18n.fanyi('router.validate.duplicate.nexthop')
           );
-        } 
-        else if (error.error.detail.includes('Nhập sai định dạng Router')) {
+        } else if (error.error.detail.includes('Nhập sai định dạng Router')) {
           this.notification.error(
             this.i18n.fanyi('app.status.fail'),
             this.i18n.fanyi('router.alert.router.wrong.format')
           );
-        } else if (error.error.detail.includes('Destination CIDR và NextHop đã tồn tại')) {
+        } else if (
+          error.error.detail.includes('Destination CIDR và NextHop đã tồn tại')
+        ) {
           this.notification.error(
             this.i18n.fanyi('app.status.fail'),
             this.i18n.fanyi('router.validate.duplicate.cidr')
           );
-        }else {
+        } else {
           this.notification.error(
             this.i18n.fanyi('app.status.fail'),
             this.i18n.fanyi('router.nofitacation.create.fail1')
@@ -405,12 +395,14 @@ export class RouterDetailComponent implements OnInit {
           this.getRouterInterfaces();
         },
         error: (e) => {
-          if(e.error.detail.includes('Vui lòng không xóa Router Interface vì')){
+          if (
+            e.error.detail.includes('Vui lòng không xóa Router Interface vì')
+          ) {
             this.notification.error(
               this.i18n.fanyi('app.status.fail'),
               this.i18n.fanyi('router.nofitacation.interface.remove.fail1')
             );
-          }else{
+          } else {
             this.notification.error(
               this.i18n.fanyi('app.status.fail'),
               this.i18n.fanyi('router.nofitacation.interface.remove.fail')
@@ -467,7 +459,14 @@ export class RouterDetailComponent implements OnInit {
 
   onRegionChange(region: RegionModel) {
     this.regionId = region.regionId;
+    if(this.projectCombobox){
+      this.projectCombobox.loadProjects(true, region.regionId);
+    }
     this.router.navigate(['/app-smart-cloud/network/router']);
+  }
+
+  onRegionChanged(region: RegionModel) {
+    this.regionId = region.regionId;
   }
 
   onProjectChange(project: ProjectModel) {

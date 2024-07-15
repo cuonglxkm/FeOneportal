@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject, OnInit, ViewChild } from '@angular/core';
 import {
   FormControl,
   FormGroup,
@@ -38,6 +38,9 @@ import { CreateVolumeRequestModel } from 'src/app/shared/models/volume.model';
 import { addDays } from 'date-fns';
 import { OrderService } from 'src/app/shared/services/order.service';
 import { ConfigurationsService } from 'src/app/shared/services/configurations.service';
+import { ProjectService } from 'src/app/shared/services/project.service';
+import { NAME_SNAPSHOT_REGEX } from 'src/app/shared/constants/constants';
+import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
 
 @Component({
   selector: 'one-portal-create-file-system-snapshot',
@@ -71,9 +74,13 @@ export class CreateFileSystemSnapshotComponent implements OnInit {
   orderItem: OrderItem = new OrderItem();
   unitPrice = 0;
   timeSelected: any
+  storageBuyVpc: number;
+  storageUsed: number
+  storageRemaining: number;
 
   isVisiblePopupError: boolean = false;
   errorList: string[] = [];
+  @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
   closePopupError() {
     this.isVisiblePopupError = false;
   }
@@ -95,7 +102,7 @@ export class CreateFileSystemSnapshotComponent implements OnInit {
       '',
       [
         Validators.required,
-        Validators.pattern(/^(?! *$)[a-zA-Z0-9-_ ]{1,255}$/),
+        Validators.pattern(NAME_SNAPSHOT_REGEX),
       ],
     ],
     description: [''],
@@ -105,15 +112,17 @@ export class CreateFileSystemSnapshotComponent implements OnInit {
   dataSubjectTime: Subject<any> = new Subject<any>();
 
   updateSelectedFileSystems(selectedFileSystem: number): void {
-    const selectedOption = this.response.records.find(
-      (option) => option.id === selectedFileSystem
-    );
-    if (selectedOption) {
-      this.selectedFileSystemName = selectedOption.name;
+    if(this.response && this.response.records){
+      const selectedOption = this.response.records.find(
+        (option) => option.id === selectedFileSystem
+      );
+      if (selectedOption) {
+        this.selectedFileSystemName = selectedOption.name;
+      }
+      this.fileSysId = selectedOption.id;
+      this.fileSysSize = selectedOption.size;
+      this.getTotalAmount();
     }
-    this.fileSysId = selectedOption.id;
-    this.fileSysSize = selectedOption.size;
-    this.getTotalAmount();
   }
 
   getListFileSystem() {
@@ -162,6 +171,7 @@ export class CreateFileSystemSnapshotComponent implements OnInit {
     this.project = regionAndProject.projectId;
     this.getListFileSystem();
     this.getConfigurations();
+    this.getStorageBuyVpc()
   }
 
   constructor(
@@ -174,11 +184,9 @@ export class CreateFileSystemSnapshotComponent implements OnInit {
     private activatedRoute: ActivatedRoute,
     private instanceService: InstancesService,
     private orderService: OrderService,
-    private configurationsService: ConfigurationsService
+    private configurationsService: ConfigurationsService,
+    private projectService: ProjectService
   ) {
-    this.form.get('time').valueChanges.subscribe((data) => {
-      this.getTotalAmount();
-    });
   }
 
   caculator(event) {
@@ -215,9 +223,9 @@ export class CreateFileSystemSnapshotComponent implements OnInit {
     this.formCreate.actionType = ServiceActionType.CREATE;
     this.formCreate.serviceInstanceId = 0;
     this.formCreate.createDate =
-      this.typeVpc === 0 ? this.dateString : new Date();
+      this.typeVpc === 0 || this.typeVpc === 2 ? this.dateString : new Date();
     this.formCreate.expireDate =
-      this.typeVpc === 0 ? this.expiredDate : new Date();
+      this.typeVpc === 0 || this.typeVpc === 2 ? this.expiredDate : new Date();
     this.formCreate.createDateInContract = null;
     this.formCreate.saleDept = null;
     this.formCreate.saleDeptCode = null;
@@ -260,6 +268,18 @@ export class CreateFileSystemSnapshotComponent implements OnInit {
       });
   }
 
+  getStorageBuyVpc() {
+    this.isLoading = true
+    this.projectService.getProjectVpc(this.project).subscribe(data => {
+      console.log(data);
+      
+      this.storageBuyVpc = data.cloudProject?.quotaShareSnapshotInGb
+      this.storageUsed = data.cloudProjectResourceUsed?.quotaShareSnapshotInGb
+      this.storageRemaining = this.storageBuyVpc - data.cloudProjectResourceUsed?.quotaShareSnapshotInGb
+      this.isLoading = false
+    })
+  }
+
   handleCreateFSS() {
     this.fileSystemSnapshotInit();
     let request: CreateVolumeRequestModel = new CreateVolumeRequestModel();
@@ -271,18 +291,16 @@ export class CreateFileSystemSnapshotComponent implements OnInit {
         orderItemQuantity: 1,
         specification: JSON.stringify(this.formCreate),
         specificationType: 'sharesnapshot_create',
-        price: this.typeVpc === 0 ? this.orderItem?.totalAmount.amount : 0,
-        serviceDuration: this.typeVpc === 0 ? this.form.controls.time.value : 1,
+        price: this.typeVpc === 0 || this.typeVpc === 2 ? this.orderItem?.totalAmount.amount : 0,
+        serviceDuration: this.typeVpc === 0 || this.typeVpc === 2 ? this.form.controls.time.value : 1,
       },
     ];
-    if (this.typeVpc === 0) {
+    if (this.typeVpc === 0 || this.typeVpc === 2) {
       this.orderService.validaterOrder(request).subscribe({
         next: (data) => {
           if (data.success) {
           var returnPath: string =
             '/app-smart-cloud/file-system-snapshot/create';
-          console.log('request', request);
-          console.log('service name', this.formCreate.serviceName);
           this.router.navigate(['/app-smart-cloud/order/cart'], {
             state: { data: request, path: returnPath },
           });
@@ -310,17 +328,17 @@ export class CreateFileSystemSnapshotComponent implements OnInit {
                     this.isLoadingCreateFSS = false;
                     this.notification.success(
                       this.i18n.fanyi('app.status.success'),
-                      'Yêu cầu tạo File System Snapshot thành công.'
+                      this.i18n.fanyi('app.file.snapshot.create.success')
                     );
                     this.router.navigate([
-                      '/app-smart-cloud/file-system-snapshot/list',
+                      '/app-smart-cloud/file-system-snapshot',
                     ]);
                   }
                 } else {
                   this.isLoadingCreateFSS = false;
                   this.notification.error(
                     this.i18n.fanyi('app.status.fail'),
-                    'Yêu cầu tạo File System Snapshot thất bại.'
+                    this.i18n.fanyi('app.file.snapshot.create.fail')
                   );
                 }
               },
@@ -328,7 +346,7 @@ export class CreateFileSystemSnapshotComponent implements OnInit {
                 this.isLoadingCreateFSS = false;
                 this.notification.error(
                   this.i18n.fanyi('app.status.fail'),
-                  'Yêu cầu tạo File System Snapshot thất bại.'
+                  this.i18n.fanyi('app.file.snapshot.create.fail')
                 );
               }
             );
@@ -362,16 +380,24 @@ export class CreateFileSystemSnapshotComponent implements OnInit {
 
 
   onRegionChange(region: RegionModel) {
+    console.log(region);
+    
     this.region = region.regionId;
-    this.router.navigate(['/app-smart-cloud/file-system-snapshot/list']);
+    this.router.navigate(['/app-smart-cloud/file-system-snapshot']);
+  }
+
+  onRegionChanged(region: RegionModel) {
+    this.region = region.regionId;
   }
 
   onProjectChange(project: ProjectModel) {
     this.project = project?.id;
     this.typeVpc = project?.type;
+    console.log(project);
+    
   }
 
   userChangeProject(project: ProjectModel) {
-    this.router.navigate(['/app-smart-cloud/file-system-snapshot/list']);
+    this.router.navigate(['/app-smart-cloud/file-system-snapshot']);
   }
 }

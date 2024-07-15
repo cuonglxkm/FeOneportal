@@ -15,24 +15,35 @@ import { HttpClient, HttpContext, HttpHeaders } from '@angular/common/http';
 import { ALLOW_ANONYMOUS, DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { environment } from '@env/environment';
+import { Router } from '@angular/router';
+import { CookieService } from 'ngx-cookie-service';
+import { I18NService } from '@core';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
+import { finalize } from 'rxjs';
 
 @Component({
   selector: 'one-portal-reset-password',
-  template: ` <div *nzModalTitle>Đổi mật khẩu</div>
+  template: ` <div *nzModalTitle>
+      {{ 'menu.account.reset.password' | i18n }}
+    </div>
     <form nz-form [formGroup]="form" [nzLayout]="'vertical'">
       <nz-form-item>
         <nz-form-label
-          >Mật khẩu cũ (<span class="text-red">*</span>)</nz-form-label
+          >{{ 'app.password.old' | i18n }} (<span class="text-red">*</span
+          >)</nz-form-label
         >
         <nz-form-control [nzErrorTip]="oldpassErrorTpl">
-          <input
-            type="password"
-            (ngModelChange)="onOldPassChange($event)"
-            nz-input
-            formControlName="old_password"
-            placeholder="Mật khẩu cũ"
-            nzSize="large"
-          />
+          <nz-input-group [nzSuffix]="suffixTemplateOld" nzSize="large">
+            <input
+              [type]="oldPasswordVisible ? 'text' : 'password'"
+              (ngModelChange)="onOldPassChange($event)"
+              minlength="8"
+              maxlength="16"
+              nz-input
+              formControlName="old_password"
+              [placeholder]="'app.enter.password.old' | i18n"
+            />
+          </nz-input-group>
           <div *ngIf="incorrectOldPassword">
             <span style="color: #ff4d4f">{{
               'validation.password.old.incorrect' | i18n
@@ -46,28 +57,57 @@ import { environment } from '@env/environment';
               'validation.password.account.pattern' | i18n
             }}</ng-container>
           </ng-template>
+          <ng-template #suffixTemplateOld>
+            <img
+              style="margin-top: -4px"
+              [src]="
+                oldPasswordVisible
+                  ? 'assets/imgs/eye-close.svg'
+                  : 'assets/imgs/eye1.svg'
+              "
+              alt=""
+              (click)="oldPasswordVisible = !oldPasswordVisible"
+            />
+          </ng-template>
         </nz-form-control>
       </nz-form-item>
       <nz-form-item>
         <nz-form-label
-          >Mật khẩu mới (<span class="text-red">*</span>)</nz-form-label
+          >{{ 'app.password.new' | i18n }} (<span class="text-red">*</span
+          >)</nz-form-label
         >
         <nz-form-control [nzErrorTip]="newpassErrorTpl">
-          <input
-            type="password"
-            (ngModelChange)="updateConfirmValidator()"
-            minlength="8"
-            maxlength="16"
-            nz-input
-            formControlName="new_password"
-            placeholder="Mật khẩu mới"
-            nzSize="large"
-          />
+          <nz-input-group [nzSuffix]="suffixTemplateNew" nzSize="large">
+            <input
+              [type]="newPasswordVisible ? 'text' : 'password'"
+              (ngModelChange)="updateConfirmValidator()"
+              minlength="8"
+              maxlength="16"
+              nz-input
+              formControlName="new_password"
+              [placeholder]="'app.enter.password.new' | i18n"
+            />
+          </nz-input-group>
           <div *ngIf="isSamePassword">
             <span style="color: #ff4d4f">{{
               'validation.password.new.match.old' | i18n
             }}</span>
           </div>
+          <div *ngIf="isValidatorError">
+            <span style="color: #ff4d4f">{{ messageError }}</span>
+          </div>
+          <ng-template #suffixTemplateNew>
+            <img
+              style="margin-top: -4px"
+              [src]="
+                newPasswordVisible
+                  ? 'assets/imgs/eye-close.svg'
+                  : 'assets/imgs/eye1.svg'
+              "
+              alt=""
+              (click)="newPasswordVisible = !newPasswordVisible"
+            />
+          </ng-template>
         </nz-form-control>
         <ng-template #newpassErrorTpl let-control>
           <ng-container *ngIf="control.hasError('required')"
@@ -80,17 +120,33 @@ import { environment } from '@env/environment';
       </nz-form-item>
       <nz-form-item>
         <nz-form-label
-          >Xác nhận mật khẩu (<span class="text-red">*</span>)</nz-form-label
+          >{{ 'app.password.confirm' | i18n }} (<span class="text-red">*</span
+          >)</nz-form-label
         >
         <nz-form-control [nzErrorTip]="'validation.password.confirm' | i18n">
-          <input
-            type="password"
-            nz-input
-            (change)="onRetypePassChange($event)"
-            formControlName="confirm_password"
-            placeholder="Xác nhận mật khẩu"
-            nzSize="large"
-          />
+          <nz-input-group [nzSuffix]="suffixTemplateConfirm" nzSize="large">
+            <input
+              [type]="confirmPasswordVisible ? 'text' : 'password'"
+              nz-input
+              (change)="onRetypePassChange($event)"
+              minlength="8"
+              maxlength="16"
+              formControlName="confirm_password"
+              [placeholder]="'app.password.confirm' | i18n"
+            />
+          </nz-input-group>
+          <ng-template #suffixTemplateConfirm>
+            <img
+              style="margin-top: -4px"
+              [src]="
+                confirmPasswordVisible
+                  ? 'assets/imgs/eye-close.svg'
+                  : 'assets/imgs/eye1.svg'
+              "
+              alt=""
+              (click)="confirmPasswordVisible = !confirmPasswordVisible"
+            />
+          </ng-template>
         </nz-form-control>
       </nz-form-item>
     </form>
@@ -100,19 +156,20 @@ import { environment } from '@env/environment';
           style="padding-right: 10px; margin-top: -4px"
           src="assets/imgs/cancel.svg"
           alt=""
-        />Hủy
+        />{{ 'app.button.cancel' | i18n }}
       </button>
       <button
         nz-button
         nzType="primary"
         (click)="handleOkResetPassword()"
+        [nzLoading]="isLoading"
         [disabled]="form.invalid || isSamePassword"
       >
         <img
           style="padding-right: 10px; margin-top: -4px"
           src="assets/imgs/confirm.svg"
           alt=""
-        />Xác nhận
+        />{{ 'app.button.confirm' | i18n }}
       </button>
     </div>`,
 })
@@ -125,11 +182,18 @@ export class ModalResetPassComponent implements OnInit {
     }),
   };
 
+  isLoading: boolean = false;
+  oldPasswordVisible: boolean = false;
+  newPasswordVisible: boolean = false;
+  confirmPasswordVisible: boolean = false;
   constructor(
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
+    @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
     private http: HttpClient,
     private modalRef: NzModalRef,
     private notification: NzNotificationService,
+    private router: Router,
+    private cookieService: CookieService,
     private cdr: ChangeDetectorRef
   ) {}
 
@@ -177,7 +241,10 @@ export class ModalResetPassComponent implements OnInit {
   }
 
   incorrectOldPassword: boolean = false;
+  isValidatorError: boolean = false;
+  messageError: string = '';
   handleOkResetPassword() {
+    this.isLoading = true;
     const baseUrl = environment['baseUrl'];
     const updatedUser = {
       id: this.userModel.id,
@@ -197,15 +264,28 @@ export class ModalResetPassComponent implements OnInit {
         context: new HttpContext().set(ALLOW_ANONYMOUS, true),
         headers: this.httpOptions.headers,
       })
+      .pipe(
+        finalize(() => {
+          this.isLoading = false;
+          this.cdr.detectChanges();
+        })
+      )
       .subscribe({
         next: (res) => {
           this.modalRef.close();
           console.log(res);
-          this.notification.success('', 'Đổi mật khẩu thành công');
+          this.notification.success(
+            '',
+            this.i18n.fanyi('app.notify.reset.pass.success')
+          );
+          setTimeout(() => this.logout(), 5000);
         },
         error: (e) => {
-          if (e.error.detail == 'Incorrect password.') {
+          if (e.error.message == 'Incorrect password.') {
             this.incorrectOldPassword = true;
+          } else {
+            this.isValidatorError = true;
+            this.messageError = e.error.validationErrors.NewPassword.join(", ");
           }
         },
       });
@@ -216,7 +296,8 @@ export class ModalResetPassComponent implements OnInit {
     this.incorrectOldPassword = false;
     if (
       this.form.controls['old_password'].value ==
-      this.form.controls['new_password'].value
+        this.form.controls['new_password'].value &&
+      this.form.controls['old_password'].value != ''
     ) {
       this.isSamePassword = true;
     } else {
@@ -246,13 +327,15 @@ export class ModalResetPassComponent implements OnInit {
 
   isSamePassword: boolean = false;
   updateConfirmValidator(): void {
+    this.isValidatorError = false;
     /** wait for refresh value */
     Promise.resolve().then(() =>
       this.form.controls['confirm_password'].updateValueAndValidity()
     );
     if (
       this.form.controls['old_password'].value ==
-      this.form.controls['new_password'].value
+        this.form.controls['new_password'].value &&
+      this.form.controls['new_password'].value != ''
     ) {
       this.isSamePassword = true;
     } else {
@@ -263,4 +346,23 @@ export class ModalResetPassComponent implements OnInit {
   onNewPassChange(data: any) {}
 
   onRetypePassChange(data: any) {}
+
+  logout(): void {
+    let id_token = this.tokenService.get()!['id_token'];
+    console.log('logout host');
+    sessionStorage.clear();
+    this.cookieService.deleteAll( "/",".onsmartcloud.com",true,"None");
+    this.tokenService.clear();
+    localStorage.removeItem('UserRootId');
+    localStorage.removeItem('ShareUsers');
+    localStorage.removeItem('PermissionOPA');
+    localStorage.removeItem('user');
+    localStorage.removeItem('_token');
+
+    window.location.href =
+      environment['sso'].issuer +
+      `/connect/logout?oi_au_id=${id_token}&post_logout_redirect_uri=${decodeURIComponent(
+        environment['sso'].logout_callback
+      )}`;
+  }
 }

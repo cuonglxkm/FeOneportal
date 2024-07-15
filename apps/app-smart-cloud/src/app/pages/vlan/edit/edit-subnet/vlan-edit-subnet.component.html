@@ -5,8 +5,9 @@
     <nz-breadcrumb [nzSeparator]="iconTemplate">
       <nz-breadcrumb-item>{{ 'app.breadcrumb.home' | i18n }}</nz-breadcrumb-item>
       <nz-breadcrumb-item>{{ 'app.breadcrumb.infrastructure.service' | i18n }}</nz-breadcrumb-item>
+      <nz-breadcrumb-item>Networks</nz-breadcrumb-item>
       <nz-breadcrumb-item>
-        <a routerLink="/app-smart-cloud/vlan/network/list">VLAN</a>
+        <a routerLink="/app-smart-cloud/vlan/network/list">{{'app.vlan.title'|i18n}}</a>
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>
         <a routerLink="/app-smart-cloud/vlan/network/detail/{{idNetwork}}">{{ 'app.vlan.note25' | i18n }}</a>
@@ -20,8 +21,8 @@
   <ng-template #action>
     <div class="alain-custom-action text-right">
       <share-users-combobox></share-users-combobox>
-      <region-select-dropdown (valueChanged)="regionChanged($event)"></region-select-dropdown>
-      <project-select-dropdown (valueChanged)="projectChanged($event)"
+      <region-select-dropdown (regionChange)="onRegionChanged($event)" (valueChanged)="regionChanged($event)"></region-select-dropdown>
+      <project-select-dropdown #projectCombobox (valueChanged)="projectChanged($event)"
                                (userChanged)="userChanged($event)"
                                [regionId]="region"></project-select-dropdown>
     </div>
@@ -103,7 +104,7 @@
               </label>
             </div>
             <div nz-col nzSpan="12">
-              <label nz-checkbox formControlName="enableDhcp" (nzCheckedChange)="onChangeClickDisableDhcp($event)" >
+              <label nz-checkbox formControlName="enableDhcp" (nzCheckedChange)="onChangeClickDisableDhcp($event)" [nzDisabled]="subnet.usedBy != null"  >
                 <nz-space [nzSize]="4" nzAlign="center">
                   <span *nzSpaceItem class="text-value">DHCP</span>
                   <img *nzSpaceItem nz-popover nzPopoverContent="{{ 'app.vlan.note32' | i18n }}"

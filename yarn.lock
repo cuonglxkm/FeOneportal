@@ -4811,7 +4811,7 @@
 
 "@types/qrcode@1.5.0":
   version "1.5.0"
-  resolved "https://registry.npmjs.org/@types/qrcode/-/qrcode-1.5.0.tgz"
+  resolved "https://registry.yarnpkg.com/@types/qrcode/-/qrcode-1.5.0.tgz#6a98fe9a9a7b2a9a3167b6dde17eff999eabe40b"
   integrity sha512-x5ilHXRxUPIMfjtM+1vf/GPTRWZ81nqscursm5gMznJeK9M0YnZ1c3bEvRLQ0zSSgedLx1J6MGL231ObQGGhaA==
   dependencies:
     "@types/node" "*"
@@ -5464,9 +5464,9 @@ angular@^1.6.1:
   resolved "https://registry.npmjs.org/angular/-/angular-1.8.3.tgz"
   integrity sha512-5qjkWIQQVsHj4Sb5TcEs4WZWpFeVFHXwxEBHUhrny41D8UrBAd6T/6nPPAsLngJCReIOqi95W3mxdveveutpZw==
 
-angularx-qrcode@^15.0.1:
+angularx-qrcode@15.0.1:
   version "15.0.1"
-  resolved "https://registry.npmjs.org/angularx-qrcode/-/angularx-qrcode-15.0.1.tgz"
+  resolved "https://registry.yarnpkg.com/angularx-qrcode/-/angularx-qrcode-15.0.1.tgz#349b558715c99d933cb62b264ff1bd7b269b334d"
   integrity sha512-CirpL2rhhYX/QZ1OSaJ/fusABjDlwl1oYBqaLRqmyie0xTbscWqTBW0DEoht2yCNGN8Wt+JmZwTLxYG6tLuWeQ==
   dependencies:
     "@types/qrcode" "1.5.0"
@@ -9812,11 +9812,6 @@ jquery@^3.5.1:
   resolved "https://registry.npmjs.org/jquery/-/jquery-3.7.1.tgz"
   integrity sha512-m4avr8yL8kmFN8psrbFFFmB/If14iN5o9nw/NgnnM+kybDJpRsAynV2BsfpTYrTRysYUdADVD7CkUUizgkpLfg==
 
-js-cookie@^3.0.5:
-  version "3.0.5"
-  resolved "https://registry.yarnpkg.com/js-cookie/-/js-cookie-3.0.5.tgz#0b7e2fd0c01552c58ba86e0841f94dc2557dcdbc"
-  integrity sha512-cEiJEAEoIbWfCZYKWhVwFuvPX1gETRYPw6LlaTKoxD3s2AkXzkCjnp6h0V77ozyqj0jakteJ4YqDJT830+lVGw==
-
 js-tokens@^4.0.0:
   version "4.0.0"
   resolved "https://registry.npmjs.org/js-tokens/-/js-tokens-4.0.0.tgz"
@@ -11048,6 +11043,13 @@ ngx-color-picker@^13.0.0:
   integrity sha512-3mgMbs21KeqnmmY5p1cn71ckTH3q7gBt6Qn0fMfeF/Ql7ddTZsW4Z7Z8ga6LymMP/ugooGuLOFX+V6yx0dDxAw==
   dependencies:
     tslib "^2.3.0"
+
+ngx-cookie-service@^18.0.0:
+  version "18.0.0"
+  resolved "https://registry.yarnpkg.com/ngx-cookie-service/-/ngx-cookie-service-18.0.0.tgz#f21e3fa261aeb56d73628e324edc7dfc4fdff746"
+  integrity sha512-hkkUckzZTXXWtFgvVkT2hg6mwYMLXioXDZWBsVCOy9gYkADjsj0N5VViO7eo2izQ0VcMPd/Etog1trf/T4oZMQ==
+  dependencies:
+    tslib "^2.6.2"
 
 ngx-countdown@^16.0.0:
   version "16.0.0"
@@ -12360,7 +12362,7 @@ pure-rand@^6.0.0:
 
 qrcode@1.5.1:
   version "1.5.1"
-  resolved "https://registry.npmjs.org/qrcode/-/qrcode-1.5.1.tgz"
+  resolved "https://registry.yarnpkg.com/qrcode/-/qrcode-1.5.1.tgz#0103f97317409f7bc91772ef30793a54cd59f0cb"
   integrity sha512-nS8NJ1Z3md8uTjKtP+SGGhfqmTCs5flU/xR623oI0JX+Wepz9R8UrRVCTBTJm3qGw3rH6jJ6MUHjkDx15cxSSg==
   dependencies:
     dijkstrajs "^1.0.1"
@@ -14017,6 +14019,11 @@ tslib@^2.0.0, tslib@^2.0.3, tslib@^2.1.0, tslib@^2.2.0, tslib@^2.3.0, tslib@^2.3
   version "2.6.2"
   resolved "https://registry.npmjs.org/tslib/-/tslib-2.6.2.tgz"
   integrity sha512-AEYxH93jGFPn/a2iVAwW87VuUIkR1FVUKB77NwMF7nBTDkDrrT/Hpt/IrCJ0QXhW27jTBDcf5ZY7w6RiqTMw2Q==
+
+tslib@^2.6.2:
+  version "2.6.3"
+  resolved "https://registry.yarnpkg.com/tslib/-/tslib-2.6.3.tgz#0438f810ad7a9edcde7a241c3d80db693c8cbfe0"
+  integrity sha512-xNvxJEOUiWPGhUuUdQgAJPKOOJfGnIyKySOc09XkKsgdUV/3E2zvwZYdejjmRgPCgcym1juLH3226yA7sEFJKQ==
 
 tsutils@^3.21.0:
   version "3.21.0"

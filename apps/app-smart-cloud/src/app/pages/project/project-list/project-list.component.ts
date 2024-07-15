@@ -115,12 +115,17 @@ export class ProjectListComponent implements OnInit {
     this.getData(true);
   }
 
+  onRegionChanged(region: RegionModel) {
+    this.regionId = region.regionId;
+  }
+
   getData(isCheckBegin: boolean): void {
     this.loading = true;
     this.vpcService.getData(this.searchKey, this.selectedStatus, this.tokenService.get()?.userId, this.regionId, this.size, this.index)
       .pipe(finalize(() => this.loading = false))
       .subscribe(baseResponse => {
         this.listOfData = baseResponse.records;
+        console.log(" this.listOfData", this.listOfData)
         this.total = baseResponse.totalCount;
         if (isCheckBegin) {
           this.isBegin = this.listOfData === null || this.listOfData.length < 1 ? true : false;
@@ -164,7 +169,7 @@ export class ProjectListComponent implements OnInit {
     this.nameDelete = '';
     this.isVisibleDelete = false;
     this.isVisibleDeleteProject = false;
-    debugger
+    // debugger
     this.isVisibleEditNormal = false;
     this.disableDelete = true;
   }

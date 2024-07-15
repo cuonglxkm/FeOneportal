@@ -16,7 +16,8 @@
       name="name"
       nz-input
       [placeholder]="'app.placeholder.search' | i18n"
-      [(ngModel)]="inputSearch"
+      [(ngModel)]="value"
+      #searchBox (keyup.enter)="search(searchBox.value)" (ngModelChange)="searchDelay.next(false)"
     />
   </nz-input-group>
   <ng-template #prefixIconSearch>
@@ -89,11 +90,13 @@
   </tbody>
 </nz-table>
 
+<!-- Create -->
 <nz-modal
   [(nzVisible)]="isVisibleCreate"
   [nzTitle]="'app.lifeCycle.create' | i18n"
   (nzOnCancel)="handleCancelCreate()"
 >
+<form nz-form [formGroup]="formCreate">
   <ng-container *nzModalContent>
     <label
       class="text-label"
@@ -102,6 +105,8 @@
       [ngModelOptions]="{ standalone: true }"
       >{{ 'app.enable.filter' | i18n }}</label
     >
+    <nz-form-item>
+      <nz-form-control [nzErrorTip]="prefixErrorTpl">
     <div style="margin-top: 16px" class="text-label">
       {{ 'app.prefix' | i18n }}
       <img
@@ -112,13 +117,21 @@
     />
     </div>
     <input
-      style="margin-bottom: 16px; margin-top: 5px"
+      style="margin-top: 5px"
       class="input-custom"
       nz-input
       [placeholder]="'app.input.prefix' | i18n"
       [(ngModel)]="lifecycleCreate.prefix"
+      formControlName="prefix"
       [ngModelOptions]="{ standalone: true }"
     />
+    <ng-template #prefixErrorTpl let-control>
+      <ng-container *ngIf="control.hasError('required')">{{
+        'app.lifeCycle.prefix.require' | i18n
+      }}</ng-container>
+    </ng-template>
+    </nz-form-control>
+    </nz-form-item>
     <div class="text-label">
       {{ 'app.filter.by.tag' | i18n
       }}<img
@@ -174,6 +187,7 @@
       style="margin-top: 16px"
       nz-checkbox
       [(ngModel)]="lifecycleCreate.isSetExpiration_Day"
+      formControlName="isSetExpiration_Day"
       [ngModelOptions]="{ standalone: true }"
       >{{ 'app.delete.file.current.version' | i18n }}</label
     >
@@ -182,8 +196,8 @@
         <nz-input-number
           style="width: 100%; margin-left: 0px"
           [nzMin]="1"
-          [nzMax]="30"
-          [nzStep]="1"
+          [nzStep]="1" 
+          [nzDisabled]="lifecycleCreate.isSetExpiration_Day === false"
           [(ngModel)]="lifecycleCreate.lifecycleRuleExpiration_Day"
           [ngModelOptions]="{ standalone: true }"
           nzSize="large"
@@ -201,6 +215,7 @@
       style="margin-top: 16px"
       nz-checkbox
       [(ngModel)]="lifecycleCreate.isSetNoncurrentVersionExpiration_Day"
+      formControlName="isSetNoncurrentVersionExpiration_Day"
       [ngModelOptions]="{ standalone: true }"
       >{{ 'app.delete.file.non.current.version' | i18n }}</label
     >
@@ -209,8 +224,8 @@
         <nz-input-number
           style="width: 100%; margin-left: 0px"
           [nzMin]="1"
-          [nzMax]="30"
           [nzStep]="1"
+          [nzDisabled]="lifecycleCreate.isSetNoncurrentVersionExpiration_Day === false"
           [(ngModel)]="
             lifecycleCreate.lifecycleRuleNoncurrentVersionExpiration_Day
           "
@@ -231,6 +246,7 @@
       nz-checkbox
       [(ngModel)]="lifecycleCreate.isSetAbortIncompleteMultipartUpload_Day"
       [ngModelOptions]="{ standalone: true }"
+      formControlName="isSetAbortIncompleteMultipartUpload_Day"
       >{{ 'app.delete.multi.upload' | i18n }}</label
     >
     <div style="display: flex; margin-top: 5px">
@@ -238,8 +254,8 @@
         <nz-input-number
           style="width: 100%; margin-left: 0px"
           [nzMin]="1"
-          [nzMax]="30"
           [nzStep]="1"
+          [nzDisabled]="lifecycleCreate.isSetAbortIncompleteMultipartUpload_Day === false"
           [(ngModel)]="
             lifecycleCreate.lifecycleRuleAbortIncompleteMultipartUpload_Day
           "
@@ -263,7 +279,9 @@
         alt=""
       />{{ 'app.button.cancel' | i18n }}
     </button>
-    <button nz-button nzType="primary" [nzLoading]="isLoadingCreate" (click)="handleOkCreate()">
+    <button nz-button nzType="primary" [disabled]="(formCreate.controls['isSetExpiration_Day'].value === false &&
+    formCreate.controls['isSetAbortIncompleteMultipartUpload_Day'].value === false &&
+    formCreate.controls['isSetNoncurrentVersionExpiration_Day'].value === false)" [nzLoading]="isLoadingCreate" (click)="handleOkCreate()">
       <img
         *ngIf="isLoadingCreate === false"
         style="padding-right: 10px; margin-top: -4px"
@@ -272,8 +290,10 @@
       />{{ 'app.button.confirm' | i18n }}
     </button>
   </div>
+</form>
 </nz-modal>
 
+<!-- Delete -->
 <nz-modal
   [(nzVisible)]="isVisibleDelete"
   nzTitle="Xác nhận xóa Lifecycle"
@@ -302,11 +322,13 @@
   </div>
 </nz-modal>
 
+<!-- Update -->
 <nz-modal
   [(nzVisible)]="isVisibleUpdate"
   [nzTitle]="'app.lifeCycle.edit' | i18n"
   (nzOnCancel)="handleCancelUpdate()"
 >
+<form nz-form [formGroup]="formUpdate">
   <ng-container *nzModalContent>
     <label
       class="text-label"
@@ -318,11 +340,11 @@
     <div style="margin-top: 16px" class="text-label">
       {{ 'app.prefix' | i18n }}
       <img
-        style="padding-right: 10px; margin-top: -4px"
-        [nz-tooltip]="'app.lifeCycle.tooltip.prefix' | i18n"
-        src="assets/imgs/message-question.svg"
-        alt=""
-      />
+      style="padding-right: 10px; margin-top: -4px"
+      [nz-tooltip]="'app.lifeCycle.tooltip.prefix' | i18n"
+      src="assets/imgs/pajamas_question.svg"
+      alt=""
+    />
     </div>
     <input
       style="margin-bottom: 16px; margin-top: 5px"
@@ -387,6 +409,7 @@
       style="margin-top: 16px"
       nz-checkbox
       [(ngModel)]="lifecycleUpdate.isSetExpiration_Day"
+      formControlName="isSetExpiration_Day"
       [ngModelOptions]="{ standalone: true }"
       >{{ 'app.delete.file.current.version' | i18n }}</label
     >
@@ -395,9 +418,9 @@
         <nz-input-number
           style="width: 100%; margin-left: 0px"
           [nzMin]="1"
-          [nzMax]="30"
           [nzStep]="1"
           [(ngModel)]="lifecycleUpdate.lifecycleRuleExpiration_Day"
+          [nzDisabled]="lifecycleUpdate.isSetExpiration_Day === false"
           [ngModelOptions]="{ standalone: true }"
           nzSize="large"
         ></nz-input-number>
@@ -414,6 +437,7 @@
       style="margin-top: 16px"
       nz-checkbox
       [(ngModel)]="lifecycleUpdate.isSetNoncurrentVersionExpiration_Day"
+      formControlName="isSetNoncurrentVersionExpiration_Day"
       [ngModelOptions]="{ standalone: true }"
       >{{ 'app.delete.file.non.current.version' | i18n }}</label
     >
@@ -422,8 +446,8 @@
         <nz-input-number
           style="width: 100%; margin-left: 0px"
           [nzMin]="1"
-          [nzMax]="30"
           [nzStep]="1"
+          [nzDisabled]="lifecycleUpdate.isSetNoncurrentVersionExpiration_Day === false"
           [(ngModel)]="
             lifecycleUpdate.lifecycleRuleNoncurrentVersionExpiration_Day
           "
@@ -443,6 +467,7 @@
       style="margin-top: 16px"
       nz-checkbox
       [(ngModel)]="lifecycleUpdate.isSetAbortIncompleteMultipartUpload_Day"
+      formControlName="isSetAbortIncompleteMultipartUpload_Day"
       [ngModelOptions]="{ standalone: true }"
       >{{ 'app.delete.multi.upload' | i18n }}</label
     >
@@ -451,8 +476,8 @@
         <nz-input-number
           style="width: 100%; margin-left: 0px"
           [nzMin]="1"
-          [nzMax]="30"
           [nzStep]="1"
+          [nzDisabled]="lifecycleUpdate.isSetAbortIncompleteMultipartUpload_Day === false"
           [(ngModel)]="
             lifecycleUpdate.lifecycleRuleAbortIncompleteMultipartUpload_Day
           "
@@ -476,7 +501,9 @@
         alt=""
       />{{ 'app.button.cancel' | i18n }}
     </button>
-    <button nz-button nzType="primary" [nzLoading]="isLoadingUpdate" (click)="handleOkUpdate()">
+    <button nz-button nzType="primary" [disabled]="(formUpdate.controls['isSetExpiration_Day'].value === false &&
+    formUpdate.controls['isSetAbortIncompleteMultipartUpload_Day'].value === false &&
+    formUpdate.controls['isSetNoncurrentVersionExpiration_Day'].value === false)" [nzLoading]="isLoadingUpdate" (click)="handleOkUpdate()">
       <img
       *ngIf="isLoadingUpdate === false"
         style="padding-right: 10px; margin-top: -4px"
@@ -485,4 +512,5 @@
       />{{ 'app.button.confirm' | i18n }}
     </button>
   </div>
+</form>
 </nz-modal>

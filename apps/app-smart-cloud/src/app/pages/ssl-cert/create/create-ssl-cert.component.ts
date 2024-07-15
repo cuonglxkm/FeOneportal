@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { I18NService } from '@core';
@@ -11,6 +11,8 @@ import { FormCreateSslCert } from 'src/app/shared/models/ssl-cert.model';
 import { SSLCertService } from 'src/app/shared/services/ssl-cert.service';
 import { BaseResponse, ProjectModel, RegionModel } from '../../../../../../../libs/common-utils/src';
 import { differenceInCalendarDays } from 'date-fns';
+import { NAME_REGEX } from 'src/app/shared/constants/constants';
+import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
 
 
 @Component({
@@ -47,12 +49,12 @@ export class CreateSslCertComponent implements OnInit{
     passphrase: FormControl<string>
   }> = this.fb.group({
     privateKey: ['', Validators.required],
-    certName: ['', [Validators.required, Validators.pattern(/^[a-zA-Z0-9_]{0,49}$/)]],
+    certName: ['', [Validators.required, Validators.pattern(NAME_REGEX)]],
     publicKey: ['', Validators.required],
     passphrase: [''],
   });
 
-
+  @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
 
   constructor(
     private router: Router,
@@ -124,6 +126,9 @@ export class CreateSslCertComponent implements OnInit{
   }
 
   onRegionChange(region: RegionModel) {
+    if(this.projectCombobox){
+      this.projectCombobox.loadProjects(true, region.regionId);
+    }
     this.region = region.regionId;
   }
 

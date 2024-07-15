@@ -5,9 +5,9 @@
     <nz-breadcrumb [nzSeparator]="iconTemplate">
       <nz-breadcrumb-item>{{ 'app.breadcrumb.home' | i18n }}</nz-breadcrumb-item>
       <nz-breadcrumb-item>{{ 'app.breadcrumb.infrastructure.service' | i18n }}</nz-breadcrumb-item>
-      <nz-breadcrumb-item>VLAN</nz-breadcrumb-item>
+      <nz-breadcrumb-item>Networks</nz-breadcrumb-item>
       <nz-breadcrumb-item>
-        <a routerLink="/app-smart-cloud/vlan/network/list">{{ 'app.vlan.note1' | i18n }}</a>
+        <a routerLink="/app-smart-cloud/vlan/network/list">{{'app.vlan.title'|i18n}}</a>
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>{{ 'app.vlan.note65' | i18n }} </nz-breadcrumb-item>
     </nz-breadcrumb>
@@ -16,8 +16,8 @@
   <ng-template #action>
     <div class="alain-custom-action text-right">
       <share-users-combobox></share-users-combobox>
-      <region-select-dropdown (valueChanged)="regionChanged($event)"></region-select-dropdown>
-      <project-select-dropdown (valueChanged)="projectChanged($event)"
+      <region-select-dropdown (regionChange)="onRegionChanged($event)" (valueChanged)="regionChanged($event)"></region-select-dropdown>
+      <project-select-dropdown #projectCombobox (valueChanged)="projectChanged($event)"
                                (userChanged)="userChanged($event)"
                                [regionId]="region"></project-select-dropdown>
     </div>
@@ -39,7 +39,7 @@
                      (input)="changeInputChangeSubnet($event)" />
             </nz-input-group>
             <ng-template #prefixIconSearch>
-              <img src="assets/imgs/search.svg" alt="" style="cursor: pointer" nz-tooltip="{{ 'volume.tooltip.title.filter.img' | i18n }}" />
+              <img src="assets/imgs/search.svg" alt="" />
             </ng-template>
           </nz-col>
           <nz-col nzSpan="8" style="flex:none;" *ngIf="!networkName?.includes('pri_network')">
@@ -71,7 +71,18 @@
             <td>{{ data.name }}</td>
             <td>{{ data.subnetAddressRequired }}</td>
             <td>{{ data.gatewayIp }}</td>
-            <td *ngIf="!networkName?.includes('pri_network')">
+            <td *ngIf="data.usedBy">
+              <img nz-popover src="assets/imgs/edit-2.svg" alt=""
+                   nzPopoverPlacement="bottom" (click)="navigateToEditSubnet(data.id)"
+                   style="cursor: pointer; margin-right: 16px;"
+                   nzPopoverContent="{{ 'app.text.edit' | i18n }}" disabled="true"/>
+              <img src="assets/imgs/delete.svg"
+                   style="height: 28px;width: 28px; cursor: pointer;opacity: 0.5; pointer-events: none; filter: grayscale(100%);"
+                   nz-popover
+                   [nzPopoverContent]="'app.text.delete'|i18n"
+                   nzPopoverPlacement="bottom" disabled="true" />
+            </td>
+            <td *ngIf="!networkName?.includes('pri_network') && !data.usedBy">
               <img nz-popover src="assets/imgs/edit-2.svg" alt=""
                    nzPopoverPlacement="bottom" (click)="navigateToEditSubnet(data.id)"
                    style="cursor: pointer; margin-right: 16px;"
@@ -103,8 +114,7 @@
                      (input)="changeInputChangePort($event)" />
             </nz-input-group>
             <ng-template #prefixIconSearch>
-              <img src="assets/imgs/search.svg" alt="" style="cursor: pointer"
-                   nz-tooltip="{{ 'volume.tooltip.title.filter.img' | i18n }}" />
+              <img src="assets/imgs/search.svg" alt="" />
             </ng-template>
           </nz-col>
           <nz-col nzSpan="8" style="flex:none;">

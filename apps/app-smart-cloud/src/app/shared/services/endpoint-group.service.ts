@@ -58,7 +58,7 @@ export class EndpointGroupService extends BaseService {
 
   getEndpointGroupById(id: number, vpcid: number, region: number) {
     return this.http.get<FormDetailEndpointGroup>(this.baseUrl + this.ENDPOINT.provisions +
-      `/vpn-sitetosite/endpoint_groups/${id}?vpcId=${vpcid}&regionId=${region}`).pipe(
+      `/vpn-sitetosite/endpoint_groups/${id}?vpcId=${vpcid}&regionId=${region}`, {headers: this.getHeaders()}).pipe(
         catchError((error: HttpErrorResponse) => {
           if (error.status === 401) {
             console.error('login');
@@ -71,7 +71,7 @@ export class EndpointGroupService extends BaseService {
   }
 
   deleteEndpointGroup(formDelete: FormDeleteEndpointGroup) {
-    return this.http.delete(this.baseUrl + this.ENDPOINT.provisions + `/vpn-sitetosite/endpoint_groups/${formDelete.id}?regionId=${formDelete.regionId}&vpcId=${formDelete.vpcId}`).pipe(
+    return this.http.delete(this.baseUrl + this.ENDPOINT.provisions + `/vpn-sitetosite/endpoint_groups/${formDelete.id}?regionId=${formDelete.regionId}&vpcId=${formDelete.vpcId}`, {headers: this.getHeaders()}).pipe(
       catchError((error: HttpErrorResponse) => {
         if (error.status === 401) {
           console.error('login');
@@ -85,7 +85,7 @@ export class EndpointGroupService extends BaseService {
 
   editEndpoinGroup(formEdit: FormEditEndpointGroup) {
     return this.http.put(this.baseUrl + this.ENDPOINT.provisions + `/vpn-sitetosite/endpoint_groups/${formEdit.id}?name=${formEdit.name}&description=${formEdit.description}&vpcId=${formEdit.vpcId}&regionId=${formEdit.regionId}&`,
-      Object.assign(formEdit)).pipe(
+      Object.assign(formEdit), {headers: this.getHeaders()}).pipe(
         catchError((error: HttpErrorResponse) => {
           if (error.status === 401) {
           } else if (error.status === 404) {
@@ -98,7 +98,7 @@ export class EndpointGroupService extends BaseService {
   
   listSubnetEndpointGroup(projectId: number, region: number){
     return this.http.get(this.baseUrl + this.ENDPOINT.provisions +
-      `/vpn-sitetosite/endpoint_groups/list_subnet?projectId=${projectId}&regionId=${region}`).pipe(
+      `/vpn-sitetosite/endpoint_groups/list_subnet?projectId=${projectId}&regionId=${region}`, {headers: this.getHeaders()}).pipe(
         catchError((error: HttpErrorResponse) => {
           if (error.status === 401) {
             console.error('login');

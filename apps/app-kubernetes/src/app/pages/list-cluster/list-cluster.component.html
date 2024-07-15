@@ -49,7 +49,7 @@
 
             <div>
               <button nz-button nzType="text" [nzTooltipTitle]="'app.cluster.refresh' | i18n" nzTooltipPlacement="top" nz-tooltip
-                (click)="searchCluster()" class="borderless">
+                (click)="searchCluster()" class="borderless" nzSize="large">
                 <img src="assets/imgs/refresh.svg" alt="" id="img-refresh" />
               </button>
             </div>
@@ -57,7 +57,7 @@
         </div>
 
         <div nz-col [nzSpan]="4">
-          <button nz-button nzType="primary" routerLink="create" class="border-button align-right">
+          <button nz-button nzType="primary" routerLink="create" class="border-button align-right" nzSize="large">
             <span nz-icon>
               <svg viewBox="64 64 896 896" focusable="false">
                 <path d="M482 152h60q8 0 8 8v704q0 8-8 8h-60q-8 0-8-8V160q0-8 8-8z" /><path d="M176 474h672q8 0 8 8v60q0 8-8 8H176q-8 0-8-8v-60q0-8 8-8z" />
@@ -75,42 +75,42 @@
         [nzLoading]="isLoadingCluster">
         <thead>
           <tr>
-            <th class="header-table">{{ 'app.order.ordinalNumber' | i18n }}</th>
-            <th class="header-table">{{ 'app.cluster.name' | i18n }}</th>
-            <th class="header-table">{{ 'app.text.version' | i18n }}</th>
-            <th class="header-table">{{ 'app.service.status' | i18n }}</th>
-            <th class="header-table">{{ 'app.cluster.api-endpoint' | i18n }}</th>
-            <th class="header-table">{{ 'app.cluster.total-node' | i18n }}</th>
-            <th class="header-table">{{ 'app.text.created-date' | i18n }}</th>
-            <th class="header-table">{{ 'app.text.operation' | i18n }}</th>
+            <th class="content header-table">{{ 'app.order.ordinalNumber' | i18n }}</th>
+            <th class="content header-table">{{ 'app.cluster.name' | i18n }}</th>
+            <th class="content header-table">{{ 'app.text.version' | i18n }}</th>
+            <th class="content header-table">{{ 'app.service.status' | i18n }}</th>
+            <th class="content header-table">{{ 'app.cluster.api-endpoint' | i18n }}</th>
+            <th class="content header-table">{{ 'app.cluster.total-node' | i18n }}</th>
+            <th class="content header-table">{{ 'app.text.created-date' | i18n }}</th>
+            <th class="content header-table">{{ 'app.text.operation' | i18n }}</th>
           </tr>
         </thead>
         <tbody>
           <tr *ngFor="let item of clusterTable.data; let i = index;">
-            <td class="right-align">{{ getIndexOfCluster(item.id) }}</td>
-            <td>
+            <td class="right-align content-table content">{{ getIndexOfCluster(item.id) }}</td>
+            <td nzBreakWord>
               <a routerLink={{item.serviceOrderCode}}>
                 <ng-container *ngIf="item.clusterName?.length <= 30; else truncateNameTpl">
-                  {{ item.clusterName }}
+                  <span class="content">{{ item.clusterName }}</span>
                 </ng-container>
                 <ng-template #truncateNameTpl>
                   <span nz-popover nzPopoverPlacement="bottomLeft" [nzPopoverContent]="clusterNameTpl">
-                    {{ item.clusterName | truncateLabel }}
+                    <span class="content">{{ item.clusterName | truncateLabel }}</span>
                   </span>
                   <ng-template #clusterNameTpl>
-                    {{ item.clusterName }}
+                    <span class="content">{{ item.clusterName }}</span>
                   </ng-template>
                 </ng-template>
               </a>
             </td>
-            <td>{{ item.currentVersion }}</td>
-            <td>
+            <td class="content-table content">{{ item.currentVersion }}</td>
+            <td class="content">
               <ng-container *ngIf="item.serviceStatus | status2ColorPipe as status">
 
                 <ng-container *ngIf="item.serviceStatus == 2; else ortherStatusTpl">
                   <div class="flex-style">
                     <nz-progress [nzPercent]="100" nzSize="small" nzType="circle" [nzWidth]="24" class="mr-2 pb-1"></nz-progress>
-                    <span [ngStyle]="{color: status.color, 'margin-top': '2px'}">{{ status.status | i18n }}</span>
+                    <span [ngStyle]="{color: status.color, 'margin-top': '2px'}" class="content">{{ status.status | i18n }}</span>
                   </div>
                 </ng-container>
 
@@ -127,9 +127,11 @@
 
               </ng-container>
             </td>
-            <td>{{ item.apiEndpoint }}</td>
-            <td class="right-align">{{ item.totalNode ? item.totalNode : 0 }}</td>
-            <td>{{ item.createdDate | date: 'dd/MM/yyyy' }}</td>
+            <td nzBreakWord class="content-table content">
+              {{ item.apiEndpoint }}
+            </td>
+            <td class="right-align content-table content">{{ item.totalNode ? item.totalNode : 0 }}</td>
+            <td class="content-table content">{{ item.createdDate | date: 'dd/MM/yyyy' }}</td>
             <td>
               <button nz-button nzType="text" [nzTooltipTitle]="'app.text.edit' | i18n" nzTooltipPlacement="top" nz-tooltip (click)="onDestroy()"
                 class="borderless marleft-0 action-btn" [disabled]="item.serviceStatus == 3"  routerLink="edit/{{item.serviceOrderCode}}">
@@ -147,8 +149,8 @@
               </button>
 
               <button nz-button nzType="text" [nzTooltipTitle]="'app.cluster.download-config' | i18n" nzTooltipPlacement="top" nz-tooltip
-                class="borderless marleft-0 action-btn" [disabled]="item.serviceStatus == 3">
-                <img src="assets/imgs/download-file.svg" class="icon-action" (click)="handleDownloadKubeConfig(item)" />
+                class="borderless marleft-0 action-btn" [disabled]="item.serviceStatus == 3" (click)="handleDownloadKubeConfig(item)">
+                <img src="assets/imgs/download.svg" class="icon-action" (click)="handleDownloadKubeConfig(item)" />
               </button>
 
               <ng-container *ngIf="item.serviceStatus | checkStatus as progressing">

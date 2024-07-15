@@ -18,8 +18,12 @@ export class InstancesService extends BaseService {
   httpOptions = {
     headers: new HttpHeaders({
       'Content-Type': 'application/json',
-      'User-Root-Id': this.tokenService.get()?.userId,
       Authorization: 'Bearer ' + this.tokenService.get()?.token,
+      'User-Root-Id':
+        localStorage.getItem('UserRootId') &&
+        Number(localStorage.getItem('UserRootId')) > 0
+          ? Number(localStorage.getItem('UserRootId'))
+          : this.tokenService.get()?.userId,
     }),
   };
 
@@ -35,7 +39,8 @@ export class InstancesService extends BaseService {
   postAction(data: any): Observable<any> {
     return this.http.post(
       this.baseUrl + this.ENDPOINT.provisions + '/instances/action',
-      data
+      data,
+      this.httpOptions
     );
   }
 
@@ -49,13 +54,19 @@ export class InstancesService extends BaseService {
   ): Observable<any> {
     let url_ = `/security_group/getbyinstace?instanceId=${instanceId}&userId=${userId}&regionId=${regionId}&projectId=${projectId}`;
     url_ = url_.replace(/[?&]$/, '');
-    return this.http.get<any>(this.baseUrl + this.ENDPOINT.provisions + url_);
+    return this.http.get<any>(
+      this.baseUrl + this.ENDPOINT.provisions + url_,
+      this.httpOptions
+    );
   }
 
   getAllIPSubnet(regionId: any): Observable<any> {
     let url_ = `/Ip/subnet/${regionId}`;
     url_ = url_.replace(/[?&]$/, '');
-    return this.http.get<any>(this.baseUrl + this.ENDPOINT.provisions + url_);
+    return this.http.get<any>(
+      this.baseUrl + this.ENDPOINT.provisions + url_,
+      this.httpOptions
+    );
   }
 
   getAllSecurityGroup(
@@ -65,7 +76,10 @@ export class InstancesService extends BaseService {
   ): Observable<any> {
     let url_ = `/security_group/getall?userId=${userId}&regionId=${regionId}&projectId=${projectId}`;
     url_ = url_.replace(/[?&]$/, '');
-    return this.http.get<any>(this.baseUrl + this.ENDPOINT.provisions + url_);
+    return this.http.get<any>(
+      this.baseUrl + this.ENDPOINT.provisions + url_,
+      this.httpOptions
+    );
   }
 
   getAllIPPublic(
@@ -79,7 +93,10 @@ export class InstancesService extends BaseService {
   ): Observable<any> {
     let url_ = `/Ip?projectId=${projectId}&customerId=${customerId}&regionId=${regionId}&pageSize=${pageSize}&currentPage=${currentPage}&isCheckState=${isCheckState}&ipAddress=${ipAddress}`;
     url_ = url_.replace(/[?&]$/, '');
-    return this.http.get<any>(this.baseUrl + this.ENDPOINT.provisions + url_);
+    return this.http.get<any>(
+      this.baseUrl + this.ENDPOINT.provisions + url_,
+      this.httpOptions
+    );
   }
 
   getAllSSHKey(
@@ -90,7 +107,10 @@ export class InstancesService extends BaseService {
   ): Observable<any> {
     let url_ = `/keypair?regionId=${regionId}&userId=${userId}&pageSize=${pageSize}&currentPage=${currentPage}`;
     url_ = url_.replace(/[?&]$/, '');
-    return this.http.get<any>(this.baseUrl + this.ENDPOINT.provisions + url_);
+    return this.http.get<any>(
+      this.baseUrl + this.ENDPOINT.provisions + url_,
+      this.httpOptions
+    );
   }
 
   getAllSnapshot(
@@ -102,32 +122,27 @@ export class InstancesService extends BaseService {
     let url_ = `/images?show=${show}&type=${type}&region=${region}&customerId=${customerId}`;
     // let url_ = `/images?region=${region}`;
     url_ = url_.replace(/[?&]$/, '');
-    return this.http.get<any>(this.baseUrl + this.ENDPOINT.provisions + url_);
+    return this.http.get<any>(
+      this.baseUrl + this.ENDPOINT.provisions + url_,
+      this.httpOptions
+    );
   }
 
   getImageById(id: number): Observable<{}> {
     let url_ = `/images/${id}`;
     url_ = url_.replace(/[?&]$/, '');
-    return this.http.get(this.baseUrl + this.ENDPOINT.provisions + url_);
+    return this.http.get(
+      this.baseUrl + this.ENDPOINT.provisions + url_,
+      this.httpOptions
+    );
   }
 
   getAllImageType(): Observable<{}> {
     let url_ = `/images/imageTypes`;
     url_ = url_.replace(/[?&]$/, '');
-    return this.http.get(this.baseUrl + this.ENDPOINT.provisions + url_);
-  }
-
-  getAllFlavors(
-    show: any,
-    region: any,
-    isBasic: any,
-    isVpc: any,
-    showAll: any
-  ): Observable<Flavors[]> {
-    let url_ = `/flavors?show=${show}&region=${region}&isBasic=${isBasic}&isVpc=${isVpc}&showAll=${showAll}`;
-    url_ = url_.replace(/[?&]$/, '');
-    return this.http.get<Flavors[]>(
-      this.baseUrl + this.ENDPOINT.provisions + url_
+    return this.http.get(
+      this.baseUrl + this.ENDPOINT.provisions + url_,
+      this.httpOptions
     );
   }
 
@@ -145,7 +160,10 @@ export class InstancesService extends BaseService {
     let url_ = `/instances/getpaging?pageNumber=${pageNumber}&pageSize=${pageSize}&region=${region}&projectId=${projectId}&searchValue=${searchValue}&status=${status}&isCheckState=${isCheckState}&userId=${userId}`;
     url_ = url_.replace(/[?&]$/, '');
 
-    return this.http.get<any>(this.baseUrl + this.ENDPOINT.provisions + url_);
+    return this.http.get<any>(
+      this.baseUrl + this.ENDPOINT.provisions + url_,
+      this.httpOptions
+    );
   }
 
   getById(id: number, checkState: boolean = true): Observable<any> {
@@ -161,7 +179,8 @@ export class InstancesService extends BaseService {
     let url_ = `/instances/${id}`;
     url_ = url_.replace(/[?&]$/, '');
     return this.http.delete<any>(
-      this.baseUrl + this.ENDPOINT.provisions + url_
+      this.baseUrl + this.ENDPOINT.provisions + url_,
+      this.httpOptions
     );
   }
 
@@ -183,7 +202,8 @@ export class InstancesService extends BaseService {
   }
 
   changePassword(id: number, newPassword: string) {
-    let url_ = `/instances/${id}/change_password?newPassword=${newPassword}`;
+    const encodedPassword = encodeURIComponent(newPassword);
+    let url_ = `/instances/${id}/change_password?newPassword=${encodedPassword}`;
     return this.http.post(this.baseUrl + this.ENDPOINT.provisions + url_, '', {
       headers: this.httpOptions.headers,
       responseType: 'text',
@@ -196,7 +216,7 @@ export class InstancesService extends BaseService {
     return this.http.post(
       this.baseUrl + this.ENDPOINT.provisions + url_,
       data,
-      { responseType: 'text' }
+      { responseType: 'text', headers: this.httpOptions.headers }
     );
   }
 
@@ -205,13 +225,15 @@ export class InstancesService extends BaseService {
     url_ = url_.replace(/[?&]$/, '');
     return this.http.put<any>(
       this.baseUrl + this.ENDPOINT.provisions + url_,
-      data
+      data,
+      this.httpOptions
     );
   }
 
   getInstanceById(id: number) {
     return this.http.get<InstancesModel>(
-      this.baseUrl + this.ENDPOINT.provisions + `/instances/${id}`
+      this.baseUrl + this.ENDPOINT.provisions + `/instances/${id}`,
+      this.httpOptions
     );
   }
 
@@ -223,26 +245,34 @@ export class InstancesService extends BaseService {
   ): Observable<any> {
     let url_ = `/instances/monitor?instanceId=${cloudId}&regionId=${regionId}&during=${during}&type=${type}`;
     url_ = url_.replace(/[?&]$/, '');
-    return this.http.get<any>(this.baseUrl + this.ENDPOINT.provisions + url_);
+    return this.http.get<any>(
+      this.baseUrl + this.ENDPOINT.provisions + url_,
+      this.httpOptions
+    );
   }
 
   getConsoleUrl(id: number): Observable<any> {
     return this.http.get(
-      `${this.baseUrl + this.ENDPOINT.provisions}/instances/${id}/console`
+      `${this.baseUrl + this.ENDPOINT.provisions}/instances/${id}/console`,
+      this.httpOptions
     );
   }
 
   getPortByInstance(instanceId: number, region: number): Observable<any> {
     let url_ = `/instances/port?instanceId=${instanceId}&region=${region}`;
     url_ = url_.replace(/[?&]$/, '');
-    return this.http.get<any>(this.baseUrl + this.ENDPOINT.provisions + url_);
+    return this.http.get<any>(
+      this.baseUrl + this.ENDPOINT.provisions + url_,
+      this.httpOptions
+    );
   }
 
   getBlockStorage(id: number): Observable<any> {
     return this.http.get<any>(
       `${
         this.baseUrl + this.ENDPOINT.provisions
-      }/instances/${id}/instance-attachments`
+      }/instances/${id}/instance-attachments`,
+      this.httpOptions
     );
   }
 
@@ -258,20 +288,29 @@ export class InstancesService extends BaseService {
     return this.http.get<any>(
       `${
         this.baseUrl + this.ENDPOINT.catalogs
-      }/offers?regionId=${regionId}&unitOfMeasure=${unitOfMeasure}`
+      }/offers?regionId=${regionId}&unitOfMeasure=${unitOfMeasure}`,
+      this.httpOptions
     );
   }
-  getTypeCatelogOffers(regionId: number, unitOfMeasureProduct: string): Observable<any> {
+  getTypeCatelogOffers(
+    regionId: number,
+    unitOfMeasureProduct: string
+  ): Observable<any> {
     return this.http.get<any>(
       `${
         this.baseUrl + this.ENDPOINT.catalogs
-      }/offers?regionId=${regionId}&unitOfMeasureProduct=${unitOfMeasureProduct}`
+      }/offers?regionId=${regionId}&unitOfMeasureProduct=${unitOfMeasureProduct}`,
+      this.httpOptions
     );
   }
 
   getTotalAmount(data: any): Observable<any> {
     return this.http
-      .post<any>(this.baseUrl + this.ENDPOINT.orders + '/totalamount', data)
+      .post<any>(
+        this.baseUrl + this.ENDPOINT.orders + '/totalamount',
+        data,
+        this.httpOptions
+      )
       .pipe(
         catchError((error: HttpErrorResponse) => {
           if (error.status === 401) {
@@ -290,7 +329,8 @@ export class InstancesService extends BaseService {
   getPrices(data: any): Observable<any> {
     return this.http.post<any>(
       this.baseUrl + this.ENDPOINT.orders + '/totalamount',
-      data
+      data,
+      this.httpOptions
     );
   }
 
@@ -301,32 +341,43 @@ export class InstancesService extends BaseService {
     return this.http.get<OfferDetail[]>(
       `${
         this.baseUrl + this.ENDPOINT.catalogs
-      }/offers?productId=${productId}&regionId=${regionId}`
+      }/offers?productId=${productId}&regionId=${regionId}`,
+      this.httpOptions
     );
   }
 
   getDetailProductByUniqueName(name: string): Observable<any> {
     return this.http.get<any>(
-      `${this.baseUrl + this.ENDPOINT.catalogs}/products?uniqueName=${name}`
+      `${this.baseUrl + this.ENDPOINT.catalogs}/products?uniqueName=${name}`,
+      this.httpOptions
     );
   }
 
   getListAllPortByNetwork(networkId: string, region: number): Observable<any> {
     let url_ = `/vlans/listallportbynetworkid?networkId=${networkId}&region=${region}`;
-    return this.http.get<any>(this.baseUrl + this.ENDPOINT.provisions + url_);
+    return this.http.get<any>(
+      this.baseUrl + this.ENDPOINT.provisions + url_,
+      this.httpOptions
+    );
   }
 
   getInfoVPC(productId: number): Observable<any> {
     return this.http.get<any>(
-      this.baseUrl + this.ENDPOINT.provisions + '/projects/' + productId
+      this.baseUrl + this.ENDPOINT.provisions + '/projects/' + productId,
+      this.httpOptions
     );
   }
 
-  checkExistName(name: string, regionId: number, projectId: number): Observable<boolean> {
+  checkExistName(
+    name: string,
+    regionId: number,
+    projectId: number
+  ): Observable<boolean> {
     let url_ = `/instances/exist-instancename?name=${name}&regionId=${regionId}&projectId=${projectId}`;
     url_ = url_.replace(/[?&]$/, '');
     return this.http.get<boolean>(
-      this.baseUrl + this.ENDPOINT.provisions + url_
+      this.baseUrl + this.ENDPOINT.provisions + url_,
+      this.httpOptions
     );
   }
 
@@ -359,7 +410,8 @@ export class InstancesService extends BaseService {
       this.baseUrl +
         this.ENDPOINT.provisions +
         '/vlans/CheckIpAvailableToListSubnet',
-      data
+      data,
+      this.httpOptions
     );
   }
 }

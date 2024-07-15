@@ -106,19 +106,9 @@ export class BackupVmService extends BaseService {
     }
 
     restoreCurrentBackupVm(form: RestoreFormCurrent) {
-        return this.http.post(this.baseUrl + this.ENDPOINT.provisions + `/backups/intances/restore`, Object.assign(form), {
+        return this.http.post(this.baseUrl + this.ENDPOINT.provisions + `/backups/intances/restore`, form, {
             headers: this.getHeaders()
-        }).pipe(
-          catchError((error: HttpErrorResponse) => {
-            if (error.status === 401) {
-              console.error('login');
-            } else if (error.status === 404) {
-              // Handle 404 Not Found error
-              console.error('Resource not found');
-            }
-            return throwError(error);
-          }))
-
+        });
     }
 
     getVolumeInstanceAttachment(id: number) {
@@ -151,7 +141,9 @@ export class BackupVmService extends BaseService {
     }
 
     create(data: CreateBackupVmOrderData) {
-        return this.http.post<BackupVm>(this.baseUrl + this.ENDPOINT.orders, Object.assign(data))
+        return this.http.post<BackupVm>(this.baseUrl + this.ENDPOINT.orders, Object.assign(data), {
+          headers: this.getHeaders()
+        })
           .pipe(catchError((error: HttpErrorResponse) => {
             if (error.status === 401) {
               console.error('login');
@@ -164,7 +156,9 @@ export class BackupVmService extends BaseService {
     }
 
     update(formUpdate: FormUpdateBackupVm) {
-      return this.http.put(this.baseUrl + this.ENDPOINT.provisions + '/backups/intances', Object.assign(formUpdate))
+      return this.http.put(this.baseUrl + this.ENDPOINT.provisions + '/backups/intances', Object.assign(formUpdate), {
+        headers: this.getHeaders()
+      })
         .pipe(catchError((error: HttpErrorResponse) => {
           if (error.status === 401) {
             console.error('login');

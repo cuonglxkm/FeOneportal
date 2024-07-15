@@ -8,7 +8,7 @@
         {{'app.breadcrumb.infrastructure.service' | i18n}}
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>
-        <a routerLink="/app-smart-cloud/security-group">{{'sg.title.list' | i18n}}</a>
+        <a routerLink="/app-smart-cloud/security-group">Security Group</a>
       </nz-breadcrumb-item>
     </nz-breadcrumb>
     <ng-template #iconTemplate><one-portal-svg-icon [icon]="'icon_breadcrumb'"></one-portal-svg-icon></ng-template>
@@ -16,8 +16,8 @@
   <ng-template #action>
     <div class="alain-custom-action text-right">
       <share-users-combobox></share-users-combobox>
-      <region-select-dropdown (valueChanged)="regionChanged($event)"></region-select-dropdown>
-      <project-select-dropdown (valueChanged)="projectChanged($event)"
+      <region-select-dropdown (regionChange)="onRegionChanged($event)" (valueChanged)="regionChanged($event)"></region-select-dropdown>
+      <project-select-dropdown #projectCombobox (valueChanged)="projectChanged($event)"
                                (userChanged)="projectChanged($event)"
                                [regionId]="region"></project-select-dropdown>
     </div>
@@ -84,10 +84,12 @@
           </div>
         </div>
         <one-portal-list-inbound [securityGroupId]="selectedSG?.id"
+                                 [securityGroupName]="selectedSG?.name"
                                  [regionId]="region"
                                  [projectId]="project" />
 
         <one-portal-list-outbound [securityGroupId]="selectedSG?.id"
+                                  [securityGroupName]="selectedSG?.name"
                                   [regionId]="region"
                                   [projectId]="project" />
         <nz-row>

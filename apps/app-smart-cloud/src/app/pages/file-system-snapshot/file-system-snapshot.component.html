@@ -13,7 +13,7 @@
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>File Storage</nz-breadcrumb-item>
       <nz-breadcrumb-item>
-        File System Snapshot
+        <a [routerLink]="'/app-smart-cloud/file-system-snapshot'">File System Snapshot</a>
       </nz-breadcrumb-item>
     </nz-breadcrumb>
     <ng-template #separatorTemplate
@@ -25,8 +25,9 @@
       <share-users-combobox></share-users-combobox>
       <region-select-dropdown
         (valueChanged)="onRegionChange($event)"
+        (regionChange)="onRegionChanged($event)"
       ></region-select-dropdown>
-      <project-select-dropdown
+      <project-select-dropdown #projectCombobox
         [regionId]="region"
         (valueChanged)="projectChange($event)"
         (userChanged)="projectChange($event)"
@@ -48,7 +49,7 @@
               name="name"
               nz-input
               [(ngModel)]="value"
-              (input)="onInputChange($event.target['value'])"
+              #searchBox (keyup.enter)="search(searchBox.value)" (ngModelChange)="searchDelay.next(false)"
               [placeholder]="'app.file.system.placeholder.search' | i18n"
             />
           </nz-input-group>

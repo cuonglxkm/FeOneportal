@@ -1,10 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { NonNullableFormBuilder } from '@angular/forms';
 import { getCurrentRegionAndProject } from '@shared';
 import { RegionModel, ProjectModel } from '../../../../../../../../../libs/common-utils/src';
 import { ActivatedRoute, Router } from '@angular/router';
 import { VPNServiceDetail } from 'src/app/shared/models/vpn-service';
 import { VpnServiceService } from 'src/app/shared/services/vpn-service.service';
+import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
 
 
 @Component({
@@ -18,7 +19,7 @@ export class DetailVpnServiceComponent implements OnInit{
   isLoading: boolean = false
 
   vpnService: VPNServiceDetail = new VPNServiceDetail();
-  
+  @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
   
   constructor(private vpnServiceService: VpnServiceService,
     private router: Router,
@@ -33,7 +34,14 @@ ngOnInit(): void {
   }
   onRegionChange(region: RegionModel) {
     this.region = region.regionId;
-    this.router.navigate(['/app-smart-cloud/vpn-site-to-site/manage']);
+    if(this.projectCombobox){
+      this.projectCombobox.loadProjects(true, region.regionId);
+    }
+    this.router.navigate(['/app-smart-cloud/vpn-site-to-site']);
+  }
+
+  onRegionChanged(region: RegionModel) {
+    this.region = region.regionId;
   }
 
   onProjectChange(project: ProjectModel) {
@@ -41,7 +49,7 @@ ngOnInit(): void {
   }
 
   userChangeProject(){
-    this.router.navigate(['/app-smart-cloud/vpn-site-to-site/manage']);
+    this.router.navigate(['/app-smart-cloud/vpn-site-to-site']);
   }
 
   getVpnServiceById(id) {

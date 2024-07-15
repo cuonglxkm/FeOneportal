@@ -53,7 +53,7 @@ export class VpcService extends BaseService {
 
   getData(searchKey: string, selectedStatus: string, userId: any, regionId: any, size: number, index: number): Observable<BaseResponse<VpcModel[]>> {
     return this.http.get<BaseResponse<VpcModel[]>>(this.baseUrl + this.ENDPOINT.provisions + '/vpcs?projectName=' + searchKey + '&status=' + selectedStatus+ '&customerId=' + userId+
-      '&regionId=' + regionId+'&pageSize=' + size+ '&currentPage=' + index);
+      '&regionId=' + regionId+'&pageSize=' + size+ '&currentPage=' + index,this.httpOptions);
   }
 
   getDetail(id: any): Observable<VpcModel> {
@@ -68,10 +68,32 @@ export class VpcService extends BaseService {
   }
 
   delete(id: any):Observable<HttpResponse<any>> {
+    localStorage.removeItem("projects");
+    localStorage.removeItem("projectId");
     return this.http.delete<HttpResponse<any>>(this.baseUrl + this.ENDPOINT.provisions + "/vpcs/"+ id);
   }
 
   updateVpc(request: any, id: any) {
+    localStorage.removeItem("projects");
+    localStorage.removeItem("projectId");
     return this.http.put<HttpResponse<any>>(this.baseUrl + this.ENDPOINT.provisions + "/vpcs/" + id, request, this.httpOptions);
+  }
+  createIpPublic(IP: any): Observable<any>  {
+    return this.http.post<HttpResponse<any>>(this.baseUrl + this.ENDPOINT.orders, IP, this.httpOptions);
+  }
+  getStepBlock(name:string): Observable<any> {
+    return this.http.get<any>(this.baseUrl + this.ENDPOINT.configurations + '?name=' +name);
+  }
+  getTotalAmount(data: any): Observable<any> {
+    return this.http.post<any>(
+      this.baseUrl + this.ENDPOINT.orders + '/totalamount',
+      data
+    );
+  }
+
+  
+  getProductActivebyregion(catalog:string[], regionid:number): Observable<any> {
+    const catalogString = catalog.join(',');
+    return this.http.get<any>(this.baseUrl + this.ENDPOINT.catalogs +'/products/activebyregion?catalogs=' +catalogString + '&regionid=' + regionid);
   }
 }

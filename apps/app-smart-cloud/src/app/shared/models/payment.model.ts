@@ -11,7 +11,11 @@ export class PaymentModel {
   paymentMethod: string
   paymentUrl: string
   statusTransitionHistory: StatusTransitionHistory[]
-  invoiceIssuedId: number
+  invoiceIssuedId: number;
+  eInvoiceCode: number;
+  eInvoiceCodePadded?: string;
+  checked?: boolean = false;
+  indeterminate?: boolean = false;
 }
 
 export class StatusTransitionHistory {
@@ -28,4 +32,5 @@ export class PaymentSearch {
   customerId: number
   pageSize: number
   currentPage: number
+  invoiceStatus: number
 }

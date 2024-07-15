@@ -48,6 +48,7 @@ export class AttachVolumeComponent implements AfterViewInit{
     }
 
   onChange(value) {
+    console.log('value selected instance', value)
     this.instanceSelected = value
     this.isSelected = false
   }
@@ -88,7 +89,7 @@ export class AttachVolumeComponent implements AfterViewInit{
     } else {
       this.isSelected = false
       this.isLoading = true
-      this.volumeService.getVolumeById(this.volumeId).subscribe(data => {
+      this.volumeService.getVolumeById(this.volumeId, this.project).subscribe(data => {
         if(data != null) {
           if (data.isMultiAttach == false && data.attachedInstances?.length == 1) {
             this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('volume.notification.fail.attach.multiple'))

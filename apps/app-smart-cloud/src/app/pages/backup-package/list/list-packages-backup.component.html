@@ -11,7 +11,7 @@
         {{ 'app.backup.package.breadcrumb.backup' | i18n }}
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>
-        <a routerLink="/app-smart-cloud/backup/packages">{{ 'app.backup.package.list'|i18n }}</a>
+        <a routerLink="/app-smart-cloud/backup/packages">{{ 'app.backup.volume.backup.package'|i18n }}</a>
       </nz-breadcrumb-item>
     </nz-breadcrumb>
     <ng-template #iconTemplate>
@@ -21,102 +21,195 @@
   <ng-template #action>
     <div class="alain-custom-action text-right">
       <share-users-combobox></share-users-combobox>
-      <region-select-dropdown (valueChanged)="regionChanged($event)"></region-select-dropdown>
-      <project-select-dropdown (valueChanged)="projectChanged($event)"
+      <region-select-dropdown (regionChange)="onRegionChanged($event)" (valueChanged)="regionChanged($event)"></region-select-dropdown>
+      <project-select-dropdown #projectCombobox (valueChanged)="projectChanged($event)"
+                               (userChanged)="projectChanged($event)"
                                [regionId]="region"></project-select-dropdown>
     </div>
   </ng-template>
 </page-header>
-<nz-content>
-  <nz-card style="bottom: 8px;">
-    <nz-row nzJustify="space-between">
-      <nz-col nzSpan="16">
-        <nz-select [(ngModel)]="selectedValue"
-                   nzSize="large"
-                   style="margin-right: 10px; width: 200px;"
-                   (ngModelChange)="onChange($event)"
-                   nzPlaceHolder="{{ 'app.status.all' | i18n }}"
-                   nzTooltipTitle="{{ 'tooltip.title.filter.status' | i18n }}"
-                   nzTooltipPlacement="bottom"
-                   nz-tooltip>
-          <nz-option *ngFor="let item of options" [nzValue]="item.value" [nzLabel]="item.label"></nz-option>
-        </nz-select>
-        <nz-input-group
-          style="width: 300px;"
-          [nzPrefix]="prefixIconSearch"
-          nzSize="large">
-          <input appAutofocus
-                 name="name"
-                 nz-input
-                 placeholder="{{ 'app.backup.package.placeholder.search.name' | i18n }}"
-                 [(ngModel)]="value"
-                 (input)="changeInputChange($event)"
-                 (keydown.enter)="onEnter($event)" />
-        </nz-input-group>
-        <ng-template #prefixIconSearch>
-          <img src="assets/imgs/search.svg" alt="" />
-        </ng-template>
-      </nz-col>
-      <nz-col nzSpan="8" style="flex:none;">
-        <button nz-button nzType="primary" nzSize="large" (click)="navigateToCreate()">
-          <img style="padding-right: 10px; margin-top: -4px" src="assets/imgs/add-circle.svg" alt="" />
-          <span class="button-text-primary">{{ 'app.backup.package.create'|i18n }}</span>
-        </button>
-      </nz-col>
-    </nz-row>
-    <nz-table #fixedTable
-              style="margin-top: 15px;"
-              nzShowSizeChanger
-              [nzScroll]="{ x: '100%', y: '55vh' }"
-              [nzData]="response?.records"
-              [nzPageSize]="response?.pageSize"
-              (nzPageSizeChange)="onPageSizeChange($event)"
-              [nzPageIndex]="response?.currentPage"
-              (nzPageIndexChange)="onPageIndexChange($event)"
-              [nzTotal]="response?.totalCount"
-              [nzFrontPagination]="false"
-              [nzLoading]="isLoading">
-      <thead>
-      <tr>
-        <th nzLeft>{{ 'app.backup.package.name'|i18n }}</th>
-        <th nzBreakWord>{{ 'app.backup.package.storage.total' |i18n }} (GB)</th>
-        <th nzBreakWord>{{ 'app.backup.package.storage.used'|i18n }} (GB)</th>
-        <th nzBreakWord>{{ 'app.backup.package.storage.remaining'|i18n }} (GB)</th>
-        <th nzBreakWord>{{ 'app.backup.package.expire.date'|i18n }}</th>
-        <th nzBreakWord>{{ 'app.payment.status'|i18n }}</th>
-        <th nzBreakWord>{{ 'app.text.operation'|i18n }}</th>
-      </tr>
-      </thead>
-      <tbody>
-      <tr *ngFor="let data of fixedTable.data">
-        <td><a [routerLink]="'/app-smart-cloud/backup/packages/detail/'+ data.id">{{ data.packageName }}</a></td>
-        <td nzAlign="right">{{ data.sizeInGB }}</td>
-        <td nzAlign="right">{{ data.usedSize }}</td>
-        <td nzAlign="right">{{ data.totalSize - data.usedSize }}</td>
-        <td>{{ data.expirationDate | date:'dd/MM/yyyy' }}</td>
-        <ng-container *ngIf="data.status | ServiceStatusPipe as statusModel">
-          <td nzBreakWord nzAlign="left" [ngStyle]="{color: statusModel.color}">{{ statusModel.status }}</td>
-        </ng-container>
-        <td>
-          <div>
-            <!---Chỉnh sửa------>
-            <one-portal-update-backup-package [region]="region"
-                                              [project]="project"
-                                              [idBackupPackage]="data.id"
-                                              [backupPackage]="data"
-                                              (onOk)="handleUpdateOk()" />
-            <!---Điều chỉnh dung lượng------>
-            <img src="assets/imgs/resize.svg" alt="" style="margin-left: 15px; cursor: pointer;"
-                 (click)="navigateToResize(data.id)"
-                 nz-popover nzPopoverPlacement="bottom"
-                 [nzPopoverContent]="'app.backup.package.breadcrumb.resize'|i18n"/>
-            <!---Xóa------>
-            <one-portal-delete-backup-package [region]="region" [project]="project" [packageBackupModel]="data"
-                                              (onOk)="handleDeletedOk()" />
-          </div>
-        </td>
-      </tr>
-      </tbody>
-    </nz-table>
-  </nz-card>
-</nz-content>
+<nz-spin [nzSpinning]="isLoading">
+
+  <ng-container [ngSwitch]="isCheckBegin">
+    <ng-container *ngSwitchCase="false">
+      <nz-content *ngIf="typeVPC != 1">
+        <nz-card style="bottom: 8px;">
+          <nz-row nzJustify="space-between">
+            <nz-col nzSpan="16">
+              <nz-select [(ngModel)]="selectedValue"
+                         nzSize="large"
+                         style="margin-right: 10px; width: 200px;"
+                         (ngModelChange)="onChange($event)"
+                         nzPlaceHolder="{{ 'app.status.all' | i18n }}"
+                         nzTooltipTitle="{{ 'tooltip.title.filter.status' | i18n }}"
+                         nzTooltipPlacement="bottom"
+                         nz-tooltip>
+                <nz-option *ngFor="let item of options" [nzValue]="item.value" [nzLabel]="item.label"></nz-option>
+              </nz-select>
+              <nz-input-group
+                style="width: 300px;"
+                [nzPrefix]="prefixIconSearch"
+                nzSize="large">
+                <input name="name"
+                       nz-input
+                       placeholder="{{ 'app.backup.package.placeholder.search.name' | i18n }}"
+                       [(ngModel)]="value"
+                       (input)="changeInputChange($event)"
+                       (keydown.enter)="onEnter($event)" />
+              </nz-input-group>
+              <ng-template #prefixIconSearch>
+                <img src="assets/imgs/search.svg" alt="" />
+              </ng-template>
+            </nz-col>
+            <nz-col nzSpan="8" style="flex:none;">
+              <button nz-button nzType="primary" nzSize="large" (click)="navigateToCreate()">
+                <img style="padding-right: 10px; margin-top: -4px" src="assets/imgs/add-circle.svg" alt="" />
+                <span class="button-text-primary">{{ 'app.backup.package.create'|i18n }}</span>
+              </button>
+            </nz-col>
+          </nz-row>
+          <nz-table #fixedTable
+                    style="margin-top: 15px;"
+                    nzShowSizeChanger
+                    [nzScroll]="{ x: '100%', y: '55vh' }"
+                    [nzData]="response?.records"
+                    [nzPageSize]="response?.pageSize"
+                    (nzPageSizeChange)="onPageSizeChange($event)"
+                    [nzPageIndex]="response?.currentPage"
+                    (nzPageIndexChange)="onPageIndexChange($event)"
+                    [nzTotal]="response?.totalCount"
+                    [nzFrontPagination]="false">
+            <thead>
+            <tr>
+              <th nzLeft>{{ 'app.backup.package.name'|i18n }}</th>
+              <th nzBreakWord>{{ 'app.backup.package.storage.total' |i18n }} (GB)</th>
+              <th nzBreakWord>{{ 'app.backup.package.storage.used'|i18n }} (GB)</th>
+              <th nzBreakWord>{{ 'app.backup.package.storage.remaining'|i18n }} (GB)</th>
+              <th nzBreakWord>{{ 'app.backup.package.create.date' | i18n}}</th>
+              <th nzBreakWord>{{ 'app.backup.package.expire.date'|i18n }}</th>
+              <th nzBreakWord>{{ 'app.payment.status'|i18n }}</th>
+              <th nzBreakWord>{{ 'app.text.operation'|i18n }}</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let data of fixedTable.data">
+              <td  nzLeft><a [routerLink]="'/app-smart-cloud/backup/packages/detail/'+ data.id">{{ data.packageName }}</a></td>
+              <td  nzBreakWord nzAlign="right">{{ data.sizeInGB }}</td>
+              <td  nzBreakWord nzAlign="right">{{ data.usedSize }}</td>
+              <td nzBreakWord nzAlign="right">{{ data.availableSize }}</td>
+              <td nzBreakWord nzAlign="center">{{ data.creationDate | date: 'dd/MM/yyyy' }}</td>
+              <td nzBreakWord nzAlign="center">{{ data.expirationDate | date:'dd/MM/yyyy' }}</td>
+              <ng-container *ngIf="data.status | ServiceStatusPipe as statusModel">
+                <td nzBreakWord nzAlign="left" [ngStyle]="{color: statusModel.color}">{{ statusModel.status }}</td>
+              </ng-container>
+              <td nzBreakWord>
+                <div *ngIf="['ACTIVE', 'AVAILABLE'].includes(data.status)">
+                  <!---Chỉnh sửa------>
+                  <one-portal-update-backup-package [region]="region"
+                                                    [project]="project"
+                                                    [idBackupPackage]="data.id"
+                                                    [backupPackage]="data"
+                                                    (onOk)="handleUpdateOk()" />
+                  <!---Điều chỉnh dung lượng------>
+                  <img src="assets/imgs/resize.svg" alt="" style="margin-left: 5px;cursor: pointer;"
+                       (click)="navigateToResize(data.id)"
+                       nz-popover nzPopoverPlacement="bottom"
+                       [nzPopoverContent]="'app.backup.package.breadcrumb.resize'|i18n" />
+                  <!---Xóa------>
+                  <one-portal-delete-backup-package [region]="region" [project]="project" [packageBackupModel]="data"
+                                                    (onOk)="handleDeletedOk()" />
+                </div>
+                <div *ngIf="!['ACTIVE', 'AVAILABLE'].includes(data.status) && data.status != 'ERROR'">
+                  <img src="assets/imgs/calendar-tick.svg" alt=""
+                       (click)="navigateToExtend(data.id)"
+                       nz-popover nzPopoverPlacement="bottom"
+                       [nzPopoverContent]="'app.dashboard.service.near.expire.extend'|i18n" />
+                  <!---Xóa------>
+                  <one-portal-delete-backup-package [region]="region" [project]="project" [packageBackupModel]="data"
+                                                    (onOk)="handleDeletedOk()" />
+                </div>
+                <div *ngIf="data.status == 'ERROR'">
+                  <!---Xóa------>
+                  <one-portal-delete-backup-package [region]="region" [project]="project" [packageBackupModel]="data"
+                                                    (onOk)="handleDeletedOk()" />
+                </div>
+              </td>
+            </tr>
+            </tbody>
+          </nz-table>
+        </nz-card>
+      </nz-content>
+      <nz-content *ngIf="typeVPC == 1">
+        <nz-card>
+          <result>
+            <nz-row>
+              <nz-col class="text-center" style="width: 100%">
+                <img src="/assets/imgs/scheduleBackup.svg" alt="" />
+              </nz-col>
+            </nz-row>
+            <nz-row style="margin-top: 20px">
+              <nz-col class="text-center" style="width: 100%">
+                  <span class="text-intro-title"
+                        style="color: #0066b3">{{ 'app.backup.volume.backup.package'|i18n }}</span>
+              </nz-col>
+            </nz-row>
+            <nz-row style="margin-top: 20px">
+              <nz-col class="text-center" style="width: 100%">
+                <span class="text-intro-desc">{{ 'app.backup.package.intro.vpc1' | i18n }} <a [routerLink]="'/app-smart-cloud/project/detail/' + project">{{ projectName }}</a> {{'app.backup.package.intro.vpc2'|i18n}}</span>
+              </nz-col>
+            </nz-row>
+          </result>
+        </nz-card>
+      </nz-content>
+    </ng-container>
+    <ng-container *ngSwitchDefault>
+      <nz-card *ngIf="typeVPC != 1">
+        <result>
+          <nz-row>
+            <nz-col class="text-center" style="width: 100%">
+              <img src="/assets/imgs/scheduleBackup.svg" alt="" />
+            </nz-col>
+          </nz-row>
+          <nz-row style="margin-top: 20px">
+            <nz-col class="text-center" style="width: 100%">
+                <span class="text-intro-title"
+                      style="color: #0066b3">{{ 'app.backup.volume.backup.package'|i18n }}</span>
+            </nz-col>
+          </nz-row>
+          <nz-row style="margin-top: 20px">
+            <nz-col class="text-center" style="width: 100%">
+              <span class="text-intro-desc">{{ 'app.backup.package.intro.desc' | i18n }}</span>
+            </nz-col>
+          </nz-row>
+          <button *ngIf="typeVPC != 1" style="margin-top: 20px" nz-button [nzType]="'primary'"
+                  (click)="navigateToCreate()" nzSize="large">
+            <img style="padding-right: 10px; margin-top: -4px" src="assets/imgs/cloud-plus-bold.svg" alt="" />
+            {{ 'app.backup.package.create' | i18n }}
+          </button>
+        </result>
+      </nz-card>
+      <nz-content *ngIf="typeVPC == 1">
+        <nz-card>
+          <result>
+            <nz-row>
+              <nz-col class="text-center" style="width: 100%">
+                <img src="/assets/imgs/scheduleBackup.svg" alt="" />
+              </nz-col>
+            </nz-row>
+            <nz-row style="margin-top: 20px">
+              <nz-col class="text-center" style="width: 100%">
+                  <span class="text-intro-title"
+                        style="color: #0066b3">{{ 'app.backup.volume.backup.package'|i18n }}</span>
+              </nz-col>
+            </nz-row>
+            <nz-row style="margin-top: 20px">
+              <nz-col class="text-center" style="width: 100%">
+                <span class="text-intro-desc">{{ 'app.backup.package.intro.vpc1' | i18n }} <a [routerLink]="'/app-smart-cloud/project/detail/' + project">{{ projectName }}</a> {{'app.backup.package.intro.vpc2'|i18n}}</span>
+              </nz-col>
+            </nz-row>
+          </result>
+        </nz-card>
+      </nz-content>
+    </ng-container>
+  </ng-container>
+</nz-spin>

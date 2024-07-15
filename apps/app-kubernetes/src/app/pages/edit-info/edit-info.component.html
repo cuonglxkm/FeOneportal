@@ -25,7 +25,7 @@
   </ng-template>
 </page-header>
 
-<nz-card class="border-card">
+<nz-card class="border-radius-card">
   <form nz-form [formGroup]="editForm" nzLayout="vertical">
     <nz-form-item>
       <nz-form-label>{{ 'app.cluster.name' | i18n }} (<span class="required-color">*</span>)</nz-form-label>
@@ -65,11 +65,11 @@
     </nz-form-item>
 
     <div style="position: relative; float: right;">
-      <button nz-button nzType="default" (click)="handleShowModalCancelEdit()" [disabled]="isSubmitting">
+      <button nz-button nzType="default" (click)="handleShowModalCancelEdit()" [disabled]="isSubmitting" nzSize="large">
         <span nz-icon nzType="close" nzTheme="outline"></span>
         {{ 'app.button.cancel' | i18n }}
       </button>
-      <button nz-button nzType="primary" (click)="onSubbmit()">
+      <button nz-button nzType="primary" (click)="onSubbmit()" nzSize="large">
         <ng-container *ngIf="isSubmitting; else normalTpl">
           <span nz-icon [nzType]="'loading'"></span>
         </ng-container>
@@ -92,18 +92,18 @@
       nzType="warning"
       [nzDescription]="cancelWarning" nzShowIcon></nz-alert>
     <ng-template #cancelWarning>
-      <div class="warning-description">{{ 'app.cluster.cancel-desciption-1' | i18n }}</div>
+      <div class="warning-description">{{ 'app.cluster.cancel-description-11' | i18n }}</div>
       <div class="delete-color warning-description mt-1">{{ 'app.cluster.cancel-desciption-2' | i18n }}</div>
     </ng-template>
   </ng-template>
 
   <ng-template #modalFooter>
     <button nz-button nzType="default" (click)="handleCancelModalEdit()">
-      <span nz-icon nzType="close" nzTheme="outline"></span>
+      <span nz-icon nzType="close" nzTheme="outline" nzSize="large"></span>
       {{ 'app.cluster.cancel' | i18n }}
     </button>
     <button nz-button nzType="primary" (click)="back2detail()">
-      <span nz-icon nzType="check" nzTheme="outline"></span>
+      <span nz-icon nzType="check" nzTheme="outline" nzSize="large"></span>
       {{ 'app.button.confirm' | i18n }}
     </button>
   </ng-template>

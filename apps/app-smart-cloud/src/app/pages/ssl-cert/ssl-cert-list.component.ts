@@ -1,10 +1,11 @@
-import { Component, Inject } from '@angular/core';
+import { Component, Inject, ViewChild } from '@angular/core';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { getCurrentRegionAndProject } from '@shared';
 import { debounceTime } from 'rxjs';
 import { FormSearchSslSearch } from 'src/app/shared/models/ssl-cert.model';
 import { SSLCertService } from 'src/app/shared/services/ssl-cert.service';
 import { BaseResponse, ProjectModel, RegionModel } from '../../../../../../libs/common-utils/src';
+import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
 
 @Component({
   selector: 'one-portal-ssl-cert-list',
@@ -31,7 +32,7 @@ export class SslCertListComponent {
   filteredData: []
 
   formSearchSslSearch: FormSearchSslSearch = new FormSearchSslSearch()
-
+  @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
   constructor(private SslCertService: SSLCertService,
             @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService) {
 }
@@ -50,6 +51,9 @@ export class SslCertListComponent {
 
   onRegionChange(region: RegionModel) {
     this.region = region.regionId;
+    if(this.projectCombobox){
+      this.projectCombobox.loadProjects(true, region.regionId);
+    }
     this.refreshParams();
   }
 

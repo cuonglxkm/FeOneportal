@@ -71,3 +71,9 @@ export class CharacteristicValues {
   charOptionValues: string[]
   productOfferId: number
 }
+
+export class SupportService {
+  productName: string;
+  isActive: boolean;
+  regionId: number;
+}

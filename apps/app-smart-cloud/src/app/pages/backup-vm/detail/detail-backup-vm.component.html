@@ -6,7 +6,7 @@
         <a [routerLink]="['/']">{{ 'app.breadcrumb.home'|i18n }}</a>
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>{{ 'app.breadcrumb.infrastructure.service'|i18n }}</nz-breadcrumb-item>
-      <nz-breadcrumb-item [routerLink]="'/app-smart-cloud/backup-vm'">Backup VM</nz-breadcrumb-item>
+      <nz-breadcrumb-item><a [routerLink]="'/app-smart-cloud/backup-vm'">Backup VM</a></nz-breadcrumb-item>
       <nz-breadcrumb-item>{{ 'app.backup.vm.detail'|i18n }}</nz-breadcrumb-item>
     </nz-breadcrumb>
     <ng-template #iconTemplate><one-portal-svg-icon [icon]="'icon_breadcrumb'"></one-portal-svg-icon></ng-template>
@@ -15,103 +15,209 @@
   <ng-template #action>
     <div class="alain-custom-action text-right">
       <share-users-combobox></share-users-combobox>
-      <region-select-dropdown (valueChanged)="regionChanged($event)"></region-select-dropdown>
-      <project-select-dropdown (valueChanged)="projectChanged($event)"
+      <region-select-dropdown (regionChange)="onRegionChanged($event)" (valueChanged)="regionChanged($event)"></region-select-dropdown>
+      <project-select-dropdown #projectCombobox (valueChanged)="projectChanged($event)"
                                (userChanged)="userChanged($event)"
                                [regionId]="region"></project-select-dropdown>
     </div>
   </ng-template>
 </page-header>
-<nz-content>
-  <nz-card style="border-radius: 8px;">
-    <span class="text-card-header">{{ 'app.backup.vm.ìnformation'|i18n }}</span>
-    <div class="customRow" style="margin-top: 25px;">
-      <nz-row>
-        <nz-col nzSpan="12">
-          <nz-row style="padding: 12px 0 12px 0">
-            <span class="text-label customSpan" style="width: 35%">{{ 'app.table.backup.vm.name' | i18n }}</span>
-            <span class="text-value-detail customSpan">{{ backupVm?.name }}</span>
-          </nz-row>
-        </nz-col>
-        <nz-col nzSpan="12">
-          <nz-row style="padding: 12px 0 12px 0">
-            <span class="text-label" style="width: 35%">{{ 'app.info.backup.vm.vm.root' | i18n }}</span>
-            <span class="text-value-detail">{{ backupVm?.instanceName }}</span>
-          </nz-row>
-        </nz-col>
-      </nz-row>
-      <nz-row style="background-color: #e2e2e9">
-        <nz-col nzSpan="12">
-          <nz-row style="padding: 12px 0 12px 0">
+<nz-spin [nzSpinning]="isLoading">
+  <nz-content>
+    <nz-card style="border-radius: 8px;" *ngIf="typeVpc != 1">
+      <span class="text-card-header">{{ 'app.backup.vm.ìnformation'|i18n }}</span>
+      <div class="customRow" style="margin-top: 25px;">
+        <nz-row>
+          <nz-col nzSpan="12">
+            <nz-row style="padding: 12px 0 12px 0">
+              <span class="text-label customSpan" style="width: 35%">{{ 'app.table.backup.vm.name' | i18n }}</span>
+              <span class="text-value-detail customSpan">{{ backupVm?.name }}</span>
+            </nz-row>
+          </nz-col>
+          <nz-col nzSpan="12">
+            <nz-row style="padding: 12px 0 12px 0">
+              <span class="text-label" style="width: 35%">{{ 'app.info.backup.vm.vm.root' | i18n }}</span>
+              <span class="text-value-detail">{{ backupVm?.instanceName }}</span>
+            </nz-row>
+          </nz-col>
+        </nz-row>
+        <nz-row style="background-color: #e2e2e9"  >
+          <nz-col nzSpan="12">
+            <nz-row style="padding: 12px 0 12px 0">
             <span class="text-label customSpan"
                   style="width: 35%">{{ 'app.table.backup.vm.backup.package' | i18n }}</span>
-            <span class="text-value-detail customSpan">{{ backupPackageDetail?.packageName }}</span>
-          </nz-row>
-        </nz-col>
-        <nz-col nzSpan="12">
-          <nz-row style="padding: 12px 0 12px 0">
-            <span class="text-label" style="width: 35%">{{ 'app.instances.OS' | i18n }}</span>
-            <span class="text-value-detail">{{ backupVm?.systemInfoBackups[0].osName }}</span>
-          </nz-row>
-        </nz-col>
-      </nz-row>
-      <nz-row>
-        <nz-col nzSpan="12">
-          <nz-row style="padding: 12px 0 12px 0">
-            <span class="text-label customSpan" style="width: 35%">{{ 'app.backup.package.storage' | i18n }}</span>
-            <span class="text-value-detail" style="margin-left: 2%;">{{ backupPackageDetail?.sizeInGB }} GB</span>
-          </nz-row>
-        </nz-col>
-        <nz-col nzSpan="12">
-          <nz-row style="padding: 12px 0 12px 0">
-            <span class="text-label" style="width: 35%">{{ 'app.info.backup.vm.storage.flavor' | i18n }}</span>
-            <span class="text-value-detail">{{ backupVm?.systemInfoBackups[0].rootSize }} GB</span>
-          </nz-row>
-        </nz-col>
-      </nz-row>
-      <nz-row style="background-color: #e2e2e9">
-        <nz-col nzSpan="12">
-          <nz-row style="padding: 12px 0 12px 0">
-            <span class="text-label" style="width: 35%; margin-left: 2%;">{{ 'app.used.capacity' | i18n }}</span>
-            <span class="text-value-detail" style="margin-left: 2%;">{{ backupPackageDetail?.usedSize }} GB</span>
-          </nz-row>
-        </nz-col>
-        <nz-col nzSpan="12">
-          <nz-row style="padding: 12px 0 12px 0">
-            <span class="text-label" style="width: 35%">Security Group</span>
-            <span class="text-value-detail">{{ nameSecurityGroupTextUnique }}</span>
-          </nz-row>
-        </nz-col>
-      </nz-row>
-      <nz-row>
-        <nz-col nzSpan="12">
-          <nz-row style="padding: 12px 0 12px 0">
+              <span class="text-value-detail customSpan">{{ backupPackageDetail?.packageName }}</span>
+            </nz-row>
+          </nz-col>
+          <nz-col nzSpan="12">
+            <nz-row style="padding: 12px 0 12px 0">
+              <span class="text-label" style="width: 35%">{{ 'app.instances.OS' | i18n }}</span>
+              <span class="text-value-detail">{{ backupVm?.systemInfoBackups[0].osName }}</span>
+            </nz-row>
+          </nz-col>
+        </nz-row>
+        <nz-row>
+          <nz-col nzSpan="12">
+            <nz-row style="padding: 12px 0 12px 0">
+              <span class="text-label customSpan" style="width: 35%">{{ 'app.backup.package.storage' | i18n }}</span>
+              <span class="text-value-detail" style="margin-left: 2%;">{{ backupPackageDetail?.sizeInGB }} GB</span>
+            </nz-row>
+          </nz-col>
+          <nz-col nzSpan="12">
+            <nz-row style="padding: 12px 0 12px 0">
+              <span class="text-label" style="width: 35%">{{ 'app.info.backup.vm.storage.flavor' | i18n }}</span>
+              <span class="text-value-detail">{{ backupVm?.systemInfoBackups[0].rootSize }} GB</span>
+            </nz-row>
+          </nz-col>
+        </nz-row>
+        <nz-row style="background-color: #e2e2e9">
+          <nz-col nzSpan="12">
+            <nz-row style="padding: 12px 0 12px 0">
+              <span class="text-label" style="width: 35%; margin-left: 2%;">{{ 'app.used.capacity' | i18n }}</span>
+              <span class="text-value-detail" style="margin-left: 2%;">{{ backupPackageDetail?.usedSize }} GB</span>
+            </nz-row>
+          </nz-col>
+          <nz-col nzSpan="12">
+            <nz-row style="padding: 12px 0 12px 0">
+              <span class="text-label" style="width: 35%">Security Group</span>
+              <span class="text-value-detail">{{ convertString(nameSecurityGroupTextUnique) }}</span>
+            </nz-row>
+          </nz-col>
+        </nz-row>
+        <nz-row>
+          <nz-col nzSpan="12">
+            <nz-row style="padding: 12px 0 12px 0">
             <span class="text-label customSpan"
                   style="width: 35%; margin-left: 2%">{{ 'app.backup.package.storage.remaining' | i18n }}</span>
-            <span class="text-value-detail" style="margin-left: 2%;">{{ backupPackageDetail?.sizeInGB - backupPackageDetail?.usedSize }} GB</span>
-          </nz-row>
-        </nz-col>
-        <nz-col nzSpan="12">
-          <nz-row style="padding: 12px 0 12px 0">
-            <span class="text-label" style="width: 35%">{{ 'app.info.backup.vm.external.volume' |i18n }}</span>
-            <span class="text-value-detail" >{{ nameVolumeBackupAttachNameUnique }}</span>
-          </nz-row>
-        </nz-col>
-      </nz-row>
-      <nz-row style="background-color: #e2e2e9">
-        <nz-col nzSpan="12">
-          <nz-row style="padding: 12px 0 12px 0">
-            <span class="text-label customSpan" style="width: 35%">{{ 'app.service.creation-date' | i18n }}</span>
-            <span class="text-value-detail customSpan">{{ backupVm?.creationDate | date : 'dd/MM/yyyy' }}</span>
-          </nz-row>
-        </nz-col>
-        <nz-col nzSpan="12">
-          <nz-row style="padding: 12px 0 12px 0">
-            <span class="text-label" style="width: 35%; color: #EB1414;">{{ 'app.service.expiration-date' | i18n }}</span>
-            <span class="text-value-detail" style="color: #EB1414">{{ backupVm?.expirationDate | date : 'dd/MM/yyyy' }}</span>
-          </nz-row>
-        </nz-col>
-      </nz-row>
-    </div>
-  </nz-card>
-</nz-content>
+              <span class="text-value-detail" style="margin-left: 2%;">{{ backupPackageDetail?.sizeInGB - backupPackageDetail?.usedSize }} GB</span>
+            </nz-row>
+          </nz-col>
+          <nz-col nzSpan="12">
+            <nz-row style="padding: 12px 0 12px 0">
+              <span class="text-label" style="width: 35%; color: #EB1414;">{{ 'app.service.expiration-date' | i18n }}</span>
+              <span class="text-value-detail" style="color: #EB1414">{{ backupVm?.expirationDate | date : 'HH:mm:ss dd/MM/yyyy' }}</span>
+            </nz-row>
+          </nz-col>
+        </nz-row>
+        <nz-row style="background-color: #e2e2e9">
+          <nz-col nzSpan="12">
+            <nz-row style="padding: 12px 0 12px 0">
+              <span class="text-label customSpan" style="width: 35%">{{ 'app.service.creation-date' | i18n }}</span>
+              <span class="text-value-detail customSpan">{{ backupVm?.creationDate | date : 'HH:mm:ss dd/MM/yyyy' }}</span>
+            </nz-row>
+          </nz-col>
+        </nz-row>
+      </div>
+    </nz-card>
+    <nz-card style="border-radius: 8px;" *ngIf="typeVpc == 1">
+      <span class="text-card-header">{{ 'app.backup.vm.ìnformation'|i18n }}</span>
+      <div class="customRow" style="margin-top: 25px;">
+        <nz-row>
+          <nz-col nzSpan="12">
+            <nz-row style="padding: 12px 0 12px 0">
+              <span class="text-label customSpan" style="width: 35%">{{ 'app.table.backup.vm.name' | i18n }}</span>
+              <span class="text-value-detail customSpan">{{ backupVm?.name }}</span>
+            </nz-row>
+          </nz-col>
+          <nz-col nzSpan="12">
+            <nz-row style="padding: 12px 0 12px 0">
+              <span class="text-label" style="width: 35%">{{ 'app.info.backup.vm.vm.root' | i18n }}</span>
+              <span class="text-value-detail">{{ backupVm?.instanceName }}</span>
+            </nz-row>
+          </nz-col>
+        </nz-row>
+        <nz-row style="background-color: #e2e2e9"  >
+          <nz-col nzSpan="12">
+            <nz-row style="padding: 12px 0 12px 0">
+            <span class="text-label customSpan"
+                  style="width: 35%">{{ 'app.info.backup.vm.total.storage' | i18n }}</span>
+              <span class="text-value-detail customSpan">{{ backupVm?.size }} GB</span>
+            </nz-row>
+          </nz-col>
+          <nz-col nzSpan="12">
+            <nz-row style="padding: 12px 0 12px 0">
+              <span class="text-label" style="width: 35%">{{ 'app.instances.OS' | i18n }}</span>
+              <span class="text-value-detail">{{ backupVm?.systemInfoBackups[0].osName }}</span>
+            </nz-row>
+          </nz-col>
+        </nz-row>
+        <nz-row>
+          <nz-col nzSpan="12">
+            <nz-row style="padding: 12px 0 12px 0">
+              <span class="text-label customSpan" style="width: 35%">{{ 'app.backup.vm.bought' | i18n }}</span>
+              <span class="text-value-detail" style="margin-left: 2%;">{{ projectDetail?.cloudProject.quotaBackupVolumeInGb }} GB</span>
+            </nz-row>
+          </nz-col>
+          <nz-col nzSpan="12">
+            <nz-row style="padding: 12px 0 12px 0">
+              <span class="text-label" style="width: 35%">{{ 'app.info.backup.vm.storage.flavor' | i18n }}</span>
+              <span class="text-value-detail">{{ backupVm?.systemInfoBackups[0].rootSize }} GB</span>
+            </nz-row>
+          </nz-col>
+        </nz-row>
+        <nz-row style="background-color: #e2e2e9">
+          <nz-col nzSpan="12">
+            <nz-row style="padding: 12px 0 12px 0">
+              <span class="text-label" style="width: 35%; margin-left: 2%;">{{ 'app.backup.package.storage.remaining' | i18n }}</span>
+              <span class="text-value-detail" style="margin-left: 2%;">{{ projectDetail?.cloudProject.quotaBackupVolumeInGb - projectDetail?.cloudProjectResourceUsed.backup }} GB</span>
+            </nz-row>
+          </nz-col>
+          <nz-col nzSpan="12">
+            <nz-row style="padding: 12px 0 12px 0">
+              <span class="text-label" style="width: 35%">Security Group</span>
+              <span class="text-value-detail">{{ convertString(nameSecurityGroupTextUnique) }}</span>
+            </nz-row>
+          </nz-col>
+        </nz-row>
+        <nz-row>
+          <nz-col nzSpan="12">
+            <nz-row style="padding: 12px 0 12px 0">
+            <span class="text-label customSpan"
+                  style="width: 35%; margin-left: 2%">{{ 'app.service.creation-date' | i18n }}</span>
+              <span class="text-value-detail" style="margin-left: 2%;">{{ backupVm?.creationDate | date : 'HH:mm:ss dd/MM/yyyy' }}</span>
+            </nz-row>
+          </nz-col>
+          <nz-col nzSpan="12">
+            <nz-row style="padding: 12px 0 12px 0">
+              <span class="text-label" style="width: 35%; color: #EB1414;">{{ 'app.service.expiration-date' | i18n }}</span>
+              <span class="text-value-detail" style="color: #EB1414">{{ backupVm?.expirationDate | date : 'HH:mm:ss dd/MM/yyyy' }}</span>
+            </nz-row>
+          </nz-col>
+        </nz-row>
+      </div>
+    </nz-card>
+    <nz-card>
+      <span class="text-card-header">Thông tin Volume gắn ngoài</span>
+      <nz-table #tableVolumeAttach
+                nzShowPagination="false"
+                [nzData]="backupVm?.volumeBackups"
+                style="margin-top: 20px;">
+        <thead>
+        <tr>
+          <th>Tên volume</th>
+          <th>Dung lượng (GB)</th>
+          <th>Loại volume</th>
+          <th>Mã hóa Volume</th>
+          <th>Gắn nhiều máy ảo</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let data of tableVolumeAttach.data">
+          <td *ngIf="!data.isBootable">{{data.name}}</td>
+          <td *ngIf="!data.isBootable" nzAlign="right">{{data.size}}</td>
+          <td *ngIf="!data.isBootable">
+            <span *ngIf="data.volumeType == 'ssd'">{{'volume.ssd' | i18n}}</span>
+            <span *ngIf="data.volumeType == 'hdd'">{{'volume.hdd' | i18n}}</span>
+          </td>
+          <td *ngIf="!data.isBootable" nzAlign="center">
+            <label nz-checkbox [(ngModel)]="data.isEncryption" [disabled]="true"></label>
+          </td>
+          <td *ngIf="!data.isBootable" nzAlign="center">
+            <label nz-checkbox [(ngModel)]="data.isMultiAttach" [disabled]="true"></label>
+          </td>
+        </tr>
+        </tbody>
+      </nz-table>
+    </nz-card>
+  </nz-content>
+</nz-spin>

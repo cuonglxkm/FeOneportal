@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
@@ -7,6 +7,10 @@ import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { FormCreateIpsecPolicy } from 'src/app/shared/models/ipsec-policy';
 import { RegionModel, ProjectModel } from '../../../../../../../../../libs/common-utils/src';
 import { IpsecPolicyService } from 'src/app/shared/services/ipsec-policy.service';
+import { I18NService } from '@core';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
+import { NAME_SPECIAL_REGEX } from 'src/app/shared/constants/constants';
+import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
 
 
 @Component({
@@ -64,11 +68,11 @@ export class CreateIpsecPoliciesComponent implements OnInit{
     name: FormControl<string>;
     lifeTimeValue: FormControl<number>
   }> = this.fb.group({
-    name: ['', [Validators.required, Validators.pattern(/^[a-zA-Z0-9][a-zA-Z0-9-_ ]{0,49}$/)]],
+    name: ['', [Validators.required, Validators.pattern(NAME_SPECIAL_REGEX)]],
     lifeTimeValue: [3600, [Validators.required, Validators.min(60)]]
   });
 
-
+  @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
   getData(): any {
     this.formCreateIpsecPolicy.customerId =
       this.tokenService.get()?.userId;
@@ -100,7 +104,8 @@ export class CreateIpsecPoliciesComponent implements OnInit{
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
     private fb: NonNullableFormBuilder,
     private notification: NzNotificationService,
-    private ipsecPolicyService: IpsecPolicyService
+    private ipsecPolicyService: IpsecPolicyService,
+    @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService
   ) {}
 
   handleCreate() {
@@ -114,16 +119,16 @@ export class CreateIpsecPoliciesComponent implements OnInit{
           (data) => {
             this.isLoading = false
             this.notification.success(
-              'Thành công',
-              'Tạo mới IPsec Policy thành công'
+              this.i18n.fanyi('app.status.success'),
+              this.i18n.fanyi('app.ipsec.policy-create.success')
             );
-            this.router.navigate(['/app-smart-cloud/vpn-site-to-site/manage']);
+            this.router.navigate(['/app-smart-cloud/vpn-site-to-site']);
           },
           (error) => {
             this.isLoading = false
             this.notification.error(
-              'Thất bại',
-              'Tạo mới IPsec Policy thất bại'
+              this.i18n.fanyi('app.status.fail'),
+              this.i18n.fanyi('app.ipsec.policy-create.fail')
             );
             console.log(error);
           }
@@ -134,7 +139,14 @@ export class CreateIpsecPoliciesComponent implements OnInit{
 
   onRegionChange(region: RegionModel) {
     this.region = region.regionId;
-    this.router.navigate(['/app-smart-cloud/vpn-site-to-site/manage']);
+    if(this.projectCombobox){
+      this.projectCombobox.loadProjects(true, region.regionId);
+    }
+    this.router.navigate(['/app-smart-cloud/vpn-site-to-site']);
+  }
+
+  onRegionChanged(region: RegionModel) {
+    this.region = region.regionId;
   }
 
   onProjectChange(project: ProjectModel) {
@@ -142,6 +154,6 @@ export class CreateIpsecPoliciesComponent implements OnInit{
   }
 
   userChangeProject(){
-    this.router.navigate(['/app-smart-cloud/vpn-site-to-site/manage']);
+    this.router.navigate(['/app-smart-cloud/vpn-site-to-site']);
   }
 }

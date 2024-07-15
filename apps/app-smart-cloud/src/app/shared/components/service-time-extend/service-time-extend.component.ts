@@ -10,11 +10,12 @@ import { addDays } from 'date-fns';
 export class ServiceTimeExtendComponent implements OnInit {
   @Input() createDate: any;
   @Input() expiredDate: any;
+  @Input() newExpiredDate: any
   @Output() valueChanged = new EventEmitter();
 
   dataSubjectTime: Subject<any> = new Subject<any>();
   numberMonth: number = 1;
-  newExpiredDate: any;
+  // newExpiredDate: any;
 
   constructor(private cdr: ChangeDetectorRef) {
   }
@@ -45,22 +46,22 @@ export class ServiceTimeExtendComponent implements OnInit {
       .subscribe((res) => {
         console.log(res);
         this.valueChanged.emit(res);
-        let expiredDate = new Date(this.expiredDate);
-        expiredDate.setDate(expiredDate.getDate() + this.numberMonth * 30);
-        this.newExpiredDate = expiredDate.toISOString().substring(0, 19);
+        // let expiredDate = new Date(this.expiredDate);
+        // expiredDate.setDate(expiredDate.getDate() + this.numberMonth * 30);
+        // this.newExpiredDate = expiredDate.toISOString().substring(0, 19);
         this.cdr.detectChanges();
       });
   }
 
   ngOnInit(): void {
-    console.log(this.expiredDate);
-    console.log(this.createDate);
-    
-    let expiredDate = new Date(this.expiredDate);
-    expiredDate.setDate(expiredDate.getDate() + this.numberMonth * 30);
-    
-    this.newExpiredDate = expiredDate.toISOString().substring(0, 19);
-    console.log('new', this.newExpiredDate)
+    // console.log(this.expiredDate);
+    // console.log(this.createDate);
+    //
+    // let expiredDate = new Date(this.expiredDate);
+    // expiredDate.setDate(expiredDate.getDate() + this.numberMonth * 30);
+    //
+    // this.newExpiredDate = expiredDate.toISOString().substring(0, 19);
+    // console.log('new', this.newExpiredDate)
     this.onChangeTime();
   }
 

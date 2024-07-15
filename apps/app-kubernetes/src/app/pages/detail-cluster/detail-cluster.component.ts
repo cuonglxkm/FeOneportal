@@ -1,4 +1,4 @@
-import { Component, Inject, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
+import { Component, HostListener, Inject, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { ClipboardService } from 'ngx-clipboard';
@@ -65,6 +65,16 @@ export class DetailClusterComponent implements OnInit, OnDestroy {
 
   listOfCurrentWorkerGroup: WorkerGroupModel[];
 
+  @HostListener('window:unload', ['$event'])
+  async unloadHandler(event) {
+    this.ngOnDestroy();
+  }
+
+  @HostListener('window:beforeunload', ['$event'])
+  async beforeUnloadHandler(event) {
+    this.ngOnDestroy();
+  }
+
   constructor(
     private router: Router,
     private clusterService: ClusterService,
@@ -101,8 +111,6 @@ export class DetailClusterComponent implements OnInit, OnDestroy {
       // volumeCloudType: [null, [Validators.required]],
       workerGroup: this.listFormWorkerGroupUpgrade
     });
-
-    this.openWs();
   }
 
   ngOnDestroy(): void {
@@ -132,58 +140,6 @@ export class DetailClusterComponent implements OnInit, OnDestroy {
   //   this.getListWorkerType(this.regionId, this.cloudProfileId);
   //   this.getListVolumeType(this.regionId, this.cloudProfileId);
   // }
-
-  // websocket
-  private openWs() {
-    // list topic subscribe
-    const topicSpecificUser = NotificationConstant.WS_SPECIFIC_TOPIC + "/" + '';
-    const topicBroadcast = NotificationConstant.WS_BROADCAST_TOPIC;
-
-    const notificationMessageCb = (noti) => {
-      if (noti.body) {
-        try {
-          const notificationMessage = JSON.parse(noti.body);
-          if (notificationMessage.content && notificationMessage.content?.length > 0) {
-            if (notificationMessage.status == NotificationConstant.NOTI_SUCCESS) {
-              this.notificationService.success(
-                this.i18n.fanyi('app.status.success'),
-                notificationMessage.content);
-
-              // refresh page
-              this.getDetailCluster(this.serviceOrderCode);
-
-            } else {
-              this.notificationService.error(
-                this.i18n.fanyi('app.status.fail'),
-                notificationMessage.content);
-            }
-          }
-        } catch (ex) {
-          console.log("parse message error: ", ex);
-        }
-
-      }
-    }
-
-    this.initNotificationWebsocket([
-      { topics: [topicBroadcast, topicSpecificUser], cb: notificationMessageCb }
-    ]);
-  }
-
-  private initNotificationWebsocket(topicCBs: Array<{ topics: string[], cb: messageCallbackType }>) {
-
-    setTimeout(() => {
-      this.websocketService = NotificationWsService.getInstance();
-      this.websocketService.connect(
-        () => {
-          for (const topicCB of topicCBs) {
-            for (const topic of topicCB.topics) {
-              this.websocketService.subscribe(topic, topicCB.cb);
-            }
-          }
-        });
-    }, 1000);
-  }
 
   initFormWorkerGroup(wgs: WorkerGroupModel[]) {
     for (let i = 0; i < wgs.length; i++) {
@@ -439,6 +395,8 @@ export class DetailClusterComponent implements OnInit, OnDestroy {
       }, 1500);
     };
     dlink.click(); dlink.remove();
+
+    this.notificationService.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('app.cluster.download-file'));
   }
 
   // for kubeconfig
@@ -475,6 +433,8 @@ export class DetailClusterComponent implements OnInit, OnDestroy {
       }, 1500);
     };
     dlink.click(); dlink.remove();
+
+    this.notificationService.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('app.cluster.download-file'));
   }
 
   // upgrade worker
@@ -543,24 +503,38 @@ export class DetailClusterComponent implements OnInit, OnDestroy {
   template: `
   <style>
     .danger-color {color: #ea3829;}
+
+    .content {
+      font-size: 16px;
+    }
+
+    /* dark theme */
+    [data-theme='dark'] :host ::ng-deep .content {
+      font-size: 16px;
+    }
+
+    /* compact theme */
+    [data-theme='compact'] :host ::ng-deep .content {
+      font-size: 14px;
+    }
   </style>
   <div nz-row>
     <div nz-col nzSpan="8">
-      {{label}}
+      <span class="content">{{label}}</span>
     </div>
     <div nz-col nzSpan="16" style="font-weight: 600;"
       [ngClass]="type === 'danger' ? 'danger-color' : ''">
       <ng-container *ngIf="(value + '').length <= 30; else truncateValueTpl">
-        {{value}}
+        <span class="content">{{value}}</span>
       </ng-container>
       <ng-template #truncateValueTpl>
         <div [nzPopoverContent]="contentTpl"
           nzPopoverPlacement="bottom" nz-popover>
-          {{value | truncateLabel}}
+          <span class="content">{{value | truncateLabel}}</span>
         </div>
 
         <ng-template #contentTpl>
-          <div style="width: fit-content">{{value}}</div>
+          <div style="width: fit-content"><span class="content">{{value}}</span></div>
         </ng-template>
       </ng-template>
     </div>

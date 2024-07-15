@@ -14,10 +14,6 @@
   margin-left: 16px;
 }
 
-.header-table {
-  background-color: #E2EEFC;
-}
-
 p, label {
   font-size: 16px;
 }
@@ -63,7 +59,7 @@ small {
   color: #ea3829;
 }
 
-input, .border-button, .border-card {
+input, .border-button, .border-radius-card {
   border-radius: 8px;
 }
 
@@ -102,6 +98,10 @@ img {
   border-radius: 4px;
 }
 
+.content {
+  font-size: 16px;
+}
+
 .description-title {
   font-weight: 600;
   font-size: 32px;
@@ -125,3 +125,10 @@ img {
   font-weight: 600;
 }
 
+[data-theme='dark'] :host ::ng-deep .content-table {
+  color: #DDDDDD;
+}
+
+[data-theme='compact'] :host ::ng-deep .content {
+  font-size: 14px;
+}

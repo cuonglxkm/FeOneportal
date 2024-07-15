@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject, OnInit, ViewChild } from '@angular/core';
 import {
   AbstractControl,
   FormControl,
@@ -17,6 +17,7 @@ import { RegionModel, ProjectModel, AppValidator } from '../../../../../../../..
 import { finalize } from 'rxjs/operators';
 import { I18NService } from '@core';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
+import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
 export function ipAddressValidator(): ValidatorFn {
   return (control: AbstractControl): { [key: string]: any } | null => {
     const ipAddressList = control.value.split(',').map(ip => ip.trim()); // Tách các địa chỉ IP theo dấu (,)
@@ -124,7 +125,7 @@ export class ListenerCreateComponent implements OnInit{
   selectedHttpMethod = 'GET';
   loading= false;
   private disableMember = false;
-
+  @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
   constructor(private router: Router,
               private fb: NonNullableFormBuilder,
               private service: ListenerService,
@@ -225,6 +226,13 @@ export class ListenerCreateComponent implements OnInit{
   }
 
   onRegionChange(region: RegionModel) {
+    this.regionId = region.regionId;
+    if(this.projectCombobox){
+      this.projectCombobox.loadProjects(true, region.regionId);
+    }
+  }
+
+  onRegionChanged(region: RegionModel) {
     this.regionId = region.regionId;
   }
 

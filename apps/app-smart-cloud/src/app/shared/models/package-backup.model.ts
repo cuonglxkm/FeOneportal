@@ -11,11 +11,12 @@ export class PackageBackupModel {
   status: string
   errorLog: string
   customerId: number
-  creationDate: Date
-  expirationDate: Date
+  creationDate: string
+  expirationDate: string
   totalSize: number
   usedSize: number
   description: string
+  availableSize: number
 }
 
 export class FormUpdatePackage {
@@ -45,7 +46,9 @@ export class BackupPackageRequestModel {
   customerId: number;
   createdByUserId: number;
   note: string;
-  couponCode: string
+  couponCode: string;
+  totalPayment: number;
+  totalVAT: number;
   orderItems: [
     {
       orderItemQuantity: number;
@@ -138,10 +141,11 @@ export class FormUpdate {
   packageId: number
   packageName: string
   description: string
+  regionId: number
 }
 
 export class ServiceInPackage {
-  instanceBackups: BackupVm[]
-  volumeBackups: VolumeDTO[]
+  instanceBackups: any
+  volumeBackups: any
   backupSchedules: BackupSchedule[]
 }

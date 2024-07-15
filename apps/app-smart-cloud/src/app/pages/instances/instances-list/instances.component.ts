@@ -7,14 +7,13 @@ import {
   ViewChild,
 } from '@angular/core';
 import { Router } from '@angular/router';
-import { concatMap, finalize, takeWhile } from 'rxjs/operators';
+import { finalize } from 'rxjs/operators';
 import { InstancesService } from '../instances.service';
 import {
   CheckIPAddressModel,
   InstanceAction,
   InstancesModel,
   Network,
-  SecurityGroupModel,
   UpdateInstances,
   VlanSubnet,
 } from '../instances.model';
@@ -36,6 +35,7 @@ import {
 import { VlanService } from 'src/app/shared/services/vlan.service';
 import { I18NService } from '@core';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
+import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
 
 class SearchParam {
   status: string = '';
@@ -72,7 +72,7 @@ export class InstancesComponent implements OnInit {
   activeCreate: boolean = false;
   isVisibleGanVLAN: boolean = false;
   isVisibleGoKhoiVLAN: boolean = false;
-
+  @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
   typeVpc: number;
 
   constructor(
@@ -93,12 +93,6 @@ export class InstancesComponent implements OnInit {
     this.region = regionAndProject.regionId;
     this.projectId = regionAndProject.projectId;
     this.userId = this.tokenService.get()?.userId;
-    this.getListNetwork();
-    this.getAllSecurityGroup();
-    if (this.notificationService.connection == undefined) {
-      this.notificationService.initiateSignalrConnection();
-    }
-
     this.notificationService.connection.on('UpdateInstance', (data) => {
       if (data) {
         let instanceId = data.serviceId;
@@ -110,7 +104,9 @@ export class InstancesComponent implements OnInit {
         if (foundIndex > -1) {
           switch (actionType) {
             case 'SHUTOFF':
+              this.reloadTable();
             case 'START':
+              this.reloadTable();
             case 'REBOOTING':
               this.updateRowState(taskState, foundIndex);
             case 'REBOOT':
@@ -147,6 +143,7 @@ export class InstancesComponent implements OnInit {
           switch (actionType) {
             case 'CREATING':
             case 'CREATED':
+              this.activeCreate = false;
               this.getDataList();
               break;
           }
@@ -156,6 +153,10 @@ export class InstancesComponent implements OnInit {
     this.checkExistName();
     this.onCheckIPAddress();
     this.onChangeSearchParam();
+  }
+
+  onRegionChanged(region: RegionModel) {
+    this.region = region.regionId;
   }
 
   dataSubjectSearchParam: Subject<any> = new Subject<any>();
@@ -188,22 +189,27 @@ export class InstancesComponent implements OnInit {
     }
   }
 
+  isFirstVisit: boolean = true;
   onRegionChange(region: RegionModel) {
     // Handle the region change event
+    this.isFirstVisit = false;
     this.activeCreate = false;
     this.loading = true;
-    this.region = region.regionId;
+    this.region = region?.regionId;
+    if(this.projectCombobox){
+      this.projectCombobox.loadProjects(true, region.regionId);
+    }
     console.log(this.tokenService.get()?.userId);
   }
 
   onProjectChange(project: ProjectModel) {
+    this.isFirstVisit = false;
     this.project = project;
     this.activeCreate = false;
     this.loading = true;
-    this.projectId = project.id;
+    this.projectId = project?.id;
     this.typeVpc = project?.type;
     this.getDataList();
-    this.getListNetwork();
   }
 
   doSearch() {
@@ -268,6 +274,7 @@ export class InstancesComponent implements OnInit {
               this.dataList = data.records;
               this.total = data.totalCount;
             } else {
+              this.dataList = [];
               this.activeCreate = true;
             }
             this.cdr.detectChanges();
@@ -301,7 +308,9 @@ export class InstancesComponent implements OnInit {
 
   listVlanNetwork: NetWorkModel[] = [];
   vlanCloudId: string;
+  isLoadingNetwork: boolean = true;
   getListNetwork(): void {
+    this.isLoadingNetwork = true;
     let formSearchNetwork: FormSearchNetwork = new FormSearchNetwork();
     formSearchNetwork.region = this.region;
     formSearchNetwork.project = this.projectId;
@@ -312,7 +321,9 @@ export class InstancesComponent implements OnInit {
       .getVlanNetworks(formSearchNetwork)
       .subscribe((data: any) => {
         this.listVlanNetwork = data.records;
+        this.isLoadingNetwork = false;
         this.vlanCloudId = this.listVlanNetwork[0].cloudId;
+        this.instanceAction.networkId = this.vlanCloudId;
         this.getListPort(this.vlanCloudId);
         this.getVlanSubnets(this.vlanCloudId);
         this.cdr.detectChanges();
@@ -330,7 +341,9 @@ export class InstancesComponent implements OnInit {
         next: (data) => {
           this.listPort = data.filter((e) => e.attachedDeviceId == '');
           this.portLoading = false;
-          this.instanceAction.portId = this.listPort[0].id;
+          if (this.listPort.length != 0) {
+            this.instanceAction.portId = this.listPort[0].id;
+          }
         },
         error: (e) => {
           this.notification.error(
@@ -383,9 +396,7 @@ export class InstancesComponent implements OnInit {
   showHandleGanVLAN(id: number) {
     this.isChoosePort = true;
     this.instanceAction = new InstanceAction();
-    this.instanceAction.networkId = this.vlanCloudId;
-    this.getListPort(this.vlanCloudId);
-    this.getVlanSubnets(this.vlanCloudId);
+    this.getListNetwork();
     this.instanceAction.id = id;
     this.instanceAction.command = 'attachinterface';
     this.instanceAction.customerId = this.userId;
@@ -702,39 +713,11 @@ export class InstancesComponent implements OnInit {
     }),
   });
   updateInstances: UpdateInstances = new UpdateInstances();
-  selectedSecurityGroup: string[] = [];
   isVisibleEdit = false;
   instanceEdit: InstancesModel;
-  currentSecurityGroup: string[] = [];
   modalEdit(data: InstancesModel) {
     this.instanceEdit = data;
-    this.selectedSecurityGroup = [];
-    this.dataService
-      .getAllSecurityGroupByInstance(
-        data.cloudId,
-        data.regionId,
-        data.customerId,
-        data.projectId
-      )
-      .subscribe({
-        next: (datasg: any) => {
-          console.log('getAllSecurityGroupByInstance', datasg);
-          datasg.forEach((e) => {
-            this.selectedSecurityGroup.push(e.id);
-            this.currentSecurityGroup.push(e.id);
-          });
-          this.isVisibleEdit = true;
-          this.cdr.detectChanges();
-        },
-        error: (e) => {
-          this.isVisibleEdit = true;
-          this.notification.error(
-            e.statusText,
-            this.i18n.fanyi('app.notify.get.sg.of.instance.fail')
-          );
-          this.cdr.detectChanges();
-        },
-      });
+    this.isVisibleEdit = true
     this.updateInstances.name = data.name;
     this.updateInstances.customerId = this.userId;
     this.updateInstances.id = data.id;
@@ -777,7 +760,6 @@ export class InstancesComponent implements OnInit {
 
   handleOkEdit() {
     this.isVisibleEdit = false;
-    this.updateInstances.securityGroups = this.selectedSecurityGroup.join(',');
     this.dataService.update(this.updateInstances).subscribe({
       next: (next) => {
         this.notification.success(
@@ -794,18 +776,6 @@ export class InstancesComponent implements OnInit {
       },
     });
   }
-
-  //#region Chọn Security Group
-  listSecurityGroup: SecurityGroupModel[] = [];
-  getAllSecurityGroup() {
-    this.dataService
-      .getAllSecurityGroup(this.region, this.userId, this.projectId)
-      .subscribe((data: any) => {
-        console.log('getAllSecurityGroup', data);
-        this.listSecurityGroup = data;
-      });
-  }
-  //#endregion
 
   openConsole(id: number): void {
     this.router.navigateByUrl(
@@ -843,9 +813,7 @@ export class InstancesComponent implements OnInit {
         '/app-smart-cloud/backup-vm/create/vpc',
         { instanceId: id },
       ]);
-    }
-
-    if (this.typeVpc == 0) {
+    } else {
       this.router.navigate([
         '/app-smart-cloud/backup-vm/create/no-vpc',
         { instanceId: id },
@@ -858,6 +826,13 @@ export class InstancesComponent implements OnInit {
       '/app-smart-cloud/schedule/backup/create',
       { instanceId: id },
     ]);
+  }
+
+  createSnapshot(id: number) {
+    this.router.navigate(
+      ['/app-smart-cloud/snapshot/create', { instanceId: id }],
+      { queryParams: { navigateType: 1 } }
+    );
   }
 
   instancesModel: InstancesModel = new InstancesModel();
@@ -884,5 +859,12 @@ export class InstancesComponent implements OnInit {
     }
     this.dataList[foundIndex] = record;
     this.cdr.detectChanges();
+  }
+
+  navigateToCreateScheduleSnapshot(id: number) {
+    this.router.navigate(
+      ['/app-smart-cloud/schedule/snapshot/create', { instanceId: id }],
+      { queryParams: { snapshotTypeCreate: 1 } }
+    );
   }
 }

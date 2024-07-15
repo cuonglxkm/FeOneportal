@@ -8,7 +8,14 @@
       <nz-breadcrumb-item>
         <a [routerLink]="['/']">{{ 'app.breadcrumb.home' | i18n }}</a>
       </nz-breadcrumb-item>
-      <nz-breadcrumb-item>{{ 'app.instances' | i18n }}</nz-breadcrumb-item>
+      <nz-breadcrumb-item>
+        {{ 'app.breadcrumb.infrastructure.service' | i18n }}
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item
+        ><a [routerLink]="['/app-smart-cloud/instances']">{{
+          'app.instances' | i18n
+        }}</a></nz-breadcrumb-item
+      >
     </nz-breadcrumb>
     <ng-template #separatorTemplate
       ><img src="assets/imgs/arrow-square-right.svg" alt="" />
@@ -19,9 +26,13 @@
       <share-users-combobox></share-users-combobox>
       <region-select-dropdown
         (valueChanged)="onRegionChange($event)"
+        (regionChange)="onRegionChanged($event)"
       ></region-select-dropdown>
       <project-select-dropdown
+        #projectCombobox
         [regionId]="region"
+        [isFirstVisit]="isFirstVisit"
+        [disabledProject]="loading"
         (valueChanged)="onProjectChange($event)"
         (userChanged)="onProjectChange($event)"
       ></project-select-dropdown>
@@ -145,10 +156,18 @@
             >{{ data.flavorName | slice : 3 }}</a
           >
           <ng-template #contentConfigPackage>
-            <nz-row style="width: 320px">
-              <nz-col nzSpan="12"> CPU </nz-col>
+            <nz-row
+              *ngIf="
+                instancesModel.volumeType != undefined &&
+                instancesModel.volumeType != null
+              "
+              style="width: 320px"
+            >
+              <nz-col nzSpan="12"
+                >{{ instancesModel.volumeType == 1 ? 'SSD' : 'HDD' }}
+              </nz-col>
               <nz-col class="text-right" nzSpan="12">
-                {{ instancesModel.cpu }} vCPU
+                {{ instancesModel.storage }} GB
               </nz-col>
             </nz-row>
             <nz-row style="width: 320px; margin-top: 5px">
@@ -158,9 +177,20 @@
               </nz-col>
             </nz-row>
             <nz-row style="width: 320px; margin-top: 5px">
-              <nz-col nzSpan="12"> {{ 'app.capacity' | i18n }} </nz-col>
+              <nz-col nzSpan="12"> CPU </nz-col>
               <nz-col class="text-right" nzSpan="12">
-                {{ instancesModel.storage }} GB
+                {{ instancesModel.cpu }} vCPU
+              </nz-col>
+            </nz-row>
+            <nz-row
+              *ngIf="instancesModel.gpuType != null"
+              style="width: 320px; margin-top: 5px"
+            >
+              <nz-col nzSpan="12">
+                GPU - NVIDIA-{{ instancesModel.gpuType.toUpperCase() }}
+              </nz-col>
+              <nz-col class="text-right" nzSpan="12">
+                {{ instancesModel.gpuCount }} GPU
               </nz-col>
             </nz-row>
             <nz-row style="width: 320px; margin-top: 5px">
@@ -190,15 +220,6 @@
             {{ statusModel.status }}
           </td>
         </ng-container>
-        <!-- <td *ngIf="data.status == 'KHOITAO'" style="color: #0066b3">
-          {{ 'app.status.running' | i18n }}
-        </td>
-        <td *ngIf="data.status == 'RESIZING'" style="color: #4fe414">
-          {{ 'app.status.upgrade' | i18n }}
-        </td>
-        <td *ngIf="data.status == 'TAMNGUNG'" style="color: #ea3829">
-          {{ 'app.status.not-renew' | i18n }}
-        </td> -->
         <td nzBreakWord>{{ data.taskState }}</td>
         <td nzBreakWord nzAlign="left">
           <div *ngIf="data.ipPrivate == ''">{{ data.ipPrivate }}</div>
@@ -260,10 +281,8 @@
           <img
             *ngIf="
               data.status.toUpperCase() == 'KHOITAO' &&
-              data.taskState.toUpperCase() != 'REBUILDING' &&
-              !data.taskState.toUpperCase().includes('RESIZING') &&
-              data.taskState.toUpperCase() != 'ERROR' &&
-              data.taskState.toUpperCase() != 'POWERING-OFF'
+              !data.taskState.toUpperCase().includes('ING') &&
+              data.taskState.toUpperCase() != 'ERROR'
             "
             nz-dropdown
             [nzDropdownMenu]="opMenu"
@@ -275,11 +294,31 @@
               <li
                 *ngIf="
                   data.status.toUpperCase() == 'KHOITAO' &&
-                  data.taskState.toUpperCase() != 'REBUILDING' &&
-                  !data.taskState.toUpperCase().includes('RESIZING') &&
+                  !data.taskState.toUpperCase().includes('ING') &&
+                  data.taskState.toUpperCase() != 'ERROR'
+                "
+                nz-menu-item
+                (click)="createSnapshot(data.id)"
+              >
+                {{ 'app.snapshot.create' | i18n }}
+              </li>
+              <li
+                *ngIf="
+                  data.status.toUpperCase() == 'KHOITAO' &&
+                  !data.taskState.toUpperCase().includes('ING') &&
+                  data.taskState.toUpperCase() != 'ERROR'
+                "
+                nz-menu-item
+                (click)="navigateToCreateScheduleSnapshot(data.id)"
+              >
+                {{ 'volume.menu.create.schedule.snapshot' | i18n }}
+              </li>
+              <li
+                *ngIf="
+                  data.status.toUpperCase() == 'KHOITAO' &&
+                  !data.taskState.toUpperCase().includes('ING') &&
                   data.taskState.toUpperCase() != 'ERROR' &&
                   data.taskState.toUpperCase() != 'SHUTOFF' &&
-                  data.taskState.toUpperCase() != 'POWERING-OFF' &&
                   data.taskState.toUpperCase() != 'REBOOT_STARTED'
                 "
                 nz-menu-item
@@ -290,11 +329,9 @@
               <li
                 *ngIf="
                   data.status.toUpperCase() == 'KHOITAO' &&
-                  data.taskState.toUpperCase() != 'REBUILDING' &&
-                  !data.taskState.toUpperCase().includes('RESIZING') &&
+                  !data.taskState.toUpperCase().includes('ING') &&
                   data.taskState.toUpperCase() != 'ERROR' &&
                   data.taskState.toUpperCase() != 'SHUTOFF' &&
-                  data.taskState.toUpperCase() != 'POWERING-OFF' &&
                   data.taskState.toUpperCase() != 'REBOOT_STARTED'
                 "
                 nz-menu-item
@@ -305,11 +342,9 @@
               <li
                 *ngIf="
                   data.status.toUpperCase() == 'KHOITAO' &&
-                  data.taskState.toUpperCase() != 'REBUILDING' &&
-                  !data.taskState.toUpperCase().includes('RESIZING') &&
+                  !data.taskState.toUpperCase().includes('ING') &&
                   data.taskState.toUpperCase() != 'ERROR' &&
-                  data.taskState.toUpperCase() != 'SHUTOFF' &&
-                  data.taskState.toUpperCase() != 'POWERING-OFF'
+                  data.taskState.toUpperCase() != 'SHUTOFF'
                 "
                 nz-menu-item
                 (click)="showModalRestart(data.id)"
@@ -319,11 +354,9 @@
               <li
                 *ngIf="
                   data.status.toUpperCase() == 'KHOITAO' &&
-                  data.taskState.toUpperCase() != 'REBUILDING' &&
-                  !data.taskState.toUpperCase().includes('RESIZING') &&
+                  !data.taskState.toUpperCase().includes('ING') &&
                   data.taskState.toUpperCase() != 'ERROR' &&
-                  data.taskState.toUpperCase() != 'SHUTOFF' &&
-                  data.taskState.toUpperCase() != 'POWERING-OFF'
+                  data.taskState.toUpperCase() != 'SHUTOFF'
                 "
                 nz-menu-item
                 (click)="showModalShutdown(data.id)"
@@ -343,11 +376,9 @@
               <li
                 *ngIf="
                   data.status.toUpperCase() == 'KHOITAO' &&
-                  data.taskState.toUpperCase() != 'REBUILDING' &&
-                  !data.taskState.toUpperCase().includes('RESIZING') &&
+                  !data.taskState.toUpperCase().includes('ING') &&
                   data.taskState.toUpperCase() != 'ERROR' &&
                   data.taskState.toUpperCase() != 'SHUTOFF' &&
-                  data.taskState.toUpperCase() != 'POWERING-OFF' &&
                   data.taskState.toUpperCase() != 'RESCUE'
                 "
                 nz-menu-item
@@ -368,11 +399,9 @@
               <li
                 *ngIf="
                   data.status.toUpperCase() == 'KHOITAO' &&
-                  data.taskState.toUpperCase() != 'REBUILDING' &&
-                  !data.taskState.toUpperCase().includes('RESIZING') &&
+                  !data.taskState.toUpperCase().includes('ING') &&
                   data.taskState.toUpperCase() != 'ERROR' &&
                   data.taskState.toUpperCase() != 'SHUTOFF' &&
-                  data.taskState.toUpperCase() != 'POWERING-OFF' &&
                   data.taskState.toUpperCase() != 'RESCUE'
                 "
                 nz-menu-item
@@ -462,6 +491,7 @@
             [(ngModel)]="instanceAction.networkId"
             (ngModelChange)="changeVlanNetwork($event)"
             [ngModelOptions]="{ standalone: true }"
+            [nzLoading]="isLoadingNetwork"
             nzSize="large"
           >
             <nz-option

@@ -20,11 +20,11 @@ export class ServiceStatusPipe implements PipeTransform {
       case "ENABLE":
       case "ACTIVE":
         return new StatusModel("#008d47", this.i18n.fanyi('service.status.active'));
-      case "EXTENDING": 
+      case "EXTENDING":
         return new StatusModel("#0066B0 ", this.i18n.fanyi('service.status.resizing'));
-      case "RESIZING": 
+      case "RESIZING":
         return new StatusModel("#EA3824", this.i18n.fanyi('service.status.extending'));
-      case "DELETING": 
+      case "DELETING":
         return new StatusModel("#EA3829", this.i18n.fanyi('service.status.deleting'));
       case "ERROR":
         return new StatusModel("#EA3829", this.i18n.fanyi('service.status.error'));
@@ -32,6 +32,17 @@ export class ServiceStatusPipe implements PipeTransform {
         return new StatusModel("#e67300", this.i18n.fanyi('service.status.expired'));
       case "VIOLATION":
         return new StatusModel("#e67300", this.i18n.fanyi('service.status.violation'));
+      case "RESTORING":
+        return new StatusModel("#513FE7", this.i18n.fanyi('service.status.restoring'));
+      case "DISABLED":
+      case "DISABLE":
+        return new StatusModel("#EA3829", this.i18n.fanyi('service.status.disabled'));
+      case "PAUSED":
+        return new StatusModel("#E67300", this.i18n.fanyi('service.status.paused'));
+      case "PROCESSING":
+        return new StatusModel("#0066B0", this.i18n.fanyi('service.status.processing'));
+      case "SUSPENDED":
+        return new StatusModel("#FFBB63", this.i18n.fanyi('app.suspend'));
       default:
         return new StatusModel("#4c4f67", this.i18n.fanyi('service.status.unknown'));
     }

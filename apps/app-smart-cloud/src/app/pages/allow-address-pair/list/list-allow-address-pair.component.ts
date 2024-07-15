@@ -1,18 +1,24 @@
-import {Component, Inject, OnInit} from '@angular/core';
-import {FormControl, FormGroup} from "@angular/forms";
+import { Component, Inject, OnInit, ViewChild } from '@angular/core';
+import { FormControl, FormGroup } from '@angular/forms';
 import PairInfo, {
   AllowAddressPair,
   AllowAddressPairCreateOrDeleteForm,
-  AllowAddressPairSearchForm
+  AllowAddressPairSearchForm,
 } from 'src/app/shared/models/allow-address-pair';
-import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
-import {AllowAddressPairService} from "../../../shared/services/allow-address-pair.service";
-import {ActivatedRoute} from "@angular/router";
-import {NzNotificationService} from "ng-zorro-antd/notification";
-import Pagination from "../../../shared/models/pagination";
-import {NzTableQueryParams} from "ng-zorro-antd/table";
-import { RegionModel, ProjectModel } from '../../../../../../../libs/common-utils/src';
-
+import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
+import { AllowAddressPairService } from '../../../shared/services/allow-address-pair.service';
+import { ActivatedRoute, Router } from '@angular/router';
+import { NzNotificationService } from 'ng-zorro-antd/notification';
+import Pagination from '../../../shared/models/pagination';
+import { NzTableQueryParams } from 'ng-zorro-antd/table';
+import {
+  RegionModel,
+  ProjectModel,
+} from '../../../../../../../libs/common-utils/src';
+import { debounceTime, Subject, Subscription } from 'rxjs';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
+import { I18NService } from '../../../../../../app-kafka/src/app/core/i18n/i18n.service';
+import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
 
 @Component({
   selector: 'list-allow-address-pair',
@@ -20,16 +26,17 @@ import { RegionModel, ProjectModel } from '../../../../../../../libs/common-util
   styleUrls: ['./list-allow-address-pair.component.less'],
 })
 export class ListAllowAddressPairComponent implements OnInit {
-  constructor(@Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
-              private allowAddressPairService: AllowAddressPairService,
-              private notification: NzNotificationService,
-              private route: ActivatedRoute) {
-  }
+  constructor(
+    @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
+    @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
+    private allowAddressPairService: AllowAddressPairService,
+    private notification: NzNotificationService,
+    private activatedRoute: ActivatedRoute,
+    private router: Router,
+  ) {}
 
-  portId: string
-
-  isVisibleCreate = false;
-  userId: number
+  portId: string;
+  userId: number;
 
   region = JSON.parse(localStorage.getItem('regionId'));
 
@@ -46,7 +53,8 @@ export class ListAllowAddressPairComponent implements OnInit {
   isVisibleDelete = false;
   isConfirmLoading = false;
 
-  formDeleteOrCreate: AllowAddressPairCreateOrDeleteForm = new AllowAddressPairCreateOrDeleteForm();
+  formDeleteOrCreate: AllowAddressPairCreateOrDeleteForm =
+    new AllowAddressPairCreateOrDeleteForm();
 
   isLoading: boolean = false;
 
@@ -55,26 +63,28 @@ export class ListAllowAddressPairComponent implements OnInit {
     totalCount: 0,
     records: [],
     currentPage: 1,
-    pageSize: 10
-
+    pageSize: 10,
   };
 
-  pageSize: number = 5
-  pageNumber: number = 1
+  pageSize: number = 5;
+  pageNumber: number = 1;
 
-  size: number = 0
+  instanceId: string;
 
-  instanceId: string
+  @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
   regionChanged(region: RegionModel) {
     this.region = region.regionId;
+    if(this.projectCombobox){
+      this.projectCombobox.loadProjects(true, region.regionId);
+    }
   }
 
-  projectChanged(project: ProjectModel) {
-    if (this.region != undefined) {
-      this.project = project?.id;
-    }
-    this.formSearch = this.getParam();
-    this.getAllowAddressPair(this.formSearch);
+  userChangeProject(project: ProjectModel) {
+    this.router.navigate(['/app-smart-cloud/instances']);
+  }
+
+  onProjectChange(project: ProjectModel) {
+    this.project = project;
   }
 
   getParam(): AllowAddressPairSearchForm {
@@ -110,65 +120,94 @@ export class ListAllowAddressPairComponent implements OnInit {
     this.formDeleteOrCreate.customerId = this.tokenService.get()?.userId;
 
     this.isVisibleDelete = false;
-``
+    ``;
     this.isLoading = true;
-    this.allowAddressPairService.createOrDelete(this.formDeleteOrCreate).subscribe(
-      () => {
-        this.isLoading = false;
-        this.notification.success('Thành công', `Xóa Allow Address Pair thành công`);
-        this.getAllowAddressPair(this.formSearch)
-      }, () => {
-        this.isLoading = false;
-        this.notification.error('Thất bại', 'Xóa Allow Address Pair thất bại');
-      }
-    )
-
-  }
-
-  showModalCreate() {
-    if(this.size >= 10 ){
-      this.isVisibleCreate = false
-      this.notification.warning('','Không thể thêm mới quá 10 Allow Address Pair')
-    } else {
-      this.isVisibleCreate = true;
-    }
-
-  }
-
-  handleCloseCreate() {
-    this.isVisibleCreate = false;
+    this.allowAddressPairService
+      .createOrDelete(this.formDeleteOrCreate)
+      .subscribe({
+        next: (data) => {
+          this.isLoading = false;
+          this.notification.success(
+            '',
+            this.i18n.fanyi('app.notify.delete.allow.address.pair.success')
+          );
+          this.getAllowAddressPair(this.formSearch);
+        },
+        error: (e) => {
+          this.isLoading = false;
+          this.notification.error(
+            e.statusText,
+            this.i18n.fanyi('app.notify.delete.allow.address.pair.fail')
+          );
+        },
+      });
   }
 
   handleOkCreate() {
-    this.isVisibleCreate = false
-    this.getAllowAddressPair(this.formSearch)
+    this.getAllowAddressPair(this.formSearch);
   }
 
   onQueryParamsChange(params: NzTableQueryParams) {
-    const {pageSize, pageIndex} = params
+    const { pageSize, pageIndex } = params;
     this.formSearch.pageSize = pageSize;
-    this.formSearch.currentPage = pageIndex
+    this.formSearch.currentPage = pageIndex;
     this.getAllowAddressPair(this.formSearch);
   }
 
   getAllowAddressPair(formSearch: AllowAddressPairSearchForm) {
     this.isLoading = true;
-    this.allowAddressPairService.search(formSearch)
-      .subscribe((data) => {
+    this.allowAddressPairService.search(formSearch).subscribe({
+      next: (data) => {
         this.isLoading = false;
-        this.collection = data
-        this.size = this.collection.totalCount
-      }, error => {
+        this.collection = data;
+      },
+      error: (e) => {
+        this.notification.error(
+          e.statusText,
+          this.i18n.fanyi('app.notify.get.list.allow.address.pair')
+        );
         this.isLoading = false;
         this.collection = null;
-      });
+      },
+    });
   }
 
   ngOnInit(): void {
-    this.userId = this.tokenService.get()?.userId
-    this.formSearch.customerId = this.userId
-    this.portId = this.route.snapshot.paramMap.get('portId')
-    this.instanceId = this.route.snapshot.paramMap.get('instanceId')
+    this.userId = this.tokenService.get()?.userId;
+    this.formSearch.customerId = this.userId;
+    this.portId = this.activatedRoute.snapshot.paramMap.get('portId');
+    this.instanceId = this.activatedRoute.snapshot.paramMap.get('instanceId');
+    this.search();
+  }
+
+  dataSubjectSearchParam: Subject<any> = new Subject<any>();
+  private searchSubscription: Subscription;
+  private enterPressed: boolean = false;
+  changeSearchParam(value: string) {
+    this.enterPressed = false;
+    this.dataSubjectSearchParam.next(value);
+  }
+
+  onChangeSearchParam() {
+    this.searchSubscription = this.dataSubjectSearchParam
+      .pipe(debounceTime(700))
+      .subscribe((res) => {
+        if (!this.enterPressed) {
+          this.search();
+        }
+      });
+  }
+
+  onEnter(event: Event) {
+    event.preventDefault();
+    this.enterPressed = true;
+    this.search();
+  }
+
+  ngOnDestroy(): void {
+    if (this.searchSubscription) {
+      this.searchSubscription.unsubscribe();
+    }
   }
 
   search() {
@@ -178,5 +217,9 @@ export class ListAllowAddressPairComponent implements OnInit {
 
   onInputChange(value: string) {
     this.value = value;
+  }
+
+  onRegionChanged(region: RegionModel) {
+    this.region = region.regionId;
   }
 }

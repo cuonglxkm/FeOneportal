@@ -140,12 +140,13 @@ export class SecurityGroupComponent implements OnInit, OnChanges, OnDestroy {
     logSG.serviceOrderCode = this.detailCluster.serviceOrderCode;
     logSG.action = 'delete';
     logSG.userId = this.tokenService.get()?.userId;
-    rule.direction == KubernetesConstant.INBOUND_RULE ?
-      logSG.operation = KubernetesConstant.DELETE_INBOUND_RULE
-      : logSG.operation = KubernetesConstant.DELETE_OUTBOUND_RULE;
-
-    let note = `Xóa rule (IP Version: ${rule.etherType}, Protocol: ${rule.protocol?.toUpperCase()}, Port Range: ${rule.portRange}, Remote IP: ${rule.remoteIp})`;
-    logSG.jsonRule = note;
+    if (rule.direction == KubernetesConstant.INBOUND_RULE) {
+      logSG.operation = KubernetesConstant.DELETE_INBOUND_RULE;
+      logSG.jsonRule = `${this.i18n.fanyi('cluster.log.delete-inboud')} (IP Version: ${rule.etherType}, Protocol: ${rule.protocol?.toUpperCase()}, Port Range: ${rule.portRange}, Remote IP: ${rule.remoteIp})`;
+    } else {
+      logSG.operation = KubernetesConstant.DELETE_OUTBOUND_RULE;
+      logSG.jsonRule = `${this.i18n.fanyi('cluster.log.delete-outbound')} (IP Version: ${rule.etherType}, Protocol: ${rule.protocol?.toUpperCase()}, Port Range: ${rule.portRange}, Remote IP: ${rule.remoteIp})`;
+    }
 
     this.clusterService.createLogSG(logSG)
     .subscribe((r: any) => {

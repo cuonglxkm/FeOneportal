@@ -6,15 +6,17 @@ import {
   Input,
   OnInit,
 } from '@angular/core';
+import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { I18NService } from '@core';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
+import { getCurrentRegionAndProject } from '@shared';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { ClipboardService } from 'ngx-clipboard';
+import { FILE_NO_SPACE_REGEX } from 'src/app/shared/constants/constants';
 import {
-  BucketDetail,
-  BucketWebsite,
+  BucketWebsite
 } from 'src/app/shared/models/bucket.model';
 import { BucketService } from 'src/app/shared/services/bucket.service';
 
@@ -26,9 +28,10 @@ import { BucketService } from 'src/app/shared/services/bucket.service';
 })
 export class StaticWebHostingComponent implements OnInit {
   @Input() bucketName: string;
-  bucketDetail: BucketDetail = new BucketDetail();
+  @Input() bucketDetail: any;
   bucketWebsitecreate: BucketWebsite = new BucketWebsite();
   isLoading: boolean = false;
+  region = JSON.parse(localStorage.getItem('regionId'));
   constructor(
     private bucketService: BucketService,
     private cdr: ChangeDetectorRef,
@@ -36,15 +39,22 @@ export class StaticWebHostingComponent implements OnInit {
     private message: NzMessageService,
     private notification: NzNotificationService,
     private router: Router,
-    @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService
+    @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
+    private fb: NonNullableFormBuilder
   ) {}
 
   ngOnInit(): void {
-    this.bucketService.getBucketDetail(this.bucketName).subscribe((data) => {
-      this.bucketDetail = data;
-      this.cdr.detectChanges();
-    });
+    let regionAndProject = getCurrentRegionAndProject();
+    this.region = regionAndProject.regionId;
   }
+
+  formUpdate: FormGroup<{
+    errorDocument: FormControl<string>;
+    indexDocumentSuffix: FormControl<string>;
+  }> = this.fb.group({
+    errorDocument: ['', Validators.pattern(FILE_NO_SPACE_REGEX)],
+    indexDocumentSuffix: ['', Validators.pattern(FILE_NO_SPACE_REGEX)],
+  });
 
   copyText(endPoint: string) {
     this.clipboardService.copyFromContent(endPoint);
@@ -66,7 +76,7 @@ export class StaticWebHostingComponent implements OnInit {
       }
 
       this.bucketService
-        .createBucketWebsite(this.bucketWebsitecreate)
+        .createBucketWebsite(this.bucketWebsitecreate, this.region)
         .subscribe({
           next: (data) => {
             this.isLoading = false
@@ -87,7 +97,7 @@ export class StaticWebHostingComponent implements OnInit {
         });
     } else {
       this.bucketService
-        .deleteBucketWebsite({ bucketName: this.bucketName })
+        .deleteBucketWebsite({ bucketName: this.bucketName }, this.region)
         .subscribe({
           next: (data) => {
             this.isLoading = false

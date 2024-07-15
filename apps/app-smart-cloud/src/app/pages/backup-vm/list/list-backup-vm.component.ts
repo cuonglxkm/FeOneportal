@@ -1,4 +1,4 @@
-import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
+import { Component, Inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import {BackupVm, BackupVMFormSearch} from "../../../shared/models/backup-vm";
 import {BackupVmService} from "../../../shared/services/backup-vm.service";
 import Pagination from "../../../shared/models/pagination";
@@ -12,6 +12,7 @@ import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from '@core';
 import { ProjectService } from 'src/app/shared/services/project.service';
 import { debounceTime, Subject, Subscription } from 'rxjs';
+import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
 
 @Component({
   selector: 'one-portal-list-backup-vm',
@@ -31,9 +32,10 @@ export class ListBackupVmComponent implements OnInit, OnDestroy {
   isLoading: boolean = false;
 
   status = [
-    {label: this.i18n.fanyi('app.payment.status.all'), value: 'all'},
+    {label: this.i18n.fanyi('app.status.all'), value: 'all'},
     {label: this.i18n.fanyi('app.status.running'), value: 'AVAILABLE'},
-    {label: this.i18n.fanyi('app.status.suspend'), value: 'SUSPENDED'}
+    {label: this.i18n.fanyi('app.status.suspend'), value: 'SUSPENDED'},
+    {label: this.i18n.fanyi('app.status.error'), value: 'ERROR'}
   ]
 
   selectedValue?: string = null
@@ -65,7 +67,7 @@ export class ListBackupVmComponent implements OnInit, OnDestroy {
   dataSubjectInputSearch: Subject<any> = new Subject<any>();
   private searchSubscription: Subscription;
   private enterPressed: boolean = false;
-
+  @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
   constructor(private backupVmService: BackupVmService,
               @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
               private router: Router,
@@ -78,7 +80,13 @@ export class ListBackupVmComponent implements OnInit, OnDestroy {
   regionChanged(region: RegionModel) {
     this.region = region.regionId
     this.formSearch.regionId = this.region
-    this.getListBackupVM(true)
+    if(this.projectCombobox){
+      this.projectCombobox.loadProjects(true, region.regionId);
+    }
+  }
+
+  onRegionChanged(region: RegionModel) {
+    this.region = region.regionId;
   }
 
   projectChanged(project: ProjectModel) {
@@ -133,7 +141,7 @@ export class ListBackupVmComponent implements OnInit, OnDestroy {
   }
 
   handleOkUpdate() {
-    setTimeout(() => {this.getListBackupVM(true)}, 1500)
+    setTimeout(() => {this.getListBackupVM(false)}, 1500)
   }
 
   getListBackupVM(isBegin) {
@@ -148,6 +156,7 @@ export class ListBackupVmComponent implements OnInit, OnDestroy {
     }, error => {
       this.isLoading = true
       this.collection = null
+      this.notification.error(error.statusText, this.i18n.fanyi('app.failData'));
     })
 
   }
@@ -174,24 +183,17 @@ export class ListBackupVmComponent implements OnInit, OnDestroy {
     this.getListBackupVM(false)
   }
 
-
-
-  loadProjects() {
-    this.projectService.getByRegion(this.region).subscribe(data => {
-      let project = data.find(project => project.id === +this.project);
-      if (project) {
-        this.typeVPC = project.type
-      }
-    });
-  }
-
+  isLoadingAction: boolean = false
   navigateToCreateBackup() {
     // this.dataService.setSelectedObjectId(id)
+    this.isLoadingAction = true
     if(this.typeVPC == 1) {
+      this.isLoadingAction = false
       this.router.navigate(['/app-smart-cloud/backup-vm/create/vpc']);
     }
 
-    if(this.typeVPC == 0) {
+    if(this.typeVPC != 1) {
+      this.isLoadingAction = false
       this.router.navigate(['/app-smart-cloud/backup-vm/create/no-vpc']);
     }
 
@@ -251,7 +253,12 @@ export class ListBackupVmComponent implements OnInit, OnDestroy {
   }
 
   navigateToRestore(id: number) {
-    this.router.navigate(['/app-smart-cloud/backup-vm/restore-backup-vm/' + id])
+    let hasRoleSI = localStorage.getItem('role').includes('SI')
+    if (this.typeVPC == 1 || hasRoleSI) {
+      this.router.navigate(['/app-smart-cloud/backup-vm/restore-backup-vm-vpc/' + id])
+    } else {
+      this.router.navigate(['/app-smart-cloud/backup-vm/restore-backup-vm/' + id])
+    }
   }
 
   selectedActionChange(value: any, data: BackupVm) {

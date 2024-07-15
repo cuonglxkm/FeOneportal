@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
@@ -17,6 +17,7 @@ import { ProjectModel, RegionModel } from '../../../../../../../../libs/common-u
 import { debounceTime, Subject } from 'rxjs';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from '@core';
+import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
 
 
 export function ipAddressValidator(): ValidatorFn {
@@ -180,7 +181,7 @@ export class VlanCreateSubnetComponent implements OnInit {
 
   isInvalidGateway: boolean = false
   dataSubjectGateway: Subject<any> = new Subject<any>();
-
+  @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
   constructor(private router: Router,
               @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
               private notification: NzNotificationService,
@@ -227,7 +228,14 @@ export class VlanCreateSubnetComponent implements OnInit {
   }
 
   regionChanged(region: RegionModel) {
+    if(this.projectCombobox){
+      this.projectCombobox.loadProjects(true, region.regionId);
+    }
     this.router.navigate(['/app-smart-cloud/vlan/list']);
+  }
+
+  onRegionChanged(region: RegionModel) {
+    this.region = region.regionId;
   }
 
   projectChanged(project: ProjectModel) {

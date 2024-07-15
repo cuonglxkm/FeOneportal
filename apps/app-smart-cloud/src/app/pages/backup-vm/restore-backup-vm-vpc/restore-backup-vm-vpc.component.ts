@@ -10,32 +10,36 @@ import {
 import {
   ProjectModel,
   RegionModel,
-  slider,
 } from '../../../../../../../libs/common-utils/src';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BackupVmService } from '../../../shared/services/backup-vm.service';
-import { getCurrentRegionAndProject } from '@shared';
+import {
+  getCurrentRegionAndProject,
+  getListGpuConfigRecommend,
+  getUniqueObjects,
+} from '@shared';
 import {
   BackupVm,
   RestoreFormCurrent,
-  SecurityGroupBackup,
+  RestoreInstanceBackup,
   VolumeBackup,
+  VolumeExternalBackup,
 } from '../../../shared/models/backup-vm';
-import { PackageBackupModel } from '../../../shared/models/package-backup.model';
-import { PackageBackupService } from '../../../shared/services/package-backup.service';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from '@core';
 import {
-  DataPayment,
-  InstanceCreate,
+  GpuConfigRecommend,
+  GpuProject,
+  GpuUsage,
+  InfoVPCModel,
+  InstancesModel,
   IPPublicModel,
-  ItemPayment,
   OfferItem,
-  SecurityGroupModel,
+  Order,
+  OrderItem,
   SHHKeyModel,
-  VolumeCreate,
 } from '../../instances/instances.model';
 import { InstancesService } from '../../instances/instances.service';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
@@ -46,29 +50,23 @@ import {
 } from '../../../shared/models/vlan.model';
 import { VlanService } from '../../../shared/services/vlan.service';
 import { debounceTime, finalize, Subject } from 'rxjs';
-import { SizeInCloudProject } from 'src/app/shared/models/project.model';
-import { ProjectService } from 'src/app/shared/services/project.service';
 import { ConfigurationsService } from 'src/app/shared/services/configurations.service';
 import { NguCarousel, NguCarouselConfig } from '@ngu/carousel';
-import { BlockStorage } from '../../instances/instances-create/instances-create.component';
 import { CatalogService } from 'src/app/shared/services/catalog.service';
 import { LoadingService } from '@delon/abc/loading';
-import { TotalVpcResource } from 'src/app/shared/models/vpc.model';
+import { OrderService } from 'src/app/shared/services/order.service';
+import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
 
-class ConfigCustom {
-  //cấu hình tùy chỉnh
-  vCPU?: number = 0;
-  ram?: number = 0;
+class BlockStorage {
+  id: number = 0;
+  type?: string = '';
+  name?: string = '';
+  newName?: string;
   capacity?: number = 0;
+  minCapacity?: number = 0;
+  encrypt?: boolean = false;
+  multiattach?: boolean = false;
 }
-class ConfigGPU {
-  CPU: number = 0;
-  ram: number = 0;
-  storage: number = 0;
-  GPU: number = 0;
-  gpuOfferId: number = 0;
-}
-
 @Component({
   selector: 'one-portal-restore-backup-vm-vpc',
   templateUrl: './restore-backup-vm-vpc.component.html',
@@ -107,39 +105,29 @@ export class RestoreBackupVmVpcComponent implements OnInit {
   project = JSON.parse(localStorage.getItem('projectId'));
   userId: number;
   idBackup: number;
+  restoreInstanceBackup: RestoreInstanceBackup = new RestoreInstanceBackup();
 
   backupVmModel: BackupVm;
-  projectDetail: SizeInCloudProject;
-  backupPackage: PackageBackupModel;
+  backupSize: number = 0;
   listExternalAttachVolume: VolumeBackup[] = [];
-  listSecurityGroupBackups: SecurityGroupBackup[] = [];
+  listSecurityGroupBackups: any[] = [];
 
   selectedOption: string = 'current';
-  typeVpc: number;
-
-  nameSecurityGroup = [];
-  nameSecurityGroupText: string[];
-
-  nameFlavorText: string[];
-  nameFlavor = [];
-
-  nameVolumeBackupAttach = [];
-  nameVolumeBackupAttachName: string[];
-  nameVolumeBackupAttachNameUnique: string;
 
   isLoadingCurrent: boolean = false;
-  isLoadingNew: boolean = false;
+  isLoading: boolean = false;
 
   disableKeypair: boolean = false;
 
   numberMonth: number = 1;
 
+  ipPublicValue: number = 0;
   passwordVisible = false;
   remainingRAM: number = 0;
   remainingVolume: number = 0;
   remainingVCPU: number = 0;
   remainingGpu: number = 0;
-
+  @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
   validateForm = new FormGroup({
     formCurrent: new FormGroup({
       securityGroupIds: new FormControl(null as string[]),
@@ -176,8 +164,6 @@ export class RestoreBackupVmVpcComponent implements OnInit {
     private router: Router,
     private backupService: BackupVmService,
     private activatedRoute: ActivatedRoute,
-    private projectService: ProjectService,
-    private backupPackageService: PackageBackupService,
     private catalogService: CatalogService,
     private notification: NzNotificationService,
     private dataService: InstancesService,
@@ -185,6 +171,7 @@ export class RestoreBackupVmVpcComponent implements OnInit {
     private cdr: ChangeDetectorRef,
     private configurationService: ConfigurationsService,
     private loadingSrv: LoadingService,
+    private orderService: OrderService,
     @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService
   ) {
@@ -225,19 +212,69 @@ export class RestoreBackupVmVpcComponent implements OnInit {
       this.activatedRoute.snapshot.paramMap.get('id')
     );
     this.getConfigurations();
-    this.getVolumeUnitMoney();
+    this.getDetailBackupById(this.idBackup);
+    this.getInfoVPC();
     this.getListGpuType();
-    this.getProjectVpc(this.project);
     this.getAllIPPublic();
     this.getListNetwork();
     this.onChangeCapacity();
-    this.onChangeRam();
-    this.onChangeVCPU();
     this.getAllSSHKey();
+    this.getListOptionGpuValue();
+    this.getActiveServiceByRegion();
     this.cdr.detectChanges();
   }
 
-  infoVPC: TotalVpcResource = new TotalVpcResource();
+  //Lấy các dịch vụ hỗ trợ theo region
+  isSupportEncryption: boolean = false;
+  isSupportMultiAttachment: boolean = false;
+  isVmGpu: boolean = false;
+  getActiveServiceByRegion() {
+    this.catalogService
+      .getActiveServiceByRegion(
+        ['Encryption', 'MultiAttachment', 'vm-gpu'],
+        this.region
+      )
+      .subscribe((data) => {
+        console.log('support service', data);
+        this.isSupportMultiAttachment = data.filter(
+          (e) => e.productName == 'MultiAttachment'
+        )[0].isActive;
+        this.isSupportEncryption = data.filter(
+          (e) => e.productName == 'Encryption'
+        )[0].isActive;
+        this.isVmGpu = data.filter(
+          (e) => e.productName == 'vm-gpu'
+        )[0].isActive;
+      });
+  }
+
+  //Kiểm tra trùng tên máy ảo
+  dataSubjectName: Subject<any> = new Subject<any>();
+  changeName(value: number) {
+    this.dataSubjectName.next(value);
+  }
+
+  isExistName: boolean = false;
+  checkExistName() {
+    this.dataSubjectName
+      .pipe(
+        debounceTime(300) // Đợi 500ms sau khi người dùng dừng nhập trước khi xử lý sự kiện
+      )
+      .subscribe((res) => {
+        this.dataService
+          .checkExistName(res, this.region, this.project)
+          .subscribe((data) => {
+            if (data == true) {
+              this.isExistName = true;
+            } else {
+              this.isExistName = false;
+            }
+            this.cdr.detectChanges();
+          });
+      });
+  }
+
+  infoVPC: InfoVPCModel = new InfoVPCModel();
   getInfoVPC() {
     this.loadingSrv.open({ type: 'spin', text: 'Loading...' });
     this.dataService
@@ -255,6 +292,10 @@ export class RestoreBackupVmVpcComponent implements OnInit {
           this.remainingVCPU =
             this.infoVPC.cloudProject.quotavCpu -
             this.infoVPC.cloudProjectResourceUsed.cpu;
+
+          if (this.infoVPC.cloudProject.gpuProjects.length != 0) {
+            this.getListGpuType();
+          }
           this.cdr.detectChanges();
         },
         error: (e) => {
@@ -268,13 +309,18 @@ export class RestoreBackupVmVpcComponent implements OnInit {
 
   regionChanged(region: RegionModel) {
     this.region = region.regionId;
+    if(this.projectCombobox){
+      this.projectCombobox.loadProjects(true, region.regionId);
+    }
     this.router.navigate(['/app-smart-cloud/backup-vm']);
+  }
+
+  onRegionChanged(region: RegionModel) {
+    this.region = region.regionId;
   }
 
   projectChanged(project: ProjectModel) {
     this.project = project?.id;
-    this.typeVpc = project?.type;
-    // this.router.navigate(['/app-smart-cloud/backup-vm'])
   }
 
   userChanged(project: ProjectModel) {
@@ -304,117 +350,11 @@ export class RestoreBackupVmVpcComponent implements OnInit {
     }
   }
 
-  configCustom: ConfigCustom = new ConfigCustom();
-  configGPU: ConfigGPU = new ConfigGPU();
-  instanceCreate: InstanceCreate = new InstanceCreate();
-
-  instanceInit() {
-    this.instanceCreate.description = null;
-    // this.instanceCreate.imageId = this.hdh;
-    this.instanceCreate.iops = 0;
-    // this.instanceCreate.vmType = this.activeBlockHDD ? 'hdd' : 'ssd';
-    this.instanceCreate.keypairName = this.validateForm
-      .get('formNew')
-      .get('keypair').value;
-    this.instanceCreate.securityGroups = this.validateForm
-      .get('formNew')
-      .get('securityGroupIds').value;
-    this.instanceCreate.network = null;
-    this.instanceCreate.isUsePrivateNetwork =
-      this.validateForm.get('formNew').get('vlan').value == '' ? false : true;
-    if (this.validateForm.get('formNew').get('vlan').value != '') {
-      this.instanceCreate.privateNetId = this.validateForm
-        .get('formNew')
-        .get('vlan').value;
-    }
-    if (this.port != '') {
-      this.instanceCreate.privatePortId = this.port;
-    }
-    this.instanceCreate.ipPublic = this.validateForm
-      .get('formNew')
-      .get('ipPublic').value;
-    this.instanceCreate.password = this.validateForm
-      .get('formNew')
-      .get('password').value;
-    // this.instanceCreate.snapshotCloudId = this.selectedSnapshot;
-    this.instanceCreate.encryption = false;
-    // this.instanceCreate.isUseIPv6 = this.isUseIPv6;
-    this.instanceCreate.addRam = 0;
-    this.instanceCreate.addCpu = 0;
-    this.instanceCreate.addBttn = 0;
-    this.instanceCreate.addBtqt = 0;
-    this.instanceCreate.poolName = null;
-    this.instanceCreate.usedMss = false;
-    this.instanceCreate.customerUsingMss = null;
-    // if (this.isCustomconfig) {
-    this.instanceCreate.offerId = 0;
-    this.instanceCreate.flavorId = 0;
-    this.instanceCreate.ram = this.configCustom.ram;
-    this.instanceCreate.cpu = this.configCustom.vCPU;
-    this.instanceCreate.volumeSize = this.configCustom.capacity;
-    // }
-    // this.instanceCreate.volumeType = this.activeBlockHDD ? 'hdd' : 'ssd';
-    this.instanceCreate.projectId = this.project;
-    this.instanceCreate.oneSMEAddonId = null;
-    this.instanceCreate.serviceType = 1;
-    this.instanceCreate.serviceInstanceId = 0;
-    // this.instanceCreate.customerId = this.tokenService.get()?.userId;
-
-    // let currentDate = new Date();
-    // let lastDate = new Date();
-    // lastDate.setDate(currentDate.getDate() + this.numberMonth * 30);
-    // this.instanceCreate.createDate = currentDate.toISOString().substring(0, 19);
-    // this.instanceCreate.expireDate = lastDate.toISOString().substring(0, 19);
-
-    this.instanceCreate.saleDept = null;
-    this.instanceCreate.saleDeptCode = null;
-    this.instanceCreate.contactPersonEmail = null;
-    this.instanceCreate.contactPersonPhone = null;
-    this.instanceCreate.contactPersonName = null;
-    this.instanceCreate.note = null;
-    this.instanceCreate.createDateInContract = null;
-    this.instanceCreate.am = null;
-    this.instanceCreate.amManager = null;
-    this.instanceCreate.isTrial = false;
-    this.instanceCreate.couponCode = null;
-    this.instanceCreate.dhsxkd_SubscriptionId = null;
-    this.instanceCreate.dSubscriptionNumber = null;
-    this.instanceCreate.dSubscriptionType = null;
-    this.instanceCreate.oneSME_SubscriptionId = null;
-    this.instanceCreate.regionId = this.region;
-    // this.instanceCreate.userEmail = this.tokenService.get()['email'];
-    // this.instanceCreate.actorEmail = this.tokenService.get()['email'];
-  }
-
-  totalAmount: number = 0;
-  totalVAT: number = 0;
-  totalincludesVAT: number = 0;
-  totalAmountVolume: number = 0;
-  totalVATVolume: number = 0;
-  totalPaymentVolume: number = 0;
-  getTotalAmount() {
-    this.instanceInit();
-    let itemPayment: ItemPayment = new ItemPayment();
-    itemPayment.orderItemQuantity = 1;
-    itemPayment.specificationString = JSON.stringify(this.instanceCreate);
-    itemPayment.specificationType = 'instance_create';
-    itemPayment.serviceDuration = 1;
-    itemPayment.sortItem = 0;
-    let dataPayment: DataPayment = new DataPayment();
-    dataPayment.orderItems = [itemPayment];
-    dataPayment.projectId = this.project;
-    this.dataService.getPrices(dataPayment).subscribe((result) => {
-      console.log('thanh tien', result);
-      this.totalAmount = Number.parseFloat(result.data.totalAmount.amount);
-      this.totalincludesVAT = Number.parseFloat(
-        result.data.totalPayment.amount
-      );
-      this.cdr.detectChanges();
-    });
-  }
-
-  listIDAttachVolume: number[] = [];
+  instanceModel: InstancesModel;
+  selectedIndextab: number = 0;
+  listAttachVolume: VolumeBackup[] = [];
   getDetailBackupById(id) {
+    this.backupSize = 0;
     this.backupService
       .detail(id)
       .pipe(
@@ -424,6 +364,34 @@ export class RestoreBackupVmVpcComponent implements OnInit {
       )
       .subscribe((data) => {
         this.backupVmModel = data;
+        this.dataService
+          .getById(this.backupVmModel.instanceId)
+          .subscribe((data) => {
+            this.instanceModel = data;
+            if (this.instanceModel.offerId != 0) {
+              this.selectedIndextab = 1;
+              this.onClickCustomConfig();
+            }
+            if (this.instanceModel.gpuType != null) {
+              this.selectedIndextab = 2;
+              this.onClickGpuConfig();
+            }
+          });
+        this.backupVmModel.volumeBackups.forEach((e) => {
+          this.backupSize += e.size;
+        });
+        if (
+          this.backupVmModel?.volumeBackups
+            .filter((e) => e.isBootable == true)[0]
+            .typeName.toUpperCase()
+            .includes('HDD')
+        ) {
+          this.activeBlockHDD = true;
+          this.activeBlockSSD = false;
+        } else {
+          this.activeBlockHDD = false;
+          this.activeBlockSSD = true;
+        }
 
         this.listExternalAttachVolume =
           this.backupVmModel?.volumeBackups.filter(
@@ -431,59 +399,29 @@ export class RestoreBackupVmVpcComponent implements OnInit {
           );
 
         this.listExternalAttachVolume.forEach((e) => {
-          this.listIDAttachVolume.push(e.id);
+          this.listAttachVolume.push(e);
           let tempBS = new BlockStorage();
           tempBS.id = e.id;
           tempBS.name = e.name;
           tempBS.capacity = e.size;
+          tempBS.minCapacity = e.size;
           if (e.typeName.toUpperCase().includes('HDD')) {
             tempBS.type = 'HDD';
-            tempBS.price = e.size * this.unitPriceVolumeHDD;
-            tempBS.VAT = e.size * this.unitVATVolumeHDD;
-            tempBS.priceAndVAT = e.size * this.unitPaymentVolumeHDD;
           } else {
             tempBS.type = 'SSD';
-            tempBS.price = e.size * this.unitPriceVolumeSSD;
-            tempBS.VAT = e.size * this.unitVATVolumeSSD;
-            tempBS.priceAndVAT = e.size * this.unitPaymentVolumeSSD;
           }
           this.listOfDataBlockStorage.push(tempBS);
         });
 
-        this.listSecurityGroupBackups = this.backupVmModel.securityGroupBackups;
+        this.listSecurityGroupBackups = getUniqueObjects(
+          this.backupVmModel.securityGroupBackups,
+          'sgName'
+        );
         this.listSecurityGroupBackups.forEach((e) => {
           if (e.sgName.toUpperCase() == 'DEFAULT') {
             this.selectedSecurityGroup.push(e.sgName);
           }
         });
-
-        this.backupVmModel?.securityGroupBackups.forEach((item) => {
-          this.nameSecurityGroup?.push(item.sgName);
-        });
-
-        this.backupVmModel?.systemInfoBackups.forEach((item) => {
-          this.nameFlavor?.push(item.osName);
-        });
-
-        this.backupVmModel?.volumeBackups.forEach((item) => {
-          if (item.isBootable == false) {
-            this.nameVolumeBackupAttach?.push(item.name);
-          }
-        });
-
-        this.nameSecurityGroupText = Array.from(
-          new Set(this.nameSecurityGroup)
-        );
-
-        this.nameVolumeBackupAttachName = Array.from(
-          new Set(this.nameVolumeBackupAttach)
-        );
-        this.nameVolumeBackupAttachNameUnique =
-          this.nameVolumeBackupAttachName.join('\n');
-        console.log('name', this.nameVolumeBackupAttachName);
-        console.log('unique', this.nameVolumeBackupAttachNameUnique);
-
-        this.getBackupPackage(this.backupVmModel?.backupPacketId);
         this.cdr.detectChanges();
       });
   }
@@ -544,30 +482,44 @@ export class RestoreBackupVmVpcComponent implements OnInit {
     );
   }
 
-  getProjectVpc(id) {
-    this.projectService.getProjectVpc(id).subscribe((data) => {
-      this.projectDetail = data;
-    });
-  }
-
-  getBackupPackage(value) {
-    this.backupPackageService.detail(value).subscribe((data) => {
-      this.backupPackage = data;
-    });
-  }
-
   //#region  cấu hình
+  configRecommend: GpuConfigRecommend;
+  listOptionGpuValue: number[] = [];
+  getListOptionGpuValue() {
+    this.configurationService
+      .getConfigurations('OPTIONGPUVALUE')
+      .subscribe((data) => {
+        this.listOptionGpuValue = data.valueString.split(', ').map(Number);
+        this.listOptionGpuValue = this.listOptionGpuValue.filter(
+          (e) => e <= this.remainingGpu
+        );
+      });
+  }
+
   activeBlockHDD: boolean = true;
   activeBlockSSD: boolean = false;
   isCustomconfig = true;
   isGpuConfig = false;
   listGPUType: OfferItem[] = [];
+  purchasedListGPUType: OfferItem[] = [];
+  listGpuConfigRecommend: GpuConfigRecommend[] = [];
   getListGpuType() {
     this.dataService
       .getListOffers(this.region, 'vm-flavor-gpu')
       .subscribe((data) => {
         this.listGPUType = data.filter(
           (e: OfferItem) => e.status.toUpperCase() == 'ACTIVE'
+        );
+        this.listGpuConfigRecommend = getListGpuConfigRecommend(
+          this.listGPUType
+        );
+        console.log('list gpu config recommend', this.listGpuConfigRecommend);
+        let listGpuOfferIds: number[] = [];
+        this.infoVPC.cloudProject.gpuProjects.forEach((gputype) =>
+          listGpuOfferIds.push(gputype.gpuOfferId)
+        );
+        this.purchasedListGPUType = this.listGPUType.filter((e) =>
+          listGpuOfferIds.includes(e.id)
         );
       });
   }
@@ -576,10 +528,8 @@ export class RestoreBackupVmVpcComponent implements OnInit {
     this.isCustomconfig = true;
     this.isGpuConfig = false;
     this.resetData();
-    this.disableHDD = false;
   }
 
-  disableHDD: boolean = false;
   onClickGpuConfig() {
     this.isCustomconfig = false;
     this.isGpuConfig = true;
@@ -589,14 +539,68 @@ export class RestoreBackupVmVpcComponent implements OnInit {
     this.remainingVolume =
       this.infoVPC.cloudProject.quotaSSDInGb -
       this.infoVPC.cloudProjectResourceUsed.ssd;
-    this.disableHDD = true;
+    this.restoreInstanceBackup.gpuTypeOfferId = this.purchasedListGPUType[0].id;
+    this.gpuTypeName = this.purchasedListGPUType.filter(
+      (e) => e.id == this.restoreInstanceBackup.gpuTypeOfferId
+    )[0].offerName;
+
+    let gpuProject: GpuProject = this.infoVPC.cloudProject.gpuProjects.filter(
+      (e) => e.gpuOfferId == this.restoreInstanceBackup.gpuTypeOfferId
+    )[0];
+    let gpuUsage: GpuUsage =
+      this.infoVPC.cloudProjectResourceUsed.gpuUsages.filter(
+        (e) => e.gpuOfferId == this.restoreInstanceBackup.gpuTypeOfferId
+      )[0];
+    if (gpuUsage) {
+      this.remainingGpu = gpuProject.gpuCount - gpuUsage.gpuCount;
+    } else {
+      this.remainingGpu = gpuProject.gpuCount;
+    }
+    this.getListOptionGpuValue();
+    this.cdr.detectChanges();
+  }
+
+  gpuTypeName: string = '';
+  changeGpuType(id: number) {
+    this.restoreInstanceBackup.gpuCount = 0;
+    this.configRecommend = null;
+    this.gpuTypeName = this.purchasedListGPUType.filter(
+      (e) => e.id == id
+    )[0].offerName;
+    let gpuProject: GpuProject = this.infoVPC.cloudProject.gpuProjects.filter(
+      (e) => e.gpuOfferId == id
+    )[0];
+    let gpuUsage: GpuUsage =
+      this.infoVPC.cloudProjectResourceUsed.gpuUsages.filter(
+        (e) => e.gpuOfferId == id
+      )[0];
+    if (gpuUsage) {
+      this.remainingGpu = gpuProject.gpuCount - gpuUsage.gpuCount;
+    } else {
+      this.remainingGpu = gpuProject.gpuCount;
+    }
+    this.getListOptionGpuValue();
+  }
+
+  changeGpu() {
+    this.configRecommend = this.listGpuConfigRecommend.filter(
+      (e) =>
+        e.id == this.restoreInstanceBackup.gpuTypeOfferId &&
+        e.gpuCount == this.restoreInstanceBackup.gpuCount
+    )[0];
+    console.log('cấu hình đề recommend', this.configRecommend);
   }
 
   resetData() {
-    this.instanceCreate.cpu = 0;
-    this.instanceCreate.volumeSize = 0;
-    this.instanceCreate.ram = 0;
-    this.instanceCreate.gpuCount = 0;
+    this.restoreInstanceBackup.cpu = 0;
+    this.restoreInstanceBackup.volumeSize =
+      this.backupSize < this.stepCapacity ? this.stepCapacity : this.backupSize;
+
+    this.restoreInstanceBackup.ram = 0;
+    this.restoreInstanceBackup.gpuCount = 0;
+    this.restoreInstanceBackup.gpuTypeOfferId = null;
+    this.isValid = false;
+    this.configRecommend = null;
   }
 
   minCapacity: number;
@@ -613,7 +617,6 @@ export class RestoreBackupVmVpcComponent implements OnInit {
     });
   }
 
-  isValidCapacity: boolean = false;
   dataSubjectCapacity: Subject<any> = new Subject<any>();
   changeCapacity(value: number) {
     this.dataSubjectCapacity.next(value);
@@ -624,97 +627,37 @@ export class RestoreBackupVmVpcComponent implements OnInit {
         debounceTime(700) // Đợi 700ms sau khi người dùng dừng nhập trước khi xử lý sự kiện
       )
       .subscribe((res) => {
-        if (this.instanceCreate.volumeSize % this.stepCapacity > 0) {
+        if (this.restoreInstanceBackup.volumeSize % this.stepCapacity > 0) {
           this.notification.warning(
             '',
             this.i18n.fanyi('app.notify.amount.capacity', {
               number: this.stepCapacity,
             })
           );
-          this.instanceCreate.volumeSize =
-            this.instanceCreate.volumeSize -
-            (this.instanceCreate.volumeSize % this.stepCapacity);
-          this.checkValidConfig();
-          this.cdr.detectChanges();
-        }
-        if (this.instanceCreate.volumeSize > this.remainingVolume) {
-          this.isValidCapacity = false;
-          if (this.activeBlockHDD) {
-            this.notification.error(
-              '',
-              this.i18n.fanyi('app.notify.amount.capacity.add', {
-                num1: this.infoVPC.cloudProjectResourceUsed.hdd,
-                num2: this.infoVPC.cloudProject.quotaHddInGb,
-                num3: this.instanceCreate.volumeSize - this.remainingVolume,
-              })
-            );
-          } else {
-            this.notification.error(
-              '',
-              this.i18n.fanyi('app.notify.amount.capacity.add', {
-                num1: this.infoVPC.cloudProjectResourceUsed.ssd,
-                num2: this.infoVPC.cloudProject.quotaSSDInGb,
-                num3: this.instanceCreate.volumeSize - this.remainingVolume,
-              })
-            );
+          this.restoreInstanceBackup.volumeSize =
+            this.restoreInstanceBackup.volumeSize -
+            (this.restoreInstanceBackup.volumeSize % this.stepCapacity);
+          if (this.restoreInstanceBackup.volumeSize < this.stepCapacity) {
+            this.restoreInstanceBackup.volumeSize =
+              this.backupSize < this.stepCapacity
+                ? this.stepCapacity
+                : this.backupSize;
           }
-        } else {
-          this.isValidCapacity = true;
         }
-      });
-  }
-
-  isValidVCPU: boolean = false;
-  dataSubjectVCPU: Subject<any> = new Subject<any>();
-  changeVCPU(value: number) {
-    this.dataSubjectVCPU.next(value);
-  }
-  onChangeVCPU() {
-    this.dataSubjectVCPU
-      .pipe(
-        debounceTime(500) // Đợi 500ms sau khi người dùng dừng nhập trước khi xử lý sự kiện
-      )
-      .subscribe((res) => {
-        if (this.instanceCreate.cpu > this.remainingVCPU) {
-          this.isValidVCPU = false;
-          this.notification.error(
+        if (this.restoreInstanceBackup.volumeSize < this.backupSize) {
+          this.notification.warning(
             '',
-            this.i18n.fanyi('app.notify.amount.cpu.add', {
-              num1: this.infoVPC.cloudProjectResourceUsed.cpu,
-              num2: this.infoVPC.cloudProject.quotavCpu,
-              num3: this.instanceCreate.cpu - this.remainingVCPU,
+            this.i18n.fanyi('app.notify.amount.capacity.snapshot', {
+              num: this.backupSize,
             })
           );
-        } else {
-          this.isValidVCPU = true;
+          this.restoreInstanceBackup.volumeSize =
+            this.backupSize < this.stepCapacity
+              ? this.stepCapacity
+              : this.backupSize;
         }
-      });
-  }
-
-  isValidRam: boolean = false;
-  dataSubjectRam: Subject<any> = new Subject<any>();
-  changeRam(value: number) {
-    this.dataSubjectRam.next(value);
-  }
-  onChangeRam() {
-    this.dataSubjectRam
-      .pipe(
-        debounceTime(500) // Đợi 500ms sau khi người dùng dừng nhập trước khi xử lý sự kiện
-      )
-      .subscribe((res) => {
-        if (this.instanceCreate.ram > this.remainingRAM) {
-          this.isValidRam = false;
-          this.notification.error(
-            '',
-            this.i18n.fanyi('app.notify.amount.ram.add', {
-              num1: this.infoVPC.cloudProjectResourceUsed.ram,
-              num2: this.infoVPC.cloudProject.quotaRamInGb,
-              num3: this.instanceCreate.ram - this.remainingRAM,
-            })
-          );
-        } else {
-          this.isValidRam = true;
-        }
+        this.checkValidConfig();
+        this.cdr.detectChanges();
       });
   }
 
@@ -722,12 +665,24 @@ export class RestoreBackupVmVpcComponent implements OnInit {
   checkValidConfig() {
     if (
       this.isCustomconfig &&
-      (!this.instanceCreate.volumeSize ||
-        this.instanceCreate.volumeSize == 0 ||
-        !this.instanceCreate.ram ||
-        this.instanceCreate.ram == 0 ||
-        !this.instanceCreate.cpu ||
-        this.instanceCreate.cpu == 0)
+      (!this.restoreInstanceBackup.volumeSize ||
+        this.restoreInstanceBackup.volumeSize == 0 ||
+        !this.restoreInstanceBackup.ram ||
+        this.restoreInstanceBackup.ram == 0 ||
+        !this.restoreInstanceBackup.cpu ||
+        this.restoreInstanceBackup.cpu == 0)
+    ) {
+      this.isValid = false;
+    } else if (
+      this.isGpuConfig &&
+      (!this.restoreInstanceBackup.volumeSize ||
+        this.restoreInstanceBackup.volumeSize == 0 ||
+        !this.restoreInstanceBackup.ram ||
+        this.restoreInstanceBackup.ram == 0 ||
+        !this.restoreInstanceBackup.cpu ||
+        this.restoreInstanceBackup.cpu == 0 ||
+        !this.restoreInstanceBackup.gpuCount ||
+        this.restoreInstanceBackup.gpuCount == 0)
     ) {
       this.isValid = false;
     } else {
@@ -738,19 +693,11 @@ export class RestoreBackupVmVpcComponent implements OnInit {
 
   //#region Chọn IP Public Chọn Security Group
   listIPPublic: IPPublicModel[] = [];
-  listSecurityGroup: SecurityGroupModel[] = [];
+  listSecurityGroup: any[] = [];
   selectedSecurityGroup: any[] = [];
   getAllIPPublic() {
     this.dataService
-      .getAllIPPublic(
-        this.project,
-        '',
-        this.userId,
-        this.region,
-        9999,
-        1,
-        true
-      )
+      .getAllIPPublic(this.project, '', this.userId, this.region, 9999, 1, true)
       .subscribe((data: any) => {
         const currentDateTime = new Date().toISOString();
         this.listIPPublic = data.records.filter(
@@ -824,7 +771,7 @@ export class RestoreBackupVmVpcComponent implements OnInit {
         this.project
       )
       .subscribe((data: any) => {
-        this.listSecurityGroup = data;
+        this.listSecurityGroup = getUniqueObjects(data, 'name');
         this.listSecurityGroup.forEach((e) => {
           if (e.name.toUpperCase() == 'DEFAULT') {
             this.selectedSecurityGroup.push(e.name);
@@ -833,13 +780,6 @@ export class RestoreBackupVmVpcComponent implements OnInit {
         this.cdr.detectChanges();
       });
   }
-  //#endregion
-
-  selectedElementFlavor: string = null;
-  selectElementInputFlavors(id: string) {
-    this.selectedElementFlavor = id;
-  }
-
   //#endregion
 
   //#region selectedPasswordOrSSHkey
@@ -889,126 +829,174 @@ export class RestoreBackupVmVpcComponent implements OnInit {
         });
       });
   }
-
   //#endregion
+
   //#region volume gắn ngoài
   listOfDataBlockStorage: BlockStorage[] = [];
-
-  unitPriceVolumeHDD: number = 0;
-  unitVATVolumeHDD: number = 0;
-  unitPaymentVolumeHDD: number = 0;
-  unitPriceVolumeSSD: number = 0;
-  unitVATVolumeSSD: number = 0;
-  unitPaymentVolumeSSD: number = 0;
-  // Lấy giá tiền của Volume gắn thêm 1GB/1Tháng
-  getVolumeUnitMoney() {
-    this.loadingSrv.open({ type: 'spin', text: 'Loading...' });
-    this.catalogService
-      .getCatalogOffer(2, this.region, null, null)
-      .subscribe((data) => {
-        let offer = data.find(
-          (offer) => offer.status.toUpperCase() == 'ACTIVE'
-        );
-        let temVolumeCreate = new VolumeCreate();
-        temVolumeCreate.volumeType = 'hdd';
-        temVolumeCreate.volumeSize = 1;
-        temVolumeCreate.projectId = this.project.toString();
-        temVolumeCreate.serviceType = 2;
-        temVolumeCreate.serviceInstanceId = 0;
-        temVolumeCreate.customerId = this.tokenService.get()?.userId;
-        temVolumeCreate.isTrial = false;
-        temVolumeCreate.regionId = this.region;
-        temVolumeCreate.serviceName = '';
-        temVolumeCreate.offerId = offer.id;
-        let itemPayment: ItemPayment = new ItemPayment();
-        itemPayment.orderItemQuantity = 1;
-        itemPayment.specificationString = JSON.stringify(temVolumeCreate);
-        itemPayment.specificationType = 'volume_create';
-        itemPayment.serviceDuration = 1;
-        itemPayment.sortItem = 0;
-        let dataPayment: DataPayment = new DataPayment();
-        dataPayment.orderItems = [itemPayment];
-        dataPayment.projectId = this.project;
-        this.dataService.getPrices(dataPayment).subscribe((result) => {
-          console.log('thanh tien volume', result);
-          this.unitPriceVolumeHDD = Number.parseFloat(
-            result.data.totalAmount.amount
-          );
-          this.unitVATVolumeHDD = Number.parseFloat(
-            result.data.totalVAT.amount
-          );
-          this.unitPaymentVolumeHDD = Number.parseFloat(
-            result.data.totalPayment.amount
-          );
-          this.cdr.detectChanges();
-        });
-      });
-
-    this.catalogService
-      .getCatalogOffer(114, this.region, null, null)
-      .subscribe((data) => {
-        let offer = data.find(
-          (offer) => offer.status.toUpperCase() == 'ACTIVE'
-        );
-        let temVolumeCreate = new VolumeCreate();
-        temVolumeCreate.volumeType = 'ssd';
-        temVolumeCreate.volumeSize = 1;
-        temVolumeCreate.projectId = this.project.toString();
-        temVolumeCreate.serviceType = 2;
-        temVolumeCreate.serviceInstanceId = 0;
-        temVolumeCreate.customerId = this.tokenService.get()?.userId;
-        temVolumeCreate.isTrial = false;
-        temVolumeCreate.regionId = this.region;
-        temVolumeCreate.serviceName = '';
-        temVolumeCreate.offerId = offer.id;
-        let itemPayment: ItemPayment = new ItemPayment();
-        itemPayment.orderItemQuantity = 1;
-        itemPayment.specificationString = JSON.stringify(temVolumeCreate);
-        itemPayment.specificationType = 'volume_create';
-        itemPayment.serviceDuration = 1;
-        itemPayment.sortItem = 0;
-        let dataPayment: DataPayment = new DataPayment();
-        dataPayment.orderItems = [itemPayment];
-        dataPayment.projectId = this.project;
-        this.dataService.getPrices(dataPayment).subscribe((result) => {
-          console.log('thanh tien volume', result);
-          this.unitPriceVolumeSSD = Number.parseFloat(
-            result.data.totalAmount.amount
-          );
-          this.unitVATVolumeSSD = Number.parseFloat(
-            result.data.totalVAT.amount
-          );
-          this.unitPaymentVolumeSSD = Number.parseFloat(
-            result.data.totalPayment.amount
-          );
-          this.getDetailBackupById(this.idBackup);
-          this.cdr.detectChanges();
-        });
-      });
-  }
-
   changeAttachVolume() {
     this.listOfDataBlockStorage = [];
     this.listExternalAttachVolume.forEach((e) => {
-      if (this.listIDAttachVolume.includes(e.id)) {
+      if (this.listAttachVolume.includes(e)) {
         let tempBS = new BlockStorage();
         tempBS.id = e.id;
         tempBS.name = e.name;
         tempBS.capacity = e.size;
+        tempBS.minCapacity = e.size;
         if (e.typeName.toUpperCase().includes('HDD')) {
           tempBS.type = 'HDD';
-          tempBS.price = e.size * this.unitPriceVolumeHDD;
-          tempBS.VAT = e.size * this.unitVATVolumeHDD;
-          tempBS.priceAndVAT = e.size * this.unitPaymentVolumeHDD;
         } else {
           tempBS.type = 'SSD';
-          tempBS.price = e.size * this.unitPriceVolumeSSD;
-          tempBS.VAT = e.size * this.unitVATVolumeSSD;
-          tempBS.priceAndVAT = e.size * this.unitPaymentVolumeSSD;
         }
         this.listOfDataBlockStorage.push(tempBS);
       }
     });
   }
   //#endregion
+
+  instanceInit() {
+    this.restoreInstanceBackup.instanceBackupId = this.backupVmModel?.id;
+    let selectedVolumeExternal: VolumeExternalBackup[] = [];
+    this.listOfDataBlockStorage.forEach((e) => {
+      let volumeExternal = new VolumeExternalBackup();
+      volumeExternal.id = e.id;
+      volumeExternal.name = e.newName;
+      volumeExternal.size = e.capacity;
+      selectedVolumeExternal.push(volumeExternal);
+    });
+    this.restoreInstanceBackup.volumeBackups = selectedVolumeExternal;
+    this.restoreInstanceBackup.instanceName = this.backupVmModel?.instanceName;
+    this.restoreInstanceBackup.keypairName = this.selectedSSHKeyName;
+    this.restoreInstanceBackup.securityGroups = this.selectedSecurityGroup;
+    this.restoreInstanceBackup.isUsePrivateNetwork =
+      this.vlanNetwork == '' ? false : true;
+    if (this.vlanNetwork != '') {
+      this.restoreInstanceBackup.privateNetId = this.vlanNetwork;
+    }
+    if (this.port != '') {
+      this.restoreInstanceBackup.privatePortId = this.port;
+    }
+    this.restoreInstanceBackup.ipPublic = this.ipPublicValue;
+    this.restoreInstanceBackup.password = this.password;
+    this.restoreInstanceBackup.projectId = this.project;
+    this.restoreInstanceBackup.oneSMEAddonId = null;
+    this.restoreInstanceBackup.serviceType = 1;
+    this.restoreInstanceBackup.serviceInstanceId = 0;
+    this.restoreInstanceBackup.saleDept = null;
+    this.restoreInstanceBackup.saleDeptCode = null;
+    this.restoreInstanceBackup.contactPersonEmail = null;
+    this.restoreInstanceBackup.contactPersonPhone = null;
+    this.restoreInstanceBackup.contactPersonName = null;
+    this.restoreInstanceBackup.note = null;
+    this.restoreInstanceBackup.createDateInContract = null;
+    this.restoreInstanceBackup.am = null;
+    this.restoreInstanceBackup.amManager = null;
+    this.restoreInstanceBackup.isTrial = false;
+    this.restoreInstanceBackup.couponCode = null;
+    this.restoreInstanceBackup.dhsxkd_SubscriptionId = null;
+    this.restoreInstanceBackup.dSubscriptionNumber = null;
+    this.restoreInstanceBackup.dSubscriptionType = null;
+    this.restoreInstanceBackup.oneSME_SubscriptionId = null;
+    this.restoreInstanceBackup.regionId = this.region;
+  }
+
+  isVisiblePopupError: boolean = false;
+  errorList: string[] = [];
+  closePopupError() {
+    this.isVisiblePopupError = false;
+  }
+  order: Order = new Order();
+  orderItem: OrderItem[] = [];
+  restore(): void {
+    this.isLoading = true;
+    this.cdr.detectChanges();
+    this.dataService
+      .checkflavorforimage(
+        this.backupVmModel?.systemInfoBackups[0].imageIdInt,
+        this.restoreInstanceBackup.volumeSize,
+        this.restoreInstanceBackup.ram,
+        this.restoreInstanceBackup.cpu
+      )
+      .subscribe({
+        next: (data) => {
+          this.instanceInit();
+          this.orderItem = [];
+          let specificationInstance = JSON.stringify(
+            this.restoreInstanceBackup
+          );
+          let orderItemInstance = new OrderItem();
+          orderItemInstance.orderItemQuantity = 1;
+          orderItemInstance.specification = specificationInstance;
+          orderItemInstance.specificationType = 'instance_create';
+          this.orderItem.push(orderItemInstance);
+          console.log('order instance', orderItemInstance);
+
+          this.order.customerId = this.tokenService.get()?.userId;
+          this.order.createdByUserId = this.tokenService.get()?.userId;
+          this.order.note = 'tạo vm';
+          this.order.orderItems = this.orderItem;
+
+          this.orderService
+            .validaterOrder(this.order)
+            .pipe(
+              finalize(() => {
+                this.isLoading = false;
+                this.cdr.detectChanges();
+              })
+            )
+            .subscribe({
+              next: (result) => {
+                if (result.success) {
+                  this.dataService.create(this.order).subscribe({
+                    next: (data: any) => {
+                      this.notification.success(
+                        '',
+                        this.i18n.fanyi(
+                          'app.notify.success.instances.order.create'
+                        )
+                      );
+                      this.router.navigate(['/app-smart-cloud/instances']);
+                    },
+                    error: (e) => {
+                      this.notification.error(
+                        e.statusText,
+                        this.i18n.fanyi(
+                          'app.notify.fail.instances.order.create'
+                        )
+                      );
+                    },
+                  });
+                } else {
+                  this.isVisiblePopupError = true;
+                  this.errorList = result.data;
+                }
+              },
+              error: (error) => {
+                this.notification.error(
+                  this.i18n.fanyi('app.status.fail'),
+                  error.error.detail
+                );
+              },
+            });
+        },
+        error: (e) => {
+          this.isLoading = false;
+          this.cdr.detectChanges();
+          let numbers: number[] = [];
+          const regex = /\d+/g;
+          const matches = e.error.match(regex);
+          if (matches) {
+            numbers = matches.map((match) => parseInt(match));
+            this.notification.error(
+              '',
+              this.i18n.fanyi('app.notify.check.config.for.os', {
+                nameHdh: this.backupVmModel?.systemInfoBackups[0].osName,
+                volume: numbers[0],
+                ram: numbers[1],
+                cpu: numbers[2],
+              })
+            );
+          }
+        },
+      });
+  }
 }

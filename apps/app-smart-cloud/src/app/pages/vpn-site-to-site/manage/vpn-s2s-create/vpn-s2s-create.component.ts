@@ -1,4 +1,4 @@
-import { Component, ElementRef, Inject, OnInit, Renderer2 } from '@angular/core';
+import { Component, ElementRef, Inject, OnInit, Renderer2, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { environment } from '@env/environment';
@@ -9,6 +9,10 @@ import { OrderService } from 'src/app/shared/services/order.service';
 import { ServiceActionType, ServiceType } from 'src/app/shared/enums/common.enum';
 import { RegionModel, ProjectModel } from '../../../../../../../../libs/common-utils/src';
 import { FormControl, FormGroup, NonNullableFormBuilder } from '@angular/forms';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
+import { I18NService } from '../../../../../../../app-kafka/src/app/core/i18n/i18n.service';
+import { NzNotificationService } from 'ng-zorro-antd/notification';
+import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
 @Component({
   selector: 'one-portal-vpn-s2s-create',
   templateUrl: './vpn-s2s-create.component.html',
@@ -32,6 +36,10 @@ export class VpnS2sCreateComponent implements OnInit {
   vatPer = 10;
   vatDisplay
   timeSelected: any;
+  isLoadingCreate: boolean = false;
+  isVisiblePopupError: boolean = false;
+  errorList: string[] = [];
+  @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
   /**
    *
    */
@@ -42,7 +50,9 @@ export class VpnS2sCreateComponent implements OnInit {
     private router: Router,
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
     private orderService: OrderService,
-    private fb: NonNullableFormBuilder
+    private fb: NonNullableFormBuilder,
+    @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
+    private notification: NzNotificationService,
   ) {
     this.unitOfMeasure = environment.unitOfMeasureVpn;
   }
@@ -61,6 +71,13 @@ export class VpnS2sCreateComponent implements OnInit {
   }
 
   regionChanged(region: RegionModel) {
+    this.region = region.regionId;
+    if(this.projectCombobox){
+      this.projectCombobox.loadProjects(true, region.regionId);
+    }
+  }
+
+  onRegionChanged(region: RegionModel) {
     this.region = region.regionId;
   }
 
@@ -123,7 +140,7 @@ export class VpnS2sCreateComponent implements OnInit {
   }
 
   extend() {
-    
+    this.specChange();
     const request = {
       customerId: this.tokenService.get()?.userId,
       createdByUserId: this.tokenService.get()?.userId,
@@ -138,9 +155,28 @@ export class VpnS2sCreateComponent implements OnInit {
         }
       ]
     }
+    this.isLoadingCreate = true;
+    this.orderService.validaterOrder(request).subscribe({
+      next: (data) => {
+        if (data.success) {
+          var returnPath: string = window.location.pathname;
+          this.router.navigate(['/app-smart-cloud/order/cart'], {state: {data: request, path: returnPath}});
+        }else{
+          this.isVisiblePopupError = true;
+          this.errorList = data.data;
+        }
+        this.isLoadingCreate = false;
+      },
+      error: (e) => {
+        this.isLoadingCreate = false;
+          this.notification.error(
+            this.i18n.fanyi('app.status.fail'),
+            e.error.detail
+          );
+      },
+    });
 
-    var returnPath: string = window.location.pathname;
-    this.router.navigate(['/app-smart-cloud/order/cart'], {state: {data: request, path: returnPath}});
+    
   }
 
   onChangeTime(value) {
@@ -206,5 +242,9 @@ export class VpnS2sCreateComponent implements OnInit {
       "oneSME_SubscriptionId": null,
       "typeName": "SharedKernel.IntegrationEvents.Orders.Specifications.VpnSiteToSiteCreateSpecification,SharedKernel.IntegrationEvents, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null"
     };
+  }
+
+  closePopupError() {
+    this.isVisiblePopupError = false;
   }
 }

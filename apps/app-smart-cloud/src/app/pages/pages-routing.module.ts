@@ -154,6 +154,15 @@ import { RestoreBackupVmComponent } from './backup-vm/restore-backup-vm/restore-
 import {
   RestoreBackupVolumeComponent
 } from './volume/component/backup-volume/restore-backup-volume/restore-backup-volume.component';
+import { SnapshotCreateComponent } from './snapshot/create/snapshot-create.component';
+import { SnapshotListComponent } from './snapshot/list/snapshot-list.component';
+import { RestoreBackupVmVpcComponent } from './backup-vm/restore-backup-vm-vpc/restore-backup-vm-vpc.component';
+import {
+  RestoreBackupVolumeVpcComponent
+} from './volume/component/backup-volume/restore-backup-volume-vpc/restore-backup-volume-vpc.component';
+import { SnapshotDetailComponent } from './snapshot/detail/snapshot-detail.component';
+import { InvoiceDetailComponent } from './billing/payment/invoice-detail/invoice-detail.component';
+import { CreateScheduleBackupVpcComponent } from './schedule-backup/create-vpc/create-schedule-backup-vpc.component';
 
 // import { BlankVolumeComponent } from './volume/component/blank/blank-volume.component';
 
@@ -173,6 +182,14 @@ const routes: Routes = [
   },
   {
     path: 'volumes',
+    component: VolumeComponent,
+    canActivate: [PermissionGuard],
+    data: {
+      permission: 'volume:List'
+    }
+  },
+  {
+    path: 'volumesadvance',
     component: VolumeComponent,
     canActivate: [PermissionGuard],
     data: {
@@ -213,6 +230,18 @@ const routes: Routes = [
   },
   {
     path: 'instances',
+    loadChildren: () =>
+      import('../pages/instances/instances.module').then(
+        (m) => m.InstancesModule
+      ),
+    canActivate: [PermissionGuard],
+    data: {
+      permission: 'instance:List'
+    }
+
+  },
+  {
+    path: 'instanceadvance',
     loadChildren: () =>
       import('../pages/instances/instances.module').then(
         (m) => m.InstancesModule
@@ -310,6 +339,14 @@ const routes: Routes = [
     }
   },
   {
+    path: 'backup-vm/restore-backup-vm-vpc/:id',
+    component: RestoreBackupVmVpcComponent,
+    canActivate: [PermissionGuard],
+    data: {
+      permission: 'backup:InstanceBackupRestore'
+    }
+  },
+  {
     path: 'backup-vm/detail-backup-vm/:id',
     component: DetailBackupVmComponent,
     canActivate: [PermissionGuard],
@@ -373,6 +410,15 @@ const routes: Routes = [
   {
     path: 'backup-volume/restore/:id',
     component: RestoreBackupVolumeComponent,
+    canActivate: [PermissionGuard],
+    data: {
+      permission: 'backup:Get'
+    }
+  },
+
+  {
+    path: 'backup-volume/restore/vpc/:id',
+    component: RestoreBackupVolumeVpcComponent,
     canActivate: [PermissionGuard],
     data: {
       permission: 'backup:Get'
@@ -545,6 +591,15 @@ const routes: Routes = [
 
   },
   {
+    path: 'schedule/backup/create/vpc',
+    component: CreateScheduleBackupVpcComponent,
+    canActivate: [PermissionGuard],
+    data: {
+      permission: 'order:create'
+    }
+
+  },
+  {
     path: 'schedule/backup/edit/vm/:id',
     component: EditScheduleBackupVmComponent,
     canActivate: [PermissionGuard],
@@ -561,7 +616,7 @@ const routes: Routes = [
     }
   },
   {
-    path: 'schedule/snapshot/list',
+    path: 'schedule/snapshot',
     component: SnapshotScheduleListComponent,
     canActivate: [PermissionGuard],
     data: {
@@ -602,6 +657,10 @@ const routes: Routes = [
 
   },
   {
+    path: 'billing/invoice/:id',
+    component: InvoiceDetailComponent
+  },
+  {
     path: 'billing/payments/success',
     component: PaymentSuccessComponent
   },
@@ -619,7 +678,7 @@ const routes: Routes = [
 
   },
   {
-    path: 'order/list',
+    path: 'order',
     component: OrderListComponent,
     canActivate: [PermissionGuard],
     data: {
@@ -849,6 +908,14 @@ const routes: Routes = [
     }
   },
   {
+    path: 'object-storage/sub-user-advance/list',
+    component: ListSubUserComponent,
+    canActivate: [PermissionGuard],
+    data: {
+      permission: 'objectstorages:ObjectStorageUser'
+    }
+  },
+  {
     path: 'object-storage/sub-user/list',
     component: ListSubUserComponent,
     canActivate: [PermissionGuard],
@@ -873,6 +940,14 @@ const routes: Routes = [
     }
   },
   {
+    path: 'object-storage/dashboard-advance',
+    component: DashboardObjectStorageComponent,
+    canActivate: [PermissionGuard],
+    data: {
+      permission: 'objectstorages:ObjectStorageMonitor'
+    }
+  },
+  {
     path: 'networks/ip-floating/list',
     component: ListIpFloatingComponent,
     canActivate: [PermissionGuard],
@@ -882,7 +957,7 @@ const routes: Routes = [
 
   },
   {
-    path: 'file-system-snapshot/list',
+    path: 'file-system-snapshot',
     component: FileSystemSnapshotComponent,
     canActivate: [PermissionGuard],
     data: {
@@ -947,6 +1022,14 @@ const routes: Routes = [
   },
   {
     path: 'object-storage/bucket',
+    component: BucketListComponent,
+    canActivate: [PermissionGuard],
+    data: {
+      permission: 'objectstorages:ObjectStorageUser'
+    }
+  },
+  {
+    path: 'object-storage/bucket-advance',
     component: BucketListComponent,
     canActivate: [PermissionGuard],
     data: {
@@ -1021,6 +1104,14 @@ const routes: Routes = [
   },
   {
     path: 'object-storage/s3-key',
+    component: S3KeyComponent,
+    canActivate: [PermissionGuard],
+    data: {
+      permission: 'objectstorages:Search'
+    }
+  },
+  {
+    path: 'object-storage/s3-key-advance',
     component: S3KeyComponent,
     canActivate: [PermissionGuard],
     data: {
@@ -1213,7 +1304,18 @@ const routes: Routes = [
     path: 'ssl-cert/create',
     component: CreateSslCertComponent,
   },
-
+  {
+    path: 'snapshot/create',
+    component: SnapshotCreateComponent,
+  },
+  {
+    path: 'snapshot',
+    component: SnapshotListComponent,
+  },
+  {
+    path: 'snapshot/detail/:id',
+    component: SnapshotDetailComponent,
+  }
 ];
 
 @NgModule({

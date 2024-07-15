@@ -2,8 +2,8 @@
   <ng-template #breadcrumb>
     <nz-breadcrumb [nzSeparator]="iconTemplate">
       <nz-breadcrumb-item><a [routerLink]="['/']">{{ 'app.breadcrumb.home' | i18n }}</a></nz-breadcrumb-item>
-      <nz-breadcrumb-item><a [routerLink]="['/app-smart-cloud/project']">{{ 'project.note1' | i18n
-          }}</a></nz-breadcrumb-item>
+      <nz-breadcrumb-item><a [routerLink]="['/app-smart-cloud/project']">Quản lý VPC</a></nz-breadcrumb-item>
+           <nz-breadcrumb-item><a [routerLink]="['/app-smart-cloud/project/detail/' + data?.id]">Chi tiết VPC</a></nz-breadcrumb-item>
       <nz-breadcrumb-item>{{ 'project.note31' | i18n }}</nz-breadcrumb-item>
     </nz-breadcrumb>
     <ng-template #iconTemplate><one-portal-svg-icon [icon]="'icon_breadcrumb'"></one-portal-svg-icon></ng-template>
@@ -11,7 +11,7 @@
   <ng-template #action>
     <div class="alain-custom-action text-right">
       <share-users-combobox></share-users-combobox>
-      <region-select-dropdown (valueChanged)="onRegionChange($event)"></region-select-dropdown>
+      <region-select-dropdown (regionChange)="onRegionChanged($event)" (valueChanged)="onRegionChange($event)"></region-select-dropdown>
     </div>
   </ng-template>
 </page-header>
@@ -39,7 +39,8 @@
                     <span class="label-fontsize">Trạng thái:</span>
                   </div>
                   <div nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="12">
-                    <span class="label-fontsize font-bold">{{data?.resourceStatus}}</span>
+                    <span class="label-fontsize font-bold" *ngIf="data?.resourceStatus=='ENABLE'">Đang hoạt động</span>
+                    <span class="label-fontsize font-bold" *ngIf="data?.resourceStatus=='DISABLE'">Tạm ngưng</span>
                   </div>
                 </div>
                 <div nz-row [nzGutter]="24" class="row-white-bg content-items-center">
@@ -47,20 +48,19 @@
                     <span class="label-fontsize">Gói Load Balancer SDN:</span>
                   </div>
                   <div nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="12">
-                    <span class="label-fontsize font-bold ">{{data?.type == 'VPC' ? data?.loadbalancerOfferName: '-'
-                      }}</span>
+                    <span class="label-fontsize font-bold ">{{data?.type == 'VPC' ? (data?.loadbalancerOfferName==null ? '-':data?.loadbalancerOfferName) : '-' }}</span>
                   </div>
                 </div>
-                <div nz-row [nzGutter]="24" class="row-gray-bg content-items-center">
+                <!-- <div nz-row [nzGutter]="24" class="row-gray-bg content-items-center">
                   <div nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="12">
                     <span class="label-fontsize">Ngày khởi tạo:</span>
                   </div>
                   <div nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="12">
 
-                    <span class="label-fontsize font-bold">{{data.type == 'VPC' ? ( data?.createDate | date :
-                      'dd/MM/YYYY') : '-' }}</span>
+                    <span class="label-fontsize font-bold">{{data?.type == 'VPC' ? ( data?.createDate | date :
+                      'dd/MM/YYYY HH:mm:ss') : '-' }}</span>
                   </div>
-                </div>
+                </div> -->
               </div>
             </div>
             <div nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="12">
@@ -78,7 +78,7 @@
                     <span class="label-fontsize">Dải IP Kết nối Internet:</span>
                   </div>
                   <div nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="12">
-                    <span class="label-fontsize font-bold">{{data?.type == 'VPC' ? data?.publicNetworkAddress
+                    <span class="label-fontsize font-bold">{{data?.type == 'VPC' ? (data?.publicNetworkAddress=="" ? '-': data?.publicNetworkAddress)
                       :'-'}}</span>
                   </div>
                 </div>
@@ -87,29 +87,29 @@
                     <span class="label-fontsize">Gói VPN Site to Site:</span>
                   </div>
                   <div nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="12">
-                    <span class="label-fontsize font-bold">{{data?.type == 'VPC' ? data?.vpnSiteToSiteOfferName
+                    <span class="label-fontsize font-bold">{{data?.type == 'VPC' ? (data?.vpnSiteToSiteOfferName==null? '-':data?.vpnSiteToSiteOfferName)
                       :'-'}}</span>
                   </div>
                 </div>
-                <div nz-row [nzGutter]="24" class="row-gray-bg content-items-center">
+                <!-- <div nz-row [nzGutter]="24" class="row-gray-bg content-items-center">
                   <div nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="12">
                     <span class="label-fontsize">Ngày hết hạn:</span>
                   </div>
                   <div nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="12">
-                    <span class="label-fontsize font-bold">{{data.type == 'VPC' ? ( data?.expireDate | date :
-                      'dd/MM/YYYY') : '-'}}</span>
+                    <span class="label-fontsize font-bold">{{data?.type == 'VPC' ? ( data?.expireDate | date :
+                      'dd/MM/YYYY HH:mm:ss') : '-'}}</span>
                   </div>
-                </div>
+                </div> -->
               </div>
             </div>
           </div>
           <div class="text-description">
             <label for="description" class="label-fontsize pb-3">Mô tả</label>
-            <textarea name="description" id="description" rows="3" readonly>{{data?.description}}</textarea>
+            <textarea name="description" id="description" class="row-gray-bg textbox-radius-lg" rows="3" readonly>{{data?.description}}</textarea>
           </div>
-        
+
         </div>
-        
+
       </nz-card>
       <!-- <nz-card class="text-label" nzTitle="" style="border-radius: 8px;">
         <div style="margin-bottom: 20px">
@@ -143,19 +143,18 @@
         </nz-table>
       </nz-card> -->
       <nz-card class="text-label" nzTitle="" style="border-radius: 8px;" [nzLoading]="loading">
-        <div style="margin-bottom: 20px">
+        <one-portal-service-time-extend *ngIf="data"  [createDate]="data?.createDate"
+        [expiredDate]="data?.expireDate"  (valueChanged)="onChangeTime($event)" [newExpiredDate]="total?.data?.orderItemPrices[0]?.expiredDate"></one-portal-service-time-extend>
+        <!-- <div style="margin-bottom: 20px">
           <span class="text-card-header">{{'app.extension.info' | i18n}}</span>
         </div>
         <nz-row style="margin-bottom: 15px">
-          <div nz-col nzSpan="7">{{'app.service.start.date' | i18n}}:</div>
-          <div nz-col nzSpan="17" style="font-weight: bold;">{{ today | date : 'dd/MM/yyyy' }}</div>
+          <div nz-col nzSpan="12" style="color: red;">{{'app.service.start.date' | i18n}}:  {{ today | date : 'dd/MM/yyyy' }}</div>
+          <div nz-col nzSpan="12" style="color: red;">Ngày hết hạn:  {{ expiredDate | date : 'dd/MM/yyyy' }}</div>
         </nz-row>
-        <nz-row style="margin-bottom: 15px">
-          <div nz-col nzSpan="7">Ngày hết hạn:</div>
-          <div nz-col nzSpan="17" style="font-weight: bold;">{{ expiredDate | date : 'dd/MM/yyyy' }}</div>
-        </nz-row>
-        <nz-form-item style="margin-bottom: 5px">
-          <nz-form-label>Số tháng cần gia hạn thêm
+
+        <nz-form-item style="margin-bottom: 5px" class="mt-5">
+          <nz-form-label>Số tháng cần gia hạn thêm (<span style="color: red;">*</span>)
           </nz-form-label>
           <nz-form-control>
             <nz-row>
@@ -165,47 +164,60 @@
             </nz-row>
           </nz-form-control>
 
-          <div class="text-custom-time" style="color: red;">
+          <div class="text-custom-time label-fontsize" style="color: red;">
             Ngày hết hạn dự kiến: {{ expiredDateOld   | date : 'dd/MM/yyyy' }}
           </div>
-        </nz-form-item>
+        </nz-form-item> -->
       </nz-card>
     </nz-col>
 
     <!---------------CARD-THÀNH TIỀN-------------->
-  
+
       <nz-col nzSpan="8">
         <nz-affix [nzOffsetTop]="72">
         <nz-card style="border-radius: 8px;border: 1px solid #B2DEFF;" [nzLoading]="loadingCalculate">
           <div style="margin-bottom: 20px">
             <span class="text-card-header">{{'app.estimated.cost' | i18n}}</span>
           </div>
-          <nz-row style="margin-bottom: 10px" nzGutter="16">
-            <nz-col nzSpan="16">
-              <span class="text-value">{{'app.service.cost' | i18n}} {{ this.form.controls['numOfMonth'].value || 0 }}
+          <div *ngIf="!hasRoleSI">
+            <nz-row style="margin-bottom: 10px" nzGutter="16">
+              <nz-col nzSpan="16">
+              <span class="text-value">{{'app.service.cost' | i18n}} {{ timeSelected || 1 }}
                 {{'app.month' | i18n}}</span>
-            </nz-col>
-            <nz-col class="text-right" nzSpan="8">
+              </nz-col>
+              <nz-col class="text-right" nzSpan="8">
               <span class="text-value" style="color: #0066b3" nzAlign="right">
-                {{ totalAmount || 0 }}
+                {{ totalAmount |formatPrice }}
                 VND
               </span>
-            </nz-col>
-          </nz-row>
-          <nz-row style="
+              </nz-col>
+            </nz-row>
+            <nz-row style="margin-bottom: 10px" nzGutter="16">
+              <nz-col nzSpan="16">
+                <span class="text-value">Chi phí VAT (10%)</span>
+              </nz-col>
+              <nz-col class="text-right" nzSpan="8">
+              <span class="text-value" style="color: #0066b3" nzAlign="right">
+                {{ totalVAT |formatPrice  }}
+                VND
+              </span>
+              </nz-col>
+            </nz-row>
+            <nz-row style="
               margin-bottom: 20px;
               background-color: #cce9ff;
               padding: 16px 0 16px 0;
               border-radius: 8px;
             " nzGutter="16">
-            <nz-col nzSpan="16">
-              <span class="text-label">{{'app.total.payment' | i18n}}</span><br />
-              <span class="text-note-italicized">({{'app.payment-detail.vat' | i18n}})</span>
-            </nz-col>
-            <nz-col class="text-right" nzSpan="8">
-              <span class="text-value" style="color: #ea3829" nzAlign="right">{{ totalPayment || 0 }} VND</span>
-            </nz-col>
-          </nz-row>
+              <nz-col nzSpan="16">
+                <span class="text-label">{{'app.total.payment' | i18n}}</span><br />
+                <span class="text-note-italicized">({{'app.payment-detail.vat' | i18n}})</span>
+              </nz-col>
+              <nz-col class="text-right" nzSpan="8">
+                <span class="text-value" style="color: #ea3829" nzAlign="right">{{ totalPayment |formatPrice}} VND</span>
+              </nz-col>
+            </nz-row>
+          </div>
           <nz-row>
             <nz-col style="width: 100%">
               <button style="width: 100%" nz-button nzSize="large" nzType="primary" (click)="extendVpc()">
@@ -217,7 +229,11 @@
         </nz-card>
       </nz-affix>
       </nz-col>
-    
-    
+
+
   </nz-row>
 </form>
+<one-portal-popup-list-error
+    [isVisible]="isVisiblePopupError"
+    [errorList]="errorList"
+    (onCancel)="closePopupError()" />

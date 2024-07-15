@@ -8,10 +8,16 @@
         Dịch vụ hạ tầng
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>
-        <a routerLink="/app-smart-cloud/snapshot/packages">Snapshot</a>
+        Block Storage
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>
-        Điều chỉnh dung lượng gói Snapshot
+        <a routerLink="/app-smart-cloud/snapshot/packages">Gói Snapshot</a>
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item>
+        <a routerLink="/app-smart-cloud/snapshot/packages/detail/{{idSnapshotPackage}}">Thông tin gói Snapshot</a>
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item>
+        <a routerLink="/app-smart-cloud/snapshot/packages/edit/{{idSnapshotPackage}}">Điều chỉnh dung lượng gói Snapshot</a>
       </nz-breadcrumb-item>
     </nz-breadcrumb>
     <ng-template #separatorTemplate
@@ -21,23 +27,16 @@
   <ng-template #action>
     <div class="alain-custom-action text-right">
       <share-users-combobox></share-users-combobox>
-      <region-select-dropdown (valueChanged)="regionChanged($event)"></region-select-dropdown>
-      <project-select-dropdown (valueChanged)="projectChanged($event)"
+      <region-select-dropdown (regionChange)="onRegionChanged($event)" (valueChanged)="regionChanged($event)"></region-select-dropdown>
+      <project-select-dropdown #projectCombobox (valueChanged)="projectChanged($event)"
                                [regionId]="region"></project-select-dropdown>
     </div>
   </ng-template>
   <ng-template #title>
     <div nz-row nzJustify="space-between">
       <nz-row>
-<!--        <nz-col>-->
-<!--          <span nz-icon-->
-<!--                nzType="arrow-left"-->
-<!--                nzTheme="outline"-->
-<!--                [routerLink]="'/app-smart-cloud/Snapshot/packages'"-->
-<!--                style="margin-right: 10px;"></span>-->
-<!--        </nz-col>-->
         <nz-col>
-          <div>Điều chỉnh dung lượng gói Snapshot</div>
+          <div >Điều chỉnh dung lượng gói Snapshot</div>
         </nz-col>
       </nz-row>
     </div>
@@ -48,191 +47,285 @@
     <nz-row nzGutter="24">
       <nz-col nzSpan="16">
         <nz-card>
-          <h3><b>Thông tin của gói Snapshot</b></h3>
+          <div class="text-card-header">Thông tin của gói Snapshot</div>
+          <div class="customRow" style="margin-top: 15px;">
+            <nz-row>
+              <nz-col nzSpan="12">
+                <nz-row style="padding: 12px 0 12px 0">
+                  <span class="text-label customSpan" style="width: 35%">Tên gói Snapshot:</span>
+                  <span class="text-value-detail customSpan">{{packageSnapshotModel.packageName}}</span>
+                </nz-row>
+              </nz-col>
+              <nz-col nzSpan="12">
+                <nz-row style="padding: 12px 0 12px 0">
+                  <span class="text-label customSpan" style="width: 35%">Trạng thái:</span>
+                  <ng-container *ngIf="packageSnapshotModel.status | ServiceStatusPipe as statusModel">
+                    <span nzBreakWord  [ngStyle]="{ color: statusModel.color }" class="text-value-detail customSpan">{{statusModel.status}}</span>
+                    <!--                <td >{{  }}</td>-->
+                  </ng-container>
+                </nz-row>
+              </nz-col>
+            </nz-row>
+            <nz-row style="background-color: #e2e2e9">
+              <nz-col nzSpan="12">
+                <nz-row style="padding: 12px 0 12px 0">
+                  <span class="text-label customSpan" style="width: 35%">Ngày khởi tạo:</span>
+                  <span class="text-value-detail customSpan">{{packageSnapshotModel?.creationDate | date: 'dd/MM/yyyy'}}</span>
+                </nz-row>
+              </nz-col>
+              <nz-col nzSpan="12">
+                <nz-row style="padding: 12px 0 12px 0">
+                  <span class="text-label customSpan" style="width: 35%">Ngày hết hạn:</span>
+                  <span class="text-value-detail customSpan">{{packageSnapshotModel?.expirationDate | date: 'dd/MM/yyyy'}}</span>
+                </nz-row>
+              </nz-col>
+            </nz-row>
+            <nz-row>
+              <nz-col nzSpan="12">
+                <nz-row style="padding: 12px 0 12px 0">
+                  <span class="text-label customSpan" style="width: 35%">Ngày điều chỉnh:</span>
+                  <span class="text-value-detail customSpan">{{today | date: 'dd/MM/yyyy'}}</span>
+                </nz-row>
+              </nz-col>
+              <nz-col nzSpan="12">
+                <nz-row style="padding: 12px 0 12px 0">
+                </nz-row>
+              </nz-col>
+            </nz-row>
+          </div>
+
           <nz-form-item>
-            <nz-form-label nzFor="name">
-              <div style="margin-top: 15px;">
-                <span>Tên gói Snapshot</span>
-                (<span style="color: rgba(252, 16, 16, 1); ">*</span>)
-              </div>
+            <nz-form-label>
+              <span>{{ 'app.service.description' | i18n }}</span>
             </nz-form-label>
-            <nz-form-control>
-              <input nz-input
-                     [value]="packageSnapshotModel.packageName"
-                     disabled="true"
-                     class="input-custom"
-                     />
-            </nz-form-control>
-          </nz-form-item>
-          <nz-form-item>
-            <nz-form-label nzFor="name">
-              <div style="margin-top: 15px;">
-                <span>Dung lượng gói Snapshot hiện tại</span>
-                (<span style="color: rgba(252, 16, 16, 1); ">*</span>)
-              </div>
-            </nz-form-label>
-            <nz-form-control>
-              <input nz-input
-                     [value]="packageSnapshotModel.sizeInGB"
-                     disabled="true"
-                     class="input-custom"
-                     />
-            </nz-form-control>
-          </nz-form-item>
-          <nz-form-item>
-            <nz-form-label nzFor="description">
-              <div class="label">
-                <span>Mô tả</span>
-              </div>
-            </nz-form-label>
-            <nz-form-control>
-          <textarea rows="4" nz-input
-                    [value]="packageSnapshotModel.description"
-                    disabled="true"
-                    
-                    >
-          </textarea>
-            </nz-form-control>
-          </nz-form-item>
-          <nz-row>
-            <nz-col nzSpan="8">
-              <nz-form-item>
-                <nz-form-label>
-                  <div>
-                    <span>Ngày khởi tạo: {{packageSnapshotModel?.creationDate | date: 'dd/MM/yyyy'}}</span>
-                  </div>
-                </nz-form-label>
-              </nz-form-item>
-            </nz-col>
-            <nz-col nzSpan="8">
-              <nz-form-item>
-                <nz-form-label>
-                  <div>
-                    <span style="color: #FC1010;">Ngày hết hạn: {{packageSnapshotModel?.expirationDate | date: 'dd/MM/yyyy'}}</span>
-                  </div>
-                </nz-form-label>
-              </nz-form-item>
-            </nz-col>
-          </nz-row>
-        </nz-card>
-        <nz-card>
-          <h3><b>Thông tin điều chỉnh</b></h3>
-          <nz-alert nzBanner
-                    [nzMessage]="'Khi thực hiện tăng dung lượng gói Snapshot, chi phí mới sẽ được tính từ ngày chỉnh sửa cho tới ngày hết hạn.'"
-                    nzShowIcon>
-          </nz-alert>
-          <nz-form-item class="mt-3">
-            <nz-form-label nzFor="storage">
-              <div class="label">
-                <span>Dung lượng gói Snapshot bổ sung</span>
-                (<span style="color: rgba(252, 16, 16, 1); ">*</span>)
-                <span nz-icon nzType="question-circle"
-                      nzTheme="outline"
-                      nz-popover
-                      [nzPopoverContent]="'Chi phí dung lượng bổ sung tính từ ngày chỉnh sửa cho tới ngày hết hạn.'"
-                      nzPopoverPlacement="bottom">
-                </span>
-              </div>
-            </nz-form-label>
-            <nz-form-control nzDisableAutoTips [nzErrorTip]="storageErrorTpl">
-              <nz-input-number formControlName="storage"
-                               id="storage"
-                               style="width: 100%;"
-                               [nzMin]="packageSnapshotModel.sizeInGB"
-                               (ngModelChange)="changeValueInput()"
-                               [nzStep]="1"
-                               class="input-custom"
-                               />
-              <ng-template #storageErrorTpl let-control>
-                <ng-container *ngIf="control.hasError('required')">Vui lòng nhập dung lượng của gói Snapshot
-                </ng-container>
+            <nz-form-control nzDisableAutoTips [nzErrorTip]="descriptionErrorTpl">
+              <textarea nz-input class="input-custom" formControlName="description" [maxLength]="255"
+                        [nzAutosize]="{ minRows: 3, maxRows: 5 }"></textarea>
+              <ng-template #descriptionErrorTpl let-control>
+                <ng-container *ngIf="control.hasError('maxlength')">{{ 'app.description.maxLength.255' | i18n }}</ng-container>
               </ng-template>
             </nz-form-control>
           </nz-form-item>
+        </nz-card>
+        <nz-card>
+          <div class="text-card-header" style="margin-bottom: 10px">Thông tin tài nguyên</div>
+          <nz-table nzData="null" nzHideOnSinglePage='true'>
+            <thead>
+            <tr>
+              <th>Tên tài nguyên</th>
+              <th>Tổng hạn mức</th>
+              <th>Đã dùng</th>
+              <th>Còn lại</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+              <td>Dung lượng HDD (GB)</td>
+              <td class="text-right">{{ packageSnapshotModel.totalSizeHDD }}</td>
+              <td class="text-right">{{ packageSnapshotModel.usedSizeHDD }}</td>
+              <td class="text-right">{{ packageSnapshotModel.availableSizeHDD }}</td>
+            </tr>
+            <tr>
+              <td>Dung lượng SSD (GB)</td>
+              <td class="text-right">{{ packageSnapshotModel.totalSizeSSD }}</td>
+              <td class="text-right">{{ packageSnapshotModel.usedSizeSSD }}</td>
+              <td class="text-right">{{ packageSnapshotModel.availableSizeSSD }}</td>
+            </tr>
+            </tbody>
+          </nz-table>
+        </nz-card>
+        <nz-card>
+          <div class="text-card-header" style="margin-bottom: 10px">Thông tin điều chỉnh</div>
+          <nz-alert nzType="warning" style="margin-bottom: 8px"
+                    [nzMessage]="'Khi thực hiện tăng dung lượng gói Snapshot, chi phí mới sẽ được tính từ ngày chỉnh sửa cho tới ngày hết hạn, lưu ý dung lượng bổ sung chỉ là dung lượng bổ sung thêm, không bao gồm dung lượng đã mua trước đó.'"
+                    nzShowIcon></nz-alert>
           <nz-form-item>
             <nz-form-label>
-              <div>
-                <span *ngIf="orderItem != undefined && orderItem?.orderItemPrices?.length > 0">
-                  <b>Đơn giá: </b> {{orderItem?.orderItemPrices[0]?.unitPricePerDay.amount}} {{orderItem?.orderItemPrices[0]?.unitPricePerDay.currency}}/GB/ngày
-                </span>
-                <span *ngIf="orderItem == undefined && orderItem?.orderItemPrices?.length <= 0">
-                  <b>Đơn giá: </b> 0 VNĐ/GB/ngày
-                </span>
-              </div>
+              <span>Dung lượng gói Snapshot</span>
+              (<span style="color: rgba(252, 16, 16, 1)">*</span>)
+              <img style="margin-left: 10px" [nz-tooltip]="'Người dùng có thể mua một hoặc đồng thời cả hai loại dung lượng HDD và SSD cho gói Snapshot'" src="assets/imgs/pajamas_question.svg" alt="" />
             </nz-form-label>
+            <nz-table nzData="null" nzHideOnSinglePage='true'>
+              <thead>
+              <tr>
+                <th>Loại gói</th>
+                <th>Dung lượng (GB)</th>
+                <th>Giá theo tháng (VND)</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr>
+                <td>HDD</td>
+                <td>
+                  <nz-input-number style="width: 20%; margin-left: -1px" [nzMin]="0" [nzStep]="1"
+                                   (keydown)="checkPossiblePress($event)" [(ngModel)]="numberHDDBonus"
+                                   (ngModelChange)="changeQuota(true)" [ngModelOptions]="{ standalone: true }"
+                                   nzSize="large"></nz-input-number>
+                </td>
+                <td class="text-right">{{hddPrice| number}}</td>
+              </tr>
+              <tr>
+                <td>SSD</td>
+                <td>
+                  <nz-input-number style="width: 20%; margin-left: -1px" [nzMin]="0" [nzStep]="1"
+                                   (keydown)="checkPossiblePress($event)" [(ngModel)]="numberSSDBonus"
+                                   (ngModelChange)="changeQuota(false)" [ngModelOptions]="{ standalone: true }"
+                                   nzSize="large"></nz-input-number>
+                </td>
+                <td class="text-right">{{ssdPrice | number}}</td>
+              </tr>
+              </tbody>
+            </nz-table>
           </nz-form-item>
-          <nz-form-item>
-            <nz-form-label>
-              <div>
-                <span><b>Ngày điều chỉnh: {{resizeDate | date: 'dd/MM/yyyy'}}</b></span>
-              </div>
-            </nz-form-label>
-          </nz-form-item>
+        </nz-card>
+        <nz-card>
+          <one-portal-guide-formula></one-portal-guide-formula>
         </nz-card>
       </nz-col>
       <nz-col nzSpan="8">
-        <nz-card class="right-form">
-          <div class="right-title">
-            <span class="text-card-header">Chi phí ước tính</span>
-          </div>
+        <nz-affix [nzOffsetTop]="72">
+          <nz-card style="border-radius: 8px;border: 1px solid #B2DEFF">
+            <div style="margin-bottom: 20px">
+              <span class="text-card-header">{{'app.estimated.cost' | i18n}}</span>
+            </div>
+            <div class="text-value">Tên gói Snapshot</div>
+            <div style="margin-top: 10px" class="text-label">{{ packageSnapshotModel.packageName }}</div>
+            <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
+            <div class="text-value">Dung lượng tổng</div>
+            <div style="margin-top: 10px" class="text-label">{{ numberSSD + numberHDD  + numberHDDBonus + numberSSDBonus }} GB</div>
+            <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
+            <div class="text-value">Dung lượng HDD</div>
+            <div style="margin-top: 10px" class="text-label">{{ numberHDD + numberHDDBonus }} GB</div>
+            <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
+            <div class="text-value">Dung lượng SSD</div>
+            <div style="margin-top: 10px" class="text-label">{{ numberSSD + numberSSDBonus }} GB</div>
+            <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
+<!--            <nz-row style="margin-bottom: 10px" nzGutter="16">-->
+<!--              <nz-col nzSpan="16">-->
+<!--                <span class="text-value"> {{'app.service.cost' | i18n}} {{ this.validateForm.controls['time'].value || 0 }} {{'app.month' | i18n}} </span>-->
+<!--              </nz-col>-->
+<!--              <nz-col class="text-right" nzSpan="8">-->
+<!--            <span class="text-value" style="color: #0066b3" nzAlign="right">-->
+<!--              {{ totalAmount |number }}-->
+<!--              VND-->
+<!--            </span>-->
+<!--              </nz-col>-->
+<!--            </nz-row>-->
+<!--            <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>-->
+            <nz-row style="margin-bottom: 10px" nzGutter="16">
+              <nz-col nzSpan="16">
+                <span class="text-value"> {{'app.fee.resize' | i18n}}</span>
+              </nz-col>
+              <nz-col class="text-right" nzSpan="8">
+            <span class="text-value" style="color: #0066b3" nzAlign="right">
+              {{ totalAmount |number }}
+              VND
+            </span>
+              </nz-col>
+            </nz-row>
+            <nz-row style="margin-bottom: 10px" nzGutter="16">
+              <nz-col nzSpan="16">
+                <span class="text-value"> {{'app.cost.vat' | i18n}}</span>
+              </nz-col>
+              <nz-col class="text-right" nzSpan="8">
+            <span class="text-value" style="color: #0066b3" nzAlign="right">
+              {{ totalVat |number }}
+              VND
+            </span>
+              </nz-col>
+            </nz-row>
+            <nz-row style="
+            margin-bottom: 20px;
+            background-color: #cce9ff;
+            padding: 16px 0 16px 0;
+            border-radius: 8px;
+          " nzGutter="16">
+              <nz-col nzSpan="16">
+                <span class="text-label">{{'app.total.payment' | i18n}}</span><br />
+                <span class="text-note-italicized">{{'app.include.vat' | i18n:{"vat":"10"} }}</span>
+              </nz-col>
+              <nz-col class="text-right" nzSpan="8">
+                <span class="text-value" style="color: #ea3829" nzAlign="right">{{ totalPayment | number }} VND</span>
+              </nz-col>
+            </nz-row>
+            <nz-row>
+              <nz-col style="width: 100%">
+                <button style="width: 100%" nz-button nzSize="large" nzType="primary" (click)="navigateToPaymentSummary()"
+                        [disabled]="this.loadingCalculate || (numberHDDBonus + numberSSDBonus)==0" [nzLoading]="loadingCalculate">
+                  <span nz-icon nzType="wallet" nzTheme="outline"></span>
+                  <span [style.color]="this.loadingCalculate || (numberHDDBonus + numberSSDBonus)==0 ? 'gray' : 'white'">{{'app.button.resize' | i18n}}</span>
+                </button>
+              </nz-col>
+            </nz-row>
+          </nz-card>
+        </nz-affix>
+<!--        <nz-card class="right-form">-->
+<!--          <div class="right-title">-->
+<!--            <span class="text-card-header">Chi phí ước tính</span>-->
+<!--          </div>-->
 
-          <nz-row class="right-form-content-month" nzGutter="16">
-            <nz-col nzSpan="16">
-              <span class="text-value"> Chi phí tăng dung lượng </span>
-            </nz-col>
-            <nz-col class="text-right" nzSpan="8">
-              <span class="text-value month-money" nzAlign="right">
+<!--          <nz-row class="right-form-content-month" nzGutter="16">-->
+<!--            <nz-col nzSpan="16">-->
+<!--              <span class="text-value"> Chi phí tăng dung lượng </span>-->
+<!--            </nz-col>-->
+<!--            <nz-col class="text-right" nzSpan="8">-->
+<!--              <span class="text-value month-money" nzAlign="right">-->
 
-                <b *ngIf="orderItem?.orderItemPrices?.length > 0">{{orderItem?.orderItemPrices[0].unitPrice.amount}} {{orderItem?.orderItemPrices[0].unitPrice.currency}}</b>
-                <b *ngIf="orderItem?.orderItemPrices?.length <= 0">0 VNĐ</b>
-              </span>
-            </nz-col>
-          </nz-row>
-          <nz-row class="right-form-content-total" nzGutter="16">
-            <nz-col nzSpan="16">
-              <span class="text-label">Tổng thanh toán</span><br />
-              <span class="text-note-italicized">(Đã bao gồm 10% VAT)</span>
-            </nz-col>
-            <nz-col class="text-right" nzSpan="8">
-              <span class="text-value vat-money" nzAlign="right">
-                <span
-                  *ngIf="orderItem != undefined"
-                  class="text-value"
-                  style="color: #ea3829"
-                  nzAlign="right"
-                >
-                <!-- <b
-                *ngIf="orderItem != undefined">{{orderItem?.totalPayment?.amount}} {{orderItem?.totalPayment?.currency}}</b> -->
-              <!-- <b *ngIf="orderItem == undefined">0 VNĐ</b> -->
-                </span>
-                <span
-                  
-                  class="text-value"
-                  style="color: #ea3829"
-                  nzAlign="right"
-                >
-                  0 VND
-                </span>
-              </span>
-            </nz-col>
-          </nz-row>
-          <nz-row>
-            <nz-col style="width: 100%" class="text-right">
-              <button
-                style="width: 100%"
-                nz-button
-                nzSize="large"
-                nzType="primary"
-                [disabled]="!validateForm.valid"
-                (click)="navigateToPaymentSummary()"
-              >
-                <span nz-icon nzType="wallet" nzTheme="outline"></span>
-                Điều chỉnh
-              </button>
-            </nz-col>
-          </nz-row>
-        </nz-card>
+<!--                <b *ngIf="orderItem?.orderItemPrices?.length > 0">{{orderItem?.orderItemPrices[0].unitPrice.amount}} {{orderItem?.orderItemPrices[0].unitPrice.currency}}</b>-->
+<!--                <b *ngIf="orderItem?.orderItemPrices?.length <= 0">0 VNĐ</b>-->
+<!--              </span>-->
+<!--            </nz-col>-->
+<!--          </nz-row>-->
+<!--          <nz-row class="right-form-content-total" nzGutter="16">-->
+<!--            <nz-col nzSpan="16">-->
+<!--              <span class="text-label">Tổng thanh toán</span><br />-->
+<!--              <span class="text-note-italicized">(Đã bao gồm 10% VAT)</span>-->
+<!--            </nz-col>-->
+<!--            <nz-col class="text-right" nzSpan="8">-->
+<!--              <span class="text-value vat-money" nzAlign="right">-->
+<!--                <span-->
+<!--                  *ngIf="orderItem != undefined"-->
+<!--                  class="text-value"-->
+<!--                  style="color: #ea3829"-->
+<!--                  nzAlign="right"-->
+<!--                >-->
+<!--                &lt;!&ndash; <b-->
+<!--                *ngIf="orderItem != undefined">{{orderItem?.totalPayment?.amount}} {{orderItem?.totalPayment?.currency}}</b> &ndash;&gt;-->
+<!--              &lt;!&ndash; <b *ngIf="orderItem == undefined">0 VNĐ</b> &ndash;&gt;-->
+<!--                </span>-->
+<!--                <span-->
+
+<!--                  class="text-value"-->
+<!--                  style="color: #ea3829"-->
+<!--                  nzAlign="right"-->
+<!--                >-->
+<!--                  0 VND-->
+<!--                </span>-->
+<!--              </span>-->
+<!--            </nz-col>-->
+<!--          </nz-row>-->
+<!--          <nz-row>-->
+<!--            <nz-col style="width: 100%" class="text-right">-->
+<!--              <button-->
+<!--                style="width: 100%"-->
+<!--                nz-button-->
+<!--                nzSize="large"-->
+<!--                nzType="primary"-->
+<!--                [disabled]="!validateForm.valid"-->
+<!--                (click)="navigateToPaymentSummary()"-->
+<!--              >-->
+<!--                <span nz-icon nzType="wallet" nzTheme="outline"></span>-->
+<!--                Điều chỉnh-->
+<!--              </button>-->
+<!--            </nz-col>-->
+<!--          </nz-row>-->
+<!--        </nz-card>-->
       </nz-col>
     </nz-row>
+    <one-portal-popup-list-error
+      [isVisible]="isVisiblePopupError"
+      [errorList]="errorList"
+      (onCancel)="closePopupError()"
+    ></one-portal-popup-list-error>
   </form>
 </nz-content>

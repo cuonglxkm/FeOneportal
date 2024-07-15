@@ -6,8 +6,8 @@
 
   <div class="text-right">
     <share-users-combobox></share-users-combobox>
-    <region-select-dropdown (valueChanged)="onRegionChange($event)"></region-select-dropdown>
-    <project-select-dropdown (valueChanged)="onProjectChange($event)" [regionId]="selectedRegion"></project-select-dropdown>
+    <region-select-dropdown (regionChange)="onRegionChanged($event)" (valueChanged)="onRegionChange($event)"></region-select-dropdown>
+    <project-select-dropdown #projectCombobox (valueChanged)="onProjectChange($event)" [regionId]="selectedRegion"></project-select-dropdown>
   </div>
 </div>
 <div nz-row nzGutter="16">

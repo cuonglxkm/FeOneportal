@@ -15,17 +15,18 @@
       }}</nz-breadcrumb-item>
       <nz-breadcrumb-item>File Storage</nz-breadcrumb-item>
       <nz-breadcrumb-item
-        ><a [routerLink]="['/app-smart-cloud/file-system-snapshot/list']"
+        ><a [routerLink]="['/app-smart-cloud/file-system-snapshot']"
           >File System Snapshot</a
         >
       </nz-breadcrumb-item>
+      <nz-breadcrumb-item><a [routerLink]="['/app-smart-cloud/file-system-snapshot/detail/' + fileSystemSnapshotId]"
+        >{{ 'app.file.system.snapshot.detail' | i18n }}</a
+        ></nz-breadcrumb-item>
       <nz-breadcrumb-item
-        [routerLink]="
-          '/app-smart-cloud/file-storage/file-system/' +
-          idFileSystem +
-          '/extend'
-        "
-        >Gia hạn File System Snapshot
+        >
+        <a [routerLink]="['/app-smart-cloud/file-system-snapshot/extend/' +
+          fileSystemSnapshotId]"
+        >Gia hạn File System Snapshot</a>
       </nz-breadcrumb-item>
     </nz-breadcrumb>
     <ng-template #separatorTemplate
@@ -35,9 +36,10 @@
   <ng-template #action>
     <div class="alain-custom-action text-right">
       <region-select-dropdown
+      (regionChange)="onRegionChanged($event)"
         (valueChanged)="regionChanged($event)"
       ></region-select-dropdown>
-      <project-select-dropdown
+      <project-select-dropdown #projectCombobox
         (valueChanged)="projectChanged($event)"
         (userChanged)="userChanged($event)"
         [regionId]="region"
@@ -130,7 +132,9 @@
         <one-portal-service-time-extend *ngIf="fileSystemSnapshotDetail"
                                           [createDate]="fileSystemSnapshotDetail?.createTime"
                                           [expiredDate]="fileSystemSnapshotDetail?.expireDate"
-                                          (valueChanged)="onChangeTime($event)" />
+                                          (valueChanged)="onChangeTime($event)" 
+                                          [newExpiredDate]="this.orderItem.orderItemPrices[0].expiredDate"
+                                          />
       </nz-col>
       <nz-col nzSpan="8">
         <nz-affix [nzOffsetTop]="72">
@@ -270,3 +274,7 @@
     </nz-row>
   </form>
 </nz-content>
+<one-portal-popup-list-error
+    [isVisible]="isVisiblePopupError"
+    [errorList]="errorList"
+    (onCancel)="closePopupError()" />

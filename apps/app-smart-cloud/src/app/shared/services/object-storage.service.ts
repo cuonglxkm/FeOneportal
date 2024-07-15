@@ -1,7 +1,11 @@
 import { Inject, Injectable } from '@angular/core';
 import { BaseService } from './base.service';
 import { BehaviorSubject, Observable, throwError } from 'rxjs';
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import {
+  HttpClient,
+  HttpErrorResponse,
+  HttpHeaders,
+} from '@angular/common/http';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { Summary, UserInfoObjectStorage } from '../models/object-storage.model';
 import { BaseResponse } from '../../../../../../libs/common-utils/src';
@@ -20,10 +24,24 @@ export class ObjectStorageService extends BaseService {
     super();
   }
 
-  getUserInfo() {
+  httpOptions = {
+    headers: new HttpHeaders({
+      'Content-Type': 'application/json',
+      'User-Root-Id':
+        localStorage?.getItem('UserRootId') &&
+        Number(localStorage?.getItem('UserRootId')) > 0
+          ? Number(localStorage?.getItem('UserRootId'))
+          : this.tokenService?.get()?.userId,
+      Authorization: 'Bearer ' + this.tokenService.get()?.token,
+    }),
+  };
+
+  getUserInfo(regionId: number) {
     return this.http
       .get<UserInfoObjectStorage>(
-        this.baseUrl + this.ENDPOINT.provisions + '/object-storage/userinfo'
+        this.baseUrl +
+          this.ENDPOINT.provisions +
+          `/object-storage/userinfo?regionId=${regionId}`
       )
       .pipe(
         catchError((error: HttpErrorResponse) => {
@@ -45,12 +63,12 @@ export class ObjectStorageService extends BaseService {
     );
   }
 
-  getMonitorObjectStorage(bucketname: string, from: number) {
+  getMonitorObjectStorage(bucketname: string, from: number, regionId: number) {
     return this.http
       .get<Summary[]>(
         this.baseUrl +
           this.ENDPOINT.provisions +
-          `/object-storage/Monitor?from=${from}&bucketname=${bucketname}`
+          `/object-storage/Monitor?from=${from}&bucketname=${bucketname}&regionId=${regionId}`
       )
       .pipe(
         catchError((error: HttpErrorResponse) => {
@@ -69,5 +87,21 @@ export class ObjectStorageService extends BaseService {
     return this.http.get<any>(
       this.baseUrl + this.ENDPOINT.provisions + '/object-storage/user'
     );
+  }
+
+  getUsageOfUser(regionId: number): Observable<any> {
+    return this.http.get<any>(
+      this.baseUrl +
+        this.ENDPOINT.provisions +
+        `/object-storage/GetUsageOfUser?regionId=${regionId}`
+    );
+  }
+
+  getUsageOfBucket(bucketName: string, regionId: number): Observable<any> {
+    let url_ = `/object-storage/UsageOfBucket?bucketname=${bucketName}&regionId=${regionId}`;
+    return this.http.get(this.baseUrl + this.ENDPOINT.provisions + url_, {
+      headers: this.httpOptions.headers,
+      responseType: 'text',
+    });
   }
 }

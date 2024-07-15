@@ -52,7 +52,7 @@
 
 input,
 textarea,
-.border-card,
+.border-radius-card,
 .border-button {
   border-radius: 8px;
 }
@@ -73,8 +73,6 @@ small {
 }
 
 .summary-info {
-  text-align: right;
-  font-weight: 600;
   font-size: 16px;
 }
 
@@ -237,10 +235,10 @@ label, span {
   overflow: hidden;
 }
 
-.carousel-div {
+/* .carousel-div {
   overflow:hidden;
   -webkit-mask: linear-gradient(90deg,#0000,#000 6% 94%,#0000)
-}
+} */
 
 .item {
   padding: 10px;
@@ -365,4 +363,75 @@ label, span {
 
 .warning-description {
   font-size: 14px;
+}
+
+[data-theme='dark'] :host ::ng-deep .w-85 {
+  width: 85% !important;
+}
+
+[data-theme='dark'] :host ::ng-deep .item-header {
+  background-color: #141414;
+  border-bottom: 1px solid #E2E2E9;
+  text-align: center;
+  min-height: 110px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+}
+
+[data-theme='dark'] :host ::ng-deep .item-body {
+  background-color: #141414;
+  width: 100%;
+  text-align: center;
+  min-height: 68px;
+  justify-content: center;
+  align-items: center;
+  font-family: Inter;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 24px;
+  letter-spacing: 0.10000000149011612px;
+  padding: 20px;
+  cursor: pointer;
+}
+
+[data-theme='dark'] :host ::ng-deep .ant-select:not(.ant-select-customize-input) .ant-select-selector {
+  border-radius: 8px;
+}
+
+[data-theme='dark'] :host ::ng-deep .default-pack {
+  cursor: not-allowed;
+  background-color: #262626;
+  border-color: #434343;
+  color: #686868;
+}
+
+[data-theme='dark'] :host ::ng-deep .price {
+  width: 50%;
+  height: 100%;
+  color: #929292;
+  line-height: normal;
+  padding: 10px 0;
+}
+
+[data-theme='dark'] :host ::ng-deep .ant-input-affix-wrapper, button {
+  border-radius: 8px;
+}
+
+[data-theme='dark'] :host ::ng-deep label, span {
+  font-size: 16px;
+}
+
+[data-theme='dark'] :host ::ng-deep .price-panel {
+  background-color: #262626;
+  border-radius: 8px;
+}
+
+[data-theme='dark'] :host ::ng-deep .unit-color {
+  color: #DCDCDC;
+}
+
+[data-theme='dark'] :host ::ng-deep .description-config {
+  color: #DCDCDC;
 }

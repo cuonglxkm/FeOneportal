@@ -1,20 +1,24 @@
 <page-header
   [breadcrumb]="breadcrumb"
   [action]="action"
-  [title]="'Xem chi tiết IKE Policy'"
+  [title]="'app.ike.policy-detail' | i18n"
 >
   <ng-template #breadcrumb>
     <nz-breadcrumb [nzSeparator]="separatorTemplate">
       <nz-breadcrumb-item>
-        <a [routerLink]="['/']">Trang chủ</a>
+        <a [routerLink]="['/']">{{ 'app.breadcrumb.home' | i18n }}</a>
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>
-        Dịch vụ hạ tầng
+        {{ 'app.breadcrumb.infrastructure.service' | i18n }}
       </nz-breadcrumb-item>
-      <nz-breadcrumb-item><a [routerLink]="['/app-smart-cloud/vpn-site-to-site/manage']"
-        >VPN site to site</a
-      ></nz-breadcrumb-item>
-      <nz-breadcrumb-item>Xem chi tiết IKE Policy</nz-breadcrumb-item>
+      <nz-breadcrumb-item
+        ><a [routerLink]="['/app-smart-cloud/vpn-site-to-site']"
+          >VPN site to site</a
+        ></nz-breadcrumb-item
+      >
+      <nz-breadcrumb-item>{{
+        'app.ike.policy-detail' | i18n
+      }}</nz-breadcrumb-item>
     </nz-breadcrumb>
     <ng-template #separatorTemplate
       ><img src="assets/imgs/arrow-square-right.svg" alt="" />
@@ -24,274 +28,257 @@
     <div class="alain-custom-action text-right">
       <share-users-combobox></share-users-combobox>
       <region-select-dropdown
-      (valueChanged)="onRegionChange($event)"
-    ></region-select-dropdown>
-    <project-select-dropdown
-      [regionId]="region"
-      (valueChanged)="onProjectChange($event)"
-      (userChanged)="userChangeProject($event)"
-    ></project-select-dropdown>
+        (valueChanged)="onRegionChange($event)"
+        (regionChange)="onRegionChanged($event)"
+      ></region-select-dropdown>
+      <project-select-dropdown #projectCombobox
+        [regionId]="region"
+        (valueChanged)="onProjectChange($event)"
+        (userChanged)="userChangeProject($event)"
+      ></project-select-dropdown>
     </div>
   </ng-template>
 </page-header>
 
 <div nz-row [nzGutter]="16">
   <div nz-col [nzSpan]="24" class="gutter-row">
-    <nz-card style="border-radius: 8px;">
-      <h2 class="custom-title">Thông tin IKE Policy</h2>
+    <nz-card style="border-radius: 8px">
+      <h2 class="custom-title">{{ 'app.information' | i18n }} IKE Policy</h2>
       <form nz-form [nzLayout]="'vertical'">
         <div nz-row [nzGutter]="16">
-        <div nz-col [nzSpan]="12" class="gutter-row">
-          <nz-form-item >
-            <nz-form-control>
-            <nz-form-label nzFor="name"
-            >
-            <span>Name</span> (<span
-            style="color: rgba(252, 16, 16, 1)"
-            >*</span
-          >)
-          <img
-          nz-popover
-          [nzPopoverContent]="
-            'Tên của Ike Policy bao gồm các ký tự chữ thường a-z, chữ hoa A-Z, số 0-9, dấu gạch ngang (-) và dấu gạch dưới (_), có thể có khoảng trắng, tối thiểu 1 ký tự và tối đa 50 ký tự.'
-          "
-          nzPopoverPlacement="bottom"
-          style="margin-left: 5px"
-          src="assets/imgs/pajamas_question.svg"
-          alt=""
-        />
-            </nz-form-label
-          >
-            <input
-              nz-input
-              type="text"
-              value="{{ikePolicy?.name}}"  [disabled]="true"
-            class="input-custom"  
-            />
-            
-          </nz-form-control>
-          </nz-form-item>
-        </div>
-        <div nz-col [nzSpan]="12" class="gutter-row">
-          <nz-form-item >
-            <nz-form-control>
-            <nz-form-label nzFor="name"
-            >
-            <span>Authorization Algorithm</span> (<span
-            style="color: rgba(252, 16, 16, 1)"
-            >*</span
-          >)
-          <img
-                  nz-popover
-                  [nzPopoverContent]="
-                    'Thuật toán xác thực danh tính cho Ike Policy bao gồm các lựa chọn: sha1, sha256, sha384, sha512 (dựa trên thuật toán băm mã hóa dựa theo số bit) mặc định sha1.'
-                  "
-                  nzPopoverPlacement="bottom"
-                  style="margin-left: 5px"
-                  src="assets/imgs/pajamas_question.svg"
-                  alt=""
+          <div nz-col [nzSpan]="12" class="gutter-row">
+            <nz-form-item>
+              <nz-form-control>
+                <nz-form-label nzFor="name">
+                  <span>{{ 'form.account.name' | i18n }}</span> (<span
+                    style="color: rgba(252, 16, 16, 1)"
+                    >*</span
+                  >)
+                  <img
+                    nz-popover
+                    [nzPopoverContent]="
+                      'app.ike.policy-create.name.tooltip' | i18n
+                    "
+                    nzPopoverPlacement="bottom"
+                    style="margin-left: 5px"
+                    src="assets/imgs/pajamas_question.svg"
+                    alt=""
+                  />
+                </nz-form-label>
+                <input
+                  nz-input
+                  type="text"
+                  value="{{ ikePolicy?.name }}"
+                  [disabled]="true"
+                  class="input-custom"
                 />
-            </nz-form-label
-          >
-            <input
-              nz-input
-              type="text"
-              value="{{ikePolicy?.
-                authorizationAlgorithm}}"  [disabled]="true"
-              class="input-custom"  
-            />
-          </nz-form-control>
-          </nz-form-item>
-        </div>
-        <div nz-col [nzSpan]="12" class="gutter-row">
-          <nz-form-item >
-            <nz-form-control nzErrorTip="File System không đuợc để trống!">
-            <nz-form-label nzFor="name"
-            >
-            <span>IKE version</span> (<span
-            style="color: rgba(252, 16, 16, 1)"
-            >*</span
-          >)
-          <img
-          nz-popover
-          [nzPopoverContent]="
-            'Là một giao thức được sử dụng để thiết lập liên lạc an toàn giữa hai thiết bị qua internet. Có 2 lựa chọn v1 và v2, v2 sẽ bao gồm nhiều phương pháp xác thực và mã hóa hơn đảm bảo tính bảo mật và toàn vẹn dữ liệu hơn. mặc định là v1.'
-          "
-          nzPopoverPlacement="bottom"
-          style="margin-left: 5px"
-          src="assets/imgs/pajamas_question.svg"
-          alt=""
-        />
-            </nz-form-label
-          >
-            <input
-            nz-input
-            type="text"
-            value="{{ikePolicy?.
-              ikeVersion}}"  [disabled]="true"
-            class="input-custom"  
-          />
-            
-          </nz-form-control>
-          </nz-form-item>
-        </div>
-        <div nz-col [nzSpan]="12" class="gutter-row">
-          <nz-form-item >
-            <nz-form-control>
-            <nz-form-label nzFor="name"
-            >
-            <span>Encryption Algorithm</span> (<span
-            style="color: rgba(252, 16, 16, 1)"
-            >*</span
-          >)
-          <img
-          nz-popover
-          [nzPopoverContent]="
-            'Thuật toán mã hóa đối xứng sử dụng cho Ike Policy bao gồm các lựa chọn: 3des, aes-128, aes-192, aes-256 ( dựa theo thuật toán mã hóa đối xứng  với độ dài khóa tương đương với số bit) mặc định aes-128.'
-          "
-          nzPopoverPlacement="bottom"
-          style="margin-left: 5px"
-          src="assets/imgs/pajamas_question.svg"
-          alt=""
-        />
-            </nz-form-label
-          >
-            <input
-            nz-input
-            type="text"
-            value="{{ikePolicy?.
-              encryptionAlgorithm}}"  [disabled]="true"
-            class="input-custom"  
-          />
-          </nz-form-control>
-          </nz-form-item>
-        </div>
-        <div nz-col [nzSpan]="12" class="gutter-row">
-          <nz-form-item >
-            <nz-form-control>
-            <nz-form-label nzFor="name"
-            >
-            <span>Lifetime Units</span> (<span
-            style="color: rgba(252, 16, 16, 1)"
-            >*</span
-          >)
-          <img
-          nz-popover
-          [nzPopoverContent]="
-            'Đơn vị đo thời gian tồn tại của Ike Policy key (mặc định là giây).'
-          "
-          nzPopoverPlacement="bottom"
-          style="margin-left: 5px"
-          src="assets/imgs/pajamas_question.svg"
-          alt=""
-        />
-            </nz-form-label
-          >
-            <input
-            nz-input
-            type="text"
-            value="{{ikePolicy?.
-              lifetimeUnit}}"  [disabled]="true"
-            class="input-custom"  
-          />
-            
-          </nz-form-control>
-          </nz-form-item>
-        </div>
-        <div nz-col [nzSpan]="12" class="gutter-row">
-          <nz-form-item >
-            <nz-form-control>
-            <nz-form-label nzFor="name"
-            >
-            <span>Lifetime Value</span> (<span
-            style="color: rgba(252, 16, 16, 1)"
-            >*</span
-          >)
-          <img
-                  nz-popover
-                  [nzPopoverContent]="
-                    'Giá trị của Lifetime units, Khách hàng tùy ý nhập giá trị lớn hơn 60 (mặc định là 3600).'
-                  "
-                  nzPopoverPlacement="bottom"
-                  style="margin-left: 5px"
-                  src="assets/imgs/pajamas_question.svg"
-                  alt=""
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+          <div nz-col [nzSpan]="12" class="gutter-row">
+            <nz-form-item>
+              <nz-form-control>
+                <nz-form-label nzFor="name">
+                  <span>Authorization Algorithm</span> (<span
+                    style="color: rgba(252, 16, 16, 1)"
+                    >*</span
+                  >)
+                  <img
+                    nz-popover
+                    [nzPopoverContent]="
+                      'app.ike.policy-create.Authorization.tooltip' | i18n
+                    "
+                    nzPopoverPlacement="bottom"
+                    style="margin-left: 5px"
+                    src="assets/imgs/pajamas_question.svg"
+                    alt=""
+                  />
+                </nz-form-label>
+                <input
+                  nz-input
+                  type="text"
+                  value="{{ ikePolicy?.authorizationAlgorithm }}"
+                  [disabled]="true"
+                  class="input-custom"
                 />
-            </nz-form-label
-          >
-            <input
-            nz-input
-            type="text"
-            value="{{ikePolicy?.
-              lifetimeValue}}"  [disabled]="true"
-            class="input-custom"  
-          />
-            
-          </nz-form-control>
-          </nz-form-item>
-        </div>
-        <div nz-col [nzSpan]="12" class="gutter-row">
-          <nz-form-item >
-            <nz-form-control>
-            <nz-form-label nzFor="name"
-            >
-            <span>Perfect Forward Secrecy</span> (<span
-            style="color: rgba(252, 16, 16, 1)"
-            >*</span
-          >)
-          <img
-                  nz-popover
-                  [nzPopoverContent]="
-                    'Perfect Forward Secrecy (PFS) là một tính năng bảo mật đảm bảo rằng ngay cả khi kẻ tấn công giành được quyền truy cập vào thông tin liên lạc được mã hóa, thì chúng cũng không thể giải mã các phiên liên lạc trước đây nếu chúng không có quyền truy cập vào các khóa mã hóa được sử dụng trong các phiên đó. Có các lựa chọn là group2, group5, group14 (mặc định là group5).'
-                  "
-                  nzPopoverPlacement="bottom"
-                  style="margin-left: 5px"
-                  src="assets/imgs/pajamas_question.svg"
-                  alt=""
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+          <div nz-col [nzSpan]="12" class="gutter-row">
+            <nz-form-item>
+              <nz-form-control>
+                <nz-form-label nzFor="name">
+                  <span>IKE version</span> (<span
+                    style="color: rgba(252, 16, 16, 1)"
+                    >*</span
+                  >)
+                  <img
+                    nz-popover
+                    [nzPopoverContent]="
+                      'app.ike.policy-create.version.tooltip' | i18n
+                    "
+                    nzPopoverPlacement="bottom"
+                    style="margin-left: 5px"
+                    src="assets/imgs/pajamas_question.svg"
+                    alt=""
+                  />
+                </nz-form-label>
+                <input
+                  nz-input
+                  type="text"
+                  value="{{ ikePolicy?.ikeVersion }}"
+                  [disabled]="true"
+                  class="input-custom"
                 />
-            </nz-form-label
-          >
-            <input
-            nz-input
-            type="text"
-            value="{{ikePolicy?.
-              perfectForwardSecrey}}"  [disabled]="true"
-            class="input-custom"  
-          />
-          </nz-form-control>
-          </nz-form-item>
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+          <div nz-col [nzSpan]="12" class="gutter-row">
+            <nz-form-item>
+              <nz-form-control>
+                <nz-form-label nzFor="name">
+                  <span>Encryption Algorithm</span> (<span
+                    style="color: rgba(252, 16, 16, 1)"
+                    >*</span
+                  >)
+                  <img
+                    nz-popover
+                    [nzPopoverContent]="
+                      'app.ike.policy-create.Encryption.tooltip' | i18n
+                    "
+                    nzPopoverPlacement="bottom"
+                    style="margin-left: 5px"
+                    src="assets/imgs/pajamas_question.svg"
+                    alt=""
+                  />
+                </nz-form-label>
+                <input
+                  nz-input
+                  type="text"
+                  value="{{ ikePolicy?.encryptionAlgorithm }}"
+                  [disabled]="true"
+                  class="input-custom"
+                />
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+          <div nz-col [nzSpan]="12" class="gutter-row">
+            <nz-form-item>
+              <nz-form-control>
+                <nz-form-label nzFor="name">
+                  <span>Lifetime Units</span> (<span
+                    style="color: rgba(252, 16, 16, 1)"
+                    >*</span
+                  >)
+                  <img
+                    nz-popover
+                    [nzPopoverContent]="
+                      'app.ike.policy-create.lifetime.tooltip' | i18n
+                    "
+                    nzPopoverPlacement="bottom"
+                    style="margin-left: 5px"
+                    src="assets/imgs/pajamas_question.svg"
+                    alt=""
+                  />
+                </nz-form-label>
+                <input
+                  nz-input
+                  type="text"
+                  value="{{ ikePolicy?.lifetimeUnit }}"
+                  [disabled]="true"
+                  class="input-custom"
+                />
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+          <div nz-col [nzSpan]="12" class="gutter-row">
+            <nz-form-item>
+              <nz-form-control>
+                <nz-form-label nzFor="name">
+                  <span>Lifetime Value</span> (<span
+                    style="color: rgba(252, 16, 16, 1)"
+                    >*</span
+                  >)
+                  <img
+                    nz-popover
+                    [nzPopoverContent]="
+                      'app.ike.policy-create.lifetime.value.tooltip' | i18n
+                    "
+                    nzPopoverPlacement="bottom"
+                    style="margin-left: 5px"
+                    src="assets/imgs/pajamas_question.svg"
+                    alt=""
+                  />
+                </nz-form-label>
+                <input
+                  nz-input
+                  type="text"
+                  value="{{ ikePolicy?.lifetimeValue }}"
+                  [disabled]="true"
+                  class="input-custom"
+                />
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+          <div nz-col [nzSpan]="12" class="gutter-row">
+            <nz-form-item>
+              <nz-form-control>
+                <nz-form-label nzFor="name">
+                  <span>Perfect Forward Secrecy</span> (<span
+                    style="color: rgba(252, 16, 16, 1)"
+                    >*</span
+                  >)
+                  <img
+                    nz-popover
+                    [nzPopoverContent]="
+                      'app.ike.policy-create.pfs.tooltip' | i18n
+                    "
+                    nzPopoverPlacement="bottom"
+                    style="margin-left: 5px"
+                    src="assets/imgs/pajamas_question.svg"
+                    alt=""
+                  />
+                </nz-form-label>
+                <input
+                  nz-input
+                  type="text"
+                  value="{{ ikePolicy?.perfectForwardSecrey }}"
+                  [disabled]="true"
+                  class="input-custom"
+                />
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+          <div nz-col [nzSpan]="12" class="gutter-row">
+            <nz-form-item>
+              <nz-form-control>
+                <nz-form-label nzFor="name">
+                  <span>IKE Phase1 Negotiation Mode</span> (<span
+                    style="color: rgba(252, 16, 16, 1)"
+                    >*</span
+                  >)
+                  <img
+                    nz-popover
+                    [nzPopoverContent]="
+                      'app.ike.policy-create.Negotiation.tooltip' | i18n
+                    "
+                    nzPopoverPlacement="bottom"
+                    style="margin-left: 5px"
+                    src="assets/imgs/pajamas_question.svg"
+                    alt=""
+                  />
+                </nz-form-label>
+                <input
+                  nz-input
+                  type="text"
+                  value="{{ ikePolicy?.ikePhase1NegotiationMode }}"
+                  [disabled]="true"
+                  class="input-custom"
+                />
+              </nz-form-control>
+            </nz-form-item>
+          </div>
         </div>
-        <div nz-col [nzSpan]="12" class="gutter-row">
-          <nz-form-item >
-            <nz-form-control>
-            <nz-form-label nzFor="name"
-            >
-            <span>IKE Phase1 Negotiation Mode</span> (<span
-            style="color: rgba(252, 16, 16, 1)"
-            >*</span
-          >)
-          <img
-          nz-popover
-          [nzPopoverContent]="
-            'Có 2 lựa chọn là Main và aggressive ( mặc định là main sẽ đảm bảo mật hơn)'
-          "
-          nzPopoverPlacement="bottom"
-          style="margin-left: 5px"
-          src="assets/imgs/pajamas_question.svg"
-          alt=""
-        />
-            </nz-form-label
-          >
-            <input
-            nz-input
-            type="text"
-            value="{{ikePolicy?.ikePhase1NegotiationMode}}"  [disabled]="true"
-            class="input-custom"  
-          />
-          </nz-form-control>
-          </nz-form-item>
-        </div>
-      </div>
       </form>
     </nz-card>
   </div>
@@ -304,5 +291,4 @@
     justify-content: flex-end;
     height: 100%;
   "
->
-</div>
+></div>

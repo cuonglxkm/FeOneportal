@@ -1,5 +1,5 @@
-import { Component, Inject, OnInit } from '@angular/core';
-import { KubernetesCluster, Order, OrderItem } from '../../model/cluster.model';
+import { ChangeDetectorRef, Component, Inject, OnInit } from '@angular/core';
+import { KubernetesCluster, Order, OrderItem, OrderItemPayment, OrderPayment } from '../../model/cluster.model';
 import { RegionModel } from '../../shared/models/region.model';
 import { KubernetesConstant } from '../../constants/kubernetes.constant';
 import { ProjectModel } from '../../shared/models/project.model';
@@ -8,13 +8,14 @@ import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 import { PackModel } from '../../model/pack.model';
-import { forkJoin } from 'rxjs';
+import { finalize, forkJoin, map } from 'rxjs';
 import { VlanService } from '../../services/vlan.service';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { PriceModel } from '../../model/price.model';
 import { UserInfo } from '../../model/user.model';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from '../../core/i18n/i18n.service';
+import { CostService } from '../../services/cost.service';
 
 @Component({
   selector: 'one-portal-extension',
@@ -28,6 +29,7 @@ export class ExtensionComponent implements OnInit {
 
   totalCost: number;
   vatCost: number;
+  vatPercent: number;
   costByMonth: number;
   costAMonth: number;
   extendMonth: number;
@@ -49,7 +51,9 @@ export class ExtensionComponent implements OnInit {
     private router: Router,
     private vlanService: VlanService,
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
-    @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService
+    @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
+    private costService: CostService,
+    private cdr: ChangeDetectorRef
   ) {
     this.isShowModalCancelExtend = false;
     this.isSubmitting = false;
@@ -73,6 +77,10 @@ export class ExtensionComponent implements OnInit {
   onRegionChange(region: RegionModel) {
     this.regionId = region.regionId;
     this.cloudProfileId = KubernetesConstant.OPENSTACK_LABEL;
+  }
+
+  onProjectChange(project: ProjectModel) {
+    this.projectId = project.id;
 
     let detailClusterObs = this.clusterService.getDetailCluster(this.serviceOrderCode);
     let listPackObs = this.clusterService.getListPack(this.cloudProfileId);
@@ -103,10 +111,6 @@ export class ExtensionComponent implements OnInit {
     });
   }
 
-  onProjectChange(project: ProjectModel) {
-    this.projectId = project.id;
-  }
-
   userInfo: UserInfo;
   getUserInfo(userId: number) {
     this.clusterService.getUserInfo(userId)
@@ -130,32 +134,9 @@ export class ExtensionComponent implements OnInit {
     .subscribe((r: any) => {
       if (r && r.code == 200) {
         this.listOfPriceItem = r.data;
-        this.initPrice();
+        // this.initPrice();
       } else {
         this.notificationService.error(this.i18n.fanyi('app.status.fail'), r.message);
-      }
-    });
-  }
-
-  priceOfCpu: number;
-  priceOfRam: number;
-  priceOfSsd: number;
-  priceOfHdd: number;
-  initPrice() {
-    this.listOfPriceItem.forEach(data => {
-      switch (data.item) {
-        case 'cpu':
-          this.priceOfCpu = data.price;
-          break;
-        case 'ram':
-          this.priceOfRam = data.price;
-          break;
-        case 'storage_ssd':
-          this.priceOfSsd = data.price;
-          break;
-        case 'storage_hdd':
-          this.priceOfHdd = data.price;
-          break;
       }
     });
   }
@@ -197,16 +178,59 @@ export class ExtensionComponent implements OnInit {
     this.setUsageTime();
   }
 
+  isCalculating: boolean = false;
+  getTotalAmount(data: OrderPayment) {
+    this.isCalculating = true;
+    this.costService.getTotalAmount(data)
+    .pipe(finalize(() => {
+      this.isCalculating = false;
+      this.cdr.detectChanges();
+    }), map((r: any) => r.data))
+    .subscribe((r: any) => {
+      this.vatPercent = r.currentVAT;
+      this.vatCost = r.totalVAT.amount;
+      this.costByMonth = r.totalAmount.amount;
+      this.totalCost = r.totalPayment.amount;
+    });
+  }
+
+  async onHandleGetTotalAmount() {
+    let orderPayment: OrderPayment = new OrderPayment();
+    orderPayment.projectId = this.projectId;
+    console.log({projectId: this.projectId});
+    orderPayment.orderItems = [];
+
+    let orderItemPayment: OrderItemPayment = new OrderItemPayment();
+    orderItemPayment.sortItem = 0;
+    orderItemPayment.orderItemQuantity = 1;
+    orderItemPayment.specificationType = KubernetesConstant.CLUSTER_EXTEND_TYPE;
+    orderItemPayment.serviceDuration = this.extendMonth;
+    orderItemPayment.specificationString = JSON.stringify({
+      serviceInstanceId: 123,
+      currentOfferId: this.detailCluster.offerId,
+      regionId: this.regionId,
+      totalCpu: this.totalCpu,
+      totalRam: this.totalRam,
+      totalStorage: this.totalStorage
+    });
+
+    orderPayment.orderItems = [...orderPayment.orderItems, orderItemPayment];
+
+    this.getTotalAmount(orderPayment);
+  }
 
   expectedExpirationDate: number;
   setUsageTime() {
     let d = new Date(this.expiryDate);
-    d.setDate(d.getDate() + Number(this.extendMonth) * 30 + 1);
+    d.setDate(d.getDate() + Number(this.extendMonth) * 30);
     this.expectedExpirationDate = d.getTime();
 
     this.onCalculatePrice();
   }
 
+  totalRam: number;
+  totalCpu: number;
+  totalStorage: number;
   onCalculatePrice() {
     let offerId = this.detailCluster.offerId;
 
@@ -215,7 +239,7 @@ export class ExtensionComponent implements OnInit {
       this.costByMonth = this.currentPack.price * this.extendMonth;
     } else {
       let wgs = this.detailCluster.workerGroup;
-      let totalRam = 0, totalCpu = 0, totalStorage = 0;
+      this.totalRam = 0, this.totalCpu = 0, this.totalStorage = 0;
 
       for (let i = 0; i < wgs.length; i++) {
         const cpu = wgs[i].cpu ? wgs[i].cpu : 0;
@@ -229,17 +253,13 @@ export class ExtensionComponent implements OnInit {
           nodeNumber = wgs[i].minimumNode ? wgs[i].minimumNode : 0;
         }
 
-        totalCpu += nodeNumber * cpu;
-        totalRam += nodeNumber * ram;
-        totalStorage += nodeNumber * storage;
+        this.totalCpu += nodeNumber * cpu;
+        this.totalRam += nodeNumber * ram;
+        this.totalStorage += nodeNumber * storage;
       }
-
-      this.costAMonth = totalRam * this.priceOfRam + totalCpu * this.priceOfCpu + totalStorage * this.priceOfSsd;
-      this.costByMonth = this.costAMonth * this.extendMonth;
     }
 
-    this.vatCost = this.costByMonth * 0.1;
-    this.totalCost = this.costByMonth + this.vatCost;
+    this.onHandleGetTotalAmount();
   }
 
   onCalculateResource() {
@@ -264,6 +284,23 @@ export class ExtensionComponent implements OnInit {
     return {totalRam, totalCpu, totalStorage};
   }
 
+  signature: string;
+  onValidateExtend() {
+    let specification = this.setDataExtend();
+
+    this.isSubmitting = true;
+    this.clusterService.validateExtendService({Specification: JSON.stringify(specification)})
+    .pipe(finalize(() => this.isSubmitting = false))
+    .subscribe((r: any) => {
+      if (r && r.code == 200) {
+        this.signature = r.data;
+        this.onExtendService();
+      } else {
+        this.notificationService.error(this.i18n.fanyi('app.status.fail'), r.message);
+      }
+    });
+  }
+
   onExtendService() {
     let order = new Order();
     const userId = this.tokenService.get()?.userId;
@@ -272,14 +309,28 @@ export class ExtensionComponent implements OnInit {
     order.orderItems = [];
 
     let orderItem = new OrderItem();
-    orderItem.price = this.costAMonth;
+    orderItem.price = this.costByMonth;
     orderItem.serviceDuration = this.extendMonth;
     orderItem.orderItemQuantity = 1;
     orderItem.specificationType = KubernetesConstant.CLUSTER_EXTEND_TYPE;
 
     const resource = this.onCalculateResource();
+    let req = this.setDataExtend();
+    orderItem.specification = JSON.stringify(req);
+    orderItem.signature = this.signature;
+
+    order.orderItems = [...order.orderItems, orderItem];
+
+    // console.log({order: order});
+    let returnPath = window.location.pathname;
+    this.router.navigate(['/app-smart-cloud/order/cart'], {state: {data: order, path: returnPath}});
+  }
+
+  setDataExtend() {
+    const resource = this.onCalculateResource();
     let req = {
       serviceName: this.detailCluster.clusterName,
+      serviceInstanceId: this.detailCluster.id,
       newExpireDate: new Date(this.expectedExpirationDate).toISOString().substring(0, 19),
       serviceType: KubernetesConstant.K8S_TYPE_ID,
       currentOfferId: this.detailCluster.offerId,
@@ -295,13 +346,8 @@ export class ExtensionComponent implements OnInit {
         UserEmail: this.userInfo.email
       })
     };
-    orderItem.specification = JSON.stringify(req);
 
-    order.orderItems = [...order.orderItems, orderItem];
-
-    // console.log({order: order});
-    let returnPath = window.location.pathname;
-    this.router.navigate(['/app-smart-cloud/order/cart'], {state: {data: order, path: returnPath}});
+    return req;
   }
 
   back2list() {

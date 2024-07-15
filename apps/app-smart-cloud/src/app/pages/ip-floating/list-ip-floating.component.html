@@ -12,8 +12,8 @@
   <ng-template #action>
     <div class="alain-custom-action text-right">
       <share-users-combobox></share-users-combobox>
-      <region-select-dropdown (valueChanged)="onRegionChange($event)"></region-select-dropdown>
-      <project-select-dropdown [regionId]="region"
+      <region-select-dropdown (regionChange)="onRegionChanged($event)" (valueChanged)="onRegionChange($event)"></region-select-dropdown>
+      <project-select-dropdown #projectCombobox [regionId]="region"
                                (valueChanged)="projectChange($event)"
                                (userChanged)="projectChange($event)"></project-select-dropdown>
     </div>
@@ -38,7 +38,7 @@
           <img src="assets/imgs/search.svg" alt="" style="cursor: pointer"/>
         </ng-template>
       </nz-col>
-      <nz-col nzSpan="8" style="flex:none;" *ngIf="projectType == 0">
+      <nz-col nzSpan="8" style="flex:none;" *ngIf="projectType != 1">
         <one-portal-create-ip-floating [region]="region" [project]="project" [projectType]="projectType" (onOk)="handleOkCreateIpFloating()" />
       </nz-col>
     </nz-row>
@@ -82,10 +82,10 @@
                                            [project]="project"
                                            [idIpFloating]="data.id"
                                            (onOk)="handleOkDetachIpFloating()" />
-            <img *ngIf="projectType == 0" style="padding-right: 10px;" src="assets/imgs/calendar-tick.svg"
+            <img *ngIf="projectType != 1" style="padding-right: 10px;" src="assets/imgs/calendar-tick.svg"
                  nz-tooltip nzTooltipTitle="{{'app.extend' | i18n}} IP Floating" nzTooltipPlacement="bottom"
                  [routerLink]="['/app-smart-cloud/networks/ip-floating-normal/' + data.id + '/extend']"/>
-            <one-portal-delete-ip-floating *ngIf="data.typeIP == WanFloating || projectType == 0" [region]="region"
+            <one-portal-delete-ip-floating *ngIf="data.typeIP == WanFloating || projectType != 1" [region]="region"
                  [project]="project"
                  [idIpFloating]="data.id"
                  [ip]="data.ipAddress"

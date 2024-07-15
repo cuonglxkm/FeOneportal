@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject, OnInit, ViewChild } from '@angular/core';
 import { AttachedDto, VolumeDTO } from '../../../../shared/dto/volume.dto';
 import { VolumeService } from '../../../../shared/services/volume.service';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -9,6 +9,9 @@ import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from '@core';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { SizeInCloudProject } from 'src/app/shared/models/project.model';
+import { CatalogService } from '../../../../shared/services/catalog.service';
+import { SupportService } from '../../../../shared/models/catalog.model';
+import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
 
 @Component({
   selector: 'app-detail-volume',
@@ -33,15 +36,22 @@ export class DetailVolumeComponent implements OnInit {
 
 
   sizeInCloudProject: SizeInCloudProject = new SizeInCloudProject();
-
+  @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
   regionChanged(region: RegionModel) {
     this.region = region.regionId;
     // this.projectService.getByRegion(this.region).subscribe(data => {
     //   if (data.length){
     //     localStorage.setItem("projectId", data[0].id.toString())
+    if(this.projectCombobox){
+      this.projectCombobox.loadProjects(true, region.regionId);
+    }
     this.router.navigate(['/app-smart-cloud/volumes']);
     //   }
     // });
+  }
+
+  onRegionChanged(region: RegionModel) {
+    this.region = region.regionId;
   }
 
   projectChanged(project: ProjectModel) {
@@ -62,6 +72,7 @@ export class DetailVolumeComponent implements OnInit {
     let regionAndProject = getCurrentRegionAndProject();
     this.region = regionAndProject.regionId;
     this.project = regionAndProject.projectId;
+    this.getActiveServiceByRegion()
     // this.customerId = this.tokenService.get()?.userId
     this.getVolumeById(Number.parseInt(idVolume));
   }
@@ -76,7 +87,7 @@ export class DetailVolumeComponent implements OnInit {
 
   getVolumeById(idVolume: number) {
     this.isLoading = true;
-    this.volumeSevice.getVolumeById(idVolume).subscribe(data => {
+    this.volumeSevice.getVolumeById(idVolume, this.project).subscribe(data => {
         this.isLoading = false;
         console.log('data get volume by id', data);
         this.volumeInfo = data;
@@ -116,11 +127,44 @@ export class DetailVolumeComponent implements OnInit {
 
   volumeStatus: Map<String, string>;
 
+  typeMultiple: boolean;
+  typeEncrypt: boolean;
+  typeSnapshot: boolean;
+  serviceActiveByRegion: SupportService[] = [];
+
+  getActiveServiceByRegion() {
+    this.isLoading = true
+    this.catalogService.getActiveServiceByRegion(
+      ['volume-ssd', 'volume-hdd', 'MultiAttachment', 'Encryption', 'volume-snapshot-ssd', 'volume-snapshot-hdd'], this.region)
+      .subscribe(data => {
+        this.isLoading = false
+        this.serviceActiveByRegion = data;
+        this.serviceActiveByRegion.forEach(item => {
+          if(['volume-snapshot-hdd', 'volume-snapshot-ssd'].includes(item.productName)){
+            this.typeSnapshot = item.isActive
+          }
+          if(['MultiAttachment'].includes(item.productName)){
+            this.typeMultiple = item.isActive
+          }
+          if(['Encryption'].includes(item.productName)){
+            this.typeEncrypt = item.isActive
+          }
+        })
+      }, error => {
+        this.isLoading = false
+        this.typeEncrypt = false
+        this.typeMultiple = false
+        this.typeSnapshot = false
+        this.serviceActiveByRegion = []
+      });
+  }
+
   constructor(@Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
               private volumeSevice: VolumeService,
               private router: Router,
               private activatedRoute: ActivatedRoute,
               private notification: NzNotificationService,
+              private catalogService: CatalogService,
               @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService) {
 
 

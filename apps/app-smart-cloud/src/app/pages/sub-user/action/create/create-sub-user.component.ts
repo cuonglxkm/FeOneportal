@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
 import { FormCreateSubUser } from '../../../../shared/models/sub-user.model';
@@ -10,6 +10,7 @@ import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { RegionModel, ProjectModel } from '../../../../../../../../libs/common-utils/src';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from '@core';
+import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
 
 @Component({
   selector: 'one-portal-create-sub-user',
@@ -40,7 +41,7 @@ export class CreateSubUserComponent implements OnInit{
   })
 
   nameList: string[] = []
-
+  @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
   constructor(private router: Router,
               private fb: NonNullableFormBuilder,
               private objectStorageService: ObjectStorageService,
@@ -65,6 +66,13 @@ export class CreateSubUserComponent implements OnInit{
 
   regionChanged(region: RegionModel) {
     this.region = region.regionId
+    if(this.projectCombobox){
+      this.projectCombobox.loadProjects(true, region.regionId);
+    }
+  }
+
+  onRegionChanged(region: RegionModel) {
+    this.region = region.regionId;
   }
 
   projectChanged(project: ProjectModel) {
@@ -80,7 +88,7 @@ export class CreateSubUserComponent implements OnInit{
   }
 
   getListSubUser() {
-    this.subUserService.getListSubUser(null, 99999, 1).subscribe(data => {
+    this.subUserService.getListSubUser(null, 99999, 1, this.region).subscribe(data => {
       data?.records?.forEach(item => {
         this.nameList?.push(item?.subUserId);
       });
@@ -97,6 +105,7 @@ export class CreateSubUserComponent implements OnInit{
       formCreate.generate_secret = true
       formCreate.secret_key = ""
       formCreate.key_type = "s3"
+      formCreate.regionId = this.region
       if(this.validateForm.controls.access.value.includes('none')) {
         formCreate.access = ""
       } else {
@@ -112,7 +121,7 @@ export class CreateSubUserComponent implements OnInit{
   }
 
   getInformationOfUserObject() {
-    this.objectStorageService.getUserInfo().subscribe(data => {
+    this.objectStorageService.getUserInfo(this.region).subscribe(data => {
       console.log('data', data)
       this.userInfoObjectStorage = data
     })

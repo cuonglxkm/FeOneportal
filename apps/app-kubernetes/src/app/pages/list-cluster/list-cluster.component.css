@@ -22,11 +22,7 @@
   text-align: right;
 }
 
-.header-table {
-  background-color: #E2EEFC;
-}
-
-p {
+p, span {
   font-size: 16px;
 }
 
@@ -95,6 +91,10 @@ img {
   border-radius: 4px;
 }
 
+.content {
+  font-size: 16px;
+}
+
 .description-title {
   font-weight: 600;
   font-size: 28px;
@@ -123,4 +123,40 @@ img {
 .icon-action {
   cursor: pointer;
   width: fit-content;
+}
+
+/* dark theme */
+[data-theme='dark'] :host ::ng-deep .description-content {
+  width: 55%;
+  margin-left: auto;
+  margin-right: auto;
+  font-size: 16px;
+  color: #DDDDDD;
+}
+
+[data-theme='dark'] :host ::ng-deep .content-table {
+  color: #DDDDDD;
+}
+
+[data-theme='dark'] :host ::ng-deep .ant-select:not(.ant-select-customize-input) .ant-select-selector {
+  border-radius: 8px;
+}
+
+/* compact theme */
+[data-theme='compact'] :host ::ng-deep .ant-select:not(.ant-select-customize-input) .ant-select-selector {
+  border-radius: 8px;
+  font-size: 14px;
+}
+
+[data-theme='compact'] :host ::ng-deep .ant-input-affix-wrapper {
+  border-radius: 8px;
+}
+
+[data-theme='compact'] :host ::ng-deep .content {
+  font-size: 14px;
+}
+
+[data-theme='compact'] :host ::ng-deep .header-table {
+  font-weight: 600;
+  background-color: #E2EEFC;
 }

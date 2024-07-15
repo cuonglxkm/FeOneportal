@@ -27,9 +27,10 @@
     <div class="alain-custom-action text-right">
       <share-users-combobox></share-users-combobox>
       <region-select-dropdown
+        (regionChange)="onRegionChanged($event)"
         (valueChanged)="regionChanged($event)"
       ></region-select-dropdown>
-      <project-select-dropdown
+      <project-select-dropdown #projectCombobox
         (valueChanged)="projectChanged($event)"
         (userChanged)="userChanged($event)"
         [regionId]="region"
@@ -94,13 +95,13 @@
             </nz-form-item>
             <nz-form-item>
               <nz-form-label>
-                <span>{{ 'app.backup.package.storage' | i18n }}</span>
+                <span>{{ 'app.backup.size' | i18n }}</span>
               </nz-form-label>
               <nz-form-control>
                 <input
                   nz-input
                   class="input-custom"
-                  [value]="backupPackage?.sizeInGB + ' GB'"
+                  [value]="backupSize + ' GB'"
                   [disabled]="true"
                 />
               </nz-form-control>
@@ -181,8 +182,9 @@
           *ngIf="selectedOption == 'new'"
           formGroupName="formNew"
         >
-          <div *ngIf="typeVpc == 0">
+          <div>
             <nz-tabset
+              [(nzSelectedIndex)]="selectedIndextab"
               nzCentered
               nzSize="large"
               (keydown)="handleKeyboardEvent($event)"
@@ -211,7 +213,7 @@
                             [nzMin]="minCapacity"
                             [nzMax]="remainingVolume"
                             [nzStep]="stepCapacity"
-                            [(ngModel)]="instanceCreate.volumeSize"
+                            [(ngModel)]="restoreInstanceBackup.volumeSize"
                             (ngModelChange)="changeCapacity($event)"
                             [ngModelOptions]="{ standalone: true }"
                           ></nz-slider>
@@ -235,7 +237,7 @@
                             [nzMin]="minCapacity"
                             [nzMax]="maxCapacity"
                             [nzStep]="stepCapacity"
-                            [(ngModel)]="instanceCreate.volumeSize"
+                            [(ngModel)]="restoreInstanceBackup.volumeSize"
                             (ngModelChange)="changeCapacity($event)"
                             (keydown)="onKeyDown($event)"
                             [ngModelOptions]="{ standalone: true }"
@@ -252,10 +254,8 @@
                           <nz-slider
                             [nzMin]="0"
                             [nzMax]="remainingRAM"
-                            [(ngModel)]="instanceCreate.ram"
-                            (ngModelChange)="
-                              checkValidConfig(); changeRam($event)
-                            "
+                            [(ngModel)]="restoreInstanceBackup.ram"
+                            (ngModelChange)="checkValidConfig()"
                             [ngModelOptions]="{ standalone: true }"
                           ></nz-slider>
                           <div
@@ -277,10 +277,8 @@
                           <nz-input-number
                             [nzMin]="0"
                             [nzMax]="remainingRAM"
-                            [(ngModel)]="instanceCreate.ram"
-                            (ngModelChange)="
-                              checkValidConfig(); changeRam($event)
-                            "
+                            [(ngModel)]="restoreInstanceBackup.ram"
+                            (ngModelChange)="checkValidConfig()"
                             (keydown)="onKeyDown($event)"
                             [ngModelOptions]="{ standalone: true }"
                             nzSize="large"
@@ -296,10 +294,8 @@
                           <nz-slider
                             [nzMin]="0"
                             [nzMax]="remainingVCPU"
-                            [(ngModel)]="instanceCreate.cpu"
-                            (ngModelChange)="
-                              checkValidConfig(); changeVCPU($event)
-                            "
+                            [(ngModel)]="restoreInstanceBackup.cpu"
+                            (ngModelChange)="checkValidConfig()"
                             [ngModelOptions]="{ standalone: true }"
                           ></nz-slider>
                           <div
@@ -321,10 +317,8 @@
                           <nz-input-number
                             [nzMin]="0"
                             [nzMax]="remainingVCPU"
-                            [(ngModel)]="instanceCreate.cpu"
-                            (ngModelChange)="
-                              checkValidConfig(); changeVCPU($event)
-                            "
+                            [(ngModel)]="restoreInstanceBackup.cpu"
+                            (ngModelChange)="checkValidConfig()"
                             (keydown)="onKeyDown($event)"
                             [ngModelOptions]="{ standalone: true }"
                             nzSize="large"
@@ -336,6 +330,7 @@
                 </div>
               </nz-tab>
               <nz-tab
+                *ngIf="isVmGpu"
                 [nzTitle]="'app.gpu.configuration' | i18n"
                 (nzClick)="onClickGpuConfig()"
               >
@@ -349,86 +344,6 @@
                     </thead>
                     <tbody class="ant-table-tbody">
                       <tr>
-                        <td>
-                          <nz-form-label style="margin-left: -12px"
-                            >CPUs (<span class="text-red">*</span
-                            >)</nz-form-label
-                          >
-                          <nz-slider
-                            [nzMin]="0"
-                            [nzMax]="remainingVCPU"
-                            [(ngModel)]="instanceCreate.cpu"
-                            (ngModelChange)="checkValidConfig()"
-                            [ngModelOptions]="{ standalone: true }"
-                          ></nz-slider>
-                          <div
-                            *ngIf="remainingVCPU == 0"
-                            style="font-size: 14px; color: #ff4d4f"
-                          >
-                            {{ 'app.alert.quota.vpc' | i18n }}
-                            <a
-                              [routerLink]="[
-                                '/app-smart-cloud/project/update',
-                                projectId
-                              ]"
-                              >{{ 'app.this' | i18n }}</a
-                            >
-                            {{ 'app.alert.quota.vpc.next' | i18n }}
-                          </div>
-                        </td>
-                        <td>
-                          <nz-input-number
-                            [nzMin]="0"
-                            [nzMax]="remainingVCPU"
-                            [(ngModel)]="instanceCreate.cpu"
-                            (ngModelChange)="checkValidConfig()"
-                            (keydown)="onKeyDown($event)"
-                            [ngModelOptions]="{ standalone: true }"
-                            nzSize="large"
-                          ></nz-input-number>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>
-                          <nz-form-label style="margin-left: -12px"
-                            >RAM (<span class="text-red">*</span>) -
-                            GB</nz-form-label
-                          >
-                          <nz-slider
-                            [nzMin]="0"
-                            [nzMax]="remainingRAM"
-                            [(ngModel)]="instanceCreate.ram"
-                            (ngModelChange)="checkValidConfig()"
-                            [ngModelOptions]="{ standalone: true }"
-                          ></nz-slider>
-                          <div
-                            *ngIf="remainingRAM == 0"
-                            style="font-size: 14px; color: #ff4d4f"
-                          >
-                            {{ 'app.alert.quota.vpc' | i18n }}
-                            <a
-                              [routerLink]="[
-                                '/app-smart-cloud/project/update',
-                                projectId
-                              ]"
-                              >{{ 'app.this' | i18n }}</a
-                            >
-                            {{ 'app.alert.quota.vpc.next' | i18n }}
-                          </div>
-                        </td>
-                        <td>
-                          <nz-input-number
-                            [nzMin]="0"
-                            [nzMax]="remainingRAM"
-                            [(ngModel)]="instanceCreate.ram"
-                            (ngModelChange)="checkValidConfig()"
-                            (keydown)="onKeyDown($event)"
-                            [ngModelOptions]="{ standalone: true }"
-                            nzSize="large"
-                          ></nz-input-number>
-                        </td>
-                      </tr>
-                      <tr>
                         <td style="width: 50%">
                           <nz-form-label style="margin-left: -12px"
                             >{{ 'app.ssd.capacity' | i18n }} (<span
@@ -440,7 +355,7 @@
                             [nzMin]="minCapacity"
                             [nzMax]="remainingVolume"
                             [nzStep]="stepCapacity"
-                            [(ngModel)]="instanceCreate.volumeSize"
+                            [(ngModel)]="restoreInstanceBackup.volumeSize"
                             (ngModelChange)="checkValidConfig()"
                             [ngModelOptions]="{ standalone: true }"
                           ></nz-slider>
@@ -464,7 +379,7 @@
                             [nzMin]="minCapacity"
                             [nzMax]="remainingVolume"
                             [nzStep]="stepCapacity"
-                            [(ngModel)]="instanceCreate.volumeSize"
+                            [(ngModel)]="restoreInstanceBackup.volumeSize"
                             (ngModelChange)="checkValidConfig()"
                             (keydown)="onKeyDown($event)"
                             [ngModelOptions]="{ standalone: true }"
@@ -473,22 +388,20 @@
                         </td>
                       </tr>
                       <tr>
-                        <td style="width: 50%">
+                        <td>
                           <nz-form-label style="margin-left: -12px"
-                            >{{ 'app.gpu.number' | i18n }} (<span
-                              class="text-red"
-                              >*</span
-                            >)</nz-form-label
+                            >RAM (<span class="text-red">*</span>) -
+                            GB</nz-form-label
                           >
                           <nz-slider
                             [nzMin]="0"
-                            [nzMax]="remainingGpu"
-                            [(ngModel)]="instanceCreate.gpuCount"
+                            [nzMax]="remainingRAM"
+                            [(ngModel)]="restoreInstanceBackup.ram"
                             (ngModelChange)="checkValidConfig()"
                             [ngModelOptions]="{ standalone: true }"
                           ></nz-slider>
                           <div
-                            *ngIf="remainingGpu == 0"
+                            *ngIf="remainingRAM == 0"
                             style="font-size: 14px; color: #ff4d4f"
                           >
                             {{ 'app.alert.quota.vpc' | i18n }}
@@ -505,8 +418,8 @@
                         <td>
                           <nz-input-number
                             [nzMin]="0"
-                            [nzMax]="remainingGpu"
-                            [(ngModel)]="instanceCreate.gpuCount"
+                            [nzMax]="remainingRAM"
+                            [(ngModel)]="restoreInstanceBackup.ram"
                             (ngModelChange)="checkValidConfig()"
                             (keydown)="onKeyDown($event)"
                             [ngModelOptions]="{ standalone: true }"
@@ -514,37 +427,156 @@
                           ></nz-input-number>
                         </td>
                       </tr>
+                      <tr>
+                        <td>
+                          <nz-form-label style="margin-left: -12px"
+                            >CPU (<span class="text-red">*</span>) -
+                            vCPU</nz-form-label
+                          >
+                          <nz-slider
+                            [nzMin]="0"
+                            [nzMax]="remainingVCPU"
+                            [(ngModel)]="restoreInstanceBackup.cpu"
+                            (ngModelChange)="checkValidConfig()"
+                            [ngModelOptions]="{ standalone: true }"
+                          ></nz-slider>
+                          <div
+                            *ngIf="remainingVCPU == 0"
+                            style="font-size: 14px; color: #ff4d4f"
+                          >
+                            {{ 'app.alert.quota.vpc' | i18n }}
+                            <a
+                              [routerLink]="[
+                                '/app-smart-cloud/project/update',
+                                projectId
+                              ]"
+                              >{{ 'app.this' | i18n }}</a
+                            >
+                            {{ 'app.alert.quota.vpc.next' | i18n }}
+                          </div>
+                        </td>
+                        <td>
+                          <nz-input-number
+                            [nzMin]="0"
+                            [nzMax]="remainingVCPU"
+                            [(ngModel)]="restoreInstanceBackup.cpu"
+                            (ngModelChange)="checkValidConfig()"
+                            (keydown)="onKeyDown($event)"
+                            [ngModelOptions]="{ standalone: true }"
+                            nzSize="large"
+                          ></nz-input-number>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td style="width: 50%">
+                          <nz-form-label style="margin-left: -12px"
+                            >{{ 'app.choose.gpu.type' | i18n }} (<span
+                              class="text-red"
+                              >*</span
+                            >)</nz-form-label
+                          >
+                          <style>
+                            ::ng-deep nz-form-control {
+                              padding-left: 0px !important;
+                              padding-right: 0px !important;
+                            }
+                          </style>
+                          <nz-form-control>
+                            <nz-select
+                              [nzPlaceHolder]="
+                                '-- ' + ('app.choose.gpu.type' | i18n) + ' --'
+                              "
+                              [nzShowSearch]="true"
+                              [(ngModel)]="restoreInstanceBackup.gpuTypeOfferId"
+                              (ngModelChange)="changeGpuType($event)"
+                              [ngModelOptions]="{ standalone: true }"
+                              nzSize="large"
+                            >
+                              <nz-option
+                                *ngFor="let i of purchasedListGPUType"
+                                [nzLabel]="i.offerName"
+                                [nzValue]="i.id"
+                              />
+                            </nz-select>
+                          </nz-form-control>
+                          <div
+                            *ngIf="remainingGpu == 0"
+                            style="font-size: 14px; color: #ff4d4f"
+                          >
+                            {{ 'app.alert.quota.vpc' | i18n }}
+                            <a
+                              [routerLink]="[
+                                '/app-smart-cloud/project/update',
+                                projectId
+                              ]"
+                              >{{ 'app.this' | i18n }}</a
+                            >
+                            {{ 'app.alert.quota.vpc.next' | i18n }}
+                          </div>
+                        </td>
+                        <td>
+                          <nz-form-label></nz-form-label>
+                          <nz-form-control
+                            ><nz-select
+                              style="margin-left: 8px; width: 90px"
+                              [nzShowSearch]="true"
+                              [(ngModel)]="restoreInstanceBackup.gpuCount"
+                              (ngModelChange)="checkValidConfig(); changeGpu()"
+                              [ngModelOptions]="{ standalone: true }"
+                              nzSize="large"
+                            >
+                              <nz-option
+                                *ngFor="let i of listOptionGpuValue"
+                                [nzLabel]="i"
+                                [nzValue]="i"
+                              /> </nz-select
+                          ></nz-form-control>
+                          <div
+                            *ngIf="remainingGpu == 0"
+                            style="font-size: 14px; color: #fff"
+                          >
+                            white
+                          </div>
+                        </td>
+                      </tr>
                     </tbody>
                   </table>
+                  <nz-alert
+                    *ngIf="configRecommend"
+                    style="margin-top: 20px"
+                    nzType="warning"
+                    [nzDescription]="
+                      'app.alert.config.gpu.recommend'
+                        | i18n
+                          : {
+                              type: gpuTypeName,
+                              gpu: configRecommend.gpuCount,
+                              ssd: configRecommend.ssd,
+                              ram: configRecommend.ram,
+                              cpu: configRecommend.cpu
+                            }
+                    "
+                    nzShowIcon
+                  ></nz-alert>
                 </div>
-                <nz-form-item style="margin-top: 20px; margin-bottom: 0px">
-                  <nz-form-label
-                    >{{ 'app.choose.gpu.type' | i18n }} (<span class="text-red"
-                      >*</span
-                    >)</nz-form-label
-                  >
-                  <nz-form-control>
-                    <nz-select
-                      [nzPlaceHolder]="
-                        '-- ' + ('app.choose.gpu.type' | i18n) + ' --'
-                      "
-                      [nzShowSearch]="true"
-                      [(ngModel)]="instanceCreate.gpuTypeOfferId"
-                      [ngModelOptions]="{ standalone: true }"
-                      nzSize="large"
-                    >
-                      <nz-option
-                        *ngFor="let i of listGPUType"
-                        [nzLabel]="i.offerName"
-                        [nzValue]="i.id"
-                      />
-                    </nz-select>
-                  </nz-form-control>
-                </nz-form-item>
               </nz-tab>
             </nz-tabset>
-            <br />
-            <nz-row nzGutter="16">
+            <label
+              *ngIf="isSupportEncryption"
+              style="margin-top: 20px"
+              nz-checkbox
+              [(ngModel)]="restoreInstanceBackup.encryption"
+              [ngModelOptions]="{ standalone: true }"
+              [disabled]="isSnapshot"
+              >{{ 'volume.info.type.encrypt' | i18n }}
+              <img
+                [nz-tooltip]="'volume.tooltip.type.encrypt' | i18n"
+                src="assets/imgs/pajamas_question.svg"
+                alt=""
+                [nzPopoverOverlayStyle]="{ width: '320px' }"
+              />
+            </label>
+            <nz-row style="margin-top: 20px" nzGutter="16">
               <nz-col nzLg="12" nzMd="12" nzSm="24">
                 <nz-form-item>
                   <nz-form-label>
@@ -572,7 +604,7 @@
                       class="input-custom"
                       nz-input
                       formControlName="name"
-                      [(ngModel)]="instanceCreate.serviceName"
+                      [(ngModel)]="restoreInstanceBackup.serviceName"
                       (ngModelChange)="changeName($event)"
                       [placeholder]="'app.input.name' | i18n"
                       [maxlength]="50"
@@ -638,14 +670,13 @@
                   >
                   <nz-form-control>
                     <nz-select
-                      [nzPlaceHolder]="'menu.dashboard.v1' | i18n"
                       [nzShowSearch]="true"
                       [(ngModel)]="ipPublicValue"
                       [ngModelOptions]="{ standalone: true }"
                       nzSize="large"
                     >
                       <nz-option
-                        [nzLabel]="'menu.dashboard.v1' | i18n"
+                        [nzLabel]="'app.do.not.use' | i18n"
                         [nzValue]="0"
                       />
                       <nz-option
@@ -673,10 +704,6 @@
                       [ngModelOptions]="{ standalone: true }"
                       nzSize="large"
                     >
-                      <nz-option
-                        [nzLabel]="'app.do.not.use' | i18n"
-                        [nzValue]="''"
-                      />
                       <nz-option
                         *ngFor="let i of listVlanNetwork"
                         [nzLabel]="i.name"
@@ -937,7 +964,7 @@
                     'app.choose.backup.vm.external.volume' | i18n
                   "
                   [nzShowSearch]="true"
-                  [(ngModel)]="listIDAttachVolume"
+                  [(ngModel)]="listAttachVolume"
                   (ngModelChange)="changeAttachVolume()"
                   [ngModelOptions]="{ standalone: true }"
                   nzSize="large"
@@ -945,29 +972,37 @@
                   <nz-option
                     *ngFor="let e of listExternalAttachVolume"
                     [nzLabel]="e.name"
-                    [nzValue]="e.id"
+                    [nzValue]="e"
                   />
                 </nz-select>
               </nz-form-control>
             </nz-form-item>
           </nz-col>
         </nz-row>
-        <div class="text-center" style="margin-bottom: 20px">
+        <div
+          *ngIf="listOfDataBlockStorage.length > 0"
+          class="text-center"
+          style="margin-bottom: 20px"
+        >
           <span class="text-header-attach-volume"
-            >Cấu hình volume gắn ngoài
+            >{{ 'app.backup.config.vm.attach' | i18n }}
           </span>
         </div>
-        <div>
+        <div *ngIf="listOfDataBlockStorage.length > 0">
           <div class="ant-table">
             <table>
               <thead class="ant-table-thead">
                 <tr>
-                  <th>{{ 'app.volume.name' | i18n }}</th>
+                  <th>{{ 'app.backup.volume.root' | i18n }}</th>
+                  <th *ngIf="selectedOption == 'new'">
+                    {{ 'app.backup.volume.restore' | i18n }}
+                  </th>
                   <th>{{ 'app.volume.type' | i18n }}</th>
                   <th>{{ 'app.capacity' | i18n }} (GB)</th>
-                  <th *ngIf="selectedOption == 'new'">
-                    {{ 'app.monthly.price' | i18n }} (VND)
+                  <th *ngIf="isSupportEncryption">
+                    {{ 'app.encrypt' | i18n }}
                   </th>
+                  <th *ngIf="isSupportMultiAttachment">Multi Attach</th>
                 </tr>
               </thead>
               <tbody class="ant-table-tbody">
@@ -979,7 +1014,16 @@
                       [ngModelOptions]="{ standalone: true }"
                       nz-input
                       [(ngModel)]="data.name"
-                      [id]="'name_' + data.id"
+                    />
+                  </td>
+                  <td *ngIf="selectedOption == 'new'">
+                    <input
+                      class="input-custom"
+                      type="text"
+                      [placeholder]="'app.input.name' | i18n"
+                      [ngModelOptions]="{ standalone: true }"
+                      nz-input
+                      [(ngModel)]="data.newName"
                     />
                   </td>
                   <td>
@@ -993,19 +1037,35 @@
                     />
                   </td>
                   <td>
-                    <input
-                      class="input-custom"
-                      type="text"
-                      [ngModelOptions]="{ standalone: true }"
-                      nz-input
+                    <nz-input-number
                       [(ngModel)]="data.capacity"
-                      [disabled]="true"
-                    />
+                      (keydown)="onKeyDown($event)"
+                      [ngModelOptions]="{ standalone: true }"
+                      [id]="'capacity_' + data.id"
+                      [nzMin]="data.minCapacity"
+                      [nzMax]="maxCapacity"
+                      [nzStep]="stepCapacity"
+                      [disabled]="selectedOption == 'current'"
+                      nzSize="large"
+                    ></nz-input-number>
                   </td>
-                  <td nzAlign="right" *ngIf="selectedOption == 'new'">
-                    <label class="text-custom-price">
-                      {{ data.price | number }}
-                    </label>
+                  <td nzAlign="center">
+                    <label
+                      *ngIf="isSupportEncryption"
+                      nz-checkbox
+                      [ngModel]="data.isEncryption"
+                      [ngModelOptions]="{ standalone: true }"
+                      [disabled]="true"
+                    ></label>
+                  </td>
+                  <td nzAlign="center">
+                    <label
+                      *ngIf="isSupportMultiAttachment"
+                      nz-checkbox
+                      [ngModel]="data.isMultiAttach"
+                      [ngModelOptions]="{ standalone: true }"
+                      [disabled]="true"
+                    ></label>
                   </td>
                 </tr>
               </tbody>
@@ -1013,11 +1073,6 @@
           </div>
         </div>
       </nz-card>
-      <one-portal-service-usage-period
-        *ngIf="selectedOption == 'new'"
-        [nameService]="'instance'"
-        (valueChanged)="onChangeTime($event)"
-      ></one-portal-service-usage-period>
     </form>
   </div>
   <div nz-col [nzSpan]="8" style="display: flex">
@@ -1034,7 +1089,9 @@
             }}</span>
           </div>
           <div class="text-value">{{ 'app.instances.name' | i18n }}</div>
-          <div style="margin-top: 10px" class="text-label"></div>
+          <div style="margin-top: 10px" class="text-label">
+            {{ restoreInstanceBackup.serviceName }}
+          </div>
           <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
           <div class="text-value">{{ 'app.instances.OS' | i18n }}</div>
           <div style="margin-top: 10px" class="text-label">
@@ -1042,97 +1099,46 @@
           </div>
           <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
           <div class="text-value">{{ 'app.text.package' | i18n }}</div>
-          <div
-            *ngIf="instanceCreate.cpu"
-            style="margin-top: 10px"
-            class="text-label"
-          >
-            {{ instanceCreate.cpu }} CPUs
+          <div style="margin-top: 10px" class="text-label">
+            {{ restoreInstanceBackup.cpu }} vCPU
           </div>
-          <div
-            *ngIf="instanceCreate.ram"
-            style="margin-top: 10px"
-            class="text-label"
-          >
-            {{ instanceCreate.ram }} GB RAM
+          <div style="margin-top: 10px" class="text-label">
+            {{ restoreInstanceBackup.ram }} GB RAM
           </div>
-          <div
-            *ngIf="instanceCreate.volumeSize"
-            style="margin-top: 10px"
-            class="text-label"
-          >
-            {{ instanceCreate.volumeSize }} GB Root Disk (<span>{{
-              instanceCreate.volumeType | uppercase
+          <div style="margin-top: 10px" class="text-label">
+            {{ restoreInstanceBackup.volumeSize }} GB Root Disk (<span>{{
+              activeBlockHDD ? 'HDD' : 'SSD'
             }}</span
             >)
           </div>
-          <div
-            *ngIf="instanceCreate.gpuCount"
-            style="margin-top: 10px"
-            class="text-label"
-          >
-            {{ instanceCreate.gpuCount }} GPU ({{ gpuTypeName }})
+          <div *ngIf="isGpuConfig" style="margin-top: 10px" class="text-label">
+            {{ restoreInstanceBackup.gpuCount }} GPU ({{ gpuTypeName }})
           </div>
           <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
-          <div class="text-value">{{ 'app.setting' | i18n }}</div>
-          <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
-          <nz-row style="margin-bottom: 10px" nzGutter="16">
-            <nz-col nzSpan="16">
-              <span *ngIf="numberMonth == 1" class="text-value">
-                {{ 'app.cost.a.month' | i18n }}
-              </span>
-              <span *ngIf="numberMonth > 1" class="text-value">
-                {{ 'app.cost.n.month' | i18n : { numberMonth: numberMonth } }}
-              </span>
-            </nz-col>
-            <nz-col class="text-right" nzSpan="8"> </nz-col>
-          </nz-row>
-          <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
-          <nz-row style="margin-bottom: 10px" nzGutter="16">
-            <nz-col nzSpan="16">
-              <span class="text-value">
-                {{ 'app.cost.vat' | i18n }}
-              </span>
-            </nz-col>
-            <nz-col class="text-right" nzSpan="8">
-              <span class="text-value" style="color: #0066b3" nzAlign="right">
-                VND
-              </span>
-            </nz-col>
-          </nz-row>
-          <nz-row
-            style="
-              margin-bottom: 20px;
-              background-color: #cce9ff;
-              padding: 16px 0 16px 0;
-              border-radius: 8px;
-            "
-            nzGutter="16"
-          >
-            <nz-col nzSpan="16">
-              <span class="text-label">{{ 'app.total.payment' | i18n }}</span
-              ><br />
-              <span class="text-note-italicized"
-                >({{ 'app.include.vat' | i18n : { vat: '10' } }})</span
-              >
-            </nz-col>
-            <nz-col class="text-right" nzSpan="8">
-              <span class="text-value" style="color: #ea3829" nzAlign="right">
-                VND
-              </span>
-            </nz-col>
-          </nz-row>
-          <nz-row>
+          <div class="text-value">
+            {{ 'app.info.backup.vm.external.volume' | i18n }}
+          </div>
+          <div *ngFor="let v of listOfDataBlockStorage; let last = last">
+            <div style="margin-top: 10px" class="text-label">
+              {{ v.capacity }} GB {{ v.name }} ({{ v.type }})
+            </div>
+          </div>
+          <nz-row style="margin-top: 20px">
             <nz-col style="width: 100%">
               <button
                 style="width: 100%"
                 nz-button
                 nzSize="large"
                 nzType="primary"
+                [nzLoading]="isLoading"
+                (click)="restore()"
+                [disabled]="
+                  formNew.invalid || isExistName || totalincludesVAT == 0
+                "
               >
                 <span nz-icon nzType="wallet" nzTheme="outline"></span>
                 <span [style.color]="formCurrent.invalid ? 'gray' : 'white'">{{
-                  'app.button.create' | i18n
+                  'app.restore' | i18n
                 }}</span>
               </button>
             </nz-col>
@@ -1180,7 +1186,7 @@
                 nzType="primary"
               >
                 <span nz-icon nzType="wallet" nzTheme="outline"></span>
-                <span>{{ 'app.button.create' | i18n }}</span>
+                <span>{{ 'app.restore' | i18n }}</span>
               </button>
             </nz-col>
           </nz-row>

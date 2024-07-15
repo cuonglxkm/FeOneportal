@@ -4,7 +4,7 @@
       <nz-breadcrumb-item>
         <a [routerLink]="['/']">{{"app.breadcrumb.home" | i18n}}</a></nz-breadcrumb-item>
       <nz-breadcrumb-item>
-        <a [routerLink]="['/app-smart-cloud/order/list']">{{"app.breadcrumb.order" | i18n}}</a></nz-breadcrumb-item>
+        <a [routerLink]="['/app-smart-cloud/order']">{{"app.breadcrumb.order" | i18n}}</a></nz-breadcrumb-item>
     </nz-breadcrumb>
     <ng-template #iconTemplate><one-portal-svg-icon [icon]="'icon_breadcrumb'"></one-portal-svg-icon></ng-template>
   </ng-template>
@@ -12,7 +12,7 @@
     <div class="alain-custom-action text-right">
       <share-users-combobox></share-users-combobox>
       <!-- <region-select-dropdown (valueChanged)="regionChanged($event)"></region-select-dropdown> -->
-      <!-- <project-select-dropdown [regionId]="region" (valueChanged)="projectChanged($event)"
+      <!-- <project-select-dropdown #projectCombobox [regionId]="region" (valueChanged)="projectChanged($event)"
         (userChanged)="projectChanged($event)"></project-select-dropdown> -->
     </div>
   </ng-template>
@@ -22,9 +22,17 @@
     <nz-row nzAlign="middle">
       <nz-space [nzSize]="24">
         <div *nzSpaceItem>
-          <nz-select class="input-select-custom" [(ngModel)]="searchStatus" style="width: 160px;"
-            (ngModelChange)="onChange($event)" [nzPlaceHolder]="'app.order.status' | i18n">
-            <nz-option *ngFor="let item of status" [nzValue]="item.value" [nzLabel]="item.label"></nz-option>
+          <nz-select class="input-select-custom" [(ngModel)]="searchStatusOrder" style="width: 180px;"
+            (ngModelChange)="onChange($event)" [nzPlaceHolder]="'app.order.status.order1' | i18n">
+            <nz-option *ngFor="let item of statusOrder" [nzValue]="item.value" [nzLabel]="item.label"></nz-option>
+          </nz-select>
+        </div>
+      </nz-space>
+      <nz-space [nzSize]="24" style="margin-left: 10px;">
+        <div *nzSpaceItem>
+          <nz-select class="input-select-custom" [(ngModel)]="searchStatus" style="width: 180px;"
+            (ngModelChange)="onChangeStatusInstall($event)" [nzPlaceHolder]="'app.order.status.installation' | i18n">
+            <nz-option *ngFor="let item of statusInstall" [nzValue]="item.value" [nzLabel]="item.label"></nz-option>
           </nz-select>
         </div>
       </nz-space>
@@ -33,7 +41,8 @@
       <div style="width: 300px; margin-left: 10px;">
         <nz-input-group class="input-custom textbox-radius-lg" style="width: 380px" nzSearch
           [nzPrefix]="prefixIconSearch">
-          <input [(ngModel)]="value" (input)="onInputChange($event.target['value'])" type="text" nz-input
+          <input [(ngModel)]="value"
+          #searchBox (keyup.enter)="search(searchBox.value)" (ngModelChange)="searchDelay.next(false)" type="text" nz-input
             [placeholder]="'app.order.search' | i18n" />
         </nz-input-group>
         <ng-template #prefixIconSearch>
@@ -48,7 +57,6 @@
     [nzLoading]="isLoadingEntities" (nzQueryParams)="onQueryParamsChange($event)">
     <thead>
       <tr>
-        <th>{{"app.order.ordinalNumber" | i18n}}</th>
         <th>{{"app.order.ordercode" | i18n}}</th>
         <th>{{"app.order.name.service" | i18n}}</th>
        
@@ -59,12 +67,11 @@
     </thead>
     <tbody>
       <tr *ngFor="let data of rowSelectionTable.data; let i = index">
-        <td>{{ i + 1 }}</td>
         <td>
           <a (click)="navigateToDetail(data.id)">{{ data.orderCode }}</a>
         </td>
         <!-- <td>{{ data.note }}</td> -->
-        <td>{{ data?.orderItems[0] }}</td>
+        <td><div *ngFor="let item of data?.orderItems">{{ item }}</div></td>
       
         <td>{{ data.orderDate | date : 'HH:mm:ss dd/MM/YYYY' }}</td>
         <td [ngStyle]="{

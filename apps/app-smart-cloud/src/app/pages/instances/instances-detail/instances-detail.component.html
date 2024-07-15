@@ -9,6 +9,9 @@
         <a [routerLink]="['/']">{{ 'app.breadcrumb.home' | i18n }}</a>
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>
+        {{ 'app.breadcrumb.infrastructure.service' | i18n }}
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item>
         <a [routerLink]="['/app-smart-cloud/instances']">{{
           'app.instances' | i18n
         }}</a>
@@ -26,8 +29,9 @@
       <share-users-combobox></share-users-combobox>
       <region-select-dropdown
         (valueChanged)="onRegionChange($event)"
+        (regionChange)="onRegionChanged($event)"
       ></region-select-dropdown>
-      <project-select-dropdown
+      <project-select-dropdown #projectCombobox
         [regionId]="regionId"
         (valueChanged)="onProjectChange($event)"
         (userChanged)="userChangeProject()"
@@ -69,6 +73,7 @@
       <one-portal-instances-btn
         *ngIf="
           instancesModel &&
+          instancesModel.status.toUpperCase() == 'KHOITAO' &&
           instancesModel.taskState.toUpperCase() != 'REBUILDING' &&
           !instancesModel.taskState.toUpperCase().includes('RESIZING') &&
           instancesModel.taskState.toUpperCase() != 'POWERING-OFF' &&
@@ -76,7 +81,7 @@
         "
         [instancesId]="id"
         [isProjectVPC]="
-          (project != undefined && project.type) == 0 ? false : true
+          (project != undefined && project.type) == 1 ? true : false
         "
         (valueChanged)="onReloadInstanceDetail($event)"
         style="margin-left: 8px"
@@ -177,9 +182,48 @@
           <span class="text-label customSpan" style="width: 35%"
             >{{ 'app.configuration.package' | i18n }}:</span
           >
-          <span class="text-value-detail customSpan">{{
-            instancesModel.flavorName | slice : 3
-          }}</span>
+          <span class="text-value-detail customSpan">
+            <a
+              nz-popover
+              [nzPopoverTitle]="instancesModel.flavorName | slice : 3"
+              [nzPopoverContent]="contentConfigPackage"
+              [nzPopoverTrigger]="'click'"
+              >{{ instancesModel.flavorName | slice : 3 }}</a
+            >
+            <ng-template #contentConfigPackage>
+              <nz-row style="width: 320px">
+                <nz-col nzSpan="12"
+                  >{{ instancesModel.volumeType == 1 ? 'SSD' : 'HDD' }}
+                </nz-col>
+                <nz-col class="text-right" nzSpan="12">
+                  {{ instancesModel.storage }} GB
+                </nz-col>
+              </nz-row>
+              <nz-row style="width: 320px; margin-top: 5px">
+                <nz-col nzSpan="12"> RAM </nz-col>
+                <nz-col class="text-right" nzSpan="12">
+                  {{ instancesModel.ram }} GB
+                </nz-col>
+              </nz-row>
+              <nz-row style="width: 320px; margin-top: 5px">
+                <nz-col nzSpan="12"> CPU </nz-col>
+                <nz-col class="text-right" nzSpan="12">
+                  {{ instancesModel.cpu }} vCPU
+                </nz-col>
+              </nz-row>
+              <nz-row
+                *ngIf="instancesModel.gpuType != null"
+                style="width: 320px; margin-top: 5px"
+              >
+                <nz-col nzSpan="12">
+                  GPU - NVIDIA-{{ instancesModel.gpuType.toUpperCase() }}
+                </nz-col>
+                <nz-col class="text-right" nzSpan="12">
+                  {{ instancesModel.gpuCount }} GPU
+                </nz-col>
+              </nz-row>
+            </ng-template>
+          </span>
         </nz-row>
       </nz-col>
       <nz-col nzSpan="12">

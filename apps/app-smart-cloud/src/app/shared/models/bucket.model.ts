@@ -54,7 +54,7 @@ export class BucketCorsCreate {
   allowedMethods: string[] = [];
   allowedHeaders: string[] = [];
   exposeHeaders: string[] = [];
-  maxAgeSeconds: number;
+  maxAgeSeconds: number = 3600;
   id: string;
 }
 
@@ -104,11 +104,11 @@ export class BucketLifecycleCreate {
   id: string;
   prefix: string;
   lifecycleTagPredicate: LifecycleTagPredicate[] = [];
-  isSetExpiration_Day: boolean;
-  lifecycleRuleExpiration_Day: number;
-  isSetNoncurrentVersionExpiration_Day: boolean;
-  lifecycleRuleNoncurrentVersionExpiration_Day: number;
-  isSetAbortIncompleteMultipartUpload_Day: boolean;
-  lifecycleRuleAbortIncompleteMultipartUpload_Day: number;
+  isSetExpiration_Day: boolean = false;
+  lifecycleRuleExpiration_Day: number = 1;
+  isSetNoncurrentVersionExpiration_Day: boolean = false;
+  lifecycleRuleNoncurrentVersionExpiration_Day: number = 1;
+  isSetAbortIncompleteMultipartUpload_Day: boolean = false;
+  lifecycleRuleAbortIncompleteMultipartUpload_Day: number = 1;
   enabled: boolean;
 }

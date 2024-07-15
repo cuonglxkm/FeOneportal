@@ -1,4 +1,4 @@
-import {Component, Inject} from '@angular/core';
+import { Component, Inject, OnInit, ViewChild } from '@angular/core';
 import {BackupSchedule, FormEditSchedule, FormSearchScheduleBackup} from "../../../../shared/models/schedule.model";
 import {FormControl, FormGroup, NonNullableFormBuilder, Validators} from "@angular/forms";
 import {ActivatedRoute, Router} from "@angular/router";
@@ -9,21 +9,23 @@ import {DatePipe} from "@angular/common";
 import { RegionModel, ProjectModel } from '../../../../../../../../libs/common-utils/src';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from '@core';
+import { getCurrentRegionAndProject } from '@shared';
+import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
 
 @Component({
   selector: 'one-portal-extend-schedule-backup-volume',
   templateUrl: './edit-schedule-backup-volume.component.html',
   styleUrls: ['./edit-schedule-backup-volume.component.less'],
 })
-export class EditScheduleBackupVolumeComponent {
+export class EditScheduleBackupVolumeComponent implements OnInit{
   region = JSON.parse(localStorage.getItem('regionId'));
   project = JSON.parse(localStorage.getItem('projectId'));
   modeType: any = '4'
   mode = [
-    {label: this.i18n.fanyi("schedule.backup.label.each.day"), value: '1'},
-    {label: this.i18n.fanyi("schedule.backup.label.each.number.day"), value: '2'},
-    {label: this.i18n.fanyi("schedule.backup.label.each.week"), value: '3'},
-    {label: this.i18n.fanyi("schedule.backup.label.each.month"), value: '4'}
+    {label: this.i18n.fanyi("schedule.backup.label.each.day"), value: 1},
+    {label: this.i18n.fanyi("schedule.backup.label.each.number.day"), value: 2},
+    {label: this.i18n.fanyi("schedule.backup.label.each.week"), value: 3},
+    {label: this.i18n.fanyi("schedule.backup.label.each.month"), value: 4}
   ]
   numberOfWeek = [
     {label: '1 ' + this.i18n.fanyi("app.Week"), value: '1'},
@@ -42,7 +44,7 @@ export class EditScheduleBackupVolumeComponent {
   isLoading: boolean = false
   numberOfWeekChangeSelected: string
 
-
+  @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
   customerId: number
   idSchedule: number
   backupSchedule: BackupSchedule
@@ -52,7 +54,7 @@ export class EditScheduleBackupVolumeComponent {
   formEdit: FormEditSchedule = new FormEditSchedule()
 
   validateForm: FormGroup<{
-    backupMode: FormControl<string>
+    backupMode: FormControl<number>
     name: FormControl<string>
     description: FormControl<string>
     months: FormControl<number>
@@ -62,10 +64,9 @@ export class EditScheduleBackupVolumeComponent {
     daysOfWeek: FormControl<string>
     daysOfWeekMultiple: FormControl<string[]>
   }> = this.fb.group({
-    backupMode: ['4', [Validators.required]],
+    backupMode: [4, [Validators.required]],
     name: [null as string, [Validators.required,
-      Validators.pattern(/^[a-zA-Z0-9_]{1,255}$/),
-      this.validateSpecialCharacters.bind(this), this.duplicateNameValidator.bind(this)]],
+      Validators.pattern(/^[a-zA-Z0-9_]*$/), this.duplicateNameValidator.bind(this)]],
     description: [null as string, [Validators.maxLength(700)]],
     months: [1, [Validators.required, Validators.pattern(/^[1-9]$|^1[0-9]$|^2[0-4]$/)]],
     times: [new Date(), [Validators.required]],
@@ -75,6 +76,7 @@ export class EditScheduleBackupVolumeComponent {
     daysOfWeekMultiple: [[] as string[]],
   })
 
+  isLoadingAction: boolean = false
 
   constructor(private fb: NonNullableFormBuilder,
               private router: Router,
@@ -88,22 +90,24 @@ export class EditScheduleBackupVolumeComponent {
   }
 
   regionChanged(region: RegionModel) {
-    this.router.navigate(['/app-smart-cloud/schedule/backup/list'])
+    this.region = region.regionId;
+    if(this.projectCombobox){
+      this.projectCombobox.loadProjects(true, region.regionId);
+    }
+    this.router.navigate(['/app-smart-cloud/schedule/backup/list']);
 
+  }
+
+  onRegionChanged(region: RegionModel) {
+    this.region = region.regionId;
+  }
+
+  userChanged(project: ProjectModel) {
+    this.router.navigate(['/app-smart-cloud/schedule/backup/list']);
   }
 
   projectChanged(project: ProjectModel) {
-    this.router.navigate(['/app-smart-cloud/schedule/backup/list'])
-  }
-
-  validateSpecialCharacters(control) {
-    const value = control.value;
-
-    if (/[^a-zA-Z0-9_]/.test(value)) {
-      return {invalidCharacters: true};
-    } else {
-      return null;
-    }
+    this.project = project.id;
   }
 
   duplicateNameValidator(control) {
@@ -114,10 +118,9 @@ export class EditScheduleBackupVolumeComponent {
     } else {
       return null;
     }
-
   }
 
-  modeChange(value: string) {
+  modeChange(value) {
     this.validateForm.controls.daysOfWeek.clearValidators();
     this.validateForm.controls.daysOfWeek.markAsPristine();
     this.validateForm.controls.daysOfWeek.reset();
@@ -137,15 +140,15 @@ export class EditScheduleBackupVolumeComponent {
     this.validateForm.controls.date.clearValidators();
     this.validateForm.controls.date.markAsPristine();
     this.validateForm.controls.date.reset();
-    if (value === '1') {
-      this.modeType = '1'
-    } else if (value === '2') {
-      this.modeType = '2'
+    if (value === 1) {
+      this.modeType = 1
+    } else if (value === 2) {
+      this.modeType = 2
       this.validateForm.controls.daysOfWeekMultiple.clearValidators();
       this.validateForm.controls.daysOfWeekMultiple.markAsPristine();
       this.validateForm.controls.daysOfWeekMultiple.reset();
-    } else if (value === '3') {
-      this.modeType = '3'
+    } else if (value === 3) {
+      this.modeType = 3
 
       this.validateForm.controls.numberOfWeek.setValidators([Validators.required]);
       this.validateForm.controls.numberOfWeek.markAsDirty();
@@ -154,8 +157,8 @@ export class EditScheduleBackupVolumeComponent {
       this.validateForm.controls.daysOfWeek.setValidators([Validators.required]);
       this.validateForm.controls.daysOfWeek.markAsDirty();
       this.validateForm.controls.daysOfWeek.reset();
-    } else if (value === '4') {
-      this.modeType = '4'
+    } else if (value === 4) {
+      this.modeType = 4
       this.validateForm.controls.months.setValidators([Validators.required, Validators.pattern(/^[1-9]$|^1[0-9]$|^2[0-4]$/)]);
       this.validateForm.controls.months.markAsDirty();
       this.validateForm.controls.months.reset();
@@ -166,21 +169,17 @@ export class EditScheduleBackupVolumeComponent {
     }
   }
 
-  goBack() {
-    this.router.navigate(['/app-smart-cloud/schedule/backup/list'])
-  }
-
   numberOfWeekChange(value: string) {
     this.numberOfWeekChangeSelected = value
-    console.log('weeek', this.numberOfWeekChangeSelected)
+    console.log('week', this.numberOfWeekChangeSelected)
   }
 
   getData(): FormEditSchedule {
     this.validateForm.get('backupMode').valueChanges.subscribe(data => {
       if(data != this.validateForm.get('backupMode').value) {
-        this.formEdit.mode = parseInt(data,10)
+        this.formEdit.mode = data
       } else {
-        this.formEdit.mode = parseInt(this.validateForm.controls.backupMode.value, 10)
+        this.formEdit.mode = this.validateForm.controls.backupMode.value
       }
     })
     this.validateForm.get('name').valueChanges.subscribe(data => {
@@ -197,13 +196,6 @@ export class EditScheduleBackupVolumeComponent {
         this.formEdit.description =  this.validateForm.controls.description.value
       }
     })
-    // this.validateForm.get('months').valueChanges.subscribe(data => {
-    //   if(data != this.validateForm.get('months').value) {
-    //     this.formEdit.intervalMonth = data;
-    //   } else {
-    //     this.formEdit.intervalMonth =  this.validateForm.controls.months.getRawValue();
-    //   }
-    // })
     this.validateForm.get('times').valueChanges.subscribe(data => {
       if(data != this.validateForm.get('times').value) {
         this.formEdit.runtime = data
@@ -218,7 +210,7 @@ export class EditScheduleBackupVolumeComponent {
     this.formEdit.name = this.validateForm.controls.name.getRawValue();
     this.formEdit.description = this.validateForm.controls.description.getRawValue();
     this.formEdit.scheduleId = this.idSchedule;
-    this.formEdit.mode = parseInt(this.validateForm.controls.backupMode.getRawValue(), 10)
+    this.formEdit.mode = this.validateForm.controls.backupMode.getRawValue()
     this.formEdit.runtime = this.datepipe.transform(this.validateForm.controls.times.value,'yyyy-MM-ddTHH:mm:ss', 'vi-VI')
     if(this.formEdit.mode === 3) {
       this.formEdit.intervalWeek = this.validateForm.controls.numberOfWeek.value
@@ -236,14 +228,18 @@ export class EditScheduleBackupVolumeComponent {
 
 
   submitForm() {
+    this.isLoadingAction = true;
     if (this.validateForm.valid) {
       console.log(this.validateForm.getRawValue())
       this.formEdit = this.getData()
       this.scheduleService.edit(this.formEdit).subscribe(data => {
+        this.isLoadingAction = false
         this.notification.success(this.i18n.fanyi("app.status.success"), this.i18n.fanyi("schedule.backup.notify.edit.volume.success"))
         this.router.navigate(['/app-smart-cloud/schedule/backup/list'])
       }, error => {
+        this.isLoadingAction = false
         this.notification.error(this.i18n.fanyi("app.status.fail"), this.i18n.fanyi("schedule.backup.notify.edit.volume.fail"))
+        this.router.navigate(['/app-smart-cloud/schedule/backup/list']);
       })
     } else {
       console.log(this.validateForm.controls);
@@ -262,8 +258,10 @@ export class EditScheduleBackupVolumeComponent {
     this.scheduleService.detail(customerId, id).subscribe(data => {
       this.backupSchedule = data
       this.isLoading = false
-      this.validateForm.controls.backupMode.setValue(this.backupSchedule?.mode.toString())
+      this.validateForm.controls.backupMode.setValue(this.backupSchedule?.mode)
+
       this.validateForm.controls.times.setValue(this.backupSchedule?.runtime)
+      console.log('times', this.validateForm.controls.times.value)
       this.validateForm.controls.name.setValue(this.backupSchedule?.name)
       this.validateForm.controls.description.setValue(this.backupSchedule?.description)
       this.validateForm.controls.months.setValue(this.backupSchedule?.interval)
@@ -304,6 +302,10 @@ export class EditScheduleBackupVolumeComponent {
   }
 
   ngOnInit(): void {
+    let regionAndProject = getCurrentRegionAndProject();
+    this.region = regionAndProject.regionId;
+    this.project = regionAndProject.projectId;
+
     this.isLoading = true
     this.customerId = this.tokenService.get()?.userId
 

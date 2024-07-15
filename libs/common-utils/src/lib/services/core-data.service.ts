@@ -1,6 +1,6 @@
 import { Router } from "@angular/router";
 import { RegionCoreService } from "./region-core.service";
-import { Inject, Injectable } from "@angular/core";
+import { ChangeDetectorRef, Inject, Injectable } from "@angular/core";
 import { DA_SERVICE_TOKEN, ITokenService } from "@delon/auth";
 import { PolicyCoreService } from "./policy-core.service";
 import { ProjectCoreService } from "./project-core.service";
@@ -67,9 +67,12 @@ export class CoreDataService {
         let regionId = localStorage.getItem('regionId');
 
         //localStorage.removeItem('regions');
+        
 
         this.regionService.getAll(baseUrl).subscribe({
             next : (data) => {
+                console.log(data);
+                
                 if (!data) {
                     this.router.navigateByUrl(`/exception/500`)
                 }
@@ -99,20 +102,22 @@ export class CoreDataService {
     }
 
     public getProjects(baseUrl:string, regionId: number) {
+        // debugger
         if (regionId < 1) {
             return;
         }
-
+        
         //localStorage.removeItem('projects');
-
         this.projectService.getByRegion(baseUrl, regionId).subscribe({
             next: (data) => {
+                console.log(data);
                 
                 if (!data) {
                     this.router.navigateByUrl(`/exception/500`)
                 }
 
                 localStorage.setItem('projects', JSON.stringify(data));
+                console.log(localStorage.getItem('projects'));
 
                 if (data && data.length > 0) {
                     let projectId = localStorage.getItem('projectId');

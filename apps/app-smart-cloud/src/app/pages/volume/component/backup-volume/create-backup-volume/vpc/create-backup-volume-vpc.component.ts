@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject, OnInit, ViewChild } from '@angular/core';
 import { getCurrentRegionAndProject } from '@shared';
 import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -15,6 +15,7 @@ import { BaseResponse, ProjectModel, RegionModel } from '../../../../../../../..
 import { VolumeDTO } from '../../../../../../shared/dto/volume.dto';
 import { CreateBackupVolumeOrderData, FormCreateBackupVolume } from '../../backup-volume.model';
 import { SizeInCloudProject } from '../../../../../../shared/models/project.model';
+import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
 
 @Component({
   selector: 'one-portal-create-backup-volume-vpc',
@@ -31,7 +32,6 @@ export class CreateBackupVolumeVpcComponent implements OnInit{
     backupInstanceOfferId: FormControl<number>;
     description: FormControl<string>;
     scheduleId: FormControl<number>;
-    backupPacketId: FormControl<number>;
     customerId: FormControl<number>
   }> = this.fb.group({
     volumeId: [0, [Validators.required]],
@@ -41,17 +41,16 @@ export class CreateBackupVolumeVpcComponent implements OnInit{
     backupInstanceOfferId: [0, [Validators.required]],
     description: ['', [Validators.maxLength(500)]],
     scheduleId: [0, [Validators.required, Validators.required]],
-    backupPacketId: [1, [Validators.required]],
     customerId: [0, [Validators.required]]
   });
 
   volumeIdParam: any;
   listName: string[] = []
-  listVolumes: BaseResponse<VolumeDTO[]>
+  listVolumes: VolumeDTO[]
   isLoading: boolean = false
   volumeInfo: VolumeDTO = new VolumeDTO()
 
-
+  @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
 
   constructor(private activatedRoute: ActivatedRoute,
               private router: Router,
@@ -67,7 +66,14 @@ export class CreateBackupVolumeVpcComponent implements OnInit{
   }
 
   regionChanged(region: RegionModel) {
+    if(this.projectCombobox){
+      this.projectCombobox.loadProjects(true, region.regionId);
+    }
     this.router.navigate(['/app-smart-cloud/backup-volume']);
+  }
+
+  onRegionChanged(region: RegionModel) {
+    this.region = region.regionId;
   }
 
   projectChanged(project: ProjectModel) {
@@ -88,15 +94,22 @@ export class CreateBackupVolumeVpcComponent implements OnInit{
     }
   }
 
+  isLoadingVolume: boolean = false
   getListVolumes() {
+    this.isLoadingVolume = true
     this.volumeService.getVolumes(this.tokenService.get()?.userId, this.project, this.region, 9999, 1, '', '').subscribe(data => {
-      this.listVolumes = data;
+      this.isLoadingVolume = false
+      this.listVolumes = data.records;
+      this.listVolumes = this.listVolumes.filter(item => item.status === 'KHOITAO')
       this.validateForm.controls.volumeId.setValue(this.listVolumes[0]?.id)
+    }, error => {
+      this.isLoadingVolume = false
+      this.notification.error(error.statusText, this.i18n.fanyi('app.failData'))
     })
   }
 
   getDataByVolumeId(id) {
-    this.volumeService.getVolumeById(id).subscribe(data => {
+    this.volumeService.getVolumeById(id, this.project).subscribe(data => {
       this.volumeInfo = data
     })
   }
@@ -113,7 +126,6 @@ export class CreateBackupVolumeVpcComponent implements OnInit{
     let formCreateBackupVolume = new FormCreateBackupVolume()
     formCreateBackupVolume.volumeId = this.validateForm.controls.volumeId.value
     formCreateBackupVolume.description = this.validateForm.controls.description.value
-    formCreateBackupVolume.backupPackageId = this.validateForm.controls.backupPacketId.value
     formCreateBackupVolume.customerId = this.tokenService.get()?.userId
     formCreateBackupVolume.userEmail = this.tokenService.get()?.email
     formCreateBackupVolume.actorEmail = this.tokenService.get()?.email
@@ -178,10 +190,29 @@ export class CreateBackupVolumeVpcComponent implements OnInit{
       this.isLoading = false
     })
   }
+
+  getListBackupVolumes() {
+    this.isLoading = true
+    this.backupVolumeService.getListBackupVolume(this.region, this.project, '', '', 99999, 1).subscribe(data => {
+      this.isLoading = false
+      data?.records.forEach(item => {
+        if (this.listName.length > 0) {
+          this.listName.push(item.name);
+        } else {
+          this.listName = [item.name];
+        }
+      })
+    }, error =>  {
+      this.isLoading = false
+      this.notification.error(error.statusText, this.i18n.fanyi('app.failData'))
+    });
+  }
+
   ngOnInit() {
     let regionAndProject = getCurrentRegionAndProject();
     this.region = regionAndProject.regionId;
     this.project = regionAndProject.projectId;
+    this.getListBackupVolumes()
     if (this.activatedRoute.snapshot.paramMap.get('volumeId') != undefined || this.activatedRoute.snapshot.paramMap.get('volumeId') != null) {
       console.log('here')
       this.volumeIdParam = Number.parseInt(this.activatedRoute.snapshot.paramMap.get('volumeId'));

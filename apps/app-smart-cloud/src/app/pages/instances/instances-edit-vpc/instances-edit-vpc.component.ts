@@ -4,8 +4,13 @@ import {
   Component,
   Inject,
   OnInit,
+  ViewChild,
 } from '@angular/core';
 import {
+  GpuConfigRecommend,
+  GpuProject,
+  GpuUsage,
+  InfoVPCModel,
   InstanceResize,
   InstancesModel,
   Network,
@@ -19,17 +24,18 @@ import { InstancesService } from '../instances.service';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { slider } from '../../../../../../../libs/common-utils/src/lib/slide-animation';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
-import { getCurrentRegionAndProject } from '@shared';
+import { getCurrentRegionAndProject, getListGpuConfigRecommend } from '@shared';
 import {
   RegionModel,
   ProjectModel,
 } from '../../../../../../../libs/common-utils/src';
-import { TotalVpcResource } from 'src/app/shared/models/vpc.model';
 import { I18NService } from '@core';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { debounceTime, finalize, Subject } from 'rxjs';
 import { ConfigurationsService } from 'src/app/shared/services/configurations.service';
 import { OrderService } from 'src/app/shared/services/order.service';
+import { CatalogService } from 'src/app/shared/services/catalog.service';
+import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
 
 @Component({
   selector: 'one-portal-instances-edit-vpc',
@@ -48,7 +54,7 @@ export class InstancesEditVpcComponent implements OnInit {
   projectId: number;
   listSecurityGroupModel: SecurityGroupModel[] = [];
   listSecurityGroup: SecurityGroupModel[] = [];
-
+  @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
   handleKeyboardEvent(event: KeyboardEvent) {
     if (event.key === 'ArrowLeft' || event.key === 'ArrowRight') {
       event.preventDefault(); // Ngăn chặn hành vi mặc định của các phím mũi tên
@@ -93,6 +99,7 @@ export class InstancesEditVpcComponent implements OnInit {
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
     @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
     private dataService: InstancesService,
+    private catalogService: CatalogService,
     private cdr: ChangeDetectorRef,
     private activatedRoute: ActivatedRoute,
     private router: Router,
@@ -109,44 +116,172 @@ export class InstancesEditVpcComponent implements OnInit {
     let regionAndProject = getCurrentRegionAndProject();
     this.region = regionAndProject.regionId;
     this.projectId = regionAndProject.projectId;
+    this.getActiveServiceByRegion();
     this.getConfigurations();
-    this.getCurrentInfoInstance(this.id);
     this.getInfoVPC();
     this.onChangeCapacity();
   }
 
-  isConfigGpuAtInitial: boolean = false;
-  getCurrentInfoInstance(instanceId: number): void {
-    this.dataService.getById(instanceId, true).subscribe({
-      next: (data: any) => {
-        this.instancesModel = data;
-        this.cloudId = this.instancesModel.cloudId;
-        this.region = this.instancesModel.regionId;
-        this.getListIpPublic();
-        if (
-          this.instancesModel.gpuCount != null &&
-          this.instancesModel.gpuType != null
-        ) {
-          this.isConfigGpuAtInitial = true;
-          this.isGpuConfig = true;
-          this.gpuTypeOfferId = this.listGPUType.filter(
-            (e) =>
-              e.characteristicValues[0].charOptionValues[0] ==
-              this.instancesModel.gpuType
-          )[0].id;
-        }
-        this.dataService
-          .getAllSecurityGroupByInstance(
-            this.cloudId,
-            this.region,
-            this.instancesModel.customerId,
-            this.instancesModel.projectId
-          )
-          .subscribe((datasg: any) => {
-            this.listSecurityGroupModel = datasg;
-            this.cdr.detectChanges();
-          });
+  //Lấy các dịch vụ hỗ trợ theo region
+  isVmGpu: boolean = false;
+  getActiveServiceByRegion() {
+    this.catalogService
+      .getActiveServiceByRegion(['Encryption', 'vm-gpu'], this.region)
+      .subscribe((data) => {
+        console.log('support service', data);
+        this.isVmGpu = data.filter(
+          (e) => e.productName == 'vm-gpu'
+        )[0].isActive;
+      });
+  }
+
+  isCurrentConfigGpu: boolean = false;
+  gpuTypeNameAtIntial: string = '';
+  getCurrentInfoInstance(): void {
+    this.listOptionGpuValue = this.listOptionGpuValue.filter(
+      (e) => e >= this.instancesModel.gpuCount
+    );
+    this.cloudId = this.instancesModel.cloudId;
+    this.region = this.instancesModel.regionId;
+    this.getListIpPublic();
+    if (
+      this.instancesModel.gpuCount != null &&
+      this.instancesModel.gpuType != null
+    ) {
+      this.isCurrentConfigGpu = true;
+      this.isGpuConfig = true;
+      this.isCustomconfig = false;
+      this.gpuOfferId = this.purchasedListGPUType.filter(
+        (e) =>
+          e.characteristicValues[0].charOptionValues[0] ==
+          this.instancesModel.gpuType
+      )[0].id;
+
+      this.gpuTypeNameAtIntial = this.purchasedListGPUType.filter(
+        (e) => e.id == this.gpuOfferId
+      )[0].offerName;
+
+      this.gpuTypeName = this.purchasedListGPUType.filter(
+        (e) => e.id == this.gpuOfferId
+      )[0].offerName;
+
+      let gpuProject: GpuProject = this.infoVPC.cloudProject.gpuProjects.filter(
+        (e) => e.gpuOfferId == this.gpuOfferId
+      )[0];
+      this.purchasedGpu = gpuProject.gpuCount;
+      let gpuUsage: GpuUsage =
+        this.infoVPC.cloudProjectResourceUsed.gpuUsages.filter(
+          (e) => e.gpuOfferId == this.gpuOfferId
+        )[0];
+      if (gpuUsage) {
+        this.remainingGpu = gpuProject.gpuCount - gpuUsage.gpuCount;
+      } else {
+        this.remainingGpu = gpuProject.gpuCount;
+      }
+    } else {
+      this.isCurrentConfigGpu = false;
+    }
+    this.dataService
+      .getAllSecurityGroupByInstance(
+        this.cloudId,
+        this.region,
+        this.instancesModel.customerId,
+        this.instancesModel.projectId
+      )
+      .subscribe((datasg: any) => {
+        this.listSecurityGroupModel = datasg;
         this.cdr.detectChanges();
+      });
+    console.log('so du gpu', this.remainingGpu);
+    this.listOptionGpuValue = this.listOptionGpuValue.filter(
+      (e) => e <= this.remainingGpu + this.instancesModel.gpuCount
+    );
+    this.instanceResize.gpuCount = this.instancesModel.gpuCount;
+    this.configRecommend = this.listGpuConfigRecommend.filter(
+      (e) =>
+        e.id == this.gpuOfferId && e.gpuCount == this.instanceResize.gpuCount
+    )[0];
+    this.cdr.detectChanges();
+  }
+
+  listOptionGpuValue: any[];
+  getListOptionGpuValue() {
+    this.configurationService
+      .getConfigurations('OPTIONGPUVALUE')
+      .subscribe((data) => {
+        this.listOptionGpuValue = data.valueString.split(', ').map(Number);
+        this.getCurrentInfoInstance();
+      });
+  }
+
+  configRecommend: GpuConfigRecommend;
+  listGpuConfigRecommend: GpuConfigRecommend[] = [];
+  listGPUType: OfferItem[] = [];
+  purchasedListGPUType: OfferItem[] = [];
+  getListGpuType() {
+    this.dataService
+      .getListOffers(this.region, 'vm-flavor-gpu')
+      .subscribe((data) => {
+        this.listGPUType = data.filter(
+          (e: OfferItem) => e.status.toUpperCase() == 'ACTIVE'
+        );
+        this.listGpuConfigRecommend = getListGpuConfigRecommend(
+          this.listGPUType
+        );
+        console.log('list gpu config recommend', this.listGpuConfigRecommend);
+        let listGpuOfferIds: number[] = [];
+        this.infoVPC.cloudProject.gpuProjects.forEach((gputype) =>
+          listGpuOfferIds.push(gputype.gpuOfferId)
+        );
+        this.purchasedListGPUType = this.listGPUType.filter((e) =>
+          listGpuOfferIds.includes(e.id)
+        );
+        this.getListOptionGpuValue();
+      });
+  }
+
+  infoVPC: InfoVPCModel;
+  remainingRAM: number = 0;
+  remainingVolume: number = 0;
+  purchasedVolume: number = 0;
+  purchasedGpu: number = 0;
+  remainingVCPU: number = 0;
+  remainingGpu: number = 0;
+  getInfoVPC() {
+    this.dataService.getById(this.id, true).subscribe({
+      next: (ressultModel: any) => {
+        this.instancesModel = ressultModel;
+        this.dataService.getInfoVPC(this.projectId).subscribe({
+          next: (data) => {
+            this.infoVPC = data;
+            if (data.volumeType == 0) {
+              this.purchasedVolume = this.infoVPC.cloudProject.quotaHddInGb;
+              this.remainingVolume =
+                this.infoVPC.cloudProject.quotaHddInGb -
+                this.infoVPC.cloudProjectResourceUsed.hdd;
+            } else {
+              this.purchasedVolume = this.infoVPC.cloudProject.quotaSSDInGb;
+              this.remainingVolume =
+                this.infoVPC.cloudProject.quotaSSDInGb -
+                this.infoVPC.cloudProjectResourceUsed.ssd;
+            }
+            this.remainingRAM =
+              this.infoVPC.cloudProject.quotaRamInGb -
+              this.infoVPC.cloudProjectResourceUsed.ram;
+            this.remainingVCPU =
+              this.infoVPC.cloudProject.quotavCpu -
+              this.infoVPC.cloudProjectResourceUsed.cpu;
+            if (this.infoVPC.cloudProject.gpuProjects.length != 0) {
+              this.getListGpuType();
+            }
+          },
+          error: (e) => {
+            this.notification.error(
+              e.statusText,
+              this.i18n.fanyi('app.notify.get.vpc.info.fail')
+            );
+          },
+        });
       },
       error: (e) => {
         this.checkPermission = false;
@@ -156,44 +291,9 @@ export class InstancesEditVpcComponent implements OnInit {
     });
   }
 
-  infoVPC: TotalVpcResource;
-  remainingRAM: number = 0;
-  remainingVolume: number = 0;
-  purchasedVolume: number = 0;
-  remainingVCPU: number = 0;
-  remainingGpu: number = 0;
-  listGPUType: OfferItem[] = [];
-  getInfoVPC() {
-    this.dataService.getInfoVPC(this.projectId).subscribe({
-      next: (data) => {
-        this.infoVPC = data;
-        if (this.instancesModel.volumeType == 0) {
-          this.purchasedVolume = this.infoVPC.cloudProject.quotaHddInGb;
-          this.remainingVolume =
-            this.infoVPC.cloudProject.quotaHddInGb -
-            this.infoVPC.cloudProjectResourceUsed.hdd;
-        } else {
-          this.purchasedVolume = this.infoVPC.cloudProject.quotaSSDInGb;
-          this.remainingVolume =
-            this.infoVPC.cloudProject.quotaSSDInGb -
-            this.infoVPC.cloudProjectResourceUsed.ssd;
-        }
-        this.remainingRAM =
-          this.infoVPC.cloudProject.quotaRamInGb -
-          this.infoVPC.cloudProjectResourceUsed.ram;
-        this.remainingVCPU =
-          this.infoVPC.cloudProject.quotavCpu -
-          this.infoVPC.cloudProjectResourceUsed.cpu;
-      },
-      error: (e) => {
-        this.notification.error(
-          e.statusText,
-          this.i18n.fanyi('app.notify.get.vpc.info.fail')
-        );
-      },
-    });
+  onRegionChanged(region: RegionModel) {
+    this.region = region.regionId;
   }
-
   listIPPublicStr = '';
   listIPLanStr = '';
   getListIpPublic() {
@@ -229,26 +329,89 @@ export class InstancesEditVpcComponent implements OnInit {
     this.isCustomconfig = true;
     this.isGpuConfig = false;
     this.resetData();
+    this.checkChangeConfig();
   }
 
   onClickGpuConfig() {
-    this.isCustomconfig = false;
-    this.isGpuConfig = true;
-    this.resetData();
+    if (this.isCurrentConfigGpu) {
+      return;
+    } else {
+      this.isCustomconfig = false;
+      this.isGpuConfig = true;
+      this.resetData();
+      this.gpuOfferId = this.purchasedListGPUType[0].id;
+      this.gpuTypeName = this.purchasedListGPUType.filter(
+        (e) => e.id == this.gpuOfferId
+      )[0].offerName;
+
+      let gpuProject: GpuProject = this.infoVPC.cloudProject.gpuProjects.filter(
+        (e) => e.gpuOfferId == this.gpuOfferId
+      )[0];
+      this.purchasedGpu = gpuProject.gpuCount;
+      let gpuUsage: GpuUsage =
+        this.infoVPC.cloudProjectResourceUsed.gpuUsages.filter(
+          (e) => e.gpuOfferId == this.gpuOfferId
+        )[0];
+      if (gpuUsage) {
+        this.remainingGpu = gpuProject.gpuCount - gpuUsage.gpuCount;
+      } else {
+        this.remainingGpu = gpuProject.gpuCount;
+      }
+      this.getListOptionGpuValue();
+    }
+    this.checkChangeConfig();
+    this.cdr.detectChanges();
+  }
+
+  gpuTypeName: string = '';
+  changeGpuType(id: number) {
+    this.gpuTypeName = this.purchasedListGPUType.filter(
+      (e) => e.id == id
+    )[0].offerName;
+
+    let gpuProject: GpuProject = this.infoVPC.cloudProject.gpuProjects.filter(
+      (e) => e.gpuOfferId == id
+    )[0];
+    this.purchasedGpu = gpuProject.gpuCount;
+
+    let gpuUsage: GpuUsage =
+      this.infoVPC.cloudProjectResourceUsed.gpuUsages.filter(
+        (e) => e.gpuOfferId == id
+      )[0];
+
+    if (gpuUsage) {
+      this.remainingGpu = gpuProject.gpuCount - gpuUsage.gpuCount;
+    } else {
+      this.remainingGpu = gpuProject.gpuCount;
+    }
+    this.getListOptionGpuValue();
+    this.instanceResize.gpuCount = 0;
+    this.configRecommend = null;
+  }
+
+  changeGpu() {
+    this.configRecommend = this.listGpuConfigRecommend.filter(
+      (e) =>
+        e.id == this.gpuOfferId && e.gpuCount == this.instanceResize.gpuCount
+    )[0];
+    console.log('cấu hình đề recommend', this.configRecommend);
   }
 
   resetData() {
     this.vCPU = 0;
     this.storage = 0;
     this.ram = 0;
-    this.GPU = 0;
+    this.instanceResize.gpuCount = this.instancesModel.gpuCount;
+    this.configRecommend = this.listGpuConfigRecommend.filter(
+      (e) =>
+        e.id == this.gpuOfferId && e.gpuCount == this.instanceResize.gpuCount
+    )[0];
   }
 
   vCPU: number = 0;
   ram: number = 0;
   storage: number = 0;
-  GPU: number = 0;
-  gpuTypeOfferId: number = 0;
+  gpuOfferId: number = 0;
   instanceResize: InstanceResize = new InstanceResize();
   instanceResizeInit() {
     this.instanceResize.description = null;
@@ -261,14 +424,14 @@ export class InstancesEditVpcComponent implements OnInit {
       this.instanceResize.cpu = this.vCPU + this.instancesModel.cpu;
       this.instanceResize.ram = this.ram + this.instancesModel.ram;
       this.instanceResize.storage = this.storage + this.instancesModel.storage;
-      this.instanceResize.gpuCount = this.GPU + this.instancesModel.gpuCount;
-      if (this.gpuTypeOfferId) {
-        this.instanceResize.gpuType = this.listGPUType.filter(
-          (e) => e.id == this.gpuTypeOfferId
+      if (this.gpuOfferId) {
+        this.instanceResize.gpuType = this.purchasedListGPUType.filter(
+          (e) => e.id == this.gpuOfferId
         )[0].characteristicValues[0].charOptionValues[0];
       } else {
         this.instanceResize.gpuType = this.instancesModel.gpuType;
       }
+      this.instanceResize.newGpuOfferId = this.gpuOfferId;
     }
 
     this.instanceResize.addBtqt = 0;
@@ -293,16 +456,17 @@ export class InstancesEditVpcComponent implements OnInit {
     this.cdr.detectChanges();
     if (
       this.isGpuConfig == true &&
-      (this.GPU == 0 || this.gpuTypeOfferId == 0) &&
+      (this.instanceResize.gpuCount == 0 || this.gpuOfferId == 0) &&
       (this.instancesModel.gpuCount == null ||
         this.instancesModel.gpuCount == 0)
     ) {
       this.notification.error(
         '',
-        this.i18n.fanyi('app.notify.gpu.configuration.invalid')
+        this.i18n.fanyi('app.notify.gpu.count.invalid')
       );
       return;
     }
+    this.orderItem = [];
     this.instanceResizeInit();
     let specificationInstance = JSON.stringify(this.instanceResize);
     let orderItemInstanceResize = new OrderItem();
@@ -319,7 +483,12 @@ export class InstancesEditVpcComponent implements OnInit {
 
     this.orderService
       .validaterOrder(this.order)
-      .pipe(finalize(() => (this.isLoading = false)))
+      .pipe(
+        finalize(() => {
+          this.isLoading = false;
+          this.cdr.detectChanges();
+        })
+      )
       .subscribe({
         next: (result) => {
           if (result.success) {
@@ -357,7 +526,25 @@ export class InstancesEditVpcComponent implements OnInit {
     if (this.storage % this.stepCapacity > 0) {
       this.isChange = false;
     } else {
-      if (this.storage != 0 || this.ram != 0 || this.vCPU != 0) {
+      if (
+        this.isCustomconfig &&
+        (this.storage != 0 || this.ram != 0 || this.vCPU != 0)
+      ) {
+        this.isChange = true;
+      } else if (
+        this.isGpuConfig &&
+        this.isCurrentConfigGpu &&
+        (this.storage != 0 ||
+          this.ram != 0 ||
+          this.vCPU != 0 ||
+          this.instanceResize.gpuCount != this.instancesModel.gpuCount)
+      ) {
+        this.isChange = true;
+      } else if (
+        this.isGpuConfig &&
+        !this.isCurrentConfigGpu &&
+        this.instanceResize.gpuCount != this.instancesModel.gpuCount
+      ) {
         this.isChange = true;
       } else {
         this.isChange = false;
@@ -385,7 +572,7 @@ export class InstancesEditVpcComponent implements OnInit {
   }
   onChangeCapacity() {
     this.dataSubjectCapacity.pipe(debounceTime(700)).subscribe((res) => {
-      if (res % this.stepCapacity > 0) {
+      if (this.storage % this.stepCapacity > 0) {
         this.notification.warning(
           '',
           this.i18n.fanyi('app.notify.amount.capacity', {
@@ -393,11 +580,16 @@ export class InstancesEditVpcComponent implements OnInit {
           })
         );
         this.storage = this.storage - (this.storage % this.stepCapacity);
+        this.checkChangeConfig();
+        this.cdr.detectChanges();
       }
     });
   }
 
   onRegionChange(region: RegionModel) {
+    if(this.projectCombobox){
+      this.projectCombobox.loadProjects(true, region.regionId);
+    }
     this.router.navigate(['/app-smart-cloud/instances']);
   }
 

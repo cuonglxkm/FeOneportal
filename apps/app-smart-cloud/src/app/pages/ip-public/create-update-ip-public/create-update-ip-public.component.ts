@@ -1,4 +1,4 @@
-import {Component, Inject, Input, OnInit} from '@angular/core';
+import {Component, Inject, Input, OnInit, ViewChild} from '@angular/core';
 import {IpPublicService} from "../../../shared/services/ip-public.service";
 import {InstancesService} from "../../instances/instances.service";
 import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
@@ -20,6 +20,7 @@ import {CatalogService} from "../../../shared/services/catalog.service";
 import { OrderService } from '../../../shared/services/order.service';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from '../../../../../../app-kafka/src/app/core/i18n/i18n.service';
+import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
 
 @Component({
   selector: 'one-portal-create-update-ip-public',
@@ -54,6 +55,12 @@ export class CreateUpdateIpPublicComponent implements OnInit {
   ipId = '';
   VMId = '';
   unitPrice: any;
+  isVisiblePopupError: boolean = false;
+  errorList: string[] = [];
+  closePopupError() {
+    this.isVisiblePopupError = false;
+  }
+  @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
   constructor(private service: IpPublicService, private instancService: InstancesService,
               @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
               private notification: NzNotificationService,
@@ -108,7 +115,14 @@ export class CreateUpdateIpPublicComponent implements OnInit {
 
   onRegionChange(region: RegionModel) {
     this.regionId = region.regionId;
+    if(this.projectCombobox){
+      this.projectCombobox.loadProjects(true, region.regionId);
+    }
     this.router.navigate(['/app-smart-cloud/ip-public']);
+  }
+
+  onRegionChanged(region: RegionModel) {
+    this.regionId = region.regionId;
   }
 
   projectChange(project: ProjectModel) {
@@ -179,7 +193,13 @@ export class CreateUpdateIpPublicComponent implements OnInit {
     var returnPath: string = window.location.pathname;
     this.orderService.validaterOrder(request).subscribe(
       data => {
-        this.router.navigate(['/app-smart-cloud/order/cart'], {state: {data: request, path: returnPath}});
+        if (data.success) {
+          this.router.navigate(['/app-smart-cloud/order/cart'], {state: {data: request, path: returnPath}});
+        } else {
+          this.isVisiblePopupError = true;
+          this.errorList = data.data;
+
+        }
       },
       error => {
         this.notification.error(this.i18n.fanyi('app.status.fail'),this.i18n.fanyi('app.validate.order.fail'))

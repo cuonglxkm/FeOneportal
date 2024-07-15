@@ -1,4 +1,4 @@
-import {Component, Inject, OnInit} from '@angular/core';
+import {Component, Inject, OnInit, ViewChild} from '@angular/core';
 import {IpPublicService} from "../../shared/services/ip-public.service";
 import {BaseResponse, ProjectModel, RegionModel} from "../../../../../../libs/common-utils/src";
 import {IpPublicModel} from "../../shared/models/ip-public.model";
@@ -12,6 +12,7 @@ import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from '@core';
 import { TimeCommon } from '../../shared/utils/common';
 import { debounceTime, Subject } from 'rxjs';
+import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
 
 @Component({
   selector: 'one-portal-ip-public',
@@ -50,6 +51,7 @@ export class IpPublicComponent implements OnInit {
     {name: this.i18n.fanyi('app.status.low-renew'), value: 'TAMNGUNG'}];
   disableDelete = true;
   ipAddressDelete = '';
+  @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
 
   constructor(private service: IpPublicService, private router: Router,
               @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
@@ -94,7 +96,14 @@ export class IpPublicComponent implements OnInit {
 
   onRegionChange(region: RegionModel) {
     this.regionId = region.regionId;
+    if(this.projectCombobox){
+      this.projectCombobox.loadProjects(true, region.regionId);
+    }
     this.refreshParams();
+  }
+
+  onRegionChanged(region: RegionModel) {
+    this.regionId = region.regionId;
   }
 
   projectChange(project: ProjectModel) {

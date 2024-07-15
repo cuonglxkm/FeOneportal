@@ -45,6 +45,9 @@ export interface VolumeBackup {
   backupPackageId: number,
   status: string,
   typeName: string
+  volumeType: string
+  isEncryption: false
+  isMultiAttach: false
 }
 
 export interface SystemInfoBackup {
@@ -56,6 +59,7 @@ export interface SystemInfoBackup {
   flavorName: string,
   osName: string,
   imageId: string
+  imageIdInt: number
 }
 
 export interface SecurityGroupBackup {
@@ -82,6 +86,8 @@ export class BackupVMFormSearch {
 
 export class RestoreFormCurrent {
   instanceBackupId: number
+  securityGroups: string[]
+  volumeBackupIds: number[]
 }
 
 export class VolumeAttachment {
@@ -192,52 +198,56 @@ export class FormUpdateBackupVm {
 
 export class RestoreInstanceBackup {
   instanceBackupId: number
-  volumeBackupIds: any
+  volumeBackups: VolumeExternalBackup[]
   instanceName: any
   securityGroups: any
   subnetCloudId: any
   offerFlavorId: number
   keypairName: any
-  volumeSize: number
+  volumeSize: number = 0
   isUsePrivateNetwork: boolean
   ipPublic: any
   password: any
   encryption: boolean
-  ram: number
-  cpu: number
-  gpuCount: any
+  ram: number = 0
+  cpu: number = 0
+  gpuCount: any = 0
   gpuTypeOfferId: any
   privateNetId: any
   privatePortId: any
-  customerId: number
-  userEmail: any
-  actorEmail: any
   projectId: any
-  vpcId: any
-  regionId: number
-  serviceName: any
+  customerId: number
   serviceType: number
-  actionType: number
   serviceInstanceId: number
   createDate: string
   expireDate: string
-  createDateInContract: any
   saleDept: any
   saleDeptCode: any
   contactPersonEmail: any
   contactPersonPhone: any
   contactPersonName: any
+  note: any
+  createDateInContract: any
   am: any
   amManager: any
-  note: any
   isTrial: boolean
   offerId: number
   couponCode: any
   dhsxkd_SubscriptionId: any
   dSubscriptionNumber: any
   dSubscriptionType: any
-  oneSMEAddonId: any
   oneSME_SubscriptionId: any
-  isSendMail: boolean
+  oneSMEAddonId: any
+  userEmail: any
+  actorEmail: any
+  actionType: number
+  regionId: number
+  serviceName: any
   typeName: string
+}
+
+export class VolumeExternalBackup {
+  id: number
+  name: string
+  size: number
 }

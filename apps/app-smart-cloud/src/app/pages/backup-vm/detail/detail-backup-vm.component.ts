@@ -1,4 +1,4 @@
-import {Component, Inject, OnInit} from '@angular/core';
+import {Component, Inject, OnInit, ViewChild} from '@angular/core';
 import {BackupVmService} from "../../../shared/services/backup-vm.service";
 import {BackupVm, SystemInfoBackup, VolumeBackup} from "../../../shared/models/backup-vm";
 import {ActivatedRoute, Router} from "@angular/router";
@@ -15,6 +15,7 @@ import { PackageBackupModel } from '../../../shared/models/package-backup.model'
 import { PackageBackupService } from '../../../shared/services/package-backup.service';
 import { SizeInCloudProject } from 'src/app/shared/models/project.model';
 import { ProjectService } from 'src/app/shared/services/project.service';
+import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
 
 @Component({
   selector: 'one-portal-detail-backup-vm',
@@ -26,28 +27,29 @@ export class DetailBackupVmComponent implements OnInit {
   region = JSON.parse(localStorage.getItem('regionId'));
   project = JSON.parse(localStorage.getItem('projectId'));
 
+  isLoading: boolean = false
+
   backupVm: BackupVm;
 
   systemInfoBackups: SystemInfoBackup[] = []
   volumeBackups: VolumeBackup[] = []
 
   nameSecurityGroup = []
-  nameSecurityGroupTextUnique: string
-  nameSecurityGroupText: string[]
+  nameSecurityGroupTextUnique: string = ''
+  nameSecurityGroupText: string[] = []
 
-  nameFlavorTextUnique: string
-  nameFlavorText: string[]
+  nameFlavorTextUnique: string = ''
+  nameFlavorText: string[] = []
   nameFlavor = []
 
-  nameVolumeBackupAttach = []
-  nameVolumeBackupAttachName: string[]
-  nameVolumeBackupAttachNameUnique: string
+  volumeBackupAttach = []
 
 
   userId: number
   typeVpc: number
   projectDetail: SizeInCloudProject
   backupPackageDetail: PackageBackupModel = new PackageBackupModel();
+  @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
   constructor(private backupVmService: BackupVmService,
               private route: ActivatedRoute,
               @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
@@ -60,12 +62,19 @@ export class DetailBackupVmComponent implements OnInit {
 
   regionChanged(region: RegionModel) {
     this.region = region.regionId
+    if(this.projectCombobox){
+      this.projectCombobox.loadProjects(true, region.regionId);
+    }
     // this.projectService.getByRegion(this.region).subscribe(data => {
     //   if (data.length) {
     //     localStorage.setItem("projectId", data[0].id.toString())
         this.router.navigate(['/app-smart-cloud/backup-vm'])
     //   }
     // });
+  }
+
+  onRegionChanged(region: RegionModel) {
+    this.region = region.regionId;
   }
 
   projectChanged(project: ProjectModel) {
@@ -78,15 +87,20 @@ export class DetailBackupVmComponent implements OnInit {
     this.router.navigate(['/app-smart-cloud/backup-vm'])
   }
 
-  goBack() {
-    this.router.navigate(['/app-smart-cloud/backup-vm'])
+  convertString(str: string): string {
+    const parts = str?.trim().split('\n');
+    if (parts?.length === 1) {
+      return str;
+    }
+    return parts.join(', ');
   }
 
   getBackupVmById(id) {
+    this.isLoading = true
     this.backupVmService.detail(id).subscribe(data => {
+      this.isLoading = false
       this.backupVm = data
       this.systemInfoBackups = this.backupVm.systemInfoBackups
-      this.volumeBackups = this.backupVm.volumeBackups
       this.backupVm?.securityGroupBackups.forEach(item => {
         this.nameSecurityGroup?.push(item.sgName)
       })
@@ -95,35 +109,23 @@ export class DetailBackupVmComponent implements OnInit {
         this.nameFlavor?.push(item.osName)
       })
 
-      this.backupVm?.volumeBackups.forEach(item => {
-        if(item.isBootable == false) {
-          this.nameVolumeBackupAttach?.push(item.name)
-        }
-      })
-
       this.nameSecurityGroupText = Array.from(new Set(this.nameSecurityGroup))
-      this.nameSecurityGroupTextUnique = this.nameSecurityGroupText.join('\n')
-      console.log('name', this.nameSecurityGroup)
-      console.log('data', this.backupVm)
-      console.log('unique', this.nameSecurityGroupText)
+      this.nameSecurityGroupTextUnique = this.nameSecurityGroupText?.join('\n')
 
       this.nameFlavorText = Array.from(new Set(this.nameFlavor))
       this.nameFlavorTextUnique = this.nameFlavorText.join('\n')
-      console.log('name', this.nameFlavorText)
-      console.log('unique', this.nameFlavorTextUnique)
 
-      this.nameVolumeBackupAttachName = Array.from(new Set(this.nameVolumeBackupAttach))
-      this.nameVolumeBackupAttachNameUnique = this.nameVolumeBackupAttachName.join('\n')
-      console.log('name', this.nameVolumeBackupAttachName)
-      console.log('unique', this.nameVolumeBackupAttachNameUnique)
 
       this.getBackupPackage(this.backupVm?.backupPacketId);
     }, error => {
+      this.isLoading = false
       if(error.error.detail.includes('Not Found!')) {
         this.router.navigate(['/app-smart-cloud/backup-vm'])
         this.notification.error('', error.error.detail)
+      } else {
+        // this.router.navigate(['/app-smart-cloud/backup-vm'])
+        this.notification.error(error.statusText, error.error.title)
       }
-     this.notification.error('', error.error.detail)
     })
   }
 
@@ -134,7 +136,7 @@ export class DetailBackupVmComponent implements OnInit {
   }
 
   getBackupPackage(value) {
-    this.backupPackageService.detail(value).subscribe(data => {
+    this.backupPackageService.detail(value, this.project).subscribe(data => {
       this.backupPackageDetail = data;
     });
   }
@@ -148,7 +150,7 @@ export class DetailBackupVmComponent implements OnInit {
     this.project = regionAndProject.projectId
     console.log(selectedDetailBackupId);
     if (selectedDetailBackupId !== undefined || selectedDetailBackupId !== null || selectedDetailBackupId !== '') {
-      this.getInfoProjectVpc(parseInt(selectedDetailBackupId))
+      this.getInfoProjectVpc(this.project)
       this.getBackupVmById(parseInt(selectedDetailBackupId))
     }
   }

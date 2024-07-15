@@ -32,16 +32,16 @@ export class ObjectObjectStorageService extends BaseService {
       '&pageSize=' + pageSize + '&currentPage=' + currentPage);
   }
 
-  getDataS3Key(search: any, pageSize: any, currentPage: any): Observable<any> {
-    return this.http.get<any>(this.baseUrl + this.ENDPOINT.provisions + '/object-storage/keys/getpaging?pageSize=' + pageSize + '&pageNumber=' + currentPage);
+  getDataS3Key(search: string, pageSize: number, currentPage: number, regionId: number): Observable<any> {
+    return this.http.get<any>(this.baseUrl + this.ENDPOINT.provisions + '/object-storage/keys/getpaging?pageSize=' + pageSize + '&pageNumber=' + currentPage + '&regionId=' + regionId + '&searchValueUser=' + search);
   }
 
-  createS3Key(subUser: string) {
-    return this.http.post<any>(this.baseUrl + this.ENDPOINT.provisions + '/object-storage/createS3Key?subUser=' + subUser, this.httpOptions);
+  createS3Key(subUser: string, regionId: number) {
+    return this.http.post<any>(this.baseUrl + this.ENDPOINT.provisions + '/object-storage/createS3Key?subUser=' + subUser + '&regionId=' + regionId, this.httpOptions);
   }
 
-  generateS3Key(data: s3KeyGenerate) {
-    return this.http.post<any>(this.baseUrl + this.ENDPOINT.provisions + '/object-storage/generateS3Key', data, this.httpOptions);
+  generateS3Key(data: s3KeyGenerate, regionId: number) {
+    return this.http.post<any>(this.baseUrl + this.ENDPOINT.provisions + `/object-storage/generateS3Key?regionId=${regionId}`, data, this.httpOptions);
   }
 
   deleteS3key(data: formDeleteS3Key) {
@@ -62,8 +62,8 @@ export class ObjectObjectStorageService extends BaseService {
     return this.http.post<any>(this.baseUrl + this.ENDPOINT.provisions + '/object-storage/CopyObject', data, this.httpOptions);
   }
 
-  downloadFile(bucketName: string, key: string, versionId: string) {
-    let url = this.baseUrl + this.ENDPOINT.provisions + '/object-storage/download?bucketName=' + bucketName + '&key=' + key;
+  downloadFile(bucketName: string, key: string, versionId: string, regionId: number) {
+    let url = this.baseUrl + this.ENDPOINT.provisions + '/object-storage/download?bucketName=' + bucketName + '&key=' + key + '&regionId=' + regionId;
     if (versionId != '') {
       url += '&versionId=' + versionId
     }
@@ -92,15 +92,15 @@ export class ObjectObjectStorageService extends BaseService {
     return this.http.post<any>(this.baseUrl + this.ENDPOINT.provisions + '/object-storage/ShareObject', data, this.httpOptions);
   }
 
-  editPermission(bucketName: string, keyName: string, role: string) {
-    return this.http.post<any>(this.baseUrl + this.ENDPOINT.provisions + '/object-storage/ObjectAcl?bucketName=' + bucketName + '&keyName=' + keyName + '&role=' + role, this.httpOptions);
+  editPermission(bucketName: string, keyName: string, role: string, regionId: number) {
+    return this.http.post<any>(this.baseUrl + this.ENDPOINT.provisions + '/object-storage/ObjectAcl?bucketName=' + bucketName + '&keyName=' + keyName + '&role=' + role + '&regionId=' + regionId, this.httpOptions);
   }
 
   loadDataVersion(data: any) {
     return this.http.post<any>(this.baseUrl + this.ENDPOINT.provisions + '/object-storage/GetObjectVersions', data, this.httpOptions);
   }
 
-  restoreObject(data: { bucketName: string; versionId: string; key: string }) {
+  restoreObject(data: { bucketName: string; versionId: string; key: string; regionId: number }) {
     return this.http.post<any>(this.baseUrl + this.ENDPOINT.provisions + '/object-storage/RestoreObjectVersion', data, this.httpOptions);
   }
 

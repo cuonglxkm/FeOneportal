@@ -1,22 +1,22 @@
 <page-header
   [breadcrumb]="breadcrumb"
   [action]="action"
-  [title]="'Tạo mới Endpoint Group'"
+  [title]="'app.endpoint-create' |i18n"
 >
   <ng-template #breadcrumb>
     <nz-breadcrumb [nzSeparator]="separatorTemplate">
       <nz-breadcrumb-item>
-        <a [routerLink]="['/']">Trang chủ</a>
+        <a [routerLink]="['/']">{{ 'app.breadcrumb.home' | i18n }}</a>
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>
-        Dịch vụ hạ tầng
+        {{ 'app.breadcrumb.infrastructure.service' | i18n }}   
       </nz-breadcrumb-item>
       <nz-breadcrumb-item
-        ><a [routerLink]="['/app-smart-cloud/vpn-site-to-site/manage']"
+        ><a [routerLink]="['/app-smart-cloud/vpn-site-to-site']"
           >VPN site to site</a
         ></nz-breadcrumb-item
       >
-      <nz-breadcrumb-item>Tạo mới Endpoint Group</nz-breadcrumb-item>
+      <nz-breadcrumb-item>{{'app.endpoint-create' |i18n}}</nz-breadcrumb-item>
     </nz-breadcrumb>
     <ng-template #separatorTemplate
       ><img src="assets/imgs/arrow-square-right.svg" alt="" />
@@ -26,9 +26,10 @@
     <div class="alain-custom-action text-right">
       <share-users-combobox></share-users-combobox>
       <region-select-dropdown
+      (regionChange)="onRegionChanged($event)"
       (valueChanged)="onRegionChange($event)"
     ></region-select-dropdown>
-    <project-select-dropdown
+    <project-select-dropdown #projectCombobox
       [regionId]="region"
       (valueChanged)="onProjectChange($event)"
       (userChanged)="userChangeProject($event)"
@@ -40,18 +41,18 @@
 <div nz-row [nzGutter]="16">
   <div nz-col [nzSpan]="17" class="gutter-row">
     <nz-card style="border-radius: 8px">
-      <h2 class="custom-title">Thông tin Endpoint Group</h2>
+      <h2 class="custom-title">{{'app.information' |i18n}} Endpoint Group</h2>
       <form [formGroup]="form" nz-form [nzLayout]="'vertical'">
         <nz-form-item>
           <nz-form-control [nzErrorTip]="nameErrorTpl">
             <nz-form-label nzFor="name">
               <div>
-                <span>Name</span>
+                <span>{{'form.account.name' |i18n}}</span>
                 (<span style="color: rgba(252, 16, 16, 1)">*</span>)
                 <img
                   nz-popover
                   [nzPopoverContent]="
-                    'Tên của Endpoint bao gồm các ký tự chữ thường a-z, chữ hoa A-Z, số 0-9, dấu gạch ngang (-) và dấu gạch dưới (_), có thể có khoảng trắng, tối thiểu 1 ký tự và tối đa 50 ký tự.'
+                    'app.endpoint-create.name.tooltip' |i18n
                   "
                   nzPopoverPlacement="bottom"
                   style="margin-left: 5px"
@@ -67,15 +68,15 @@
               nz-input
               type="text"
               required
-              placeholder="Nhập tên"
+              [placeholder]="'app.input.name' |i18n"
               formControlName="name"
             />
             <ng-template #nameErrorTpl let-control>
               <ng-container *ngIf="control.hasError('required')"
-                >Tên Endpoint Group không được để trống</ng-container
+                >{{'app.endpoint-create.name.alert' |i18n}}</ng-container
               >
               <ng-container *ngIf="control.hasError('pattern')"
-                >Tên Endpoint Group chỉ chứa các ký tự chữ thường a-z, chữ hoa A-Z, số 0-9, dấu gạch ngang (-) và dấu gạch dưới (_), có thể có khoảng trắng, tối thiểu 1 ký tự và tối đa 50 ký tự</ng-container
+                >{{'app.endpoint-create.name.tooltip' |i18n}}</ng-container
               >
             </ng-template>
           </nz-form-control>
@@ -90,7 +91,7 @@
                 <img
                   nz-popover
                   [nzPopoverContent]="
-                    'IPsec Connection yêu cầu Local Endpoints là Subnet và peer endpoints là CIDR.'
+                    'app.endpoint-create.type.tooltip' |i18n
                   "
                   nzPopoverPlacement="bottom"
                   style="margin-left: 5px"
@@ -101,8 +102,6 @@
             </nz-form-label>
             <nz-select
               class="input-select-custom"
-              nzShowSearch
-              nzAllowClear
               [(ngModel)]="selectedType"
               [ngModelOptions]="{ standalone: true }"
               (ngModelChange)="handleChangeType($event)"
@@ -124,9 +123,8 @@
                 <span nzFor="name">Local Systems Subnets </span>
                 <img
                   nz-popover
-                  nzPopoverContent="
-                        Local Subnet(s). Trường này hợp lệ và có ý nghĩa nếu Type là Subnet
-                    Đây là VLAN trong VPC.
+                  [nzPopoverContent]="
+                  'app.endpoint-create.local.tooltip' |i18n
                       "
                   nzPopoverPlacement="bottom"
                   style="margin-left: 5px"
@@ -136,13 +134,13 @@
               </div>
             </nz-form-label>
             <nz-checkbox-wrapper
-              *ngIf="selectedType == 'subnet' && listSubnets.length !== 0"
+              *ngIf="selectedType == 'subnet' && listSubnets && listSubnets.length !== 0"
               style="width: 100%"
               (nzOnChange)="log($event)"
             >
               <div *ngIf="selectedType == 'subnet'">
                 <div *ngFor="let item of listSubnets">
-                  <div [ngModel]="checked" [nzValue]="item.cidr" nz-checkbox>
+                  <div class="text-label" [ngModel]="checked" [nzValue]="item.cidr" [ngModelOptions]="{ standalone: true }"  nz-checkbox>
                     {{ item.cidr }}
                   </div>
                 </div>
@@ -157,8 +155,7 @@
                 [routerLink]="[
                   '/app-smart-cloud/network/router/detail/' + routerId
                 ]"
-                >Vui lòng kiểm tra Router và add Interface Router để sử dụng
-                dịch vụ!</a
+                >{{'app.endpoint-create.add.router' |i18n}}</a
               >
             </ng-container>
 
@@ -167,9 +164,8 @@
                 <span nzFor="name">External Systems CIDRs </span>
                 <img
                   nz-popover
-                  nzPopoverContent="
-                    Remote peer subnet(s) với  mask(s) ở định dạng CIDR được phân tách bằng dấu phẩy nếu cần (ví dụ: 20.1.0.0/24, 21.1.0.0/24) trường này hợp lệ nếu Type là CIDR.
-                    Đây là danh sách các remote subnet cần quảng qua VPN Site to site.
+                  [nzPopoverContent]="
+                  'app.endpoint-create.cidr.tooltip' |i18n
                   "
                   nzPopoverPlacement="bottom"
                   style="margin-left: 5px"
@@ -188,10 +184,10 @@
             />
             <ng-template #cidrErrorTpl let-control>
               <ng-container *ngIf="control.hasError('required')"
-                >CIDR không được để trống</ng-container
+                >{{'app.endpoint-create.cidr.alert1' |i18n}}</ng-container
               >
               <ng-container *ngIf="control.hasError('pattern')"
-                >CIDR phải có dạng x.x.x.0/24</ng-container
+                >{{'app.endpoint-create.cidr.alert2' |i18n}}</ng-container
               >
             </ng-template>
           </nz-form-control>
@@ -201,7 +197,7 @@
   </div>
   <div nz-col [nzSpan]="7" class="gutter-row">
     <nz-card style="border-radius: 8px;" class="card-border">
-      <h2 class="custom-title">Thông số cấu hình</h2>
+      <h2 class="custom-title">{{'app.config.parameters' |i18n}}</h2>
       <div style="overflow: auto; height: 235px; margin-bottom: 16px">
         <div style="margin-bottom: 12px">
           <h3 class="custom-subtitle">Name</h3>
@@ -248,7 +244,7 @@
         [nzLoading]="isLoading"
       >
         <img src="assets/imgs/wallet.svg" alt="" />
-        <span class="button-text-primary">Khởi tạo</span>
+        <span class="button-text-primary">{{'app.button.create' |i18n}}</span>
       </button>
     </nz-card>
   </div>

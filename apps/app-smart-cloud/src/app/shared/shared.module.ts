@@ -30,6 +30,8 @@ import { GuideFormulaComponent } from './components/guide-formula/guide-formula.
 import { TimeUsedResizeComponent } from './components/time-used-resize/time-used-resize.component';
 import { PopupListErrorComponent } from './components/popup-list-error/popup-list-error.component';
 import { ServiceTimeExtendComponent } from './components/service-time-extend/service-time-extend.component';
+import { TrimDirective } from '../pages/file-storage/TrimDirective';
+import { PhoneValidatorDirective } from './directive/PhoneValidatorDirective';
 
 const antDesignIcons = AllIcons as {
   [key: string]: any;
@@ -75,7 +77,8 @@ const DIRECTIVES: Array<Type<any>> = [];
     AlainThemeModule.forChild(),
     DelonACLModule,
     DelonFormModule,
-
+    TrimDirective,
+    PhoneValidatorDirective,
     ...SHARED_DELON_MODULES,
     ...SHARED_ZORRO_MODULES,
     // third libs

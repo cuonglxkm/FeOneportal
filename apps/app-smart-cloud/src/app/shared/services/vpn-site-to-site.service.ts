@@ -27,7 +27,7 @@ export class VpnSiteToSiteService extends BaseService {
   }
 
   getVpnSiteToSite(vpcId) {
-    return this.http.get<VpnSiteToSiteDTO>(this.baseUrl + this.ENDPOINT.provisions + '/vpn-sitetosite/byVpc/' + vpcId, {observe: 'response'})
+    return this.http.get<VpnSiteToSiteDTO>(this.baseUrl + this.ENDPOINT.provisions + '/vpn-sitetosite/byVpc/' + vpcId, { headers: this.getHeaders(),observe: 'response'})
   }
 
   vpnSiteToSite(id): Observable<any> {

@@ -17,6 +17,14 @@ export class PaymentService extends BaseService {
     super();
   }
 
+  httpOptions = {
+    headers: new HttpHeaders({
+      'Content-Type': 'application/json',
+      'User-Root-Id': localStorage?.getItem('UserRootId') && Number(localStorage?.getItem('UserRootId')) > 0 ? Number(localStorage?.getItem('UserRootId')) : this.tokenService?.get()?.userId,
+      Authorization: 'Bearer ' + this.tokenService.get()?.token,
+    }),
+  };
+
   search(paymentSearch: PaymentSearch) {
     let params = new HttpParams()
     if (paymentSearch.code != undefined || paymentSearch.code != null) {
@@ -40,6 +48,9 @@ export class PaymentService extends BaseService {
     if (paymentSearch.currentPage != undefined || paymentSearch.currentPage != null) {
       params = params.append('currentPage', paymentSearch.currentPage)
     }
+    if (paymentSearch.invoiceStatus != undefined || paymentSearch.invoiceStatus != null) {
+      params = params.append('invoiceStatus', paymentSearch.invoiceStatus)
+    }
 
     return this.http.get<BaseResponse<PaymentModel[]>>(this.baseUrl + this.ENDPOINT.payments + '/Paging', {
       params: params }).pipe(catchError((error: HttpErrorResponse) => {
@@ -56,6 +67,19 @@ export class PaymentService extends BaseService {
   export(id: number) {
     return this.http.get(this.baseUrl + `/invoices/export/${id}`,
       {responseType: 'blob' as 'json'}).pipe(
+      catchError((error: HttpErrorResponse) => {
+        if (error.status === 401) {
+          console.error('login');
+        } else if (error.status === 404) {
+          // Handle 404 Not Found error
+          console.error('Resource not found');
+        }
+        return throwError(error);
+      }))
+  }
+
+  exportInvoice(id: number) {
+    return this.http.get(this.baseUrl + `/invoices/export-einvoice/${id}`, { responseType: 'text' }).pipe(
       catchError((error: HttpErrorResponse) => {
         if (error.status === 401) {
           console.error('login');
@@ -93,5 +117,11 @@ export class PaymentService extends BaseService {
         }
         return throwError(error);
       }));
+  }
+
+  cancelPayment(paymentNumber: string): Observable<any> {
+    return this.http.put<any>(
+      this.baseUrl + this.ENDPOINT.payments + `/cancel?paymentNumber=${paymentNumber}`, this.httpOptions
+    );
   }
 }

@@ -1,6 +1,7 @@
 <page-header
   [breadcrumb]="breadcrumb"
   [title]="'app.object.storage.extend' | i18n"
+  [action]="action"
 >
   <ng-template #breadcrumb>
     <nz-breadcrumb [nzSeparator]="separatorTemplate">
@@ -20,6 +21,14 @@
       ><img src="assets/imgs/arrow-square-right.svg" alt="" />
     </ng-template>
   </ng-template>
+  <ng-template #action>
+    <div class="alain-custom-action text-right">
+      <region-select-dropdown
+      (valueChanged)="onRegionChange($event)"
+        (regionChange)="onRegionChanged($event)"
+      ></region-select-dropdown>
+    </div>
+  </ng-template>
 </page-header>
 
 <form nz-form [nzLayout]="'vertical'">
@@ -38,8 +47,8 @@
           >
           <nz-form-control>
             <nz-input-number
+            [(ngModel)]="objectStorage.quota"
               style="width: 100%; margin-left: 0px"
-              [(ngModel)]="objectStorage.quota"
               [ngModelOptions]="{ standalone: true }"
               [disabled]="true"
               nzSize="large"
@@ -210,3 +219,7 @@
     </nz-col>
   </nz-row>
 </form>
+<one-portal-popup-list-error
+    [isVisible]="isVisiblePopupError"
+    [errorList]="errorList"
+    (onCancel)="closePopupError()" />

@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FileSystemService } from '../../../../../shared/services/file-system.service';
@@ -15,6 +15,8 @@ import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { ProjectService } from 'src/app/shared/services/project.service';
 import { debounceTime, Subject } from 'rxjs';
 import { ConfigurationsService } from '../../../../../shared/services/configurations.service';
+import { OrderService } from '../../../../../shared/services/order.service';
+import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
 
 @Component({
   selector: 'one-portal-resize-file-system',
@@ -50,6 +52,8 @@ export class ResizeFileSystemComponent implements OnInit {
   stepStorage: number = 0;
   valueStringConfiguration: string = '';
 
+  @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
+
   constructor(private fb: NonNullableFormBuilder,
               private router: Router,
               private activatedRoute: ActivatedRoute,
@@ -58,12 +62,20 @@ export class ResizeFileSystemComponent implements OnInit {
               @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
               private notification: NzNotificationService,
               private projectService: ProjectService,
+              private orderService: OrderService,
               private configurationsService: ConfigurationsService) {
   }
 
   regionChanged(region: RegionModel) {
     // this.region = region.regionId
+    if(this.projectCombobox){
+      this.projectCombobox.loadProjects(true, region.regionId);
+    }
     this.router.navigate(['/app-smart-cloud/file-storage/file-system/list']);
+  }
+
+  onRegionChanged(region: RegionModel) {
+    this.region = region.regionId;
   }
 
   projectChanged(project: ProjectModel) {
@@ -90,8 +102,8 @@ export class ResizeFileSystemComponent implements OnInit {
     this.fileSystemService.getFileSystemById(id, this.region, this.project).subscribe(data => {
       this.fileSystem = data;
       this.isLoading = false;
-      this.storage = this.fileSystem?.size;
-      this.validateForm.controls.storage.setValue(this.fileSystem.size);
+      // this.storage = this.fileSystem?.size;
+      // this.validateForm.controls.storage.setValue(this.fileSystem.size);
     }, error => {
       this.fileSystem = null;
       this.isLoading = false;
@@ -118,13 +130,20 @@ export class ResizeFileSystemComponent implements OnInit {
     this.resizeFileSystem.actorEmail = this.tokenService.get()?.email;
   }
 
+  isVisiblePopupError: boolean = false;
+  errorList: string[] = [];
+
+  closePopupError() {
+    this.isVisiblePopupError = false;
+  }
+
   doResizeFileSystem() {
     this.isLoading = true;
     this.initFileSystem();
     let request = new ResizeFileSystemRequestModel();
     request.customerId = this.resizeFileSystem.customerId;
     request.createdByUserId = this.resizeFileSystem.customerId;
-    request.note = 'Điều chỉnh dung lượng File System';
+    request.note = this.i18n.fanyi('app.file.system.resize.title');
     request.orderItems = [
       {
         orderItemQuantity: 1,
@@ -135,20 +154,30 @@ export class ResizeFileSystemComponent implements OnInit {
       }
     ];
     console.log('request', request);
-    this.fileSystemService.resize(request).subscribe(data => {
-      if (data != null) {
-        if (data.code == 200) {
+    this.orderService.validaterOrder(request).subscribe(data => {
+      this.isLoading = false;
+      if (data.success) {
+        this.fileSystemService.resize(request).subscribe(data => {
+          if (data != null) {
+            if (data.code == 200) {
+              this.isLoading = false;
+              this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('app.file.system.notification.require.resize.success'));
+              setTimeout(() => {this.router.navigate(['/app-smart-cloud/file-storage/file-system/list']);}, 1500)
+            }
+          } else {
+            this.isLoading = false;
+            this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.file.system.notification.require.resize.fail'));
+          }
+        }, error => {
           this.isLoading = false;
-          this.notification.success(this.i18n.fanyi('app.status.success'), 'Yêu cầu điều chỉnh File System thành công.');
-          setTimeout(() => {this.router.navigate(['/app-smart-cloud/file-storage/file-system/list']);}, 1500)
-        }
+          this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.file.system.notification.require.resize.fail'));
+        });
       } else {
-        this.isLoading = false;
-        this.notification.error(this.i18n.fanyi('app.status.fail'), 'Yêu cầu điều chỉnh File System thất bại.');
+        this.isVisiblePopupError = true;
+        this.errorList = data.data;
       }
     }, error => {
-      this.isLoading = false;
-      this.notification.error(this.i18n.fanyi('app.status.fail'), 'Yêu cầu điều chỉnh File System thất bại.');
+      this.notification.error(this.i18n.fanyi('app.status.fail'), error.error.detail);
     });
 
   }

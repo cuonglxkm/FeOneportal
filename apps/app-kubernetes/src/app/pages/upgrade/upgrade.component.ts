@@ -1,8 +1,8 @@
 import { NzNotificationService } from 'ng-zorro-antd/notification';
-import { ChangeDetectionStrategy, Component, ElementRef, Inject, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, Inject, OnInit, ViewChild } from '@angular/core';
 import { RegionModel } from '../../shared/models/region.model';
 import { ProjectModel } from '../../shared/models/project.model';
-import { KubernetesCluster, Order, OrderItem, UpgradeWorkerGroupDto, WorkerGroupModel, WorkerGroupReqDto } from '../../model/cluster.model';
+import { KubernetesCluster, Order, OrderItem, OrderItemPayment, OrderPayment, UpgradeWorkerGroupDto, WorkerGroupModel, WorkerGroupReqDto } from '../../model/cluster.model';
 import { ClusterService } from '../../services/cluster.service';
 import { ActivatedRoute, Route, Router } from '@angular/router';
 import { Title } from '@angular/platform-browser';
@@ -15,11 +15,12 @@ import { VolumeTypeModel } from '../../model/volume-type.model';
 import { PriceModel } from '../../model/price.model';
 import { K8sVersionModel } from '../../model/k8s-version.model';
 import { VlanService } from '../../services/vlan.service';
-import { finalize, forkJoin } from 'rxjs';
+import { debounceTime, distinctUntilChanged, finalize, forkJoin, map, take } from 'rxjs';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { UserInfo } from '../../model/user.model';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from '../../core/i18n/i18n.service';
+import { CostService } from '../../services/cost.service';
 
 @Component({
   selector: 'one-portal-upgrade',
@@ -82,7 +83,9 @@ export class UpgradeComponent implements OnInit {
     private fb: FormBuilder,
     private vlanService: VlanService,
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
-    @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService
+    @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
+    private costService: CostService,
+    private cdr: ChangeDetectorRef
   ) {
     this.listOfServicePack = [];
     this.currentDate = new Date();
@@ -205,9 +208,7 @@ export class UpgradeComponent implements OnInit {
       }
 
       // init calculate cost
-      this.currentRegisteredCost = this.getCurrentRegisteredCost();
-      this.costPerDay = this.getCostPerDay();
-      this.remainCost = this.getRemainCost();
+      this.onCalculatePrice();
     });
   }
 
@@ -467,56 +468,30 @@ export class UpgradeComponent implements OnInit {
     .subscribe((r: any) => {
       if (r && r.code == 200) {
         this.listOfPriceItem = r.data;
-        this.initPrice();
+        // this.initPrice();
       } else {
         this.notificationService.error(this.i18n.fanyi('app.status.fail'), r.message);
       }
     });
   }
 
-  priceOfCpu: number;
-  priceOfRam: number;
-  priceOfSsd: number;
-  priceOfHdd: number;
-  initPrice() {
-    this.listOfPriceItem.forEach(data => {
-      switch (data.item) {
-        case 'cpu':
-          this.priceOfCpu = data.price;
-          break;
-        case 'ram':
-          this.priceOfRam = data.price;
-          break;
-        case 'storage_ssd':
-          this.priceOfSsd = data.price;
-          break;
-        case 'storage_hdd':
-          this.priceOfHdd = data.price;
-          break;
-      }
-    });
-  }
-
-  remainCost: number;
   newConfigCost: number;
   upgradeCost: number;
   currentRegisteredCost: number;
   totalCost: number;
   vatCost: number;
+  vatPercent: number;
   costPerDay: number;
   onCalculatePrice() {
-    this.newConfigCost = this.getNewConfigCost();
-    this.remainCost = this.getRemainCost();
-
-    this.upgradeCost = this.newConfigCost - this.remainCost;
-    this.vatCost = this.upgradeCost * 0.1;
-    this.totalCost = this.upgradeCost + this.vatCost;
+    this.calculateNewConfig();
+    this.calculateCurrentConfig();
+    this.onHanldeGetTotalAmount();
   }
 
   newTotalCpu: number;
   newTotalRam: number;
   newTotalStorage: number;
-  getNewConfigCost(): number {
+  calculateNewConfig() {
     this.newTotalCpu = 0;
     this.newTotalRam = 0;
     this.newTotalStorage = 0;
@@ -545,18 +520,13 @@ export class UpgradeComponent implements OnInit {
         this.newTotalRam += nodeNumber * ram;
         this.newTotalStorage += nodeNumber * storage;
       }
-
-      let upgradeCostPerMonth = this.priceOfCpu * this.newTotalCpu
-        + this.priceOfRam * this.newTotalRam + this.priceOfSsd * this.newTotalStorage;
-
-      return upgradeCostPerMonth * this.remainDay / 30;
     }
   }
 
   currentTotalCpu: number;
   currentTotalRam: number;
   currentTotalStorage: number;
-  getCurrentRegisteredCost() {
+  calculateCurrentConfig() {
     this.currentTotalCpu = 0;
     this.currentTotalRam = 0;
     this.currentTotalStorage = 0;
@@ -566,13 +536,17 @@ export class UpgradeComponent implements OnInit {
     if (offerId != 0) {
       // using pack
       const pack = this.listOfServicePack.find(pack => pack.offerId = offerId);
-      return pack.price;
+      const nodeNumber = pack.workerNode;
+      this.currentTotalCpu = nodeNumber * pack.cpu;
+      this.currentTotalRam = nodeNumber * pack.ram;
+      // this.currentTotalStorage = nodeNumber * pack.rootStorage + pack.volumeStorage;
+      this.currentTotalStorage = nodeNumber * pack.rootStorage;
 
     } else {
 
       let wgs = this.detailCluster.workerGroup;
       for (let i = 0; i < wgs.length; i++) {
-        console.log(wgs[i]);
+        // console.log(wgs[i]);
         const cpu = wgs[i].cpu ? wgs[i].cpu : 0;
         const ram = wgs[i].ram ? wgs[i].ram : 0;
         const storage = +wgs[i].volumeSize ? +wgs[i].volumeSize : 0;
@@ -588,31 +562,51 @@ export class UpgradeComponent implements OnInit {
         this.currentTotalRam += nodeNumber * ram;
         this.currentTotalStorage += nodeNumber * storage;
       }
-      console.log(this.currentTotalRam, this.currentTotalCpu, this.currentTotalStorage);
-      return this.priceOfCpu * this.currentTotalCpu
-        + this.priceOfRam * this.currentTotalRam + this.priceOfSsd * this.currentTotalStorage;
     }
   }
 
-  getCostPerDay() {
-    return Math.floor(this.currentRegisteredCost / 30);
+  onHanldeGetTotalAmount() {
+    let orderPayment: OrderPayment = new OrderPayment();
+    orderPayment.projectId = this.projectId;
+    orderPayment.orderItems = [];
+
+    let orderItemPayment: OrderItemPayment = new OrderItemPayment();
+    orderItemPayment.sortItem = 0;
+    orderItemPayment.orderItemQuantity = 1;
+    orderItemPayment.specificationType = KubernetesConstant.CLUSTER_UPGRADE_TYPE;
+    orderItemPayment.specificationString = JSON.stringify({
+      serviceInstanceId: this.detailCluster.id,
+      regionId: this.regionId,
+      currentOfferId: this.detailCluster.offerId ? this.detailCluster.offerId : 0,
+      newOfferId: this.chooseItem ? this.chooseItem.offerId : 0,
+      currentTotalCpu: this.currentTotalCpu ? this.currentTotalCpu : 0,
+      currentTotalRam: this.currentTotalRam ? this.currentTotalRam : 0,
+      currentTotalStorage: this.currentTotalStorage ? this.currentTotalStorage : 0,
+      newTotalCpu: this.newTotalCpu ? this.newTotalCpu : 0,
+      newTotalRam: this.newTotalRam ? this.newTotalRam : 0,
+      newTotalStorage: this.newTotalStorage ? this.newTotalStorage : 0,
+    });
+
+    orderPayment.orderItems = [...orderPayment.orderItems, orderItemPayment];
+    this.getTotalAmount(orderPayment);
   }
 
-  remainDay: number;
-  getRemainCost(): number {
-    this.remainCost = 0;
-    this.remainDay = this.getRemainDay();
-    return this.costPerDay * this.remainDay;
-  }
-
-  getRemainDay(): number {
-    let tomorrow = new Date();
-    tomorrow.setDate(tomorrow.getDate() + 1);
-    let expiredDate = new Date(this.detailCluster.expiredDate);
-
-    let diffTimes = Math.abs(expiredDate.getTime() - tomorrow.getTime());
-    let diffDays = Math.floor(diffTimes / (1000 * 60 * 60 * 24));
-    return diffDays;
+  isCalculating: boolean = false;
+  getTotalAmount(data: OrderPayment) {
+    this.isCalculating = true;
+    this.costService.getTotalAmount(data)
+    .pipe(finalize(() => {
+      this.isCalculating = false;
+      this.cdr.detectChanges();
+    }), map((r: any) => r.data))
+    .subscribe((r: any) => {
+      this.vatCost = r.totalVAT.amount;
+      this.vatPercent = r.currentVAT;
+      this.newConfigCost = r.orderItemPrices[0].unitPrice.amount;
+      this.upgradeCost = r.totalAmount.amount;
+      this.totalCost = r.totalPayment.amount;
+      this.cdr.detectChanges();
+    });
   }
 
   clearFormWorker() {
@@ -623,6 +617,10 @@ export class UpgradeComponent implements OnInit {
     this.totalCost = 0;
     this.vatCost = 0;
     this.newConfigCost = 0;
+    this.upgradeCost = 0;
+    this.newTotalCpu = 0;
+    this.newTotalRam = 0;
+    this.newTotalStorage = 0;
   }
 
   // validate duplicate worker group name
@@ -664,6 +662,7 @@ export class UpgradeComponent implements OnInit {
     }
   }
 
+  signature: string;
   onValidateInfo = () => {
     this.validateForm();
 
@@ -671,8 +670,11 @@ export class UpgradeComponent implements OnInit {
     let cluster = this.setClusterData();
     // this.submitUpgrade(cluster);
 
-    let reqDto = new UpgradeWorkerGroupDto(cluster);
-    this.clusterService.validateUpgradeCluster(reqDto)
+    let data = {
+      ServiceOrderCode: this.serviceOrderCode,
+      Specification: JSON.stringify(cluster)
+    };
+    this.clusterService.validateUpgradeCluster(data)
     .pipe(finalize(() => this.isSubmitting = false))
     .subscribe((r: any) => {
       if (r && r.code == 200) {
@@ -684,6 +686,7 @@ export class UpgradeComponent implements OnInit {
 
         } else {
           // call payment
+          this.signature = r.data;
           this.submitUpgrade(cluster);
         }
       }
@@ -708,6 +711,7 @@ export class UpgradeComponent implements OnInit {
     orderItem.orderItemQuantity = 1;
     orderItem.specificationType = KubernetesConstant.CLUSTER_UPGRADE_TYPE;
     orderItem.specification = JSON.stringify(cluster);
+    orderItem.signature = this.signature;
 
     order.orderItems = [...order.orderItems, orderItem];
 
@@ -725,7 +729,7 @@ export class UpgradeComponent implements OnInit {
     cluster.currentTotalRam = this.currentTotalRam ? this.currentTotalRam : 0;
     cluster.currentTotalStorage = this.currentTotalStorage ? this.currentTotalStorage : 0;
 
-    cluster.newVcpu = this.newTotalCpu ? this.newTotalCpu : 0;
+    cluster.newTotalCpu = this.newTotalCpu ? this.newTotalCpu : 0;
     cluster.newTotalRam = this.newTotalRam ? this.newTotalRam : 0;
     cluster.newTotalStorage = this.newTotalStorage ? this.newTotalStorage : 0;
 
@@ -734,6 +738,7 @@ export class UpgradeComponent implements OnInit {
     cluster.serviceType = KubernetesConstant.K8S_TYPE_ID;
     cluster.sortItem = 0;
     cluster.tenant = this.projectName;
+    cluster.serviceInstanceId = this.detailCluster.id;
 
     const wgs: [] = cluster.workerGroup;
     const tmp: WorkerGroupReqDto[] = [];

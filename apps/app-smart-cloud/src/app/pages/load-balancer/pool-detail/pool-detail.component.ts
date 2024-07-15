@@ -30,6 +30,7 @@ import { InstanceService } from 'src/app/shared/services/instance.service';
 import { LoadBalancerService } from 'src/app/shared/services/load-balancer.service';
 import { InstancesModel } from '../../instances/instances.model';
 import { RegionModel } from '../../../../../../../libs/common-utils/src';
+import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
 
 @Component({
   selector: 'one-portal-pool-detail',
@@ -48,7 +49,7 @@ export class PoolDetailComponent implements OnInit {
 
   @ViewChild('nameInput') healthInput: ElementRef;
   @ViewChild('memberInput') memberInput: ElementRef;
-
+  @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
   onKeyDown(event: KeyboardEvent) {
     // Lấy giá trị của phím được nhấn
     const key = event.key;
@@ -663,7 +664,14 @@ export class PoolDetailComponent implements OnInit {
   }
 
   onRegionChange(region: RegionModel) {
+    if(this.projectCombobox){
+      this.projectCombobox.loadProjects(true, region.regionId);
+    }
     this.router.navigate(['/app-smart-cloud/load-balancer/list']);
+  }
+
+  onRegionChanged(region: RegionModel) {
+    this.regionId = region.regionId;
   }
 
   userChangeProject() {

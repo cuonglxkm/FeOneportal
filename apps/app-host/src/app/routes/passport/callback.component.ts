@@ -22,7 +22,7 @@ import {
   CoreDataService,
   NotificationService,
 } from '../../../../../../libs/common-utils/src';
-import Cookies from 'js-cookie';
+import {CookieService} from 'ngx-cookie-service';
 export interface TokenResponse {
   [key: string]: NzSafeAny;
 
@@ -56,7 +56,8 @@ export class CallbackComponent implements OnInit {
     private activatedRoute: ActivatedRoute,
     private menuService: MenuService,
     private notificationService: NotificationService,
-    private coreDataService: CoreDataService
+    private coreDataService: CoreDataService,
+    private cookieService: CookieService
   ) {}
 
   ngOnInit(): void {
@@ -76,7 +77,7 @@ export class CallbackComponent implements OnInit {
       .set('grant_type', 'authorization_code')
       .set('code', this.code)
       .set('redirect_uri', environment['sso'].callback);
-
+    
     localStorage.removeItem('UserRootId');
     localStorage.removeItem('PermissionOPA');
     localStorage.removeItem('ShareUsers');
@@ -89,6 +90,8 @@ export class CallbackComponent implements OnInit {
       })
       .pipe(
         switchMap((token) => {
+          console.log(token);
+          
           const accessToken = token.access_token || '';
           const decodedToken = helper.decodeToken(accessToken);
           let info = {
@@ -121,10 +124,10 @@ export class CallbackComponent implements OnInit {
       )
       .subscribe({
         next: (response) => {
-          console.log(response);
-
-          // Cookies.set('auth_token', response.token || '', { domain: 'localhost', path: '/', secure: true });
-
+          const url = window.location;  
+          if (url.hostname === 'oneportal-dev.onsmartcloud.com' || url.hostname === 'vnptcloud.onsmartcloud.com' || url.hostname === 'oneportal.onsmartcloud.com') {
+             this.cookieService.set('TOKEN_USER', response.token || '', response.exp, '/', '.onsmartcloud.com', true);
+          }
 
           this.settingsSrv.setUser({
             ...this.settingsSrv.user,
@@ -132,48 +135,9 @@ export class CallbackComponent implements OnInit {
           });
           this.socialService.callback(response);
           if (this.notificationService.connection == undefined) {
-            this.notificationService.initiateSignalrConnection(true);
+            this.notificationService.initiateSignalrConnection(environment.baseUrl, true);
           }
           this.coreDataService.getCoreData(baseUrl);
-          // this.httpClient
-          //   .get(baseUrl + '/provisions/object-storage/userinfo')
-          //   .subscribe((checkData) => {
-          //     if (checkData) {
-          //       let json = {
-          // key: 'Object Storage',
-          // text: 'Object Storage',
-          // icon: 'anticon-profile',
-          // children: [
-          //   {
-          //     text: 'Bucket',
-          //     link: '/app-smart-cloud/object-storage/bucket',
-          //   },
-          //   {
-          //     text: 'Sub User',
-          //     link: '/app-smart-cloud/object-storage/sub-user/list',
-          //   },
-          //   {
-          //     text: 'S3 Key',
-          //     link: '/app-smart-cloud/object',
-          //   },
-          //   {
-          //     text: 'Thống kê',
-          //     link: '/app-smart-cloud/object-storage/dashboard',
-          //   },
-          // ],
-          //       };
-          //       this.menuService.setItem('Object Storage', json);
-          //       this.menuService.resume();
-          //     } else {
-          //       let json = {
-          //         key: 'Object Storage',
-          //         text: 'Object Storage',
-          //         icon: 'anticon-profile',
-          //         link: '/app-smart-cloud/object-storage',
-          //       };
-          //       this.menuService.setItem('Object Storage', json);
-          //     }
-          //   });
         },
         error: (error) => {
           console.log(error);

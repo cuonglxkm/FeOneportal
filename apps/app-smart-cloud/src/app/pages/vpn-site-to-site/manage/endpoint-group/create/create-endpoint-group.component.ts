@@ -1,4 +1,4 @@
-import { Component, OnInit, Inject } from '@angular/core';
+import { Component, OnInit, Inject, ViewChild } from '@angular/core';
 import {
   FormControl,
   FormGroup,
@@ -16,6 +16,10 @@ import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { EndpointGroupService } from 'src/app/shared/services/endpoint-group.service';
 import { RegionModel, ProjectModel } from '../../../../../../../../../libs/common-utils/src';
 import { VpnSiteToSiteService } from 'src/app/shared/services/vpn-site-to-site.service';
+import { I18NService } from '@core';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
+import { CIDR_REGEX } from 'src/app/shared/constants/constants';
+import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
 
 @Component({
   selector: 'one-portal-create-endpoint-group',
@@ -37,7 +41,7 @@ export class CreateEndpointGroupComponent implements OnInit {
   selectedType = 'cidr';
   isLoading: boolean = false;
   routerId: string
-
+  @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
   formCreateEndpointGroup: FormCreateEndpointGroup =
     new FormCreateEndpointGroup();
   form: FormGroup<{
@@ -58,7 +62,7 @@ export class CreateEndpointGroupComponent implements OnInit {
         Validators.required,
         Validators.pattern(
           new RegExp(
-            '^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}0\\/24(,\\s*((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}0\\/24)*$'
+            CIDR_REGEX
         )
         ),
       ],
@@ -108,7 +112,8 @@ export class CreateEndpointGroupComponent implements OnInit {
     private fb: NonNullableFormBuilder,
     private notification: NzNotificationService,
     private endpointGroupService: EndpointGroupService,
-    private vpnSiteToSiteService: VpnSiteToSiteService
+    private vpnSiteToSiteService: VpnSiteToSiteService,
+    @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService
   ) {}
 
   handleChangeType(event: any){
@@ -120,11 +125,16 @@ export class CreateEndpointGroupComponent implements OnInit {
     if(event === 'cidr'){
       this.listCidrInfo = []
       this.subnetId = [];
+      this.form.controls.endpointsCidr.reset();
       this.form.controls.endpointsCidr.setValidators([
         Validators.required,
+        Validators.pattern(
+          new RegExp(
+            '^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}0\\/24(,\\s*((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}0\\/24)*$'
+        )
+        ),
       ]);
-      this.form.controls.endpointsCidr.markAsPristine();
-    this.form.controls.endpointsCidr.reset();
+      this.form.controls.endpointsCidr.updateValueAndValidity();
     }
   }
 
@@ -133,8 +143,8 @@ export class CreateEndpointGroupComponent implements OnInit {
     if (this.form.valid) {
       if(this.selectedType === 'subnet' && this.subnetId.length === 0){
         this.notification.warning(
-          'Cảnh báo',
-          'Vui lòng chọn subnet'
+          this.i18n.fanyi('app.status.warning'),
+          this.i18n.fanyi('app.endpoint-create.choose.subnet')
         );
         this.isLoading = false;
       }else{
@@ -144,16 +154,16 @@ export class CreateEndpointGroupComponent implements OnInit {
         (data) => {
           this.isLoading = false;
           this.notification.success(
-            'Thành công',
-            'Tạo mới Endpoint Group thành công'
+            this.i18n.fanyi('app.status.success'),
+              this.i18n.fanyi('app.endpoint-create.success')
           );
-          this.router.navigate(['/app-smart-cloud/vpn-site-to-site/manage']);
+          this.router.navigate(['/app-smart-cloud/vpn-site-to-site']);
         },
         (error) => {
           this.isLoading = false;
           this.notification.error(
-            'Thất bại',
-            'Tạo mới Endpoint Group thất bại'
+            this.i18n.fanyi('app.status.fail'),
+              this.i18n.fanyi('app.endpoint-create.fail')
           );
           console.log(error);
         }
@@ -190,7 +200,14 @@ export class CreateEndpointGroupComponent implements OnInit {
 
   onRegionChange(region: RegionModel) {
     this.region = region.regionId;
-    this.router.navigate(['/app-smart-cloud/vpn-site-to-site/manage']);
+    if(this.projectCombobox){
+      this.projectCombobox.loadProjects(true, region.regionId);
+    }
+    this.router.navigate(['/app-smart-cloud/vpn-site-to-site']);
+  }
+
+  onRegionChanged(region: RegionModel) {
+    this.region = region.regionId;
   }
 
   onProjectChange(project: ProjectModel) {
@@ -198,7 +215,7 @@ export class CreateEndpointGroupComponent implements OnInit {
   }
 
   userChangeProject(){
-    this.router.navigate(['/app-smart-cloud/vpn-site-to-site/manage']);
+    this.router.navigate(['/app-smart-cloud/vpn-site-to-site']);
   }
 
 }

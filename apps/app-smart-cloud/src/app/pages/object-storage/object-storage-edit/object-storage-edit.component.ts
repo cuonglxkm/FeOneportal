@@ -27,6 +27,9 @@ import { I18NService } from '@core';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { ConfigurationsService } from 'src/app/shared/services/configurations.service';
 import { OrderItemObject } from 'src/app/shared/models/price';
+import { OrderService } from 'src/app/shared/services/order.service';
+import { getCurrentRegionAndProject } from '@shared';
+import { RegionModel } from '../../../../../../../libs/common-utils/src';
 
 @Component({
   selector: 'one-portal-object-storage-extend',
@@ -39,11 +42,17 @@ export class ObjectStorageEditComponent implements OnInit {
   today: Date = new Date();
   addQuota: number = 1;
   objectStorageResize: ObjectStorageResize = new ObjectStorageResize();
-  valueStringConfiguration: string
-  minStorage: number
-  maxStorage: number
-  stepStorage: number
+  valueStringConfiguration: string;
+  minStorage: number;
+  maxStorage: number;
+  stepStorage: number;
   orderObject: OrderItemObject = new OrderItemObject();
+  isVisiblePopupError: boolean = false;
+  errorList: string[] = [];
+  region = JSON.parse(localStorage.getItem('regionId'));
+  closePopupError() {
+    this.isVisiblePopupError = false;
+  }
   constructor(
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
     @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
@@ -53,14 +62,25 @@ export class ObjectStorageEditComponent implements OnInit {
     private cdr: ChangeDetectorRef,
     private loadingSrv: LoadingService,
     private notification: NzNotificationService,
+    private orderService: OrderService,
     private configurationsService: ConfigurationsService
   ) {}
 
   ngOnInit(): void {
     this.id = this.activatedRoute.snapshot.paramMap.get('id');
+    let regionAndProject = getCurrentRegionAndProject();
+    this.region = regionAndProject.regionId;
     this.getObjectStorage();
     this.getTotalAmount();
-    this.getConfigurations()
+    this.getConfigurations();
+  }
+
+  onRegionChange(region: RegionModel) {
+    this.region = region.regionId;
+  }
+
+  onRegionChanged(region: RegionModel) {
+    this.region = region.regionId;
   }
 
   objectStorage: ObjectStorage = new ObjectStorage();
@@ -72,7 +92,8 @@ export class ObjectStorageEditComponent implements OnInit {
       .subscribe({
         next: (data) => {
           this.objectStorage = data;
-          this.objectStorageResize.newQuota = this.addQuota + this.objectStorage.quota;
+          this.objectStorageResize.newQuota =
+            this.addQuota + this.objectStorage.quota;
           this.dataSubject.next(1);
           this.cdr.detectChanges();
         },
@@ -93,7 +114,7 @@ export class ObjectStorageEditComponent implements OnInit {
     this.objectStorageResize.actorEmail = this.tokenService.get()?.email;
     this.objectStorageResize.typeName =
       'SharedKernel.IntegrationEvents.Orders.Specifications.UserObjectStorageExtendSpecification,SharedKernel.IntegrationEvents, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null';
-    this.objectStorageResize.regionId = 0;
+    this.objectStorageResize.regionId = this.region;
     this.objectStorageResize.serviceType = 13;
     this.objectStorageResize.actionType = 4;
     this.objectStorageResize.serviceInstanceId = this.id;
@@ -128,7 +149,7 @@ export class ObjectStorageEditComponent implements OnInit {
           this.totalincludesVAT = Number.parseFloat(
             result.data.totalPayment.amount
           );
-          this.orderObject = result.data
+          this.orderObject = result.data;
           this.cdr.detectChanges();
         });
       });
@@ -137,6 +158,7 @@ export class ObjectStorageEditComponent implements OnInit {
   order: Order = new Order();
   orderItem: OrderItem[] = [];
   update() {
+    this.orderItem = [];
     this.initObjectStorageResize();
     let specification = JSON.stringify(this.objectStorageResize);
     let orderItemOS = new OrderItem();
@@ -151,20 +173,36 @@ export class ObjectStorageEditComponent implements OnInit {
     this.order.createdByUserId = this.tokenService.get()?.userId;
     this.order.note = 'Điều chỉnh object storage';
     this.order.orderItems = this.orderItem;
-
-    var returnPath: string = window.location.pathname;
-    this.router.navigate(['/app-smart-cloud/order/cart'], {
-      state: { data: this.order, path: returnPath },
+    this.orderService.validaterOrder(this.order).subscribe({
+      next: (data) => {
+        if (data.success) {
+          var returnPath: string = window.location.pathname;
+          this.router.navigate(['/app-smart-cloud/order/cart'], {
+            state: { data: this.order, path: returnPath },
+          });
+        } else {
+          this.isVisiblePopupError = true;
+          this.errorList = data.data;
+        }
+      },
+      error: (e) => {
+        this.notification.error(
+          this.i18n.fanyi('app.status.fail'),
+          e.error.detail
+        );
+      },
     });
   }
 
   getConfigurations() {
-    this.configurationsService.getConfigurations('BLOCKSTORAGE').subscribe(data => {
-      this.valueStringConfiguration = data.valueString;
-      const arr = this.valueStringConfiguration.split('#')
-      this.minStorage = Number.parseInt(arr[0])
-      this.stepStorage = Number.parseInt(arr[1])
-      this.maxStorage = Number.parseInt(arr[2])
-    })
+    this.configurationsService
+      .getConfigurations('BLOCKSTORAGE')
+      .subscribe((data) => {
+        this.valueStringConfiguration = data.valueString;
+        const arr = this.valueStringConfiguration.split('#');
+        this.minStorage = Number.parseInt(arr[0]);
+        this.stepStorage = Number.parseInt(arr[1]);
+        this.maxStorage = Number.parseInt(arr[2]);
+      });
   }
 }

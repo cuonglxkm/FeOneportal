@@ -1,22 +1,22 @@
 <page-header
   [breadcrumb]="breadcrumb"
   [action]="action"
-  [title]="'Xem chi tiết VPN Connection'"
+  [title]="'app.vpn.connection-detail' |i18n"
 >
   <ng-template #breadcrumb>
     <nz-breadcrumb [nzSeparator]="separatorTemplate">
       <nz-breadcrumb-item>
-        <a [routerLink]="['/']">Trang chủ</a>
+        <a [routerLink]="['/']">{{ 'app.breadcrumb.home' | i18n }}</a>
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>
-        Dịch vụ hạ tầng
+        {{ 'app.breadcrumb.infrastructure.service' | i18n }}   
       </nz-breadcrumb-item>
       <nz-breadcrumb-item
-        ><a [routerLink]="['/app-smart-cloud/vpn-site-to-site/manage']"
+        ><a [routerLink]="['/app-smart-cloud/vpn-site-to-site']"
           >VPN site to site</a
         ></nz-breadcrumb-item
       >
-      <nz-breadcrumb-item>Xem chi tiết VPN Connection</nz-breadcrumb-item>
+      <nz-breadcrumb-item>{{'app.vpn.connection-detail' |i18n}}</nz-breadcrumb-item>
     </nz-breadcrumb>
     <ng-template #separatorTemplate
       ><img src="assets/imgs/arrow-square-right.svg" alt="" />
@@ -26,9 +26,10 @@
     <div class="alain-custom-action text-right">
       <share-users-combobox></share-users-combobox>
       <region-select-dropdown
+      (regionChange)="onRegionChanged($event)"
       (valueChanged)="onRegionChange($event)"
     ></region-select-dropdown>
-    <project-select-dropdown
+    <project-select-dropdown #projectCombobox
       [regionId]="region"
       (valueChanged)="onProjectChange($event)"
       (userChanged)="userChangeProject($event)"
@@ -40,20 +41,20 @@
 <div nz-row [nzGutter]="16">
   <div nz-col [nzSpan]="24" class="gutter-row">
     <nz-card style="border-radius: 8px">
-      <h2 class="custom-title">Thông tin VPN Connection</h2>
+      <h2 class="custom-title">{{'app.information' |i18n}} VPN Connection</h2>
       <form nz-form [nzLayout]="'vertical'">
         <div nz-row [nzGutter]="16">
           <div nz-col [nzSpan]="12" class="gutter-row">
             <nz-form-item>
               <nz-form-control>
                 <nz-form-label nzFor="name">
-                  <span>Name</span> (<span style="color: rgba(252, 16, 16, 1)"
+                  <span>{{'form.account.name' |i18n}}</span> (<span style="color: rgba(252, 16, 16, 1)"
                     >*</span
                   >)
                   <img
                     nz-popover
                     [nzPopoverContent]="
-                      'Name: Tên, các ký tự chữ thường a-z, chữ hoa A-Z, số 0-9, dấu gạch ngang (-) và dấu gạch dưới (_), có thể có khoảng trắng, tối thiểu 1 ký tự và tối đa 50 ký tự.'
+                      'app.vpn.connection-create.name.tooltip' |i18n
                     "
                     nzPopoverPlacement="bottom"
                     style="margin-left: 5px"
@@ -82,7 +83,7 @@
                   <img
                     nz-popover
                     [nzPopoverContent]="
-                      'IPsec Policy: Khách hàng chọn IPsec Policy đã tạo thành công ở mục IPsec Policies trước đó ( lựa chọn theo tên).'
+                      'app.vpn.connection-create.ipsec.tooltip' |i18n
                     "
                     nzPopoverPlacement="bottom"
                     style="margin-left: 5px"
@@ -111,7 +112,7 @@
                   <img
                     nz-popover
                     [nzPopoverContent]="
-                      'VPN Service: Khách hàng lựa chọn VPN Service đã tạo thành công trước đó ( lựa chọn theo tên ).'
+                      'app.vpn.connection-create.vpnservice.tooltip' |i18n
                     "
                     nzPopoverPlacement="bottom"
                     style="margin-left: 5px"
@@ -140,7 +141,7 @@
                   <img
                     nz-popover
                     [nzPopoverContent]="
-                      'Peer Remote IP VPN  Gateway  [bắt buộc]: Khách hàng nhập IP VPN Gateway ở đầu VPN tunnel phía Client, tương ứng với trường Peer gateway public IPv4/IPv6 Address or FQDN.'
+                      'app.vpn.connection-create.peerIP.tooltip' |i18n
                     "
                     nzPopoverPlacement="bottom"
                     style="margin-left: 5px"
@@ -169,7 +170,7 @@
                   <img
                     nz-popover
                     [nzPopoverContent]="
-                      'Local Endpoint Group (System Subnet) : Local subnet của người dùng'
+                      'app.vpn.connection-create.local.tooltip' |i18n
                     "
                     nzPopoverPlacement="bottom"
                     style="margin-left: 5px"
@@ -198,7 +199,7 @@
                   <img
                     nz-popover
                     [nzPopoverContent]="
-                      'Peer ID VPN Connection là ID của thiết bị đầu xa đang thực hiện kết nối. Nó có thể là các định dạng theo địa chỉ IP, tên miền, địa chỉ email hoặc distinguished name. Trong khi thiết lập kết thì cần đảm bảo đúng định dạng giữa 2 đầu VPN.'
+                      'app.vpn.connection-create.peerId.tooltip' |i18n
                     "
                     nzPopoverPlacement="bottom"
                     style="margin-left: 5px"
@@ -227,7 +228,7 @@
                   <img
                     nz-popover
                     [nzPopoverContent]="
-                      'IKE Policy: Khách hàng chọn IKE Policy đã tạo thành công ở mục IKE Policies trước đó ( lựa chọn theo tên).'
+                      'app.vpn.connection-create.ike.tooltip' |i18n
                     "
                     nzPopoverPlacement="bottom"
                     style="margin-left: 5px"
@@ -256,7 +257,7 @@
                   <img
                     nz-popover
                     [nzPopoverContent]="
-                      'Khách hàng lựa chọn remote Endpoint Group đã tạo.'
+                      'app.vpn.connection-create.remote.tooltip' |i18n
                     "
                     nzPopoverPlacement="bottom"
                     style="margin-left: 5px"
@@ -286,7 +287,7 @@
                   <img
                     nz-popover
                     [nzPopoverContent]="
-                      'Pre-Shared Key (PSK) String: Khách hàng nhập key chung giữa 2 tunnel để có thể dùng giải mã gói tin, Khách hàng tùy ý nhập key này.'
+                      'app.vpn.connection-create.prekey.tooltip' |i18n
                     "
                     nzPopoverPlacement="bottom"
                     style="margin-left: 5px"

@@ -20,7 +20,7 @@ export class FileSystemService extends BaseService {
   httpOptions = {
     headers: new HttpHeaders({
       'Content-Type': 'application/json',
-      'User-Root-Id': this.tokenService.get()?.userId,
+      'User-Root-Id': localStorage.getItem('UserRootId') && Number(localStorage.getItem('UserRootId')) > 0 ? Number(localStorage.getItem('UserRootId')) : this.tokenService.get()?.userId,
       Authorization: 'Bearer ' + this.tokenService.get()?.token,
     }),
   };
@@ -55,7 +55,8 @@ export class FileSystemService extends BaseService {
     }
     return this.http.get<BaseResponse<FileSystemModel[]>>(this.baseUrl +
       this.ENDPOINT.provisions + '/file-storage/shares/paging', {
-      params: params
+      params: params,
+      headers: this.httpOptions.headers
     }).pipe(
       catchError((error: HttpErrorResponse) => {
         if (error.status === 401) {
@@ -72,7 +73,9 @@ export class FileSystemService extends BaseService {
 
   edit(formEdit: FormEditFileSystem) {
     return this.http.put(this.baseUrl + this.ENDPOINT.provisions + `/file-storage/shares/${formEdit.id}`,
-      Object.assign(formEdit)).pipe(
+      Object.assign(formEdit), {
+        headers: this.httpOptions.headers
+      }).pipe(
       catchError((error: HttpErrorResponse) => {
         if (error.status === 401) {
           console.error('login');
@@ -88,7 +91,9 @@ export class FileSystemService extends BaseService {
 
   getFileSystemById(id: number, region: number, project: number){
     return this.http.get<FileSystemDetail>(this.baseUrl + this.ENDPOINT.provisions +
-      `/file-storage/shares/${id}?regionId=${region}&projectId=${project}`).pipe(
+      `/file-storage/shares/${id}?regionId=${region}&projectId=${project}`, {
+      headers: this.httpOptions.headers
+    }).pipe(
       catchError((error: HttpErrorResponse) => {
         if (error.status === 401) {
           console.error('login');
@@ -103,7 +108,9 @@ export class FileSystemService extends BaseService {
   }
 
   create(request: CreateFileSystemRequestModel) {
-    return this.http.post<CreateFileSystemResponseModel>(this.baseUrl + this.ENDPOINT.orders, Object.assign(request)).pipe(
+    return this.http.post<CreateFileSystemResponseModel>(this.baseUrl + this.ENDPOINT.orders, Object.assign(request), {
+      headers: this.httpOptions.headers
+    }).pipe(
       catchError((error: HttpErrorResponse) => {
         if (error.status === 401) {
           console.error('login');
@@ -118,7 +125,8 @@ export class FileSystemService extends BaseService {
   }
 
   deleteFileSystem(formDelete: FormDeleteFileSystem) {
-    return this.http.delete(this.baseUrl + this.ENDPOINT.provisions + `/file-storage/shares/${formDelete.id}?regionId=${formDelete.regionId}&projectId=${formDelete.project}`).pipe(
+    return this.http.delete(this.baseUrl + this.ENDPOINT.provisions
+      + `/file-storage/shares/${formDelete.id}?regionId=${formDelete.regionId}&projectId=${formDelete.project}`, {headers: this.httpOptions.headers}).pipe(
       catchError((error: HttpErrorResponse) => {
         if (error.status === 401) {
           console.error('login');
@@ -134,7 +142,9 @@ export class FileSystemService extends BaseService {
 
 
   resize(request: ResizeFileSystemRequestModel) {
-    return this.http.post<ResizeFileSystemResponseModel>(this.baseUrl + this.ENDPOINT.orders, Object.assign(request)).pipe(
+    return this.http.post<ResizeFileSystemResponseModel>(this.baseUrl + this.ENDPOINT.orders, Object.assign(request), {
+      headers: this.httpOptions.headers
+    }).pipe(
       catchError((error: HttpErrorResponse) => {
         if (error.status === 401) {
           console.error('login');

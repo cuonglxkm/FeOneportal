@@ -12,8 +12,8 @@
     </ng-template>
     <ng-template #action>
         <div class="alain-custom-action text-right">
-            <region-select-dropdown (valueChanged)="onRegionChange($event)"></region-select-dropdown>
-            <project-select-dropdown [regionId]="regionId"
+            <region-select-dropdown (regionChange)="onRegionChanged($event)" (valueChanged)="onRegionChange($event)"></region-select-dropdown>
+            <project-select-dropdown #projectCombobox [regionId]="regionId"
                 (valueChanged)="projectChange($event)"></project-select-dropdown>
         </div>
     </ng-template>

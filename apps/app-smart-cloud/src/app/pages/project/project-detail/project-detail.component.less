@@ -24,7 +24,6 @@
 }
 #description{
     border: 1px solid var(--Neutral-5, #C4C6D4);
-    border-radius: 4px;
     padding:10px 12px;
 }
 #description::focus-visible{
@@ -32,4 +31,11 @@
 }
 :focus-visible{
     outline: none !important;
+}
+
+::ng-deep .percent_vpc .ant-progress-status-success .ant-progress-inner:not(.ant-progress-circle-gradient) .ant-progress-circle-path {
+     stroke: #1890ff; 
+}
+::ng-deep .percent_vpc .ant-progress-circle.ant-progress-status-success .ant-progress-text {
+    color: #1890ff;
 }

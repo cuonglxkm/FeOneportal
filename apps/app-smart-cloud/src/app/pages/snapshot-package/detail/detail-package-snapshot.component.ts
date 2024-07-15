@@ -1,4 +1,4 @@
-import {Component, Inject, OnInit} from '@angular/core';
+import {Component, Inject, OnInit, ViewChild} from '@angular/core';
 import {ActivatedRoute, Router} from "@angular/router";
 import {PackageBackupService} from "../../../shared/services/package-backup.service";
 import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
@@ -8,6 +8,9 @@ import {PackageBackupModel} from "../../../shared/models/package-backup.model";
 import {getCurrentRegionAndProject} from "@shared";
 import { RegionModel, ProjectModel } from '../../../../../../../libs/common-utils/src';
 import { ProjectService } from 'src/app/shared/services/project.service';
+import { PackageSnapshotModel } from '../../../shared/models/package-snapshot.model';
+import { PackageSnapshotService } from '../../../shared/services/package-snapshot.service';
+import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
 
 @Component({
   selector: 'one-portal-detail-package-snapshot',
@@ -19,14 +22,15 @@ export class DetailSnapshotComponent implements OnInit{
   project = JSON.parse(localStorage.getItem('projectId'));
 
   packageBackupModel: PackageBackupModel = new PackageBackupModel()
-
+  packageSnapshotModel: PackageSnapshotModel = new PackageSnapshotModel();
   idPackageBackup: number
 
   typeVPC: number
-
+  @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
   constructor(private router: Router,
               private packageBackupService: PackageBackupService,
               @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
+              private packageSnapshotService: PackageSnapshotService,
               private notification: NzNotificationService,
               private route: ActivatedRoute,
               private fb: NonNullableFormBuilder,
@@ -35,6 +39,9 @@ export class DetailSnapshotComponent implements OnInit{
 
   regionChanged(region: RegionModel) {
     this.region = region.regionId
+    if(this.projectCombobox){
+      this.projectCombobox.loadProjects(true, region.regionId);
+    }
     this.projectService.getByRegion(this.region).subscribe(data => {
       if (data.length) {
         localStorage.setItem("projectId", data[0].id.toString())
@@ -43,23 +50,34 @@ export class DetailSnapshotComponent implements OnInit{
     });
   }
 
+  onRegionChanged(region: RegionModel) {
+    this.region = region.regionId;
+  }
+
   projectChanged(project: ProjectModel) {
     this.project = project?.id
   }
 
-  getDetailPackageBackup(id) {
-    this.packageBackupService.detail(id).subscribe(data => {
-      console.log('data', data)
-      this.packageBackupModel = data
-    })
+  // getDetailPackageBackup(id) {
+  //   this.packageBackupService.detail(id, this.project).subscribe(data => {
+  //     console.log('data', data)
+  //     this.packageBackupModel = data
+  //   })
+  // }
+
+  getDetailPackageSnapshot(id) {
+    this.packageSnapshotService.detail(id, this.project).subscribe(data => {
+      console.log('data', data);
+      this.packageSnapshotModel = data;
+    });
   }
 
   navigateToExtend() {
-    this.router.navigate(['/app-smart-cloud/backup/packages/extend/' + this.idPackageBackup])
+    this.router.navigate(['/app-smart-cloud/snapshot/packages/extend/' + this.idPackageBackup])
   }
 
   navigateToEdit() {
-    this.router.navigate(['/app-smart-cloud/backup/packages/edit/' + this.idPackageBackup])
+    this.router.navigate(['/app-smart-cloud/snapshot/packages/edit/' + this.idPackageBackup])
   }
 
   loadProjects() {
@@ -71,15 +89,16 @@ export class DetailSnapshotComponent implements OnInit{
     });
   }
   ngOnInit() {
-    const id = Number.parseInt(this.route.snapshot.paramMap.get('id'));
+    this.idPackageBackup = Number.parseInt(this.route.snapshot.paramMap.get('id'));
     const { regionId, projectId } = getCurrentRegionAndProject();
     this.region = regionId;
     this.project = projectId;
     if (this.project && this.region) {
       this.loadProjects();
     }
-    if (id) {
-      this.getDetailPackageBackup(id);
+    if (this.idPackageBackup) {
+      // this.getDetailPackageBackup(this.idPackageBackup);
+      this.getDetailPackageSnapshot(this.idPackageBackup);
     }
   }
 }

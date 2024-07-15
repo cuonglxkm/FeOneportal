@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject, OnInit, ViewChild } from '@angular/core';
 import { EditSizeMemoryVolumeDTO, VolumeDTO } from '../../../../shared/dto/volume.dto';
 import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
 import { InstancesModel } from '../../../instances/instances.model';
@@ -16,6 +16,7 @@ import { ProjectService } from 'src/app/shared/services/project.service';
 import { debounceTime, Subject } from 'rxjs';
 import { getCurrentRegionAndProject } from '@shared';
 import { ConfigurationsService } from '../../../../shared/services/configurations.service';
+import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
 
 @Component({
   selector: 'one-portal-resize-volume-vpc',
@@ -70,7 +71,7 @@ export class ResizeVolumeVpcComponent implements OnInit {
   stepStorage: number = 0;
   valueString: string;
   maxStorage: number = 0;
-
+  @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
   constructor(@Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
               private volumeService: VolumeService,
               private route: ActivatedRoute,
@@ -114,7 +115,14 @@ export class ResizeVolumeVpcComponent implements OnInit {
   }
 
   regionChanged(region: RegionModel) {
+    if(this.projectCombobox){
+      this.projectCombobox.loadProjects(true, region.regionId);
+    }
     this.router.navigate(['/app-smart-cloud/volumes']);
+  }
+
+  onRegionChanged(region: RegionModel) {
+    this.region = region.regionId;
   }
 
   projectChanged(project: ProjectModel) {
@@ -159,7 +167,7 @@ export class ResizeVolumeVpcComponent implements OnInit {
 
   getVolumeById(idVolume: number) {
     this.isLoading = true;
-    this.volumeService.getVolumeById(idVolume).subscribe(data => {
+    this.volumeService.getVolumeById(idVolume, this.project).subscribe(data => {
       this.isLoading = false;
       this.volumeInfo = data;
       this.oldSize = data.sizeInGB;

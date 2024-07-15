@@ -53,13 +53,16 @@ export class CreateScheduleSnapshotDTO {
   duration: number;
   name: string;
   volumeId: number;
-  runtime: string;
+  runtime: any;
   intervalMonth: number;
   maxBaxup: number;
   snapshotPacketId: number;
   customerId: number;
   projectId: number;
   regionId: number;
+  serviceInstanceId: any;
+  maxSnapshot: number;
+  snapshotType: any;
 }
 
 export class EditSnapshotVolume {

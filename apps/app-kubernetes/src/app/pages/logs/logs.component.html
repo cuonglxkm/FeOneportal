@@ -1,5 +1,5 @@
 <nz-content>
-  <nz-card class="border-card">
+  <nz-card class="border-radius-card">
     <!-- filter -->
     <div class="flex-style marbot-5 mbot-24">
       <div class="mt-1">
@@ -9,7 +9,7 @@
       <div class="mleft-16 w-20">
         <nz-input-group nzSearch nzSize="default" [nzPrefix]="prefixButton" class="w-100" nzSize="large">
           <input type="text" nz-input [placeholder]="'app.cluster.username' | i18n" [(ngModel)]="userAction"
-            (ngModelChange)="this.changeUserKeySearch.next($event)" />
+            (ngModelChange)="this.changeUserKeySearch.next($event)" class="content" />
         </nz-input-group>
         <ng-template #prefixButton>
           <img src="assets/imgs/search.svg" alt="" style="cursor: pointer" [nz-tooltip]="'app.button.search' | i18n" />
@@ -18,7 +18,7 @@
 
       <div class="mleft-16 w-20">
         <nz-select nzSize="default" nzAllowClear [(ngModel)]="resourceType" (ngModelChange)="onChangeResourceType($event); searchLogs()"
-          [nzPlaceHolder]="'app.cluster.resource-type' | i18n" class="w-100" nzSize="large">
+          [nzPlaceHolder]="'app.cluster.resource-type' | i18n" class="w-100 content" nzSize="large">
           <nz-option *ngFor="let rt of listOfResourceType" [nzLabel]="rt.name"
             [nzValue]="rt.value"></nz-option>
         </nz-select>
@@ -26,19 +26,20 @@
 
       <div class="mleft-16 w-20">
         <nz-select nzSize="default" nzAllowClear [(ngModel)]="resource" (ngModelChange)="searchLogs()"
-          [nzPlaceHolder]="'app.cluster.select-wg' | i18n" class="w-100" nzSize="large" [nzDisabled]="isDisableWorkerFilter">
+          [nzPlaceHolder]="'app.cluster.select-wg' | i18n" class="w-100 content" nzSize="large" [nzDisabled]="isDisableWorkerFilter">
           <nz-option *ngFor="let item of listOfWorkerGroupName" [nzLabel]="item"
             [nzValue]="item"></nz-option>
         </nz-select>
       </div>
 
-      <div mleft-16 class="mleft-16 w-20">
+      <div class="mleft-16 w-20">
         <nz-range-picker
           nzFormat="dd/MM/yyyy"
           [(ngModel)]="date"
           (ngModelChange)="onChangeDate($event); searchLogs();"
           [nzSize]="'large'"
           [nzPlaceHolder]="['app.cluster.start-date' | i18n, 'app.cluster.end-date' | i18n]"
+          class="content"
         ></nz-range-picker>
       </div>
     </div>
@@ -52,19 +53,19 @@
       [nzPageSize]="pageSize" [nzPageIndex]="pageIndex" (nzQueryParams)="onQueryParamsChange($event)" [nzLoading]="isLoading">
       <thead>
         <tr>
-          <th class="header-table" nzWidth="15">{{ 'app.cluster.username' | i18n }}</th>
-          <th class="header-table" nzWidth="10">{{ 'app.cluster.resource-type' | i18n }}</th>
-          <th class="header-table" nzWidth="20">{{ 'app.cluster.resource-name' | i18n }}</th>
-          <th class="header-table" nzWidth="15">{{ 'app.text.operation' | i18n }}</th>
-          <th class="header-table" nzWidth="25">{{ 'app.cluster.content' | i18n }}</th>
-          <th class="header-table" nzWidth="15">{{ 'app.cluster.action-time' | i18n }}</th>
+          <th class="content header-table" nzWidth="15">{{ 'app.cluster.username' | i18n }}</th>
+          <th class="content header-table" nzWidth="10">{{ 'app.cluster.resource-type' | i18n }}</th>
+          <th class="content header-table" nzWidth="20">{{ 'app.cluster.resource-name' | i18n }}</th>
+          <th class="content header-table" nzWidth="15">{{ 'app.text.operation' | i18n }}</th>
+          <th class="content header-table" nzWidth="25">{{ 'app.cluster.content' | i18n }}</th>
+          <th class="content header-table" nzWidth="15">{{ 'app.cluster.action-time' | i18n }}</th>
         </tr>
       </thead>
       <tbody>
         <tr *ngFor="let item of logTable.data; let i = index;">
-          <td>{{ item.userAction }}</td>
-          <td id="type">{{ item.resourceType }}</td>
-          <td>
+          <td class="content-table content">{{ item.userAction }}</td>
+          <td class="content-table content" id="type">{{ item.resourceType }}</td>
+          <td class="content-table content">
             <ng-container *ngIf="item.resource.length <= 25; else truncateResourceTpl">
               {{ item.resource }}
             </ng-container>
@@ -77,8 +78,10 @@
               </ng-template>
             </ng-template>
           </td>
-          <td>{{ (item.operation | action2label) | i18n }}</td>
-          <td>
+          <td class="content-table content">
+            {{ (item.operation | action2label) | i18n }}
+          </td>
+          <td class="content-table content">
             <ng-container *ngIf="item.note?.length <= 30; else truncateValueTpl">
               {{ item.note }}
             </ng-container>
@@ -94,7 +97,7 @@
               </ng-template>
             </ng-template>
           </td>
-          <td class="center-align">{{ item.opTime | date: 'dd/MM/yyyy HH:mm:ss' }}</td>
+          <td class="center-align content-table content">{{ item.opTime | date: 'dd/MM/yyyy HH:mm:ss' }}</td>
         </tr>
       </tbody>
     </nz-table>

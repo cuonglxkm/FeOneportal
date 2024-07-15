@@ -12,6 +12,8 @@ import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from '@core';
 import { RegionModel, ProjectModel } from '../../../../../../../libs/common-utils/src';
 import { TimeCommon } from '../../../shared/utils/common';
+import { getCurrentRegionAndProject } from '@shared';
+import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
 @Component({
   selector: 'one-portal-policy-list',
   templateUrl: './policy-list.component.html',
@@ -48,7 +50,7 @@ export class PolicyListComponent implements OnInit{
     {label:this.i18n.fanyi("app.policies.detach"),value :"1"},
   ];
   disableDelete = true;
-
+  @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
   constructor(private service: PolicyService,private router: Router,
               private clipboardService: ClipboardService,
               @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
@@ -59,6 +61,9 @@ export class PolicyListComponent implements OnInit{
   }
 
   ngOnInit() {
+    let regionAndProject = getCurrentRegionAndProject();
+    this.regionId = regionAndProject.regionId;
+    this.projectId = regionAndProject.projectId;
     this.selectedStatus = this.listPolicyType[0].value;
     this.selectedAction = this.listAction[0].value;
     this.searchDelay.pipe(debounceTime(TimeCommon.timeOutSearch)).subscribe(() => {
@@ -108,6 +113,13 @@ export class PolicyListComponent implements OnInit{
   }
 
   onRegionChange(region: RegionModel) {
+    this.regionId = region.regionId;
+    if(this.projectCombobox){
+      this.projectCombobox.loadProjects(true, region.regionId);
+    }
+  }
+
+  onRegionChanged(region: RegionModel) {
     this.regionId = region.regionId;
   }
 

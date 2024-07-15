@@ -5,6 +5,7 @@ export class FormSearchFileSystemSnapshot {
     isCheckState: boolean
     pageSize: number
     currentPage: number
+    name: string
   }
 
   export class FormCreateFileSystemSnapShot {
