@@ -127,6 +127,7 @@ export class CreateVolumeComponent implements OnInit {
       this.enableEncrypt = value;
     });
 
+    //hdd => iops = 300, ssd => dung lương <= 40 -> iops = 400; dung lượng > 40 -> iops = dung lượng * 10
     this.validateForm.get('storage').valueChanges.subscribe((value) => {
       if (this.volumeCreate.volumeType == 'hdd') return (this.iops = 300);
       if (this.volumeCreate.volumeType == 'ssd') {
@@ -136,6 +137,7 @@ export class CreateVolumeComponent implements OnInit {
     });
   }
 
+  //check trùng tên trong list
   duplicateNameValidator(control) {
     const value = control.value;
     // Check if the input name is already in the list
@@ -148,6 +150,7 @@ export class CreateVolumeComponent implements OnInit {
 
   isLoading: boolean = false;
 
+  // check các dịch vụ được sử dụng theo khu vực
   getActiveServiceByRegion() {
     this.isLoading = true;
     this.catalogService.getActiveServiceByRegion(
@@ -198,6 +201,7 @@ export class CreateVolumeComponent implements OnInit {
   valueString: string;
   maxStorage: number = 0;
 
+  //lấy thông số mua theo block
   getConfiguration() {
     this.configurationsService.getConfigurations('BLOCKSTORAGE').subscribe(data => {
       this.valueString = data.valueString;
@@ -239,6 +243,7 @@ export class CreateVolumeComponent implements OnInit {
     this.router.navigate(['/app-smart-cloud/volumes']);
   }
 
+  // tắt bật tạo từ snapshot
   onSwitchSnapshot(value) {
     this.isInitSnapshot = value;
     console.log('snap shot', this.isInitSnapshot);

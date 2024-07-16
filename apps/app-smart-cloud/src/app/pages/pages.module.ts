@@ -18,7 +18,6 @@ import { NzImageModule } from 'ng-zorro-antd/image';
 import { NzPaginationModule } from 'ng-zorro-antd/pagination';
 import { SshKeyComponent } from './ssh-key/ssh-key.component';
 import { DeleteAllowAddressPairComponent } from './allow-address-pair/delete/delete-allow-address-pair.component';
-import { HeaderVolumeComponent } from './volume/component/header-volume/header-volume.component';
 import { PopupAddVolumeComponent } from './volume/component/popup-volume/popup-add-volume.component';
 import { PopupDeleteVolumeComponent } from './volume/component/popup-volume/popup-delete-volume.component';
 import { CreateVolumeComponent } from './volume/component/create-volume/create-volume.component';
@@ -268,7 +267,6 @@ const icons: IconDefinition[] = [SettingOutline, SearchOutline];
     DetailVolumeComponent,
     PopupExtendVolumeComponent,
     EditVolumeComponent,
-    HeaderVolumeComponent,
     DeleteAllowAddressPairComponent,
     IpPublicComponent,
     CreateUpdateIpPublicComponent,
