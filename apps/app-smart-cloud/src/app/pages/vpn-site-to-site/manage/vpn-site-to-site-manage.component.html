@@ -1,5 +1,4 @@
-<ng-container [ngSwitch]="isBegin">
-<nz-content *ngSwitchCase="false">
+
   <page-header
     [breadcrumb]="breadcrumb"
     [action]="action"
@@ -22,7 +21,7 @@
       <div class="alain-custom-action text-right">
         <share-users-combobox></share-users-combobox>
         <region-select-dropdown
-        (regionChange)="onRegionChanged($event)"
+          (regionChange)="onRegionChanged($event)"
           (valueChanged)="regionChanged($event)"
         ></region-select-dropdown>
         <project-select-dropdown #projectCombobox
@@ -33,6 +32,8 @@
       </div>
     </ng-template>
   </page-header>
+  <ng-container [ngSwitch]="isBegin">
+    <nz-content *ngSwitchCase="false">
   <nz-card style="border-radius: 8px; margin-bottom: 20px">
     <nz-row style="margin-bottom: 20px" nzGutter="24">
       <div
@@ -139,37 +140,6 @@
   </nz-card>
 </nz-content>
 <nz-content *ngSwitchDefault>
-  <page-header
-[breadcrumb]="breadcrumb"
-[action]="action"
-xmlns="http://www.w3.org/1999/html"
->
-<ng-template #breadcrumb>
-  <nz-breadcrumb [nzSeparator]="separatorTemplate">
-    <nz-breadcrumb-item>
-      <a [routerLink]="['/']">{{ 'app.breadcrumb.home' | i18n }}</a>
-    </nz-breadcrumb-item>
-    <nz-breadcrumb-item> {{ 'app.breadcrumb.infrastructure.service' | i18n }} </nz-breadcrumb-item>
-    <nz-breadcrumb-item><a [routerLink]="['/app-smart-cloud/vpn-site-to-site']">VPN site to site</a></nz-breadcrumb-item>
-  </nz-breadcrumb>
-<ng-template #separatorTemplate
-  ><img src="assets/imgs/arrow-square-right.svg" alt="" />
-</ng-template>
-</ng-template>
-<ng-template #action>
-  <div class="alain-custom-action text-right">
-    <share-users-combobox></share-users-combobox>
-    <region-select-dropdown
-      (valueChanged)="regionChanged($event)"
-    ></region-select-dropdown>
-    <project-select-dropdown #projectCombobox
-      (valueChanged)="projectChanged($event)"
-      (userChanged)="projectChanged($event)"
-      [regionId]="region"
-    ></project-select-dropdown>
-  </div>
-</ng-template>
-</page-header>
 <nz-card style="border-radius: 8px;">
   <nz-row nzJustify="center" class="pt-15">
     <img src="/assets/imgs/vpn-site-to-site-bg.png" width="500" height="250" alt="blank-vpn-site-to-site">
