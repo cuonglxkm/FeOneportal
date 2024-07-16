@@ -113,7 +113,20 @@
               <div *ngIf="data.iops != null">{{ data.iops }}</div>
             </td>
             <ng-container *ngIf="data.status | ServiceStatusPipe as statusModel">
-              <td nzBreakWord nzAlign="left" [ngStyle]="{color: statusModel.color}">{{ statusModel.status }}</td>
+              <td *ngIf="data.status != 'SUSPENDED'"
+                  nzBreakWord
+                  nzAlign="left"
+                  [ngStyle]="{color: statusModel.color}">{{ statusModel.status }}
+              </td>
+              <td *ngIf="data.status == 'SUSPENDED'"
+                  nzBreakWord nzAlign="left"
+                  [ngStyle]="{color: statusModel.color}">
+                <span nz-popover
+                      style="cursor: pointer;"
+                      [nzPopoverContent]="getSuspendedReason(data.suspendReason)"
+                      [nzPopoverTrigger]="'hover'"
+                      [nzPopoverPlacement]="'bottom'">{{ statusModel.status }}</span>
+              </td>
             </ng-container>
             <td nzBreakWord nzAlign="left">{{ data.serviceStatus }}</td>
             <td nzBreakWord nzAlign="left">
