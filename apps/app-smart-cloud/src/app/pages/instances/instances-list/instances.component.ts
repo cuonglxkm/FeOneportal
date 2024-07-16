@@ -159,6 +159,7 @@ export class InstancesComponent implements OnInit {
     this.region = region.regionId;
   }
 
+  //#region chức năng tìm kiếm
   dataSubjectSearchParam: Subject<any> = new Subject<any>();
   private searchSubscription: Subscription;
   private enterPressed: boolean = false;
@@ -188,6 +189,7 @@ export class InstancesComponent implements OnInit {
       this.searchSubscription.unsubscribe();
     }
   }
+  //#endregion
 
   isFirstVisit: boolean = true;
   onRegionChange(region: RegionModel) {
@@ -306,6 +308,7 @@ export class InstancesComponent implements OnInit {
     }
   }
 
+  //#region Gắn Vlan máy ảo
   listVlanNetwork: NetWorkModel[] = [];
   vlanCloudId: string;
   isLoadingNetwork: boolean = true;
@@ -452,6 +455,7 @@ export class InstancesComponent implements OnInit {
     this.dataSubjectGateway.next(value);
   }
 
+  //Validate ip address
   onCheckIPAddress() {
     this.dataSubjectGateway.pipe(debounceTime(500)).subscribe((res) => {
       if (res == null || res == '') {
@@ -492,7 +496,9 @@ export class InstancesComponent implements OnInit {
       }
     });
   }
+  //#endregion
 
+  //#region Gỡ khỏi Vlan
   listOfPrivateNetwork: Network[];
   getListIpPrivate(id: number) {
     this.dataService
@@ -539,7 +545,9 @@ export class InstancesComponent implements OnInit {
       },
     });
   }
+  //#endregion
 
+  //#region Tắt máy ảo
   isVisibleShutdown: boolean = false;
   instanceControlId: number = 0;
   showModalShutdown(id: number) {
@@ -573,7 +581,9 @@ export class InstancesComponent implements OnInit {
   handleCancelShutdown() {
     this.isVisibleShutdown = false;
   }
+  //#endregion
 
+  //#region Bật máy ảo
   isVisibleStart: boolean = false;
   showModalStart(id: number) {
     this.isVisibleStart = true;
@@ -606,7 +616,9 @@ export class InstancesComponent implements OnInit {
   handleCancelStart() {
     this.isVisibleStart = false;
   }
+  //#endregion
 
+  //#region Khởi động lại máy ảo
   isVisibleRestart: boolean = false;
   showModalRestart(id: number) {
     this.isVisibleRestart = true;
@@ -639,7 +651,9 @@ export class InstancesComponent implements OnInit {
   handleCancelRestart() {
     this.isVisibleRestart = false;
   }
+  //#endregion
 
+  //#region Rescuse, UnRescue
   isVisibleRescue: boolean = false;
   showModalRescue(id: number) {
     this.isVisibleRescue = true;
@@ -705,7 +719,9 @@ export class InstancesComponent implements OnInit {
   handleCancelUnRescue() {
     this.isVisibleUnRescue = false;
   }
+  //#endregion
 
+  //#region Chỉnh sửa tên máy ảo
   form = new FormGroup({
     name: new FormControl('', {
       nonNullable: true,
@@ -776,6 +792,7 @@ export class InstancesComponent implements OnInit {
       },
     });
   }
+  //#endregion
 
   openConsole(id: number): void {
     this.router.navigateByUrl(
@@ -793,15 +810,6 @@ export class InstancesComponent implements OnInit {
       this.router.navigate(['/app-smart-cloud/instances/instances-create-vpc']);
     } else {
       this.router.navigate(['/app-smart-cloud/instances/instances-create']);
-    }
-  }
-  navigateToEdit(id: number) {
-    if (this.project.type == 0) {
-      this.router.navigate(['/app-smart-cloud/instances/instances-edit/' + id]);
-    } else {
-      this.router.navigate([
-        '/app-smart-cloud/instances/instances-edit-vpc/' + id,
-      ]);
     }
   }
 

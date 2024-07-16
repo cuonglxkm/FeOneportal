@@ -167,7 +167,10 @@ export class InstancesEditInfoComponent implements OnInit {
             this.cdr.detectChanges();
           },
           error: (e) => {
-            this.notification.error(e.error.detail, '');
+            this.notification.error(
+              this.i18n.fanyi('app.status.fail'),
+              e.error.message
+            );
             this.returnPage();
           },
         });
@@ -230,7 +233,7 @@ export class InstancesEditInfoComponent implements OnInit {
   }
 
   onRegionChange(region: RegionModel) {
-    if(this.projectCombobox){
+    if (this.projectCombobox) {
       this.projectCombobox.loadProjects(true, region.regionId);
     }
     this.route.navigate(['/app-smart-cloud/instances']);

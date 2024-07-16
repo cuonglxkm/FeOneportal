@@ -108,7 +108,7 @@ export class InstancesExtendComponent implements OnInit {
         this.cdr.detectChanges();
       },
       error: (e) => {
-        this.notification.error(e.error.detail, '');
+        this.notification.error(e.error.message, '');
         this.router.navigate(['/app-smart-cloud/instances']);
       },
     });
@@ -266,7 +266,7 @@ export class InstancesExtendComponent implements OnInit {
         error: (error) => {
           this.notification.error(
             this.i18n.fanyi('app.status.fail'),
-            error.error.detail
+            error.error.message
           );
         },
       });
