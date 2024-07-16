@@ -16,6 +16,7 @@ export class ServiceTaskStatePipe implements PipeTransform {
       case 'REBUILDING':
       case 'RESIZING':
       case 'REBOOT_STARTED':
+      case 'UPDATING_PASSWORD':
         return new StatusModel('#ea3829', status);
       case 'DELETED':
         return new StatusModel('#ea3829 ', this.i18n.fanyi('app.disconnected'));
