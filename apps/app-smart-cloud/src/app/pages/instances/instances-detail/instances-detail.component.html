@@ -49,9 +49,7 @@
           !activeGS &&
           instancesModel &&
           instancesModel.taskState.toUpperCase() != 'REBUILDING' &&
-          !instancesModel.taskState.toUpperCase().includes('RESIZING') &&
-          instancesModel.taskState.toUpperCase() != 'POWERING-OFF' &&
-          instancesModel.taskState.toUpperCase() != 'REBOOT_STARTED'
+          !instancesModel.taskState.toUpperCase().includes('RESIZING')
         "
       >
         <i nz-icon nzType="eye"></i> <span>{{ 'app.monitor' | i18n }}</span>

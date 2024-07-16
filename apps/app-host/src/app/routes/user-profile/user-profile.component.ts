@@ -63,7 +63,7 @@ export class UserProfileComponent implements OnInit {
   isLoadingUpdateInfo: any = false;
   email: string;
   isTabInvoice = true;
-  formHandleUserInvoice: FormUpdateUserInvoice = new FormUpdateUserInvoice();
+  // formHandleUserInvoice: FormUpdateUserInvoice = new FormUpdateUserInvoice();
   userModel: UserModel = {};
   form = new FormGroup({
     name: new FormControl('', {
@@ -304,80 +304,80 @@ export class UserProfileComponent implements OnInit {
   }
 
   handleOkUpdateCustomerInvoice() {
-    if (this.userModel && this.userModel.customerInvoice === null) {
-      this.isLoadingUpdateInfo = true;
-      this.formHandleUserInvoice.companyName =
-        this.formCustomerInvoice.controls.nameCompany.value;
-      this.formHandleUserInvoice.address =
-        this.formCustomerInvoice.controls.address.value;
-      this.formHandleUserInvoice.phoneNumber =
-        this.formCustomerInvoice.controls.phoneNumber.value;
-      this.formHandleUserInvoice.fullName =
-        this.formCustomerInvoice.controls.nameCustomer.value;
-      this.formHandleUserInvoice.email =
-        this.formCustomerInvoice.controls.email.value;
-      this.formHandleUserInvoice.taxCode =
-        this.formCustomerInvoice.controls.taxCode.value;
-      this.formHandleUserInvoice.customerGroupId = this.customerGroup;
-      this.formHandleUserInvoice.customerTypeId = this.customerType;
-      this.formHandleUserInvoice.customerId = this.tokenService.get()?.userId;
-      console.log(this.formHandleUserInvoice);
+    // if (this.userModel && this.userModel.customerInvoice === null) {
+    //   this.isLoadingUpdateInfo = true;
+    //   this.formHandleUserInvoice.companyName =
+    //     this.formCustomerInvoice.controls.nameCompany.value;
+    //   this.formHandleUserInvoice.address =
+    //     this.formCustomerInvoice.controls.address.value;
+    //   this.formHandleUserInvoice.phoneNumber =
+    //     this.formCustomerInvoice.controls.phoneNumber.value;
+    //   this.formHandleUserInvoice.fullName =
+    //     this.formCustomerInvoice.controls.nameCustomer.value;
+    //   this.formHandleUserInvoice.email =
+    //     this.formCustomerInvoice.controls.email.value;
+    //   this.formHandleUserInvoice.taxCode =
+    //     this.formCustomerInvoice.controls.taxCode.value;
+    //   this.formHandleUserInvoice.customerGroupId = this.customerGroup;
+    //   this.formHandleUserInvoice.customerTypeId = this.customerType;
+    //   this.formHandleUserInvoice.customerId = this.tokenService.get()?.userId;
+    //   console.log(this.formHandleUserInvoice);
 
-      this.invoiceService.createInvoice(this.formHandleUserInvoice).subscribe({
-        next: (data) => {
-          this.isLoadingUpdateInfo = false;
-          this.notification.success(
-            this.i18n.fanyi('app.status.success'),
-            this.i18n.fanyi('app.invoice.pop-up.update.success')
-          );
-          setTimeout(() => window.location.reload(), 1000);
-        },
-        error: (e) => {
-          this.isLoadingUpdateInfo = false;
-          this.notification.error(
-            this.i18n.fanyi('app.status.fail'),
-            this.i18n.fanyi('app.invoice.pop-up.update.fail')
-          );
-        },
-      });
-    } else if (this.userModel && this.userModel.customerInvoice !== null) {
-      this.isLoadingUpdateInfo = true;
-      this.formHandleUserInvoice.companyName =
-        this.formCustomerInvoice.controls.nameCompany.value;
-      this.formHandleUserInvoice.address =
-        this.formCustomerInvoice.controls.address.value;
-      this.formHandleUserInvoice.phoneNumber =
-        this.formCustomerInvoice.controls.phoneNumber.value;
-      this.formHandleUserInvoice.fullName =
-        this.formCustomerInvoice.controls.nameCustomer.value;
-      this.formHandleUserInvoice.email =
-        this.formCustomerInvoice.controls.email.value;
-      this.formHandleUserInvoice.taxCode =
-        this.formCustomerInvoice.controls.taxCode.value;
-      this.formHandleUserInvoice.customerGroupId = this.customerGroup;
-      this.formHandleUserInvoice.customerTypeId = this.customerType;
-      this.formHandleUserInvoice.customerId = this.tokenService.get()?.userId;
-      this.formHandleUserInvoice.id = this.userModel.customerInvoice.id;
-      console.log(this.formHandleUserInvoice);
+    //   this.invoiceService.createInvoice(this.formHandleUserInvoice).subscribe({
+    //     next: (data) => {
+    //       this.isLoadingUpdateInfo = false;
+    //       this.notification.success(
+    //         this.i18n.fanyi('app.status.success'),
+    //         this.i18n.fanyi('app.invoice.pop-up.update.success')
+    //       );
+    //       setTimeout(() => window.location.reload(), 1000);
+    //     },
+    //     error: (e) => {
+    //       this.isLoadingUpdateInfo = false;
+    //       this.notification.error(
+    //         this.i18n.fanyi('app.status.fail'),
+    //         this.i18n.fanyi('app.invoice.pop-up.update.fail')
+    //       );
+    //     },
+    //   });
+    // } else if (this.userModel && this.userModel.customerInvoice !== null) {
+    //   this.isLoadingUpdateInfo = true;
+    //   this.formHandleUserInvoice.companyName =
+    //     this.formCustomerInvoice.controls.nameCompany.value;
+    //   this.formHandleUserInvoice.address =
+    //     this.formCustomerInvoice.controls.address.value;
+    //   this.formHandleUserInvoice.phoneNumber =
+    //     this.formCustomerInvoice.controls.phoneNumber.value;
+    //   this.formHandleUserInvoice.fullName =
+    //     this.formCustomerInvoice.controls.nameCustomer.value;
+    //   this.formHandleUserInvoice.email =
+    //     this.formCustomerInvoice.controls.email.value;
+    //   this.formHandleUserInvoice.taxCode =
+    //     this.formCustomerInvoice.controls.taxCode.value;
+    //   this.formHandleUserInvoice.customerGroupId = this.customerGroup;
+    //   this.formHandleUserInvoice.customerTypeId = this.customerType;
+    //   this.formHandleUserInvoice.customerId = this.tokenService.get()?.userId;
+    //   this.formHandleUserInvoice.id = this.userModel.customerInvoice.id;
+    //   console.log(this.formHandleUserInvoice);
 
-      this.invoiceService.updateInvoice(this.formHandleUserInvoice).subscribe({
-        next: (data) => {
-          this.isLoadingUpdateInfo = false;
-          this.notification.success(
-            this.i18n.fanyi('app.status.success'),
-            this.i18n.fanyi('app.invoice.pop-up.update.success')
-          );
-          setTimeout(() => window.location.reload(), 1000);
-        },
-        error: (e) => {
-          this.isLoadingUpdateInfo = false;
-          this.notification.error(
-            this.i18n.fanyi('app.status.fail'),
-            this.i18n.fanyi('app.invoice.pop-up.update.fail')
-          );
-        },
-      });
-    }
+    //   this.invoiceService.updateInvoice(this.formHandleUserInvoice).subscribe({
+    //     next: (data) => {
+    //       this.isLoadingUpdateInfo = false;
+    //       this.notification.success(
+    //         this.i18n.fanyi('app.status.success'),
+    //         this.i18n.fanyi('app.invoice.pop-up.update.success')
+    //       );
+    //       setTimeout(() => window.location.reload(), 1000);
+    //     },
+    //     error: (e) => {
+    //       this.isLoadingUpdateInfo = false;
+    //       this.notification.error(
+    //         this.i18n.fanyi('app.status.fail'),
+    //         this.i18n.fanyi('app.invoice.pop-up.update.fail')
+    //       );
+    //     },
+    //   });
+    // }
   }
 
   httpOptions = {

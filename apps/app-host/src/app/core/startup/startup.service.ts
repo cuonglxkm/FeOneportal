@@ -99,6 +99,7 @@ export class StartupService {
             link: item.attributes.link_level1,
             group: item.attributes.menu_level2.length > 0,
             action: item.attributes.action_level1,
+            isShow: item.attributes.isShow,
             children:
               item.attributes.menu_level2.length > 0
                 ? item.attributes.menu_level2.map((subItem: any) => ({
@@ -121,6 +122,7 @@ export class StartupService {
                         ? true
                         : false,
                     action: subItem.action_level2,
+                    isShow: subItem.isShow,
                     children:
                       subItem.menu_level3.length &&
                       subItem.menu_level3.length > 0
@@ -144,6 +146,7 @@ export class StartupService {
                                         : 'svg',
                                   },
                             link: subSubItem.link_level3,
+                            isShow: subSubItem.isShow,
                             action: subSubItem.action_level3,
                           }))
                         : [],
@@ -164,10 +167,6 @@ export class StartupService {
       defaultLang !== 'vi-VI'
         ? this.httpClient.get('assets/tmp/app-data-en.json')
         : this.httpClient.get('assets/tmp/app-data.json')
-
-      // localStorage.getItem('_token')
-      //   ? this.httpClient.get(baseUrl + '/provisions/object-storage/userinfo')
-      //   : of(null)
     ).pipe(
       catchError((res) => {
         console.log(`StartupService.load: Network request failed`, res);
@@ -177,7 +176,6 @@ export class StartupService {
       map(([langData, appData]: [Record<string, string>, NzSafeAny]) => {
         // setting language data
         this.i18n.use(defaultLang, langData);
-        // console.log(appData.menu);
         const menuDataPromise = this.loadMenu();
         const menuDataObservable = from(menuDataPromise);
         menuDataObservable
@@ -190,9 +188,10 @@ export class StartupService {
           )
           .subscribe(
             (data) => {
-              this.menuData = data;
+              this.menuData = data;        
               this.menuService.add(this.menuData.menu);
               this.regionProjectService.getCoreData(baseUrl);
+              this.checkisShowMenu(this.menuData.menu);
               if (localStorage?.getItem('PermissionOPA')) {
                 this.checkPermissionAction(this.menuData.menu);
               } else if (localStorage?.getItem('UserRootId')) {
@@ -207,6 +206,9 @@ export class StartupService {
                     this.checkPermissionAction(this.menuData.menu);
                   });
               }
+              
+              console.log(this.menuData.menu);
+              
             },
             (error) => {
               console.error('Error loading menu data:', error);
@@ -221,42 +223,6 @@ export class StartupService {
 
         this.aclService.setFull(true);
 
-        // if (checkData) {
-        //   let json = {
-        //     key: 'Object Storage',
-        //     text: 'Object Storage',
-        //     icon: 'anticon-profile',
-        //     children: [
-        //       {
-        //         text: 'Bucket',
-        //         link: '/app-smart-cloud/object-storage/bucket',
-        //       },
-        //       {
-        //         text: 'Sub User',
-        //         link: '/app-smart-cloud/object-storage/sub-user/list',
-        //       },
-        //       {
-        //         text: 'S3 Key',
-        //         link: '/app-smart-cloud/object-storage/s3-key',
-        //       },
-        //       {
-        //         text: 'Thống kê',
-        //         link: '/app-smart-cloud/object-storage/dashboard',
-        //       },
-        //     ],
-        //   };
-        //   this.menuService.setItem('Object Storage', json);
-        // } else {
-        //   let json = {
-        //     key: 'Object Storage',
-        //     text: 'Object Storage',
-        //     icon: 'anticon-profile',
-        //     link: '/app-smart-cloud/object-storage',
-        //   };
-        //   this.menuService.setItem('Object Storage', json);
-        // }
-        // this.menuService.resume();
-
         this.titleService.default = '';
         this.titleService.suffix = appData.app.name;
       })
@@ -264,12 +230,27 @@ export class StartupService {
   }
 
   async checkPermissionAction(datas: any[]) {
-    datas.forEach(async (item) => {
-      if (item.action) {
-        item._hidden = !(await this.policyService.hasPermission(item.action));
+    for (const item of datas) {
+        if (item.action) {
+            if (!item._hidden) {
+                item._hidden = !(await this.policyService.hasPermission(item.action));
+            }
+        }
+        if (item.children && item.children.length > 0) {
+            await this.checkPermissionAction(item.children);
+        }
+    }
+}
+
+  checkisShowMenu(items: any[]) {
+    items.forEach(item => {
+      if (item.isShow !== null) {
+        item._hidden = item.isShow === false;
+      }else{
+        item._hidden = false;
       }
-      if (item.children && item.children.length > 0) {
-        await this.checkPermissionAction(item.children);
+      if (item.children) {
+        this.checkisShowMenu(item.children);
       }
     });
   }

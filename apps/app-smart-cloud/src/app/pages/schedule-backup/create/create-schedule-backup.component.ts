@@ -159,13 +159,13 @@ export class CreateScheduleBackupComponent implements OnInit {
     // { label: '4 ' + this.i18n.fanyi('app.Week'), value: 4 }
   ];
   daysOfWeeks = [
-    { label: this.i18n.fanyi('schedule.backup.monday'), value: 1 },
-    { label: this.i18n.fanyi('schedule.backup.tuesday'), value: 2 },
-    { label: this.i18n.fanyi('schedule.backup.wednesday'), value: 3 },
-    { label: this.i18n.fanyi('schedule.backup.thursday'), value: 4 },
-    { label: this.i18n.fanyi('schedule.backup.friday'), value: 5 },
-    { label: this.i18n.fanyi('schedule.backup.saturday'), value: 6 },
-    { label: this.i18n.fanyi('schedule.backup.sunday'), value: 7 }
+    { label: this.i18n.fanyi('schedule.backup.monday'), value: "1" },
+    { label: this.i18n.fanyi('schedule.backup.tuesday'), value: "2" },
+    { label: this.i18n.fanyi('schedule.backup.wednesday'), value: "3" },
+    { label: this.i18n.fanyi('schedule.backup.thursday'), value: "4" },
+    { label: this.i18n.fanyi('schedule.backup.friday'), value: "5" },
+    { label: this.i18n.fanyi('schedule.backup.saturday'), value: "6" },
+    { label: this.i18n.fanyi('schedule.backup.sunday'), value: "7" }
   ];
 
   constructor(private fb: NonNullableFormBuilder,

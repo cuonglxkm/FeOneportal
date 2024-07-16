@@ -113,6 +113,7 @@ textarea,
   margin-bottom: 4px;
   margin-right: 6px;
   margin-top: 1px;
+  width: 24px;
 }
 
 .icon-action-2 {
@@ -120,6 +121,8 @@ textarea,
   margin-right: 0;
   margin-left: 0;
   margin-top: 1px;
+  width: 24px;
+  height: 24px;
 }
 
 /* dark theme */

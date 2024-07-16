@@ -30,6 +30,8 @@ export class VpnSiteToSiteManage {
   }
 
   regionChanged(region: RegionModel) {
+    console.log(region);
+    
     this.region = region.regionId;
     if(this.projectComboboxs && this.projectComboboxs.length > 0){
       this.projectComboboxs.forEach(element => {
