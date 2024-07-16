@@ -163,6 +163,7 @@ import {
 import { SnapshotDetailComponent } from './snapshot/detail/snapshot-detail.component';
 import { InvoiceDetailComponent } from './billing/payment/invoice-detail/invoice-detail.component';
 import { CreateScheduleBackupVpcComponent } from './schedule-backup/create-vpc/create-schedule-backup-vpc.component';
+import { UpdateLoadBalancerNormalComponent } from './load-balancer/normal/update/update-load-balancer-normal.component';
 
 // import { BlankVolumeComponent } from './volume/component/blank/blank-volume.component';
 
@@ -1203,6 +1204,14 @@ const routes: Routes = [
   {
     path: 'load-balancer/update/vpc/:id',
     component: EditLoadBalancerVpcComponent,
+    canActivate: [PermissionGuard],
+    data: {
+      permission: 'loadbalancer:Update'
+    }
+  },
+  {
+    path: 'load-balancer/update/normal/:id',
+    component: UpdateLoadBalancerNormalComponent,
     canActivate: [PermissionGuard],
     data: {
       permission: 'loadbalancer:Update'

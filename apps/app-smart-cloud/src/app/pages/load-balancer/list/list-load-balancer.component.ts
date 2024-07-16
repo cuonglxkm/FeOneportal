@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit, ViewChild } from '@angular/core';
+import { Component, Inject, OnInit, ViewChild , ChangeDetectorRef} from '@angular/core';
 import { getCurrentRegionAndProject } from '@shared';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { Router } from '@angular/router';
@@ -42,6 +42,7 @@ export class ListLoadBalancerComponent implements OnInit {
 
   constructor(@Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
               private router: Router,
+              private cdr: ChangeDetectorRef,
               private loadBalancerService: LoadBalancerService,
               private projectService: ProjectService,
               private vpcService: VpcService,
@@ -54,6 +55,8 @@ export class ListLoadBalancerComponent implements OnInit {
   }
 
   regionChanged(region: RegionModel) {
+    this.loading = true;
+    this.isFirstVisit = false;
     this.region = region.regionId;
     if(this.projectCombobox){
       this.projectCombobox.loadProjects(true, region.regionId);
@@ -62,16 +65,20 @@ export class ListLoadBalancerComponent implements OnInit {
   }
 
   onRegionChanged(region: RegionModel) {
+    this.loading = true;
+    this.isFirstVisit = false;
     this.region = region.regionId;
   }
 
   projectChanged(project: ProjectModel) {
+    this.loading = true;
+    this.isFirstVisit = false;
     this.projectCurrentModel = project;
     this.isLoading = true;
     this.createNewLB = false;
     this.project = project?.id;
     this.typeVPC = project?.type;
-
+    this.isBegin = false
     if (this.typeVPC == 1) {
       this.projectService.getProjectVpc(this.project)
         .pipe(finalize(() => {
@@ -80,7 +87,11 @@ export class ListLoadBalancerComponent implements OnInit {
         .subscribe(data => {
           const LBId = data?.cloudProject?.offerIdLBSDN;
           if (LBId != undefined && LBId != null) {
-            this.catalogService.getDetailOffer(LBId).subscribe(
+            this.catalogService.getDetailOffer(LBId)
+              .pipe(finalize(() => {
+                this.loading = false;
+              }))
+              .subscribe(
               data2 => {
                 this.createNewLB = false;
               },
@@ -94,9 +105,6 @@ export class ListLoadBalancerComponent implements OnInit {
         });
 
       this.vpcService.getTotalResouce(this.project)
-        .pipe(finalize(() => {
-          // this.pushTable();
-        }))
         .subscribe(
           data => {
             if (data.cloudProject?.quotaLoadBalancerSDNCount-data.cloudProjectResourceUsed?.loadBalancerSdnCount <= 0) {
@@ -122,17 +130,21 @@ export class ListLoadBalancerComponent implements OnInit {
   }
 
   navigateToCreate(typeVpc) {
-    console.log(typeVpc);
-    let hasRoleSI = localStorage.getItem('role').includes('SI');
-    if (typeVpc === 1 || hasRoleSI) {
-      if (this.noneQuota) {
-        this.notification.warning('Cảnh báo','Quý khách vui lòng mua thêm quota cho Load Balancer')
-      } else {
-        this.router.navigate(['/app-smart-cloud/load-balancer/create/vpc']);
+    this.alertLB = false;
+    if (!this.isLoading) {
+      console.log(typeVpc);
+      let hasRoleSI = localStorage.getItem('role').includes('SI');
+      if (typeVpc === 1 || hasRoleSI) {
+        if (this.noneQuota) {
+          this.notification.warning('Cảnh báo','Quý khách vui lòng mua thêm quota cho Load Balancer')
+          this.alertLB = true;
+        } else {
+          this.router.navigate(['/app-smart-cloud/load-balancer/create/vpc']);
+        }
       }
-    }
-    if (typeVpc !== 1) {
-      this.router.navigate(['/app-smart-cloud/load-balancer/create']);
+      if (typeVpc !== 1) {
+        this.router.navigate(['/app-smart-cloud/load-balancer/create']);
+      }
     }
   }
 
@@ -150,20 +162,24 @@ export class ListLoadBalancerComponent implements OnInit {
 
   search(isBegin) {
     this.isLoading = true;
+    this.loading = true;
     let formSearch = new FormSearchListBalancer();
     formSearch.vpcId = this.project;
     formSearch.regionId = this.region;
     formSearch.name = this.value;
     formSearch.pageSize = this.pageSize;
     formSearch.currentPage = this.pageIndex;
-
-    this.loadBalancerService.search(formSearch).subscribe(data => {
-      this.isLoading = false;
+    this.loadBalancerService.search(formSearch)
+      .pipe(finalize(() => {
+        this.loading = false;
+        this.isLoading = false;
+      }))
+      .subscribe(data => {
       this.response = data;
-
       if (isBegin) {
         this.isBegin = this.response.records.length < 1 || this.response.records === null ? true : false;
       }
+      this.cdr.detectChanges();
     }, error => {
       this.isLoading = false;
       this.response = null;
@@ -183,6 +199,9 @@ export class ListLoadBalancerComponent implements OnInit {
   }
 
   searchDelay = new Subject<boolean>();
+  isFirstVisit: boolean = true;
+  loading = true;
+  alertLB = false;
 
   ngOnInit(): void {
     let regionAndProject = getCurrentRegionAndProject();
@@ -197,5 +216,9 @@ export class ListLoadBalancerComponent implements OnInit {
     this.searchDelay.pipe(debounceTime(TimeCommon.timeOutSearch)).subscribe(() => {
       this.search(false);
     });
+  }
+
+  navigateToUpdateNormal(id: number) {
+    this.router.navigate(['/app-smart-cloud/load-balancer/update/normal/' + id]);
   }
 }

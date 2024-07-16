@@ -107,7 +107,7 @@ export class InstancesComponent implements OnInit {
               this.reloadTable();
             case 'START':
               this.reloadTable();
-            case 'REBOOTING':
+            case 'REBOOT_STARTED':
               this.updateRowState(taskState, foundIndex);
             case 'REBOOT':
               this.updateRowState(taskState, foundIndex);

@@ -33,7 +33,7 @@
                                [regionId]="region"></project-select-dropdown>
     </div>
   </ng-template>
-  <button class="button-cancel"
+  <button *ngIf="!['SUSPENDED'].includes(volumeInfo?.status) && !['CREATING', 'ATTACHING', 'DELETING', 'ERROR_DELETING', 'ERROR'].includes(volumeInfo?.serviceStatus)" class="button-cancel"
           (click)="navigateEditVolume(volumeInfo.id)"
           nz-button nzType="primary">
     <img src="assets/imgs/edit-1.svg" alt=""

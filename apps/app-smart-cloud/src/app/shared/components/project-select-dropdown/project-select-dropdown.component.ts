@@ -71,6 +71,7 @@ export class ProjectSelectDropdownComponent implements OnInit, OnChanges {
           this.listProject = data;
 
           if (this.listProject.length > 0) {
+            localStorage.setItem('projects', JSON.stringify(this.listProject));
             if (localStorage.getItem('projectId') != null) {
               this.selectedProject = this.listProject.find(
                 (item) =>

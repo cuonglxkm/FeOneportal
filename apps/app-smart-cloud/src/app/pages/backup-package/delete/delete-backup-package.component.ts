@@ -7,22 +7,21 @@ import { NonNullableFormBuilder } from '@angular/forms';
 import { PackageBackupModel, ServiceInPackage } from '../../../shared/models/package-backup.model';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from '@core';
-import { FormDeleteFileSystem } from '../../../shared/models/file-system.model';
 
 @Component({
   selector: 'one-portal-delete-backup-package',
   templateUrl: './delete-backup-package.component.html',
   styleUrls: ['./delete-backup-package.component.less']
 })
-export class DeleteBackupPackageComponent implements AfterViewInit{
+export class DeleteBackupPackageComponent implements AfterViewInit {
   @Input() region: number;
   @Input() project: number;
   @Input() packageBackupModel: PackageBackupModel;
   @Output() onCancel = new EventEmitter<void>();
   @Output() onOk = new EventEmitter<void>();
 
-  isVisible: boolean = false
-  isLoading: boolean = false
+  isVisible: boolean = false;
+  isLoading: boolean = false;
 
   value: string = '';
 
@@ -53,7 +52,7 @@ export class DeleteBackupPackageComponent implements AfterViewInit{
       }, error => {
         this.isLoading = false;
         this.isVisible = false;
-        this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.notification.delete.package.fail', error.error.detail) );
+        this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.notification.delete.package.fail', error.error.detail));
       });
     } else {
       this.isInput = true;
@@ -66,12 +65,12 @@ export class DeleteBackupPackageComponent implements AfterViewInit{
     this.isVisible = false;
     this.isLoading = false;
     this.value = '';
-    this.isInput = false
+    this.isInput = false;
     this.onCancel.emit();
   }
 
   onInputChange(value) {
-    this.value = value
+    this.value = value;
     console.log('input change', this.value);
   }
 
@@ -92,9 +91,10 @@ export class DeleteBackupPackageComponent implements AfterViewInit{
 
   getServiceFromPackage() {
     this.packageBackupService.getServiceInPackage(this.packageBackupModel?.id).subscribe(data => {
-      this.serviceInBackupPackage = data
-    })
+      this.serviceInBackupPackage = data;
+    });
   }
+
   ngAfterViewInit() {
     this.backupPackageInputName?.nativeElement.focus();
   }
