@@ -7,6 +7,7 @@
   <nz-content>
     <nz-row [nzGutter]="6" style="padding-top: 24px;">
       <nz-col [nzSpan]="6">
+        <!---CARD THÔNG TIN DỊCH VỤ------>
         <nz-card style="border: 1px solid #0074CC; gap: 40px; border-radius: 10px;"
                  nz-popover
                  [nzPopoverTitle]="title"
@@ -21,7 +22,6 @@
             </div>
           </div>
         </nz-card>
-
         <ng-template #infoService>
           <div class="scroll">
             <div *ngFor="let data of subscriptionDashboardService?.details" style="width: 300px" class="text-label">
@@ -47,11 +47,10 @@
               <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
             </div>
           </div>
-
-
         </ng-template>
       </nz-col>
       <nz-col [nzSpan]="6">
+        <!---CARD THÔNG TIN DỊCH VỤ ĐANG HOẠT ĐỘNG------>
         <nz-card style="border: 1px solid #0074CC;gap: 40px;border-radius: 10px;"
                  nz-popover
                  [nzPopoverTitle]="title"
@@ -94,6 +93,7 @@
         </ng-template>
       </nz-col>
       <nz-col [nzSpan]="6">
+        <!---CARD THÔNG TIN DỊCH VỤ SẮP HẾT HẠN------>
         <nz-card style="border: 1px solid #0074CC;gap: 40px;border-radius: 10px;"
                  nz-popover
                  [nzPopoverTitle]="title"
@@ -136,6 +136,7 @@
         </ng-template>
       </nz-col>
       <nz-col [nzSpan]="6">
+        <!---CARD THÔNG TIN DỊCH VỤ HẾT HẠN------>
         <nz-card style="border: 1px solid #0074CC;gap: 40px;border-radius: 10px;"
                  nz-popover
                  [nzPopoverTitle]="title"
@@ -185,10 +186,12 @@
     <nz-card style="border-radius: 8px; margin-top: 15px;">
       <span class="text-card-header">{{ 'app.dashboard.payment.and.cost' | i18n }}</span>
       <nz-row nzGutter="24">
+        <!---BIỂU ĐỒ CHI PHÍ SỬ DỤNG------>
         <nz-col nzSpan="8">
           <div #pieChart></div>
         </nz-col>
         <nz-col nzSpan="16">
+          <!---BẢNG THÔNG TIN CHI PHÍ SỬ DỤNG------>
           <nz-table #fixTablePaymentCost
                     nzShowSizeChanger
                     style="margin-top: 25px;"
@@ -234,6 +237,7 @@
     <nz-card style="border-radius: 8px; margin-top: 25px;">
       <span class="text-card-header">{{ 'app.dashboard.service.near.expire'|i18n }}</span>
       <div style="margin-top: 25px;">
+        <!---TÌM KIẾM TÊN DỊCH VỤ SẮP HẾT HẠN HOẶC HẾT HẠN------>
         <nz-input-group
           style="width: 300px;"
           [nzPrefix]="prefixIconSearch"
@@ -249,6 +253,7 @@
       <ng-template #prefixIconSearch>
         <img src="assets/imgs/search.svg" alt="" />
       </ng-template>
+      <!---BẢNG THÔNG TIN SẮP HẾT HẠN VÀ HÊT HẠN------>
       <nz-table #fixTableNearExpire
                 nzShowSizeChanger
                 style="margin-top: 25px;"
