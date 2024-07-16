@@ -384,7 +384,7 @@ export class InstancesEditComponent implements OnInit {
   }
 
   onRegionChange(region: RegionModel) {
-    if(this.projectCombobox){
+    if (this.projectCombobox) {
       this.projectCombobox.loadProjects(true, region.regionId);
     }
     this.router.navigate(['/app-smart-cloud/instances']);
@@ -444,7 +444,7 @@ export class InstancesEditComponent implements OnInit {
       },
       error: (e) => {
         this.checkPermission = false;
-        this.notification.error(e.error.detail, '');
+        this.notification.error('', e.error.message);
         this.returnPage();
       },
     });
@@ -980,13 +980,22 @@ export class InstancesEditComponent implements OnInit {
       .subscribe({
         next: (result) => {
           if (result.success) {
-            if(this.hasRoleSI) {
-              this.dataService.create(this.order).subscribe(data => {
-                this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('app.notify.resize.instance.success'));
-                this.router.navigate(['/app-smart-cloud/volumes']);
-              }, error => {
-                this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('app.notify.resize.instance.fail'));
-              })
+            if (this.hasRoleSI) {
+              this.dataService.create(this.order).subscribe({
+                next: (data) => {
+                  this.notification.success(
+                    this.i18n.fanyi('app.status.success'),
+                    this.i18n.fanyi('app.notify.resize.instance.success')
+                  );
+                  this.router.navigate(['/app-smart-cloud/volumes']);
+                },
+                error: (error) => {
+                  this.notification.success(
+                    this.i18n.fanyi('app.status.success'),
+                    this.i18n.fanyi('app.notify.resize.instance.fail')
+                  );
+                },
+              });
             } else {
               var returnPath: string = window.location.pathname;
               this.router.navigate(['/app-smart-cloud/order/cart'], {
@@ -1001,7 +1010,7 @@ export class InstancesEditComponent implements OnInit {
         error: (error) => {
           this.notification.error(
             this.i18n.fanyi('app.status.fail'),
-            error.error.detail
+            error.error.message
           );
         },
       });
