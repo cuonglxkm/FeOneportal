@@ -110,6 +110,7 @@ export class ExtendVolumeDTO{
   newExpireDate: string;
   userEmail: string;
   actorEmail: string;
+  vpcId: number;
 }
 
 

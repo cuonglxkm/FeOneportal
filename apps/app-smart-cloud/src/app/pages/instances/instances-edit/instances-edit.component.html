@@ -36,6 +36,7 @@
         (regionChange)="onRegionChanged($event)"
       ></region-select-dropdown>
       <project-select-dropdown
+        #projectCombobox
         [regionId]="region"
         (userChanged)="onProjectChange($event)"
       ></project-select-dropdown>
@@ -54,9 +55,7 @@
         *ngIf="
           instancesModel &&
           instancesModel.taskState.toUpperCase() != 'REBUILDING' &&
-          !instancesModel.taskState.toUpperCase().includes('RESIZING') &&
-          instancesModel.taskState.toUpperCase() != 'POWERING-OFF' &&
-          instancesModel.taskState.toUpperCase() != 'REBOOTING'
+          !instancesModel.taskState.toUpperCase().includes('RESIZING')
         "
         [instancesId]="id"
         [isProjectVPC]="false"
@@ -178,54 +177,19 @@
                 <span class="text-label customSpan" style="width: 35%"
                   >{{ 'app.task.status' | i18n }}:</span
                 >
-                <span
-                  *ngIf="instancesModel.taskState.toUpperCase() == 'SHUTOFF'"
-                  class="text-value-detail customSpan"
-                  style="color: #ea3829"
-                  >{{ instancesModel.taskState.toUpperCase() }}</span
-                >
-                <span
+                <ng-container
                   *ngIf="
-                    instancesModel.taskState.toUpperCase() == 'POWERING-OFF'
+                    instancesModel.taskState.toUpperCase()
+                      | ServiceTaskStatePipe as statusModel
                   "
-                  class="text-value-detail customSpan"
-                  style="color: #ea3829"
-                  >{{ instancesModel.taskState.toUpperCase() }}</span
                 >
-                <span
-                  *ngIf="instancesModel.taskState.toUpperCase() == 'REBUILDING'"
-                  class="text-value-detail customSpan"
-                  style="color: #ea3829"
-                  >{{ instancesModel.taskState.toUpperCase() }}</span
-                >
-                <span
-                  *ngIf="
-                    instancesModel.taskState.toUpperCase().includes('RESIZING')
-                  "
-                  class="text-value-detail customSpan"
-                  style="color: #ea3829"
-                  >{{ instancesModel.taskState.toUpperCase() }}</span
-                >
-                <span
-                  *ngIf="instancesModel.taskState.toUpperCase() == 'REBOOTING'"
-                  class="text-value-detail customSpan"
-                  style="color: #ea3829"
-                  >{{ instancesModel.taskState.toUpperCase() }}</span
-                >
-                <span
-                  *ngIf="instancesModel.taskState.toUpperCase() == 'ACTIVE'"
-                  class="text-value-detail customSpan"
-                  style="color: #008d47"
-                  >{{ instancesModel.taskState.toUpperCase() }}</span
-                >
-                <span
-                  *ngIf="
-                    instancesModel.taskState.toUpperCase() == 'POWERING-ON'
-                  "
-                  class="text-value-detail customSpan"
-                  style="color: #008d47"
-                  >{{ instancesModel.taskState.toUpperCase() }}</span
-                >
+                  <span
+                    class="text-value-detail customSpan"
+                    [ngStyle]="{ color: statusModel.color }"
+                  >
+                    {{ statusModel.status }}
+                  </span>
+                </ng-container>
               </nz-row>
             </nz-col>
             <nz-col nzSpan="12">
@@ -613,7 +577,7 @@
               </div>
             </nz-tab>
             <nz-tab
-              *ngIf="instancesModel.volumeType != 0"
+              *ngIf="instancesModel.volumeType != 0 && isVmGpu"
               [nzTitle]="'app.gpu.configuration' | i18n"
               (nzClick)="onClickGpuConfig()"
             >
@@ -800,7 +764,7 @@
               'app.alert.config.gpu.recommend'
                 | i18n
                   : {
-                      type: gpuTypeName,
+                      type: 'NVIDIA-' + instancesModel.gpuType.toUpperCase(),
                       gpu: configRecommend.gpuCount,
                       ssd: configRecommend.ssd,
                       ram: configRecommend.ram,
@@ -876,52 +840,52 @@
           <div *ngIf="!hasRoleSI">
             <nz-row style="margin-bottom: 10px" nzGutter="16">
               <nz-col nzSpan="16">
-              <span class="text-value">
-                {{ 'app.fee.resize' | i18n }}
-              </span>
+                <span class="text-value">
+                  {{ 'app.fee.resize' | i18n }}
+                </span>
               </nz-col>
               <nz-col class="text-right" nzSpan="8">
-              <span class="text-value" style="color: #0066b3" nzAlign="right">
-                {{ totalAmount | number }}
-                VND
-              </span>
+                <span class="text-value" style="color: #0066b3" nzAlign="right">
+                  {{ totalAmount | number }}
+                  VND
+                </span>
               </nz-col>
             </nz-row>
             <nz-row style="margin-bottom: 10px" nzGutter="16">
               <nz-col nzSpan="16">
-              <span class="text-value">
-                {{ 'app.cost.vat' | i18n }}
-              </span>
+                <span class="text-value">
+                  {{ 'app.cost.vat' | i18n }}
+                </span>
               </nz-col>
               <nz-col class="text-right" nzSpan="8">
-              <span class="text-value" style="color: #0066b3" nzAlign="right">
-                {{ totalVAT | number }}
-                VND
-              </span>
+                <span class="text-value" style="color: #0066b3" nzAlign="right">
+                  {{ totalVAT | number }}
+                  VND
+                </span>
               </nz-col>
             </nz-row>
             <nz-row
               style="
-              margin-top: 16px;
-              margin-bottom: 20px;
-              background-color: #cce9ff;
-              padding: 16px 0 16px 0;
-              border-radius: 8px;
-            "
+                margin-top: 16px;
+                margin-bottom: 20px;
+                background-color: #cce9ff;
+                padding: 16px 0 16px 0;
+                border-radius: 8px;
+              "
               nzGutter="16"
             >
               <nz-col nzSpan="16">
-              <span class="text-label">{{ 'app.total.payment' | i18n }}</span
-              ><br />
+                <span class="text-label">{{ 'app.total.payment' | i18n }}</span
+                ><br />
                 <span class="text-note-italicized"
-                >({{ 'app.include.vat' | i18n : { vat: '10' } }})</span
+                  >({{ 'app.include.vat' | i18n : { vat: '10' } }})</span
                 >
               </nz-col>
               <nz-col class="text-right" nzSpan="8">
-              <span class="text-value" style="color: #ea3829" nzAlign="right">
-                {{ totalincludesVAT | number }}
-                VND
-              </span>
+                <span class="text-value" style="color: #ea3829" nzAlign="right">
+                  {{ totalincludesVAT | number }}
+                  VND
+                </span>
               </nz-col>
             </nz-row>
           </div>

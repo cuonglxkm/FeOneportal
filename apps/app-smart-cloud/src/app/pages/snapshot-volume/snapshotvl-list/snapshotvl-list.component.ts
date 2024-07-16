@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, Inject, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, Inject, OnInit, ViewChild } from '@angular/core';
 import { NzSelectOptionInterface } from 'ng-zorro-antd/select';
 import { SnapshotVolumeDto } from '../../../shared/dto/snapshot-volume.dto';
 import { SnapshotVolumeService } from '../../../shared/services/snapshot-volume.service';
@@ -11,6 +11,7 @@ import {
   ProjectModel,
   RegionModel,
 } from '../../../../../../../libs/common-utils/src';
+import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
 
 @Component({
   selector: 'app-snapshot-volume-list',
@@ -39,7 +40,7 @@ export class SnapshotVolumeListComponent implements OnInit {
   pageNumber: number = 1;
   snapshotStatusSearch: string = '';
   nameSearch: string = '';
-
+  @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
   constructor(
     private snapshotVlService: SnapshotVolumeService,
     private router: Router,
@@ -62,6 +63,9 @@ export class SnapshotVolumeListComponent implements OnInit {
 
   getRegionId(region: RegionModel) {
     this.regionId = region.regionId;
+    if(this.projectCombobox){
+      this.projectCombobox.loadProjects(true, region.regionId);
+    }
   }
 
   initVolume(snapshotVl: SnapshotVolumeDto) {

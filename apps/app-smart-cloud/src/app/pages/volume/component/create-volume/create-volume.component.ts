@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, Inject, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, Inject, OnInit, ViewChild } from '@angular/core';
 import { CreateVolumeRequestModel } from '../../../../shared/models/volume.model';
 import { VolumeService } from '../../../../shared/services/volume.service';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
@@ -18,6 +18,7 @@ import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { ConfigurationsService } from '../../../../shared/services/configurations.service';
 import { OrderService } from '../../../../shared/services/order.service';
 import { SupportService } from '../../../../shared/models/catalog.model';
+import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
 
 @Component({
   selector: 'app-create-volume',
@@ -100,7 +101,7 @@ export class CreateVolumeComponent implements OnInit {
   // snapshot: any;
 
   serviceActiveByRegion: SupportService[] = [];
-
+  @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
   constructor(
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
     private volumeService: VolumeService,
@@ -145,32 +146,32 @@ export class CreateVolumeComponent implements OnInit {
     }
   }
 
-  isLoading: boolean = false
+  isLoading: boolean = false;
 
   getActiveServiceByRegion() {
-    this.isLoading = true
+    this.isLoading = true;
     this.catalogService.getActiveServiceByRegion(
       ['volume-ssd', 'volume-hdd', 'MultiAttachment', 'Encryption', 'volume-snapshot-ssd', 'volume-snapshot-hdd'], this.region)
       .subscribe(data => {
-        this.isLoading = false
+        this.isLoading = false;
         this.serviceActiveByRegion = data;
         this.serviceActiveByRegion.forEach(item => {
-          if(['volume-snapshot-hdd', 'volume-snapshot-ssd'].includes(item.productName)){
-            this.typeSnapshot = item.isActive
+          if (['volume-snapshot-hdd', 'volume-snapshot-ssd'].includes(item.productName)) {
+            this.typeSnapshot = item.isActive;
           }
-          if(['MultiAttachment'].includes(item.productName)){
-            this.typeMultiple = item.isActive
+          if (['MultiAttachment'].includes(item.productName)) {
+            this.typeMultiple = item.isActive;
           }
-          if(['Encryption'].includes(item.productName)){
-            this.typeEncrypt = item.isActive
+          if (['Encryption'].includes(item.productName)) {
+            this.typeEncrypt = item.isActive;
           }
-        })
+        });
       }, error => {
-        this.isLoading = false
-        this.typeEncrypt = false
-        this.typeMultiple = false
-        this.typeSnapshot = false
-        this.serviceActiveByRegion = []
+        this.isLoading = false;
+        this.typeEncrypt = false;
+        this.typeMultiple = false;
+        this.typeSnapshot = false;
+        this.serviceActiveByRegion = [];
       });
   }
 
@@ -208,6 +209,9 @@ export class CreateVolumeComponent implements OnInit {
 
   regionChanged(region: RegionModel) {
     this.region = region.regionId;
+    if(this.projectCombobox){
+      this.projectCombobox.loadProjects(true, region.regionId);
+    }
     this.router.navigate(['/app-smart-cloud/volumes']);
   }
 
@@ -240,7 +244,12 @@ export class CreateVolumeComponent implements OnInit {
     console.log('snap shot', this.isInitSnapshot);
     if (this.isInitSnapshot) {
       this.validateForm.controls.snapshot.setValidators(Validators.required);
+      this.disableSSD = true
+      this.disableHDD = true
     } else {
+      this.disableSSD = false
+      this.disableHDD = false
+
       this.validateForm.controls.snapshot.clearValidators();
       this.validateForm.controls.snapshot.updateValueAndValidity();
 
@@ -449,12 +458,31 @@ export class CreateVolumeComponent implements OnInit {
     ];
     this.orderService.validaterOrder(request).subscribe(data => {
       if (data.success) {
-        var returnPath: string = '/app-smart-cloud/volume/create';
-        console.log('request', request);
-        console.log('service name', this.volumeCreate.serviceName);
-        this.router.navigate(['/app-smart-cloud/order/cart'], {
-          state: { data: request, path: returnPath }
-        });
+        if(this.hasRoleSI) {
+          this.volumeService.createNewVolume(request).subscribe(data => {
+              this.isLoadingAction = false;
+              if (data != null) {
+                if (data.code == 200) {
+                  this.isLoadingAction = false;
+                  this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('volume.notification.require.create.success'));
+                  this.router.navigate(['/app-smart-cloud/volumes']);
+                }
+              } else {
+                this.isLoadingAction = false;
+              }
+            },
+            error => {
+              this.isLoadingAction = false;
+              this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('volume.notification.request.create.fail'));
+            });
+        } else {
+          var returnPath: string = '/app-smart-cloud/volume/create';
+          console.log('request', request);
+          console.log('service name', this.volumeCreate.serviceName);
+          this.router.navigate(['/app-smart-cloud/order/cart'], {
+            state: { data: request, path: returnPath }
+          });
+        }
       } else {
         this.isVisiblePopupError = true;
         this.errorList = data.data;
@@ -517,14 +545,16 @@ export class CreateVolumeComponent implements OnInit {
     this.volumeService.getVolumeById(idVolume, this.project).subscribe(data => {
       this.onChangeStatusEncrypt(data.isEncryption);
       this.onChangeStatusMultiAttach(data.isMultiAttach);
-      console.log('instance', data?.attachedInstances[0].instanceId);
-      this.instanceSelectedChange(data?.attachedInstances[0].instanceId);
-      this.validateForm.controls.instanceId.setValue(data?.attachedInstances[0].instanceId);
+      console.log('instance', data?.attachedInstances[0]?.instanceId);
+      this.instanceSelectedChange(data?.attachedInstances[0]?.instanceId);
+      this.validateForm.controls.instanceId.setValue(data?.attachedInstances[0]?.instanceId);
     });
   }
 
+  disableHDD: boolean
+  disableSSD: boolean
   getDetailSnapshotVolume(id) {
-    this.snapshotvlService.getDetailSnapshotSchedule(id).subscribe(data => {
+    this.snapshotvlService.getSnapshotVolumeById(id).subscribe(data => {
       this.snapshot = data;
       console.log('data', data);
       this.validateForm.controls.storage.setValue(data.sizeInGB);
@@ -535,15 +565,18 @@ export class CreateVolumeComponent implements OnInit {
       if (data.volumeType == 'hdd') {
         this.selectedValueHDD = true;
         this.selectedValueSSD = false;
+        this.disableHDD = true
       }
       if (data.volumeType == 'ssd') {
         this.selectedValueSSD = true;
         this.selectedValueHDD = false;
+        this.disableSSD = true
       }
     });
   }
 
   hasRoleSI: boolean;
+
   ngOnInit() {
     let regionAndProject = getCurrentRegionAndProject();
     this.region = regionAndProject.regionId;
@@ -552,7 +585,7 @@ export class CreateVolumeComponent implements OnInit {
     this.getConfiguration();
     this.onChangeValueStorage();
     this.getTotalAmount();
-    this.hasRoleSI = localStorage.getItem('role').includes('SI')
+    this.hasRoleSI = localStorage.getItem('role').includes('SI');
   }
 
   //

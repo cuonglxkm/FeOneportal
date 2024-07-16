@@ -18,7 +18,7 @@
       <img style="padding-right: 10px;" src="assets/imgs/extend.png" alt="" />
       <span class="button-text-primary">Gia hạn</span>
     </button>
-    <button *ngIf="data?.type == 'VPC' && isAdjust && data?.serviceStatus == 'KHOITAO'" nz-button nzType="primary" (click)="edit()" nzSize="large">
+    <button *ngIf="data?.type == 'VPC' && isAdjust && data?.resourceStatus == 'ENABLE'" nz-button nzType="primary" (click)="edit()" nzSize="large">
       <img style="padding-right: 10px;" src="assets/imgs/edit-1.svg" alt="" />
       <span class="button-text-primary">Điều chỉnh</span>
     </button>
@@ -36,7 +36,7 @@
         <div>
           <div nz-row [nzGutter]="24" class="row-white-bg content-items-center">
             <div nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="12">
-              <span class="label-fontsize">Loại dự án:</span>
+              <span class="label-fontsize">{{'project.note30' |i18n}}:</span>
             </div>
             <div nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="12">
               <span class="label-fontsize font-bold ">{{ data?.type == 'VPC' ? ('project.note4' | i18n) : ('project.note5' | i18n)}}</span>
@@ -47,7 +47,9 @@
               <span class="label-fontsize">Trạng thái:</span>
             </div>
             <div nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="12">
-              <span class="label-fontsize font-bold">{{data?.resourceStatus}}</span>
+              <!-- <span class="label-fontsize font-bold">{{data?.resourceStatus=='ENABLE'? 'Đang hoạt động': 'Tạm ngưng'}}</span> -->
+              <span class="label-fontsize font-bold" *ngIf="data?.resourceStatus=='ENABLE'">Đang hoạt động</span>
+              <span class="label-fontsize font-bold" *ngIf="data?.resourceStatus=='DISABLE'">Tạm ngưng</span>
             </div>
           </div>
           <div nz-row [nzGutter]="24" class="row-white-bg content-items-center">
@@ -73,7 +75,7 @@
         <div class="" style="margin-left:20px">
           <div nz-row [nzGutter]="24" class="row-white-bg content-items-center" >
             <div nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="12">
-              <span class="label-fontsize">Tên dự án:</span>
+              <span class="label-fontsize">{{'project.note19' | i18n}}:</span>
             </div>
             <div nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="12">
               <span class="label-fontsize font-bold">{{ data?.displayName }}</span>
@@ -188,25 +190,25 @@
       <td>{{totalUsed?.ssd}} GB</td>
       <td>{{totalLimit?.quotaSSDInGb-totalUsed?.ssd}} GB</td>
     </tr>
-    <tr  *ngIf="catalogStatus['backup-volume'] && data?.type == 'VPC'">
+    <tr  *ngIf="typeBackup_volume && data?.type == 'VPC'">
       <td>Dung lượng Backup Volume/VM(GB)</td>
       <td>{{totalLimit?.quotaBackupVolumeInGb}} GB</td>
       <td>{{totalUsed?.backup}} GB</td>
       <td>{{totalLimit?.quotaBackupVolumeInGb-totalUsed?.backup}} GB</td>
     </tr>
-    <tr  *ngIf="catalogStatus['ip'] && data?.type == 'VPC'">
+    <tr  *ngIf="typeIp && data?.type == 'VPC'">
       <td>Số lượng IP Floating</td>
       <td>{{totalLimit?.quotaIpFloatingCount}}</td>
       <td>{{totalUsed?.ipFloatingCount}}</td>
       <td>{{totalLimit?.quotaIpFloatingCount-totalUsed?.ipFloatingCount}}</td>
     </tr>
-    <tr *ngIf="catalogStatus['ip'] && data?.type == 'VPC'">
+    <tr *ngIf="typeIp && data?.type == 'VPC'">
       <td>Số lượng IP Public</td>
       <td>{{totalLimit?.quotaIpPublicCount}}</td>
       <td>{{totalUsed?.ipPublicCount}}</td>
       <td>{{totalLimit?.quotaIpPublicCount-totalUsed?.ipPublicCount}}</td>
     </tr>
-    <tr *ngIf="catalogStatus['ipv6'] && data?.type == 'VPC'">
+    <tr *ngIf="typeIpv6 && data?.type == 'VPC'">
       <td>Số lượng IPv6</td>
       <td>{{totalLimit?.quotaIpv6Count}}</td>
       <td>{{totalUsed?.ipv6Count}}</td>
@@ -230,32 +232,32 @@
       <td>{{totalUsed?.routerCount}}</td>
       <td>{{totalLimit?.quotaRouterCount-totalUsed?.routerCount}}</td>
     </tr>
-    <tr *ngIf="catalogStatus['loadbalancer-sdn'] && data?.type == 'VPC'">
+    <tr *ngIf="typeLoadbalancer_sdn && data?.type == 'VPC'">
       <td>Số lượng Load Balancer</td>
       <td>{{totalLimit?.quotaLoadBalancerSDNCount}}</td>
       <td>{{totalUsed?.loadBalancerSdnCount}}</td>
       <td>{{totalLimit?.quotaLoadBalancerSDNCount-totalUsed?.loadBalancerSdnCount}}</td>
     </tr>
-    <tr *ngIf="catalogStatus['file-storage'] && data?.type == 'VPC'">
+    <tr *ngIf="typeFile_storage && data?.type == 'VPC'">
       <td>Dung lượng File System (GB)</td>
       <td>{{totalLimit?.quotaShareInGb}} GB</td>
       <td>{{totalUsed?.quotaShareInGb}} GB</td>
       <td>{{totalLimit?.quotaShareInGb-totalUsed?.quotaShareInGb}} GB</td>
     </tr>
-    <tr *ngIf="catalogStatus['file-storage-snapshot'] && data?.type == 'VPC'" >
+    <tr *ngIf="typeFile_storage_snapshot && data?.type == 'VPC'" >
       <td>Dung lượng File System Snapshot (GB)</td>
       <td>{{totalLimit?.quotaShareSnapshotInGb}} GB</td>
       <td>{{totalUsed?.quotaShareSnapshotInGb}} GB</td>
       <td>{{totalLimit?.quotaShareSnapshotInGb-totalUsed?.quotaShareSnapshotInGb}} GB</td>
     </tr>
 
-    <tr *ngIf="catalogStatus['volume-snapshot-hdd'] && data?.type == 'VPC'">
+    <tr *ngIf="typeVolume_snapshot_hdd && data?.type == 'VPC'">
       <td>Dung lượng Snapshot HDD (GB)</td>
       <td>{{totalLimit?.quotaVolumeSnapshotHddInGb}} GB</td>
       <td>{{totalUsed?.volumeSnapshotHddInGb}} GB</td>
       <td>{{totalLimit?.quotaVolumeSnapshotHddInGb-totalUsed?.volumeSnapshotHddInGb}} GB</td>
     </tr>
-    <tr *ngIf="catalogStatus['volume-snapshot-ssd'] && data?.type == 'VPC'">
+    <tr *ngIf="typeVolume_snapshot_ssd && data?.type == 'VPC'">
       <td>Dung lượng Snapshot SSD (GB)</td>
       <td>{{totalLimit?.quotaVolumeSnapshotSsdInGb}} GB</td>
       <td>{{totalUsed?.volumeSnapshotSsdInGb}} GB</td>
@@ -263,10 +265,10 @@
     </tr>
 
       <tr *ngFor="let gpu of totalGpu" >
-        <td *ngIf="catalogStatus['vm-gpu'] && data?.type == 'VPC'">Số lượng GPU ({{gpu?.gpuType}})</td>
-        <td *ngIf="catalogStatus['vm-gpu'] && data?.type == 'VPC'">{{gpu?.totalLimitGpu}}</td>
-        <td *ngIf="catalogStatus['vm-gpu'] && data?.type == 'VPC'">{{gpu?.totalUsedGpu}}</td>
-        <td *ngIf="catalogStatus['vm-gpu'] && data?.type == 'VPC'">{{gpu?.totalLimitGpu-gpu?.totalUsedGpu}}</td>
+        <td *ngIf="typeVm_gpu && data?.type == 'VPC'">Số lượng GPU ({{gpu?.gpuType}})</td>
+        <td *ngIf="typeVm_gpu && data?.type == 'VPC'">{{gpu?.totalLimitGpu}}</td>
+        <td *ngIf="typeVm_gpu && data?.type == 'VPC'">{{gpu?.totalUsedGpu}}</td>
+        <td *ngIf="typeVm_gpu && data?.type == 'VPC'">{{gpu?.totalLimitGpu-gpu?.totalUsedGpu}}</td>
       </tr>
 
    

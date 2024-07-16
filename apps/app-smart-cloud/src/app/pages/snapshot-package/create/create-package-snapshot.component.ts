@@ -1,13 +1,11 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { getCurrentRegionAndProject } from '@shared';
 import { addDays } from 'date-fns';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
-import { BackupPackageRequestModel } from 'src/app/shared/models/package-backup.model';
 import { FormCreateSnapshotPackage, SnapshotPackageRequestModel } from 'src/app/shared/models/package-snapshot.model';
-import { OrderItem } from '../../../shared/models/price';
 import { PackageBackupService } from '../../../shared/services/package-backup.service';
 import { DataPayment, ItemPayment } from '../../instances/instances.model';
 import { InstancesService } from '../../instances/instances.service';
@@ -18,6 +16,7 @@ import { OrderService } from '../../../shared/services/order.service';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from '../../../../../../app-kafka/src/app/core/i18n/i18n.service';
 import { ConfigurationsService } from '../../../shared/services/configurations.service';
+import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
 
 @Component({
   selector: 'one-portal-create-package-snapshot',
@@ -56,7 +55,12 @@ export class CreatePackageSnapshotComponent implements OnInit {
   totalAmount: number;
   totalPayment: number;
   totalVat: number;
-
+  isVisiblePopupError: boolean = false;
+  errorList: string[] = [];
+  closePopupError() {
+    this.isVisiblePopupError = false;
+  }
+  @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
   constructor(private router: Router,
               private orderService: OrderService,
               private configurationsService: ConfigurationsService,
@@ -101,6 +105,9 @@ export class CreatePackageSnapshotComponent implements OnInit {
 
   regionChanged(region: RegionModel) {
     this.region = region.regionId;
+    if(this.projectCombobox){
+      this.projectCombobox.loadProjects(true, region.regionId);
+    }
     this.router.navigate(['/app-smart-cloud/snapshot/packages']);
   }
 
@@ -134,8 +141,13 @@ export class CreatePackageSnapshotComponent implements OnInit {
 
     this.orderService.validaterOrder(request).subscribe(
       data => {
-        var returnPath: string = window.location.pathname;
-        this.router.navigate(['/app-smart-cloud/order/cart'], { state: { data: request, path: returnPath } });
+        if (data.success) {
+          var returnPath: string = window.location.pathname;
+          this.router.navigate(['/app-smart-cloud/order/cart'], { state: { data: request, path: returnPath } });
+        } else {
+          this.isVisiblePopupError = true;
+          this.errorList = data.data;
+        }
       },
       error => {
         this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.validate.order.fail'));

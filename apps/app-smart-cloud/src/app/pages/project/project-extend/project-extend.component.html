@@ -3,7 +3,7 @@
     <nz-breadcrumb [nzSeparator]="iconTemplate">
       <nz-breadcrumb-item><a [routerLink]="['/']">{{ 'app.breadcrumb.home' | i18n }}</a></nz-breadcrumb-item>
       <nz-breadcrumb-item><a [routerLink]="['/app-smart-cloud/project']">Quản lý VPC</a></nz-breadcrumb-item>
-           <nz-breadcrumb-item><a [routerLink]="['/app-smart-cloud/project/detail/' + data?.id]">{{ data?.displayName }}</a></nz-breadcrumb-item>
+           <nz-breadcrumb-item><a [routerLink]="['/app-smart-cloud/project/detail/' + data?.id]">Chi tiết VPC</a></nz-breadcrumb-item>
       <nz-breadcrumb-item>{{ 'project.note31' | i18n }}</nz-breadcrumb-item>
     </nz-breadcrumb>
     <ng-template #iconTemplate><one-portal-svg-icon [icon]="'icon_breadcrumb'"></one-portal-svg-icon></ng-template>
@@ -27,7 +27,7 @@
               <div>
                 <div nz-row [nzGutter]="24" class="row-white-bg content-items-center">
                   <div nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="12">
-                    <span class="label-fontsize">Loại dự án:</span>
+                    <span class="label-fontsize">Loại VPC:</span>
                   </div>
                   <div nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="12">
                     <span class="label-fontsize font-bold ">{{ data?.type == 'VPC' ? ('project.note4' | i18n) :
@@ -39,7 +39,8 @@
                     <span class="label-fontsize">Trạng thái:</span>
                   </div>
                   <div nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="12">
-                    <span class="label-fontsize font-bold">{{data?.resourceStatus}}</span>
+                    <span class="label-fontsize font-bold" *ngIf="data?.resourceStatus=='ENABLE'">Đang hoạt động</span>
+                    <span class="label-fontsize font-bold" *ngIf="data?.resourceStatus=='DISABLE'">Tạm ngưng</span>
                   </div>
                 </div>
                 <div nz-row [nzGutter]="24" class="row-white-bg content-items-center">
@@ -66,7 +67,7 @@
               <div class="" style="margin-left:20px">
                 <div nz-row [nzGutter]="24" class="row-white-bg content-items-center">
                   <div nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="12">
-                    <span class="label-fontsize">Tên dự án:</span>
+                    <span class="label-fontsize">Tên VPC:</span>
                   </div>
                   <div nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="12">
                     <span class="label-fontsize font-bold">{{ data?.displayName }}</span>
@@ -143,7 +144,7 @@
       </nz-card> -->
       <nz-card class="text-label" nzTitle="" style="border-radius: 8px;" [nzLoading]="loading">
         <one-portal-service-time-extend *ngIf="data"  [createDate]="data?.createDate"
-        [expiredDate]="data?.expireDate"  (valueChanged)="onChangeTime($event)" [newExpireDate]="total?.data?.orderItemPrices[0]?.expiredDate"></one-portal-service-time-extend>
+        [expiredDate]="data?.expireDate"  (valueChanged)="onChangeTime($event)" [newExpiredDate]="total?.data?.orderItemPrices[0]?.expiredDate"></one-portal-service-time-extend>
         <!-- <div style="margin-bottom: 20px">
           <span class="text-card-header">{{'app.extension.info' | i18n}}</span>
         </div>

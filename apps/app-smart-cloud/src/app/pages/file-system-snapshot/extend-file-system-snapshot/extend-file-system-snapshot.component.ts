@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject, OnInit, ViewChild } from '@angular/core';
 import {
   FormControl,
   FormGroup,
@@ -33,6 +33,7 @@ import { InstancesService } from '../../instances/instances.service';
 import { OrderService } from 'src/app/shared/services/order.service';
 import { I18NService } from '@core';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
+import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
 
 @Component({
   selector: 'one-portal-extend-file-system-snapshot',
@@ -69,6 +70,7 @@ export class ExtendFileSystemSnapshotComponent implements OnInit {
 
   isVisiblePopupError: boolean = false;
   errorList: string[] = [];
+  @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
   closePopupError() {
     this.isVisiblePopupError = false;
   }
@@ -103,6 +105,9 @@ export class ExtendFileSystemSnapshotComponent implements OnInit {
 
   regionChanged(region: RegionModel) {
     // this.region = region.regionId
+    if(this.projectCombobox){
+      this.projectCombobox.loadProjects(true, region.regionId);
+    }
     this.router.navigate(['/app-smart-cloud/file-system-snapshot']);
   }
 

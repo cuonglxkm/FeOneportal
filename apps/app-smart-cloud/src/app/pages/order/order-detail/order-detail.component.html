@@ -27,7 +27,7 @@
     <div class="alain-custom-action text-right">
       <share-users-combobox></share-users-combobox>
       <!-- <region-select-dropdown (valueChanged)="onRegionChange($event)"></region-select-dropdown> -->
-      <!-- <project-select-dropdown [regionId]="regionId" (userChanged)="projectChange($event)"></project-select-dropdown> -->
+      <!-- <project-select-dropdown #projectCombobox [regionId]="regionId" (userChanged)="projectChange($event)"></project-select-dropdown> -->
     </div>
   </ng-template>
 </page-header>
@@ -254,7 +254,7 @@
                 }}</a>
                 <a
                   *ngSwitchCase="'VPNSiteToSites'"
-                  [routerLink]="['/app-smart-cloud/vpn-site-to-site/manage']"
+                  [routerLink]="['/app-smart-cloud/vpn-site-to-site']"
                   >{{ item?.serviceName }}</a
                 >
                 <a
@@ -268,7 +268,7 @@
                   >{{ item?.serviceName }}</a
                 >
                 <a
-                  *ngSwitchCase="'Vpc'"
+                  *ngSwitchCase="'VPC'"
                   [routerLink]="['/app-smart-cloud/project']"
                   >{{ item?.serviceName }}</a
                 >
@@ -293,10 +293,20 @@
                   >{{ item?.serviceName }}</a
                 >
                 <a
-                  *ngSwitchCase="'Backup volume'"
-                  [routerLink]="['/app-smart-cloud/backup-volume']"
+                  *ngSwitchCase="'Backup Package'"
+                  [routerLink]="['/app-smart-cloud/backup/packages']"
                   >{{ item?.serviceName }}</a
                 >
+                <a
+                  *ngSwitchCase="'Backup vm'"
+                  [routerLink]="['/app-smart-cloud/backup-vm']"
+                  >{{ item?.serviceName }}</a
+                >
+                <a
+                *ngSwitchCase="'File system snapshot'"
+                [routerLink]="['/app-smart-cloud/file-system-snapshot']"
+                >{{ item?.serviceName }}</a
+              >
                 <div *ngSwitchDefault>{{ item?.serviceName }}</div>
               </td>
             </ng-container>

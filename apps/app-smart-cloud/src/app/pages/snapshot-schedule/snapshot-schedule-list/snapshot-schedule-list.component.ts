@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { SnapshotVolumeService } from '../../../shared/services/snapshot-volume.service';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
@@ -15,6 +15,7 @@ import { I18NService } from '@core';
 import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
 import { time } from 'echarts';
 import { DatePipe } from '@angular/common';
+import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
 
 @Component({
   selector: 'one-portal-list-schedule-snapshot',
@@ -63,11 +64,11 @@ export class SnapshotScheduleListComponent implements OnInit {
   isVisibleDelete = false;
   dataAction: any;
   nameDelete: any;
-  disableDelete: boolean;
+  disableDelete = true;
   loadingDelete = false;
   isVisibleRestart = false;
   loadingRestart: any;
-
+  @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
   searchSnapshotScheduleList(checkBegin: any) {
     this.doGetSnapSchedules(this.pageSize, this.pageNumber, this.region, this.project, this.searchName, '', checkBegin);
   }
@@ -279,6 +280,9 @@ export class SnapshotScheduleListComponent implements OnInit {
 
   onRegionChange(region: RegionModel) {
     this.region = region.regionId;
+    if(this.projectCombobox){
+      this.projectCombobox.loadProjects(true, region.regionId);
+    }
   }
 
   onRegionChanged(region: RegionModel) {
@@ -346,11 +350,11 @@ export class SnapshotScheduleListComponent implements OnInit {
       }))
       .subscribe(
         result => {
-          this.notification.success(this.i18n.fanyi('app.status.success'), 'Khoi phuc lịch Snapshot thành công');
+          this.notification.success(this.i18n.fanyi('app.status.success'), 'Khôi phục lịch Snapshot thành công');
           this.doGetSnapSchedules(this.pageSize, this.pageNumber, this.region, this.project, this.searchName, '', true);
         },
         error => {
-          this.notification.error(this.i18n.fanyi('app.status.fail'), 'Khoi phuc lịch Snapshot không thành công');
+          this.notification.error(this.i18n.fanyi('app.status.fail'), 'Khôi phục lịch Snapshot không thành công');
         });
   }
 

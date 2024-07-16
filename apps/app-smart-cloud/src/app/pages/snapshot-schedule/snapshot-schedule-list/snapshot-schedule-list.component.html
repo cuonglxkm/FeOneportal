@@ -17,7 +17,7 @@
     <div class="alain-custom-action text-right">
       <share-users-combobox></share-users-combobox>
       <region-select-dropdown (regionChange)="onRegionChanged($event)" (valueChanged)="onRegionChange($event)"></region-select-dropdown>
-      <project-select-dropdown (valueChanged)="onProjectChange($event)"
+      <project-select-dropdown #projectCombobox (valueChanged)="onProjectChange($event)"
                                (userChanged)="onProjectChange($event)"
                                [regionId]="region"></project-select-dropdown>
     </div>
@@ -66,7 +66,7 @@
                   [nzLoading]="isLoadingEntities">
           <thead>
           <tr>
-            <th nzLeft>{{ 'app.snapshot.name' | i18n }}</th>
+            <th nzLeft>Tên lịch Snapshot</th>
             <th nzLeft>Gói Snapshot</th>
             <th nzLeft>Loại Snapshot</th>
             <th nzLeft>Volume/VM</th>
@@ -83,7 +83,7 @@
             <td>{{data.snapshotType == 1 ? 'Snapshot máy ảo' : 'Snapshot Volume'}}</td>
             <td>{{data.serviceName}}</td>
             <td>{{data.maxSnapshot}}</td>
-            <td>{{data.nextRuntime | date : 'THH:mm:ss dd/MM/yyyy'  : 'vi-VI'}}</td>
+            <td>{{data.nextRuntime | date : 'HH:mm:ss dd/MM/yyyy'}}</td>
             <ng-container *ngIf="data.status | ServiceStatusPipe as statusModel">
               <td nzBreakWord nzAlign="left" [ngStyle]="{ color: statusModel.color }">{{ statusModel.status }}</td>
             </ng-container>
@@ -138,7 +138,7 @@
               nzMessage="Bạn đang thực hiện xoá lịch Snapshot {{dataAction.name}}. Hành động này không thể được hoàn tác"
               nzShowIcon></nz-alert>
     <div class="text-label" style="margin-bottom: 3px; margin-top: 10px">Đế thực hiện xoá Snapshot, vui lòng nhập tên Snapshot để xác nhận.</div>
-    <input nz-input nzSize="large" style="margin-left: -3px" placeholder="{{dataAction.name}}" [(ngModel)]="nameDelete" (ngModelChange)="confirmNameDelete($event)" type="text" (keydown.enter)="openIpDeleteCf()"/>
+    <input nz-input nzSize="large" style="margin-left: -3px" placeholder="{{dataAction.name}}" [(ngModel)]="nameDelete" (ngModelChange)="confirmNameDelete($event)" type="text"/>
   </ng-container>
   <div *nzModalFooter>
     <button nz-button (click)="handleCancel()">
@@ -153,13 +153,13 @@
 <nz-modal [(nzVisible)]="isVisibleRestart" nzTitle="Khôi phục lịch Snapshot" (nzOnCancel)="handleCancel()" [nzStyle]="modalStyle">
   <ng-container *nzModalContent>
     <div class="text-label" style="margin-bottom: 3px; margin-top: 10px">Quý khách muốn thực hiện khôi phục lịch Snapshot?</div>
-    <nz-alert nzBanner
-              style="margin-bottom: 10px;"
-              [nzMessage]="msgTpl"
-              nzShowIcon></nz-alert>
-    <ng-template #msgTpl>
-      <span class="description-info">Vui lòng thực hiện @khuyển nghị (Đã viết trong URD)  <a>Tại đây</a> để dịch vụ không bị gián đoạn</span>
-    </ng-template>
+<!--    <nz-alert nzBanner-->
+<!--              style="margin-bottom: 10px;"-->
+<!--              [nzMessage]="msgTpl"-->
+<!--              nzShowIcon></nz-alert>-->
+<!--    <ng-template #msgTpl>-->
+<!--      <span class="description-info">Vui lòng thực hiện {{dataAction.warningMessage}} <a href="">Tại đây</a> để dịch vụ không bị gián đoạn</span>-->
+<!--    </ng-template>-->
   </ng-container>
   <div *nzModalFooter>
     <button nz-button (click)="handleCancel()">

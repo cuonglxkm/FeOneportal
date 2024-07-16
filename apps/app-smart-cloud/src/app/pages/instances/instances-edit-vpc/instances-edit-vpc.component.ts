@@ -4,6 +4,7 @@ import {
   Component,
   Inject,
   OnInit,
+  ViewChild,
 } from '@angular/core';
 import {
   GpuConfigRecommend,
@@ -33,6 +34,8 @@ import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { debounceTime, finalize, Subject } from 'rxjs';
 import { ConfigurationsService } from 'src/app/shared/services/configurations.service';
 import { OrderService } from 'src/app/shared/services/order.service';
+import { CatalogService } from 'src/app/shared/services/catalog.service';
+import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
 
 @Component({
   selector: 'one-portal-instances-edit-vpc',
@@ -51,7 +54,7 @@ export class InstancesEditVpcComponent implements OnInit {
   projectId: number;
   listSecurityGroupModel: SecurityGroupModel[] = [];
   listSecurityGroup: SecurityGroupModel[] = [];
-
+  @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
   handleKeyboardEvent(event: KeyboardEvent) {
     if (event.key === 'ArrowLeft' || event.key === 'ArrowRight') {
       event.preventDefault(); // Ngăn chặn hành vi mặc định của các phím mũi tên
@@ -96,6 +99,7 @@ export class InstancesEditVpcComponent implements OnInit {
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
     @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
     private dataService: InstancesService,
+    private catalogService: CatalogService,
     private cdr: ChangeDetectorRef,
     private activatedRoute: ActivatedRoute,
     private router: Router,
@@ -112,9 +116,23 @@ export class InstancesEditVpcComponent implements OnInit {
     let regionAndProject = getCurrentRegionAndProject();
     this.region = regionAndProject.regionId;
     this.projectId = regionAndProject.projectId;
+    this.getActiveServiceByRegion();
     this.getConfigurations();
     this.getInfoVPC();
     this.onChangeCapacity();
+  }
+
+  //Lấy các dịch vụ hỗ trợ theo region
+  isVmGpu: boolean = false;
+  getActiveServiceByRegion() {
+    this.catalogService
+      .getActiveServiceByRegion(['Encryption', 'vm-gpu'], this.region)
+      .subscribe((data) => {
+        console.log('support service', data);
+        this.isVmGpu = data.filter(
+          (e) => e.productName == 'vm-gpu'
+        )[0].isActive;
+      });
   }
 
   isCurrentConfigGpu: boolean = false;
@@ -155,7 +173,7 @@ export class InstancesEditVpcComponent implements OnInit {
         this.infoVPC.cloudProjectResourceUsed.gpuUsages.filter(
           (e) => e.gpuOfferId == this.gpuOfferId
         )[0];
-      if (gpuUsage != undefined && gpuUsage != null) {
+      if (gpuUsage) {
         this.remainingGpu = gpuProject.gpuCount - gpuUsage.gpuCount;
       } else {
         this.remainingGpu = gpuProject.gpuCount;
@@ -334,7 +352,7 @@ export class InstancesEditVpcComponent implements OnInit {
         this.infoVPC.cloudProjectResourceUsed.gpuUsages.filter(
           (e) => e.gpuOfferId == this.gpuOfferId
         )[0];
-      if (gpuUsage != undefined && gpuUsage != null) {
+      if (gpuUsage) {
         this.remainingGpu = gpuProject.gpuCount - gpuUsage.gpuCount;
       } else {
         this.remainingGpu = gpuProject.gpuCount;
@@ -361,7 +379,7 @@ export class InstancesEditVpcComponent implements OnInit {
         (e) => e.gpuOfferId == id
       )[0];
 
-    if (gpuUsage != undefined && gpuUsage != null) {
+    if (gpuUsage) {
       this.remainingGpu = gpuProject.gpuCount - gpuUsage.gpuCount;
     } else {
       this.remainingGpu = gpuProject.gpuCount;
@@ -554,7 +572,7 @@ export class InstancesEditVpcComponent implements OnInit {
   }
   onChangeCapacity() {
     this.dataSubjectCapacity.pipe(debounceTime(700)).subscribe((res) => {
-      if (res % this.stepCapacity > 0) {
+      if (this.storage % this.stepCapacity > 0) {
         this.notification.warning(
           '',
           this.i18n.fanyi('app.notify.amount.capacity', {
@@ -562,11 +580,16 @@ export class InstancesEditVpcComponent implements OnInit {
           })
         );
         this.storage = this.storage - (this.storage % this.stepCapacity);
+        this.checkChangeConfig();
+        this.cdr.detectChanges();
       }
     });
   }
 
   onRegionChange(region: RegionModel) {
+    if(this.projectCombobox){
+      this.projectCombobox.loadProjects(true, region.regionId);
+    }
     this.router.navigate(['/app-smart-cloud/instances']);
   }
 

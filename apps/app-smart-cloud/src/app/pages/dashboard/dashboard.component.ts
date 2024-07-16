@@ -48,6 +48,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   @ViewChild('pieChart', { static: true }) private pieChart: ElementRef;
 
+  breadcrumb: boolean = true;
+
   constructor(private dashboardService: DashboardService,
               private router: Router,
               private paymentService: PaymentService,
@@ -146,6 +148,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.isLoading = true;
     this.dashboardService.paymentCostUsePaging(this.pageSize, this.pageIndex).subscribe(data => {
       this.listPaymentCostUse = data;
+      // console.log('list pay ment', this.listPaymentCostUse[0].serviceTypes)
       this.isLoading = false;
     }, error => {
       this.isLoading = false;

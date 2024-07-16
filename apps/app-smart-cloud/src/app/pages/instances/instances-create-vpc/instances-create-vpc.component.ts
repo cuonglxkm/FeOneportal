@@ -24,9 +24,9 @@ import {
   GpuUsage,
   GpuConfigRecommend,
 } from '../instances.model';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { InstancesService } from '../instances.service';
-import { Observable, Subject, debounceTime, finalize, of } from 'rxjs';
+import { Subject, debounceTime, finalize } from 'rxjs';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { LoadingService } from '@delon/abc/loading';
 import { NguCarousel, NguCarouselConfig } from '@ngu/carousel';
@@ -52,6 +52,7 @@ import { I18NService } from '@core';
 import { ConfigurationsService } from 'src/app/shared/services/configurations.service';
 import { OrderService } from 'src/app/shared/services/order.service';
 import { CatalogService } from 'src/app/shared/services/catalog.service';
+import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
 
 @Component({
   selector: 'one-portal-instances-create-vpc',
@@ -118,7 +119,7 @@ export class InstancesCreateVpcComponent implements OnInit {
   remainingVCPU: number = 0;
   remainingGpu: number = 0;
   volumeRootCapacity: number = 0;
-
+  @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
   onKeyDown(event: KeyboardEvent) {
     // Lấy giá trị của phím được nhấn
     const key = event.key;
@@ -169,6 +170,7 @@ export class InstancesCreateVpcComponent implements OnInit {
     private notification: NzNotificationService,
     private cdr: ChangeDetectorRef,
     private router: Router,
+    private activatedRoute: ActivatedRoute,
     private loadingSrv: LoadingService,
     private el: ElementRef,
     private renderer: Renderer2,
@@ -209,6 +211,10 @@ export class InstancesCreateVpcComponent implements OnInit {
     let regionAndProject = getCurrentRegionAndProject();
     this.region = regionAndProject.regionId;
     this.projectId = regionAndProject.projectId;
+    if (this.activatedRoute.snapshot.paramMap.get('idSnapshot')) {
+      this.isSnapshot = true;
+      this.initSnapshot();
+    }
     this.getActiveServiceByRegion();
     this.getConfigurations();
     this.getAllImageType();
@@ -257,16 +263,28 @@ export class InstancesCreateVpcComponent implements OnInit {
 
   //Lấy các dịch vụ hỗ trợ theo region
   isSupportEncryption: boolean = false;
+  isVmGpu: boolean = false;
+  isVolumeSnapshotHdd: boolean = false;
+  isVolumeSnapshotSsd: boolean = false;
   getActiveServiceByRegion() {
     this.catalogService
       .getActiveServiceByRegion(
-        ['Encryption', 'MultiAttachment', 'ipv6'],
+        ['Encryption', 'vm-gpu', 'volume-snapshot-hdd', 'volume-snapshot-ssd'],
         this.region
       )
       .subscribe((data) => {
         console.log('support service', data);
         this.isSupportEncryption = data.filter(
           (e) => e.productName == 'Encryption'
+        )[0].isActive;
+        this.isVmGpu = data.filter(
+          (e) => e.productName == 'vm-gpu'
+        )[0].isActive;
+        this.isVolumeSnapshotHdd = data.filter(
+          (e) => e.productName == 'volume-snapshot-hdd'
+        )[0].isActive;
+        this.isVolumeSnapshotSsd = data.filter(
+          (e) => e.productName == 'volume-snapshot-ssd'
         )[0].isActive;
       });
   }
@@ -438,9 +456,20 @@ export class InstancesCreateVpcComponent implements OnInit {
               (e.resourceStatus.toUpperCase() == 'AVAILABLE' ||
                 e.resourceStatus.toUpperCase() == 'IN-USE')
           );
-          this.selectedSnapshot = this.listSnapshot[0].id;
-          this.sizeSnapshotVL = this.listSnapshot[0].sizeInGB;
-          this.nameSnapshot = this.listSnapshot[0].name;
+          if (this.activatedRoute.snapshot.paramMap.get('idSnapshot')) {
+            this.selectedSnapshot = Number.parseInt(
+              this.activatedRoute.snapshot.paramMap.get('idSnapshot')
+            );
+            let selectedTemp = this.listSnapshot.filter(
+              (e) => (e.id = this.selectedSnapshot)
+            )[0];
+            this.sizeSnapshotVL = selectedTemp.sizeInGB;
+            this.nameSnapshot = selectedTemp.name;
+          } else {
+            this.selectedSnapshot = this.listSnapshot[0].id;
+            this.sizeSnapshotVL = this.listSnapshot[0].sizeInGB;
+            this.nameSnapshot = this.listSnapshot[0].name;
+          }
           if (this.listSnapshot[0].volumeType.toUpperCase() == 'SSD') {
             this.disableConfigGpu = false;
             this.activeBlockHDD = false;
@@ -588,7 +617,7 @@ export class InstancesCreateVpcComponent implements OnInit {
       this.infoVPC.cloudProjectResourceUsed.gpuUsages.filter(
         (e) => e.gpuOfferId == this.instanceCreate.gpuOfferId
       )[0];
-    if (gpuUsage != undefined && gpuUsage != null) {
+    if (gpuUsage) {
       this.remainingGpu = gpuProject.gpuCount - gpuUsage.gpuCount;
     } else {
       this.remainingGpu = gpuProject.gpuCount;
@@ -611,7 +640,7 @@ export class InstancesCreateVpcComponent implements OnInit {
       this.infoVPC.cloudProjectResourceUsed.gpuUsages.filter(
         (e) => e.gpuOfferId == id
       )[0];
-    if (gpuUsage != undefined && gpuUsage != null) {
+    if (gpuUsage) {
       this.remainingGpu = gpuProject.gpuCount - gpuUsage.gpuCount;
     } else {
       this.remainingGpu = gpuProject.gpuCount;
@@ -861,6 +890,9 @@ export class InstancesCreateVpcComponent implements OnInit {
   //#endregion
 
   onRegionChange(region: RegionModel) {
+    if(this.projectCombobox){
+      this.projectCombobox.loadProjects(true, region.regionId);
+    }
     this.router.navigate(['/app-smart-cloud/instances']);
   }
 
@@ -899,7 +931,7 @@ export class InstancesCreateVpcComponent implements OnInit {
 
   instanceInit() {
     this.instanceCreate.description = null;
-    this.instanceCreate.imageId = this.hdh;
+    this.instanceCreate.imageId = this.isSnapshot ? 0 : this.hdh;;
     this.instanceCreate.iops = 0;
     this.instanceCreate.vmType = this.activeBlockHDD ? 'hdd' : 'ssd';
     this.instanceCreate.keypairName = this.selectedSSHKeyName;
@@ -920,7 +952,7 @@ export class InstancesCreateVpcComponent implements OnInit {
     }
     this.instanceCreate.ipPublic = this.ipPublicValue;
     this.instanceCreate.password = this.password;
-    this.instanceCreate.snapshotCloudId = this.selectedSnapshot;
+    this.instanceCreate.snapshotId = this.selectedSnapshot;
     this.instanceCreate.addRam = 0;
     this.instanceCreate.addCpu = 0;
     this.instanceCreate.addBttn = 0;
@@ -1038,7 +1070,7 @@ export class InstancesCreateVpcComponent implements OnInit {
                 error: (error) => {
                   this.notification.error(
                     this.i18n.fanyi('app.status.fail'),
-                    error.error.detail
+                    error.error.message
                   );
                 },
               });
@@ -1115,7 +1147,7 @@ export class InstancesCreateVpcComponent implements OnInit {
           error: (error) => {
             this.notification.error(
               this.i18n.fanyi('app.status.fail'),
-              error.error.detail
+              error.error.message
             );
           },
         });

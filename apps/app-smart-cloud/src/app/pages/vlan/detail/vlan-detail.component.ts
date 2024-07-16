@@ -1,4 +1,4 @@
-import { Component, Inject, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
+import { Component, Inject, OnChanges, OnDestroy, OnInit, SimpleChanges, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { getCurrentRegionAndProject } from '@shared';
 import { VlanService } from '../../../shared/services/vlan.service';
@@ -9,6 +9,7 @@ import { FormSearchSubnet, Port, Subnet } from '../../../shared/models/vlan.mode
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from '@core';
+import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
 
 @Component({
   selector: 'one-portal-vlan-detail',
@@ -48,7 +49,7 @@ export class VlanDetailComponent implements OnInit, OnChanges, OnDestroy {
   dataSubjectInputSearchPort: Subject<any> = new Subject<any>();
   private searchSubscriptionPort: Subscription;
   private enterPressedPort: boolean = false;
-
+  @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
   constructor(private router: Router,
               private route: ActivatedRoute,
               private vlanService: VlanService,
@@ -81,6 +82,9 @@ export class VlanDetailComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   regionChanged(region: RegionModel) {
+    if(this.projectCombobox){
+      this.projectCombobox.loadProjects(true, region.regionId);
+    }
     this.router.navigate(['/app-smart-cloud/vlan/network/list']);
   }
 

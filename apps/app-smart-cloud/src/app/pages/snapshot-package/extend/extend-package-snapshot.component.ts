@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, NonNullableFormBuilder } from '@angular/forms';
 import { PackageBackupModel } from '../../../shared/models/package-backup.model';
 import {
@@ -18,6 +18,8 @@ import { ProjectModel, RegionModel } from '../../../../../../../libs/common-util
 import { OrderItem } from '../../../shared/models/price';
 import { DataPayment, ItemPayment } from '../../instances/instances.model';
 import { getCurrentRegionAndProject } from '@shared';
+import { OrderService } from '../../../shared/services/order.service';
+import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
 
 @Component({
   selector: 'one-portal-extend-package-snapshot',
@@ -43,7 +45,12 @@ export class ExtendPackageSnapshotComponent implements OnInit{
 
   loadingCalculate = false;
   numOfMonth: any = 1;
-
+  isVisiblePopupError: boolean = false;
+  errorList: string[] = [];
+  closePopupError() {
+    this.isVisiblePopupError = false;
+  }
+  @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
   constructor(private router: Router,
               private packageSnapshotService: PackageSnapshotService,
               @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
@@ -51,11 +58,15 @@ export class ExtendPackageSnapshotComponent implements OnInit{
               private instanceService: InstancesService,
               private route: ActivatedRoute,
               private fb: NonNullableFormBuilder,
+              private orderService: OrderService,
               private projectService: ProjectService) {
   }
 
   regionChanged(region: RegionModel) {
     this.region = region.regionId;
+    if(this.projectCombobox){
+      this.projectCombobox.loadProjects(true, region.regionId);
+    }
     this.projectService.getByRegion(this.region).subscribe(data => {
       if (data.length) {
         localStorage.setItem('projectId', data[0].id.toString());
@@ -177,9 +188,21 @@ export class ExtendPackageSnapshotComponent implements OnInit{
         serviceDuration: this.numOfMonth
       }
     ];
-    var returnPath: string = `/app-smart-cloud/snapshot/packages/extend/${this.idSnapshotPackage}`;
-    console.log('request', request);
-    this.router.navigate(['/app-smart-cloud/order/cart'], { state: { data: request, path: returnPath } });
+    this.orderService.validaterOrder(request).subscribe(
+      data => {
+        if (data.success) {
+          var returnPath: string = `/app-smart-cloud/snapshot/packages/extend/${this.idSnapshotPackage}`;
+          this.router.navigate(['/app-smart-cloud/order/cart'], { state: { data: request, path: returnPath } });
+        } else {
+          this.isVisiblePopupError = true;
+          this.errorList = data.data;
+        }
+      },
+      error => {
+
+      }
+    );
+
   }
 
   totalAmount: number;

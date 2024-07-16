@@ -26,6 +26,7 @@ import { getCurrentRegionAndProject } from '@shared';
 import { RegionModel } from '../../../../../../../libs/common-utils/src';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from '@core';
+import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
 
 @Component({
   selector: 'one-portal-instances-edit-info',
@@ -59,7 +60,7 @@ export class InstancesEditInfoComponent implements OnInit {
   listOfImageByImageType: Map<number, Image[]> = new Map();
   imageTypeId = [];
   securityGroupStr = '';
-
+  @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
   public carouselTileConfig: NguCarouselConfig = {
     grid: { xs: 1, sm: 1, md: 4, lg: 5, all: 0 },
     speed: 250,
@@ -229,6 +230,9 @@ export class InstancesEditInfoComponent implements OnInit {
   }
 
   onRegionChange(region: RegionModel) {
+    if(this.projectCombobox){
+      this.projectCombobox.loadProjects(true, region.regionId);
+    }
     this.route.navigate(['/app-smart-cloud/instances']);
   }
   onProjectChange(project: any) {

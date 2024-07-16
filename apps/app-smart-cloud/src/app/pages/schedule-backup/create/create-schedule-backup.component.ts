@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, Inject, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, Inject, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
 import { DatePipe, Location } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -20,6 +20,7 @@ import { BackupVolumeService } from '../../../shared/services/backup-volume.serv
 import { VolumeDTO } from '../../../shared/dto/volume.dto';
 import { BackupVolume } from '../../volume/component/backup-volume/backup-volume.model';
 import { VolumeService } from '../../../shared/services/volume.service';
+import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
 
 @Component({
   selector: 'one-portal-create-schedule-backup',
@@ -106,7 +107,7 @@ export class CreateScheduleBackupComponent implements OnInit {
     })
   });
 
-
+  @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
   id: number;
 
   volumeId: number;
@@ -187,6 +188,9 @@ export class CreateScheduleBackupComponent implements OnInit {
 
   regionChanged(region: RegionModel) {
     this.region = region.regionId;
+    if(this.projectCombobox){
+      this.projectCombobox.loadProjects(true, region.regionId);
+    }
     this.router.navigate(['/app-smart-cloud/schedule/backup/list']);
   }
 
@@ -409,6 +413,10 @@ export class CreateScheduleBackupComponent implements OnInit {
         this.validateForm.get('formInstance').get('date').clearValidators();
         this.validateForm.get('formInstance').get('date').markAsPristine();
         this.validateForm.get('formInstance').get('date').reset();
+        //
+        // this.validateForm.get('formInstance').get('daysOfWeekMultiple').clearValidators();
+        // this.validateForm.get('formInstance').get('daysOfWeekMultiple').markAsPristine();
+        // this.validateForm.get('formInstance').get('daysOfWeekMultiple').reset();
 
         if (this.modeSelected == 4) {
           this.setInitialValues();
@@ -435,8 +443,9 @@ export class CreateScheduleBackupComponent implements OnInit {
         }
         if (this.modeSelected == 2) {
           this.validateForm.get('formInstance').get('daysOfWeekMultiple').clearValidators();
-          this.validateForm.get('formInstance').get('daysOfWeekMultiple').setValidators([Validators.required]);
           this.validateForm.get('formInstance').get('daysOfWeekMultiple').markAsDirty();
+          this.validateForm.get('formInstance').get('daysOfWeekMultiple').reset();
+          this.validateForm.get('formInstance').get('daysOfWeekMultiple').setValidators([Validators.required]);
         }
       } else {
         this.validateForm.get('formVolume').get('daysOfWeek').clearValidators();
@@ -458,6 +467,10 @@ export class CreateScheduleBackupComponent implements OnInit {
         this.validateForm.get('formVolume').get('date').clearValidators();
         this.validateForm.get('formVolume').get('date').markAsPristine();
         this.validateForm.get('formVolume').get('date').reset();
+
+        this.validateForm.get('formVolume').get('daysOfWeekMultiple').clearValidators();
+        this.validateForm.get('formVolume').get('daysOfWeekMultiple').markAsPristine();
+        this.validateForm.get('formVolume').get('daysOfWeekMultiple').reset();
 
         if (this.modeSelected == 4) {
           this.setInitialValues();
@@ -484,8 +497,8 @@ export class CreateScheduleBackupComponent implements OnInit {
         }
         if (this.modeSelected == 2) {
           this.validateForm.get('formVolume').get('daysOfWeekMultiple').clearValidators();
-          this.validateForm.get('formVolume').get('daysOfWeekMultiple').setValidators([Validators.required]);
           this.validateForm.get('formVolume').get('daysOfWeekMultiple').markAsDirty();
+          this.validateForm.get('formVolume').get('daysOfWeekMultiple').setValidators([Validators.required]);
         }
       }
     }

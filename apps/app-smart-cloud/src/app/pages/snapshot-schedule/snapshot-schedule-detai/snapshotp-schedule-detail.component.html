@@ -1,7 +1,7 @@
 <page-header
   [breadcrumb]="breadcrumb"
   [action]="action"
-  [title]="'Xem chi tiết lịch Snapshot'"
+  [title]="'Chi tiết lịch Snapshot'"
 >
   <ng-template #breadcrumb>
     <nz-breadcrumb [nzSeparator]="separatorTemplate">
@@ -12,7 +12,7 @@
       <nz-breadcrumb-item>{{'app.breadcrumb.infrastructure.service' | i18n }}</nz-breadcrumb-item>
       <nz-breadcrumb-item>Block Storage</nz-breadcrumb-item>
       <nz-breadcrumb-item><a routerLink="/app-smart-cloud/schedule/snapshot">Lịch Snapshot</a></nz-breadcrumb-item>
-      <nz-breadcrumb-item>chi tiết lịch Snapshot</nz-breadcrumb-item>
+      <nz-breadcrumb-item>Chi tiết lịch Snapshot</nz-breadcrumb-item>
     </nz-breadcrumb>
     <ng-template #separatorTemplate
       ><img src="assets/imgs/arrow-square-right.svg" alt="" />
@@ -22,14 +22,13 @@
     <div class="alain-custom-action text-right">
       <share-users-combobox></share-users-combobox>
       <region-select-dropdown
-      (regionChange)="onRegionChanged($event)"
         (valueChanged)="onRegionChange($event)"
-        [isDetail]="true"
+        (regionChange)="onRegionChanged($event)"
       ></region-select-dropdown>
-      <project-select-dropdown
+      <project-select-dropdown #projectCombobox
         [regionId]="region"
-        [isDetail]="true"
         (valueChanged)="onProjectChange($event)"
+        (userChanged)="onUserProjectChange($event)"
       ></project-select-dropdown>
     </div>
   </ng-template>
@@ -40,92 +39,82 @@
     Thông tin lịch Snapshot
   </div>
   <nz-spin [nzSpinning]="isLoading" nzSize="large">
-    <nz-form-item>
-      <nz-form-label>{{ 'app.snapshot.schedule.name' | i18n }}</nz-form-label>
-      <input
-        nz-input
-        [(ngModel)]="scheduleName"
-        disabled="true"
-        type="text"
-        nzSize="large"
-      />
-    </nz-form-item>
-    <nz-row nzGutter="24">
-      <nz-col [nzLg]="12" [nzMd]="12" [nzSm]="24" [nzXl]="12" [nzXs]="24">
-        <nz-form-item>
-          <nz-form-label>Volume đã chọn</nz-form-label>
-          <input nz-input [(ngModel)]="volumeName" disabled="true" type="text"
-        /></nz-form-item>
-      </nz-col>
-      <nz-col [nzLg]="12" [nzMd]="12" [nzSm]="24" [nzXl]="12" [nzXs]="24">
-        <nz-form-item
-          ><nz-form-label>{{ 'app.snapshot.mode' | i18n }}</nz-form-label>
-          <input nz-input placeholder="Theo tuần" disabled="true" type="text" />
-        </nz-form-item>
-      </nz-col>
-    </nz-row>
-    <nz-row nzGutter="24">
-      <nz-col [nzLg]="12" [nzMd]="12" [nzSm]="24" [nzXl]="12" [nzXs]="24">
-        <nz-form-item>
-          <nz-form-label>{{ 'app.perform.snapshot.time' | i18n }}</nz-form-label>
-          <input
-            nz-input
-            [(ngModel)]="scheduleStartTime"
-            disabled="true"
-            type="text"
-        /></nz-form-item>
-      </nz-col>
-      <nz-col [nzLg]="12" [nzMd]="12" [nzSm]="24" [nzXl]="12" [nzXs]="24">
-        <nz-form-item
-          ><nz-form-label>Số tuần</nz-form-label>
-          <input nz-input placeholder="1 tuần" disabled="true" type="text" />
-        </nz-form-item>
-      </nz-col>
-    </nz-row>
-    <nz-row nzGutter="24">
-      <nz-col [nzLg]="12" [nzMd]="12" [nzSm]="24" [nzXl]="12" [nzXs]="24">
-        <nz-form-item
-          ><nz-form-label>Ngày thực hiện Snapshot</nz-form-label>
-          <input
-            nz-input
-            placeholder="Chọn ngày"
-            [(ngModel)]="dateStart"
-            disabled="true"
-            type="text"
-          />
-        </nz-form-item>
-      </nz-col>
-      <nz-col [nzLg]="12" [nzMd]="12" [nzSm]="24" [nzXl]="12" [nzXs]="24">
-        <nz-form-item>
-          <nz-form-label>{{ 'app.number.of.snapshot.copy' | i18n }}</nz-form-label>
-          <input nz-input placeholder="1" disabled="true" type="text"
-        /></nz-form-item>
-      </nz-col>
-    </nz-row>
-
-    <nz-form-item style="margin-bottom: 0px">
-      <nz-form-label>Mô tả</nz-form-label>
-      <nz-form-control>
-        <nz-textarea-count [nzMaxCharacterCount]="255">
+    <div class="customRow" style="margin-top: 15px;">
+      <nz-row>
+        <nz-col nzSpan="12">
+          <nz-row style="padding: 12px 0 12px 0">
+            <span class="text-label customSpan" style="width: 35%">Tên lịch Snapshot:</span>
+            <span class="text-value-detail customSpan">{{scheduleName}}</span>
+          </nz-row>
+        </nz-col>
+        <nz-col nzSpan="12">
+          <nz-row style="padding: 12px 0 12px 0">
+            <span class="text-label customSpan" style="width: 35%">Loại Snapshot</span>
+            <span class="text-value-detail customSpan">{{typeSnapshot}}</span>
+          </nz-row>
+        </nz-col>
+      </nz-row>
+      <nz-row style="background-color: #e2e2e9">
+        <nz-col nzSpan="12">
+          <nz-row style="padding: 12px 0 12px 0">
+            <span *ngIf="data.snapshotType == 1" class="text-label customSpan" style="width: 35%">Máy ảo:</span>
+            <span *ngIf="data.snapshotType != 1" class="text-label customSpan" style="width: 35%">Volume:</span>
+            <span class="text-value-detail customSpan">{{data?.serviceName}}</span>
+          </nz-row>
+        </nz-col>
+        <nz-col nzSpan="12">
+          <nz-row style="padding: 12px 0 12px 0">
+            <span class="text-label customSpan" style="width: 35%">Số bản Snapshot:</span>
+            <span class="text-value-detail customSpan">{{data?.maxSnapshot}}</span>
+          </nz-row>
+        </nz-col>
+      </nz-row>
+      <nz-row>
+        <nz-col nzSpan="12">
+          <nz-row style="padding: 12px 0 12px 0">
+            <span class="text-label customSpan" style="width: 35%">Chế độ Snapshot:</span>
+            <span class="text-value-detail customSpan">{{labelMode}}</span>
+          </nz-row>
+        </nz-col>
+        <nz-col nzSpan="12">
+          <nz-row style="padding: 12px 0 12px 0">
+            <span class="text-label customSpan" style="width: 35%">Thời điểm Snapshot</span>
+            <span class="text-value-detail customSpan">{{data?.runtime | date: 'HH:mm'}}</span>
+          </nz-row>
+        </nz-col>
+      </nz-row>
+      <nz-row style="background-color: #e2e2e9">
+        <nz-col nzSpan="12">
+          <nz-row style="padding: 12px 0 12px 0">
+            <span class="text-label customSpan" style="width: 35%">Trạng thái:</span>
+            <ng-container *ngIf="data.status | ServiceStatusPipe as statusModel">
+              <span nzBreakWord  [ngStyle]="{ color: statusModel.color }" class="text-value-detail customSpan">{{statusModel.status}}</span>
+            </ng-container>
+          </nz-row>
+        </nz-col>
+        <nz-col nzSpan="12">
+          <nz-row style="padding: 12px 0 12px 0">
+            <span *ngIf="typeProject != 1" class="text-label customSpan" style="width: 35%">Gói Snapshot:</span>
+            <a *ngIf="typeProject != 1" class="text-value-detail-href customSpan" href="/app-smart-cloud/snapshot/packages/detail/{{data.snapshotPackageId}}">{{data.packageName}}</a>
+          </nz-row>
+        </nz-col>
+      </nz-row>
+    </div>
+    <form nz-form [nzLayout]="'vertical'">
+      <nz-form-item>
+        <nz-form-label>Mô tả</nz-form-label>
+        <nz-form-control>
+          <nz-textarea-count [nzMaxCharacterCount]="255">
           <textarea
             rows="4"
             nz-input
-            [(ngModel)]="descSchedule"
+            [(ngModel)]="data.description"
             disabled="true"
             [ngModelOptions]="{ standalone: true }"
           ></textarea>
-        </nz-textarea-count>
-      </nz-form-control>
-    </nz-form-item>
+          </nz-textarea-count>
+        </nz-form-control>
+      </nz-form-item>
+    </form>
   </nz-spin>
 </nz-card>
-<div class="text-right">
-  <button nz-button (click)="goBack()">
-    <img
-      style="padding-right: 10px"
-      src="assets/imgs/arrow-left-2.svg"
-      alt=""
-    />
-    <span>{{'app.order-detail.back' | i18n}}</span>
-  </button>
-</div>

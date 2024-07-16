@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject, OnInit, ViewChild } from '@angular/core';
 import { FormUpdateL7Policy, L7Policy, Pool } from '../../../../../shared/models/load-balancer.model';
 import { getCurrentRegionAndProject } from '@shared';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -10,6 +10,7 @@ import { urlValidator } from '../create/create-l7-policy.component';
 import { RegionModel, ProjectModel } from '../../../../../../../../../libs/common-utils/src';
 import { I18NService } from '@core';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
+import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
 
 @Component({
   selector: 'one-portal-edit-l7-policy',
@@ -57,7 +58,8 @@ export class EditL7PolicyComponent implements OnInit {
   ]
 
   listPool: Pool[] = []
-  status: any = false
+  status: any = false;
+  @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
   constructor(private activatedRoute: ActivatedRoute,
               private router: Router,
               private fb: NonNullableFormBuilder,
@@ -85,6 +87,9 @@ export class EditL7PolicyComponent implements OnInit {
   }
   regionChanged(region: RegionModel) {
     this.region = region.regionId;
+    if(this.projectCombobox){
+      this.projectCombobox.loadProjects(true, region.regionId);
+    }
     // this.router.navigate(['/app-smart-cloud/load-balancer/list'])
   }
 

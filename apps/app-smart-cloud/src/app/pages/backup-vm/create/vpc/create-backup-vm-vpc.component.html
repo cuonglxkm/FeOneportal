@@ -18,7 +18,7 @@
     <div class="alain-custom-action text-right">
       <share-users-combobox></share-users-combobox>
       <region-select-dropdown (regionChange)="onRegionChanged($event)" (valueChanged)="regionChanged($event)"></region-select-dropdown>
-      <project-select-dropdown (valueChanged)="projectChanged($event)"
+      <project-select-dropdown #projectCombobox (valueChanged)="projectChanged($event)"
                                (userChanged)="userChanged($event)"
                                [regionId]="region"></project-select-dropdown>
     </div>
@@ -240,7 +240,7 @@
               </nz-form-item>
             </nz-col>
             <nz-col nzSpan="12">
-              <nz-form-item style="margin-top: 10px;">
+              <nz-form-item *ngIf="volumeAttachments.length > 0" style="margin-top: 10px;">
                 <nz-form-label>
                   <span>{{ 'app.info.backup.vm.external.volume'|i18n }}</span>
                   <img nz-popover
@@ -263,7 +263,7 @@
               </nz-form-item>
             </nz-col>
           </nz-row>
-          <div *ngIf="(instance?.storage + sizeOfVlAttach) > (projectDetail?.cloudProject.quotaBackupVolumeInGb)">
+          <div *ngIf="(instance?.storage + sizeOfVlAttach) > (projectDetail?.cloudProject.quotaBackupVolumeInGb - projectDetail?.cloudProjectResourceUsed.backup)">
             <nz-alert nzType="warning"
                       [nzMessage]="titleMessage"
                       nzShowIcon></nz-alert>
@@ -294,7 +294,7 @@
                *ngIf="volumeAttachSelected.length > 0">{{ 'app.info.backup.vm.external.volume'|i18n }}
           </div>
           <div style="margin-top: 10px" class="text-label"
-               *ngFor="let data of volumeAttachSelected">{{ data?.name }}  {{ data?.sizeInGB }}GB
+               *ngFor="let data of volumeAttachSelected">{{ data?.name }}  {{ data?.sizeInGB }} GB
           </div>
           <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
           <div style="margin-top: 10px" class="text-value">{{ 'app.info.backup.vm.total.storage'|i18n }}</div>
@@ -312,7 +312,7 @@
             <nz-col style="width: 100%">
               <button style="width: 100%" nz-button nzSize="large" nzType="primary" (click)="createBackupVmNormal()"
                       [nzLoading]="isLoading"
-                      [disabled]="validateForm.invalid">
+                      [disabled]="validateForm.invalid || ((instance?.storage + sizeOfVlAttach) > (projectDetail?.cloudProject.quotaBackupVolumeInGb - projectDetail?.cloudProjectResourceUsed.backup))">
                 <img src="assets/imgs/wallet.svg" style="margin-right: 5px; padding-bottom: 5px;" alt="" />
                 <span [style.color]="validateForm.invalid ? 'gray' : 'white'">{{ 'app.button.create' | i18n }}</span>
               </button>

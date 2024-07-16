@@ -1,4 +1,4 @@
-import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
+import { Component, Inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import {
   BackupSchedule,
@@ -14,6 +14,7 @@ import { debounceTime, Subject, Subscription } from 'rxjs';
 import { PackageBackupService } from '../../../shared/services/package-backup.service';
 import { PackageBackupModel } from '../../../shared/models/package-backup.model';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
+import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
 
 @Component({
   selector: 'one-portal-list-schedule-backup',
@@ -58,7 +59,7 @@ export class ListScheduleBackupComponent implements OnInit, OnDestroy {
   projectName: string;
 
   backupPackageModel: PackageBackupModel = new PackageBackupModel()
-
+  @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
   constructor(private router: Router,
               @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
               private backupScheduleService: ScheduleService,
@@ -69,6 +70,9 @@ export class ListScheduleBackupComponent implements OnInit, OnDestroy {
 
   regionChanged(region: RegionModel) {
     this.region = region.regionId;
+    if(this.projectCombobox){
+      this.projectCombobox.loadProjects(true, region.regionId);
+    }
     this.getListScheduleBackup(true);
     this.getCapacityBackup();
   }
@@ -202,7 +206,7 @@ export class ListScheduleBackupComponent implements OnInit, OnDestroy {
 
   //delete
   handleDeletedOk() {
-    this.getListScheduleBackup(false);
+    this.getListScheduleBackup(true);
   }
 
   //tiep tuc

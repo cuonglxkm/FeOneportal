@@ -34,7 +34,7 @@
         (valueChanged)="onRegionChange($event)"
         (regionChange)="onRegionChanged($event)"
       ></region-select-dropdown>
-      <project-select-dropdown
+      <project-select-dropdown #projectCombobox
         [regionId]="region"
         (userChanged)="onProjectChange($event)"
       ></project-select-dropdown>
@@ -79,6 +79,7 @@
                     />
                   </nz-col>
                   <nz-col
+                    *ngIf="isVolumeSnapshotHdd || isVolumeSnapshotSsd"
                     style="display: flex; align-items: center"
                     nzSpan="12"
                   >
@@ -515,6 +516,7 @@
             </div>
           </nz-tab>
           <nz-tab
+            *ngIf="isVmGpu"
             [nzTitle]="'app.gpu.configuration' | i18n"
             (nzClick)="onClickGpuConfig()"
           >
@@ -714,6 +716,12 @@
                             [nzValue]="i"
                           /> </nz-select
                       ></nz-form-control>
+                      <div
+                        *ngIf="remainingGpu == 0"
+                        style="font-size: 14px; color: #fff"
+                      >
+                        white
+                      </div>
                     </td>
                   </tr>
                 </tbody>

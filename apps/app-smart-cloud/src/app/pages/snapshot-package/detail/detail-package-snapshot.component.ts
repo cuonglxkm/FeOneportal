@@ -1,4 +1,4 @@
-import {Component, Inject, OnInit} from '@angular/core';
+import {Component, Inject, OnInit, ViewChild} from '@angular/core';
 import {ActivatedRoute, Router} from "@angular/router";
 import {PackageBackupService} from "../../../shared/services/package-backup.service";
 import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
@@ -10,6 +10,7 @@ import { RegionModel, ProjectModel } from '../../../../../../../libs/common-util
 import { ProjectService } from 'src/app/shared/services/project.service';
 import { PackageSnapshotModel } from '../../../shared/models/package-snapshot.model';
 import { PackageSnapshotService } from '../../../shared/services/package-snapshot.service';
+import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
 
 @Component({
   selector: 'one-portal-detail-package-snapshot',
@@ -25,7 +26,7 @@ export class DetailSnapshotComponent implements OnInit{
   idPackageBackup: number
 
   typeVPC: number
-
+  @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
   constructor(private router: Router,
               private packageBackupService: PackageBackupService,
               @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
@@ -38,6 +39,9 @@ export class DetailSnapshotComponent implements OnInit{
 
   regionChanged(region: RegionModel) {
     this.region = region.regionId
+    if(this.projectCombobox){
+      this.projectCombobox.loadProjects(true, region.regionId);
+    }
     this.projectService.getByRegion(this.region).subscribe(data => {
       if (data.length) {
         localStorage.setItem("projectId", data[0].id.toString())

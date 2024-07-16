@@ -47,8 +47,8 @@
           >
           <nz-form-control>
             <nz-input-number
+            [(ngModel)]="objectStorage.quota"
               style="width: 100%; margin-left: 0px"
-              [(ngModel)]="objectStorage.quota"
               [ngModelOptions]="{ standalone: true }"
               [disabled]="true"
               nzSize="large"

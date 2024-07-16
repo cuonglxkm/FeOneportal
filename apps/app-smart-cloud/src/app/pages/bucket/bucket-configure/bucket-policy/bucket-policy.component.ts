@@ -82,6 +82,16 @@ export class BucketPolicyComponent implements OnInit {
     permission: ['', Validators.required],
     listActionPermission: [[] as string[], Validators.required],
   });
+
+  formCreate: FormGroup<{
+    emailUser: FormControl<string>;
+    permission: FormControl<string>;
+    listActionPermission: FormControl<string[]>;
+  }> = this.fb.group({
+    emailUser: ['', Validators.required],
+    permission: ['', Validators.required],
+    listActionPermission: [[] as string[], Validators.required],
+  });
   
 
   searchBucketPolicy() {
@@ -162,6 +172,10 @@ export class BucketPolicyComponent implements OnInit {
     this.permission = '';
     this.emailUser = '';
     this.listActionPermission = [];
+  }
+
+  changeUser(){
+    this.formCreate.reset()
   }
 
   handleOkCreate() {

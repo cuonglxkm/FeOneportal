@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit, Renderer2 } from '@angular/core';
+import { Component, Inject, OnInit, Renderer2, ViewChild } from '@angular/core';
 import {
   AbstractControl,
   FormControl,
@@ -26,6 +26,8 @@ import { FormSearchFileSystemSnapshot } from 'src/app/shared/models/filesystem-s
 import { ProjectService } from 'src/app/shared/services/project.service';
 import { debounceTime, Subject } from 'rxjs';
 import { ConfigurationsService } from '../../../../../shared/services/configurations.service';
+import { OrderService } from '../../../../../shared/services/order.service';
+import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
 
 @Component({
   selector: 'one-portal-create-file-system',
@@ -96,6 +98,8 @@ export class CreateFileSystemComponent implements OnInit {
 
   snapshot: any;
 
+  @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
+
   constructor(private fb: NonNullableFormBuilder,
               private snapshotvlService: SnapshotVolumeService,
               @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
@@ -107,6 +111,7 @@ export class CreateFileSystemComponent implements OnInit {
               private fileSystemSnapshotService: FileSystemSnapshotService,
               private activatedRoute: ActivatedRoute,
               private renderer: Renderer2,
+              private orderService: OrderService,
               private configurationsService: ConfigurationsService) {
   }
 
@@ -134,6 +139,9 @@ export class CreateFileSystemComponent implements OnInit {
 
   regionChanged(region: RegionModel) {
     this.region = region.regionId;
+    if(this.projectCombobox){
+      this.projectCombobox.loadProjects(true, region.regionId);
+    }
     this.router.navigate(['/app-smart-cloud/file-storage/file-system/list']);
   }
 
@@ -308,6 +316,13 @@ export class CreateFileSystemComponent implements OnInit {
     });
   }
 
+  isVisiblePopupError: boolean = false;
+  errorList: string[] = [];
+
+  closePopupError() {
+    this.isVisiblePopupError = false;
+  }
+
   doCreateFileSystem() {
     this.isLoading = true;
     let request = new CreateFileSystemRequestModel();
@@ -326,21 +341,30 @@ export class CreateFileSystemComponent implements OnInit {
 
     console.log('request', request);
 
-    this.fileSystemService.create(request).subscribe(data => {
-      this.isLoading = false;
-      if (data != null) {
-        if (data.code == 200) {
+    this.orderService.validaterOrder(request).subscribe(item => {
+      if(item.success) {
+        this.fileSystemService.create(request).subscribe(data => {
+          this.isLoading = false;
+          if (data != null) {
+            if (data.code == 200) {
 
-          this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('app.file.system.notification.require.create.success'));
-          this.router.navigate(['/app-smart-cloud/file-storage/file-system/list']);
-        }
+              this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('app.file.system.notification.require.create.success'));
+              this.router.navigate(['/app-smart-cloud/file-storage/file-system/list']);
+            }
+          } else {
+
+            this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.file.system.notification.require.create.fail'));
+          }
+        }, error => {
+          this.isLoading = false;
+          this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.file.system.notification.require.create.fail'));
+        });
       } else {
-
-        this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.file.system.notification.require.create.fail'));
+        this.isVisiblePopupError = true;
+        this.errorList = item.data;
       }
     }, error => {
-      this.isLoading = false;
-      this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.file.system.notification.require.create.fail'));
+      this.notification.error(this.i18n.fanyi('app.status.fail'), error.error.detail);
     });
 
   }

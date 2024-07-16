@@ -1,4 +1,4 @@
-import { Component, Inject, Input, OnInit } from '@angular/core';
+import { Component, Inject, Input, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { SnapshotVolumeService } from '../../../shared/services/snapshot-volume.service';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
@@ -25,6 +25,7 @@ import { checkPossiblePressNumber } from '../../../shared/utils/common';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from '@core';
 import { VpcService } from '../../../shared/services/vpc.service';
+import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
 
 @Component({
   selector: 'one-portal-create-schedule-snapshot',
@@ -55,6 +56,9 @@ export class SnapshotScheduleCreateComponent implements OnInit {
   quotaType: any;
   selectedVolumeRoot: any;
   loadingCreate: boolean;
+  dataVolumeExisted: number[] = [];
+  dataVmExisted: number[] = [];
+  @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
   constructor(
     private vpcService: VpcService,
     private router: Router,
@@ -83,41 +87,40 @@ export class SnapshotScheduleCreateComponent implements OnInit {
   validateForm: FormGroup<{
     radio: FormControl<any>
     quota: FormControl<string>
+    name: FormControl<string>
+    volume: FormControl<number>
+    snapshotPackage: FormControl<number>
   }> = this.fb.group({
-    radio: [''],
-    quota: ['0GB', []]
-  })
-
-  form: FormGroup<{
-    name: FormControl<string>;
-    volume: FormControl<number>;
-    snapshotPackage: FormControl<number>;
-  }> = this.fb.group({
+    radio: ['',[]],
+    quota: ['0GB',[]],
     name: ['', [Validators.required, Validators.pattern(/^[\w\d]{1,64}$/)]],
     volume: [null as number, []],
-    snapshotPackage: [null as number, []],
-  });
-
-  dateList: NzSelectOptionInterface[] = [
-    { label: 'Chủ nhật', value: '0' },
-    { label: 'Thứ hai', value: '1' },
-    { label: 'Thứ ba', value: '2' },
-    { label: 'Thứ tư', value: '3' },
-    { label: 'Thứ năm', value: '4' },
-    { label: 'Thứ sáu', value: '5' },
-    { label: 'Thứ bảy', value: '6' },
-  ];
+    snapshotPackage: [null as number, []]
+  })
 
   ngOnInit(): void {
-    const now = new Date();
     let regionAndProject = getCurrentRegionAndProject()
     this.region = regionAndProject.regionId
     this.project = regionAndProject.projectId
     this.userId = this.tokenService.get()?.userId;
     this.doGetListSnapshotPackage();
     this.loadSnapshotPackage();
-    this.loadVolumeList();
-    this.loadVmList();
+    this.packageSnapshotService.getExistedSchedule(this.project)
+      .pipe(finalize(() => {
+        this.loadVolumeList();
+        this.loadVmList();
+      }))
+      .subscribe(
+      data => {
+        for (let item of data) {
+          if(item.snapshotType == 0) {
+            this.dataVolumeExisted.push(item.serviceInstanceId)
+          } else {
+            this.dataVmExisted.push(item.serviceInstanceId)
+          }
+        }
+      }
+    )
     this.validateForm.controls['quota'].disable();
   }
 
@@ -221,9 +224,7 @@ export class SnapshotScheduleCreateComponent implements OnInit {
                   console.log(data);
                   this.isLoading = false;
                   this.notification.success('Success', 'Tạo lịch thành công');
-                  this.router.navigate([
-                    '/app-smart-cloud/schedule/snapshot',
-                  ]);
+                  this.router.navigate(['/app-smart-cloud/schedule/snapshot']);
               },
               error => {
                 this.notification.error(this.i18n.fanyi("app.status.fail"), 'Tạo lịch thất bại',error.error.message);
@@ -238,6 +239,9 @@ export class SnapshotScheduleCreateComponent implements OnInit {
   }
   onRegionChange(region: RegionModel) {
     this.region = region.regionId;
+    if(this.projectCombobox){
+      this.projectCombobox.loadProjects(true, region.regionId);
+    }
   }
 
   onRegionChanged(region: RegionModel) {
@@ -253,10 +257,10 @@ export class SnapshotScheduleCreateComponent implements OnInit {
         data => {
           let total = data.cloudProject;
           let used = data.cloudProjectResourceUsed;
-          this.quotaHDDUsed = used.hdd;
-          this.quotaHDDTotal = total.quotaHddInGb;
-          this.quotaSSDUsed = used.ssd;
-          this.quotaSSDTotal = total.quotaSSDInGb;
+          this.quotaHDDUsed = used.volumeSnapshotHddInGb;
+          this.quotaHDDTotal = total.quotaVolumeSnapshotHddInGb;
+          this.quotaSSDUsed = used.volumeSnapshotSsdInGb;
+          this.quotaSSDTotal = total.quotaVolumeSnapshotSsdInGb;
         });
     }
   }
@@ -351,6 +355,8 @@ export class SnapshotScheduleCreateComponent implements OnInit {
         data => {
           this.volumeArray = data?.records.filter(item => {
             return ['AVAILABLE', 'IN-USE'].includes(item?.serviceStatus);
+          }).filter(item => {
+            return !this.dataVolumeExisted.includes(item?.id);
           });
           if (this.activatedRoute.snapshot.paramMap.get('volumeId') != undefined) {
             this.idVolume = Number.parseInt(this.activatedRoute.snapshot.paramMap.get('volumeId'));

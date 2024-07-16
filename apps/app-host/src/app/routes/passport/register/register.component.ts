@@ -95,6 +95,7 @@ export class UserRegisterComponent implements OnInit, OnDestroy {
       validators: MatchControl('password', 'confirm'),
     }
   );
+  province = 'Hà Nội'
   error = '';
   type = 0;
   loading = false;
@@ -195,7 +196,7 @@ export class UserRegisterComponent implements OnInit, OnDestroy {
       firstName: this.form.controls.firstName.value,
       lastName: this.form.controls.lastName.value,
       phoneNumber: this.form.controls.mobile.value,
-      province: this.form.controls.province.value,
+      province: this.province,
       address: '',
       channelSaleId: 0,
       taxCode: '',
@@ -265,11 +266,13 @@ export class UserRegisterComponent implements OnInit, OnDestroy {
   }
 
   private loadProvinces() {
-    fetch(environment.baseUrl + '/users/provinces').then(r => r.json()).then(j => {
+    fetch(environment.baseUrl + '/users/provinces').then(r => r.json())
+      .then(j => {
       this.provinces = j;
-      this.form.controls.province.setValue(j[0])
+        this.cdr.detectChanges();
       console.log(j)
-    });
+    })
+
 
     // this.http.get<any>(environment.baseUrl + '/users/provinces').subscribe(
     //   data => {

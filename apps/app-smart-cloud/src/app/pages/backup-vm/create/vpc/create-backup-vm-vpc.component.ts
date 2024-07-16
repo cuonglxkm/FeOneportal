@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject, OnInit, ViewChild } from '@angular/core';
 import {
   BackupVm,
   BackupVMFormSearch,
@@ -29,6 +29,7 @@ import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from '@core';
 import { SizeInCloudProject } from 'src/app/shared/models/project.model';
 import { ProjectService } from 'src/app/shared/services/project.service';
+import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
 
 @Component({
   selector: 'one-portal-create-backup-vm-vpc',
@@ -89,6 +90,8 @@ export class CreateBackupVmVpcComponent implements OnInit {
 
   instanceSelected: any;
 
+  @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
+
   constructor(private backupVmService: BackupVmService,
               private instanceService: InstancesService,
               private backupPackageService: PackageBackupService,
@@ -116,6 +119,9 @@ export class CreateBackupVmVpcComponent implements OnInit {
 
   regionChanged(region: RegionModel) {
     this.region = region.regionId;
+    if(this.projectCombobox){
+      this.projectCombobox.loadProjects(true, region.regionId);
+    }
     this.router.navigate(['/app-smart-cloud/backup-vm']);
   }
 
@@ -336,6 +342,7 @@ export class CreateBackupVmVpcComponent implements OnInit {
       this.projectDetail = data
     })
   }
+
   ngOnInit() {
     let regionAndProject = getCurrentRegionAndProject();
     this.region = regionAndProject.regionId;

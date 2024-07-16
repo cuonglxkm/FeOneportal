@@ -1,4 +1,4 @@
-import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
+import { Component, Inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import {BackupVm, BackupVMFormSearch} from "../../../shared/models/backup-vm";
 import {BackupVmService} from "../../../shared/services/backup-vm.service";
 import Pagination from "../../../shared/models/pagination";
@@ -12,6 +12,7 @@ import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from '@core';
 import { ProjectService } from 'src/app/shared/services/project.service';
 import { debounceTime, Subject, Subscription } from 'rxjs';
+import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
 
 @Component({
   selector: 'one-portal-list-backup-vm',
@@ -66,7 +67,7 @@ export class ListBackupVmComponent implements OnInit, OnDestroy {
   dataSubjectInputSearch: Subject<any> = new Subject<any>();
   private searchSubscription: Subscription;
   private enterPressed: boolean = false;
-
+  @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
   constructor(private backupVmService: BackupVmService,
               @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
               private router: Router,
@@ -79,7 +80,9 @@ export class ListBackupVmComponent implements OnInit, OnDestroy {
   regionChanged(region: RegionModel) {
     this.region = region.regionId
     this.formSearch.regionId = this.region
-    this.getListBackupVM(true)
+    if(this.projectCombobox){
+      this.projectCombobox.loadProjects(true, region.regionId);
+    }
   }
 
   onRegionChanged(region: RegionModel) {
@@ -153,6 +156,7 @@ export class ListBackupVmComponent implements OnInit, OnDestroy {
     }, error => {
       this.isLoading = true
       this.collection = null
+      this.notification.error(error.statusText, this.i18n.fanyi('app.failData'));
     })
 
   }

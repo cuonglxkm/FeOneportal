@@ -157,9 +157,7 @@ export class StartupService {
 
   load(): Observable<void> {
     const defaultLang = this.i18n.defaultLang;
-    console.log(defaultLang);
     const baseUrl = environment['baseUrl'];
-    console.log(baseUrl);
 
     return zip(
       this.i18n.loadLangData(defaultLang),
@@ -193,7 +191,6 @@ export class StartupService {
           .subscribe(
             (data) => {
               this.menuData = data;
-              console.log(this.menuData);
               this.menuService.add(this.menuData.menu);
               this.regionProjectService.getCoreData(baseUrl);
               if (localStorage?.getItem('PermissionOPA')) {
@@ -276,22 +273,4 @@ export class StartupService {
       }
     });
   }
-}
-
-function updateMenuItem(menuItems: any[], searchText: string): void {
-  // Duyệt qua từng mục trong mảng menuItems
-  menuItems.forEach((item) => {
-    // Nếu mục hiện tại có thuộc tính text bằng searchText
-    if (item.text === searchText) {
-      // Thay đổi giá trị của thuộc tính text thành newText
-      item.children = [];
-      item.link = '/app-smart-cloud/object-storage';
-      return; // Kết thúc vòng lặp
-    }
-    // Nếu mục hiện tại có thuộc tính children và là một mảng
-    if (item.children && Array.isArray(item.children)) {
-      // Gọi đệ quy để tìm và sửa menuItem trong mảng con
-      updateMenuItem(item.children, searchText);
-    }
-  });
 }

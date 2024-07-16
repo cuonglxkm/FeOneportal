@@ -16,6 +16,7 @@ export const environment = {
     refreshTokenType: 'auth-refresh'
   },
   baseUrl: 'https://api-dev.onsmartcloud.com',
+  //baseUrl: 'http://localhost:3000',
   sso: {
     issuer: 'https://identity-dev.onsmartcloud.com',
     clientId: 'frontend-client',

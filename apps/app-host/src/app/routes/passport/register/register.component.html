@@ -39,6 +39,7 @@
       <nz-form-label>{{'app.register.email.label' | i18n}}(<span style="color: red;">*</span>)</nz-form-label>
       <nz-input-group nzSize="large" nzAddonBeforeIcon="user">
         <input
+          [autofocus]="true"
           nz-input
           formControlName="mail"
           placeholder="{{'app.register.email.press' | i18n}}"
@@ -207,7 +208,8 @@
           nzShowSearch
           nzAllowClear
           nzPlaceHolder="{{'app.register.address.select' | i18n}}"
-          formControlName="province"
+          [(ngModel)]="province"
+          [ngModelOptions]="{ standalone: true }"
         >
           <nz-option *ngFor="let i of provinces" [nzLabel]="i.name" [nzValue]="i.name" />
         </nz-select>
@@ -260,8 +262,6 @@
   <nz-form-item>
     <re-captcha
       formControlName="recaptchaReactive"
-      key="publicKey"
-      [lang]="'vi'"
       (resolved)="addTokenLog('Reactive form mode resolved', $event)"
     >
     </re-captcha>
@@ -273,7 +273,7 @@
         <!--        <span>{{ 'app.register.agreement' | i18n }}</span>-->
         <span class="text-agreement">
           {{'app.register.1' | i18n}}
-          <a href="https://vnpt.vn" target="_blank">{{'app.register.2' | i18n}}</a></span
+          <a href="https://vnptcloud.onsmartcloud.com/terms-and-conditions" (click)="$event.stopPropagation()" target="_blank">{{'app.register.2' | i18n}} </a></span
         >
       </label>
     </nz-form-control>

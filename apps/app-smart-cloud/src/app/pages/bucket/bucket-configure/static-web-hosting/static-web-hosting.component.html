@@ -1,3 +1,4 @@
+<form nz-form [formGroup]="formUpdate">
 <span class="titlecard-custom">{{ 'app.set' | i18n }} Static Web Hosting</span>
 <div style="margin-top: 10px" class="text-label">
   <span >{{ 'app.static.web.hosting.intro' | i18n }}</span
@@ -7,6 +8,7 @@
 <nz-radio-group
   style="width: 100%; margin-top: 10px"
   [(ngModel)]="bucketDetail.isWebsite"
+  [ngModelOptions]="{ standalone: true }"
 >
   <nz-row>
     <nz-col nzSpan="12">
@@ -40,20 +42,30 @@
 </div>
 <nz-row *ngIf="bucketDetail.isWebsite" nzGutter="24"
   ><nz-col nzSpan="12">
+    <nz-form-item>
+      <nz-form-control [nzErrorTip]="indexDocumentSuffixErrorTpl">
     <input
       style="margin-top: 16px"
       class="input-custom"
       nz-input
       [(ngModel)]="bucketDetail.indexDocumentSuffix"
+      [ngModelOptions]="{ standalone: true }"
       placeholder="index.html"
+      formControlName="indexDocumentSuffix"
       (change)="
         bucketDetail.indexDocumentSuffix =
           bucketDetail.indexDocumentSuffix.trim()
       "
     />
+    <ng-template #indexDocumentSuffixErrorTpl let-control>
+      <ng-container *ngIf="control.hasError('pattern')">{{
+        'app.file.static.web.space.error' | i18n
+      }}</ng-container>
+    </ng-template>
+    </nz-form-control>
+    </nz-form-item>
     <label
       class="text-label"
-      style="margin-top: 16px"
       nz-checkbox
       [(ngModel)]="bucketDetail.checkRedirectAllRequests"
       [ngModelOptions]="{ standalone: true }"
@@ -64,6 +76,7 @@
       class="input-custom"
       nz-input
       [(ngModel)]="bucketDetail.redirectAllRequestsTo"
+      [ngModelOptions]="{ standalone: true }"
       placeholder="http://www.example.com"
       (change)="
         bucketDetail.redirectAllRequestsTo =
@@ -87,6 +100,7 @@
       <input
         nz-input
         [ngModel]="bucketDetail.linkS3Website"
+        [ngModelOptions]="{ standalone: true }"
         [readonly]="true"
       />
     </nz-input-group>
@@ -101,14 +115,25 @@
     </ng-template>
   </nz-col>
   <nz-col nzSpan="12">
+    <nz-form-item>
+      <nz-form-control [nzErrorTip]="errorDocumentSuffixErrorTpl">
     <input
       style="margin-top: 16px"
       class="input-custom"
       nz-input
       [(ngModel)]="bucketDetail.errorDocument"
+      formControlName="errorDocument"
+      [ngModelOptions]="{ standalone: true }"
       placeholder="error.html"
       (change)="bucketDetail.errorDocument = bucketDetail.errorDocument.trim()"
     />
+    <ng-template #errorDocumentSuffixErrorTpl let-control>
+      <ng-container *ngIf="control.hasError('pattern')">{{
+        'app.file.static.web.space.error' | i18n
+      }}</ng-container>
+    </ng-template>
+    </nz-form-control>
+    </nz-form-item>
   </nz-col>
 </nz-row>
 
@@ -130,3 +155,4 @@
     {{ 'app.text.edit' | i18n }}
   </button>
 </div>
+</form>

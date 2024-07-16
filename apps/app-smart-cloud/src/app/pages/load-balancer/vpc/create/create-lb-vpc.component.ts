@@ -21,6 +21,7 @@ import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { debounceTime, finalize, Subject } from 'rxjs';
 import { ProjectService } from 'src/app/shared/services/project.service';
 import { OrderService } from '../../../../shared/services/order.service';
+import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
 
 @Component({
   selector: 'one-portal-create-lb-vpc',
@@ -77,6 +78,7 @@ export class CreateLbVpcComponent implements OnInit {
   private validateIpaddress = new Subject<string>();
   private readonly debounceTimeMs = 2000;
   loadingSubnet = true;
+  @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
   constructor(private router: Router,
               private fb: NonNullableFormBuilder,
               @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
@@ -134,6 +136,9 @@ export class CreateLbVpcComponent implements OnInit {
 
   regionChanged(region: RegionModel) {
     this.region = region.regionId;
+    if(this.projectCombobox){
+      this.projectCombobox.loadProjects(true, region.regionId);
+    }
     this.router.navigate(['/app-smart-cloud/load-balancer/list']);
   }
 
@@ -160,9 +165,10 @@ export class CreateLbVpcComponent implements OnInit {
   @ViewChild('selectedValueIpFloating') selectedValueIpFloating: ElementRef;
 
   updateValue(value): void {
-    // this.validateForm.controls.subnet.setValue(value);
     if (!this.validateForm.controls['subnet'].invalid) {
       this.validateForm.controls['ipAddress'].enable();
+    } else {
+      this.validateForm.controls['ipAddress'].disable();
     }
     if (this.listSubnets) {
       const selected = this.listSubnets?.find(option => option.cloudId === value);
@@ -190,6 +196,7 @@ export class CreateLbVpcComponent implements OnInit {
   onChangeStatusInternetFacing() {
     this.validateForm.controls['subnet'].setValue('');
     this.validateForm.controls['ipAddress'].setValue('');
+    this.validateForm.controls['ipAddress'].disable();
     this.enableInternetFacing = true;
     this.enableInternal = false;
     if (this.enableInternetFacing) {
@@ -199,12 +206,13 @@ export class CreateLbVpcComponent implements OnInit {
       this.validateForm.controls.ipFloating.clearValidators();
       this.validateForm.controls.ipFloating.updateValueAndValidity();
     }
-    this.getListSubnetInternetFacing();
+    this.mapSubnetArray = [...this.mapSubnetArray1]
   }
 
   onChangeStatusInternal() {
     this.validateForm.controls['subnet'].setValue('');
     this.validateForm.controls['ipAddress'].setValue('');
+    this.validateForm.controls['ipAddress'].disable();
     this.enableInternetFacing = false;
     this.enableInternal = true;
     if (this.enableInternetFacing) {
@@ -214,7 +222,7 @@ export class CreateLbVpcComponent implements OnInit {
       this.validateForm.controls.ipFloating.clearValidators();
       this.validateForm.controls.ipFloating.updateValueAndValidity();
     }
-    this.getListSubnetInternetFacing();
+    this.mapSubnetArray = [...this.mapSubnetArray2]
   }
 
 
@@ -234,7 +242,7 @@ export class CreateLbVpcComponent implements OnInit {
         this.flavorId = this.offerDetail?.characteristicValues[1].charOptionValues[0];
       },
         error => {
-          this.notification.error(this.i18n.fanyi('app.status.fail'),'Loading Falvor')
+          this.notification.error(this.i18n.fanyi('app.status.fail'),'Lấy thông tin Flavor lỗi')
         });
 
     });
@@ -339,17 +347,17 @@ export class CreateLbVpcComponent implements OnInit {
                 }
               } else {
                 this.isLoading = false;
-                this.notification.error(
-                  '',
-                  this.i18n.fanyi('app.notification.request.create.LB.fail')
-                );
+                this.isVisiblePopupError = true;
+                this.errorList = data.data;
+                // this.notification.error(
+                //   this.i18n.fanyi('app.status.fail'),'error'
+                // );
               }
             },
             error => {
               this.isLoading = false;
               this.notification.error(
-                '',
-                this.i18n.fanyi('app.notification.request.create.LB.fail')
+                this.i18n.fanyi('app.status.fail'),error.error.message
               );
             });
       },
@@ -362,11 +370,18 @@ export class CreateLbVpcComponent implements OnInit {
 
   mapSubnet: Map<string, string> = new Map<string, string>();
   mapSubnetArray: { value: string, label: string }[] = [];
+  mapSubnetArray1: { value: string, label: string }[] = [];
+  mapSubnetArray2: { value: string, label: string }[] = [];
   loadingCreate = false;
   disabledSubnet = true;
   messageFail = '';
   loadingFloating = true;
   disabledFloating= true;
+  isVisiblePopupError: boolean = false;
+  errorList: string[] = [];
+  closePopupError() {
+    this.isVisiblePopupError = false;
+  }
 
   setDataToMap(data: any) {
     // Xóa dữ liệu hiện có trong mapSubnet (nếu cần)
@@ -377,60 +392,18 @@ export class CreateLbVpcComponent implements OnInit {
     }
   }
 
-  getListSubnetInternetFacing() {
-    this.loadingSubnet = true;
-    this.disabledSubnet = true;
-    this.mapSubnetArray = [];
-    this.validateForm.controls['ipAddress'].disable();
-    if (this.enableInternal == true) {
-      let formSearchSubnet = new FormSearchSubnet();
-      formSearchSubnet.region = this.region;
-      formSearchSubnet.vpcId = this.project;
-      formSearchSubnet.pageSize = 9999;
-      formSearchSubnet.pageNumber = 1;
-      formSearchSubnet.customerId = this.tokenService.get()?.userId;
-      formSearchSubnet.name = '';
-      this.vlanService.getSubnetByNetwork(formSearchSubnet)
-        .pipe(finalize(() => {
-          this.loadingSubnet = false;
-          this.disabledSubnet = false;
-        }))
-        .subscribe(data => {
-        this.mapSubnet?.clear();
-        // Lặp qua các cặp khóa/giá trị trong dữ liệu và thêm chúng vào mapSubnet
-        for (const model of data.records) {
-          this.mapSubnetArray?.push({ value: model.subnetCloudId, label: model.name + '(' + model.subnetAddressRequired + ')'});
-        }
-      });
-    } else {
-      this.loadBalancerService.getListSubnetInternetFacing(this.project, this.region)
-        .pipe(finalize(() => {
-          this.loadingSubnet = false;
-          this.disabledSubnet = false;
-        }))
-        .subscribe(data => {
-        this.setDataToMap(data);
-        if (this.mapSubnet instanceof Map) {
-          // Chuyển đổi Map thành mảng các cặp khóa/giá trị
-          for (const [key, value] of this.mapSubnet.entries()) {
-            this.mapSubnetArray?.push({ value: value, label: key });
-          }
-        }
-      });
-    }
-  }
-
   ngOnInit() {
     let regionAndProject = getCurrentRegionAndProject();
     this.region = regionAndProject.regionId;
     this.project = regionAndProject.projectId;
-
+    this.validateForm.controls['ipAddress'].disable();
     this.validateForm.controls.radio.setValue('floatingIp');
     this.getListVlanSubnet();
     this.searchProduct();
     // this.getIpBySubnet()a;
     this.getListLoadBalancer();
-    this.getListSubnetInternetFacing();
+    this.initSubnet1();
+    this.initSubnet2();
     this.validateIpaddress.pipe(debounceTime(this.debounceTimeMs)).subscribe((searchValue) => {
       this.onInputReal(searchValue);
     });
@@ -456,5 +429,53 @@ export class CreateLbVpcComponent implements OnInit {
           this.invalidIpAddress = true;
         })
     }
+  }
+
+  initSubnet1() {
+    this.loadingSubnet = true;
+    this.disabledSubnet = true;
+    this.loadBalancerService.getListSubnetInternetFacing(this.project, this.region)
+      .pipe(finalize(() => {
+        this.loadingSubnet = false;
+        this.disabledSubnet = false;
+      }))
+      .subscribe(
+        data => {
+        this.setDataToMap(data);
+        if (this.mapSubnet instanceof Map) {
+          // Chuyển đổi Map thành mảng các cặp khóa/giá trị
+          for (const [key, value] of this.mapSubnet.entries()) {
+            this.mapSubnetArray1?.push({ value: value, label: key });
+          }
+          this.mapSubnetArray = [...this.mapSubnetArray1]
+        }
+      },
+        error => {
+          this.notification.error(this.i18n.fanyi('app.status.fail'), 'Lấy danh sách Subnet thộc Internet Facing lỗi');
+        });
+  }
+
+  initSubnet2() {
+    this.loadingSubnet = true;
+    this.disabledSubnet = true;
+    let formSearchSubnet = new FormSearchSubnet();
+    formSearchSubnet.region = this.region;
+    formSearchSubnet.vpcId = this.project;
+    formSearchSubnet.pageSize = 9999;
+    formSearchSubnet.pageNumber = 1;
+    formSearchSubnet.customerId = this.tokenService.get()?.userId;
+    formSearchSubnet.name = '';
+    this.vlanService.getSubnetByNetwork(formSearchSubnet)
+      .pipe(finalize(() => {
+        this.loadingSubnet = false;
+        this.disabledSubnet = false;
+      }))
+      .subscribe(data => {
+        this.mapSubnet?.clear();
+        // Lặp qua các cặp khóa/giá trị trong dữ liệu và thêm chúng vào mapSubnet
+        for (const model of data.records) {
+          this.mapSubnetArray2?.push({ value: model.subnetCloudId, label: model.name + '(' + model.subnetAddressRequired + ')' });
+        }
+      });
   }
 }

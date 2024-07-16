@@ -22,7 +22,7 @@
     <div class="alain-custom-action text-right">
       <share-users-combobox></share-users-combobox>
       <region-select-dropdown (regionChange)="onRegionChanged($event)" (valueChanged)="regionChanged($event)"></region-select-dropdown>
-      <project-select-dropdown [regionId]="region"
+      <project-select-dropdown #projectCombobox [regionId]="region"
       (valueChanged)="projectChange($event)"
       (userChanged)="projectChange($event)"></project-select-dropdown>
     </div>
@@ -104,7 +104,7 @@
           <tr>
             <th nzLeft>Tên gói</th>
             <th nzBreakWord>Dung lượng HDD (GB)</th>
-            <th nzBreakWord>Dung lượng SDD (GB)</th>
+            <th nzBreakWord>Dung lượng SSD (GB)</th>
             <th nzBreakWord>Trạng thái</th>
             <th nzBreakWord>Ngày khởi tạo</th>
             <th nzBreakWord>Ngày hết hạn</th>

@@ -32,7 +32,7 @@
       (regionChange)="onRegionChanged($event)"
       (valueChanged)="onRegionChange($event)"
     ></region-select-dropdown>
-    <project-select-dropdown
+    <project-select-dropdown #projectCombobox
       [regionId]="regionId"
       (valueChanged)="onProjectChange($event)"
       (userChanged)="userChangeProject($event)"
@@ -220,7 +220,6 @@
       placeholder="{{'router.label.ip.interface.example' | i18n}}"
       formControlName="ipAddress"
       #ipAdress
-      id="ipAddress"
     />
       <!-- <span *ngIf="isInvalidipAddress" style="color: #FF4D4F;">{{ invalidipAddress }}</span> -->
       <ng-template #ipErrorTpl let-control>

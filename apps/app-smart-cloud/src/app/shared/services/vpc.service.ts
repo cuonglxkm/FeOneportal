@@ -68,10 +68,14 @@ export class VpcService extends BaseService {
   }
 
   delete(id: any):Observable<HttpResponse<any>> {
+    localStorage.removeItem("projects");
+    localStorage.removeItem("projectId");
     return this.http.delete<HttpResponse<any>>(this.baseUrl + this.ENDPOINT.provisions + "/vpcs/"+ id);
   }
 
   updateVpc(request: any, id: any) {
+    localStorage.removeItem("projects");
+    localStorage.removeItem("projectId");
     return this.http.put<HttpResponse<any>>(this.baseUrl + this.ENDPOINT.provisions + "/vpcs/" + id, request, this.httpOptions);
   }
   createIpPublic(IP: any): Observable<any>  {
@@ -88,7 +92,8 @@ export class VpcService extends BaseService {
   }
 
   
-  getProductActivebyregion(catelog:string, regionid:number): Observable<any> {
-    return this.http.get<any>(this.baseUrl + this.ENDPOINT.catalogs +'/products/activebyregion?catalogs=' +catelog + '&regionid=' + regionid);
+  getProductActivebyregion(catalog:string[], regionid:number): Observable<any> {
+    const catalogString = catalog.join(',');
+    return this.http.get<any>(this.baseUrl + this.ENDPOINT.catalogs +'/products/activebyregion?catalogs=' +catalogString + '&regionid=' + regionid);
   }
 }

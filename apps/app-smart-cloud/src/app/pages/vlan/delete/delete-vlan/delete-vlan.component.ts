@@ -74,6 +74,7 @@ export class DeleteVlanComponent implements AfterViewInit {
             this.value = null
             this.onOk.emit(data)
           }, error => {
+            console.log('error: ',error)
             this.isLoadingDelete = false
             this.isVisibleDelete = false
             if(error.error.message.includes('could not be found')) {
@@ -86,7 +87,11 @@ export class DeleteVlanComponent implements AfterViewInit {
             this.onOk.emit()
           })
       }, error => {
-        this.notification.error(this.i18n.fanyi('app.status.fail'), error.error.detail)
+        console.log('error: ',error)
+        this.isLoadingDelete = false
+        this.isVisibleDelete = false
+        this.notification.error(this.i18n.fanyi('app.status.fail'), error.error)
+        this.value = null
       })
     } else {
       if(this.value == undefined) {

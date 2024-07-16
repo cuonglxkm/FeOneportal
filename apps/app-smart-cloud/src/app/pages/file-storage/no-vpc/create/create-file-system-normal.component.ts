@@ -1,12 +1,5 @@
-import { Component, Inject, OnInit } from '@angular/core';
-import {
-  AbstractControl,
-  FormControl,
-  FormGroup,
-  NonNullableFormBuilder,
-  ValidatorFn,
-  Validators
-} from '@angular/forms';
+import { Component, Inject, OnInit, ViewChild } from '@angular/core';
+import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
 import {
   CreateFileSystemRequestModel,
   FormSearchFileSystem,
@@ -21,12 +14,7 @@ import { DataPayment, ItemPayment } from '../../../instances/instances.model';
 import { debounceTime, Subject } from 'rxjs';
 import { InstancesService } from '../../../instances/instances.service';
 import { OrderItem } from '../../../../shared/models/price';
-import {
-  AppValidator,
-  ProjectModel,
-  RegionModel,
-  storageValidator
-} from '../../../../../../../../libs/common-utils/src';
+import { ProjectModel, RegionModel, storageValidator } from '../../../../../../../../libs/common-utils/src';
 import { FormSearchFileSystemSnapshot } from 'src/app/shared/models/filesystem-snapshot';
 import { FileSystemSnapshotService } from 'src/app/shared/services/filesystem-snapshot.service';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
@@ -34,7 +22,7 @@ import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from '@core';
 import { ConfigurationsService } from '../../../../shared/services/configurations.service';
 import { OrderService } from '../../../../shared/services/order.service';
-
+import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
 
 
 @Component({
@@ -106,7 +94,7 @@ export class CreateFileSystemNormalComponent implements OnInit {
   snapshotCloudId: string;
 
   snapshot: any;
-
+  @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
   constructor(private fb: NonNullableFormBuilder,
               private snapshotvlService: SnapshotVolumeService,
               @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
@@ -133,6 +121,9 @@ export class CreateFileSystemNormalComponent implements OnInit {
 
   regionChanged(region: RegionModel) {
     this.region = region.regionId;
+    if(this.projectCombobox){
+      this.projectCombobox.loadProjects(true, region.regionId);
+    }
     this.router.navigate(['/app-smart-cloud/file-storage/file-system/list']);
   }
 
@@ -360,12 +351,30 @@ export class CreateFileSystemNormalComponent implements OnInit {
     this.orderService.validaterOrder(request).subscribe(data => {
       this.isLoadingAction = false;
       if (data.success) {
-        var returnPath: string = '/app-smart-cloud/file-storage/file-system/create/normal';
-        console.log('request', request);
-        console.log('service name', this.formCreate.serviceName);
-        this.router.navigate(['/app-smart-cloud/order/cart'], {
-          state: { data: request, path: returnPath }
-        });
+        if(this.hasRoleSI) {
+          this.fileSystemService.create(request).subscribe(data => {
+            this.isLoadingAction = false;
+            if (data != null) {
+              if (data.code == 200) {
+                this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('app.file.system.notification.require.create.success'));
+                this.router.navigate(['/app-smart-cloud/file-storage/file-system/list']);
+              }
+            } else {
+              this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.file.system.notification.require.create.fail'));
+            }
+          }, error => {
+            this.isLoading = false;
+            this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.file.system.notification.require.create.fail'));
+          });
+        } else {
+          var returnPath: string = '/app-smart-cloud/file-storage/file-system/create/normal';
+          console.log('request', request);
+          console.log('service name', this.formCreate.serviceName);
+          this.router.navigate(['/app-smart-cloud/order/cart'], {
+            state: { data: request, path: returnPath }
+          });
+        }
+
       } else {
         this.isVisiblePopupError = true;
         this.errorList = data.data;
@@ -385,10 +394,13 @@ export class CreateFileSystemNormalComponent implements OnInit {
     });
   }
 
+  hasRoleSI: boolean
   ngOnInit() {
     let regionAndProject = getCurrentRegionAndProject();
     this.region = regionAndProject.regionId;
     this.project = regionAndProject.projectId;
+
+    this.hasRoleSI = localStorage.getItem('role').includes('SI')
 
     this.getListSnapshot();
 

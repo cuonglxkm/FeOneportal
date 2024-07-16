@@ -17,7 +17,7 @@
     <div class="alain-custom-action text-right">
       <share-users-combobox></share-users-combobox>
       <region-select-dropdown (regionChange)="onRegionChanged($event)" (valueChanged)="regionChanged($event)"></region-select-dropdown>
-      <project-select-dropdown [regionId]="region"
+      <project-select-dropdown #projectCombobox [regionId]="region"
                                (valueChanged)="projectChanged($event)"
                                (userChanged)="userChaged($event)"></project-select-dropdown>
     </div>
@@ -146,16 +146,13 @@
             </nz-col>
           </nz-row>
           <nz-row nzGutter="24">
-            <nz-col nzSpan="12" style="bottom: 60px;">
+            <nz-col nzSpan="12" style="bottom: 60px;" *ngIf="backupPackages.length > 0">
               <nz-row nzGutter="18">
                 <nz-col nzSpan="10">
                   <span class="text-label">{{'app.backup.package.storage'|i18n}}</span>
                 </nz-col>
                 <nz-col nzSpan="8" style="text-align: end;">
-                  <span class="text-label"
-                        *ngIf="backupPackageDetail == undefined">0 GB</span>
-                  <span class="text-label"
-                        *ngIf="backupPackageDetail != undefined">{{ backupPackageDetail?.totalSize }} GB</span>
+                  <span class="text-label">{{ backupPackageDetail?.totalSize }} GB</span>
                 </nz-col>
               </nz-row>
               <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
@@ -164,10 +161,7 @@
                   <span class="text-label">{{'app.backup.package.storage.used'|i18n}}</span>
                 </nz-col>
                 <nz-col nzSpan="8" style="text-align: end;">
-                  <span class="text-label"
-                        *ngIf="backupPackageDetail == undefined">0 GB</span>
-                  <span class="text-label"
-                        *ngIf="backupPackageDetail != undefined">{{ backupPackageDetail?.usedSize }} GB</span>
+                  <span class="text-label">{{ backupPackageDetail?.usedSize }} GB</span>
                 </nz-col>
               </nz-row>
               <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
@@ -176,10 +170,7 @@
                   <span class="text-label">{{'app.backup.package.storage.remaining'|i18n}}</span>
                 </nz-col>
                 <nz-col nzSpan="8" style="text-align: end;">
-                  <span class="text-label"
-                        *ngIf="backupPackageDetail == undefined">0 GB</span>
-                  <span class="text-label"
-                        *ngIf="backupPackageDetail != undefined">{{ backupPackageDetail?.totalSize - backupPackageDetail?.usedSize }} GB</span>
+                  <span class="text-label">{{ backupPackageDetail?.totalSize - backupPackageDetail?.usedSize }} GB</span>
                 </nz-col>
               </nz-row>
               <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
