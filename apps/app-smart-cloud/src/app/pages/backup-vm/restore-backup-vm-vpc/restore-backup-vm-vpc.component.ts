@@ -383,7 +383,7 @@ export class RestoreBackupVmVpcComponent implements OnInit {
         if (
           this.backupVmModel?.volumeBackups
             .filter((e) => e.isBootable == true)[0]
-            .typeName.toUpperCase()
+            .volumeType.toUpperCase()
             .includes('HDD')
         ) {
           this.activeBlockHDD = true;
