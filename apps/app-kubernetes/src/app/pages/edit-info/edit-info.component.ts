@@ -25,6 +25,7 @@ export class EditInfoComponent implements OnInit {
 
   isSubmitting: boolean;
   showModalCancelEdit: boolean;
+  isChangeForm: boolean;
 
   constructor(
     private clusterService: ClusterService,
@@ -78,6 +79,17 @@ export class EditInfoComponent implements OnInit {
 
   onProjectChange(project: ProjectModel) {
     this.projectId = project.id;
+  }
+
+  onChangeForm() {
+    let name = this.editForm.get('clusterName').value;
+    let des = this.editForm.get('description').value;
+
+    if (name == this.detailCluster.clusterName && des == this.detailCluster.description) {
+      this.isChangeForm = false;
+    } else {
+      this.isChangeForm = true;
+    }
   }
 
   validateForm() {

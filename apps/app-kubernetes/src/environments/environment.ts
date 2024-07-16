@@ -13,8 +13,8 @@ export const environment = {
     refreshTokenEnabled: true,
     refreshTokenType: 'auth-refresh'
   },
-  baseUrl: 'https://idg-api-gw.onsmartcloud.com',
-  baseSCUrl: 'https://api.onsmartcloud.com'
+  baseUrl: 'https://idg-api-gw-dev.onsmartcloud.com',
+  baseSCUrl: 'https://api-dev.onsmartcloud.com'
   // modules: [DelonMockModule.forRoot({ data: MOCKDATA })]
 } as Environment;
 
