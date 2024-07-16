@@ -32,7 +32,7 @@ export class ListAllowAddressPairComponent implements OnInit {
     private allowAddressPairService: AllowAddressPairService,
     private notification: NzNotificationService,
     private activatedRoute: ActivatedRoute,
-    private router: Router,
+    private router: Router
   ) {}
 
   portId: string;
@@ -74,7 +74,7 @@ export class ListAllowAddressPairComponent implements OnInit {
   @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
   regionChanged(region: RegionModel) {
     this.region = region.regionId;
-    if(this.projectCombobox){
+    if (this.projectCombobox) {
       this.projectCombobox.loadProjects(true, region.regionId);
     }
   }
@@ -84,7 +84,7 @@ export class ListAllowAddressPairComponent implements OnInit {
   }
 
   onProjectChange(project: ProjectModel) {
-    this.project = project;
+    this.project = project.id;
   }
 
   getParam(): AllowAddressPairSearchForm {
