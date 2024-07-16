@@ -172,9 +172,7 @@
             nz-tooltip
             [nzTooltipTitle]="'app.view.detail' | i18n"
             nzTooltipPlacement="bottom"
-            [routerLink]="
-              '/app-smart-cloud/object-storage/bucket/' + data.bucketName
-            "
+            (click)="handleGoToDetail(data.bucketName)"
             >{{ data.bucketName }}</a
           >
         </td>
