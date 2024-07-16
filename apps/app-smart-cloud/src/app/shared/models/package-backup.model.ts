@@ -17,6 +17,9 @@ export class PackageBackupModel {
   usedSize: number
   description: string
   availableSize: number
+  suspendReason: string
+  suspendType: string
+  suspendDate: Date
 }
 
 export class FormUpdatePackage {

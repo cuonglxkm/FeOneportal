@@ -261,6 +261,17 @@ export class VolumeComponent implements OnInit, OnDestroy {
 
   hasRoleSI: boolean = false;
 
+
+  getSuspendedReason(suspendedReason: string) {
+    switch (suspendedReason) {
+      case "CHAMGIAHAN":
+        return this.i18n.fanyi('app.status.low-renew')
+      case "":
+      default:
+        break;
+    }
+  }
+
   ngOnInit() {
     // Lấy thong tin region & project từ local
     let regionAndProject = getCurrentRegionAndProject();
