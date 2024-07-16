@@ -4,10 +4,8 @@ import {
   EventEmitter,
   Inject,
   Input,
-  OnChanges,
   OnInit,
   Output,
-  SimpleChanges,
 } from '@angular/core';
 import { Router } from '@angular/router';
 import { InstancesService } from '../../instances.service';
@@ -24,7 +22,7 @@ import { ALAIN_I18N_TOKEN } from '@delon/theme';
   templateUrl: './instances-btn.component.html',
   styleUrls: ['./instances-btn.component.less'],
 })
-export class InstancesBtnComponent implements OnInit, OnChanges {
+export class InstancesBtnComponent implements OnInit {
   @Input() instancesId: any;
   @Input() isProjectVPC: boolean;
   @Output() valueChanged = new EventEmitter();
@@ -62,6 +60,7 @@ export class InstancesBtnComponent implements OnInit, OnChanges {
     );
   }
 
+  //#region Xóa máy ảo
   titleDeleteInstance: string = '';
   checkInputConfirm: boolean = false;
   checkInputEmpty: boolean = false;
@@ -120,14 +119,17 @@ export class InstancesBtnComponent implements OnInit, OnChanges {
     this.checkInputConfirm = false;
     this.checkInputEmpty = false;
   }
+  //#endregion
 
+  //#region Gia hạn máy ảo
   continue(): void {
-    //gia hạn
     this.route.navigate([
       '/app-smart-cloud/instances/instances-extend/' + this.instancesId,
     ]);
   }
+  //#endregion
 
+  //#region Đổi mật khẩu máy ảo
   formPass: FormGroup;
   resetPassword: string = '';
   resetPasswordRepeat: string = '';
@@ -242,7 +244,9 @@ export class InstancesBtnComponent implements OnInit, OnChanges {
       this.check = false;
     }
   }
+  //#endregion
 
+  //#region Bật máy ảo
   isVisibleStart: boolean = false;
   showModalStart() {
     this.isVisibleStart = true;
@@ -272,7 +276,9 @@ export class InstancesBtnComponent implements OnInit, OnChanges {
   handleCancelStart() {
     this.isVisibleStart = false;
   }
+  //#endregion
 
+  //#region Tắt máy ảo
   isVisibleShutdown: boolean = false;
   showModalShutdown() {
     this.isVisibleShutdown = true;
@@ -310,7 +316,9 @@ export class InstancesBtnComponent implements OnInit, OnChanges {
   handleCancelShutdown() {
     this.isVisibleShutdown = false;
   }
+  //#endregion
 
+  //#region Khởi động lại máy ảo
   isVisibleRestart: boolean = false;
   showModalRestart() {
     this.isVisibleRestart = true;
@@ -348,25 +356,5 @@ export class InstancesBtnComponent implements OnInit, OnChanges {
   handleCancelRestart() {
     this.isVisibleRestart = false;
   }
-
-  ngOnChanges(changes: SimpleChanges): void {
-    if (changes) {
-    }
-  }
-  navigateToCreate() {
-    this.route.navigate(['/app-smart-cloud/instances/instances-create']);
-  }
-  navigateToChangeImage() {
-    this.route.navigate([
-      '/app-smart-cloud/instances/instances-edit-info/' + this.instancesId,
-    ]);
-  }
-  navigateToEdit() {
-    this.route.navigate([
-      '/app-smart-cloud/instances/instances-edit/' + this.instancesId,
-    ]);
-  }
-  returnPage(): void {
-    this.route.navigate(['/app-smart-cloud/instances']);
-  }
+  //#endregion
 }

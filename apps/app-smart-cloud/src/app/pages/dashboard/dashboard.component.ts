@@ -84,6 +84,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.getSubscriptionsNearExpire();
   }
 
+  //Lấy thông tin dịch vụ 4 card: Thông tin dịch vụ, Đang hoạt động, Sắp hết hạn và Hết hạn
   getSubscriptionsDashboard() {
     this.isLoading = true;
     this.dashboardService.getSubscriptionsDashboard().subscribe(data => {
@@ -133,6 +134,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   loadingNearExpire: boolean = false
 
+  //Lấy thông tin dịch vụ sắp hết hạn
   getSubscriptionsNearExpire() {
     this.loadingNearExpire = true;
     this.dashboardService.getSubscriptionsNearExpire(this.pageSize, this.pageIndex, this.value).subscribe(data => {
@@ -144,6 +146,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     });
   }
 
+  //Lấy thông tin dịch vụ chi phí sử dụng
   getPaymentCost() {
     this.isLoading = true;
     this.dashboardService.paymentCostUsePaging(this.pageSize, this.pageIndex).subscribe(data => {
@@ -157,6 +160,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     });
   }
 
+  //Vẽ biểu đồ chi phí sử dụng
   getDataChart() {
     this.isLoading = true;
     this.dashboardService.paymentCostUseTotal().subscribe(data => {
@@ -202,6 +206,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
 
+  //Dẫn sang xem chi tiết thanh toán
   navigateToDetailPayment(id: number, paymentOrder: string) {
     this.isLoading = true
     this.paymentService.getPaymentByPaymentNumber(paymentOrder).subscribe(data => {
@@ -210,6 +215,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     })
   }
 
+  //Dẫn sang trang gia hạn
   navigateToExtend(serviceInstanceId: number, serviceType: number) {
     switch (serviceType) {
       case 1:
@@ -302,6 +308,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     }
   }
 
+  // Lấy tên của dịch vụ (sử dụng để phục vụ i18n)
   getServiceName(serviceType) {
     switch (serviceType) {
       case 1:
@@ -384,6 +391,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     }
   }
 
+  //Lấy thông tin role khi vào trang DASHBOARD
   getUserRole(): string[] {
     const token = this.tokenService.get()?.token;
     if (token) {

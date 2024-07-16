@@ -331,122 +331,6 @@ export class RestoreBackupVmComponent implements OnInit {
     }
   }
 
-  configCustom: ConfigCustom = new ConfigCustom();
-  configGPU: ConfigGPU = new ConfigGPU();
-  restoreInstanceBackup: RestoreInstanceBackup = new RestoreInstanceBackup();
-  instanceInit() {
-    this.restoreInstanceBackup.instanceBackupId = this.backupVmModel?.id;
-    let selectedVolumeExternal: VolumeExternalBackup[] = [];
-    this.listOfDataBlockStorage.forEach((e) => {
-      let volumeExternal = new VolumeExternalBackup();
-      volumeExternal.id = e.id;
-      volumeExternal.name = e.newName;
-      volumeExternal.size = e.capacity;
-      selectedVolumeExternal.push(volumeExternal);
-    });
-    this.restoreInstanceBackup.volumeBackups = selectedVolumeExternal;
-    this.restoreInstanceBackup.instanceName = this.backupVmModel?.instanceName;
-    this.restoreInstanceBackup.keypairName = this.selectedSSHKeyName;
-    this.restoreInstanceBackup.securityGroups = this.selectedSecurityGroup;
-    this.restoreInstanceBackup.isUsePrivateNetwork =
-      this.vlanNetwork == '' ? false : true;
-    if (this.vlanNetwork != '') {
-      this.restoreInstanceBackup.privateNetId = this.vlanNetwork;
-    }
-    if (this.port != '') {
-      this.restoreInstanceBackup.privatePortId = this.port;
-    }
-    this.restoreInstanceBackup.ipPublic = this.ipPublicValue;
-    this.restoreInstanceBackup.password = this.password;
-    if (this.isCustomconfig) {
-      this.restoreInstanceBackup.offerId = 0;
-      this.restoreInstanceBackup.ram = this.configCustom.ram;
-      this.restoreInstanceBackup.cpu = this.configCustom.vCPU;
-      this.restoreInstanceBackup.volumeSize = this.configCustom.capacity;
-    } else if (this.isGpuConfig) {
-      this.restoreInstanceBackup.offerId = 0;
-      this.restoreInstanceBackup.ram = this.configGPU.ram;
-      this.restoreInstanceBackup.cpu = this.configGPU.CPU;
-      this.restoreInstanceBackup.volumeSize = this.configGPU.storage;
-      this.restoreInstanceBackup.gpuCount = this.configGPU.GPU;
-      this.restoreInstanceBackup.gpuTypeOfferId = this.configGPU.gpuOfferId;
-    } else {
-      if (this.offerFlavor) {
-        this.restoreInstanceBackup.offerId = this.offerFlavor.id;
-        this.offerFlavor.characteristicValues.forEach((e) => {
-          if (e.charOptionValues[0] == 'RAM') {
-            this.restoreInstanceBackup.ram = Number.parseInt(
-              e.charOptionValues[1]
-            );
-          }
-          if (e.charOptionValues[0] == 'CPU') {
-            this.restoreInstanceBackup.cpu = Number.parseInt(
-              e.charOptionValues[1]
-            );
-          }
-          if (e.charOptionValues[0] == 'HDD') {
-            this.restoreInstanceBackup.volumeSize = Number.parseInt(
-              e.charOptionValues[1]
-            );
-          }
-        });
-      }
-    }
-    this.restoreInstanceBackup.projectId = this.project;
-    this.restoreInstanceBackup.oneSMEAddonId = null;
-    this.restoreInstanceBackup.serviceType = 1;
-    this.restoreInstanceBackup.serviceInstanceId = 0;
-    this.restoreInstanceBackup.saleDept = null;
-    this.restoreInstanceBackup.saleDeptCode = null;
-    this.restoreInstanceBackup.contactPersonEmail = null;
-    this.restoreInstanceBackup.contactPersonPhone = null;
-    this.restoreInstanceBackup.contactPersonName = null;
-    this.restoreInstanceBackup.note = null;
-    this.restoreInstanceBackup.createDateInContract = null;
-    this.restoreInstanceBackup.am = null;
-    this.restoreInstanceBackup.amManager = null;
-    this.restoreInstanceBackup.isTrial = false;
-    this.restoreInstanceBackup.couponCode = null;
-    this.restoreInstanceBackup.dhsxkd_SubscriptionId = null;
-    this.restoreInstanceBackup.dSubscriptionNumber = null;
-    this.restoreInstanceBackup.dSubscriptionType = null;
-    this.restoreInstanceBackup.oneSME_SubscriptionId = null;
-    this.restoreInstanceBackup.regionId = this.region;
-  }
-
-  totalAmount: number = 0;
-  totalVAT: number = 0;
-  totalincludesVAT: number = 0;
-  totalAmountVolume: number = 0;
-  totalVATVolume: number = 0;
-  totalPaymentVolume: number = 0;
-  getTotalAmount() {
-    this.isLoading = true;
-    this.cdr.detectChanges();
-    this.instanceInit();
-    let itemPayment: ItemPayment = new ItemPayment();
-    itemPayment.orderItemQuantity = 1;
-    itemPayment.specificationString = JSON.stringify(
-      this.restoreInstanceBackup
-    );
-    itemPayment.specificationType = 'restore_instancebackup';
-    itemPayment.serviceDuration = this.numberMonth;
-    itemPayment.sortItem = 0;
-    let dataPayment: DataPayment = new DataPayment();
-    dataPayment.orderItems = [itemPayment];
-    dataPayment.projectId = this.project;
-    this.dataService.getPrices(dataPayment).subscribe((result) => {
-      console.log('thanh tien', result);
-      this.totalAmount = Number.parseFloat(result.data.totalAmount.amount);
-      this.totalVAT = Number.parseFloat(result.data.totalVAT.amount);
-      this.totalincludesVAT = Number.parseFloat(
-        result.data.totalPayment.amount
-      );
-      this.isLoading = false;
-      this.cdr.detectChanges();
-    });
-  }
-
   instanceModel: InstancesModel;
   selectedIndextab: number = 0;
   listAttachVolume: VolumeBackup[] = [];
@@ -480,7 +364,7 @@ export class RestoreBackupVmComponent implements OnInit {
         if (
           this.backupVmModel?.volumeBackups
             .filter((e) => e.isBootable == true)[0]
-            .typeName.toUpperCase()
+            .volumeType.toUpperCase()
             .includes('HDD')
         ) {
           this.activeBlockHDD = true;
@@ -677,8 +561,6 @@ export class RestoreBackupVmComponent implements OnInit {
     this.isGpuConfig = true;
     this.resetData();
     this.configGPU.gpuOfferId = this.listGPUType[0].id;
-    this.activeBlockHDD = false;
-    this.activeBlockSSD = true;
   }
 
   resetData() {
@@ -1496,5 +1378,121 @@ export class RestoreBackupVmComponent implements OnInit {
           }
         },
       });
+  }
+
+  configCustom: ConfigCustom = new ConfigCustom();
+  configGPU: ConfigGPU = new ConfigGPU();
+  restoreInstanceBackup: RestoreInstanceBackup = new RestoreInstanceBackup();
+  instanceInit() {
+    this.restoreInstanceBackup.instanceBackupId = this.backupVmModel?.id;
+    let selectedVolumeExternal: VolumeExternalBackup[] = [];
+    this.listOfDataBlockStorage.forEach((e) => {
+      let volumeExternal = new VolumeExternalBackup();
+      volumeExternal.id = e.id;
+      volumeExternal.name = e.newName;
+      volumeExternal.size = e.capacity;
+      selectedVolumeExternal.push(volumeExternal);
+    });
+    this.restoreInstanceBackup.volumeBackups = selectedVolumeExternal;
+    this.restoreInstanceBackup.instanceName = this.backupVmModel?.instanceName;
+    this.restoreInstanceBackup.keypairName = this.selectedSSHKeyName;
+    this.restoreInstanceBackup.securityGroups = this.selectedSecurityGroup;
+    this.restoreInstanceBackup.isUsePrivateNetwork =
+      this.vlanNetwork == '' ? false : true;
+    if (this.vlanNetwork != '') {
+      this.restoreInstanceBackup.privateNetId = this.vlanNetwork;
+    }
+    if (this.port != '') {
+      this.restoreInstanceBackup.privatePortId = this.port;
+    }
+    this.restoreInstanceBackup.ipPublic = this.ipPublicValue;
+    this.restoreInstanceBackup.password = this.password;
+    if (this.isCustomconfig) {
+      this.restoreInstanceBackup.offerId = 0;
+      this.restoreInstanceBackup.ram = this.configCustom.ram;
+      this.restoreInstanceBackup.cpu = this.configCustom.vCPU;
+      this.restoreInstanceBackup.volumeSize = this.configCustom.capacity;
+    } else if (this.isGpuConfig) {
+      this.restoreInstanceBackup.offerId = 0;
+      this.restoreInstanceBackup.ram = this.configGPU.ram;
+      this.restoreInstanceBackup.cpu = this.configGPU.CPU;
+      this.restoreInstanceBackup.volumeSize = this.configGPU.storage;
+      this.restoreInstanceBackup.gpuCount = this.configGPU.GPU;
+      this.restoreInstanceBackup.gpuTypeOfferId = this.configGPU.gpuOfferId;
+    } else {
+      if (this.offerFlavor) {
+        this.restoreInstanceBackup.offerId = this.offerFlavor.id;
+        this.offerFlavor.characteristicValues.forEach((e) => {
+          if (e.charOptionValues[0] == 'RAM') {
+            this.restoreInstanceBackup.ram = Number.parseInt(
+              e.charOptionValues[1]
+            );
+          }
+          if (e.charOptionValues[0] == 'CPU') {
+            this.restoreInstanceBackup.cpu = Number.parseInt(
+              e.charOptionValues[1]
+            );
+          }
+          if (e.charOptionValues[0] == 'HDD') {
+            this.restoreInstanceBackup.volumeSize = Number.parseInt(
+              e.charOptionValues[1]
+            );
+          }
+        });
+      }
+    }
+    this.restoreInstanceBackup.projectId = this.project;
+    this.restoreInstanceBackup.oneSMEAddonId = null;
+    this.restoreInstanceBackup.serviceType = 1;
+    this.restoreInstanceBackup.serviceInstanceId = 0;
+    this.restoreInstanceBackup.saleDept = null;
+    this.restoreInstanceBackup.saleDeptCode = null;
+    this.restoreInstanceBackup.contactPersonEmail = null;
+    this.restoreInstanceBackup.contactPersonPhone = null;
+    this.restoreInstanceBackup.contactPersonName = null;
+    this.restoreInstanceBackup.note = null;
+    this.restoreInstanceBackup.createDateInContract = null;
+    this.restoreInstanceBackup.am = null;
+    this.restoreInstanceBackup.amManager = null;
+    this.restoreInstanceBackup.isTrial = false;
+    this.restoreInstanceBackup.couponCode = null;
+    this.restoreInstanceBackup.dhsxkd_SubscriptionId = null;
+    this.restoreInstanceBackup.dSubscriptionNumber = null;
+    this.restoreInstanceBackup.dSubscriptionType = null;
+    this.restoreInstanceBackup.oneSME_SubscriptionId = null;
+    this.restoreInstanceBackup.regionId = this.region;
+  }
+
+  totalAmount: number = 0;
+  totalVAT: number = 0;
+  totalincludesVAT: number = 0;
+  totalAmountVolume: number = 0;
+  totalVATVolume: number = 0;
+  totalPaymentVolume: number = 0;
+  getTotalAmount() {
+    this.isLoading = true;
+    this.cdr.detectChanges();
+    this.instanceInit();
+    let itemPayment: ItemPayment = new ItemPayment();
+    itemPayment.orderItemQuantity = 1;
+    itemPayment.specificationString = JSON.stringify(
+      this.restoreInstanceBackup
+    );
+    itemPayment.specificationType = 'restore_instancebackup';
+    itemPayment.serviceDuration = this.numberMonth;
+    itemPayment.sortItem = 0;
+    let dataPayment: DataPayment = new DataPayment();
+    dataPayment.orderItems = [itemPayment];
+    dataPayment.projectId = this.project;
+    this.dataService.getPrices(dataPayment).subscribe((result) => {
+      console.log('thanh tien', result);
+      this.totalAmount = Number.parseFloat(result.data.totalAmount.amount);
+      this.totalVAT = Number.parseFloat(result.data.totalVAT.amount);
+      this.totalincludesVAT = Number.parseFloat(
+        result.data.totalPayment.amount
+      );
+      this.isLoading = false;
+      this.cdr.detectChanges();
+    });
   }
 }

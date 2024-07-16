@@ -33,7 +33,8 @@
         (valueChanged)="onRegionChange($event)"
         (regionChange)="onRegionChanged($event)"
       ></region-select-dropdown>
-      <project-select-dropdown #projectCombobox
+      <project-select-dropdown
+        #projectCombobox
         [regionId]="region"
         (valueChanged)="valueChangeProject($event)"
         (userChanged)="userChangeProject()"
@@ -1756,7 +1757,8 @@
                   >{{
                     totalVAT + totalVATVolume + totalVATIPv4 + totalVATIPv6
                       | number
-                  }}VND</span
+                  }}
+                  VND</span
                 >
               </nz-col>
             </nz-row>
