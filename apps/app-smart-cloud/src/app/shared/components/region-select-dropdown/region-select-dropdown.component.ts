@@ -88,19 +88,6 @@ export class RegionSelectDropdownComponent implements OnInit {
     }
   }
 
-  updateSelectedRegion() {
-    if (this.url.includes('advance')) {
-      this.selectedRegion = this.listRegion[1];
-      localStorage.setItem(
-        'regionId',
-        JSON.stringify(this.listRegion[1].regionId)
-      );
-      this.regionChange.emit(this.listRegion[1]);
-    } else {
-      this.setSelectedRegionFromLocalStorage();
-    }
-  }
-
   regionChanged(region: RegionModel) {
     let baseUrl = environment['baseUrl'];
     const regionId = region.regionId;

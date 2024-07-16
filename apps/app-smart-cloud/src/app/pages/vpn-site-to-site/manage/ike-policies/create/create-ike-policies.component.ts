@@ -149,6 +149,7 @@ export class CreateIkePoliciesComponent implements OnInit{
 
   onProjectChange(project: ProjectModel) {
     this.project = project?.id;
+    
   }
 
   userChangeProject(){
