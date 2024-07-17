@@ -274,6 +274,12 @@ export class OrderDetailComponent {
       this.specType = 'mongodb_extend'
     }else if(serviceName === 'Mongodb' && this.data.orderItems[0].serviceType.includes('Điều chỉnh')){
       this.specType = 'mongodb_resize'
+    }else if(serviceName === 'ECR' && this.data.orderItems[0].serviceType === 'Tạo mới'){
+      this.specType = 'ecr_create'
+    }else if(serviceName === 'ECR' && this.data.orderItems[0].serviceType === 'Gia hạn'){
+      this.specType = 'ecr_extend'
+    }else if(serviceName === 'ECR' && this.data.orderItems[0].serviceType.includes('Điều chỉnh')){
+      this.specType = 'ecr_resize'
     }else if(serviceName === 'File system snapshot' && this.data.orderItems[0].serviceType === 'Tạo mới'){
       this.specType = 'sharesnapshot_create'
     }else if(serviceName === 'File system snapshot' && this.data.orderItems[0].serviceType === 'Gia hạn'){
