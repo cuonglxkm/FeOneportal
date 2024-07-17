@@ -1,4 +1,4 @@
-import { Component, Inject, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
+import { Component, Inject, Input, OnChanges, OnInit, SimpleChanges, ViewChild } from '@angular/core';
 import { getCurrentRegionAndProject } from '@shared';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ProjectModel, RegionModel } from '../../../../../../../libs/common-utils/src';
@@ -14,6 +14,7 @@ import { I18NService } from '@core';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { LoadingService } from '@delon/abc/loading';
 import { VpcService } from '../../../shared/services/vpc.service';
+import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
 
 @Component({
   selector: 'one-portal-snapshot-create',
@@ -52,9 +53,9 @@ export class SnapshotCreateComponent implements OnInit, OnChanges {
   selectedVM: any;
   selectedSnapshotPackage: any;
   projectType = 0;
-  @Input() snapshotTypeCreate: any = 0; // VM:1 Volume:0 none:0
+  @Input() navigateType: any = 2; // navigate form(VM:1 Volume:0 none:2)
   loadingCreate: boolean;
-  disableByQuota = true;
+  disableByQuota = false;
 
   quotaType: any;
   quotaHDDTotal: any;
@@ -64,7 +65,8 @@ export class SnapshotCreateComponent implements OnInit, OnChanges {
   quotaTotal: any;
   quotaUsed: any;
   quotaRemain: any;
-
+  selectedVolumeRoot: any;
+  @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
 
   constructor(private router: Router,
               private packageSnapshotService: PackageSnapshotService,
@@ -92,22 +94,29 @@ export class SnapshotCreateComponent implements OnInit, OnChanges {
   }
 
   regionChanged(region: RegionModel) {
+    if(this.projectCombobox){
+      this.projectCombobox.loadProjects(true, region.regionId);
+    }
+    this.region = region.regionId;
+  }
+
+  onRegionChanged(region: RegionModel) {
     this.region = region.regionId;
   }
 
   projectChanged(project: ProjectModel) {
     this.project = project?.id;
     this.projectType = project?.type;
-    if(project?.type == 1) {
+    if (project?.type == 1) {
       this.vpcService.getTotalResouce(project?.id).subscribe(
         data => {
           let total = data.cloudProject;
           let used = data.cloudProjectResourceUsed;
-          this.quotaHDDUsed = used.hdd;
-          this.quotaHDDTotal =total.quotaHddInGb;
-          this.quotaSSDUsed = used.ssd;
-          this.quotaSSDTotal = total.quotaSSDInGb;
-        })
+          this.quotaHDDUsed = used.volumeSnapshotHddInGb;
+          this.quotaHDDTotal = total.quotaVolumeSnapshotHddInGb;
+          this.quotaSSDUsed = used.volumeSnapshotSsdInGb;
+          this.quotaSSDTotal = total.quotaVolumeSnapshotSsdInGb;
+        });
     }
   }
 
@@ -116,8 +125,8 @@ export class SnapshotCreateComponent implements OnInit, OnChanges {
     const data = {
       name: this.validateForm.controls['name'].value,
       description: this.validateForm.controls['description'].value,
-      volumeId: this.selectedSnapshotType == 0 ? this.selectedVolume.id : null,
-      vmId: this.selectedSnapshotType == 1 ? this.selectedVM.id : null,
+      volumeId: this.navigateType == 0 || (this.selectedSnapshotType == 0 && this.navigateType == 2) ? this.selectedVolume.id : null,
+      vmId: this.navigateType == 1 || (this.selectedSnapshotType == 1 && this.navigateType == 2) ? this.selectedVM.id : null,
       region: this.region,
       projectId: this.project,
       scheduleId: null,
@@ -134,7 +143,7 @@ export class SnapshotCreateComponent implements OnInit, OnChanges {
           this.router.navigate(['/app-smart-cloud/snapshot']);
         },
         error => {
-          this.notification.error(this.i18n.fanyi('app.status.fail'), 'Tạo thất bại');
+          this.notification.error(this.i18n.fanyi('app.status.fail'), error.error.message);
         }
       );
   }
@@ -145,7 +154,7 @@ export class SnapshotCreateComponent implements OnInit, OnChanges {
   }
 
   formSearchPackageSnapshot: FormSearchPackageSnapshot = new FormSearchPackageSnapshot();
-  disableCreate = false;
+  disableCreate = true;
   quota: string = '1GB';
 
   private loadSnapshotPackage() {
@@ -186,6 +195,7 @@ export class SnapshotCreateComponent implements OnInit, OnChanges {
             console.log('volume array', this.volumeArray);
             this.selectedVolume = this.volumeArray?.filter(e => e.id == this.idVolume)[0];
             console.log('selected volume', this.selectedVolume);
+            this.changeVmVolume();
           } else {
             this.selectedVolume = null;
             // this.selectedSnapshotType = 1;
@@ -211,6 +221,7 @@ export class SnapshotCreateComponent implements OnInit, OnChanges {
           if (this.activatedRoute.snapshot.paramMap.get('instanceId') != undefined || this.activatedRoute.snapshot.paramMap.get('instanceId') != null) {
             // this.selectedSnapshotType = 1;
             this.selectedVM = this.vmArray.filter(e => e.id == Number.parseInt(this.activatedRoute.snapshot.paramMap.get('instanceId')))[0];
+            this.changeVmVolume();
           } else {
             this.selectedVM = null;
             // this.selectedSnapshotType = 0;
@@ -222,15 +233,15 @@ export class SnapshotCreateComponent implements OnInit, OnChanges {
   checkDisable() {
     this.disableCreate = false;
     if ((this.selectedSnapshotPackage == undefined && this.projectType != 1) ||
-      (this.selectedSnapshotType == 0 && this.selectedVolume == undefined) ||
-      (this.selectedSnapshotType == 1 && this.selectedVM == undefined)) {
+      (((this.navigateType == 0 || (this.selectedSnapshotType == 0 && this.navigateType == 2)) && this.selectedVolume == undefined) ||
+      (((this.navigateType == 1 || (this.selectedSnapshotType == 1 && this.navigateType == 2)) && this.selectedVM == undefined)))) {
       this.disableCreate = true;
     }
 
-    if (this.selectedSnapshotType == 0) {
+    if ((this.navigateType == 0 || (this.selectedSnapshotType == 0 && this.navigateType == 2)) && this.selectedVolume != undefined) {
       this.validateForm.controls['quota'].setValue(this.selectedVolume?.sizeInGB == undefined ? '0GB' : this.selectedVolume?.sizeInGB + 'GB');
-    } else if (this.selectedSnapshotType == 1) {
-      this.validateForm.controls['quota'].setValue(this.selectedVM?.storage == undefined ? '0GB' : this.selectedVM?.storage + 'GB');
+    } else if ((this.navigateType == 1 || (this.selectedSnapshotType == 1 && this.navigateType == 2)) && this.selectedVolumeRoot != undefined) {
+      this.validateForm.controls['quota'].setValue(this.selectedVolumeRoot?.sizeInGB == undefined ? '0GB' : this.selectedVolumeRoot?.sizeInGB + 'GB');
     } else {
       this.validateForm.controls['quota'].setValue('0GB');
     }
@@ -239,8 +250,8 @@ export class SnapshotCreateComponent implements OnInit, OnChanges {
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes.snapshotTypeCreate && changes.snapshotTypeCreate.previousValue == undefined) {
-      if (this.snapshotTypeCreate != undefined) {
-        this.selectedSnapshotType = this.snapshotTypeCreate;
+      if (this.navigateType != undefined) {
+        this.selectedSnapshotType = this.navigateType;
       }
     }
   }
@@ -254,7 +265,8 @@ export class SnapshotCreateComponent implements OnInit, OnChanges {
 
   private checkDisableByQuota() {
     this.disableByQuota = false;
-    if (this.quotaType != undefined && !this.checkNullQuota() && this.validateForm.controls['quota'].value != '0GB') {
+    if (this.quotaType != undefined && this.quotaSSDTotal!=undefined && this.quotaSSDUsed!=undefined && this.quotaHDDTotal!=undefined && this.quotaHDDUsed!=undefined
+      && this.validateForm.controls['quota'].value != '0GB') {
       if (this.quotaType == 'ssd') {
         this.quotaTotal = this.quotaSSDTotal;
         this.quotaUsed = this.quotaSSDUsed;
@@ -270,29 +282,58 @@ export class SnapshotCreateComponent implements OnInit, OnChanges {
   }
 
   changePackageSnapshot() {
-    // TODO get quota
     if (this.projectType != 1 && this.selectedSnapshotPackage != undefined) {
-      this.checkDisable();
+      // TODO get quota
+      this.packageSnapshotService.detail(this.selectedSnapshotPackage.id, this.project)
+        .pipe(finalize(() => {
+          this.checkDisable();
+        }))
+        .subscribe(data => {
+          this.quotaHDDTotal = data.totalSizeHDD;
+          this.quotaHDDUsed = data.usedSizeHDD;
+          this.quotaSSDTotal = data.totalSizeSSD;
+          this.quotaSSDUsed = data.usedSizeSSD;
+        });
+    }
+    if (this.selectedSnapshotPackage == undefined) {
+      this.disableByQuota = false;
+      this.disableCreate = true;
     }
   }
 
   changeVmVolume() {
     // get type
     if ((this.selectedVolume != undefined || this.selectedVM != undefined)) {
-      if (this.selectedSnapshotType == 0) {
+      if (this.navigateType == 0 || (this.selectedSnapshotType == 0 && this.navigateType == 2)) {
         this.quotaType = this.selectedVolume.volumeType;
+        this.checkDisable();
       } else {
-        this.vlService.getVolumeById(this.selectedVM.volumeRootId, this.project).subscribe(
+        this.loadingCreate = true;
+        this.vlService.getVolumeById(this.selectedVM.volumeRootId, this.project)
+          .pipe(finalize(() => {
+            this.checkDisable();
+            this.loadingCreate = false;
+          }))
+          .subscribe(
           data => {
             this.quotaType = data.volumeType;
+            this.selectedVolumeRoot = data;
           }
         );
       }
-      this.checkDisable();
+    } else {
+      this.validateForm.controls['quota'].setValue('0GB');
+      this.quotaType = '';
+    }
+
+    if (((this.navigateType == 0 || (this.selectedSnapshotType == 0 && this.navigateType == 2)) && this.selectedVolume == undefined) ||
+      ((this.navigateType == 1 || (this.selectedSnapshotType == 1 && this.navigateType == 2)) && this.selectedVM == undefined)) {
+      this.disableByQuota = false;
+      this.disableCreate = true;
     }
   }
 
   private checkNullQuota() {
-    return this.quotaSSDUsed != undefined || this.quotaHDDUsed != undefined || this.quotaSSDTotal != undefined || this.quotaSSDTotal != undefined;
+    return this.quotaSSDUsed != undefined && this.quotaHDDUsed == undefined && this.quotaSSDTotal == undefined && this.quotaHDDTotal == undefined;
   }
 }

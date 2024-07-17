@@ -1,6 +1,6 @@
 <page-header [breadcrumb]="breadcrumb"
              [action]="action"
-             title="{{'schedule.backup.title.list' | i18n}}" xmlns="http://www.w3.org/1999/html">
+             title="{{'schedule.backup.title.edit' | i18n}}" xmlns="http://www.w3.org/1999/html">
   <ng-template #breadcrumb>
     <nz-breadcrumb [nzSeparator]="iconTemplate">
       <nz-breadcrumb-item>{{'app.breadcrumb.home' | i18n}}</nz-breadcrumb-item>
@@ -20,8 +20,8 @@
   <ng-template #action>
     <div class="alain-custom-action text-right">
       <share-users-combobox></share-users-combobox>
-      <region-select-dropdown (valueChanged)="regionChanged($event)"></region-select-dropdown>
-      <project-select-dropdown (valueChanged)="projectChanged($event)"
+      <region-select-dropdown (regionChange)="onRegionChanged($event)" (valueChanged)="regionChanged($event)"></region-select-dropdown>
+      <project-select-dropdown #projectCombobox (valueChanged)="projectChanged($event)"
                                (userChanged)="userChanged($event)"
                                [regionId]="region"></project-select-dropdown>
     </div>
@@ -33,7 +33,7 @@
       <nz-row nzGutter="24">
         <nz-col nzSpan="16">
           <nz-card style="border-radius: 8px;">
-            <span class="text-card-header">{{ 'schedule.backup.label.edit' | i18n }}</span>
+            <span class="text-card-header">{{ 'schedule.backup.title.card' | i18n }}</span>
             <div style="display: grid; margin-top: 25px;">
               <label nz-radio nzValue="VM"
                      class="text-label"
@@ -155,7 +155,7 @@
                   </nz-form-label>
                   <nz-form-control nzDisableAutoTips [nzErrorTip]="timeErrorTpl">
                     <nz-time-picker formControlName=times
-                                    class="input-custom"
+                                    class="input-custom" nzFormat="HH:mm"
                                     nzPlaceHolder="{{'schedule.backup.time.select' | i18n}}"
                                     style="width: 100%"></nz-time-picker>
                     <ng-template #timeErrorTpl let-control>
@@ -176,7 +176,7 @@
                   </nz-form-label>
                   <nz-form-control nzDisableAutoTips [nzErrorTip]="timeErrorTpl">
                     <nz-time-picker formControlName=times
-                                    class="input-custom"
+                                    class="input-custom" nzFormat="HH:mm"
                                     nzPlaceHolder="{{'schedule.backup.time.select' | i18n}}"
                                     style="width: 100%"></nz-time-picker>
                     <ng-template #timeErrorTpl let-control>
@@ -220,7 +220,7 @@
                   </nz-form-label>
                   <nz-form-control nzDisableAutoTips [nzErrorTip]="timeErrorTpl">
                     <nz-time-picker formControlName=times
-                                    class="input-custom"
+                                    class="input-custom" nzFormat="HH:mm"
                                     nzPlaceHolder="{{'schedule.backup.time.select' | i18n}}"
                                     style="width: 100%"></nz-time-picker>
                     <ng-template #timeErrorTpl let-control>
@@ -286,7 +286,7 @@
                   </nz-form-label>
                   <nz-form-control nzDisableAutoTips [nzErrorTip]="timeErrorTpl">
                     <nz-time-picker formControlName=times
-                                    class="input-custom"
+                                    class="input-custom" nzFormat="HH:mm"
                                     nzPlaceHolder="{{'schedule.backup.time.select' | i18n}}"
                                     style="width: 100%"></nz-time-picker>
                     <ng-template #timeErrorTpl let-control>
@@ -418,7 +418,7 @@
               <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
               <div class="text-value">{{ 'app.cluster.action-time' | i18n }}</div>
               <div style="margin-top: 10px"
-                   class="text-label">{{ validateForm.controls.times.value | date: 'HH:mm:ss' }}
+                   class="text-label">{{ validateForm.controls.times.value | date: 'HH:mm' }}
               </div>
               <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
               <div *ngIf="validateForm.controls.backupMode.value === 2">
@@ -468,7 +468,7 @@
                           (click)="submitForm()">
                     <img src="assets/imgs/wallet.svg" style="margin-right: 5px; padding-bottom: 5px;" />
                     <span [style.color]="validateForm.invalid ? 'gray' : 'white'">
-                        {{ 'app.button.resize' |i18n }}
+                        {{ 'app.text.edit' |i18n }}
                       </span>
 
                   </button>

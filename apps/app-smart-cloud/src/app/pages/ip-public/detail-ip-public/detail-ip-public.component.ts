@@ -1,4 +1,4 @@
-import {Component, Inject} from '@angular/core';
+import {Component, Inject, ViewChild} from '@angular/core';
 import {AttachedDto, ExtendVolumeDTO, VolumeDTO} from "../../../shared/dto/volume.dto";
 import {NzModalRef, NzModalService} from "ng-zorro-antd/modal";
 import {PopupExtendVolumeComponent} from "../../volume/component/popup-volume/popup-extend-volume.component";
@@ -11,6 +11,7 @@ import {IpPublicService} from "../../../shared/services/ip-public.service";
 import {IpPublicModel} from "../../../shared/models/ip-public.model";
 import {getCurrentRegionAndProject} from "@shared";
 import { RegionModel, ProjectModel } from '../../../../../../../libs/common-utils/src';
+import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
 
 @Component({
   selector: 'one-portal-detail-ip-public',
@@ -38,7 +39,7 @@ export class DetailIpPublicComponent {
   projectId: any;
 
   regionId: any;
-
+  @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
   ngOnInit(): void {
     const id = this.activatedRoute.snapshot.paramMap.get('id');
     this.getIPPublicById(id);
@@ -85,6 +86,13 @@ export class DetailIpPublicComponent {
   }
 
   onRegionChange(region: RegionModel) {
+    this.regionId = region.regionId;
+    if(this.projectCombobox){
+      this.projectCombobox.loadProjects(true, region.regionId);
+    }
+  }
+
+  onRegionChanged(region: RegionModel) {
     this.regionId = region.regionId;
   }
 

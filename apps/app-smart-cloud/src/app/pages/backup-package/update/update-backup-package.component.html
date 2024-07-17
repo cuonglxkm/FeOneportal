@@ -1,10 +1,11 @@
 <img nz-popover src="assets/imgs/edit-2.svg" alt=""
      nzPopoverPlacement="bottom"
      (click)="showModal()"
-     style="cursor: pointer;"
+     style="cursor: pointer; margin-left: 5px;"
      [nzPopoverContent]="'app.text.edit' | i18n" />
-<nz-modal [(nzVisible)]="isVisible" nzTabScrollList="true"
-          (nzOnCancel)="handleCancel()" [nzAutofocus]="undefined">
+<nz-modal [(nzVisible)]="isVisible"
+
+          (nzOnCancel)="handleCancel()">
   <div *nzModalTitle>
     <span class="text-modal-title">{{ 'app.backup.package.edit.title'|i18n }}</span>
   </div>
@@ -33,6 +34,7 @@
             <ng-container *ngIf="control.hasError('required')">{{ 'app.backup.package.name.required'|i18n }}</ng-container>
             <ng-container *ngIf="control.hasError('pattern')">{{ 'app.backup.package.name.pattern'|i18n }}</ng-container>
             <ng-container *ngIf="control.hasError('maxLength')">{{ 'app.backup.package.name.maxLength'|i18n }}</ng-container>
+            <ng-container *ngIf="control.hasError('duplicateName')">{{'app.backup.package.name.duplicate'|i18n }}</ng-container>
           </ng-template>
         </nz-form-control>
       </nz-form-item>
@@ -63,7 +65,7 @@
       <span nz-icon nzType="close" nzTheme="outline"></span>{{ 'app.button.cancel'|i18n }}
     </button>
     <button nz-button nzType="primary" [disabled]="!validateForm.valid" (click)="handleOk()"
-            [nzLoading]="isLoading" appAutofocus
+            [nzLoading]="isLoading"
             class="button-ok">
       <span nz-icon nzType="check" nzTheme="outline"></span>{{ 'app.button.confirm'|i18n }}
     </button>

@@ -55,8 +55,8 @@ export class SecurityService extends BaseService {
       }))
     }
 
-    enableAuthenticator() {
-      return this.http.get<any>(environment.issuer + "/account/mfa/authenticator", null)
+    getOTPForAuthenticator() {
+      return this.http.get<any>(environment.issuer + "/account/mfa/authenticator")
         .pipe(catchError((error: HttpErrorResponse) => {
           if (error.status === 401) {
             console.error('login');
@@ -68,8 +68,8 @@ export class SecurityService extends BaseService {
       }))
     }
 
-    regenerateAuthenticator() {
-      return this.http.post<any>(environment.issuer + "/account/mfa/regenerate-authenticator", null)
+    submitOTPForAuthenticator(form: FormEnable2FA) {
+      return this.http.post<any>(environment.issuer + "/account/mfa/authenticator", form)
         .pipe(catchError((error: HttpErrorResponse) => {
           if (error.status === 401) {
             console.error('login');

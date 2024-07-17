@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject, OnInit, ViewChild } from '@angular/core';
 import {BackupSchedule, FormEditSchedule, FormSearchScheduleBackup} from "../../../../shared/models/schedule.model";
 import {FormControl, FormGroup, NonNullableFormBuilder, Validators} from "@angular/forms";
 import {ActivatedRoute, Router} from "@angular/router";
@@ -10,6 +10,7 @@ import { RegionModel, ProjectModel } from '../../../../../../../../libs/common-u
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from '@core';
 import { getCurrentRegionAndProject } from '@shared';
+import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
 
 @Component({
   selector: 'one-portal-extend-schedule-backup-volume',
@@ -43,7 +44,7 @@ export class EditScheduleBackupVolumeComponent implements OnInit{
   isLoading: boolean = false
   numberOfWeekChangeSelected: string
 
-
+  @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
   customerId: number
   idSchedule: number
   backupSchedule: BackupSchedule
@@ -90,8 +91,15 @@ export class EditScheduleBackupVolumeComponent implements OnInit{
 
   regionChanged(region: RegionModel) {
     this.region = region.regionId;
+    if(this.projectCombobox){
+      this.projectCombobox.loadProjects(true, region.regionId);
+    }
     this.router.navigate(['/app-smart-cloud/schedule/backup/list']);
 
+  }
+
+  onRegionChanged(region: RegionModel) {
+    this.region = region.regionId;
   }
 
   userChanged(project: ProjectModel) {
@@ -231,6 +239,7 @@ export class EditScheduleBackupVolumeComponent implements OnInit{
       }, error => {
         this.isLoadingAction = false
         this.notification.error(this.i18n.fanyi("app.status.fail"), this.i18n.fanyi("schedule.backup.notify.edit.volume.fail"))
+        this.router.navigate(['/app-smart-cloud/schedule/backup/list']);
       })
     } else {
       console.log(this.validateForm.controls);
@@ -250,7 +259,9 @@ export class EditScheduleBackupVolumeComponent implements OnInit{
       this.backupSchedule = data
       this.isLoading = false
       this.validateForm.controls.backupMode.setValue(this.backupSchedule?.mode)
+
       this.validateForm.controls.times.setValue(this.backupSchedule?.runtime)
+      console.log('times', this.validateForm.controls.times.value)
       this.validateForm.controls.name.setValue(this.backupSchedule?.name)
       this.validateForm.controls.description.setValue(this.backupSchedule?.description)
       this.validateForm.controls.months.setValue(this.backupSchedule?.interval)

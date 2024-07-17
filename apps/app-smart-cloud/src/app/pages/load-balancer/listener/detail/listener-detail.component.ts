@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
 import { ipAddressValidator } from '../create/listener-create.component';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -9,6 +9,7 @@ import { finalize } from 'rxjs/operators';
 import { ProjectModel, RegionModel } from '../../../../../../../../libs/common-utils/src';
 import { LoadBalancerService } from '../../../../shared/services/load-balancer.service';
 import { L7Policy } from '../../../../shared/models/load-balancer.model';
+import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
 
 @Component({
   selector: 'one-portal-listener-detail',
@@ -59,7 +60,7 @@ export class ListenerDetailComponent implements OnInit {
   pageIndex: number = 1;
 
   currentPageData: L7Policy[];
-
+  @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
   constructor(private router: Router,
               private fb: NonNullableFormBuilder,
               private service: ListenerService,
@@ -76,6 +77,13 @@ export class ListenerDetailComponent implements OnInit {
   }
 
   onRegionChange(region: RegionModel) {
+    this.regionId = region.regionId;
+    if(this.projectCombobox){
+      this.projectCombobox.loadProjects(true, region.regionId);
+    }
+  }
+
+  onRegionChanged(region: RegionModel) {
     this.regionId = region.regionId;
   }
 

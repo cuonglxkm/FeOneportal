@@ -17,6 +17,14 @@ export class PaymentService extends BaseService {
     super();
   }
 
+  httpOptions = {
+    headers: new HttpHeaders({
+      'Content-Type': 'application/json',
+      'User-Root-Id': localStorage?.getItem('UserRootId') && Number(localStorage?.getItem('UserRootId')) > 0 ? Number(localStorage?.getItem('UserRootId')) : this.tokenService?.get()?.userId,
+      Authorization: 'Bearer ' + this.tokenService.get()?.token,
+    }),
+  };
+
   search(paymentSearch: PaymentSearch) {
     let params = new HttpParams()
     if (paymentSearch.code != undefined || paymentSearch.code != null) {
@@ -39,6 +47,9 @@ export class PaymentService extends BaseService {
     }
     if (paymentSearch.currentPage != undefined || paymentSearch.currentPage != null) {
       params = params.append('currentPage', paymentSearch.currentPage)
+    }
+    if (paymentSearch.invoiceStatus != undefined || paymentSearch.invoiceStatus != null) {
+      params = params.append('invoiceStatus', paymentSearch.invoiceStatus)
     }
 
     return this.http.get<BaseResponse<PaymentModel[]>>(this.baseUrl + this.ENDPOINT.payments + '/Paging', {
@@ -106,5 +117,11 @@ export class PaymentService extends BaseService {
         }
         return throwError(error);
       }));
+  }
+
+  cancelPayment(paymentNumber: string): Observable<any> {
+    return this.http.put<any>(
+      this.baseUrl + this.ENDPOINT.payments + `/cancel?paymentNumber=${paymentNumber}`, this.httpOptions
+    );
   }
 }

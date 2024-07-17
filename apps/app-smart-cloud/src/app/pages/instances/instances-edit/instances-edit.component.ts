@@ -11,6 +11,7 @@ import {
 } from '@angular/core';
 import {
   DataPayment,
+  GpuConfigRecommend,
   InstanceResize,
   InstancesModel,
   ItemPayment,
@@ -27,7 +28,7 @@ import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { NguCarousel, NguCarouselConfig } from '@ngu/carousel';
 import { slider } from '../../../../../../../libs/common-utils/src/lib/slide-animation';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
-import { getCurrentRegionAndProject } from '@shared';
+import { getCurrentRegionAndProject, getListGpuConfigRecommend } from '@shared';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import {
   RegionModel,
@@ -37,6 +38,9 @@ import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from '@core';
 import { ConfigurationsService } from 'src/app/shared/services/configurations.service';
 import { OrderService } from 'src/app/shared/services/order.service';
+import { LoadingService } from '@delon/abc/loading';
+import { CatalogService } from 'src/app/shared/services/catalog.service';
+import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
 
 class ConfigCustom {
   //cấu hình tùy chỉnh
@@ -65,7 +69,6 @@ export class InstancesEditComponent implements OnInit {
   //danh sách các biến của form model
   id: number;
   instancesModel: InstancesModel;
-  instanceNameEdit: string = '';
 
   instanceResize: InstanceResize = new InstanceResize();
   order: Order = new Order();
@@ -86,7 +89,7 @@ export class InstancesEditComponent implements OnInit {
   configGPU: ConfigGPU = new ConfigGPU();
   cardHeight: string = '160px';
   isLoading = false;
-
+  @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
   public carouselTileConfig: NguCarouselConfig = {
     grid: { xs: 1, sm: 1, md: 2, lg: 4, all: 0 },
     speed: 250,
@@ -103,6 +106,7 @@ export class InstancesEditComponent implements OnInit {
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
     @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
     private dataService: InstancesService,
+    private catalogService: CatalogService,
     private cdr: ChangeDetectorRef,
     private notification: NzNotificationService,
     private router: Router,
@@ -111,7 +115,8 @@ export class InstancesEditComponent implements OnInit {
     private renderer: Renderer2,
     private breakpointObserver: BreakpointObserver,
     private configurationService: ConfigurationsService,
-    private orderService: OrderService
+    private orderService: OrderService,
+    private loadingSrv: LoadingService
   ) {}
 
   @ViewChild('myCarouselFlavor') myCarouselFlavor: NguCarousel<any>;
@@ -127,9 +132,13 @@ export class InstancesEditComponent implements OnInit {
     this.updateActivePoint(); // Gọi hàm này sau khi view đã được init để đảm bảo có giá trị cần thiết
   }
 
+  onRegionChanged(region: RegionModel) {
+    this.region = region.regionId;
+  }
+
   updateActivePoint(): void {
     // Gọi hàm reloadCarousel khi cần reload
-    if (this.reloadCarousel) {
+    if (this.reloadCarousel && this.isConfigPackageAtInitial) {
       this.reloadCarousel = false;
       setTimeout(() => {
         this.myCarouselFlavor.reset();
@@ -177,6 +186,7 @@ export class InstancesEditComponent implements OnInit {
     }
   }
 
+  hasRoleSI: boolean;
   ngOnInit(): void {
     this.userId = this.tokenService.get()?.userId;
     this.userEmail = this.tokenService.get()?.email;
@@ -184,9 +194,11 @@ export class InstancesEditComponent implements OnInit {
     let regionAndProject = getCurrentRegionAndProject();
     this.region = regionAndProject.regionId;
     this.projectId = regionAndProject.projectId;
+    this.getActiveServiceByRegion();
     this.getConfigurations();
     this.getListIpPublic();
     this.getListGpuType();
+    this.hasRoleSI = localStorage.getItem('role').includes('SI');
     this.breakpointObserver
       .observe([
         Breakpoints.XSmall,
@@ -229,6 +241,19 @@ export class InstancesEditComponent implements OnInit {
     this.onChangeGpu();
   }
 
+  //Lấy các dịch vụ hỗ trợ theo region
+  isVmGpu: boolean = false;
+  getActiveServiceByRegion() {
+    this.catalogService
+      .getActiveServiceByRegion(['Encryption', 'vm-gpu'], this.region)
+      .subscribe((data) => {
+        console.log('support service', data);
+        this.isVmGpu = data.filter(
+          (e) => e.productName == 'vm-gpu'
+        )[0].isActive;
+      });
+  }
+
   isPreConfigPackage = true;
   isCustomconfig = false;
   isGpuConfig = false;
@@ -247,10 +272,15 @@ export class InstancesEditComponent implements OnInit {
   }
 
   onClickGpuConfig() {
-    this.isPreConfigPackage = false;
-    this.isCustomconfig = false;
-    this.isGpuConfig = true;
-    this.resetData();
+    if (this.isCurrentConfigGpu) {
+      return;
+    } else {
+      this.isPreConfigPackage = false;
+      this.isCustomconfig = false;
+      this.isGpuConfig = true;
+      this.resetData();
+      this.configGPU.gpuOfferId = this.listGPUType[0].id;
+    }
   }
 
   resetData() {
@@ -258,13 +288,9 @@ export class InstancesEditComponent implements OnInit {
     this.selectedElementFlavor = null;
     this.configGPU = new ConfigGPU();
     this.configCustom = new ConfigCustom();
-    this.volumeUnitPrice = '0';
     this.volumeIntoMoney = 0;
-    this.ramUnitPrice = '0';
     this.ramIntoMoney = 0;
-    this.cpuUnitPrice = '0';
     this.cpuIntoMoney = 0;
-    this.gpuUnitPrice = '0';
     this.gpuIntoMoney = 0;
     this.totalAmount = 0;
     this.totalVAT = 0;
@@ -358,6 +384,9 @@ export class InstancesEditComponent implements OnInit {
   }
 
   onRegionChange(region: RegionModel) {
+    if(this.projectCombobox){
+      this.projectCombobox.loadProjects(true, region.regionId);
+    }
     this.router.navigate(['/app-smart-cloud/instances']);
   }
 
@@ -368,13 +397,15 @@ export class InstancesEditComponent implements OnInit {
   checkPermission: boolean = false;
   listSecurityGroupModel: SecurityGroupModel[] = [];
   isConfigPackageAtInitial: boolean = true;
-  isConfigGpuAtInitial: boolean = false;
+  isCurrentConfigGpu: boolean = false;
   getCurrentInfoInstance(instanceId: number): void {
     this.dataService.getById(instanceId, true).subscribe({
       next: (data: any) => {
         this.checkPermission = true;
         this.instancesModel = data;
-        this.instanceNameEdit = this.instancesModel.name;
+        this.listOptionGpuValue = this.listOptionGpuValue.filter(
+          (e) => e >= this.instancesModel.gpuCount
+        );
         if (this.instancesModel.offerId == 0) {
           this.isConfigPackageAtInitial = false;
           this.isCustomconfig = true;
@@ -384,14 +415,16 @@ export class InstancesEditComponent implements OnInit {
           this.instancesModel.gpuType != null
         ) {
           this.isConfigPackageAtInitial = false;
-          this.isConfigGpuAtInitial = true;
+          this.isCurrentConfigGpu = true;
           this.isGpuConfig = true;
+          this.isCustomconfig = false;
           this.configGPU.gpuOfferId = this.listGPUType.filter(
             (e) =>
               e.characteristicValues[0].charOptionValues[0] ==
               this.instancesModel.gpuType
           )[0].id;
         }
+        this.configGPU.GPU = this.instancesModel.gpuCount;
         this.cdr.detectChanges();
         this.selectedElementFlavor = this.instancesModel.flavorId;
         this.region = this.instancesModel.regionId;
@@ -545,7 +578,7 @@ export class InstancesEditComponent implements OnInit {
         if (this.isGpuConfig) {
           this.gpuUnitPrice = (
             Number.parseFloat(result.data.totalAmount.amount) /
-            this.configGPU.GPU
+            (this.isCurrentConfigGpu ? gpu : this.configGPU.GPU)
           ).toFixed(0);
         }
         this.gpuIntoMoney = Number.parseFloat(result.data.totalAmount.amount);
@@ -564,8 +597,7 @@ export class InstancesEditComponent implements OnInit {
         this.configGPU.CPU == 0 &&
         this.configGPU.ram == 0 &&
         this.configGPU.storage == 0 &&
-        this.configGPU.GPU == 0 &&
-        this.configGPU.gpuOfferId == 0)
+        this.configGPU.GPU == this.instancesModel.gpuCount)
     ) {
       this.totalAmount = 0;
       this.totalVAT = 0;
@@ -587,7 +619,6 @@ export class InstancesEditComponent implements OnInit {
       )
       .subscribe((res) => {
         if (this.configCustom.vCPU == 0) {
-          this.cpuUnitPrice = '0';
           this.cpuIntoMoney = 0;
           this.instanceResize.cpu = this.instancesModel.cpu;
         } else {
@@ -608,7 +639,6 @@ export class InstancesEditComponent implements OnInit {
       )
       .subscribe((res) => {
         if (this.configCustom.ram == 0) {
-          this.ramUnitPrice = '0';
           this.ramIntoMoney = 0;
           this.instanceResize.ram = this.instancesModel.ram;
         } else {
@@ -657,7 +687,6 @@ export class InstancesEditComponent implements OnInit {
           (this.configCustom.capacity % this.stepCapacity);
       }
       if (this.configCustom.capacity == 0) {
-        this.volumeUnitPrice = '0';
         this.volumeIntoMoney = 0;
         this.instanceResize.storage = this.instancesModel.storage;
       } else {
@@ -668,6 +697,18 @@ export class InstancesEditComponent implements OnInit {
   }
 
   //#region Cấu hình GPU
+  configRecommend: GpuConfigRecommend;
+  listOptionGpuValue: number[] = [];
+  getListOptionGpuValue() {
+    this.configurationService
+      .getConfigurations('OPTIONGPUVALUE')
+      .subscribe((data) => {
+        this.listOptionGpuValue = data.valueString.split(', ').map(Number);
+        this.getCurrentInfoInstance(this.id);
+      });
+  }
+
+  listGpuConfigRecommend: GpuConfigRecommend[] = [];
   listGPUType: OfferItem[] = [];
   getListGpuType() {
     this.dataService
@@ -676,7 +717,11 @@ export class InstancesEditComponent implements OnInit {
         this.listGPUType = data.filter(
           (e: OfferItem) => e.status.toUpperCase() == 'ACTIVE'
         );
-        this.getCurrentInfoInstance(this.id);
+        this.listGpuConfigRecommend = getListGpuConfigRecommend(
+          this.listGPUType
+        );
+        console.log('list gpu config recommend', this.listGpuConfigRecommend);
+        this.getListOptionGpuValue();
       });
   }
 
@@ -691,12 +736,17 @@ export class InstancesEditComponent implements OnInit {
       )
       .subscribe((res) => {
         if (this.configGPU.CPU == 0) {
-          this.cpuUnitPrice = '0';
           this.cpuIntoMoney = 0;
           this.instanceResize.cpu = this.instancesModel.cpu;
           this.cdr.detectChanges();
         } else {
-          this.getUnitPrice(0, 0, this.configGPU.CPU, 0, 0);
+          this.getUnitPrice(
+            0,
+            0,
+            this.configGPU.CPU,
+            0,
+            this.configGPU.gpuOfferId
+          );
         }
         this.onChangeConfigCustom();
       });
@@ -713,12 +763,17 @@ export class InstancesEditComponent implements OnInit {
       )
       .subscribe((res) => {
         if (this.configGPU.ram == 0) {
-          this.ramUnitPrice = '0';
           this.ramIntoMoney = 0;
           this.instanceResize.ram = this.instancesModel.ram;
           this.cdr.detectChanges();
         } else {
-          this.getUnitPrice(0, this.configGPU.ram, 0, 0, 0);
+          this.getUnitPrice(
+            0,
+            this.configGPU.ram,
+            0,
+            0,
+            this.configGPU.gpuOfferId
+          );
         }
         this.onChangeConfigCustom();
       });
@@ -735,12 +790,17 @@ export class InstancesEditComponent implements OnInit {
       )
       .subscribe((res) => {
         if (this.configGPU.storage == 0) {
-          this.volumeUnitPrice = '0';
           this.volumeIntoMoney = 0;
           this.instanceResize.storage = this.instancesModel.storage;
           this.cdr.detectChanges();
         } else {
-          this.getUnitPrice(this.configGPU.storage, 0, 0, 0, 0);
+          this.getUnitPrice(
+            this.configGPU.storage,
+            0,
+            0,
+            0,
+            this.configGPU.gpuOfferId
+          );
         }
         this.onChangeConfigCustom();
       });
@@ -756,23 +816,24 @@ export class InstancesEditComponent implements OnInit {
         debounceTime(500) // Đợi 500ms sau khi người dùng dừng nhập trước khi xử lý sự kiện
       )
       .subscribe((res) => {
-        if (this.configGPU.GPU == 0) {
-          this.gpuUnitPrice = '0';
+        this.configRecommend = this.listGpuConfigRecommend.filter(
+          (e) =>
+            e.id == this.configGPU.gpuOfferId &&
+            e.gpuCount == this.configGPU.GPU
+        )[0];
+        console.log('cấu hình đề recommend', this.configRecommend);
+        if (this.configGPU.GPU == this.instancesModel.gpuCount) {
           this.gpuIntoMoney = 0;
           this.instanceResize.gpuCount = this.instancesModel.gpuCount;
           this.cdr.detectChanges();
         } else {
-          if (this.configGPU.gpuOfferId != 0) {
-            this.getUnitPrice(
-              0,
-              0,
-              0,
-              this.configGPU.GPU,
-              this.configGPU.gpuOfferId
-            );
-          } else {
-            this.getUnitPrice(0, 0, 0, this.configGPU.GPU, 0);
-          }
+          this.getUnitPrice(
+            0,
+            0,
+            0,
+            this.configGPU.GPU - this.instancesModel.gpuCount,
+            this.configGPU.gpuOfferId
+          );
         }
         this.onChangeConfigCustom();
       });
@@ -781,6 +842,11 @@ export class InstancesEditComponent implements OnInit {
   changeGpuType() {
     if (this.configGPU.GPU != 0) {
       this.getUnitPrice(0, 0, 0, this.configGPU.GPU, this.configGPU.gpuOfferId);
+      this.configRecommend = this.listGpuConfigRecommend.filter(
+        (e) =>
+          e.id == this.configGPU.gpuOfferId && e.gpuCount == this.configGPU.GPU
+      )[0];
+      console.log('cấu hình đề recommend', this.configRecommend);
     }
     this.getTotalAmount();
   }
@@ -823,8 +889,7 @@ export class InstancesEditComponent implements OnInit {
       this.instanceResize.cpu = this.configGPU.CPU + this.instancesModel.cpu;
       this.instanceResize.storage =
         this.configGPU.storage + this.instancesModel.storage;
-      this.instanceResize.gpuCount =
-        this.configGPU.GPU + this.instancesModel.gpuCount;
+      this.instanceResize.gpuCount = this.configGPU.GPU;
       if (this.configGPU.gpuOfferId) {
         this.instanceResize.gpuType = this.listGPUType.filter(
           (e) => e.id == this.configGPU.gpuOfferId
@@ -879,8 +944,10 @@ export class InstancesEditComponent implements OnInit {
     ) {
       this.notification.error(
         '',
-        this.i18n.fanyi('app.notify.gpu.configuration.invalid')
+        this.i18n.fanyi('app.notify.gpu.count.invalid')
       );
+      this.isLoading = false;
+      this.cdr.detectChanges();
       return;
     }
     this.orderItem = [];
@@ -913,10 +980,19 @@ export class InstancesEditComponent implements OnInit {
       .subscribe({
         next: (result) => {
           if (result.success) {
-            var returnPath: string = window.location.pathname;
-            this.router.navigate(['/app-smart-cloud/order/cart'], {
-              state: { data: this.order, path: returnPath },
-            });
+            if(this.hasRoleSI) {
+              this.dataService.create(this.order).subscribe(data => {
+                this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('app.notify.resize.instance.success'));
+                this.router.navigate(['/app-smart-cloud/volumes']);
+              }, error => {
+                this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('app.notify.resize.instance.fail'));
+              })
+            } else {
+              var returnPath: string = window.location.pathname;
+              this.router.navigate(['/app-smart-cloud/order/cart'], {
+                state: { data: this.order, path: returnPath },
+              });
+            }
           } else {
             this.isVisiblePopupError = true;
             this.errorList = result.data;
@@ -935,6 +1011,7 @@ export class InstancesEditComponent implements OnInit {
   totalVAT: number = 0;
   totalincludesVAT: number = 0;
   getTotalAmount() {
+    this.loadingSrv.open({ type: 'spin', text: 'Loading...' });
     this.isLoading = true;
     this.cdr.detectChanges();
     this.instanceResizeInit();
@@ -946,16 +1023,19 @@ export class InstancesEditComponent implements OnInit {
     let dataPayment: DataPayment = new DataPayment();
     dataPayment.orderItems = [itemPayment];
     dataPayment.projectId = this.projectId;
-    this.dataService.getPrices(dataPayment).subscribe((result) => {
-      console.log('thanh tien', result);
-      this.totalAmount = Number.parseFloat(result.data.totalAmount.amount);
-      this.totalVAT = Number.parseFloat(result.data.totalVAT.amount);
-      this.totalincludesVAT = Number.parseFloat(
-        result.data.totalPayment.amount
-      );
-      this.isLoading = false;
-      this.cdr.detectChanges();
-    });
+    this.dataService
+      .getPrices(dataPayment)
+      .pipe(finalize(() => this.loadingSrv.close()))
+      .subscribe((result) => {
+        console.log('thanh tien', result);
+        this.totalAmount = Number.parseFloat(result.data.totalAmount.amount);
+        this.totalVAT = Number.parseFloat(result.data.totalVAT.amount);
+        this.totalincludesVAT = Number.parseFloat(
+          result.data.totalPayment.amount
+        );
+        this.isLoading = false;
+        this.cdr.detectChanges();
+      });
   }
 
   cancel(): void {

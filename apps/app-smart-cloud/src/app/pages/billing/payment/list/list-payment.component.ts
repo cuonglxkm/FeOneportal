@@ -17,7 +17,10 @@ import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from '@core';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
-
+import { LoadingService } from '@delon/abc/loading';
+import { debounceTime, finalize, Subject } from 'rxjs';
+import { TimeCommon } from 'src/app/shared/utils/common';
+import { format } from 'date-fns';
 @Component({
   selector: 'one-portal-list-payment',
   templateUrl: './list-payment.component.html',
@@ -27,7 +30,8 @@ export class ListPaymentComponent implements OnInit {
   region = JSON.parse(localStorage.getItem('regionId'));
   project = JSON.parse(localStorage.getItem('projectId'));
 
-  selectedValue?: string = null;
+  selectedValue?: string = '';
+  selectedValueInvoice?: number = 0;
   value?: string;
 
   customerId: number;
@@ -36,10 +40,19 @@ export class ListPaymentComponent implements OnInit {
 
   isLoading: boolean = false;
 
+  searchDelay = new Subject<boolean>();
+
   status = [
-    { label: this.i18n.fanyi('app.payment.status.all'), value: 'all' },
+    { label: this.i18n.fanyi('app.payment.status.all'), value: '' },
     { label: this.i18n.fanyi('app.payment.status.paid'), value: 'PAID' },
-    { label: this.i18n.fanyi('app.payment.status.unpaid'), value: 'NO' },
+    { label: this.i18n.fanyi('app.payment.status.unpaid'), value: 'INIT' },
+    { label: this.i18n.fanyi('app.payment.status.cancel'), value: 'FAILED' },
+  ];
+
+  statusInvoice = [
+    { label: this.i18n.fanyi('app.payment.status.all'), value: 0 },
+    { label: this.i18n.fanyi('app.status.success'), value: 1 },
+    { label: this.i18n.fanyi('app.status.fail'), value: 2 },
   ];
 
   dateFormat = 'dd/MM/yyyy';
@@ -61,7 +74,8 @@ export class ListPaymentComponent implements OnInit {
   dateRange: Date[] | null = null;
   fromDate: Date | null = null;
   toDate: Date | null = null;
-
+  fromDateFormatted: string | null = null;
+  toDateFormatted: string | null = null;
   formSearch: PaymentSearch = new PaymentSearch();
 
   constructor(
@@ -69,8 +83,23 @@ export class ListPaymentComponent implements OnInit {
     private paymentService: PaymentService,
     private router: Router,
     @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
-    private notificationService: NotificationService
+    private notificationService: NotificationService,
+    private loadingSrv: LoadingService
   ) {}
+
+  ngOnInit(): void {
+    this.customerId = this.tokenService.get()?.userId;
+    this.getListInvoices()
+    this.searchDelay
+      .pipe(debounceTime(TimeCommon.timeOutSearch))
+      .subscribe(() => {
+        this.getListInvoices();
+    });
+
+    this.notificationService.connection.on('UpdateStatePayment', (data) => {
+      this.getListInvoices();
+    });
+  }
 
   regionChanged(region: RegionModel) {
     this.region = region.regionId;
@@ -81,32 +110,35 @@ export class ListPaymentComponent implements OnInit {
   }
 
   onChange(value: string) {
-    console.log('abc', this.selectedValue);
-    if (value === 'all') {
-      this.selectedValue = '';
-    } else {
-      this.selectedValue = value;
-    }
+    this.selectedValue = value;
     this.getListInvoices();
   }
 
-  onDateRangeChange(value: Date[]): void {
-    if (value) {
-      this.dateRange = value;
-      this.fromDate = value[0];
-      this.toDate = value[1];
-      this.getListInvoices();
-    } else {
-      this.dateRange = null;
-      // this.fromDate = value[0]
-      // this.toDate = value[1]
-      this.getListInvoices();
-    }
+  search(search: string) {
+    this.value = search.toUpperCase().trim();
+    this.getListInvoices();
   }
 
-  onInputChange(value: string) {
-    this.value = value.toUpperCase();
-    console.log('input text: ', this.value);
+  onPageSizeChange(event: any) {
+    this.pageSize = event;
+    this.checked = false
+    this.setOfCheckedId.clear()
+    this.downloadList = []
+    this.getListInvoices();
+  }
+
+  onPageIndexChange(event: any) {
+    this.pageIndex = event;
+    this.checked = false
+    this.setOfCheckedId.clear()
+    this.downloadList = []
+    console.log(this.checked);
+    
+    this.getListInvoices();
+  }
+
+  onChangeInvoice(value: number) {
+    this.selectedValueInvoice = value;
     this.getListInvoices();
   }
 
@@ -118,36 +150,25 @@ export class ListPaymentComponent implements OnInit {
     }
   }
 
-  // onCurrentPageDataChange(listOfCurrentPageData: readonly PaymentModel[]): void {
-  //   this.listOfCurrentPageData = listOfCurrentPageData;
-  //   this.refreshCheckedStatus();
-  // }
-
-  onQueryParamsChange(params: NzTableQueryParams) {
-    const { pageSize, pageIndex } = params;
-    this.pageSize = pageSize;
-    this.pageIndex = pageIndex;
-    this.getListInvoices();
-    this.refreshCheckedStatus();
-  }
 
   refreshCheckedStatus(): void {
-    this.checked = this.listOfCurrentPageData.every((item) =>
-      this.setOfCheckedId.has(item.id)
-    );
-    this.downloadList = this.listOfData.filter(
-      (data) => this.setOfCheckedId.has(data.id) && !!data.eInvoiceCode
-    );
-    this.indeterminate =
-      this.listOfCurrentPageData.some((item) =>
-        this.setOfCheckedId.has(item.id)
-      ) && !this.checked;
+    if (!this.response?.records) {
+      return;
+    } else {
+      for (let item of this.response?.records) {
+        item.checked = this.setOfCheckedId.has(item.id);
+        item.indeterminate = this.setOfCheckedId.has(item.id) && !item.checked;
+      }
+      this.downloadList = this.response?.records.filter(
+        (data) => this.setOfCheckedId.has(data.id) && !!data.eInvoiceCode
+      );
+    }
   }
 
   onCurrentPageDataChange(
     listOfCurrentPageData: readonly PaymentModel[]
   ): void {
-    this.listOfCurrentPageData = listOfCurrentPageData;
+    listOfCurrentPageData = this.response?.records;
     this.refreshCheckedStatus();
   }
   onItemChecked(id: number, checked: boolean): void {
@@ -156,7 +177,7 @@ export class ListPaymentComponent implements OnInit {
   }
 
   onAllChecked(value: boolean): void {
-    this.listOfCurrentPageData.forEach((item) =>
+    this.response?.records.forEach((item) =>
       this.updateCheckedSet(item.id, value)
     );
     this.refreshCheckedStatus();
@@ -167,35 +188,32 @@ export class ListPaymentComponent implements OnInit {
     if (this.value === null || this.value === undefined) {
       this.formSearch.code = '';
     } else {
-      this.formSearch.code = this.value;
+      this.formSearch.code = this.value.toUpperCase().trim();
     }
-
-    if (this.selectedValue === 'all') {
-      this.formSearch.status = '';
-    } else {
-      this.formSearch.status = this.selectedValue;
-    }
+    this.formSearch.status = this.selectedValue;
     if (this.dateRange?.length > 0) {
-      this.formSearch.fromDate = this.dateRange[0].toLocaleString();
-      this.formSearch.toDate = this.dateRange[1].toLocaleString();
+      this.formSearch.fromDate = this.fromDateFormatted;
+      this.formSearch.toDate = this.toDateFormatted;
     } else {
       this.formSearch.fromDate = '';
       this.formSearch.toDate = '';
     }
     this.formSearch.pageSize = this.pageSize;
     this.formSearch.currentPage = this.pageIndex;
+    this.formSearch.invoiceStatus = this.selectedValueInvoice;
     this.isLoading = true;
     this.paymentService.search(this.formSearch).subscribe(
       (data) => {
         this.isLoading = false;
         this.response = data;
-        this.listOfData = data.records;
         this.listFilteredData = data.records;
-        this.listOfCurrentPageData = data.records;
-        this.response.records = this.response.records.map((item) => {
+        this.response.records = this.response?.records.map((item) => {
           return {
             ...item,
-            eInvoiceCodePadded: item.eInvoiceCode != null ? item.eInvoiceCode.toString().padStart(8, '0') : null
+            eInvoiceCodePadded:
+              item.eInvoiceCode != null
+                ? item.eInvoiceCode.toString().padStart(8, '0')
+                : null,
           };
         });
       },
@@ -211,24 +229,10 @@ export class ListPaymentComponent implements OnInit {
     return n < 8 ? '0' + n : n;
   }
 
-  onPageIndexChange(pageIndex: number): void {
-    this.pageIndex = pageIndex;
-    this.getListInvoices();
+  refreshParams() {
+    this.pageSize = 10;
+    this.pageIndex = 1;
   }
-
-  disabledDate = (current: Date): boolean => {
-    const now = new Date();
-    // Nếu "from date" đã được chọn, tính 30 ngày từ "from date", ngược lại tính từ ngày hiện tại
-    const startDate = this.fromDate || now;
-    const thirtyDaysAgo = new Date(startDate);
-    thirtyDaysAgo.setDate(startDate.getDate() - 30);
-
-    const thirtyDaysLeft = new Date();
-    thirtyDaysLeft.setDate(startDate.getDate() + 30);
-
-    // Disable các ngày trước ngày tính từ "from date"
-    return current < thirtyDaysAgo || current > thirtyDaysLeft;
-  };
 
   downloadMany() {
     this.downloadList
@@ -267,18 +271,6 @@ export class ListPaymentComponent implements OnInit {
     );
   }
 
-  ngOnInit(): void {
-    this.customerId = this.tokenService.get()?.userId;
-    // this.getListInvoices()
-    if (this.notificationService.connection == undefined) {
-      this.notificationService.initiateSignalrConnection();
-    }
-    this.notificationService.connection.on('UpdateStatePayment', (data) => {
-      debugger;
-      this.getListInvoices();
-    });
-  }
-
   getPaymentDetail(data: any) {
     this.router.navigate([
       '/app-smart-cloud/billing/payments/detail/' +
@@ -293,30 +285,34 @@ export class ListPaymentComponent implements OnInit {
   }
 
   printInvoice(id: number) {
-    this.paymentService.exportInvoice(id).subscribe(
-      (data) => {
-        const element = document.createElement('div');
-        element.style.width = '268mm';
-        element.style.height = '371mm';
-        if (typeof data === 'string' && data.trim().length > 0) {
-          element.innerHTML = data;
+    this.loadingSrv.open({ type: 'spin', text: 'Loading...' });
+    this.paymentService
+      .exportInvoice(id)
+      .pipe(finalize(() => this.loadingSrv.close()))
+      .subscribe(
+        (data) => {
+          const element = document.createElement('div');
+          element.style.width = '268mm';
+          element.style.height = '371mm';
+          if (typeof data === 'string' && data.trim().length > 0) {
+            element.innerHTML = data;
 
-          document.body.appendChild(element);
+            document.body.appendChild(element);
 
-          html2canvas(element).then((canvas) => {
-            const imgData = canvas.toDataURL('image/jpeg', 1.0);
-            const pdf = new jsPDF('p', 'mm', 'a4');
-            pdf.addImage(imgData, 'JPEG', 0, 0, 210, 297);
-            window.open(pdf.output('bloburl'), '_blank');
-            document.body.removeChild(element);
-          });
-        } else {
-          console.log('error:', data);
+            html2canvas(element).then((canvas) => {
+              const imgData = canvas.toDataURL('image/jpeg', 1.0);
+              const pdf = new jsPDF('p', 'mm', 'a4');
+              pdf.addImage(imgData, 'JPEG', 0, 0, 210, 297);
+              window.open(pdf.output('bloburl'), '_blank');
+              document.body.removeChild(element);
+            });
+          } else {
+            console.log('error:', data);
+          }
+        },
+        (error) => {
+          console.log('error:', error);
         }
-      },
-      (error) => {
-        console.log('error:', error);
-      }
-    );
+      );
   }
 }

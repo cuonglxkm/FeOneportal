@@ -23,7 +23,7 @@
     <div class="alain-custom-action text-right">
       <share-users-combobox></share-users-combobox>
       <!-- <region-select-dropdown (valueChanged)="regionChanged($event)"></region-select-dropdown> -->
-      <!-- <project-select-dropdown (valueChanged)="projectChanged($event)" [regionId]="region"></project-select-dropdown> -->
+      <!-- <project-select-dropdown #projectCombobox (valueChanged)="projectChanged($event)" [regionId]="region"></project-select-dropdown> -->
     </div>
   </ng-template>
 </page-header>
@@ -36,7 +36,7 @@
           <nz-select
             [(ngModel)]="selectedValue"
             (ngModelChange)="onChange($event)"
-            [nzPlaceHolder]="'app.payment.status' | i18n"
+            [nzPlaceHolder]="'app.payment.status.payment1' | i18n"
             style="width: 150px"
             class="input-select-custom"
           >
@@ -48,13 +48,19 @@
           </nz-select>
         </div>
         <div *nzSpaceItem>
-          <nz-range-picker
-            class="input-date-picker"
-            [(ngModel)]="dateRange"
-            (ngModelChange)="onDateRangeChange($event)"
-            [nzDisabledDate]="disabledDate"
-            [nzFormat]="dateFormat"
-          ></nz-range-picker>
+          <nz-select
+            [(ngModel)]="selectedValueInvoice"
+            (ngModelChange)="onChangeInvoice($event)"
+            [nzPlaceHolder]="'app.payment.status.invoice' | i18n"
+            style="width: 150px"
+            class="input-select-custom"
+          >
+            <nz-option
+              *ngFor="let item of statusInvoice"
+              [nzValue]="item.value"
+              [nzLabel]="item.label"
+            ></nz-option>
+          </nz-select>
         </div>
         <div *nzSpaceItem>
           <nz-input-group
@@ -64,7 +70,7 @@
           >
             <input
               [(ngModel)]="value"
-              (input)="onInputChange($event.target['value'])"
+              #searchBox (keyup.enter)="search(searchBox.value)" (ngModelChange)="searchDelay.next(false)"
               type="text"
               nz-input
               [placeholder]="'app.payment.searchPlaceHolder' | i18n"
@@ -94,17 +100,18 @@
       #rowSelectionTable
       nzShowSizeChanger
       [nzData]="response?.records"
-      [nzPageIndex]="response?.currentPage"
+      (nzPageSizeChange)="onPageSizeChange($event)"
+      (nzPageIndexChange)="onPageIndexChange($event)"
+      [nzPageSize]="pageSize" 
+      [nzPageIndex]="pageIndex"
       [nzTotal]="response?.totalCount"
-      (nzQueryParams)="onQueryParamsChange($event)"
       [nzLoading]="isLoading"
       [nzFrontPagination]="false"
-      (nzCurrentPageDataChange)="onCurrentPageDataChange($event)"
     >
       <thead>
         <tr>
           <th
-            [nzChecked]="checked"
+            [(nzChecked)]="checked"
             [nzIndeterminate]="indeterminate"
             (nzCheckedChange)="onAllChecked($event)"
             nzLeft
@@ -113,7 +120,6 @@
           <th>{{ 'app.payment.orderCode' | i18n }}</th>
           <th>{{ 'app.payment.invoiceNumber' | i18n }}</th>
           <th>{{ 'app.payment.totalPrice' | i18n }}</th>
-          <th>{{ 'app.payment.createDate' | i18n }}</th>
           <th>{{ 'app.payment.status.payment' | i18n }}</th>
           <th>{{ 'app.payment.status.invoice' | i18n }}</th>
           <th>{{ 'app.payment.downloadInvoice' | i18n }}</th>
@@ -145,9 +151,6 @@
             </ng-template>
           </td>
           <td nzAlign="right" nzBreakWord>{{ data.totalAmount | number }}</td>
-          <td nzAlign="center" nzBreakWord>
-            {{ data.createdDate | date : 'dd/MM/yyyy' }}
-          </td>
 
           <ng-container>
             <td
@@ -199,11 +202,12 @@
             "
             (click)="serviceDownload(data.eInvoiceCode)"
             style="cursor: pointer; text-align: center; color: #0066b0"
-            class=""
+            class=""           
             nzBreakWord
           >
             <one-portal-svg-icon
               class="icon-svg justify-center-icon"
+              [tooltip]="'app.payment.download' | i18n"
               [icon]="'icon_download'"
             ></one-portal-svg-icon>
           </td>
@@ -216,6 +220,7 @@
           >
             <one-portal-svg-icon
               class="icon-svg justify-center-icon"
+              [tooltip]="'app.payment.download' | i18n"
               [icon]="'icon_download'"
             ></one-portal-svg-icon>
           </td>

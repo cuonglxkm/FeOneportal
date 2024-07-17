@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject, OnInit, ViewChild } from '@angular/core';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from '@core';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -9,6 +9,8 @@ import { ProjectModel, RegionModel } from '../../../../../../../libs/common-util
 import { finalize } from 'rxjs';
 import { da } from 'date-fns/locale';
 import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
+import { PackageSnapshotService } from '../../../shared/services/package-snapshot.service';
+import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
 
 @Component({
   selector: 'one-portal-snapshot-detail',
@@ -28,11 +30,13 @@ export class SnapshotDetailComponent implements OnInit{
   }> = this.fb.group({
     description: ['', []],
   });
+  @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
   constructor(@Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
               private fb: NonNullableFormBuilder,
               private router: Router,
               private activatedRoute: ActivatedRoute,
               private service: VolumeService,
+              private packageSnapshotService: PackageSnapshotService,
               private notification: NzNotificationService) {
   }
 
@@ -47,6 +51,13 @@ export class SnapshotDetailComponent implements OnInit{
   }
 
   regionChanged(region: RegionModel) {
+    if(this.projectCombobox){
+      this.projectCombobox.loadProjects(true, region.regionId);
+    }
+    this.region = region.regionId;
+  }
+
+  onRegionChanged(region: RegionModel) {
     this.region = region.regionId;
   }
 
@@ -73,10 +84,9 @@ export class SnapshotDetailComponent implements OnInit{
   }
 
   private loadPackageSnapshot(snapshotPackageId) {
-    this.service.getDetailPackageSnapshot(snapshotPackageId).subscribe(
-      data => {
-        this.packageSnap = data;
-      }
-    )
+    this.packageSnapshotService.detail(snapshotPackageId, this.project).subscribe(data => {
+      console.log('data', data);
+      this.packageSnap = data;
+    });
   }
 }

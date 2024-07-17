@@ -11,8 +11,8 @@
   <ng-template #action>
     <div class="alain-custom-action text-right">
       <share-users-combobox></share-users-combobox>
-      <region-select-dropdown (valueChanged)="onRegionChange($event)"></region-select-dropdown>
-      <project-select-dropdown [regionId]="regionId" (valueChanged)="projectChange($event)" (userChanged)="projectChange($event)"></project-select-dropdown>
+      <region-select-dropdown (regionChange)="onRegionChanged($event)" (valueChanged)="onRegionChange($event)"></region-select-dropdown>
+      <project-select-dropdown #projectCombobox [regionId]="regionId" (valueChanged)="projectChange($event)" (userChanged)="projectChange($event)"></project-select-dropdown>
     </div>
   </ng-template>
 </page-header>
@@ -66,7 +66,7 @@
           <!--          <td>{{ item.ipAddress === null || item.ipAddress === '' ? 'IPv6' : 'IPv4' }}</td>-->
           <td>{{ item.attachedVm }}</td>
           <td *ngIf="item.serviceStatus === 'KHOITAO'" style="color: #0066B0">{{'app.status.running' | i18n}}</td>
-          <td *ngIf="item.serviceStatus === 'TAMNGUNG'" style="color: red">{{item.SuspendType}}</td>
+          <td *ngIf="item.serviceStatus === 'TAMNGUNG'" style="color: red">{{item.suspendReason}}</td>
           <td *ngIf="item.status === 0">-</td>
           <td *ngIf="item.status === 2">IN-USE</td>
           <td *ngIf="item.status === 3">ERROR</td>
@@ -97,15 +97,6 @@
       </nz-table>
     </ng-container>
     <ng-container *ngSwitchDefault>
-<!--      <nz-result [nzIcon]="customIcon" nzTitle="{{'app.ip.public.init.title' | i18n}}"-->
-<!--                 nzSubTitle="{{'app.ip.public.init.subTitle' | i18n}}">-->
-<!--        <ng-template #customIcon>-->
-<!--          <img src="assets/imgs/Ip-Public-ver2.png" alt="Custom Icon">-->
-<!--        </ng-template>-->
-<!--        <div nz-result-extra>-->
-<!--          <button (click)="createIp()" nz-button nzSize="large" nzType="primary" *ngIf="projectType != 1">{{'app.ip.public.create.label' | i18n}}</button>-->
-<!--        </div>-->
-<!--      </nz-result>-->
       <result>
         <nz-row>
           <nz-col class="text-center" style="width: 100%">
@@ -138,11 +129,6 @@
           (click)="createIp()"
           nzSize="large"
         >
-<!--          <img-->
-<!--            style="padding-right: 10px; margin-top: -4px"-->
-<!--            src="assets/imgs/cloud-plus-bold.svg"-->
-<!--            alt=""-->
-<!--          />-->
           {{ 'app.ip.public.create.label' | i18n }}
         </button>
       </result>

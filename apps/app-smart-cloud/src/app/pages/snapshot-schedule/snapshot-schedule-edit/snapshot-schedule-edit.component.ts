@@ -4,6 +4,7 @@ import {
   Component,
   Inject,
   OnInit,
+  ViewChild,
 } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { SnapshotVolumeService } from '../../../shared/services/snapshot-volume.service';
@@ -23,6 +24,7 @@ import {
 } from '@angular/forms';
 import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
 import { RegionModel, ProjectModel } from '../../../../../../../libs/common-utils/src';
+import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
 
 @Component({
   selector: 'one-portal-snapshot-schedule-extend',
@@ -61,7 +63,7 @@ export class SnapshotScheduleEditComponent implements OnInit {
   }> = this.fb.group({
     name: ['', [Validators.required, Validators.pattern(/^[\w\d]{1,64}$/)]],
   });
-
+  @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
   ngOnInit(): void {
     const id = Number.parseInt(this.activatedRoute.snapshot.paramMap.get('id'));
     this.customerId = this.tokenService.get()?.userId;
@@ -122,9 +124,16 @@ export class SnapshotScheduleEditComponent implements OnInit {
   }
 
   goBack() {
-    this.router.navigate(['/app-smart-cloud/schedule/snapshot/list']);
+    this.router.navigate(['/app-smart-cloud/schedule/snapshot']);
   }
   onRegionChange(region: RegionModel) {
+    this.region = region.regionId;
+    if(this.projectCombobox){
+      this.projectCombobox.loadProjects(true, region.regionId);
+    }
+  }
+
+  onRegionChanged(region: RegionModel) {
     this.region = region.regionId;
   }
 
@@ -173,7 +182,7 @@ export class SnapshotScheduleEditComponent implements OnInit {
                     'Điều chỉnh lịch Snapshot thành công'
                   );
                   this.router.navigate([
-                    '/app-smart-cloud/schedule/snapshot/list',
+                    '/app-smart-cloud/schedule/snapshot',
                   ]);
                 },
                 error: (e) => {

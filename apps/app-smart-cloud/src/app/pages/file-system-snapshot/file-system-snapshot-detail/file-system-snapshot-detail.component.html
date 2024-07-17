@@ -31,7 +31,7 @@
       <region-select-dropdown
         (valueChanged)="onRegionChange($event)"
       ></region-select-dropdown>
-      <project-select-dropdown
+      <project-select-dropdown #projectCombobox
         [regionId]="region"
         (valueChanged)="onProjectChange($event)"
         (userChanged)="userChangeProject($event)"
@@ -41,7 +41,7 @@
 </page-header>
 
 <nz-content>
-  <div nz-col nzSpan="4" class="mb-4" *ngIf="typeVPC === 0">
+  <div nz-col nzSpan="4" class="mb-4" *ngIf="typeVPC === 0 || typeVPC === 2">
     <button
       class="button-fee"
       nzType="primary"
@@ -167,7 +167,7 @@
             ></textarea>
           </nz-form-control>
         </nz-form-item>
-        <ng-container *ngIf="typeVPC == 0">
+        <ng-container *ngIf="typeVPC == 0 || typeVPC == 2">
           <!-- <nz-descriptions-item [nzTitle]="titleCreateDate">
         <span class="text-label"><b>{{ fileSystemSnapshotDetail?.createTime | date:'dd/MM/yyyy HH:mm:ss' }}</b></span></nz-descriptions-item>
       <nz-descriptions-item [nzTitle]="titleExpireDate" class="text-label">

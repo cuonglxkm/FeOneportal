@@ -64,14 +64,11 @@ export class SnapshotVolumeService extends BaseService {
   createSnapshotSchedule(request: CreateScheduleSnapshotDTO): Observable<any> {
     let urlResult = this.urlSnapshotVl + '/schedule';
     return this.http
-      .post(urlResult, request, this.httpOptions)
-      .pipe(
-        catchError(this.handleError<any>('Create Snapshot schedule error.'))
-      );
+      .post(urlResult, request, this.httpOptions);
   }
 
   getDetailSnapshotSchedule(id): Observable<any> {
-    return this.http.get<SnapshotVolumeDto>(this.baseUrl + this.ENDPOINT.provisions + `/vlsnapshots/${id}`, this.httpOptions);
+    return this.http.get<SnapshotVolumeDto>(this.baseUrl + this.ENDPOINT.provisions + `/vlsnapshots/schedule/${id}`, this.httpOptions);
   }
 
   getListSchedule(
@@ -80,9 +77,10 @@ export class SnapshotVolumeService extends BaseService {
     regionId: number,
     projectId: number,
     name: string,
-    volumeName: string
+    volumeName: string,
+    ssPackageId: string
   ): Observable<any> {
-    let urlResult = `/vlsnapshots/schedule?pageSize=${pageSize}&pageNumber=${pageNumber}&regionId=${regionId}&projectId=${projectId}&name=${name}&volumeName=${volumeName}`;
+    let urlResult = `/vlsnapshots/schedule?pageSize=${pageSize}&pageNumber=${pageNumber}&regionId=${regionId}&projectId=${projectId}&name=${name}&volumeName=${volumeName}&ssPackageId=${ssPackageId}`;
     return this.http
       .get<any>(
         this.baseUrl + this.ENDPOINT.provisions + urlResult,

@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, Inject, OnInit } from '@angular/core';
 import {
   AbstractControl,
   FormControl,
@@ -12,14 +12,22 @@ import { HttpClient, HttpContext, HttpHeaders } from '@angular/common/http';
 import { ALLOW_ANONYMOUS, DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import {
   AppValidator,
+  ProvinceModel,
   UserModel,
 } from '../../../../../../libs/common-utils/src';
-import { _HttpClient, ALAIN_I18N_TOKEN } from '@delon/theme';
+import {
+  _HttpClient,
+  ALAIN_I18N_TOKEN,
+  SettingsService,
+  User,
+} from '@delon/theme';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { I18NService } from '@core';
 import { environment } from '@env/environment';
 import { FormUpdateUserInvoice } from '../../../../../app-smart-cloud/src/app/shared/models/invoice';
 import { InvoiceService } from '../../../../../app-smart-cloud/src/app/shared/services/invoice.service';
+import { Router } from '@angular/router';
+import { finalize } from 'rxjs';
 
 @Component({
   selector: 'one-portal-user-profile',
@@ -33,13 +41,21 @@ export class UserProfileComponent implements OnInit {
     public notification: NzNotificationService,
     @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
     private fb: NonNullableFormBuilder,
-    private invoiceService: InvoiceService
+    private invoiceService: InvoiceService,
+    private settings: SettingsService,
+    private router: Router,
+    private cdr: ChangeDetectorRef
   ) {}
+
+  get user(): User {
+    return this.settings.user;
+  }
 
   ngOnInit(): void {
     this.loadUserProfile();
+    this.getProvinces();
   }
-  tabSelect = 0
+  tabSelect = 0;
   customerGroup: any;
   customerGroups: any;
   customerType: any;
@@ -54,14 +70,12 @@ export class UserProfileComponent implements OnInit {
       validators: [
         Validators.required,
         AppValidator.cannotContainSpecialCharactor,
-        noAllWhitespace(),
       ],
     }),
     surname: new FormControl('', {
       validators: [
         Validators.required,
         AppValidator.cannotContainSpecialCharactor,
-        noAllWhitespace(),
       ],
     }),
     email: new FormControl({ value: '', disabled: true }),
@@ -72,11 +86,7 @@ export class UserProfileComponent implements OnInit {
     contract_code: new FormControl({ value: '', disabled: true }),
     province: new FormControl('', { validators: [Validators.required] }),
     address: new FormControl('', {
-      // validators: [
-      //   Validators.required,
-      //   AppValidator.cannotContainSpecialCharactorExceptComma,
-      //   noAllWhitespace(),
-      // ],
+      validators: [AppValidator.cannotContainSpecialCharactorExceptComma],
     }),
     old_password: new FormControl('', { validators: [] }),
     new_password: new FormControl({ value: '', disabled: true }),
@@ -113,14 +123,13 @@ export class UserProfileComponent implements OnInit {
     address: ['', Validators.required],
   });
 
-  selectedIndexChange(event){ 
-    this.tabSelect = event
+  selectedIndexChange(event) {
+    this.tabSelect = event;
 
-    if(this.tabSelect === 1 && this.isTabInvoice){
-      this.getUser()
-      this.isTabInvoice = false
+    if (this.tabSelect === 1 && this.isTabInvoice) {
+      this.getUser();
+      this.isTabInvoice = false;
     }
-    
   }
   submitForm(): void {
     console.log('submitForm');
@@ -313,7 +322,7 @@ export class UserProfileComponent implements OnInit {
       this.formHandleUserInvoice.customerTypeId = this.customerType;
       this.formHandleUserInvoice.customerId = this.tokenService.get()?.userId;
       console.log(this.formHandleUserInvoice);
-  
+
       this.invoiceService.createInvoice(this.formHandleUserInvoice).subscribe({
         next: (data) => {
           this.isLoadingUpdateInfo = false;
@@ -321,7 +330,7 @@ export class UserProfileComponent implements OnInit {
             this.i18n.fanyi('app.status.success'),
             this.i18n.fanyi('app.invoice.pop-up.update.success')
           );
-          this.getUser();
+          setTimeout(() => window.location.reload(), 1000);
         },
         error: (e) => {
           this.isLoadingUpdateInfo = false;
@@ -331,7 +340,7 @@ export class UserProfileComponent implements OnInit {
           );
         },
       });
-    }else if(this.userModel && this.userModel.customerInvoice !== null){
+    } else if (this.userModel && this.userModel.customerInvoice !== null) {
       this.isLoadingUpdateInfo = true;
       this.formHandleUserInvoice.companyName =
         this.formCustomerInvoice.controls.nameCompany.value;
@@ -350,7 +359,7 @@ export class UserProfileComponent implements OnInit {
       this.formHandleUserInvoice.customerId = this.tokenService.get()?.userId;
       this.formHandleUserInvoice.id = this.userModel.customerInvoice.id;
       console.log(this.formHandleUserInvoice);
-  
+
       this.invoiceService.updateInvoice(this.formHandleUserInvoice).subscribe({
         next: (data) => {
           this.isLoadingUpdateInfo = false;
@@ -358,7 +367,7 @@ export class UserProfileComponent implements OnInit {
             this.i18n.fanyi('app.status.success'),
             this.i18n.fanyi('app.invoice.pop-up.update.success')
           );
-          this.getUser();
+          setTimeout(() => window.location.reload(), 1000);
         },
         error: (e) => {
           this.isLoadingUpdateInfo = false;
@@ -374,14 +383,11 @@ export class UserProfileComponent implements OnInit {
   httpOptions = {
     headers: new HttpHeaders({
       'Content-Type': 'application/json',
-      'User-Root-Id':
-        localStorage?.getItem('UserRootId') &&
-        Number(localStorage?.getItem('UserRootId')) > 0
-          ? Number(localStorage?.getItem('UserRootId'))
-          : this.tokenService?.get()?.userId,
       Authorization: 'Bearer ' + this.tokenService.get()?.token,
     }),
   };
+
+  hasRoleSI: boolean = false;
 
   loadUserProfile() {
     // @ts-ignore
@@ -396,12 +402,14 @@ export class UserProfileComponent implements OnInit {
         (res) => {
           this.userModel = res;
 
+          this.hasRoleSI = this.getUserRole().includes("SI");
+
           this.form.patchValue({
             name: res.name,
             surname: res.familyName,
             email: res.email,
             phone: res.phoneNumber,
-            customer_code: res.userCode,
+            customer_code: res.customerCode,
             contract_code: res.contractCode,
             province: res.province,
             address: res.address,
@@ -413,7 +421,9 @@ export class UserProfileComponent implements OnInit {
       );
   }
 
+  isLoadingProfile: boolean = false;
   updateProfile() {
+    this.isLoadingProfile = true;
     const baseUrl = environment['baseUrl'];
     let updatedUser = {
       id: this.userModel.id,
@@ -443,21 +453,25 @@ export class UserProfileComponent implements OnInit {
         context: new HttpContext().set(ALLOW_ANONYMOUS, true),
         headers: this.httpOptions.headers,
       })
+      .pipe(
+        finalize(() => {
+          this.isLoadingProfile = false;
+          this.cdr.detectChanges();
+        })
+      )
       .subscribe({
         next: (res) => {
           console.log(res);
-          this.loadUserProfile();
+          this.user.name = updatedUser.firstName;
+          this.settings.setUser(this.user);
           this.notification.success(
             this.i18n.fanyi('app.status.success'),
             this.i18n.fanyi('app.account.form.success')
           );
+          setTimeout(() => window.location.reload(), 1000);
         },
         error: (error) => {
-          console.log(error);
-          this.notification.error(
-            error.statusText,
-            this.i18n.fanyi('app.account.form.fail')
-          );
+          this.notification.error('', error.error.message);
         },
       });
   }
@@ -484,75 +498,59 @@ export class UserProfileComponent implements OnInit {
     ]);
     this.form.controls['confirm_password'].updateValueAndValidity();
   }
-  onNewPassChange(data: any) {}
 
-  onRetypePassChange(data: any) {}
+  provinceList: ProvinceModel[] = [];
+  getProvinces() {
+    const baseUrl = environment['baseUrl'];
+    this.http
+      .get<any>(`${baseUrl}/users/provinces`, {
+        headers: this.httpOptions.headers,
+      })
+      .subscribe({
+        next: (data) => {
+          this.provinceList = data;
+        },
+        error: (e) => {
+          this.notification.error(
+            e.statusText,
+            this.i18n.fanyi('app.notify.get.list.province')
+          );
+        },
+      });
+  }
 
-  provinceList: string[] = [
-    'Hà Nội',
-    'Thành phố Hồ Chí Minh',
-    'An Giang',
-    'Bà Rịa - Vũng Tàu',
-    'Bắc Giang',
-    'Bắc Kạn',
-    'Bạc Liêu',
-    'Bắc Ninh',
-    'Bến Tre',
-    'Bình Định',
-    'Bình Dương',
-    'Bình Phước',
-    'Bình Thuận',
-    'Cà Mau',
-    'Cao Bằng',
-    'Cần Thơ',
-    'Đà Nẵng',
-    'Đắk Lắk',
-    'Đắk Nông',
-    'Điện Biên',
-    'Đồng Nai',
-    'Đồng Tháp',
-    'Gia Lai',
-    'Hà Giang',
-    'Hà Nam',
-    'Hà Tĩnh',
-    'Hải Dương',
-    'Hải Phòng',
-    'Hậu Giang',
-    'Hòa Bình',
-    'Hưng Yên',
-    'Khánh Hòa',
-    'Kiên Giang',
-    'Kon Tum',
-    'Lai Châu',
-    'Lâm Đồng',
-    'Lạng Sơn',
-    'Lào Cai',
-    'Long An',
-    'Nam Định',
-    'Nghệ An',
-    'Ninh Bình',
-    'Ninh Thuận',
-    'Phú Thọ',
-    'Phú Yên',
-    'Quảng Bình',
-    'Quảng Nam',
-    'Quảng Ngãi',
-    'Quảng Ninh',
-    'Quảng Trị',
-    'Sóc Trăng',
-    'Sơn La',
-    'Tây Ninh',
-    'Thái Bình',
-    'Thái Nguyên',
-    'Thanh Hóa',
-    'Thừa Thiên Huế',
-    'Tiền Giang',
-    'Trà Vinh',
-    'Tuyên Quang',
-    'Vĩnh Long',
-    'Vĩnh Phúc',
-    'Yên Bái',
-  ];
+  onSernameBlur() {
+    this.form.controls['surname'].setValue(
+      this.form.controls['surname'].value!.trimStart()
+    );
+  }
+
+  onNameBlur() {
+    this.form.controls['name'].setValue(
+      this.form.controls['name'].value!.trimStart()
+    );
+  }
+
+
+  getUserRole(): string[] {
+    const token = this.tokenService.get()?.token;
+    if (token) {
+      const decodedToken = this.decodeToken(token);
+      return decodedToken['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'] || []; // Adjust 'roles' to the actual key used in your token
+    }
+    return [];
+  }
+
+  private decodeToken(token: string): any {
+    const parts = token.split('.');
+    if (parts.length !== 3) {
+      throw new Error('The token is not valid JWT');
+    }
+    const decoded = atob(parts[1]);
+    return JSON.parse(decoded);
+  }
+
+
 }
 
 export function noAllWhitespace(): ValidatorFn {

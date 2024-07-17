@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
@@ -10,6 +10,7 @@ import { IpsecPolicyService } from 'src/app/shared/services/ipsec-policy.service
 import { I18NService } from '@core';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { NAME_SPECIAL_REGEX } from 'src/app/shared/constants/constants';
+import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
 
 
 @Component({
@@ -71,7 +72,7 @@ export class CreateIpsecPoliciesComponent implements OnInit{
     lifeTimeValue: [3600, [Validators.required, Validators.min(60)]]
   });
 
-
+  @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
   getData(): any {
     this.formCreateIpsecPolicy.customerId =
       this.tokenService.get()?.userId;
@@ -138,7 +139,14 @@ export class CreateIpsecPoliciesComponent implements OnInit{
 
   onRegionChange(region: RegionModel) {
     this.region = region.regionId;
+    if(this.projectCombobox){
+      this.projectCombobox.loadProjects(true, region.regionId);
+    }
     this.router.navigate(['/app-smart-cloud/vpn-site-to-site']);
+  }
+
+  onRegionChanged(region: RegionModel) {
+    this.region = region.regionId;
   }
 
   onProjectChange(project: ProjectModel) {

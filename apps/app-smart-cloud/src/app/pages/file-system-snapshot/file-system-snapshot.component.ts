@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject, OnInit, ViewChild } from '@angular/core';
 import { getCurrentRegionAndProject } from '@shared';
 import { IpFloatingService } from '../../shared/services/ip-floating.service';
 import { FormSearchIpFloating, IpFloating } from '../../shared/models/ip-floating.model';
@@ -8,6 +8,7 @@ import { debounceTime, Subject } from 'rxjs';
 import { FormSearchFileSystemSnapshot } from 'src/app/shared/models/filesystem-snapshot';
 import { FileSystemSnapshotService } from 'src/app/shared/services/filesystem-snapshot.service';
 import { TimeCommon } from 'src/app/shared/utils/common';
+import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
 
 @Component({
   selector: 'one-portal-file-system',
@@ -48,7 +49,12 @@ export class FileSystemSnapshotComponent {
 }
 
   onRegionChange(region: RegionModel) {
+    console.log(region);
+    
     this.region = region.regionId;
+    if(this.projectCombobox){
+      this.projectCombobox.loadProjects(true, region.regionId);
+    }
     this.refreshParams();
   }
 
@@ -73,7 +79,7 @@ export class FileSystemSnapshotComponent {
     this.value = search.toLowerCase().trim();
     this.getData()
   }
-
+  @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
 
 
   getData() {
@@ -85,6 +91,8 @@ export class FileSystemSnapshotComponent {
     this.formSearchFileSystemSnapshot.currentPage = this.pageIndex
     this.formSearchFileSystemSnapshot.name = this.value.toLowerCase().trim()
     this.formSearchFileSystemSnapshot.customerId = this.customerId
+    console.log(this.formSearchFileSystemSnapshot);
+    
     this.fileSystemSnapshotService.getFileSystemSnapshot(this.formSearchFileSystemSnapshot)
       .pipe(debounceTime(500))
       .subscribe(data => {
@@ -102,6 +110,10 @@ export class FileSystemSnapshotComponent {
     this.getData()
   }
 
+  onRegionChanged(region: RegionModel) {
+    this.region = region.regionId;
+  }
+
   
   ngOnInit() {
     let regionAndProject = getCurrentRegionAndProject();
@@ -112,9 +124,6 @@ export class FileSystemSnapshotComponent {
       this.getData();
     });
 
-    if (this.notificationService.connection == undefined) {
-      this.notificationService.initiateSignalrConnection();
-    }
     this.notificationService.connection.on('UpdateStateShareSnapshot', (data) => {
       console.log(data);
       

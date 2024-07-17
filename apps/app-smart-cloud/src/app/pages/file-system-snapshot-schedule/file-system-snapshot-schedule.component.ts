@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject, OnInit, ViewChild } from '@angular/core';
 import { getCurrentRegionAndProject } from '@shared';
 import { IpFloatingService } from '../../shared/services/ip-floating.service';
 import { FormSearchIpFloating, IpFloating } from '../../shared/models/ip-floating.model';
@@ -7,6 +7,7 @@ import { BaseResponse, ProjectModel, RegionModel } from '../../../../../../libs/
 import { debounceTime } from 'rxjs';
 import { FileSystemSnapshotScheduleModel, FormSearchFileSystemSsSchedule } from 'src/app/shared/models/filesystem-snapshot-schedule';
 import { FileSystemSnapshotScheduleService } from 'src/app/shared/services/file-system-snapshot-schedule.service';
+import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
 
 @Component({
   selector: 'one-portal-file-system',
@@ -29,7 +30,7 @@ export class FileSystemSnapshotScheduleComponent {
   isLoading: boolean = false
 
   isBegin: boolean = false
-
+  @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
   constructor(private fileSystemSnapshotScheduleService: FileSystemSnapshotScheduleService,
               @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService) {
   }
@@ -40,7 +41,12 @@ export class FileSystemSnapshotScheduleComponent {
 }
 
   onRegionChange(region: RegionModel) {
+    console.log(region);
+    
     this.region = region.regionId;
+    if(this.projectCombobox){
+      this.projectCombobox.loadProjects(true, region.regionId);
+    }
     this.refreshParams();
   }
 
@@ -97,12 +103,14 @@ export class FileSystemSnapshotScheduleComponent {
     this.getData()
   }
 
-  ngOnInit() {
+  onRegionChanged(region: RegionModel) {
+    this.region = region.regionId;
+  }
 
+  ngOnInit() {
     let regionAndProject = getCurrentRegionAndProject();
     this.region = regionAndProject.regionId;
     this.project = regionAndProject.projectId;
     this.customerId = this.tokenService.get()?.userId
-    this.getData()
   }
 }

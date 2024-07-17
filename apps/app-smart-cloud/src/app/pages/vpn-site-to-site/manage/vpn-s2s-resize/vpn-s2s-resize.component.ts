@@ -1,4 +1,4 @@
-import { Component, ElementRef, Inject, OnInit, Renderer2 } from '@angular/core';
+import { Component, ElementRef, Inject, OnInit, Renderer2, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { environment } from '@env/environment';
@@ -9,6 +9,7 @@ import { CatalogService } from 'src/app/shared/services/catalog.service';
 import { OrderService } from 'src/app/shared/services/order.service';
 import { VpnSiteToSiteService } from 'src/app/shared/services/vpn-site-to-site.service';
 import { RegionModel, ProjectModel } from '../../../../../../../../libs/common-utils/src';
+import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
 
 @Component({
   selector: 'one-portal-vpn-s2s-resize',
@@ -34,7 +35,8 @@ export class VpnS2sResizeComponent implements OnInit{
   vatPer = 10;
   vpn: any;
   oldOfferId = 0;
-  vatDisplay
+  vatDisplay;
+  @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
   /**
    *
    */
@@ -56,6 +58,13 @@ export class VpnS2sResizeComponent implements OnInit{
   }
 
   regionChanged(region: RegionModel) {
+    this.region = region.regionId;
+    if(this.projectCombobox){
+      this.projectCombobox.loadProjects(true, region.regionId);
+    }
+  }
+
+  onRegionChanged(region: RegionModel) {
     this.region = region.regionId;
   }
 

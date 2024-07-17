@@ -232,6 +232,10 @@ export class SshKeyComponent implements OnInit {
     this.loadSshKeys(true);
   }
 
+  onRegionChanged(region: RegionModel) {
+    this.regionId = region.regionId;
+  }
+
   checkNullObject(object: any): Boolean {
     if (object == null || object == undefined) {
       return true;

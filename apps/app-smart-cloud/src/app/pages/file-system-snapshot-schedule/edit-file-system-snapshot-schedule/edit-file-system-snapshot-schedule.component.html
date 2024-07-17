@@ -9,7 +9,7 @@
         <a [routerLink]="['/']">{{ 'app.breadcrumb.home' | i18n }}</a>
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>
-        <a [routerLink]="['/app-smart-cloud/schedule/snapshot/list']"
+        <a [routerLink]="['/app-smart-cloud/schedule/snapshot']"
           >{{ 'app.breadcrumb.infrastructure.service' | i18n }}</a
         >
       </nz-breadcrumb-item>
@@ -34,7 +34,7 @@
       <region-select-dropdown
         (valueChanged)="regionChange($event)"
       ></region-select-dropdown>
-      <project-select-dropdown
+      <project-select-dropdown #projectCombobox
         [regionId]="region"
         (valueChanged)="projectChange($event)"
       ></project-select-dropdown>
@@ -93,7 +93,7 @@
                 nz-icon
                 nzType="question-circle"
                 nzTheme="outline"
-                nz-popover 
+                nz-popover
                 [nzPopoverContent]="'app.choose.file.system.to.perform.snapshot' | i18n"
                 nzPopoverPlacement="bottom"
               ></span>

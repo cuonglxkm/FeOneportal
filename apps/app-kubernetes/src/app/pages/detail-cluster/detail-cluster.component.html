@@ -50,7 +50,7 @@
 
   <form nz-form [formGroup]="upgradeForm">
     <!-- Thông tin chung -->
-    <nz-card class="border-card">
+    <nz-card class="border-radius-card">
       <h3>{{ 'app.cluster.overall' | i18n }}</h3>
       <div nz-row>
         <div nz-col [nzSpan]="24" class="detailtable">
@@ -92,7 +92,7 @@
                 <td class="w-50">
                   <div nz-row>
                     <div nz-col [nzSpan]="8">
-                      {{ 'app.cluster.version' | i18n }}
+                      <span class="content">{{ 'app.cluster.version' | i18n }}</span>
                     </div>
                     <div nz-col [nzSpan]="16" class="description-info">
                       {{detailCluster.currentVersion}}
@@ -131,19 +131,19 @@
                 <td class="w-50">
                   <div nz-row>
                     <div nz-col [nzSpan]="8">
-                      {{ 'app.cluster.api-endpoint' | i18n }}
+                      <span class="content">{{ 'app.cluster.api-endpoint' | i18n }}</span>
                     </div>
                     <div nz-col [nzSpan]="16" class="description-info">
                       <ng-container *ngIf="detailCluster.apiEndpoint?.length <= 30; else truncateEndpointTpl">
-                        <span>{{detailCluster.apiEndpoint}}</span>
+                        <span class="content">{{detailCluster.apiEndpoint}}</span>
                       </ng-container>
                       <ng-template #truncateEndpointTpl>
                         <span [nzPopoverContent]="apiEnpointTpl" nzPopoverPlacement="bottom" nz-popover>
-                          <span>{{detailCluster.apiEndpoint | truncateLabel}}</span>
+                          <span class="content">{{detailCluster.apiEndpoint | truncateLabel}}</span>
                         </span>
 
                         <ng-template #apiEnpointTpl>
-                          <div style="width: fit-content"><span>{{detailCluster.apiEndpoint}}</span></div>
+                          <div style="width: fit-content"><span class="content">{{detailCluster.apiEndpoint}}</span></div>
                         </ng-template>
                       </ng-template>
 
@@ -179,15 +179,15 @@
 
                 <td class="w-50">
                   <div nz-row>
-                    <div nz-col [nzSpan]="8">{{ 'app.config' | i18n }}</div>
+                    <div nz-col [nzSpan]="8"><span class="content">{{ 'app.config' | i18n }}</span></div>
                     <div nz-col [nzSpan]="16">
-                      <span class="description-info">
+                      <span class="description-info content">
                         <a (click)="handleViewKubeConfig()">
                           <ng-container *ngIf="detailCluster.clusterName.length <= 30; else truncateKubeconfigTpl">
                             {{detailCluster.clusterName}}.Kubeconfig
                           </ng-container>
                           <ng-template #truncateKubeconfigTpl>
-                            <span nz-popover nzPopoverPlacement="leftTop" [nzPopoverContent]="kubeconfigNameTpl">
+                            <span nz-popover nzPopoverPlacement="leftTop" [nzPopoverContent]="kubeconfigNameTpl" class="content">
                               {{(detailCluster.clusterName + '.Kubeconfig') | truncateLabel}}
                             </span>
                             <ng-template #kubeconfigNameTpl>
@@ -199,17 +199,7 @@
                       <button nz-button nzType="text" (click)="handleDownloadKubeConfig()"
                         class="action-icon borderless" [nzTooltipTitle]="'app.cluster.download-config' | i18n"
                         nzTooltipPlacement="top" nz-tooltip>
-                        <span nz-icon>
-                          <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
-                            xmlns="http://www.w3.org/2000/svg">
-                            <path
-                              d="M20.5 10.19H17.61C15.24 10.19 13.31 8.26 13.31 5.89V3C13.31 2.45 12.86 2 12.31 2H8.07C4.99 2 2.5 4 2.5 7.57V16.43C2.5 20 4.99 22 8.07 22H15.93C19.01 22 21.5 20 21.5 16.43V11.19C21.5 10.64 21.05 10.19 20.5 10.19ZM12.28 15.78L10.28 17.78C10.21 17.85 10.12 17.91 10.03 17.94C9.94 17.98 9.85 18 9.75 18C9.65 18 9.56 17.98 9.47 17.94C9.39 17.91 9.31 17.85 9.25 17.79C9.24 17.78 9.23 17.78 9.23 17.77L7.23 15.77C6.94 15.48 6.94 15 7.23 14.71C7.52 14.42 8 14.42 8.29 14.71L9 15.44V11.25C9 10.84 9.34 10.5 9.75 10.5C10.16 10.5 10.5 10.84 10.5 11.25V15.44L11.22 14.72C11.51 14.43 11.99 14.43 12.28 14.72C12.57 15.01 12.57 15.49 12.28 15.78Z"
-                              fill="#005999" />
-                            <path
-                              d="M17.4299 8.81048C18.3799 8.82048 19.6999 8.82048 20.8299 8.82048C21.3999 8.82048 21.6999 8.15048 21.2999 7.75048C19.8599 6.30048 17.2799 3.69048 15.7999 2.21048C15.3899 1.80048 14.6799 2.08048 14.6799 2.65048V6.14048C14.6799 7.60048 15.9199 8.81048 17.4299 8.81048Z"
-                              fill="#005999" />
-                          </svg>
-                        </span>
+                        <img src="assets/imgs/download.svg" class="icon-action-2"/>
                       </button>
                       <button nz-button nzType="text" class="action-icon borderless"
                         [nzTooltipTitle]="'app.cluster.copy' | i18n" nzTooltipPlacement="top" nz-tooltip
@@ -234,10 +224,10 @@
               <tr>
                 <td class="w-50">
                   <div nz-row>
-                    <div nz-col [nzSpan]="8">{{ 'app.text.status' | i18n }}</div>
+                    <div nz-col [nzSpan]="8"><span class="content">{{ 'app.text.status' | i18n }}</span></div>
                     <div nz-col [nzSpan]="16">
                       <ng-container *ngIf="detailCluster.serviceStatus | status2ColorPipe as status">
-                        <span [ngStyle]="{color: status.color, 'font-weight': 600}">{{ status.status | i18n }}</span>
+                        <span [ngStyle]="{color: status.color, 'font-weight': 600}" class="content">{{ status.status | i18n }}</span>
                       </ng-container>
                     </div>
                   </div>
@@ -260,7 +250,7 @@
     </nz-card>
 
     <!-- Thông tin worker group -->
-    <nz-card class="border-card">
+    <nz-card class="border-radius-card">
       <h3>{{ 'app.cluster.worker-group' | i18n }}</h3>
       <div formArrayName="workerGroup" *ngFor="let control of listFormWorkerGroupUpgrade.controls; let i = index;">
         <ng-container [formGroupName]="i">
@@ -271,11 +261,12 @@
                   <tr>
                     <td class="w-50" [ngClass]="{'padbot-zero': isEditMode == true}">
                       <div nz-row>
-                        <div nz-col [nzSpan]="8" [ngClass]="{'padtop-5': isEditMode == true}">{{
-                          'app.cluster.worker-group-name' | i18n }}</div>
+                        <div nz-col [nzSpan]="8" [ngClass]="{'padtop-5': isEditMode == true}">
+                          <span class="content">{{'app.cluster.worker-group-name' | i18n }}</span>
+                        </div>
                         <div nz-col [nzSpan]="16" class="description-info">
                           <ng-container *ngIf="!isEditMode; else editWorkerGroupNameTpl">
-                            {{'workerGroupName' | getValueInForm: listFormWorkerGroupUpgrade : i}}
+                            <span class="content">{{'workerGroupName' | getValueInForm: listFormWorkerGroupUpgrade : i}}</span>
                           </ng-container>
                           <ng-template #editWorkerGroupNameTpl>
                             <nz-form-item>
@@ -306,11 +297,12 @@
 
                     <td class="w-50" [ngClass]="{'padbot-zero': isEditMode == true}">
                       <div nz-row>
-                        <div nz-col [nzSpan]="8" [ngClass]="{'padtop-5': isEditMode == true}">{{
-                          'app.cluster.node-number' | i18n }}</div>
+                        <div nz-col [nzSpan]="8" [ngClass]="{'padtop-5': isEditMode == true}">
+                          <span class="content">{{'app.cluster.node-number' | i18n }}</span>
+                        </div>
                         <div nz-col [nzSpan]="16" class="description-info">
                           <ng-container *ngIf="!isEditMode; else editNodeNumberTpl">
-                            {{'nodeNumber' | getValueInForm: listFormWorkerGroupUpgrade : i}}
+                            <span class="content">{{'nodeNumber' | getValueInForm: listFormWorkerGroupUpgrade : i}}</span>
                           </ng-container>
                           <ng-template #editNodeNumberTpl>
                             <nz-form-item>
@@ -339,12 +331,15 @@
                   <tr>
                     <td class="w-50" [ngClass]="{'padbot-zero': isEditMode == true}">
                       <div nz-row>
-                        <div nz-col [nzSpan]="8" [ngClass]="{'padtop-5': isEditMode == true}">{{ 'app.config' | i18n }}
+                        <div nz-col [nzSpan]="8" [ngClass]="{'padtop-5': isEditMode == true}">
+                          <span class="content">{{ 'app.config' | i18n }}</span>
                         </div>
                         <div nz-col [nzSpan]="16" class="description-info">
                           <ng-container *ngIf="!isEditMode; else editConfigTypeTpl">
-                            {{'cpu' | getValueInForm: listFormWorkerGroupUpgrade : i}}vCPU / {{'ram' | getValueInForm:
-                            listFormWorkerGroupUpgrade : i}}GB
+                            <span class="content">
+                              {{'cpu' | getValueInForm: listFormWorkerGroupUpgrade : i}}vCPU / {{'ram' | getValueInForm:
+                              listFormWorkerGroupUpgrade : i}}GB
+                            </span>
                           </ng-container>
                           <ng-template #editConfigTypeTpl>
                             <nz-form-item>
@@ -370,11 +365,12 @@
 
                     <td class="w-50" [ngClass]="{'padbot-zero': isEditMode == true}">
                       <div nz-row>
-                        <div nz-col [nzSpan]="8" [ngClass]="{'padtop-5': isEditMode == true}">{{ 'app.cluster.storage' |
-                          i18n }}</div>
+                        <div nz-col [nzSpan]="8" [ngClass]="{'padtop-5': isEditMode == true}">
+                          <span class="content">{{ 'app.cluster.storage' | i18n }}</span>
+                        </div>
                         <div nz-col [nzSpan]="16" class="description-info">
                           <ng-container *ngIf="!isEditMode; else editWorkerVolumeSizeTpl">
-                            {{'volumeStorage' | getValueInForm: listFormWorkerGroupUpgrade : i}}
+                            <span class="content">{{'volumeStorage' | getValueInForm: listFormWorkerGroupUpgrade : i}}</span>
                           </ng-container>
                           <ng-template #editWorkerVolumeSizeTpl>
                             <nz-form-item>
@@ -403,8 +399,8 @@
                   <tr>
                     <td class="w-50">
                       <div nz-row>
-                        <div nz-col [nzSpan]="8">Auto scale</div>
-                        <div nz-col [nzSpan]="16" class="description-info">
+                        <div nz-col [nzSpan]="8"><span class="content">Auto scale</span></div>
+                        <div nz-col [nzSpan]="16" class="description-info content">
                           <ng-container *ngIf="!isEditMode; else editScalingTpl">
                             <ng-container
                               *ngIf="('autoScalingWorker' | getValueInForm: listFormWorkerGroupUpgrade : i) == true; else offAutoScaleTpl">
@@ -445,8 +441,8 @@
                       </div> -->
 
                       <div nz-row>
-                        <div nz-col [nzSpan]="8">{{ 'app.hard.drive.type' | i18n }}</div>
-                        <div nz-col [nzSpan]="16" class="description-info">
+                        <div nz-col [nzSpan]="8"><span class="content">{{ 'app.hard.drive.type' | i18n }}</span></div>
+                        <div nz-col [nzSpan]="16" class="description-info content">
                           <ng-container *ngIf="!isEditMode; else editVolumeTypeTpl">
                             {{'volumeTypeName' | getValueInForm: listFormWorkerGroupUpgrade : i}}
                           </ng-container>
@@ -469,10 +465,12 @@
                     <tr>
                       <td class="w-50" [ngClass]="{'padbot-zero': isEditMode == true}">
                         <div nz-row>
-                          <div nz-col [nzSpan]="8" [ngClass]="{'padtop-5': isEditMode == true}">Minimum node</div>
+                          <div nz-col [nzSpan]="8" [ngClass]="{'padtop-5': isEditMode == true}">
+                            <span class="content">Minimum node</span>
+                          </div>
                           <div nz-col [nzSpan]="16" class="description-info">
                             <ng-container *ngIf="!isEditMode; else editMinimumNodeTpl">
-                              {{'minimumNode' | getValueInForm: listFormWorkerGroupUpgrade : i}}
+                              <span class="content">{{'minimumNode' | getValueInForm: listFormWorkerGroupUpgrade : i}}</span>
                             </ng-container>
                             <ng-template #editMinimumNodeTpl>
                               <nz-form-item>
@@ -499,8 +497,10 @@
 
                       <td class="w-50" [ngClass]="{'padbot-zero': isEditMode == true}">
                         <div nz-row>
-                          <div nz-col [nzSpan]="8" [ngClass]="{'padtop-5': isEditMode == true}">Maximum node</div>
-                          <div nz-col [nzSpan]="16" class="description-info">
+                          <div nz-col [nzSpan]="8" [ngClass]="{'padtop-5': isEditMode == true}">
+                            <span class="content">Maximum node</span>
+                          </div>
+                          <div nz-col [nzSpan]="16" class="description-info content">
                             <ng-container *ngIf="!isEditMode; else editMaximumNodeTpl">
                               {{'maximumNode' | getValueInForm: listFormWorkerGroupUpgrade : i}}
                             </ng-container>
@@ -551,7 +551,7 @@
     </nz-card>
 
     <!-- Thông tin network -->
-    <nz-card class="border-card">
+    <nz-card class="border-radius-card">
       <h3>{{ 'app.cluster.network' | i18n }}</h3>
       <div nz-row>
         <div nz-col [nzSpan]="24" class="detailtable">
@@ -579,7 +579,7 @@
     </nz-card>
 
     <!-- Thông tin volume -->
-    <!-- <nz-card class="border-card">
+    <!-- <nz-card class="border-radius-card">
       <h3>Thông tin volume persistent</h3>
       <div nz-row>
         <div nz-col [nzSpan]="24" class="detailtable">
@@ -641,7 +641,7 @@
     </nz-card> -->
 
     <!-- Thông tin SSH -->
-    <nz-card class="border-card">
+    <nz-card class="border-radius-card">
       <h3>SSH Key</h3>
       <div nz-row>
         <div nz-col [nzSpan]="12" class="detailtable">
@@ -650,14 +650,14 @@
               <tr>
                 <td class="w-50">
                   <div nz-row>
-                    <div nz-col [nzSpan]="8">SSH Key</div>
+                    <div nz-col [nzSpan]="8"><span class="content">SSH Key</span></div>
                     <div nz-col [nzSpan]="16">
-                      <span class="description-info">
+                      <span class="description-info content">
                         <ng-container *ngIf="detailCluster.clusterName.length <= 30; else truncateSSHKeyTpl">
                           {{'k8s-' + detailCluster.clusterName + '-ssh_keypair'}}
                         </ng-container>
                         <ng-template #truncateSSHKeyTpl>
-                          <span nz-popover nzPopoverPlacement="leftTop" [nzPopoverContent]="sshkeyNameTpl">
+                          <span nz-popover nzPopoverPlacement="leftTop" [nzPopoverContent]="sshkeyNameTpl" class="content">
                             {{('k8s-' + detailCluster.clusterName + '-ssh_keypair') | truncateLabel}}
                           </span>
                           <ng-template #sshkeyNameTpl>
@@ -710,7 +710,7 @@
 </ng-container>
 
 <ng-template #loadingTpl>
-  <nz-card class="border-card">
+  <nz-card class="border-radius-card">
     <nz-table [nzTemplateMode]="true" [nzLoading]="true">
     </nz-table>
   </nz-card>
@@ -749,7 +749,7 @@
         ></nz-alert>
 
         <ng-template #msgTpl>
-          <span class="description-info">{{ 'app.version.note-title' | i18n }}</span>:
+          <span class="description-info content">{{ 'app.version.note-title' | i18n }}</span>:
         </ng-template>
         <ng-template #desTpl>
           <div>{{ 'app.cluster.warning-upgrade-1' | i18n }}</div>
@@ -771,7 +771,7 @@
       </div>
     </ng-container>
     <ng-template #noAvailableVersionTpl>
-      <span style="font-size: 16px;">{{ 'app.cluster.none-upgrade-description-1' | i18n }}
+      <span style="font-size: 16px;" class="content">{{ 'app.cluster.none-upgrade-description-1' | i18n }}
         <b>{{detailCluster.currentVersion}}</b> {{ 'app.cluster.none-upgrade-description-2' | i18n }}</span>
     </ng-template>
   </div>
@@ -827,32 +827,14 @@
     <div>
       <label>Cluster {{detailCluster.clusterName}} Kubenetes Config</label>
       <div class="modal-btn">
-        <button nz-button nzType="text" class="borderless" (click)="handleCopyKubeConfig()" style="height: fit-content;"
+        <button nz-button nzType="text" class="borderless" (click)="handleCopyKubeConfig()" style="height: fit-content; padding-right: 4px; padding-left: 4px"
           [nzTooltipTitle]="'app.cluster.copy' | i18n" nzTooltipPlacement="top" nz-tooltip>
-          <span nz-icon>
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path
-                d="M16 12.9V17.1C16 20.6 14.6 22 11.1 22H6.9C3.4 22 2 20.6 2 17.1V12.9C2 9.4 3.4 8 6.9 8H11.1C14.6 8 16 9.4 16 12.9Z"
-                stroke="#0066B0" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-              <path
-                d="M22 6.9V11.1C22 14.6 20.6 16 17.1 16H16V12.9C16 9.4 14.6 8 11.1 8H8V6.9C8 3.4 9.4 2 12.9 2H17.1C20.6 2 22 3.4 22 6.9Z"
-                stroke="#0066B0" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-            </svg>
-          </span>
+          <img src="assets/imgs/icon-copy4.svg"/>
         </button>
         <button nz-button nzType="text" class="borderless" (click)="handleDownloadKubeConfig()"
-          style="height: fit-content;" [nzTooltipTitle]="'app.cluster.download-config' | i18n" nzTooltipPlacement="top"
+          style="height: fit-content; padding-left: 4px; padding-right: 4px" [nzTooltipTitle]="'app.cluster.download-config' | i18n" nzTooltipPlacement="top"
           nz-tooltip>
-          <span nz-icon>
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path
-                d="M20.5 10.19H17.61C15.24 10.19 13.31 8.26 13.31 5.89V3C13.31 2.45 12.86 2 12.31 2H8.07C4.99 2 2.5 4 2.5 7.57V16.43C2.5 20 4.99 22 8.07 22H15.93C19.01 22 21.5 20 21.5 16.43V11.19C21.5 10.64 21.05 10.19 20.5 10.19ZM12.28 15.78L10.28 17.78C10.21 17.85 10.12 17.91 10.03 17.94C9.94 17.98 9.85 18 9.75 18C9.65 18 9.56 17.98 9.47 17.94C9.39 17.91 9.31 17.85 9.25 17.79C9.24 17.78 9.23 17.78 9.23 17.77L7.23 15.77C6.94 15.48 6.94 15 7.23 14.71C7.52 14.42 8 14.42 8.29 14.71L9 15.44V11.25C9 10.84 9.34 10.5 9.75 10.5C10.16 10.5 10.5 10.84 10.5 11.25V15.44L11.22 14.72C11.51 14.43 11.99 14.43 12.28 14.72C12.57 15.01 12.57 15.49 12.28 15.78Z"
-                fill="#005999" />
-              <path
-                d="M17.4299 8.81048C18.3799 8.82048 19.6999 8.82048 20.8299 8.82048C21.3999 8.82048 21.6999 8.15048 21.2999 7.75048C19.8599 6.30048 17.2799 3.69048 15.7999 2.21048C15.3899 1.80048 14.6799 2.08048 14.6799 2.65048V6.14048C14.6799 7.60048 15.9199 8.81048 17.4299 8.81048Z"
-                fill="#005999" />
-            </svg>
-          </span>
+          <img src="assets/imgs/download.svg"/>
         </button>
       </div>
     </div>

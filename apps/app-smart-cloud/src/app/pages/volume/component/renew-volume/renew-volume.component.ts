@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject, OnInit, ViewChild } from '@angular/core';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { VolumeService } from '../../../../shared/services/volume.service';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -14,7 +14,7 @@ import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from '@core';
 import { ProjectService } from 'src/app/shared/services/project.service';
 import { OrderService } from '../../../../shared/services/order.service';
-import { debounceTime, Subject } from 'rxjs';
+import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
 
 @Component({
   selector: 'one-portal-renew-volume',
@@ -49,8 +49,8 @@ export class RenewVolumeComponent implements OnInit {
   isVisibleConfirmRenew: boolean = false;
   newValue = 0;
 
-  timeSelected: number
-
+  timeSelected: number;
+  @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
   constructor(@Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
               private volumeService: VolumeService,
               private router: Router,
@@ -73,8 +73,15 @@ export class RenewVolumeComponent implements OnInit {
 
 
   regionChanged(region: RegionModel) {
-    this.region = region.regionId
+    this.region = region.regionId;
+    if(this.projectCombobox){
+      this.projectCombobox.loadProjects(true, region.regionId);
+    }
     this.router.navigate(['/app-smart-cloud/volumes']);
+  }
+
+  onRegionChanged(region: RegionModel) {
+    this.region = region.regionId;
   }
 
   projectChanged(project: ProjectModel) {
@@ -103,9 +110,9 @@ export class RenewVolumeComponent implements OnInit {
       console.log('old', this.volumeInfo?.expirationDate);
       if (data.attachedInstances != null) {
         this.volumeInfo.attachedInstances?.forEach(item => {
-          this.listVMs += item.instanceName+'\n'
-        })
-        this.getTotalAmount()
+          this.listVMs += item.instanceName + '\n';
+        });
+        this.getTotalAmount();
       }
 
     }, error => {
@@ -113,8 +120,8 @@ export class RenewVolumeComponent implements OnInit {
       this.volumeInfo = null;
       this.attachedDto = null;
       this.listVMs = null;
-      this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.failData'))
-      this.router.navigate(['/app-smart-cloud/volumes'])
+      this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.failData'));
+      this.router.navigate(['/app-smart-cloud/volumes']);
     });
   }
 
@@ -134,7 +141,8 @@ export class RenewVolumeComponent implements OnInit {
     this.extendsDto.serviceInstanceId = this.volumeInfo?.id;
     this.extendsDto.regionId = this.volumeInfo?.regionId;
     this.extendsDto.serviceName = this.volumeInfo?.name;
-    this.extendsDto.projectId = this.volumeInfo?.vpcId;
+    this.extendsDto.projectId = this.project;
+    // this.extendsDto.vpcId = this.project
     this.extendsDto.customerId = this.tokenService?.get()?.userId;
     this.extendsDto.typeName = 'SharedKernel.IntegrationEvents.Orders.Specifications.VolumeExtendSpecification,SharedKernel.IntegrationEvents, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null';
     const userString = localStorage.getItem('user');
@@ -171,44 +179,9 @@ export class RenewVolumeComponent implements OnInit {
 
   isVisiblePopupError: boolean = false;
   errorList: string[] = [];
+
   closePopupError() {
     this.isVisiblePopupError = false;
-  }
-
-  doExtend() {
-    // this.volumeInit()
-    this.getTotalAmount();
-    let request = new EditSizeVolumeModel();
-    request.customerId = this.extendsDto.customerId;
-    request.createdByUserId = this.extendsDto.customerId;
-    request.note = this.i18n.fanyi('volume.note.extend');
-    request.totalPayment = this.orderItem?.totalPayment?.amount
-    request.totalVAT = this.orderItem?.totalVAT?.amount
-    request.orderItems = [
-      {
-        orderItemQuantity: 1,
-        specification: JSON.stringify(this.extendsDto),
-        specificationType: 'volume_extend',
-        price: this.orderItem?.totalAmount.amount,
-        serviceDuration: this.validateForm.controls.time.value
-      }
-    ];
-    console.log('request', request)
-    console.log('unit', this.orderItem?.orderItemPrices[0]?.unitPrice.amount)
-    this.orderService.validaterOrder(request).subscribe(data => {
-      if(data.success) {
-        var returnPath: string = '/app-smart-cloud/volume/detail/'+this.idVolume;
-        this.router.navigate(['/app-smart-cloud/order/cart'], {
-          state: { data: request, path: returnPath },
-        });
-      } else {
-        this.isVisiblePopupError = true;
-        this.errorList = data.data;
-      }
-
-    }, error => {
-      this.notification.error(this.i18n.fanyi('app.status.fail'), error.error.detail)
-    })
   }
 
   showModalConfirmRenew() {
@@ -219,19 +192,14 @@ export class RenewVolumeComponent implements OnInit {
     this.isVisibleConfirmRenew = false;
   }
 
-  submitForm() {
-    if (this.validateForm.valid) {
-      this.doExtend();
-    }
-  }
-
-  navigateToPaymentSummary(){
+  navigateToPaymentSummary() {
+    this.isLoadingAction = true;
     if (this.validateForm.valid) {
       this.getTotalAmount();
       let request = new EditSizeVolumeModel();
       request.customerId = this.extendsDto.customerId;
       request.createdByUserId = this.extendsDto.customerId;
-      request.note =  this.i18n.fanyi('volume.note.extend');
+      request.note = this.i18n.fanyi('volume.note.extend');
       request.orderItems = [
         {
           orderItemQuantity: 1,
@@ -241,14 +209,66 @@ export class RenewVolumeComponent implements OnInit {
           serviceDuration: this.validateForm.controls.time.value
         }
       ];
-      var returnPath: string = '/app-smart-cloud/volumes/renew/' + this.idVolume
-      console.log('request', request)
-      this.router.navigate(['/app-smart-cloud/order/cart'], {state: {data: request, path: returnPath}});
+      this.orderService.validaterOrder(request).subscribe(data => {
+        if (data.success) {
+          this.isLoadingAction = false;
+          if (this.hasRoleSI) {
+            this.volumeService.editSizeVolume(request).subscribe(data => {
+              this.isLoadingAction = false;
+              if (data != null) {
+                if (data.code == 200) {
+                  this.isLoadingAction = false;
+                  this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('volume.notification.require.renew.success'));
+                  this.router.navigate(['/app-smart-cloud/volumes']);
+                }
+              } else {
+                this.isLoadingAction = false;
+              }
+            });
+          } else {
+            var returnPath: string = '/app-smart-cloud/volumes/renew/' + this.idVolume;
+            console.log('request', request);
+            this.router.navigate(['/app-smart-cloud/order/cart'], { state: { data: request, path: returnPath } });
+          }
+        } else {
+          this.isVisiblePopupError = true;
+          this.errorList = data.data;
+          this.isLoadingAction = false;
+        }
+      }, error => {
+        this.isLoadingAction = false;
+        this.notification.error(this.i18n.fanyi('app.status.fail'), error.error.detail);
+      });
+
     }
   }
-  handleOk() {
-    this.isVisibleConfirmRenew = false;
-    this.submitForm();
+
+  isLoadingAction: boolean = false;
+
+  doRenew() {
+    this.isLoadingAction = true;
+    if (this.validateForm.valid) {
+      this.getTotalAmount();
+      let request = new EditSizeVolumeModel();
+      request.customerId = this.extendsDto.customerId;
+      request.createdByUserId = this.extendsDto.customerId;
+      request.note = this.i18n.fanyi('volume.note.extend');
+      request.orderItems = [
+        {
+          orderItemQuantity: 1,
+          specification: JSON.stringify(this.extendsDto),
+          specificationType: 'volume_extend',
+          price: 0,
+          serviceDuration: this.validateForm.controls.time.value
+        }
+      ];
+      console.log('request', request);
+      this.orderService.validaterOrder(request).subscribe(data => {
+        if (data.success) {
+
+        }
+      });
+    }
   }
 
   goBack() {
@@ -257,13 +277,16 @@ export class RenewVolumeComponent implements OnInit {
 
   onChangeTime(value) {
     this.timeSelected = value;
-    this.validateForm.controls.time.setValue(this.timeSelected)
-    this.getTotalAmount()
+    this.validateForm.controls.time.setValue(this.timeSelected);
+    this.getTotalAmount();
   }
+
+  hasRoleSI: boolean;
 
   ngOnInit(): void {
     this.idVolume = Number.parseInt(this.activatedRoute.snapshot.paramMap.get('id'));
     this.getVolumeById(this.idVolume);
+    this.hasRoleSI = localStorage.getItem('role').includes('SI');
   }
 
 

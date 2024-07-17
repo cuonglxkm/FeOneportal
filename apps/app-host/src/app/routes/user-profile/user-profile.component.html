@@ -1,4 +1,24 @@
-<page-header [title]="'menu.account.center' | i18n" />
+<page-header
+  [breadcrumb]="breadcrumb"
+  [title]="'menu.account.center' | i18n"
+>
+  <ng-template #breadcrumb>
+    <nz-breadcrumb [nzSeparator]="separatorTemplate">
+      <nz-breadcrumb-item>
+        <a [routerLink]="['/']">{{ 'app.breadcrumb.home' | i18n }}</a>
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item>
+        {{ 'app.breadcrumb.account' | i18n }}
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item>
+        <a [routerLink]="['/profile']">{{ 'app.information' | i18n }}</a>
+      </nz-breadcrumb-item>
+    </nz-breadcrumb>
+    <ng-template #separatorTemplate
+      ><img src="assets/imgs/arrow-square-right.svg" alt="" />
+    </ng-template>
+  </ng-template>
+</page-header>
 
 <nz-card>
   <nz-tabset nzSelectedIndex nzSize="large" [nzSelectedIndex]="tabSelect" (nzSelectedIndexChange)="selectedIndexChange($event)">
@@ -10,7 +30,7 @@
         <nz-form-item>
           <nz-form-label>{{ 'form.account.surname' | i18n }} (<span class="text-red">*</span>)  <one-portal-svg-icon class="items-center-icon" [icon]="'tick'"  [nz-tooltip]="'form.account.tooltip.info'| i18n"></one-portal-svg-icon></nz-form-label>
           <nz-form-control [nzErrorTip]="'form.account.validate.surname'|i18n">
-            <input maxlength="20" nz-input formControlName="surname" [placeholder]="'form.account.surname'|i18n" nzSize="large" />
+            <input maxlength="20" nz-input formControlName="surname" [placeholder]="'form.account.surname'|i18n" nzSize="large" (blur)="onSernameBlur()" />
           </nz-form-control>
         </nz-form-item>
       </nz-col>
@@ -18,7 +38,7 @@
         <nz-form-item>
           <nz-form-label>{{ 'form.account.name' | i18n }} (<span class="text-red">*</span>) <one-portal-svg-icon class="items-center-icon" [icon]="'tick'"  [nz-tooltip]="'form.account.tooltip.info'| i18n"></one-portal-svg-icon></nz-form-label>
           <nz-form-control [nzErrorTip]="'form.account.validate.name'|i18n">
-            <input nz-input formControlName="name" [placeholder]="'form.account.name' |i18n" nzSize="large" />
+            <input nz-input maxlength="20" formControlName="name" [placeholder]="'form.account.name' |i18n" nzSize="large" (blur)="onNameBlur()" />
           </nz-form-control>
 
         </nz-form-item>
@@ -45,6 +65,7 @@
           <nz-form-control [nzErrorTip]="phoneErrorTpl">
             <input
               nz-input
+              appPhoneValidator
               formControlName="phone"
               [placeholder]="'form.account.phone' | i18n"
               nzSize="large"
@@ -92,7 +113,7 @@
           <nz-form-control [nzErrorTip]="'form.account.validate.address' | i18n">
             <nz-select [nzPlaceHolder]="'Chọn Tỉnh/Thành phố'" [nzShowSearch]="true" formControlName="province"
               nzSize="large">
-              <nz-option *ngFor="let i of provinceList" [nzLabel]="i" [nzValue]="i" />
+              <nz-option *ngFor="let i of provinceList" [nzLabel]="i.name" [nzValue]="i.name" />
             </nz-select>
           </nz-form-control>
         </nz-form-item>
@@ -101,9 +122,19 @@
       <nz-col nzLg="12" nzMd="12" nzSm="24">
         <nz-form-item>
           <nz-form-label>{{ 'form.account.address' | i18n }}  <one-portal-svg-icon class="items-center-icon" [icon]="'tick'"  [nz-tooltip]="'form.account.tooltip.address'|i18n"></one-portal-svg-icon></nz-form-label>
-          <nz-form-control >
+          <nz-form-control [nzErrorTip]="'form.account.validate.address.detail' | i18n">
             <input maxlength="255" nz-input formControlName="address" [placeholder]="'form.account.address' | i18n " nzSize="large" />
           </nz-form-control>
+        </nz-form-item>
+      </nz-col>
+    </nz-row>
+
+    <nz-row nzGutter="16" *ngIf="hasRoleSI">
+      <nz-col nzLg="12" nzMd="12" nzSm="24">
+        <nz-form-item>
+          <nz-form-label>
+            <one-portal-create-user />
+          </nz-form-label>
         </nz-form-item>
       </nz-col>
     </nz-row>
@@ -115,7 +146,7 @@
             <img style="padding-right: 10px; margin-top: -4px" src="assets/imgs/cancel.svg" alt="" />{{
             'app.button.cancel' | i18n }}
           </button>
-          <button nz-button [nzType]="'primary'" [disabled]="form.invalid">
+          <button nz-button [nzType]="'primary'" [nzLoading]="isLoadingProfile" [disabled]="form.invalid">
             <img style="padding-right: 10px; margin-top: -4px" src="assets/imgs/confirm.svg" alt="" />
 
             {{ 'app.button.update' | i18n }}
@@ -160,7 +191,7 @@
               </ng-template>
             </nz-form-item>
           </div>
-  
+
           <div nz-col [nzSpan]="8" class="gutter-row">
             <nz-form-item>
               <nz-form-control [nzErrorTip]="emailErrorTpl">
@@ -203,7 +234,7 @@
                   type="text"
                   [placeholder]="'app.invoice.pop-up.update.phone.placeholder' | i18n"
                   class="input-custom"
-                  [maxlength]="10"
+                  appPhoneValidator
                   formControlName="phoneNumber"
                 />
               </nz-form-control>
@@ -217,7 +248,7 @@
               </ng-template>
             </nz-form-item>
           </div>
-          
+
           <div nz-col [nzSpan]="8" class="gutter-row">
             <nz-form-item>
               <nz-form-control>
@@ -341,7 +372,7 @@
                   class="input-custom"
                   formControlName="address"
                   appTrim
-                  [maxlength]="100"
+                  [maxlength]="255"
                 />
               </nz-form-control>
               <ng-template #addressErrorTpl let-control>
@@ -389,6 +420,6 @@
         </div>
     </form>
   </ng-template>
-</nz-tab> 
+</nz-tab>
 </nz-tabset>
 </nz-card>

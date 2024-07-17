@@ -162,6 +162,7 @@ import {
 } from './volume/component/backup-volume/restore-backup-volume-vpc/restore-backup-volume-vpc.component';
 import { SnapshotDetailComponent } from './snapshot/detail/snapshot-detail.component';
 import { InvoiceDetailComponent } from './billing/payment/invoice-detail/invoice-detail.component';
+import { CreateScheduleBackupVpcComponent } from './schedule-backup/create-vpc/create-schedule-backup-vpc.component';
 
 // import { BlankVolumeComponent } from './volume/component/blank/blank-volume.component';
 
@@ -181,6 +182,14 @@ const routes: Routes = [
   },
   {
     path: 'volumes',
+    component: VolumeComponent,
+    canActivate: [PermissionGuard],
+    data: {
+      permission: 'volume:List'
+    }
+  },
+  {
+    path: 'volumesadvance',
     component: VolumeComponent,
     canActivate: [PermissionGuard],
     data: {
@@ -221,6 +230,18 @@ const routes: Routes = [
   },
   {
     path: 'instances',
+    loadChildren: () =>
+      import('../pages/instances/instances.module').then(
+        (m) => m.InstancesModule
+      ),
+    canActivate: [PermissionGuard],
+    data: {
+      permission: 'instance:List'
+    }
+
+  },
+  {
+    path: 'instanceadvance',
     loadChildren: () =>
       import('../pages/instances/instances.module').then(
         (m) => m.InstancesModule
@@ -570,6 +591,15 @@ const routes: Routes = [
 
   },
   {
+    path: 'schedule/backup/create/vpc',
+    component: CreateScheduleBackupVpcComponent,
+    canActivate: [PermissionGuard],
+    data: {
+      permission: 'order:create'
+    }
+
+  },
+  {
     path: 'schedule/backup/edit/vm/:id',
     component: EditScheduleBackupVmComponent,
     canActivate: [PermissionGuard],
@@ -586,7 +616,7 @@ const routes: Routes = [
     }
   },
   {
-    path: 'schedule/snapshot/list',
+    path: 'schedule/snapshot',
     component: SnapshotScheduleListComponent,
     canActivate: [PermissionGuard],
     data: {
@@ -878,6 +908,14 @@ const routes: Routes = [
     }
   },
   {
+    path: 'object-storage/sub-user-advance/list',
+    component: ListSubUserComponent,
+    canActivate: [PermissionGuard],
+    data: {
+      permission: 'objectstorages:ObjectStorageUser'
+    }
+  },
+  {
     path: 'object-storage/sub-user/list',
     component: ListSubUserComponent,
     canActivate: [PermissionGuard],
@@ -895,6 +933,14 @@ const routes: Routes = [
   },
   {
     path: 'object-storage/dashboard',
+    component: DashboardObjectStorageComponent,
+    canActivate: [PermissionGuard],
+    data: {
+      permission: 'objectstorages:ObjectStorageMonitor'
+    }
+  },
+  {
+    path: 'object-storage/dashboard-advance',
     component: DashboardObjectStorageComponent,
     canActivate: [PermissionGuard],
     data: {
@@ -983,6 +1029,14 @@ const routes: Routes = [
     }
   },
   {
+    path: 'object-storage/bucket-advance',
+    component: BucketListComponent,
+    canActivate: [PermissionGuard],
+    data: {
+      permission: 'objectstorages:ObjectStorageUser'
+    }
+  },
+  {
     path: 'object-storage/bucket/create',
     component: BucketCreateComponent,
     canActivate: [PermissionGuard],
@@ -1050,6 +1104,14 @@ const routes: Routes = [
   },
   {
     path: 'object-storage/s3-key',
+    component: S3KeyComponent,
+    canActivate: [PermissionGuard],
+    data: {
+      permission: 'objectstorages:Search'
+    }
+  },
+  {
+    path: 'object-storage/s3-key-advance',
     component: S3KeyComponent,
     canActivate: [PermissionGuard],
     data: {

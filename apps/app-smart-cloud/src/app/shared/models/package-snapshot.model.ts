@@ -16,6 +16,16 @@ export class PackageSnapshotModel {
   totalSize: number
   usedSize: number
   description: string
+  totalSizeHDD: number
+  totalSizeSSD: number
+  usedSizeHDD: number
+  usedSizeSSD: number
+  availableSizeHDD: number
+  availableSizeSSD: number
+  sizeHddInGB: number
+  sizeSsdInGb: number
+  postResizeSnapshotPackageId: number
+  type: any
 }
 
 export class FormSearchPackageSnapshot{
@@ -80,6 +90,8 @@ export class FormCreateSnapshotPackage {
   dSubscriptionType: null
   oneSME_SubscriptionId: null
   typeName: string
+  quotaHddSizeInGB: any;
+  quotaSsdSizeInGB: any;
 }
 
 export class FormUpdateSnapshotPackageModel{

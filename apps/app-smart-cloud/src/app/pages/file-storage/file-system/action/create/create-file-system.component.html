@@ -21,8 +21,8 @@
   <ng-template #action>
     <div class="alain-custom-action text-right">
       <share-users-combobox></share-users-combobox>
-      <region-select-dropdown (valueChanged)="regionChanged($event)"></region-select-dropdown>
-      <project-select-dropdown (valueChanged)="projectChanged($event)"
+      <region-select-dropdown (regionChange)="onRegionChanged($event)" (valueChanged)="regionChanged($event)"></region-select-dropdown>
+      <project-select-dropdown #projectCombobox (valueChanged)="projectChanged($event)"
                                (userChanged)="userChanged($event)"
                                [regionId]="region"></project-select-dropdown>
     </div>
@@ -155,7 +155,8 @@
                                      [(ngModel)]="storage"
                                      (ngModelChange)="storageSelectedChange($event)"
                                      [nzMin]="minStorage"
-                                     [nzStep]="stepStorage" [nzMax]="storageRemaining"></nz-input-number>
+                                     [nzStep]="stepStorage"
+                                     [nzMax]="storageRemaining"></nz-input-number>
                     <ng-template #storageErrorTpl let-control>
                       <ng-container *ngIf="control.hasError('required')">{{ 'validation.info.required' | i18n }}
                       </ng-container>

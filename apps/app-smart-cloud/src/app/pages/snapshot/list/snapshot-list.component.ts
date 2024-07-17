@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject, OnInit, ViewChild } from '@angular/core';
 import { ProjectModel, RegionModel } from '../../../../../../../libs/common-utils/src';
 import { getCurrentRegionAndProject } from '@shared';
 import { debounceTime, finalize, Subject } from 'rxjs';
@@ -10,6 +10,7 @@ import { I18NService } from '@core';
 import { data } from 'vis-network';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
+import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
 
 @Component({
   selector: 'one-portal-snapshot-list',
@@ -57,6 +58,7 @@ export class SnapshotListComponent implements OnInit{
   disableDelete = true;
   loadingDelete = false;
   isVisibleEdit: boolean;
+  @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
   constructor(private router: Router,
               private fb: NonNullableFormBuilder,
               @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
@@ -78,6 +80,13 @@ export class SnapshotListComponent implements OnInit{
   }
 
   regionChanged(region: RegionModel) {
+    if(this.projectCombobox){
+      this.projectCombobox.loadProjects(true, region.regionId);
+    }
+    this.region = region.regionId;
+  }
+
+  onRegionChanged(region: RegionModel) {
     this.region = region.regionId;
   }
 
@@ -88,12 +97,14 @@ export class SnapshotListComponent implements OnInit{
   }
 
   navigateToCreate() {
-    this.router.navigate(['/app-smart-cloud/snapshot/create'])
+    this.router.navigate(['/app-smart-cloud/snapshot/create',  {
+      navigateType: 2
+    }])
   }
 
   search(isBegin: boolean) {
     this.isLoading = true;
-    this.service.serchSnapshot(this.size, this.index, this.region, this.project, this.value, this.status)
+    this.service.serchSnapshot(this.size, this.index, this.region, this.project, this.value, this.status, '')
       .pipe(finalize(() => {
         this.isLoading = false;
       }))
@@ -123,11 +134,19 @@ export class SnapshotListComponent implements OnInit{
   }
 
 
-  navigateToCreateVolume(idSnapshot) {
-    if(this.typeVpc == 1) {
-      this.router.navigate(['/app-smart-cloud/volume/vpc/create', {idSnapshot: idSnapshot}])
-    } else {
-      this.router.navigate(['/app-smart-cloud/volume/create', {idSnapshot: idSnapshot}])
+  navigateToCreateVolumeVM(idSnapshot, type: any) {
+    if (type == 0) {
+      if(this.typeVpc == 1) {
+        this.router.navigate(['/app-smart-cloud/volume/vpc/create', {idSnapshot: idSnapshot}])
+      } else {
+        this.router.navigate(['/app-smart-cloud/volume/create', {idSnapshot: idSnapshot}])
+      }
+    } else if (type == 1) {
+      if(this.typeVpc == 1) {
+        this.router.navigate(['/app-smart-cloud/instances/instances-create-vpc', {idSnapshot: idSnapshot}])
+      } else {
+        this.router.navigate(['/app-smart-cloud/instances/instances-create', {idSnapshot: idSnapshot}])
+      }
     }
   }
 

@@ -28,6 +28,7 @@ export class UpdateBackupPackageComponent implements AfterViewInit{
     description: FormControl<string>
   }> = this.fb.group({
     namePackage: [null as string, [Validators.required,
+      this.duplicateNameValidator.bind(this),
       Validators.pattern(/^[a-zA-Z0-9]*$/),
       Validators.maxLength(70)]],
     description: [null as string, [Validators.maxLength(255)]]
@@ -66,7 +67,7 @@ export class UpdateBackupPackageComponent implements AfterViewInit{
   }
 
   getAllBackupPackage(){
-    this.backupPackageService.search(null, null, 9999, 1).subscribe(data => {
+    this.backupPackageService.search(null, null, this.project, this.region, 9999, 1).subscribe(data => {
       data.records.forEach((item) => {
         if (this.nameList.length > 0) {
           this.nameList.push(item.packageName);
@@ -111,6 +112,7 @@ export class UpdateBackupPackageComponent implements AfterViewInit{
     formUpdate.packageName = this.validateForm.controls.namePackage.value;
     formUpdate.description = this.validateForm.controls.description.value;
     formUpdate.customerId = this.tokenService.get()?.userId;
+    formUpdate.regionId = this.region
 
     this.backupPackageService.update(formUpdate).subscribe(data => {
       this.isLoading = false

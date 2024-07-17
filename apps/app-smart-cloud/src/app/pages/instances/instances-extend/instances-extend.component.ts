@@ -4,7 +4,7 @@ import {
   Component,
   Inject,
   OnInit,
-  TemplateRef,
+  ViewChild,
 } from '@angular/core';
 import {
   DataPayment,
@@ -19,13 +19,14 @@ import {
 import { ActivatedRoute, Router } from '@angular/router';
 import { InstancesService } from '../instances.service';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
-import { debounceTime, finalize, Subject } from 'rxjs';
+import { asapScheduler, finalize } from 'rxjs';
 import { LoadingService } from '@delon/abc/loading';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
-import { NzModalService } from 'ng-zorro-antd/modal';
 import { OrderService } from 'src/app/shared/services/order.service';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from '../../../../../../app-kafka/src/app/core/i18n/i18n.service';
+import { RegionModel } from '../../../../../../../libs/common-utils/src';
+import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
 
 @Component({
   selector: 'one-portal-instances-extend',
@@ -46,7 +47,7 @@ export class InstancesExtendComponent implements OnInit {
   newExpiredDate: string;
   order: Order = new Order();
   orderItem: OrderItem[] = [];
-
+  @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
   constructor(
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
     @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
@@ -76,10 +77,12 @@ export class InstancesExtendComponent implements OnInit {
     }
   }
 
+  hasRoleSI: boolean;
   ngOnInit(): void {
     this.customerId = this.tokenService.get()?.userId;
     this.email = this.tokenService.get()?.email;
     this.id = Number.parseInt(this.activatedRoute.snapshot.paramMap.get('id'));
+    this.hasRoleSI = localStorage.getItem('role').includes('SI');
     this.service.getById(this.id, true).subscribe({
       next: (data) => {
         this.loadingSrv.open({ type: 'spin', text: 'Loading...' });
@@ -88,7 +91,6 @@ export class InstancesExtendComponent implements OnInit {
         this.loading = false;
         let expiredDate = new Date(this.instancesModel.expiredDate);
         expiredDate.setDate(expiredDate.getDate() + this.numberMonth * 30);
-        this.newExpiredDate = expiredDate.toISOString().substring(0, 19);
         this.getListIpPublic();
         this.getTotalAmount();
         this.service
@@ -146,6 +148,10 @@ export class InstancesExtendComponent implements OnInit {
     this.getTotalAmount();
   }
 
+  onRegionChanged(region: RegionModel) {
+    this.regionId = region.regionId;
+  }
+
   instanceExtendInit() {
     this.instanceExtend.regionId = this.regionId;
     this.instanceExtend.serviceName = this.instancesModel.name;
@@ -180,6 +186,7 @@ export class InstancesExtendComponent implements OnInit {
     console.log('dataPayment extend', dataPayment);
     this.service.getPrices(dataPayment).subscribe((result) => {
       console.log('thanh tien', result);
+      this.newExpiredDate = result.data.orderItemPrices[0].expiredDate;
       this.totalAmount = Number.parseFloat(result.data.totalAmount.amount);
       this.totalVAT = Number.parseFloat(result.data.totalVAT.amount);
       this.totalincludesVAT = Number.parseFloat(
@@ -229,10 +236,28 @@ export class InstancesExtendComponent implements OnInit {
       .subscribe({
         next: (result) => {
           if (result.success) {
-            var returnPath: string = window.location.pathname;
-            this.router.navigate(['/app-smart-cloud/order/cart'], {
-              state: { data: this.order, path: returnPath },
-            });
+            if (this.hasRoleSI) {
+              this.service.create(this.order).subscribe((data) => {
+                this.isLoading = false;
+                if (data != null) {
+                  if (data.code == 200) {
+                    this.isLoading = false;
+                    this.notification.success(
+                      this.i18n.fanyi('app.status.success'),
+                      this.i18n.fanyi('app.notify.extend.instance.success')
+                    );
+                    this.router.navigate(['/app-smart-cloud/volumes']);
+                  }
+                } else {
+                  this.isLoading = false;
+                }
+              });
+            } else {
+              var returnPath: string = window.location.pathname;
+              this.router.navigate(['/app-smart-cloud/order/cart'], {
+                state: { data: this.order, path: returnPath },
+              });
+            }
           } else {
             this.isVisiblePopupError = true;
             this.errorList = result.data;
@@ -248,6 +273,9 @@ export class InstancesExtendComponent implements OnInit {
   }
 
   onRegionChange(region: any) {
+    if(this.projectCombobox){
+      this.projectCombobox.loadProjects(true, region.regionId);
+    }
     this.router.navigate(['/app-smart-cloud/instances']);
   }
 
@@ -272,4 +300,6 @@ export class InstancesExtendComponent implements OnInit {
       '/app-smart-cloud/instances/instances-detail/' + this.id,
     ]);
   }
+
+  protected readonly asapScheduler = asapScheduler;
 }

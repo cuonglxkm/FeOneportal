@@ -32,8 +32,9 @@
       <share-users-combobox></share-users-combobox>
       <region-select-dropdown
         (valueChanged)="onRegionChange($event)"
+        (regionChange)="onRegionChanged($event)"
       ></region-select-dropdown>
-      <project-select-dropdown
+      <project-select-dropdown #projectCombobox
         [regionId]="region"
         (valueChanged)="onProjectChange($event)"
         (userChanged)="userChangeProject($event)"
@@ -83,7 +84,7 @@
           </nz-form-control>
         </nz-form-item>
         <nz-row nzGutter="40">
-          <nz-col [nzSpan]="typeVpc === 0 ? '24' : '12'">
+          <nz-col [nzSpan]="typeVpc !== 1 ? '24' : '12'">
             <nz-form-item>
               <nz-form-control [nzErrorTip]="nameErrorTpl">
                 <nz-form-label nzFor="name">
@@ -182,7 +183,7 @@
         </nz-textarea-count>
 
       </nz-card>
-        <ng-container *ngIf="typeVpc === 0">
+        <ng-container *ngIf="typeVpc !== 1">
           <one-portal-service-usage-period [nameService]="'file-system-snapshot'" (valueChanged)="onChangeTime($event)"/>
           <!-- <nz-form-item class="mt-5">
             <nz-form-label nzFor="time">
@@ -295,7 +296,7 @@
       </nz-card>
     </nz-affix>
     </ng-container>
-    <ng-container *ngIf="typeVpc === 0">
+    <ng-container *ngIf="typeVpc === 0 || typeVpc === 2">
       <nz-affix nzOffsetTop="72">
       <nz-card class="right-form card-price">
         <div class="right-title">

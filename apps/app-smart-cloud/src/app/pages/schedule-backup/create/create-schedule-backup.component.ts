@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, Inject, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, Inject, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
 import { DatePipe, Location } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -8,7 +8,7 @@ import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from '@core';
 import { BackupVmService } from '../../../shared/services/backup-vm.service';
-import { BackupPackage, BackupVm, BackupVMFormSearch, VolumeAttachment } from '../../../shared/models/backup-vm';
+import { BackupVm, BackupVMFormSearch, VolumeAttachment } from '../../../shared/models/backup-vm';
 import { InstancesService } from '../../instances/instances.service';
 import { InstancesModel } from '../../instances/instances.model';
 import { BackupSchedule, FormCreateSchedule, FormSearchScheduleBackup } from '../../../shared/models/schedule.model';
@@ -20,6 +20,7 @@ import { BackupVolumeService } from '../../../shared/services/backup-volume.serv
 import { VolumeDTO } from '../../../shared/dto/volume.dto';
 import { BackupVolume } from '../../volume/component/backup-volume/backup-volume.model';
 import { VolumeService } from '../../../shared/services/volume.service';
+import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
 
 @Component({
   selector: 'one-portal-create-schedule-backup',
@@ -44,7 +45,7 @@ export class CreateScheduleBackupComponent implements OnInit {
       volumeToBackupIds: new FormControl(null as number[]),
       maxBackup: new FormControl(1, {
         nonNullable: true,
-        validators: [Validators.required, Validators.pattern(/^[0-9]*$/)]
+        validators: [Validators.required, Validators.pattern(/^[1-5]*$/)]
       }),
       description: new FormControl('', {
         validators: [Validators.maxLength(255)]
@@ -77,7 +78,7 @@ export class CreateScheduleBackupComponent implements OnInit {
       }),
       maxBackup: new FormControl(1, {
         nonNullable: true,
-        validators: [Validators.required, Validators.pattern(/^[0-9]*$/)]
+        validators: [Validators.required, Validators.pattern(/^[1-5]*$/)]
       }),
       description: new FormControl('', {
         validators: [Validators.maxLength(255)]
@@ -106,7 +107,7 @@ export class CreateScheduleBackupComponent implements OnInit {
     })
   });
 
-
+  @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
   id: number;
 
   volumeId: number;
@@ -123,7 +124,7 @@ export class CreateScheduleBackupComponent implements OnInit {
 
   modeSelected: any;
 
-  backupPackageList: BackupPackage[] = [];
+  backupPackageList = [];
   backupPackageSelected: any;
 
   numberOfWeekChangeSelected: any;
@@ -136,6 +137,13 @@ export class CreateScheduleBackupComponent implements OnInit {
   backupVolumeList: BackupVolume[];
   volumeSelected: any;
   volumeName: string;
+
+  sizeOfVlAttach: number = 0;
+  volumeAttachSelected: VolumeDTO[] = [];
+
+  instance: InstancesModel;
+
+  projectName: string;
 
   modes = [
     { label: this.i18n.fanyi('schedule.backup.label.each.day'), value: 1 },
@@ -180,8 +188,14 @@ export class CreateScheduleBackupComponent implements OnInit {
 
   regionChanged(region: RegionModel) {
     this.region = region.regionId;
+    if(this.projectCombobox){
+      this.projectCombobox.loadProjects(true, region.regionId);
+    }
     this.router.navigate(['/app-smart-cloud/schedule/backup/list']);
+  }
 
+  onRegionChanged(region: RegionModel) {
+    this.region = region.regionId;
   }
 
   userChanged(project: ProjectModel) {
@@ -190,6 +204,9 @@ export class CreateScheduleBackupComponent implements OnInit {
 
   projectChanged(project: ProjectModel) {
     this.project = project.id;
+    this.projectName = project?.projectName;
+
+    console.log('type vpc', project?.type);
   }
 
   duplicateNameValidator(control) {
@@ -225,9 +242,28 @@ export class CreateScheduleBackupComponent implements OnInit {
       this.instanceSelected = value;
       const find = this.listInstanceNotUse?.find(x => x.id === this.instanceSelected);
       this.instanceName = find?.name;
-      this.getVolumeInstanceAttachment(value);
+      this.getDataInstanceById(this.instanceSelected);
     }
   }
+
+  onSelectedVolume(value) {
+    console.log('value', value);
+    this.sizeOfVlAttach = 0;
+    this.volumeAttachSelected = [];
+    if (value.length >= 1) {
+      value.forEach(item => {
+        this.volumeService.getVolumeById(item, this.project).subscribe(data => {
+          this.volumeAttachSelected?.push(data);
+          this.sizeOfVlAttach += data?.sizeInGB;
+        });
+      });
+    } else {
+      this.volumeAttachSelected = [];
+      this.sizeOfVlAttach = 0;
+    }
+  }
+
+  sizeOfVolume: number = 0;
 
   selectVolumeChange(value) {
     console.log('value volume selected', value);
@@ -235,84 +271,115 @@ export class CreateScheduleBackupComponent implements OnInit {
       this.volumeSelected = value;
       const find = this.listVolumeNotUseUnique?.find(x => x.id === this.volumeSelected);
       this.volumeName = find?.name;
+      this.sizeOfVolume += find?.sizeInGB;
     }
   }
 
+  isLoadingAttach: boolean = false;
+
   getVolumeInstanceAttachment(id: number) {
-    this.isLoading = true;
+    this.isLoadingAttach = true;
     this.backupVmService.getVolumeInstanceAttachment(id).subscribe(data => {
-      this.isLoading = false;
+      this.isLoadingAttach = false;
       this.volumeAttachments = data;
+    }, error => {
+      this.isLoadingAttach = false;
+      this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.failData'));
     });
   }
 
+  isLoadingInstance: boolean = false;
 
   getListInstances() {
-    this.isLoading = true;
+    this.isLoadingInstance = true;
     let customerId = this.tokenService.get()?.userId;
     let formSearchBackup = new BackupVMFormSearch();
     formSearchBackup.pageSize = 10000000;
     formSearchBackup.currentPage = 1;
     formSearchBackup.customerId = customerId;
+
+    let formSearchBackupSchedule = new FormSearchScheduleBackup();
+    formSearchBackupSchedule.regionId = this.region;
+    formSearchBackupSchedule.projectId = this.project;
+    formSearchBackupSchedule.pageSize = 9999;
+    formSearchBackupSchedule.pageIndex = 1;
+    formSearchBackupSchedule.customerId = customerId;
+    formSearchBackupSchedule.scheduleName = '';
+    formSearchBackupSchedule.scheduleStatus = '';
     this.instanceService.search(1, 9999, this.region, this.project, '', '', true, customerId)
       .subscribe(data => {
-        this.isLoading = false;
+        this.isLoadingInstance = false;
         this.listInstance = data?.records.filter(value => (value?.taskState == 'ACTIVE'));
 
-        this.backupVmService.search(formSearchBackup).subscribe(data2 => {
-          this.listBackupVM = data2?.records;
-          const idSet = new Set(this.listBackupVM?.map(item => item.instanceId));
-          const idSetUnique = Array.from(new Set(idSet));
-          this.listInstance?.forEach(item1 => {
-            if (!idSetUnique.includes(item1.id)) {
-              this.listInstanceNotUse?.push(item1);
-            }
+        this.listInstance?.forEach(item1 => {
+          this.listInstanceNotUse?.push(item1);
+        });
+        this.backupScheduleService.search(formSearchBackupSchedule).subscribe(data3 => {
+          console.log('lịch', data3?.records);
+          data3.records?.forEach(item3 => {
+            this.listInstanceNotUse = this.listInstanceNotUse.filter(ins => ins.id != item3.serviceId && ins.taskState === 'ACTIVE');
+
+            console.log('list instance', this.listInstanceNotUse);
+
+            this.instanceSelected = this.listInstanceNotUse[0]?.id;
           });
-          console.log('list instance', this.listInstanceNotUse);
-          this.instanceSelected = this.listInstanceNotUse[0]?.id;
-          this.cdr.detectChanges();
         });
 
+        this.cdr.detectChanges();
+
+      }, error => {
+        this.isLoadingInstance = false;
+        this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.failData'));
       });
   }
 
-  getInstanceById() {
-    if (this.instanceId != undefined) {
-      this.validateForm.get('formInstance').get('instanceId').setValue(this.instanceId);
-      this.instanceService.getInstanceById(this.instanceId).subscribe(data => {
-        this.instanceName = data.name;
-      });
-    }
+  getDataInstanceById(id) {
+    console.log('here');
+    this.instanceService.getInstanceById(id).subscribe(data => {
+      this.instance = data;
+      this.isLoading = false;
+      this.getVolumeInstanceAttachment(this.instance.id);
+    });
   }
+
+  isLoadingVolume: boolean = false;
 
   getListVolume() {
+    this.isLoadingVolume = true;
+    let customerId = this.tokenService.get()?.userId;
+    let formSearchBackupSchedule = new FormSearchScheduleBackup();
+    formSearchBackupSchedule.regionId = this.region;
+    formSearchBackupSchedule.projectId = this.project;
+    formSearchBackupSchedule.pageSize = 9999;
+    formSearchBackupSchedule.pageIndex = 1;
+    formSearchBackupSchedule.customerId = customerId;
+    formSearchBackupSchedule.scheduleName = '';
+    formSearchBackupSchedule.scheduleStatus = '';
     this.backupVolumeService.getListBackupVolume(this.region, this.project, null, null, 9999, 1).subscribe(data => {
       this.backupVolumeList = data?.records;
       console.log('backup volume', this.backupVolumeList);
       this.volumeService.getVolumes(this.tokenService.get()?.userId, this.project, this.region, 9999, 1, null, null).subscribe(data2 => {
         console.log('list volume', data2.records);
         this.listVolume = data2.records;
-        const idSetVolume = Array.from(new Set(new Set(data2.records?.map(x => x.id))));
-        const idSetUnique = Array.from(new Set(new Set(this.backupVolumeList?.map(y => y.volumeId))));
-
-        console.log('idSetUnique', idSetUnique);
-        console.log('idSetVolume', idSetVolume);
-
-        const uniqueElements = idSetVolume.filter(id => !idSetUnique.includes(id));
-        console.log('uniqueElements', uniqueElements);
-
         this.listVolume?.forEach(item => {
-          uniqueElements.forEach(item2 => {
-            if (item.id === item2) {
               this.listVolumeNotUseUnique?.push(item);
-            }
+        });
+        this.backupScheduleService.search(formSearchBackupSchedule).subscribe(data3 => {
+          console.log('lịch', data3?.records);
+          data3.records?.forEach(item3 => {
+            this.listVolumeNotUseUnique = this.listVolumeNotUseUnique.filter((volume) => volume.id != item3.serviceId && ['AVAILABLE', 'IN-USE'].includes(volume.serviceStatus));
+
+            console.log('list volume', this.listVolumeNotUseUnique);
+
+            this.volumeSelected = this.listVolumeNotUseUnique[0]?.id;
           });
         });
-        this.listVolumeNotUseUnique.push();
+        this.isLoadingVolume = false;
         console.log('list volume', this.listVolumeNotUseUnique);
-        this.volumeSelected = this.listVolumeNotUseUnique[0]?.id;
         this.cdr.detectChanges();
       });
+    }, error => {
+      this.isLoadingVolume = false;
     });
   }
 
@@ -346,6 +413,10 @@ export class CreateScheduleBackupComponent implements OnInit {
         this.validateForm.get('formInstance').get('date').clearValidators();
         this.validateForm.get('formInstance').get('date').markAsPristine();
         this.validateForm.get('formInstance').get('date').reset();
+        //
+        // this.validateForm.get('formInstance').get('daysOfWeekMultiple').clearValidators();
+        // this.validateForm.get('formInstance').get('daysOfWeekMultiple').markAsPristine();
+        // this.validateForm.get('formInstance').get('daysOfWeekMultiple').reset();
 
         if (this.modeSelected == 4) {
           this.setInitialValues();
@@ -372,8 +443,9 @@ export class CreateScheduleBackupComponent implements OnInit {
         }
         if (this.modeSelected == 2) {
           this.validateForm.get('formInstance').get('daysOfWeekMultiple').clearValidators();
-          this.validateForm.get('formInstance').get('daysOfWeekMultiple').setValidators([Validators.required]);
           this.validateForm.get('formInstance').get('daysOfWeekMultiple').markAsDirty();
+          this.validateForm.get('formInstance').get('daysOfWeekMultiple').reset();
+          this.validateForm.get('formInstance').get('daysOfWeekMultiple').setValidators([Validators.required]);
         }
       } else {
         this.validateForm.get('formVolume').get('daysOfWeek').clearValidators();
@@ -395,6 +467,10 @@ export class CreateScheduleBackupComponent implements OnInit {
         this.validateForm.get('formVolume').get('date').clearValidators();
         this.validateForm.get('formVolume').get('date').markAsPristine();
         this.validateForm.get('formVolume').get('date').reset();
+
+        this.validateForm.get('formVolume').get('daysOfWeekMultiple').clearValidators();
+        this.validateForm.get('formVolume').get('daysOfWeekMultiple').markAsPristine();
+        this.validateForm.get('formVolume').get('daysOfWeekMultiple').reset();
 
         if (this.modeSelected == 4) {
           this.setInitialValues();
@@ -421,8 +497,8 @@ export class CreateScheduleBackupComponent implements OnInit {
         }
         if (this.modeSelected == 2) {
           this.validateForm.get('formVolume').get('daysOfWeekMultiple').clearValidators();
-          this.validateForm.get('formVolume').get('daysOfWeekMultiple').setValidators([Validators.required]);
           this.validateForm.get('formVolume').get('daysOfWeekMultiple').markAsDirty();
+          this.validateForm.get('formVolume').get('daysOfWeekMultiple').setValidators([Validators.required]);
         }
       }
     }
@@ -430,7 +506,7 @@ export class CreateScheduleBackupComponent implements OnInit {
 
   getBackupPackage() {
     this.isLoading = true;
-    this.backupVmService.getBackupPackages().subscribe(data => {
+    this.backupPackageService.search('', '', this.project, this.region, 99999, 1).subscribe(data => {
       console.log('backup packages: ', data.records);
       this.backupPackageList = data?.records;
       this.isLoading = false;
@@ -456,7 +532,7 @@ export class CreateScheduleBackupComponent implements OnInit {
   backupPackageDetail = new PackageBackupModel();
 
   getBackupPackageDetail(id) {
-    this.backupPackageService.detail(id).subscribe(data => {
+    this.backupPackageService.detail(id, this.project).subscribe(data => {
       this.backupPackageDetail = data;
     });
   }
@@ -466,7 +542,7 @@ export class CreateScheduleBackupComponent implements OnInit {
     console.log('click', this.validateForm.get('formInstance').valid);
 
     if (this.selectedOption == 'instance') {
-      this.isLoadingAction = true
+      this.isLoadingAction = true;
       let formCreateSchedule = new FormCreateSchedule();
       formCreateSchedule.customerId = this.tokenService.get()?.userId;
       formCreateSchedule.name = this.validateForm.get('formInstance').get('name').value;
@@ -490,16 +566,16 @@ export class CreateScheduleBackupComponent implements OnInit {
         formCreateSchedule.dayOfMonth = this.validateForm.get('formInstance').get('date').value;
       }
       this.backupScheduleService.create(formCreateSchedule).subscribe(data => {
-        this.isLoadingAction = false
+        this.isLoadingAction = false;
         this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('schedule.backup.notify.create.success'));
         this.nameList = [];
         this.router.navigate(['/app-smart-cloud/schedule/backup/list']);
       }, error => {
-        this.isLoadingAction = false
+        this.isLoadingAction = false;
         this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('schedule.backup.notify.create.fail') + '. ' + error.error.detail);
       });
     } else {
-      this.isLoadingAction = true
+      this.isLoadingAction = true;
       let formCreateSchedule1 = new FormCreateSchedule();
       formCreateSchedule1.customerId = this.tokenService.get()?.userId;
       formCreateSchedule1.name = this.validateForm.get('formVolume').get('name').value;
@@ -522,13 +598,13 @@ export class CreateScheduleBackupComponent implements OnInit {
         formCreateSchedule1.dayOfMonth = this.validateForm.get('formVolume').get('date').value;
       }
       this.backupScheduleService.create(formCreateSchedule1).subscribe(data => {
-        this.isLoadingAction = false
+        this.isLoadingAction = false;
         this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('schedule.backup.volume.notify.create.success'));
         this.nameList = [];
         this.router.navigate(['/app-smart-cloud/schedule/backup/list']);
       }, error => {
-        this.isLoadingAction = false
-        this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('schedule.backup.volume.notify.create.fail') + '. ' + error.error.detail);
+        this.isLoadingAction = false;
+        this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('schedule.backup.volume.notify.create.fail'));
       });
     }
 
@@ -556,6 +632,15 @@ export class CreateScheduleBackupComponent implements OnInit {
       this.validateForm.get('formVolume').get('date').setValue(1);
     }
     this.cdr.detectChanges();
+  }
+
+  getInstanceById() {
+    if (this.instanceId != undefined) {
+      this.validateForm.get('formInstance').get('instanceId').setValue(this.instanceId);
+      this.instanceService.getInstanceById(this.instanceId).subscribe(data => {
+        this.instanceName = data.name;
+      });
+    }
   }
 
 

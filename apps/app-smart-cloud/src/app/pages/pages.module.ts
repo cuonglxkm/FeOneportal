@@ -249,6 +249,7 @@ import { RestoreBackupVolumeVpcComponent } from './volume/component/backup-volum
 import { SnapshotDetailComponent } from './snapshot/detail/snapshot-detail.component';
 import { QRCodeModule } from 'angularx-qrcode';
 import { InvoiceDetailComponent } from './billing/payment/invoice-detail/invoice-detail.component';
+import { CreateScheduleBackupVpcComponent } from './schedule-backup/create-vpc/create-schedule-backup-vpc.component';
 
 const icons: IconDefinition[] = [SettingOutline, SearchOutline];
 
@@ -473,7 +474,9 @@ const icons: IconDefinition[] = [SettingOutline, SearchOutline];
     RestoreBackupVolumeVpcComponent,
     SnapshotDetailComponent,
     SnapshotDetailComponent,
-    InvoiceDetailComponent
+    InvoiceDetailComponent,
+    CreateScheduleBackupVpcComponent,
+    CreateScheduleBackupVpcComponent,
   ],
   imports: [
     CommonModule,
@@ -510,7 +513,7 @@ const icons: IconDefinition[] = [SettingOutline, SearchOutline];
     NguCarouselNextDirective,
     NguCarouselPrevDirective,
     NguItemComponent,
-    QRCodeModule
+    QRCodeModule,
   ],
 })
 export class PagesModule {}

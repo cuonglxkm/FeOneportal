@@ -42,11 +42,12 @@ export class ProjectExtendComponent implements OnInit{
   expiredDate: any;
   expiredDateOld: any;
   timeSelected:number=1;
-  
+
   loading = true;
   total: any;
   isVisiblePopupError: boolean = false;
   errorList: string[] = [];
+  hasRoleSI: boolean
   closePopupError() {
     this.isVisiblePopupError = false;
   }
@@ -56,6 +57,7 @@ export class ProjectExtendComponent implements OnInit{
               private router: Router,
               @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
               private ipService: IpPublicService,
+
               private activatedRoute: ActivatedRoute, private orderService: OrderService,  private notification: NzNotificationService) {
   }
 
@@ -64,14 +66,19 @@ export class ProjectExtendComponent implements OnInit{
     this.regionId = regionAndProject.regionId;
     const id = this.activatedRoute.snapshot.paramMap.get('id');
     this.getData(id);
+    this.hasRoleSI = localStorage.getItem('role').includes('SI')
     // this.caculate()
-    
+
     // this.onChangeTime()
   }
 
   onRegionChange(region: RegionModel) {
     this.regionId = region.regionId;
     this.router.navigate(['/app-smart-cloud/project'])
+  }
+
+  onRegionChanged(region: RegionModel) {
+    this.regionId = region.regionId;
   }
 
   private getData(id: any) {
@@ -81,7 +88,7 @@ export class ProjectExtendComponent implements OnInit{
       .subscribe(
         data => {
           this.data  = data;
-         
+
           this.expiredDate = data.expireDate;
           this.today = data.createDate;
           const expiredDateOld = new Date(this.expiredDate);
@@ -160,8 +167,20 @@ export class ProjectExtendComponent implements OnInit{
       (data) => {
         if (data.success) {
           console.log('request', request);
-           var returnPath: string = window.location.pathname;
-            this.router.navigate(['/app-smart-cloud/order/cart'], { state: { data: request,path: returnPath } });
+           if(this.hasRoleSI) {
+             this.service.createIpPublic(request).subscribe(
+               data => {
+                 this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('project.action.extend'));
+                 this.router.navigate(['/app-smart-cloud/project']);
+               },
+               error => {
+                 this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('project.note52'));
+               }
+             );
+           } else {
+             var returnPath: string = window.location.pathname;
+             this.router.navigate(['/app-smart-cloud/order/cart'], { state: { data: request,path: returnPath } });
+           }
         } else {
           this.isVisiblePopupError = true;
           this.errorList = data.data;
@@ -177,6 +196,8 @@ export class ProjectExtendComponent implements OnInit{
     // var returnPath: string = window.location.pathname;
     // this.router.navigate(['/app-smart-cloud/order/cart'], { state: { data: request,path: returnPath } });
   }
+
+
 
   // onChangeTime() {
   //   const dateNow =new Date(this.expiredDateOld);
@@ -220,7 +241,7 @@ export class ProjectExtendComponent implements OnInit{
           specificationType: "vpc_extend",
           price: 0,
           // serviceDuration: this.form.controls['numOfMonth'].value
-          serviceDuration: this.timeSelected 
+          serviceDuration: this.timeSelected
         }
       ]
     }
@@ -236,6 +257,7 @@ export class ProjectExtendComponent implements OnInit{
           this.totalAmount = this.total.data.totalAmount.amount;
           this.totalVAT = this.total.data.totalVAT.amount;
           this.totalPayment = this.total.data.totalPayment.amount;
+
         }
       );
   }

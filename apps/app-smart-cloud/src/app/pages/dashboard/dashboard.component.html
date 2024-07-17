@@ -1,131 +1,292 @@
-<nz-content>
-  <nz-row [nzGutter]="6" style="padding-top: 24px;">
-    <nz-col [nzSpan]="6">
-      <nz-card style="border: 1px solid #0074CC;gap: 40px;border-radius: 10px;">
-        <div class="ant-card-body" style="text-align: center;">
-          <div style="gap: 20px;">
-            <span class="text-card-header-dashboard">{{ subscriptionsDashboard.serviceCount }}</span><br>
-            <span class="text-body-card-dashboard" style="margin-top: 50px;">{{'app.dashboard.subscription.service' | i18n}}</span>
+<page-header class="class" [title]="'Dashboard'" xmlns="http://www.w3.org/1999/html"
+             [breadcrumb]="breadcrumb ? breadcrumbTemplate : null"></page-header>
+<ng-template #breadcrumbTemplate>
+  <!-- Breadcrumb content here -->
+</ng-template>
+<nz-spin [nzSpinning]="isLoading">
+  <nz-content>
+    <nz-row [nzGutter]="6" style="padding-top: 24px;">
+      <nz-col [nzSpan]="6">
+        <nz-card style="border: 1px solid #0074CC; gap: 40px; border-radius: 10px;"
+                 nz-popover
+                 [nzPopoverTitle]="title"
+                 [nzPopoverContent]="infoService"
+                 [nzPopoverTrigger]="'hover'"
+                 [nzPopoverPlacement]="'bottom'">
+          <div class="ant-card-body" style="text-align: center;">
+            <div style="gap: 20px; ">
+              <span class="text-card-header-dashboard">{{ subscriptionDashboardService.serviceCount }}</span><br>
+              <span class="text-body-card-dashboard"
+                    style="margin-top: 50px;">{{ 'app.dashboard.subscription.service' | i18n }}</span>
+            </div>
           </div>
-        </div>
+        </nz-card>
 
-      </nz-card>
-    </nz-col>
-    <nz-col [nzSpan]="6">
-      <nz-card style="border: 1px solid #0074CC;gap: 40px;border-radius: 10px;">
-        <div class="ant-card-body" style="text-align: center;">
-          <div style="gap: 20px;">
-            <span class="text-card-header-dashboard">{{ subscriptionsDashboard.serviceActiveCount }}</span><br>
-            <span class="text-body-card-dashboard" style="margin-top: 50px;">{{'app.dashboard.subscription.service.active'|i18n}}</span>
+        <ng-template #infoService>
+          <div class="scroll">
+            <div *ngFor="let data of subscriptionDashboardService?.details" style="width: 300px" class="text-label">
+              <nz-row *ngIf="data.serviceTypeName.toUpperCase() != 'Vpc'.toUpperCase()">
+                <nz-col nzSpan="12">{{ getServiceName(data.serviceType) }}</nz-col>
+                <nz-col class="text-right" nzSpan="12">{{ data.dataCount }}</nz-col>
+              </nz-row>
+              <nz-collapse nzGhost *ngIf="data.serviceTypeName.toUpperCase() == 'Vpc'.toUpperCase()">
+                <nz-collapse-panel [nzHeader]="header" [nzActive]="false">
+                  <ng-template #header>
+                    <div style="display: flex; width: 100%;">
+                      <div style="flex: 1;">{{ getServiceName(data.serviceType) }}</div>
+                      <div class="text-right" style="flex: 1;">{{ data.dataCount }}</div>
+                    </div>
+                  </ng-template>
+                  <nz-row *ngFor="let item of data.details; let last = last ">
+                    <nz-col nzSpan="12">{{ getServiceName(item.serviceType) }}</nz-col>
+                    <nz-col class="text-right" nzSpan="12">{{ item.dataCount }}</nz-col>
+                    <nz-divider *ngIf="!last" style="margin: 10px 0" nzType="horizontal"></nz-divider>
+                  </nz-row>
+                </nz-collapse-panel>
+              </nz-collapse>
+              <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
+            </div>
           </div>
-        </div>
 
-      </nz-card>
-    </nz-col>
-    <nz-col [nzSpan]="6">
-      <nz-card style="border: 1px solid #0074CC;gap: 40px;border-radius: 10px;">
-        <div class="ant-card-body" style="text-align: center;">
-          <div style="gap: 20px;">
-            <span class="text-card-header-dashboard">{{ subscriptionsDashboard.serviceNearExpireCount }}</span><br>
-            <span class="text-body-card-dashboard" style="margin-top: 50px;">{{'app.dashboard.subscription.service.near.expire'|i18n}}</span>
-          </div>
-        </div>
 
-      </nz-card>
-    </nz-col>
-    <nz-col [nzSpan]="6">
-      <nz-card style="border: 1px solid #0074CC;gap: 40px;border-radius: 10px;">
-        <div class="ant-card-body" style="text-align: center;">
-          <div style="gap: 20px;">
-            <span class="text-card-header-dashboard">{{ subscriptionsDashboard.serviceExpireCount }}</span><br>
-            <span class="text-body-card-dashboard" style="margin-top: 50px;">{{ 'app.dashboard.subscription.service.expire'|i18n }}</span>
-          </div>
-        </div>
-      </nz-card>
-    </nz-col>
-  </nz-row>
-  <nz-card style="border-radius: 8px; margin-top: 15px;">
-    <span class="text-card-header">{{ 'app.dashboard.payment.and.cost' | i18n }}</span>
-    <nz-row nzGutter="24">
-      <nz-col nzSpan="8">
-        <div #pieChart></div>
+        </ng-template>
       </nz-col>
-      <nz-col nzSpan="16">
-        <nz-table>
+      <nz-col [nzSpan]="6">
+        <nz-card style="border: 1px solid #0074CC;gap: 40px;border-radius: 10px;"
+                 nz-popover
+                 [nzPopoverTitle]="title"
+                 [nzPopoverContent]="active"
+                 [nzPopoverTrigger]="'hover'"
+                 [nzPopoverPlacement]="'bottom'">
+          <div class="ant-card-body" style="text-align: center;">
+            <div style="gap: 20px;">
+              <span class="text-card-header-dashboard">{{ subscriptionDashboardActive.serviceCount }}</span><br>
+              <span class="text-body-card-dashboard"
+                    style="margin-top: 50px;">{{ 'app.dashboard.subscription.service.active'|i18n }}</span>
+            </div>
+          </div>
+        </nz-card>
+        <ng-template #active>
+          <div class="scroll">
+            <div *ngFor="let data of subscriptionDashboardActive?.details" style="width: 300px">
+              <nz-row *ngIf="data.serviceTypeName.toUpperCase() != 'Vpc'.toUpperCase()">
+                <nz-col nzSpan="12" class="text-label">{{ getServiceName(data.serviceType) }}</nz-col>
+                <nz-col class="text-right" nzSpan="12">{{ data.dataCount }}</nz-col>
+              </nz-row>
+              <nz-collapse nzGhost *ngIf="data.serviceTypeName.toUpperCase() == 'Vpc'.toUpperCase()">
+                <nz-collapse-panel [nzHeader]="header" [nzActive]="false" style="padding-right: 0;">
+                  <ng-template #header>
+                    <div style="display: flex; width: 100%; ">
+                      <div style="flex: 1;">{{ getServiceName(data.serviceType) }}</div>
+                      <div class="text-right" style="flex: 1;">{{ data.dataCount }}</div>
+                    </div>
+                  </ng-template>
+                  <nz-row *ngFor="let item of data.details; let last = last">
+                    <nz-col nzSpan="12">{{ getServiceName(item.serviceType) }}</nz-col>
+                    <nz-col class="text-right" nzSpan="12">{{ item.dataCount }}</nz-col>
+                    <nz-divider *ngIf="!last" style="margin: 10px 0" nzType="horizontal"></nz-divider>
+                  </nz-row>
+                </nz-collapse-panel>
+              </nz-collapse>
+              <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
+            </div>
+          </div>
+        </ng-template>
+      </nz-col>
+      <nz-col [nzSpan]="6">
+        <nz-card style="border: 1px solid #0074CC;gap: 40px;border-radius: 10px;"
+                 nz-popover
+                 [nzPopoverTitle]="title"
+                 [nzPopoverContent]="NearExpire"
+                 [nzPopoverTrigger]="'hover'"
+                 [nzPopoverPlacement]="'bottom'">
+          <div class="ant-card-body" style="text-align: center;">
+            <div style="gap: 20px;">
+              <span class="text-card-header-dashboard">{{ subscriptionDashboardNearExpire.serviceCount }}</span><br>
+              <span class="text-body-card-dashboard"
+                    style="margin-top: 50px;">{{ 'app.dashboard.subscription.service.near.expire'|i18n }}</span>
+            </div>
+          </div>
+        </nz-card>
+        <ng-template #NearExpire>
+          <div class="scroll">
+            <div *ngFor="let data of subscriptionDashboardNearExpire?.details" style="width: 300px" class="text-label">
+              <nz-row *ngIf="data.serviceTypeName.toUpperCase() != 'Vpc'.toUpperCase()">
+                <nz-col nzSpan="12">{{ getServiceName(data.serviceType) }}</nz-col>
+                <nz-col class="text-right" nzSpan="12">{{ data.dataCount }}</nz-col>
+              </nz-row>
+              <nz-collapse nzGhost *ngIf="data.serviceTypeName.toUpperCase() == 'Vpc'.toUpperCase()">
+                <nz-collapse-panel [nzHeader]="header" [nzActive]="false">
+                  <ng-template #header>
+                    <div style="display: flex; width: 100%;">
+                      <div style="flex: 1;">{{ getServiceName(data.serviceType) }}</div>
+                      <div class="text-right" style="flex: 1;">{{ data.dataCount }}</div>
+                    </div>
+                  </ng-template>
+                  <nz-row *ngFor="let item of data.details; let last = last">
+                    <nz-col nzSpan="12">{{ getServiceName(item.serviceType) }}</nz-col>
+                    <nz-col class="text-right" nzSpan="12">{{ item.dataCount }}</nz-col>
+                    <nz-divider *ngIf="!last" style="margin: 10px 0" nzType="horizontal"></nz-divider>
+                  </nz-row>
+                </nz-collapse-panel>
+              </nz-collapse>
+              <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
+            </div>
+          </div>
+        </ng-template>
+      </nz-col>
+      <nz-col [nzSpan]="6">
+        <nz-card style="border: 1px solid #0074CC;gap: 40px;border-radius: 10px;"
+                 nz-popover
+                 [nzPopoverTitle]="title"
+                 [nzPopoverContent]="expire"
+                 [nzPopoverTrigger]="'hover'"
+                 [nzPopoverPlacement]="'bottom'">
+          <div class="ant-card-body" style="text-align: center;">
+            <div style="gap: 20px;">
+              <span class="text-card-header-dashboard">{{ subscriptionDashboardExpire.serviceCount }}</span><br>
+              <span class="text-body-card-dashboard"
+                    style="margin-top: 50px;">{{ 'app.dashboard.subscription.service.expire'|i18n }}</span>
+            </div>
+          </div>
+        </nz-card>
+        <ng-template #expire>
+          <div class="scroll">
+            <div *ngFor="let data of subscriptionDashboardExpire?.details" style="width: 300px">
+              <nz-row *ngIf="data.serviceTypeName.toUpperCase() != 'Vpc'.toUpperCase()">
+                <nz-col nzSpan="12" class="text-label">{{ getServiceName(data.serviceType) }}</nz-col>
+                <nz-col class="text-right" nzSpan="12">{{ data.dataCount }}</nz-col>
+              </nz-row>
+              <nz-collapse nzGhost *ngIf="data.serviceTypeName.toUpperCase() == 'Vpc'.toUpperCase()">
+                <nz-collapse-panel [nzHeader]="header" [nzActive]="false">
+                  <ng-template #header>
+                    <div style="display: flex; width: 100%;">
+                      <div style="flex: 1;" class="text-label">{{ getServiceName(data.serviceType) }}</div>
+                      <div class="text-right" style="flex: 1;">{{ data.dataCount }}</div>
+                    </div>
+                  </ng-template>
+                  <nz-row *ngFor="let item of data.details; let last = last" class="text-label">
+                    <nz-col nzSpan="12" class="text-label">{{ getServiceName(item.serviceType) }}</nz-col>
+                    <nz-col class="text-right" nzSpan="12">{{ item.dataCount }}</nz-col>
+                    <nz-divider *ngIf="!last" style="margin: 10px 0" nzType="horizontal"></nz-divider>
+                  </nz-row>
+                </nz-collapse-panel>
+              </nz-collapse>
+              <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
+            </div>
+          </div>
+        </ng-template>
+        <ng-template #title>
+          <span class="text-value">{{ 'app.payment-detail.serviceInformation' | i18n }}</span>
+        </ng-template>
+      </nz-col>
+    </nz-row>
+
+    <nz-card style="border-radius: 8px; margin-top: 15px;">
+      <span class="text-card-header">{{ 'app.dashboard.payment.and.cost' | i18n }}</span>
+      <nz-row nzGutter="24">
+        <nz-col nzSpan="8">
+          <div #pieChart></div>
+        </nz-col>
+        <nz-col nzSpan="16">
           <nz-table #fixTablePaymentCost
-                    nzShowPagination
+                    nzShowSizeChanger
                     style="margin-top: 25px;"
                     [nzData]="listPaymentCostUse?.records"
                     [nzFrontPagination]="false"
                     [nzTotal]="listPaymentCostUse?.totalCount"
-                    [nzPageSize]="listPaymentCostUse?.pageSize"
+                    [nzPageSize]="5"
                     [nzPageIndex]="listPaymentCostUse?.currentPage"
-                    [nzLoading]="isLoadingPaymentCost"
                     (nzPageSizeChange)="onPageSizeCostChange($event)"
-                    (nzPageIndexChange)="onPageIndexCostChange($event)">
+                    (nzPageIndexChange)="onPageIndexCostChange($event)"
+                    [nzPageSizeOptions]="pageSizes">
             <thead>
             <tr>
               <th>{{ 'app.dashboard.payment.and.cost.payment.code'|i18n }}</th>
               <th>{{ 'app.dashboard.payment.and.cost.service' |i18n }}</th>
               <th>{{ 'app.dashboard.payment.and.cost.total.payment'|i18n }}</th>
-              <th>{{ 'app.dashboard.payment.and.cost.create.date'|i18n}}</th>
+              <th>{{ 'app.dashboard.payment.and.cost.create.date'|i18n }}</th>
               <th>{{ 'app.dashboard.payment.and.cost.status'|i18n }}</th>
             </tr>
             </thead>
             <tbody>
             <tr *ngFor="let data of fixTablePaymentCost.data">
               <td><a (click)="navigateToDetailPayment(data.id, data.paymentCode)">{{ data.paymentCode }}</a></td>
-              <td>{{ data.serviceTypeName }}</td>
-              <td nzAlign="right">{{ data.totalAmount | number}}</td>
+              <td>
+                <span *ngFor="let i of data.serviceTypes; let last = last">
+                  {{ getServiceName(i) }} <br *ngIf="!last">
+                </span>
+              </td>
+              <td nzAlign="right">{{ data.totalAmount | number }}</td>
               <td nzAlign="center">{{ data.createdDate | date: 'dd/MM/yyyy' }}</td>
               <td>
-                <span *ngIf="data.status === 'PAID'" style="color: #008D47;">{{ 'app.dashboard.payment.and.cost.paid'|i18n }}</span>
-                <span *ngIf="data.status !== 'PAID'" style="color: #EB1414;">{{ 'app.dashboard.payment.and.cost.not.paid'|i18n }}</span>
+                <span *ngIf="data.status === 'PAID'"
+                      style="color: #008D47;">{{ 'app.dashboard.payment.and.cost.paid'|i18n }}</span>
+                <span *ngIf="data.status !== 'PAID'"
+                      style="color: #EB1414;">{{ 'app.dashboard.payment.and.cost.not.paid'|i18n }}</span>
               </td>
             </tr>
             </tbody>
           </nz-table>
-        </nz-table>
-      </nz-col>
-    </nz-row>
-  </nz-card>
-  <nz-card style="border-radius: 8px; margin-top: 25px;">
-    <span class="text-card-header">{{ 'app.dashboard.service.near.expire'|i18n }}</span>
-    <nz-table #fixTableNearExpire
-              nzShowPagination
-              style="margin-top: 25px;"
-              [nzData]="listSubscriptionsNearExpire?.records"
-              [nzFrontPagination]="false"
-              [nzTotal]="listSubscriptionsNearExpire?.totalCount"
-              [nzPageSize]="listSubscriptionsNearExpire?.pageSize"
-              [nzPageIndex]="listSubscriptionsNearExpire?.currentPage"
-              [nzLoading]="isLoadingNearExpire"
-              (nzPageSizeChange)="onPageSizeNearExpireChange($event)"
-              (nzPageIndexChange)="onPageIndexNearExpireChange($event)">
-      <thead>
-      <tr>
-        <th>{{ 'app.dashboard.service.near.expire.service.name'|i18n }}</th>
-        <th>{{ 'app.dashboard.service.near.expire.service.type'|i18n }}</th>
-        <th>{{ 'app.dashboard.service.near.expire.create.date'|i18n }}</th>
-        <th>{{ 'app.dashboard.service.near.expire.expire.date'|i18n }}</th>
-        <th>{{ 'app.dashboard.service.near.expire.status'|i18n }}</th>
-        <th>{{ 'app.dashboard.service.near.expire.action'|i18n }}</th>
-      </tr>
-      </thead>
-      <tbody>
-      <tr *ngFor="let data of fixTableNearExpire.data">
-        <td>{{ data.serviceName }}</td>
-        <td>{{ data.serviceTypeName }}</td>
-        <td nzAlign="center">{{ data.createDate | date: 'dd/MM/yyyy' }}</td>
-        <td nzAlign="center">{{ data.expireDate | date: 'dd/MM/yyyy' }}</td>
-        <td style="color: #EB1414;">{{ data.status }}</td>
-        <td>
-          <img style="padding-right: 10px; cursor: pointer;" src="assets/imgs/calendar-tick.svg"
-               nz-popover [nzPopoverContent]="'app.dashboard.service.near.expire.extend'|i18n"
-               nzPopoverPlacement="bottom" alt="" (click)="navigateToExtend(data.serviceInstanceId, data.serviceType)"/>
-        </td>
-      </tr>
-      </tbody>
-    </nz-table>
-  </nz-card>
-</nz-content>
+        </nz-col>
+      </nz-row>
+    </nz-card>
+    <nz-card style="border-radius: 8px; margin-top: 25px;">
+      <span class="text-card-header">{{ 'app.dashboard.service.near.expire'|i18n }}</span>
+      <div style="margin-top: 25px;">
+        <nz-input-group
+          style="width: 300px;"
+          [nzPrefix]="prefixIconSearch"
+          nzSize="large">
+          <input name="name"
+                 nz-input
+                 placeholder="{{ 'app.search.name' | i18n }}"
+                 [(ngModel)]="value"
+                 (input)="changeInputChange($event)"
+                 (keydown.enter)="onEnter($event)" />
+        </nz-input-group>
+      </div>
+      <ng-template #prefixIconSearch>
+        <img src="assets/imgs/search.svg" alt="" />
+      </ng-template>
+      <nz-table #fixTableNearExpire
+                nzShowSizeChanger
+                style="margin-top: 25px;"
+                [nzLoading]="loadingNearExpire"
+                [nzData]="listSubscriptionsNearExpire?.records"
+                [nzFrontPagination]="false"
+                [nzTotal]="listSubscriptionsNearExpire?.totalCount"
+                [nzPageSize]="5"
+                [nzPageIndex]="listSubscriptionsNearExpire?.currentPage"
+                (nzPageSizeChange)="onPageSizeNearExpireChange($event)"
+                (nzPageIndexChange)="onPageIndexNearExpireChange($event)"
+                [nzPageSizeOptions]="pageSizes">
+        <thead>
+        <tr>
+          <th>{{ 'app.dashboard.service.near.expire.service.name'|i18n }}</th>
+          <th>{{ 'app.dashboard.service.near.expire.service.type'|i18n }}</th>
+          <th>{{ 'app.dashboard.service.near.expire.create.date'|i18n }}</th>
+          <th>{{ 'app.dashboard.service.near.expire.expire.date'|i18n }}</th>
+          <th>{{ 'app.dashboard.service.near.expire.status'|i18n }}</th>
+          <th>{{ 'app.dashboard.service.near.expire.action'|i18n }}</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let data of fixTableNearExpire.data">
+          <td>{{ data.serviceName }}</td>
+          <td>{{ getServiceName(data.serviceType) }}</td>
+          <td nzAlign="center">{{ data.createDate | date: 'dd/MM/yyyy' }}</td>
+          <td nzAlign="center">{{ data.expireDate | date: 'dd/MM/yyyy' }}</td>
+          <td style="color: #EB1414;">{{ data.status }}</td>
+          <td *ngIf="![3, 5, 6, 7, 8, 9, 10, 11, 16, 17, 19, 21, 22, 23, 100].includes(data.serviceType)">
+            <img style="padding-right: 10px; cursor: pointer;" src="assets/imgs/calendar-tick.svg"
+                 nz-popover [nzPopoverContent]="'app.dashboard.service.near.expire.extend'|i18n"
+                 nzPopoverPlacement="bottom" alt=""
+                 (click)="navigateToExtend(data.serviceInstanceId, data.serviceType)" />
+          </td>
+        </tr>
+        </tbody>
+      </nz-table>
+    </nz-card>
+  </nz-content>
+</nz-spin>

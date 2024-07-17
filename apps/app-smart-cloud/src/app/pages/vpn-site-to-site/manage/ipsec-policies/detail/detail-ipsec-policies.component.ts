@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { getCurrentRegionAndProject } from '@shared';
@@ -6,6 +6,7 @@ import { FormCreateFileSystemSnapShot } from 'src/app/shared/models/filesystem-s
 import { IpsecPolicyDetail } from 'src/app/shared/models/ipsec-policy';
 import { RegionModel, ProjectModel } from '../../../../../../../../../libs/common-utils/src';
 import { IpsecPolicyService } from 'src/app/shared/services/ipsec-policy.service';
+import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
 
 
 @Component({
@@ -20,7 +21,7 @@ export class DetailIpsecPoliciesComponent implements OnInit{
   isLoading: boolean = false
 
   ipsecPolicy: IpsecPolicyDetail = new IpsecPolicyDetail();
-
+  @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
 
   constructor(private ipsecPolicyService: IpsecPolicyService,
               private router: Router,
@@ -30,7 +31,14 @@ export class DetailIpsecPoliciesComponent implements OnInit{
 
   onRegionChange(region: RegionModel) {
     this.region = region.regionId;
+    if(this.projectCombobox){
+      this.projectCombobox.loadProjects(true, region.regionId);
+    }
     this.router.navigate(['/app-smart-cloud/vpn-site-to-site']);
+  }
+
+  onRegionChanged(region: RegionModel) {
+    this.region = region.regionId;
   }
 
   onProjectChange(project: ProjectModel) {

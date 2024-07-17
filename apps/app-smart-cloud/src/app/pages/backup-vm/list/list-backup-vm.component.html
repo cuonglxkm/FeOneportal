@@ -5,7 +5,7 @@
       <nz-breadcrumb-item [routerLink]="['/']">{{ 'app.breadcrumb.home'|i18n }}</nz-breadcrumb-item>
       <nz-breadcrumb-item>{{ 'app.breadcrumb.infrastructure.service'|i18n }}</nz-breadcrumb-item>
       <nz-breadcrumb-item>Backup</nz-breadcrumb-item>
-      <nz-breadcrumb-item [routerLink]="'/app-smart-cloud/backup-vm'">Backup VM</nz-breadcrumb-item>
+      <nz-breadcrumb-item [routerLink]="'/app-smart-cloud/backup-vm'">{{'app.backup.vm.breadcrumb'|i18n}}</nz-breadcrumb-item>
     </nz-breadcrumb>
     <ng-template #iconTemplate>
       <one-portal-svg-icon [icon]="'icon_breadcrumb'"></one-portal-svg-icon>
@@ -15,8 +15,8 @@
   <ng-template #action>
     <div class="alain-custom-action text-right">
       <share-users-combobox></share-users-combobox>
-      <region-select-dropdown (valueChanged)="regionChanged($event)"></region-select-dropdown>
-      <project-select-dropdown (valueChanged)="projectChanged($event)"
+      <region-select-dropdown (regionChange)="onRegionChanged($event)" (valueChanged)="regionChanged($event)"></region-select-dropdown>
+      <project-select-dropdown #projectCombobox (valueChanged)="projectChanged($event)"
                                (userChanged)="projectChanged($event)"
                                [regionId]="region"></project-select-dropdown>
     </div>
@@ -58,7 +58,7 @@
             </ng-template>
           </nz-col>
           <nz-col>
-            <button nz-button nzType="primary" nzSize="large" (click)="navigateToCreateBackup()">
+            <button nz-button nzType="primary" nzSize="large" [nzLoading]="isLoadingAction" (click)="navigateToCreateBackup()">
               <img style="padding-right: 10px; margin-top: -4px" src="assets/imgs/add-circle.svg" alt="" />
               <span class="button-text-primary">{{ 'app.backup.vm.create.button'|i18n }}</span>
             </button>
@@ -82,10 +82,9 @@
             <th nzBreakWord>{{ 'app.table.backup.vm.vm.original'|i18n }}</th>
             <th nzBreakWord>{{ 'app.table.backup.vm.storage'|i18n }} (GB)</th>
             <th nzBreakWord *ngIf="typeVPC==0">{{ 'app.table.backup.vm.backup.package'|i18n }}</th>
-            <th nzBreakWord>{{ 'app.table.backup.vm.create.date'|i18n }}</th>
-            <th nzBreakWord>{{ 'app.table.backup.vm.expire.date'|i18n }}</th>
+            <th nzBreakWord>{{ 'app.service.start.date'|i18n }}</th>
+            <th nzBreakWord>{{ 'app.service.expiration-date'|i18n }}</th>
             <th nzBreakWord>{{ 'app.table.backup.vm.status'|i18n }}</th>
-            <th nzBreakWord>{{ 'app.table.backup.vm.task.status'|i18n }}</th>
             <th nzBreakWord>{{ 'app.table.backup.vm.action'|i18n }}</th>
           </tr>
           </thead>
@@ -96,20 +95,20 @@
             <td nzBreakWord> {{ data.instanceName }}</td>
             <td nzBreakWord nzAlign="right">{{ data.size }}</td>
             <td nzBreakWord *ngIf="typeVPC==0">{{ data.backupPackageName }}</td>
-            <td nzBreakWord>{{ data.creationDate | date: "dd/MM/yyyy" }}</td>
-            <td nzBreakWord>{{ data.expirationDate | date: "dd/MM/yyyy" }}</td>
+            <td nzBreakWord nzAlign="center">{{ data.creationDate | date: "dd/MM/yyyy" }}</td>
+            <td nzBreakWord nzAlign="center">{{ data.expirationDate | date: "dd/MM/yyyy" }}</td>
             <ng-container *ngIf="data.status | ServiceStatusPipe as statusModel">
               <td nzBreakWord nzAlign="left" [ngStyle]="{color: statusModel.color}">{{statusModel.status}}</td>
             </ng-container>
-            <td nzBreakWord>
-              <span *ngIf="data.serviceStatus === 'KHOITAO'">-</span>
-              <span *ngIf="data.serviceStatus !== 'KHOITAO'">{{ data.serviceStatus }}</span>
-            </td>
+<!--            <td nzBreakWord>-->
+<!--              <span *ngIf="data.serviceStatus === 'KHOITAO'">-</span>-->
+<!--              <span *ngIf="data.serviceStatus !== 'KHOITAO'">{{ data.serviceStatus }}</span>-->
+<!--            </td>-->
             <td nzBreakWord>
 <!--              <div [ngSwitch]="data.status">-->
                 <div *ngIf="data.status.includes('AVAILABLE')">
                   <img src="assets/imgs/rotate-right.svg" alt=""
-                       style="cursor: pointer;"
+                       style="cursor: pointer; margin-left: 5px;"
                        (click)="navigateToRestore(data.id)"
                        nz-popover nzPopoverPlacement="bottom"
                        [nzPopoverContent]="'Restore'" />
@@ -123,7 +122,7 @@
                                                [idBackupVm]="data.id"
                                                [backupName]="data.name"
                                                [backupVmInfo]="data"
-                                               (onOk)="handleOkDelete()" />
+                                               (onOk)="handleOkUpdate()" />
                 </div>
                 <div *ngIf="data.status.includes('SUSPENDED')">
                   <one-portal-delete-backup-vm [region]="region"

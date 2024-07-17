@@ -36,9 +36,10 @@
   <ng-template #action>
     <div class="alain-custom-action text-right">
       <region-select-dropdown
+      (regionChange)="onRegionChanged($event)"
         (valueChanged)="regionChanged($event)"
       ></region-select-dropdown>
-      <project-select-dropdown
+      <project-select-dropdown #projectCombobox
         (valueChanged)="projectChanged($event)"
         (userChanged)="userChanged($event)"
         [regionId]="region"
@@ -131,7 +132,9 @@
         <one-portal-service-time-extend *ngIf="fileSystemSnapshotDetail"
                                           [createDate]="fileSystemSnapshotDetail?.createTime"
                                           [expiredDate]="fileSystemSnapshotDetail?.expireDate"
-                                          (valueChanged)="onChangeTime($event)" />
+                                          (valueChanged)="onChangeTime($event)" 
+                                          [newExpiredDate]="this.orderItem.orderItemPrices[0].expiredDate"
+                                          />
       </nz-col>
       <nz-col nzSpan="8">
         <nz-affix [nzOffsetTop]="72">

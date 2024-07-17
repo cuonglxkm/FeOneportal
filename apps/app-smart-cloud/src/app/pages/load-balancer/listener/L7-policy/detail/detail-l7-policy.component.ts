@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject, OnInit, ViewChild } from '@angular/core';
 import { getCurrentRegionAndProject } from '@shared';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NonNullableFormBuilder } from '@angular/forms';
@@ -7,6 +7,7 @@ import { LoadBalancerService } from '../../../../../shared/services/load-balance
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { L7Policy, L7Rule } from '../../../../../shared/models/load-balancer.model';
 import { RegionModel, ProjectModel } from '../../../../../../../../../libs/common-utils/src';
+import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
 
 @Component({
   selector: 'one-portal-detail-l7-policy',
@@ -32,7 +33,7 @@ export class DetailL7PolicyComponent implements OnInit{
   pageIndex: number = 1
 
   currentPageData: any
-
+  @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
 
   constructor(private activatedRoute: ActivatedRoute,
               private router: Router,
@@ -44,7 +45,14 @@ export class DetailL7PolicyComponent implements OnInit{
 
   regionChanged(region: RegionModel) {
     this.region = region.regionId;
+    if(this.projectCombobox){
+      this.projectCombobox.loadProjects(true, region.regionId);
+    }
     // this.router.navigate(['/app-smart-cloud/load-balancer/list'])
+  }
+
+  onRegionChanged(region: RegionModel) {
+    this.region = region.regionId;
   }
 
   projectChanged(project: ProjectModel) {

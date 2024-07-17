@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { PackageBackupService } from '../../../shared/services/package-backup.service';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
@@ -13,12 +13,12 @@ import { OrderItem } from '../../../shared/models/price';
 import { DataPayment, ItemPayment } from '../../instances/instances.model';
 import { getCurrentRegionAndProject } from '@shared';
 import { ProjectModel, RegionModel } from '../../../../../../../libs/common-utils/src';
-import { ProjectService } from 'src/app/shared/services/project.service';
 import { ConfigurationsService } from '../../../shared/services/configurations.service';
 import { debounceTime, Subject } from 'rxjs';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from '@core';
 import { OrderService } from '../../../shared/services/order.service';
+import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
 
 @Component({
   selector: 'one-portal-extend-backup-package',
@@ -50,6 +50,7 @@ export class EditBackupPackageComponent implements OnInit {
   stepStorage: number = 0;
 
   dataSubjectStorage: Subject<any> = new Subject<any>();
+  @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
 
   constructor(private router: Router,
               private packageBackupService: PackageBackupService,
@@ -63,7 +64,14 @@ export class EditBackupPackageComponent implements OnInit {
   }
 
   regionChanged(region: RegionModel) {
+    if(this.projectCombobox){
+      this.projectCombobox.loadProjects(true, region.regionId);
+    }
     this.router.navigate(['/app-smart-cloud/backup/packages']);
+  }
+
+  onRegionChanged(region: RegionModel) {
+    this.region = region.regionId;
   }
 
   projectChanged(project: ProjectModel) {
@@ -73,6 +81,33 @@ export class EditBackupPackageComponent implements OnInit {
 
   userChanged(project: ProjectModel) {
     this.router.navigate(['/app-smart-cloud/backup/packages']);
+  }
+
+  getMonthDifference(expiredDateStr: string, createdDateStr: string): { months: number, days: number } {
+    // Chuyển đổi chuỗi thành đối tượng Date
+    const expiredDate = new Date(expiredDateStr);
+    const createdDate = new Date(createdDateStr);
+
+    // Tính số tháng giữa hai ngày
+    const oneDay = 24 * 60 * 60 * 1000; // Số mili giây trong một ngày
+    const diffDays = Math.round(Math.abs((expiredDate.getTime() - createdDate.getTime()) / oneDay)); // Số ngày chênh lệch
+    const diffMonths = Math.floor(diffDays / 30); // Số tháng dựa trên số ngày, mỗi tháng có 30 ngày
+    const remainingDays = diffDays % 30;
+    return {
+      months: diffMonths,
+      days: remainingDays
+    };
+  }
+
+  getFormattedDateDifference(expireDate: string, createdDate: string): string {
+    const diff = this.getMonthDifference(expireDate, createdDate);
+    if (diff.months == 0) {
+      return `${diff.days} ` + this.i18n.fanyi('app.day');
+    } else if (diff.days == 0) {
+      return `${diff.months} ` + this.i18n.fanyi('app.months');
+    } else {
+      return `${diff.months} ` + this.i18n.fanyi('app.months') + ` ${diff.days} ` + this.i18n.fanyi('app.day');
+    }
   }
 
   getConfiguration() {
@@ -103,7 +138,7 @@ export class EditBackupPackageComponent implements OnInit {
 
   getDetailPackageBackup(id) {
     this.isLoading = true;
-    this.packageBackupService.detail(id).subscribe(data => {
+    this.packageBackupService.detail(id, this.project).subscribe(data => {
       this.isLoading = false;
       console.log('data', data);
       this.packageBackupModel = data;
@@ -121,11 +156,11 @@ export class EditBackupPackageComponent implements OnInit {
 
   backupPackageInit() {
     this.formUpdateBackupPackageModel.packageName = this.packageBackupModel.packageName;
-    console.log('size', this.packageBackupModel.sizeInGB)
-    if(this.packageBackupModel?.sizeInGB != null) {
-      this.formUpdateBackupPackageModel.newSize = this.storage + this.packageBackupModel?.sizeInGB
+    console.log('size', this.packageBackupModel.sizeInGB);
+    if (this.packageBackupModel?.sizeInGB != null) {
+      this.formUpdateBackupPackageModel.newSize = this.storage + this.packageBackupModel?.sizeInGB;
     } else {
-      this.formUpdateBackupPackageModel.newSize = this.storage
+      this.formUpdateBackupPackageModel.newSize = this.storage;
     }
     this.formUpdateBackupPackageModel.description = this.packageBackupModel.description;
     this.formUpdateBackupPackageModel.vpcId = this.project.toString();
@@ -165,6 +200,7 @@ export class EditBackupPackageComponent implements OnInit {
 
   isVisiblePopupError: boolean = false;
   errorList: string[] = [];
+
   closePopupError() {
     this.isVisiblePopupError = false;
   }
@@ -174,15 +210,15 @@ export class EditBackupPackageComponent implements OnInit {
     request.customerId = this.formUpdateBackupPackageModel.customerId;
     request.createdByUserId = this.formUpdateBackupPackageModel.customerId;
     request.note = this.i18n.fanyi('app.backup.package.resize');
-    request.totalPayment = this.orderItem?.totalPayment?.amount
-    request.totalVAT = this.orderItem?.totalVAT?.amount
+    request.totalPayment = this.orderItem?.totalPayment?.amount;
+    request.totalVAT = this.orderItem?.totalVAT?.amount;
     request.orderItems = [
       {
         orderItemQuantity: 1,
         specification: JSON.stringify(this.formUpdateBackupPackageModel),
         specificationType: 'backuppacket_resize',
-        price: this.orderItem?.totalPayment?.amount,
-        serviceDuration: 0
+        price: this.orderItem?.totalAmount.amount,
+        serviceDuration: 1
       }
     ];
     return request;
@@ -196,7 +232,24 @@ export class EditBackupPackageComponent implements OnInit {
       console.log('data', data);
       if (data.success) {
         console.log('request', request);
-        this.navigateToPaymentSummary(request);
+        if(this.hasRoleSI) {
+          this.packageBackupService.createOrder(request).subscribe(data => {
+              if (data != null) {
+                if (data.code == 200) {
+                  this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('app.notification.request.resize.success'));
+                  this.router.navigate(['/app-smart-cloud/volumes']);
+                }
+              } else {
+                this.isLoadingButton = false;
+              }
+            },
+            error => {
+              this.isLoadingButton = false;
+              this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.notification.request.resize.fail'));
+            });
+        } else {
+          this.navigateToPaymentSummary(request);
+        }
       } else {
         this.isVisiblePopupError = true;
         this.errorList = data.data;
@@ -216,12 +269,14 @@ export class EditBackupPackageComponent implements OnInit {
   }
 
 
+  hasRoleSI: boolean;
   ngOnInit() {
     this.getConfiguration();
     this.idBackupPackage = Number.parseInt(this.route.snapshot.paramMap.get('id'));
     let regionAndProject = getCurrentRegionAndProject();
     this.region = regionAndProject.regionId;
     this.project = regionAndProject.projectId;
+    this.hasRoleSI = localStorage.getItem('role').includes('SI');
     this.onChangeStorage();
     if (this.idBackupPackage) {
       this.getDetailPackageBackup(this.idBackupPackage);

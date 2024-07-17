@@ -58,6 +58,7 @@ export class EditSubUserComponent {
     formUpdate.uid = this.uid
     formUpdate.subuser = this.idSubUser
     formUpdate.actorEmail = ''
+    formUpdate.regionId = this.region
     if(this.validateForm.controls.access.value.includes('none')) {
       this.validateForm.controls.access.setValue('')
     } else {
@@ -68,6 +69,7 @@ export class EditSubUserComponent {
       if(data) {
         this.isLoading = false
         this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('app.edit.subuser.success'))
+        this.validateForm.controls.access.setValue('none')
         this.onOk.emit()
       } else {
         this.isLoading = false

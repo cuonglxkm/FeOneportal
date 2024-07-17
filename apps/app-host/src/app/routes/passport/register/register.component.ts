@@ -87,7 +87,7 @@ export class UserRegisterComponent implements OnInit, OnDestroy {
         ],
       }],
       mobile: ['', [Validators.required, AppValidator.validPhoneNumber]],
-      province: ['', [Validators.required]],
+      province: ['Hà Nội', [Validators.required]],
       agreement: [true, [Validators.required]],
       recaptchaReactive: ['', [Validators.required]],
     },
@@ -95,6 +95,7 @@ export class UserRegisterComponent implements OnInit, OnDestroy {
       validators: MatchControl('password', 'confirm'),
     }
   );
+  province = 'Hà Nội'
   error = '';
   type = 0;
   loading = false;
@@ -116,7 +117,7 @@ export class UserRegisterComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.langRegister = localStorage.getItem('lang') == null ? this.i18n.defaultLang : localStorage.getItem('lang');
-    this.form.controls.province.setValue('Hà Nội');
+    this.loadProvinces();
   }
 
   public addTokenLog(message: string, token: string | null) {
@@ -173,6 +174,7 @@ export class UserRegisterComponent implements OnInit, OnDestroy {
   passwordVisible = false;
   passwordVisible1 = false;
   langRegister: any;
+  provinces: any;
 
   submit(): void {
     console.log('submit register')
@@ -188,13 +190,13 @@ export class UserRegisterComponent implements OnInit, OnDestroy {
     }
 
     const data: UserCreateDto = {
-      email: this.form.controls.mail.value,
+      email: this.form.controls.mail.value.toLowerCase(),
       password: this.form.controls.password.value,
       accountType: 1,
       firstName: this.form.controls.firstName.value,
       lastName: this.form.controls.lastName.value,
       phoneNumber: this.form.controls.mobile.value,
-      province: this.form.controls.province.value,
+      province: this.province,
       address: '',
       channelSaleId: 0,
       taxCode: '',
@@ -261,5 +263,25 @@ export class UserRegisterComponent implements OnInit, OnDestroy {
       this.settings.setLayout('lang', this.langRegister);
       setTimeout(() => this.doc.location.reload());
     });
+  }
+
+  private loadProvinces() {
+    fetch(environment.baseUrl + '/users/provinces').then(r => r.json())
+      .then(j => {
+      this.provinces = j;
+        this.cdr.detectChanges();
+      console.log(j)
+    })
+
+
+    // this.http.get<any>(environment.baseUrl + '/users/provinces').subscribe(
+    //   data => {
+    //     this.provinces = data
+    //     this.form.controls.province.setValue(data[0])
+    //   },
+    //   error => {
+    //     console.log(error)
+    //   }
+    // )
   }
 }

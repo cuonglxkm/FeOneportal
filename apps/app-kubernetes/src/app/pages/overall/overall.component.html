@@ -36,7 +36,7 @@
     </ng-template>
   </nz-tab>
   <ng-template #detailTitleTpl>
-    <label>{{ 'app.cluster.detail-cluster' | i18n }}</label>
+    <label class="content">{{ 'app.cluster.detail-cluster' | i18n }}</label>
   </ng-template>
 
   <!-- instance tab -->
@@ -51,7 +51,7 @@
     </ng-template>
   </nz-tab>
   <ng-template #instanceTitleTpl>
-    <label>Worker Node</label>
+    <label class="content">Worker Node</label>
   </ng-template>
 
   <!-- security group tab -->
@@ -63,7 +63,7 @@
     </ng-template>
   </nz-tab>
   <ng-template #sgTitleTpl>
-    <label [ngClass]="{'no-access': detailCluster?.serviceStatus == 1}">
+    <label [ngClass]="{'no-access': detailCluster?.serviceStatus == 1}" class="content">
       Security Group
     </label>
   </ng-template>
@@ -77,6 +77,6 @@
     </ng-template>
   </nz-tab>
   <ng-template #logTitleTpl>
-    <label>{{ 'app.cluster.log' | i18n }}</label>
+    <label class="content">{{ 'app.cluster.log' | i18n }}</label>
   </ng-template>
 </nz-tabset>

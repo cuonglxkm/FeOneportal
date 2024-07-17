@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject, OnInit, ViewChild } from '@angular/core';
 import { getCurrentRegionAndProject } from '@shared';
 import { ActivatedRoute, Router } from '@angular/router';
 import {
@@ -16,6 +16,7 @@ import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { RegionModel, ProjectModel } from '../../../../../../../../../libs/common-utils/src';
 import { I18NService } from '@core';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
+import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
 
 export function urlValidator(): ValidatorFn {
   return (control: AbstractControl): { [key: string]: any } | null => {
@@ -70,7 +71,7 @@ export class CreateL7PolicyComponent implements OnInit {
   listPool: Pool[] = []
 
   isLoading: boolean = false
-
+  @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
   constructor(private activatedRoute: ActivatedRoute,
               private router: Router,
               private fb: NonNullableFormBuilder,
@@ -91,7 +92,14 @@ export class CreateL7PolicyComponent implements OnInit {
   }
   regionChanged(region: RegionModel) {
     this.region = region.regionId;
+    if(this.projectCombobox){
+      this.projectCombobox.loadProjects(true, region.regionId);
+    }
     // this.router.navigate(['/app-smart-cloud/load-balancer/list'])
+  }
+
+  onRegionChanged(region: RegionModel) {
+    this.region = region.regionId;
   }
 
   projectChanged(project: ProjectModel) {

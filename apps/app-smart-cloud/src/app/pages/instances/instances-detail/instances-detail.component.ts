@@ -4,6 +4,7 @@ import {
   Component,
   Inject,
   OnInit,
+  ViewChild,
 } from '@angular/core';
 import {
   InstancesModel,
@@ -21,6 +22,7 @@ import {
 } from '../../../../../../../libs/common-utils/src';
 import { I18NService } from '@core';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
+import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
 
 @Component({
   selector: 'one-portal-instances-detail',
@@ -34,7 +36,7 @@ export class InstancesDetailComponent implements OnInit {
   instancesModel: InstancesModel;
   id: number;
   listSecurityGroupModel: SecurityGroupModel[] = [];
-
+  @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
   constructor(
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
     @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
@@ -94,7 +96,7 @@ export class InstancesDetailComponent implements OnInit {
             if (e.error.status == 404) {
               this.notification.error(e.error.status, '');
             } else {
-              this.notification.error(e.error.detail, '');
+              this.notification.error(e.error.message, '');
             }
             this.returnPage();
           },
@@ -137,7 +139,14 @@ export class InstancesDetailComponent implements OnInit {
   }
 
   onRegionChange(region: RegionModel) {
+    if(this.projectCombobox){
+      this.projectCombobox.loadProjects(true, region.regionId);
+    }
     this.router.navigate(['/app-smart-cloud/instances']);
+  }
+
+  onRegionChanged(region: RegionModel) {
+    
   }
 
   userChangeProject() {

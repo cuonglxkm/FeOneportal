@@ -6,9 +6,11 @@ import {
   Input,
   OnInit,
 } from '@angular/core';
+import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
 import { I18NService } from '@core';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
+import { getCurrentRegionAndProject } from '@shared';
 import { id } from 'date-fns/locale';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { debounceTime, finalize, Subject } from 'rxjs';
@@ -33,6 +35,7 @@ class HeaderName {
 export class BucketCorsComponent implements OnInit {
   @Input() bucketName: string;
   value: string = '';
+  region = JSON.parse(localStorage.getItem('regionId'));
   listBucketCors: BucketCors[] = [];
   listHeaderName: HeaderName[] = [];
   pageSize: number = 10;
@@ -54,38 +57,36 @@ export class BucketCorsComponent implements OnInit {
     private bucketService: BucketService,
     private notification: NzNotificationService,
     private cdr: ChangeDetectorRef,
-    @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService
+    @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
+    private fb: NonNullableFormBuilder,
   ) {}
 
   ngOnInit(): void {
+    let regionAndProject = getCurrentRegionAndProject();
+    this.region = regionAndProject.regionId;
     this.searchBucketCors();
     this.searchDelay.pipe(debounceTime(TimeCommon.timeOutSearch)).subscribe(() => {     
       this.searchBucketCors();
     });
   }
-  // searchBucketCors() {
-  //   this.loading = true;
-  //   this.bucketService
-  //     .getListBucketCORS(this.bucketName)
-  //     .pipe(
-  //       finalize(() => {
-  //         this.loading = false;
-  //         this.cdr.detectChanges();
-  //       })
-  //     )
-  //     .subscribe({
-  //       next: (data) => {
-  //         this.listBucketCors = data;
-  //       },
-  //       error: (e) => {
-  //         this.listBucketCors = [];
-  //         this.notification.error(
-  //           this.i18n.fanyi('app.status.fail'),
-  //           this.i18n.fanyi('app.get.bucket.cors.fail')
-  //         );
-  //       },
-  //     });
-  // }
+
+
+  formCreate: FormGroup<{
+    domain: FormControl<string>;
+    maxAgeSeconds: FormControl<number>;
+  }> = this.fb.group({
+    domain: ['', Validators.required],
+    maxAgeSeconds: [3600, Validators.required],
+  });
+
+  formUpdate: FormGroup<{
+    domain: FormControl<string>;
+    maxAgeSeconds: FormControl<number>;
+  }> = this.fb.group({
+    domain: ['', Validators.required],
+    maxAgeSeconds: [3600, Validators.required],
+  });
+  
 
   searchBucketCors() {
     this.loading = true;
@@ -94,7 +95,8 @@ export class BucketCorsComponent implements OnInit {
         this.bucketName,
         this.pageNumber,
         this.pageSize,
-        this.value.trim()
+        this.value.trim(),
+        this.region
       )
       .pipe(
         finalize(() => {
@@ -105,8 +107,6 @@ export class BucketCorsComponent implements OnInit {
       .subscribe({
         next: (data) => {
           this.listBucketCors = data.records;
-          console.log(this.listBucketCors);
-
           this.total = data.totalCount;
         },
         error: (e) => {
@@ -143,6 +143,10 @@ export class BucketCorsComponent implements OnInit {
 
   handleCancelCreate() {
     this.isVisibleCreate = false;
+    this.formCreate.reset()
+    this.listHeaderName = [];
+    this.bucketCorsCreate.maxAgeSeconds = 3600
+
   }
 
   handleOkCreate() {
@@ -168,11 +172,12 @@ export class BucketCorsComponent implements OnInit {
       this.bucketCorsCreate.allowedHeaders.push(element.name);
     });
 
-    this.bucketService.createBucketCORS(this.bucketCorsCreate).subscribe({
+    this.bucketService.createBucketCORS(this.bucketCorsCreate, this.region).subscribe({
       next: (data) => {
         this.isLoadingCreate = false
         this.isVisibleCreate = false;
         this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('app.create.bucket.cors.success'));
+        this.formCreate.reset()
         this.searchBucketCors();
         this.cdr.detectChanges()
       },
@@ -213,7 +218,7 @@ export class BucketCorsComponent implements OnInit {
 
   handleOkDelete() {
     this.isLoadingDelete = true
-    this.bucketService.deleteBucketCORS(this.bucketCorsDelete).subscribe({
+    this.bucketService.deleteBucketCORS(this.bucketCorsDelete, this.region).subscribe({
       next: (data) => {
         this.isLoadingDelete = false;
         this.isVisibleDelete = false;
@@ -246,6 +251,7 @@ export class BucketCorsComponent implements OnInit {
       headerName.name = e;
       this.listHeaderName.push(headerName);
     });
+    this.formUpdate.controls.maxAgeSeconds.setValue(this.bucketCorsUpdate.maxAgeSeconds)
     this.bucketCorsUpdate.allowedMethods.forEach((e) => {
       if (e.toUpperCase() == 'GET') {
         this.get = true;
@@ -294,7 +300,7 @@ export class BucketCorsComponent implements OnInit {
       this.bucketCorsUpdate.allowedHeaders.push(element.name);
     });
 
-    this.bucketService.updateBucketCORS(this.bucketCorsUpdate).subscribe({
+    this.bucketService.updateBucketCORS(this.bucketCorsUpdate, this.region).subscribe({
       next: (data) => {
         this.isLoadingUpdate = false
         this.isVisibleUpdate = false;

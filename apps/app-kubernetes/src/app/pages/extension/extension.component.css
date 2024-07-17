@@ -56,7 +56,7 @@
 
 input,
 textarea,
-.border-card,
+.border-radius-card,
 .border-button {
   border-radius: 8px;
 }

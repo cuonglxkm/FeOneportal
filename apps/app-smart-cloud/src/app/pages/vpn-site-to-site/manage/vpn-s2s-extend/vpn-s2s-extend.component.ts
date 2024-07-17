@@ -1,4 +1,4 @@
-import { Component, ElementRef, Inject, OnInit, Renderer2 } from '@angular/core';
+import { Component, ElementRef, Inject, OnInit, Renderer2, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { environment } from '@env/environment';
@@ -10,6 +10,7 @@ import { OrderService } from 'src/app/shared/services/order.service';
 import { VpnSiteToSiteService } from 'src/app/shared/services/vpn-site-to-site.service';
 import { RegionModel, ProjectModel } from '../../../../../../../../libs/common-utils/src';
 import { FormControl, FormGroup, NonNullableFormBuilder } from '@angular/forms';
+import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
 
 @Component({
   selector: 'one-portal-vpn-s2s-extend',
@@ -29,6 +30,7 @@ export class VpnS2sExtendComponent implements OnInit{
   offer: any;
   dateString = new Date();
   expiredDate: Date = addDays(this.dateString, 30);
+  newExpiredDate: any
   isEnable = false;
   spec: any;
   vatNumber = 0;
@@ -45,6 +47,7 @@ export class VpnS2sExtendComponent implements OnInit{
   }> = this.fb.group({
     time: [1]
   });
+  @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
   constructor(
     private catalogService: CatalogService,
     private el: ElementRef,
@@ -64,6 +67,13 @@ export class VpnS2sExtendComponent implements OnInit{
   }
 
   regionChanged(region: RegionModel) {
+    this.region = region.regionId;
+    if(this.projectCombobox){
+      this.projectCombobox.loadProjects(true, region.regionId);
+    }
+  }
+
+  onRegionChanged(region: RegionModel) {
     this.region = region.regionId;
   }
 
@@ -149,6 +159,7 @@ export class VpnS2sExtendComponent implements OnInit{
           this.vatDisplay = result.data.totalVAT.amount;
           this.totalincludesVAT = Number.parseFloat(result.data.totalPayment.amount);
           this.totalAmount = Number.parseFloat(result.data.totalAmount.amount);
+          this.newExpiredDate = result.data.orderItemPrices[0].expiredDate
         }
       });
     

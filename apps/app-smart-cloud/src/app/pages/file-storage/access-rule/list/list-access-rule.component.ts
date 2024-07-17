@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { getCurrentRegionAndProject } from '@shared';
 import { AccessRuleService } from '../../../../shared/services/access-rule.service';
@@ -7,6 +7,7 @@ import { AccessRule } from '../../../../shared/models/access-rule.model';
 import { FileSystemService } from '../../../../shared/services/file-system.service';
 import { FileSystemDetail, FileSystemModel } from '../../../../shared/models/file-system.model';
 import { debounceTime, Subject, Subscription } from 'rxjs';
+import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
 
 @Component({
   selector: 'one-portal-list-access-rule',
@@ -30,8 +31,8 @@ export class ListAccessRuleComponent implements OnInit, OnDestroy{
 
   response: BaseResponse<AccessRule[]>
 
-  isLoading: boolean = false
-
+  isLoading: boolean = false;
+  @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
   dataSubjectInputSearch: Subject<any> = new Subject<any>();
   private searchSubscription: Subscription;
   private enterPressed: boolean = false;
@@ -81,7 +82,14 @@ export class ListAccessRuleComponent implements OnInit, OnDestroy{
   }
 
   regionChanged(region: RegionModel) {
+    if(this.projectCombobox){
+      this.projectCombobox.loadProjects(true, region.regionId);
+    }
     this.router.navigate(['/app-smart-cloud/file-storage/file-system/list'])
+  }
+
+  onRegionChanged(region: RegionModel) {
+    this.region = region.regionId;
   }
 
   projectChanged(project: ProjectModel) {

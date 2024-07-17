@@ -14,8 +14,8 @@
   <ng-template #action>
     <div class="alain-custom-action text-right">
       <share-users-combobox></share-users-combobox>
-      <region-select-dropdown (valueChanged)="regionChanged($event)"></region-select-dropdown>
-      <project-select-dropdown [regionId]="region"
+      <region-select-dropdown (regionChange)="onRegionChanged($event)" (valueChanged)="regionChanged($event)"></region-select-dropdown>
+      <project-select-dropdown #projectCombobox [regionId]="region"
                                (valueChanged)="projectChanged($event)"
                                (userChanged)="projectChanged($event)"></project-select-dropdown>
     </div>
@@ -75,7 +75,7 @@
             <th>{{'app.backup.volume.root'|i18n}}</th>
             <th>{{'app.info.backup.vm.total.storage'|i18n}} (GB)</th>
             <th *ngIf="typeVpc == 0">{{'app.backup.volume.backup.package'|i18n}}</th>
-            <th>{{'app.users.createDate'|i18n}}</th>
+            <th>{{'app.service.creation-date'|i18n}}</th>
             <th>{{'app.service.expiration-date'|i18n}}</th>
             <th>{{'app.text.status'|i18n}}</th>
             <!--            <th>Trạng thái tác vụ</th>-->

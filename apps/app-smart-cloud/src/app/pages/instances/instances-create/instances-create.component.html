@@ -31,9 +31,11 @@
       <share-users-combobox></share-users-combobox>
       <region-select-dropdown
         (valueChanged)="onRegionChange($event)"
+        (regionChange)="onRegionChanged($event)"
       ></region-select-dropdown>
-      <project-select-dropdown
+      <project-select-dropdown #projectCombobox
         [regionId]="region"
+        (valueChanged)="valueChangeProject($event)"
         (userChanged)="userChangeProject()"
       ></project-select-dropdown>
     </div>
@@ -76,6 +78,7 @@
                     />
                   </nz-col>
                   <nz-col
+                    *ngIf="isVolumeSnapshotHdd || isVolumeSnapshotSsd"
                     style="display: flex; align-items: center"
                     nzSpan="12"
                   >
@@ -375,6 +378,7 @@
           (keydown)="handleKeyboardEvent($event)"
         >
           <nz-tab
+            *ngIf="isVmFlavor"
             [nzTitle]="'app.Preconfigured.Package' | i18n"
             (nzClick)="onClickConfigPackage()"
           >
@@ -672,7 +676,7 @@
             </div>
           </nz-tab>
           <nz-tab
-            *ngIf="!disableConfigGpu"
+            *ngIf="!disableConfigGpu && isVmGpu"
             [nzTitle]="'app.gpu.configuration' | i18n"
             (nzClick)="onClickGpuConfig()"
           >
@@ -687,36 +691,39 @@
                 </thead>
                 <tbody class="ant-table-tbody">
                   <tr>
-                    <td>
+                    <td style="width: 50%">
                       <nz-form-label style="margin-left: -12px"
-                        >CPUs (<span class="text-red">*</span>)</nz-form-label
+                        >{{ 'app.ssd.capacity' | i18n }} (<span class="text-red"
+                          >*</span
+                        >) - GB</nz-form-label
                       >
                       <nz-slider
-                        [nzMin]="0"
-                        [nzMax]="62"
-                        [(ngModel)]="configGPU.CPU"
-                        (ngModelChange)="changeCpuOfGpu($event)"
+                        [nzMin]="minCapacity"
+                        [nzMax]="maxCapacity"
+                        [nzStep]="stepCapacity"
+                        [(ngModel)]="configGPU.storage"
+                        (ngModelChange)="changeStorageOfGpu($event)"
                         [ngModelOptions]="{ standalone: true }"
                       ></nz-slider>
                     </td>
                     <td>
                       <nz-input-number
-                        [(ngModel)]="configGPU.CPU"
+                        [(ngModel)]="configGPU.storage"
                         (keydown)="onKeyDown($event)"
-                        (ngModelChange)="changeCpuOfGpu($event)"
+                        (ngModelChange)="changeStorageOfGpu($event)"
                         [ngModelOptions]="{ standalone: true }"
-                        [nzMin]="0"
-                        [nzMax]="62"
-                        [nzStep]="1"
+                        [nzMin]="minCapacity"
+                        [nzMax]="maxCapacity"
+                        [nzStep]="stepCapacity"
                         nzSize="large"
                       ></nz-input-number>
                     </td>
                     <td nzAlign="right">
                       <label class="text-custom-price">
-                        {{ cpuIntoMoney | number }} </label
+                        {{ volumeIntoMoney | number }} </label
                       ><br />
                       <label class="text-custom-unit-price">
-                        {{ cpuUnitPrice | number }}
+                        {{ volumeUnitPrice | number }}
                       </label>
                     </td>
                   </tr>
@@ -757,68 +764,88 @@
                     </td>
                   </tr>
                   <tr>
-                    <td style="width: 50%">
+                    <td>
                       <nz-form-label style="margin-left: -12px"
-                        >{{ 'app.ssd.capacity' | i18n }} (<span class="text-red"
-                          >*</span
-                        >) - GB</nz-form-label
+                        >CPU (<span class="text-red">*</span>) -
+                        vCPU</nz-form-label
                       >
                       <nz-slider
-                        [nzMin]="minCapacity"
-                        [nzMax]="maxCapacity"
-                        [nzStep]="stepCapacity"
-                        [(ngModel)]="configGPU.storage"
-                        (ngModelChange)="changeStorageOfGpu($event)"
+                        [nzMin]="0"
+                        [nzMax]="62"
+                        [(ngModel)]="configGPU.CPU"
+                        (ngModelChange)="changeCpuOfGpu($event)"
                         [ngModelOptions]="{ standalone: true }"
                       ></nz-slider>
                     </td>
                     <td>
                       <nz-input-number
-                        [(ngModel)]="configGPU.storage"
+                        [(ngModel)]="configGPU.CPU"
                         (keydown)="onKeyDown($event)"
-                        (ngModelChange)="changeStorageOfGpu($event)"
+                        (ngModelChange)="changeCpuOfGpu($event)"
                         [ngModelOptions]="{ standalone: true }"
-                        [nzMin]="minCapacity"
-                        [nzMax]="maxCapacity"
-                        [nzStep]="stepCapacity"
+                        [nzMin]="0"
+                        [nzMax]="62"
+                        [nzStep]="1"
                         nzSize="large"
                       ></nz-input-number>
                     </td>
                     <td nzAlign="right">
                       <label class="text-custom-price">
-                        {{ volumeIntoMoney | number }} </label
+                        {{ cpuIntoMoney | number }} </label
                       ><br />
                       <label class="text-custom-unit-price">
-                        {{ volumeUnitPrice | number }}
+                        {{ cpuUnitPrice | number }}
                       </label>
                     </td>
                   </tr>
                   <tr>
                     <td style="width: 50%">
                       <nz-form-label style="margin-left: -12px"
-                        >{{ 'app.gpu.number' | i18n }} (<span class="text-red"
+                        >{{ 'app.choose.gpu.type' | i18n }} (<span
+                          class="text-red"
                           >*</span
                         >)</nz-form-label
                       >
-                      <nz-slider
-                        [nzMin]="0"
-                        [nzMax]="8"
-                        [(ngModel)]="configGPU.GPU"
-                        (ngModelChange)="changeGpu($event)"
-                        [ngModelOptions]="{ standalone: true }"
-                      ></nz-slider>
+                      <style>
+                        ::ng-deep nz-form-control {
+                          padding-left: 0px !important;
+                          padding-right: 0px !important;
+                        }
+                      </style>
+                      <nz-form-control>
+                        <nz-select
+                          [nzPlaceHolder]="
+                            '-- ' + ('app.choose.gpu.type' | i18n) + ' --'
+                          "
+                          [nzShowSearch]="true"
+                          [(ngModel)]="configGPU.gpuOfferId"
+                          (ngModelChange)="changeGpuType()"
+                          [ngModelOptions]="{ standalone: true }"
+                          nzSize="large"
+                        >
+                          <nz-option
+                            *ngFor="let i of listGPUType"
+                            [nzLabel]="i.offerName"
+                            [nzValue]="i.id"
+                          />
+                        </nz-select>
+                      </nz-form-control>
                     </td>
                     <td>
-                      <nz-input-number
+                      <nz-select
+                        style="margin-left: 8px; margin-top: 32px; width: 90px"
+                        [nzShowSearch]="true"
                         [(ngModel)]="configGPU.GPU"
-                        (keydown)="onKeyDown($event)"
-                        (ngModelChange)="changeGpu($event)"
+                        (ngModelChange)="changeGpu()"
                         [ngModelOptions]="{ standalone: true }"
-                        [nzMin]="0"
-                        [nzMax]="8"
-                        [nzStep]="1"
                         nzSize="large"
-                      ></nz-input-number>
+                      >
+                        <nz-option
+                          *ngFor="let i of listOptionGpuValue"
+                          [nzLabel]="i"
+                          [nzValue]="i"
+                        />
+                      </nz-select>
                     </td>
                     <td nzAlign="right">
                       <label class="text-custom-price">
@@ -831,36 +858,114 @@
                   </tr>
                 </tbody>
               </table>
+              <nz-alert
+                *ngIf="configRecommend"
+                style="margin-top: 20px"
+                nzType="warning"
+                [nzDescription]="
+                  'app.alert.config.gpu.recommend'
+                    | i18n
+                      : {
+                          type: gpuTypeName,
+                          gpu: configRecommend.gpuCount,
+                          ssd: configRecommend.ssd,
+                          ram: configRecommend.ram,
+                          cpu: configRecommend.cpu
+                        }
+                "
+                nzShowIcon
+              ></nz-alert>
             </div>
-            <nz-form-item style="margin-top: 20px; margin-bottom: 0px">
-              <nz-form-label
-                >{{ 'app.choose.gpu.type' | i18n }} (<span class="text-red"
-                  >*</span
-                >)</nz-form-label
-              >
-              <nz-form-control>
-                <nz-select
-                  [nzPlaceHolder]="
-                    '-- ' + ('app.choose.gpu.type' | i18n) + ' --'
-                  "
-                  [nzShowSearch]="true"
-                  [(ngModel)]="configGPU.gpuOfferId"
-                  (ngModelChange)="changeGpuType()"
-                  [ngModelOptions]="{ standalone: true }"
-                  nzSize="large"
-                >
-                  <nz-option
-                    *ngFor="let i of listGPUType"
-                    [nzLabel]="i.offerName"
-                    [nzValue]="i.id"
-                  />
-                </nz-select>
-              </nz-form-control>
-            </nz-form-item>
           </nz-tab>
         </nz-tabset>
-        <br />
-        <nz-row nzGutter="16">
+        <div style="margin-top: 20px" class="text-label" *ngIf="activeBlockHDD">
+          IOPS
+          <img
+            nz-popover
+            [nzPopoverContent]="contentTemplateEncryptVolume"
+            src="assets/imgs/pajamas_question.svg"
+            alt=""
+            [nzPopoverOverlayStyle]="{ width: '320px' }"
+          />
+          300
+        </div>
+        <div
+          style="margin-top: 20px"
+          class="text-label"
+          *ngIf="activeBlockSSD && volumeRootCapacity <= 40"
+        >
+          IOPS
+          <img
+            nz-popover
+            [nzPopoverContent]="contentTemplateEncryptVolume"
+            src="assets/imgs/pajamas_question.svg"
+            alt=""
+            [nzPopoverOverlayStyle]="{ width: '320px' }"
+          />
+          400
+        </div>
+        <div
+          style="margin-top: 20px"
+          class="text-label"
+          *ngIf="activeBlockSSD && volumeRootCapacity > 40"
+        >
+          IOPS
+          <img
+            nz-popover
+            [nzPopoverContent]="contentTemplateEncryptVolume"
+            src="assets/imgs/pajamas_question.svg"
+            alt=""
+            [nzPopoverOverlayStyle]="{ width: '320px' }"
+          />
+          {{ volumeRootCapacity * 10 }}
+        </div>
+        <ng-template #contentTemplateEncryptVolume>
+          <span
+            [innerHTML]="'app.tooltip.instance.volume.encypt' | i18n"
+          ></span>
+        </ng-template>
+        <label
+          *ngIf="isSupportEncryption"
+          style="margin-top: 20px"
+          nz-checkbox
+          [(ngModel)]="instanceCreate.encryption"
+          [ngModelOptions]="{ standalone: true }"
+          [disabled]="isSnapshot"
+          >{{ 'volume.info.type.encrypt' | i18n }}
+          <img
+            [nz-tooltip]="'volume.tooltip.type.encrypt' | i18n"
+            src="assets/imgs/pajamas_question.svg"
+            alt=""
+            [nzPopoverOverlayStyle]="{ width: '320px' }"
+          />
+        </label>
+        <label
+          *ngIf="hasOfferIpv6"
+          style="margin-top: 20px; margin-left: 30px"
+          nz-checkbox
+          [(ngModel)]="isUseIPv6"
+          [ngModelOptions]="{ standalone: true }"
+        >
+          {{ 'app.use.ipv6' | i18n
+          }}<img
+            style="margin-left: 10px"
+            nz-popover
+            [nzPopoverContent]="contentTemplateIPv6"
+            [nzPopoverOverlayStyle]="{ width: '320px' }"
+            src="assets/imgs/pajamas_question.svg"
+            alt=""
+          /><ng-template #contentTemplateIPv6>
+            <div>
+              {{ 'app.tooltip.use.ipv6' | i18n }}
+              <a
+                href="https://docs.smartcloud.vn/index.php/knowledge-base/ipv6-la-gi-va-co-che-dual-stacks-trong-chuyen-doi-ipv4-sang-ipv6/"
+                target="_blank"
+                >{{ 'app.here' | i18n }}</a
+              >
+            </div>
+          </ng-template>
+        </label>
+        <nz-row style="margin-top: 20px" nzGutter="16">
           <nz-col nzLg="12" nzMd="12" nzSm="24">
             <nz-form-item
               ><nz-form-label
@@ -1002,43 +1107,6 @@
               </nz-form-control>
             </nz-form-item>
           </nz-col>
-        </nz-row>
-        <nz-row nzGutter="16">
-          <nz-col nzLg="12" nzMd="12" nzSm="24">
-            <div>
-              <label
-                *ngIf="hasOfferIpv6"
-                nz-checkbox
-                [(ngModel)]="isUseIPv6"
-                [ngModelOptions]="{ standalone: true }"
-                >Sử dụng IPv6<img
-                  style="margin-left: 10px"
-                  nz-popover
-                  [nzPopoverContent]="contentTemplateIPv6"
-                  src="assets/imgs/pajamas_question.svg"
-                  alt=""
-                /><ng-template #contentTemplateIPv6>
-                  <div>
-                    Máy ảo sẽ được cấp thêm một địa chỉ IPv6<br />
-                    chạy song song với địa chỉ IPv4 theo cơ<br />
-                    chế Dual Stack. Dual-stack là cơ chế có<br />
-                    khả năng thực thi đồng thời cả hai giao<br />
-                    thức IPV4 và IPV6. Thiết bị này cho phép<br />
-                    cả hai giao thức cùng hoạt động trên một<br />
-                    máy chủ. Theo đó dual-stack sẽ cho phép <br />
-                    hệ điều hành tự lựa chọn giao thức liên <br />
-                    lạc phù hợp nhất. Xem thêm về IPv6
-                    <a
-                      href="https://docs.smartcloud.vn/index.php/knowledge-base/ipv6-la-gi-va-co-che-dual-stacks-trong-chuyen-doi-ipv4-sang-ipv6/"
-                      target="_blank"
-                      >tại đây</a
-                    >
-                  </div>
-                </ng-template></label
-              >
-            </div>
-          </nz-col>
-          <nz-col nzLg="12" nzMd="12" nzSm="24"> </nz-col>
         </nz-row>
         <nz-row>
           <nz-form-label nzFor="name"
@@ -1278,8 +1346,10 @@
                     <th>{{ 'app.volume.name' | i18n }}</th>
                     <th>{{ 'app.capacity' | i18n }} (GB)</th>
                     <th>IOPS</th>
-                    <th>{{ 'app.encrypt' | i18n }}</th>
-                    <th>Multi Attach</th>
+                    <th *ngIf="isSupportEncryption">
+                      {{ 'app.encrypt' | i18n }}
+                    </th>
+                    <th *ngIf="isSupportMultiAttachment">Multi Attach</th>
                     <th>{{ 'app.monthly.price' | i18n }} (VND)</th>
                   </tr>
                 </thead>
@@ -1306,6 +1376,7 @@
                     </td>
                     <td>
                       <input
+                        [nzPlaceHolder]="'app.input.name' | i18n"
                         class="input-custom"
                         type="text"
                         [ngModelOptions]="{ standalone: true }"
@@ -1341,6 +1412,7 @@
                     </td>
                     <td>
                       <label
+                        *ngIf="isSupportEncryption"
                         nz-checkbox
                         [(ngModel)]="data.encrypt"
                         (ngModelChange)="changeEncrypt($event, i)"
@@ -1350,6 +1422,7 @@
                     </td>
                     <td>
                       <label
+                        *ngIf="isSupportMultiAttachment"
                         nz-checkbox
                         [(ngModel)]="data.multiattach"
                         (ngModelChange)="changeMultiAttach($event, i)"
@@ -1488,14 +1561,14 @@
             />{{ 'app.button.add.ipv6' | i18n }}
           </button>
         </div>
-        <div *ngIf="activeIPv6 && hasOfferIpv6">
+        <div *ngIf="activeIPv6 && hasOfferIpv6" style="margin-top: 10px">
           <nz-card nzHoverable>
             <div class="ant-table">
               <table>
                 <thead class="ant-table-thead">
                   <tr>
                     <th>{{ 'app.ip.range' | i18n }}</th>
-                    <th>{{ 'app.amount' | i18n }}/th></th>
+                    <th>{{ 'app.amount' | i18n }}</th>
                     <th>{{ 'app.monthly.price' | i18n }} (VND)</th>
                   </tr>
                 </thead>
@@ -1538,7 +1611,6 @@
                     </td>
                     <td>
                       <button
-                        *ngIf="data.ip != ''"
                         style="border: none"
                         nz-button
                         (click)="deleteRowIPv6(data.id)"
@@ -1601,7 +1673,7 @@
             <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
             <div class="text-value">{{ 'app.text.package' | i18n }}</div>
             <div style="margin-top: 10px" class="text-label">
-              {{ instanceCreate.cpu }} CPUs
+              {{ instanceCreate.cpu }} vCPU
             </div>
             <div style="margin-top: 10px" class="text-label">
               {{ instanceCreate.ram }} GB RAM
@@ -1651,72 +1723,72 @@
             </div>
           </div>
           <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
-          <nz-row style="margin-bottom: 10px" nzGutter="16">
-            <nz-col nzSpan="16">
-              <span *ngIf="numberMonth == 1" class="text-value">
-                {{ 'app.cost.a.month' | i18n }}
-              </span>
-              <span *ngIf="numberMonth > 1" class="text-value">
-                {{ 'app.cost.n.month' | i18n : { numberMonth: numberMonth } }}
-              </span>
-            </nz-col>
-            <nz-col class="text-right" nzSpan="8">
-              <span class="text-value" style="color: #0066b3" nzAlign="right">
-                {{
-                  totalAmount +
-                    totalAmountVolume +
-                    totalAmountIPv4 +
-                    totalAmountIPv6 | number
-                }}
-                VND
-              </span>
-            </nz-col>
-          </nz-row>
-          <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
-          <nz-row style="margin-bottom: 10px" nzGutter="16">
-            <nz-col nzSpan="16">
-              <span class="text-value">
-                {{ 'app.cost.vat' | i18n }}
-              </span>
-            </nz-col>
-            <nz-col class="text-right" nzSpan="8">
-              <span class="text-value" style="color: #0066b3" nzAlign="right">
-                {{
-                  totalVAT + totalVATVolume + totalVATIPv4 + totalVATIPv6
-                    | number
-                }}
-                VND
-              </span>
-            </nz-col>
-          </nz-row>
-          <nz-row
-            style="
-              margin-bottom: 20px;
-              background-color: #cce9ff;
-              padding: 16px 0 16px 0;
-              border-radius: 8px;
-            "
-            nzGutter="16"
-          >
-            <nz-col nzSpan="16">
-              <span class="text-label">{{ 'app.total.payment' | i18n }}</span
-              ><br />
-              <span class="text-note-italicized"
-                >({{ 'app.include.vat' | i18n : { vat: '10' } }})</span
-              >
-            </nz-col>
-            <nz-col class="text-right" nzSpan="8">
-              <span class="text-value" style="color: #ea3829" nzAlign="right">
-                {{
-                  totalincludesVAT +
-                    totalPaymentVolume +
-                    totalPaymentIPv4 +
-                    totalPaymentIPv6 | number : '1.0-0'
-                }}
-                VND
-              </span>
-            </nz-col>
-          </nz-row>
+
+          <div *ngIf="!hasRoleSI">
+            <nz-row style="margin-bottom: 10px" nzGutter="16">
+              <nz-col nzSpan="16">
+                <span *ngIf="numberMonth == 1" class="text-value">
+                  {{ 'app.cost.a.month' | i18n }}
+                </span>
+                <span *ngIf="numberMonth > 1" class="text-value">
+                  {{ 'app.cost.n.month' | i18n : { numberMonth: numberMonth } }}
+                </span>
+              </nz-col>
+              <nz-col class="text-right" nzSpan="8">
+                <span class="text-value" style="color: #0066b3" nzAlign="right"
+                  >{{
+                    totalAmount +
+                      totalAmountVolume +
+                      totalAmountIPv4 +
+                      totalAmountIPv6 | number
+                  }}
+                  VND</span
+                >
+              </nz-col>
+            </nz-row>
+            <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
+            <nz-row style="margin-bottom: 10px" nzGutter="16">
+              <nz-col nzSpan="16">
+                <span class="text-value">{{ 'app.cost.vat' | i18n }}</span>
+              </nz-col>
+              <nz-col class="text-right" nzSpan="8">
+                <span class="text-value" style="color: #0066b3" nzAlign="right"
+                  >{{
+                    totalVAT + totalVATVolume + totalVATIPv4 + totalVATIPv6
+                      | number
+                  }}VND</span
+                >
+              </nz-col>
+            </nz-row>
+            <nz-row
+              style="
+                margin-bottom: 20px;
+                background-color: #cce9ff;
+                padding: 16px 0 16px 0;
+                border-radius: 8px;
+              "
+              nzGutter="16"
+            >
+              <nz-col nzSpan="16">
+                <span class="text-label">{{ 'app.total.payment' | i18n }}</span
+                ><br />
+                <span class="text-note-italicized"
+                  >({{ 'app.include.vat' | i18n : { vat: '10' } }})</span
+                >
+              </nz-col>
+              <nz-col class="text-right" nzSpan="8">
+                <span class="text-value" style="color: #ea3829" nzAlign="right">
+                  {{
+                    totalincludesVAT +
+                      totalPaymentVolume +
+                      totalPaymentIPv4 +
+                      totalPaymentIPv6 | number : '1.0-0'
+                  }}
+                  VND
+                </span>
+              </nz-col>
+            </nz-row>
+          </div>
           <nz-row>
             <nz-col style="width: 100%">
               <button
@@ -1727,6 +1799,7 @@
                 [nzLoading]="isLoading"
                 (click)="save()"
                 [disabled]="
+                  !isValid ||
                   form.invalid ||
                   isExistName ||
                   totalincludesVAT +
@@ -1739,6 +1812,7 @@
                 <span nz-icon nzType="wallet" nzTheme="outline"></span>
                 <span
                   [style.color]="
+                    !isValid ||
                     form.invalid ||
                     isExistName ||
                     totalincludesVAT +

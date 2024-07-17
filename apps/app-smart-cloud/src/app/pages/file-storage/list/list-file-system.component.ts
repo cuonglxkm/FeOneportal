@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, Inject, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, Inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import {
   BaseResponse,
@@ -16,6 +16,7 @@ import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { SizeInCloudProject } from 'src/app/shared/models/project.model';
 import { ProjectService } from 'src/app/shared/services/project.service';
 import { debounceTime, Subject, Subscription } from 'rxjs';
+import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
 
 @Component({
   selector: 'one-portal-list-file-system',
@@ -46,7 +47,8 @@ export class ListFileSystemComponent implements OnInit, OnDestroy {
   dataSubjectInputSearch: Subject<any> = new Subject<any>();
   private searchSubscription: Subscription;
   private enterPressed: boolean = false;
-
+  isFirstVisit: boolean = true;
+  @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
   constructor(
     private router: Router,
     private fileSystemService: FileSystemService,
@@ -90,12 +92,21 @@ export class ListFileSystemComponent implements OnInit, OnDestroy {
   }
 
   regionChanged(region: RegionModel) {
+    if(this.projectCombobox){
+      this.projectCombobox.loadProjects(true, region.regionId);
+    }
+    this.region = region.regionId;
+  }
+
+  onRegionChanged(region: RegionModel) {
     this.region = region.regionId;
   }
 
   projectChanged(project: ProjectModel) {
+    this.isFirstVisit = false;
     this.project = project?.id;
     this.typeVpc = project?.type;
+    this.isLoading = true
     setTimeout(() => {
       this.getListFileSystem(true);
       this.getProject();
@@ -107,10 +118,13 @@ export class ListFileSystemComponent implements OnInit, OnDestroy {
   }
 
   navigateToCreateFileSystem(typeVpc) {
+    let hasRoleSI = localStorage.getItem('role').includes('SI')
+    this.isLoading = true
     this.fileSystemService.checkRouter(this.region, this.project).subscribe({
       next: (data) => {
+        this.isLoading = false
         //in vpc
-        if (typeVpc == 1) {
+        if (typeVpc == 1 || hasRoleSI) {
           this.router.navigate([
             '/app-smart-cloud/file-storage/file-system/create'
           ]);
@@ -121,6 +135,7 @@ export class ListFileSystemComponent implements OnInit, OnDestroy {
         }
       },
       error: (error) => {
+        this.isLoading = false
         if (error.error.detail.includes('Vui lòng kiểm tra Router')) {
           this.notification.error(
             this.i18n.fanyi('app.status.fail'),
@@ -216,11 +231,12 @@ export class ListFileSystemComponent implements OnInit, OnDestroy {
     this.router.navigate(['/app-smart-cloud/file-storage/file-system/' + cloudFileSystem + '/access-rule/list', { fileSystem: id }]);
   }
 
-  ngOnInit() {
+  onRegionInitComplete() {
     let regionAndProject = getCurrentRegionAndProject();
-    this.region = regionAndProject.regionId;
-    this.project = regionAndProject.projectId;
+    this.region = regionAndProject.regionId;;
+  }
 
+  ngOnInit() {
     // this.getProject();
 
     console.log('project', this.project);
@@ -240,6 +256,7 @@ export class ListFileSystemComponent implements OnInit, OnDestroy {
           case 'DELETED':
           case 'EXTENDING':
           case 'DELETING':
+          case 'ERROR':
           case 'AVAILABLE':
             this.getListFileSystem(true);
             break;
@@ -266,9 +283,6 @@ export class ListFileSystemComponent implements OnInit, OnDestroy {
     //   this.router.navigate(['/exception/500']);
     // }
     //
-    // if (this.notificationService.connection == undefined) {
-    //   this.notificationService.initiateSignalrConnection();
-    // }
     //
     // this.notificationService.connection.on('UpdateVolume', (data) => {
     //   if (data) {

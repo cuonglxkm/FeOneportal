@@ -225,7 +225,7 @@
                     class="input-custom"
                     appTrim
                     formControlName="phoneNumber"
-                    [maxlength]="10"
+                    appPhoneValidator
                   />
                 </nz-form-control>
                 <ng-template #phoneErrorTpl let-control>
@@ -481,8 +481,9 @@
             [ngModelOptions]="{ standalone: true }"
             class="text-16"
             >{{ 'app.payment.agree.to' | i18n }}
-            <a>{{ 'app.payment.service.term' | i18n }}</a></label
+            </label
           >
+          <a class="text-16"  href="https://vnptcloud.onsmartcloud.com/terms-and-conditions" target="_blank">{{ 'app.payment.service.term' | i18n }}</a>
         </div>
         <div style="margin-top: 10px">
           <button
@@ -574,7 +575,7 @@
     <span *ngIf="!checkedExistDiscount" style="color: #ff4d4f">{{
       'app.payment.voucher.not.found' | i18n
     }}</span>
-    <nz-table
+    <!-- <nz-table
       style="margin-top: 8px"
       [nzLoading]="loading"
       [nzData]="listDiscount"
@@ -626,7 +627,8 @@
           </nz-card>
         </tr>
       </tbody>
-    </nz-table>
+    </nz-table> -->
+    <span class="text-label text-center d-block mt-3">Không có mã giảm giá</span>
   </ng-container>
   <div *nzModalFooter>
     <button nz-button (click)="handleCancelDiscount()">
@@ -636,7 +638,7 @@
         alt=""
       />{{ 'app.button.cancel' | i18n }}
     </button>
-    <button nz-button nzType="primary" (click)="handleOkDiscount()">
+    <button nz-button nzType="primary" [disabled]="true" (click)="handleOkDiscount()">
       <img
         style="padding-right: 10px; margin-top: -4px"
         src="assets/imgs/confirm.svg"
@@ -728,7 +730,7 @@
                 type="text"
                 [placeholder]="'app.invoice.pop-up.update.phone.placeholder' | i18n"
                 class="input-custom"
-                [maxlength]="10"
+                appPhoneValidator
                 formControlName="phoneNumber"
               />
             </nz-form-control>

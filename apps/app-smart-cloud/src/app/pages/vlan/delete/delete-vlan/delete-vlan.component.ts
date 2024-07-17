@@ -66,23 +66,32 @@ export class DeleteVlanComponent implements AfterViewInit {
     if (this.value == this.nameNetwork) {
       this.isInputNull = false
       this.isInput = false
-      this.vlanService.deleteNetwork(this.id).subscribe(data => {
-        this.isLoadingDelete = false
-        this.isVisibleDelete = false
-        this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('app.vlan.note55'));
-        this.value = null
-        this.onOk.emit(data)
-      }, error => {
-        this.isLoadingDelete = false
-        this.isVisibleDelete = false
-        if(error.error.message.includes('could not be found')) {
-          this.notification.error(this.i18n.fanyi('app.status.fail'), 'Network không tồn tại!')
-        } else {
-          this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.vlan.note56'))
-        }
+      this.vlanService.checkDeleteNetwork(this.id).subscribe(data => {
+          this.vlanService.deleteNetwork(this.id).subscribe(data => {
+            this.isLoadingDelete = false
+            this.isVisibleDelete = false
+            this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('app.vlan.note55'));
+            this.value = null
+            this.onOk.emit(data)
+          }, error => {
+            console.log('error: ',error)
+            this.isLoadingDelete = false
+            this.isVisibleDelete = false
+            if(error.error.message.includes('could not be found')) {
+              this.notification.error(this.i18n.fanyi('app.status.fail'), 'Network không tồn tại!')
+            } else {
+              this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.vlan.note56'))
+            }
 
+            this.value = null
+            this.onOk.emit()
+          })
+      }, error => {
+        console.log('error: ',error)
+        this.isLoadingDelete = false
+        this.isVisibleDelete = false
+        this.notification.error(this.i18n.fanyi('app.status.fail'), error.error)
         this.value = null
-        this.onOk.emit()
       })
     } else {
       if(this.value == undefined) {

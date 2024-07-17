@@ -7,20 +7,17 @@ import { DetailSnapshotComponent } from './detail/detail-package-snapshot.compon
 import { ListPackagesSnapshotComponent } from './list/list-packages-snapshot.component';
 import { PackageSnapshotRoutingModule } from './packages-snapshot-routing.module';
 import { ResizeSnapshotPackageComponent } from './resize/resize-snapshot-package.component';
-
+import { ExtendPackageSnapshotComponent } from './extend/extend-package-snapshot.component';
 
 @NgModule({
   declarations: [
     ListPackagesSnapshotComponent,
     CreatePackageSnapshotComponent,
     DetailSnapshotComponent,
-    ResizeSnapshotPackageComponent
+    ResizeSnapshotPackageComponent,
+    ExtendPackageSnapshotComponent,
   ],
-  imports: [
-    PackageSnapshotRoutingModule,
-    CommonModule,
-    SharedModule,
-  ],
+  imports: [PackageSnapshotRoutingModule, CommonModule, SharedModule],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
 export class PackageSnapshotModule {}

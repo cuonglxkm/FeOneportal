@@ -1,4 +1,4 @@
-import { Component, OnInit, Inject } from '@angular/core';
+import { Component, OnInit, Inject, ViewChild } from '@angular/core';
 import {
   FormControl,
   FormGroup,
@@ -19,6 +19,7 @@ import { VpnSiteToSiteService } from 'src/app/shared/services/vpn-site-to-site.s
 import { I18NService } from '@core';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { CIDR_REGEX } from 'src/app/shared/constants/constants';
+import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
 
 @Component({
   selector: 'one-portal-create-endpoint-group',
@@ -40,7 +41,7 @@ export class CreateEndpointGroupComponent implements OnInit {
   selectedType = 'cidr';
   isLoading: boolean = false;
   routerId: string
-
+  @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
   formCreateEndpointGroup: FormCreateEndpointGroup =
     new FormCreateEndpointGroup();
   form: FormGroup<{
@@ -199,7 +200,14 @@ export class CreateEndpointGroupComponent implements OnInit {
 
   onRegionChange(region: RegionModel) {
     this.region = region.regionId;
+    if(this.projectCombobox){
+      this.projectCombobox.loadProjects(true, region.regionId);
+    }
     this.router.navigate(['/app-smart-cloud/vpn-site-to-site']);
+  }
+
+  onRegionChanged(region: RegionModel) {
+    this.region = region.regionId;
   }
 
   onProjectChange(project: ProjectModel) {

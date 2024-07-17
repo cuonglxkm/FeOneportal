@@ -9,6 +9,7 @@ import {NzSelectOptionInterface} from "ng-zorro-antd/select";
 import { RegionCoreService, ProjectModel, RegionModel } from '../../../../../../../libs/common-utils/src';
 import { I18NService } from '@core';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
+import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
 
 @Component({
   selector: 'one-portal-policy-detail',
@@ -25,7 +26,7 @@ export class PolicyDetailComponent implements OnInit {
   isLoadingPolicyInfo: boolean;
 
   @ViewChild(JsonEditorComponent, {static: false}) editor: JsonEditorComponent;
-
+  @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
 
   constructor(private regionService: RegionCoreService,
               private policyService: PolicyService,
@@ -192,7 +193,14 @@ export class PolicyDetailComponent implements OnInit {
   }
 
   regionChanged(region: RegionModel) {
-    this.region = region.regionId
+    this.region = region.regionId;
+    if(this.projectCombobox){
+      this.projectCombobox.loadProjects(true, region.regionId);
+    }
+  }
+
+  onRegionChanged(region: RegionModel) {
+    this.region = region.regionId;
   }
 
   protected readonly navigator = navigator;

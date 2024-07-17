@@ -24,8 +24,8 @@
   <ng-template #action>
     <div class="alain-custom-action text-right">
       <share-users-combobox></share-users-combobox>
-      <region-select-dropdown (valueChanged)="regionChanged($event)"></region-select-dropdown>
-      <project-select-dropdown (valueChanged)="projectChanged($event)"
+      <region-select-dropdown (regionChange)="onRegionChanged($event)" (valueChanged)="regionChanged($event)"></region-select-dropdown>
+      <project-select-dropdown #projectCombobox (valueChanged)="projectChanged($event)"
                                (userChanged)="userChanged($event)"
                                [regionId]="region"></project-select-dropdown>
     </div>
@@ -356,5 +356,10 @@
         </nz-affix>
       </nz-col>
     </nz-row>
+    <one-portal-popup-list-error
+      [isVisible]="isVisiblePopupError"
+      [errorList]="errorList"
+      (onCancel)="closePopupError()"
+    ></one-portal-popup-list-error>
   </form>
 </nz-content>
