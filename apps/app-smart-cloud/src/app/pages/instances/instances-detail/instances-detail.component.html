@@ -48,6 +48,7 @@
         *ngIf="
           !activeGS &&
           instancesModel &&
+          instancesModel.status.toUpperCase() == 'KHOITAO' &&
           instancesModel.taskState.toUpperCase() != 'REBUILDING' &&
           !instancesModel.taskState.toUpperCase().includes('RESIZING')
         "
@@ -55,8 +56,10 @@
         <i nz-icon nzType="eye"></i> <span>{{ 'app.monitor' | i18n }}</span>
       </button>
       <button
+        style="margin-right: 8px"
         *ngIf="
           instancesModel &&
+          instancesModel.status.toUpperCase() == 'KHOITAO' &&
           !instancesModel.taskState.toUpperCase().includes('ING') &&
           instancesModel.taskState.toUpperCase() != 'REBOOT_STARTED'
         "
@@ -70,7 +73,6 @@
       <one-portal-instances-btn
         *ngIf="
           instancesModel &&
-          instancesModel.status.toUpperCase() == 'KHOITAO' &&
           instancesModel.taskState.toUpperCase() != 'REBUILDING' &&
           !instancesModel.taskState.toUpperCase().includes('RESIZING')
         "
@@ -79,7 +81,6 @@
           (project != undefined && project.type) == 1 ? true : false
         "
         (valueChanged)="onReloadInstanceDetail($event)"
-        style="margin-left: 8px"
       >
       </one-portal-instances-btn>
     </div>

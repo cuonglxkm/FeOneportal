@@ -11,23 +11,13 @@ export class ServiceTaskStatePipe implements PipeTransform {
 
   transform(status: string): StatusModel {
     switch (status) {
-      case 'SHUTOFF':
-      case 'POWERING-OFF':
-      case 'REBUILDING':
-      case 'RESIZING':
-      case 'REBOOT_STARTED':
-      case 'UPDATING_PASSWORD':
-        return new StatusModel('#ea3829', status);
       case 'DELETED':
         return new StatusModel('#ea3829 ', this.i18n.fanyi('app.disconnected'));
       case 'ACTIVE':
       case 'POWERING-ON':
         return new StatusModel('#008d47', status);
       default:
-        return new StatusModel(
-          '#ea3829',
-          this.i18n.fanyi('service.status.unknown')
-        );
+        return new StatusModel('#ea3829', status);
     }
   }
 }
