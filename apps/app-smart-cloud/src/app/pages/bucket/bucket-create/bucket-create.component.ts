@@ -16,6 +16,7 @@ import { I18NService } from '@core';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { getCurrentRegionAndProject } from '@shared';
 import { RegionModel } from '../../../../../../../libs/common-utils/src';
+import { RegionID } from 'src/app/shared/enums/common.enum';
 
 @Component({
   selector: 'one-portal-bucket-create',
@@ -117,7 +118,11 @@ export class BucketCreateComponent implements OnInit {
           this.i18n.fanyi('app.status.success'),
           this.i18n.fanyi('app.button.bucket.create.success')
         );
-        this.router.navigate(['/app-smart-cloud/object-storage/bucket']);
+        if (this.region === RegionID.ADVANCE) {
+          this.router.navigate(['/app-smart-cloud/object-storage/bucket-advance']);
+        } else {
+          this.router.navigate(['/app-smart-cloud/object-storage/bucket']);
+        }
       },
       error: (e) => {
         this.isLoading = false
@@ -138,5 +143,13 @@ export class BucketCreateComponent implements OnInit {
         this.cdr.detectChanges();
       },
     });
+  }
+
+  navigateToBucketList(){
+    if(this.region === RegionID.ADVANCE){
+      this.router.navigate(['/app-smart-cloud/object-storage-advance/bucket']);
+    }else{
+      this.router.navigate(['/app-smart-cloud/object-storage/bucket']);
+    }
   }
 }

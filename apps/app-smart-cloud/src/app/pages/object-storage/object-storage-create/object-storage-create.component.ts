@@ -26,6 +26,7 @@ import { I18NService } from '@core';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { getCurrentRegionAndProject } from '@shared';
 import { RegionModel } from '../../../../../../../libs/common-utils/src';
+import { RegionID } from 'src/app/shared/enums/common.enum';
 
 @Component({
   selector: 'one-portal-object-storage-create',
@@ -205,5 +206,13 @@ export class ObjectStorageCreateComponent implements OnInit {
         this.stepStorage = Number.parseInt(arr[1]);
         this.maxStorage = Number.parseInt(arr[2]);
       });
+  }
+
+  navigateToBucketList(){
+    if(this.region === RegionID.ADVANCE){
+      this.router.navigate(['/app-smart-cloud/object-storage-advance/bucket']);
+    }else{
+      this.router.navigate(['/app-smart-cloud/object-storage/bucket']);
+    }
   }
 }
