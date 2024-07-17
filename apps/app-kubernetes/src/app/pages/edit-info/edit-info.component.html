@@ -31,7 +31,7 @@
       <nz-form-label>{{ 'app.cluster.name' | i18n }} (<span class="required-color">*</span>)</nz-form-label>
       <nz-form-control [nzErrorTip]="clusterErrorTpl">
         <input nz-input type="text" [placeholder]="'cluster.placeholder.cluster-name' | i18n"
-          formControlName="clusterName" nzSize="large" autofocus />
+          formControlName="clusterName" nzSize="large" autofocus (ngModelChange)="onChangeForm()" />
       </nz-form-control>
       <ng-template #clusterErrorTpl let-control>
         <ng-container *ngIf="control.hasError('required')">
@@ -52,7 +52,8 @@
     <nz-form-item>
       <nz-form-label>{{ 'app.cluster.description' | i18n }}</nz-form-label>
       <nz-form-control [nzErrorTip]="descriptionErrorTpl">
-        <textarea formControlName="description" nz-input rows="5" [placeholder]="'cluster.placeholder.description' | i18n" nzSize="large"></textarea>
+        <textarea formControlName="description" nz-input rows="5"
+          [placeholder]="'cluster.placeholder.description' | i18n" nzSize="large" (ngModelChange)="onChangeForm()"></textarea>
       </nz-form-control>
       <ng-template #descriptionErrorTpl let-control>
         <ng-container *ngIf="control.hasError('maxlength')">
@@ -69,7 +70,7 @@
         <span nz-icon nzType="close" nzTheme="outline"></span>
         {{ 'app.button.cancel' | i18n }}
       </button>
-      <button nz-button nzType="primary" (click)="onSubbmit()" nzSize="large">
+      <button nz-button nzType="primary" (click)="onSubbmit()" nzSize="large" [disabled]="editForm.invalid || !isChangeForm">
         <ng-container *ngIf="isSubmitting; else normalTpl">
           <span nz-icon [nzType]="'loading'"></span>
         </ng-container>

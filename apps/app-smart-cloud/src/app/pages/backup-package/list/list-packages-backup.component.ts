@@ -190,6 +190,16 @@ export class ListPackagesBackupComponent implements OnInit, OnDestroy {
     setTimeout(() => {this.getListPackageBackups(false);}, 2000)
   }
 
+  getSuspendedReason(suspendedReason: string) {
+    switch (suspendedReason) {
+      case "CHAMGIAHAN":
+        return this.i18n.fanyi('app.status.low-renew')
+      case "":
+      default:
+        break;
+    }
+  }
+
   ngOnInit() {
     this.customerId = this.tokenService.get()?.userId;
     let regionAndProject = getCurrentRegionAndProject();

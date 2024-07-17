@@ -1,8 +1,8 @@
 {
   "app-smart-cloud": "https://appsmartcloud-cloud.vnpt.vn",
   "app-kafka": "https://appkafka-cloud.vnpt.vn",
-  "app-kubernetes": "https://appkubernetes-cloud.vnpt.vn",
+  "app-kubernetes": "https://appk8s-cloud.vnpt.vn",
   "app-mongodb-replicaset": "https://appmongodb-cloud.vnpt.vn",
   "app-k8s-premium": "https://appk8spre-cloud.vnpt.vn",
-  "app-ecr": "https://apperc-cloud.vnpt.vn"
+  "app-ecr": "https://appecr-cloud.vnpt.vn"
 }

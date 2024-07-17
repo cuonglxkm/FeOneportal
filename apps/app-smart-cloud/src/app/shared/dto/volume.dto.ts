@@ -24,6 +24,7 @@ export class VolumeDTO {
   suspendDate: string;
   serviceStatus: string;
   suspendType: string;
+  suspendReason: string;
   typeId: string;
   backupScheduleId: string;
   vpcId: number;
