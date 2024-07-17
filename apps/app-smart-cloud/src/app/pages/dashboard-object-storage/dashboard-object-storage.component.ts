@@ -130,4 +130,20 @@ export class DashboardObjectStorageComponent implements OnInit {
       this.getSummaryObjectStorage()
     };
   }
+
+  navigateToDashboard(){
+    if(this.region === RegionID.ADVANCE){
+      this.router.navigate(['/app-smart-cloud/object-storage-advance/dashboard']);
+    }else{
+      this.router.navigate(['/app-smart-cloud/object-storage/dashboard']);
+    }
+  }
+
+  navigateToBucketList(){
+    if(this.region === RegionID.ADVANCE){
+      this.router.navigate(['/app-smart-cloud/object-storage-advance/bucket']);
+    }else{
+      this.router.navigate(['/app-smart-cloud/object-storage/bucket']);
+    }
+  }
 }

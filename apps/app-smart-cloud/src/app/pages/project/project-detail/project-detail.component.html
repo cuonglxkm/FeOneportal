@@ -18,7 +18,7 @@
       <img style="padding-right: 10px;" src="assets/imgs/extend.png" alt="" />
       <span class="button-text-primary">Gia hạn</span>
     </button>
-    <button *ngIf="data?.type == 'VPC' && isAdjust && data?.resourceStatus == 'ENABLE'" nz-button nzType="primary" (click)="edit()" nzSize="large">
+    <button *ngIf="data?.type == 'VPC' &&  data?.resourceStatus == 'ENABLE'" nz-button nzType="primary" (click)="edit()" nzSize="large">
       <img style="padding-right: 10px;" src="assets/imgs/edit-1.svg" alt="" />
       <span class="button-text-primary">Điều chỉnh</span>
     </button>
@@ -49,7 +49,7 @@
             <div nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="12">
               <!-- <span class="label-fontsize font-bold">{{data?.resourceStatus=='ENABLE'? 'Đang hoạt động': 'Tạm ngưng'}}</span> -->
               <span class="label-fontsize font-bold" *ngIf="data?.resourceStatus=='ENABLE'">Đang hoạt động</span>
-              <span class="label-fontsize font-bold" *ngIf="data?.resourceStatus=='DISABLE'">Tạm ngưng</span>
+              <span class="label-fontsize font-bold" *ngIf="data?.resourceStatus=='SUSPENDED'">Tạm ngưng</span>
             </div>
           </div>
           <div nz-row [nzGutter]="24" class="row-white-bg content-items-center">

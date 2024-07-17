@@ -761,7 +761,8 @@ export class ProjectUpdateComponent implements OnInit {
               }
               else{
                 this.listLoadbalancer = data;
-                this.loadBalancerId = this.listLoadbalancer[0].id;
+                // this.loadBalancerId = this.listLoadbalancer[0].id;
+                this.loadBalancerId =this.data?.offerIdLBSDN
                 this.findNameLoadBalance(this.loadBalancerId);
               }
             });
@@ -789,7 +790,8 @@ export class ProjectUpdateComponent implements OnInit {
               }
               else{
                 this.listSiteToSite = data;
-                this.siteToSiteId = this.listSiteToSite[0].id;
+                // this.siteToSiteId = this.listSiteToSite[0].id;
+                this.siteToSiteId= this.data?.vpnSiteToSiteOfferId
                 this.findNameSiteToSite(this.siteToSiteId);
               }
             });

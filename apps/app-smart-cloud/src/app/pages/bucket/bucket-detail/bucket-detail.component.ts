@@ -6,7 +6,7 @@ import {
   NonNullableFormBuilder,
   Validators,
 } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { I18NService } from '@core';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
@@ -30,6 +30,7 @@ import { RegionModel } from '../../../../../../../libs/common-utils/src';
 import { LoadingService } from '@delon/abc/loading';
 import { ObjectStorageService } from 'src/app/shared/services/object-storage.service';
 import { FOLDER_NAME_REGEX } from 'src/app/shared/constants/constants';
+import { RegionID } from 'src/app/shared/enums/common.enum';
 
 @Component({
   selector: 'one-portal-bucket-detail',
@@ -131,7 +132,8 @@ export class BucketDetailComponent extends BaseService implements OnInit {
     private modalService: NzModalService,
     private fb: NonNullableFormBuilder,
     private loadingSrv: LoadingService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private router: Router
   ) {
     super();
   }
@@ -244,10 +246,10 @@ export class BucketDetailComponent extends BaseService implements OnInit {
           this.usage = data;
         },
         error: (e) => {
-          this.notification.error(
-            this.i18n.fanyi('app.status.fail'),
-            this.i18n.fanyi('app.bucket.getObject.fail')
-          );
+          // this.notification.error(
+          //   this.i18n.fanyi('app.status.fail'),
+          //   this.i18n.fanyi('app.bucket.getObject.fail')
+          // );
         },
       });
   }
@@ -1201,5 +1203,13 @@ export class BucketDetailComponent extends BaseService implements OnInit {
         );
       }
     );
+  }
+
+  navigateToBucketList(){
+    if(this.region === RegionID.ADVANCE){
+      this.router.navigate(['/app-smart-cloud/object-storage-advance/bucket']);
+    }else{
+      this.router.navigate(['/app-smart-cloud/object-storage/bucket']);
+    }
   }
 }

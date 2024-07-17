@@ -6,9 +6,9 @@
       <nz-breadcrumb-item [routerLink]="'/'">{{ 'app.breadcrumb.home' | i18n }}</nz-breadcrumb-item>
       <nz-breadcrumb-item>{{ 'app.breadcrumb.infrastructure.service' | i18n }}</nz-breadcrumb-item>
       <nz-breadcrumb-item>Object Storage</nz-breadcrumb-item>
-      <nz-breadcrumb-item><a [routerLink]="'/app-smart-cloud/object-storage/sub-user/list'">SubUser</a></nz-breadcrumb-item>
+      <nz-breadcrumb-item><a (click)="navigateToSubUser()">SubUser</a></nz-breadcrumb-item>
       <nz-breadcrumb-item
-        [routerLink]="'/app-smart-cloud/object-storage/sub-user/create'">{{ 'app.sub.user.create' | i18n }}
+      (click)="navigateToCreateSubUser()">{{ 'app.sub.user.create' | i18n }}
       </nz-breadcrumb-item>
     </nz-breadcrumb>
     <ng-template #separatorTemplate
@@ -17,10 +17,7 @@
   </ng-template>
   <ng-template #action>
     <div class="alain-custom-action text-right">
-      <share-users-combobox></share-users-combobox>
       <region-select-dropdown (regionChange)="onRegionChanged($event)" (valueChanged)="regionChanged($event)"></region-select-dropdown>
-      <project-select-dropdown #projectCombobox (valueChanged)="projectChanged($event)"
-                               [regionId]="region"></project-select-dropdown>
     </div>
   </ng-template>
 </page-header>
