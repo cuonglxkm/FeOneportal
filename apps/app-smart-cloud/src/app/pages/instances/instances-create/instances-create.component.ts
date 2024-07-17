@@ -650,7 +650,6 @@ export class InstancesCreateComponent implements OnInit {
       this.instanceCreate.encryption = data.isEncryption;
     });
   }
-
   //#endregion
 
   //#region HDD hay SDD
@@ -684,7 +683,6 @@ export class InstancesCreateComponent implements OnInit {
     }
     this.listOfferFlavors = [];
     this.initFlavors();
-    this.isValid = false;
   }
 
   isPreConfigPackage = true;
@@ -1959,7 +1957,7 @@ export class InstancesCreateComponent implements OnInit {
                 error: (error) => {
                   this.notification.error(
                     this.i18n.fanyi('app.status.fail'),
-                    error.error.detail
+                    error.error.message
                   );
                 },
               });
@@ -2099,7 +2097,7 @@ export class InstancesCreateComponent implements OnInit {
           error: (error) => {
             this.notification.error(
               this.i18n.fanyi('app.status.fail'),
-              error.error.detail
+              error.error.message
             );
           },
         });

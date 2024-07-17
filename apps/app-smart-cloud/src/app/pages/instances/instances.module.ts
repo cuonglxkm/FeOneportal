@@ -13,7 +13,6 @@ import { NetworkDetailComponent } from './instances-common/network-detail/networ
 import { FullContentModule } from '@delon/abc/full-content';
 import { SafePipe } from '../../../../../../libs/common-utils/src';
 import { InstancesBtnComponent } from './instances-common/instances-btn/instances-btn.component';
-import { InstancesVlanGimComponent } from './instances-list/instances-vlan-gim/instances-vlan-gim.component';
 import { CarouselModule } from 'ngx-owl-carousel-o';
 import {
   NguCarousel,
@@ -39,7 +38,6 @@ import { InstancesEditVpcComponent } from './instances-edit-vpc/instances-edit-v
     NetworkDetailComponent,
     BlockstorageDetailComponent,
     InstancesBtnComponent,
-    InstancesVlanGimComponent,
     InstancesExtendComponent,
     InstancesCreateVpcComponent,
     InstancesEditVpcComponent,

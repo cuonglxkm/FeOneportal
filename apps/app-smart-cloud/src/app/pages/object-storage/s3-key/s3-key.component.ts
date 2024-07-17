@@ -15,6 +15,7 @@ import { Subject } from 'rxjs';
 import { TimeCommon } from 'src/app/shared/utils/common';
 import { getCurrentRegionAndProject } from '@shared';
 import { RegionID } from 'src/app/shared/enums/common.enum';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'one-portal-s3-key',
@@ -54,7 +55,8 @@ export class S3KeyComponent implements OnInit {
     private clipboard: Clipboard,
     private notification: NzNotificationService,
     private loadingSrv: LoadingService,
-    private subUserService: SubUserService
+    private subUserService: SubUserService,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -247,5 +249,13 @@ export class S3KeyComponent implements OnInit {
 
   handleCancelDelete() {
     this.isVisibleDelete = false;
+  }
+
+  navigateToS3Key(){
+    if(this.region === RegionID.ADVANCE){
+      this.router.navigate(['/app-smart-cloud/object-storage-advance/s3-key']);
+    }else{
+      this.router.navigate(['/app-smart-cloud/object-storage/s3-key']);
+    }
   }
 }

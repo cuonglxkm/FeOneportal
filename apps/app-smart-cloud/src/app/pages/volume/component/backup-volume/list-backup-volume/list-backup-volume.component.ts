@@ -137,8 +137,9 @@ export class ListBackupVolumeComponent implements OnInit, OnDestroy{
     if(this.statusSelected == 'all') {
       valueSearch = null
     }
-    if(this.statusSelected == 'available' ) valueSearch = 'available'
-    if(this.statusSelected == 'suspended') valueSearch = 'suspended'
+    if(this.statusSelected == 'available' ) valueSearch = 'AVAILABLE'
+    if(this.statusSelected == 'suspended') valueSearch = 'SUSPENDED'
+    if(this.statusSelected == 'ERROR') valueSearch = 'ERROR'
     this.backupVolumeService.getListBackupVolume(this.region, this.project, valueSearch, this.value, this.pageSize, this.pageIndex).subscribe(data => {
       this.isLoading = false
       this.response = data;

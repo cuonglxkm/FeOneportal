@@ -285,7 +285,7 @@ export class InstancesEditVpcComponent implements OnInit {
       },
       error: (e) => {
         this.checkPermission = false;
-        this.notification.error(e.error.detail, '');
+        this.notification.error('', e.error.message);
         this.returnPage();
       },
     });
@@ -515,7 +515,7 @@ export class InstancesEditVpcComponent implements OnInit {
         error: (error) => {
           this.notification.error(
             this.i18n.fanyi('app.status.fail'),
-            error.error.detail
+            error.error.message
           );
         },
       });
@@ -587,7 +587,7 @@ export class InstancesEditVpcComponent implements OnInit {
   }
 
   onRegionChange(region: RegionModel) {
-    if(this.projectCombobox){
+    if (this.projectCombobox) {
       this.projectCombobox.loadProjects(true, region.regionId);
     }
     this.router.navigate(['/app-smart-cloud/instances']);
