@@ -289,6 +289,7 @@
       </nz-col>
       <nz-col nzSpan="8">
         <nz-affix [nzOffsetTop]="72">
+          <!---THÔNG SỐ CÂU HÌNH ----->
           <nz-card style="border-radius: 8px" class="border-card">
             <div style="margin-bottom: 20px">
               <span class="text-card-header">{{ 'app.estimated.cost' | i18n }}</span>
@@ -310,6 +311,7 @@
             <div class="text-value">{{ 'volume.table.title.iops' | i18n }}</div>
             <div style="margin-top: 10px" class="text-label">{{ this.iops }}</div>
             <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
+            <!---THÀNH TIỀN--->
             <div *ngIf="!hasRoleSI">
               <nz-row style="margin-bottom: 10px" nzGutter="16">
                 <nz-col nzSpan="16">

@@ -248,8 +248,10 @@ export class OrderDetailComponent {
 
   getSpecType(){
     let serviceName = this.data.orderItems[0].serviceName.split('-')[0].trim()
+    if(serviceName.includes('Máy ảo')){
+      serviceName = 'VM'
+    }
     console.log(serviceName);
-
     if(serviceName === 'Backup vm' && this.data.orderItems[0].serviceType === 'Tạo mới'){
       this.specType = 'instancebackup_create'
     }else if(serviceName === 'Backup vm' && this.data.orderItems[0].serviceType === 'Khôi phục'){
@@ -334,11 +336,11 @@ export class OrderDetailComponent {
       this.specType = 'volumebackup_create'
     }else if(serviceName === 'Volume Backup' && this.data.orderItems[0].serviceType === 'Khôi phục'){
       this.specType = 'restore_volumebackup'
-    }else if(this.serviceName.includes('Máy ảo') && this.data.orderItems[0].serviceType === 'Tạo mới'){
+    }else if(serviceName === 'VM' && this.data.orderItems[0].serviceType === 'Tạo mới'){
       this.specType = 'instance_create'
-    }else if(this.serviceName.includes('Máy ảo') && this.data.orderItems[0].serviceType === 'Gia hạn'){
+    }else if(serviceName === 'VM' && this.data.orderItems[0].serviceType === 'Gia hạn'){
       this.specType = 'instance_extend'
-    }else if(this.serviceName.includes('Máy ảo') && this.data.orderItems[0].serviceType.includes('Điều chỉnh')){
+    }else if(serviceName === 'VM' && this.data.orderItems[0].serviceType.includes('Điều chỉnh')){
       this.specType = 'instance_resize'
     }
   }
