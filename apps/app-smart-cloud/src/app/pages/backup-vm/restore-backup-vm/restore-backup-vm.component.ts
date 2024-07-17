@@ -259,6 +259,7 @@ export class RestoreBackupVmComponent implements OnInit {
         this.isVmGpu = data.filter(
           (e) => e.productName == 'vm-gpu'
         )[0].isActive;
+        this.cdr.detectChanges()
       });
   }
 
@@ -473,6 +474,7 @@ export class RestoreBackupVmComponent implements OnInit {
             e.status == 0 && new Date(e.expiredDate) > new Date(currentDateTime)
         );
         console.log('list IP public', this.listIPPublic);
+        this.cdr.detectChanges()
       });
   }
 
@@ -777,6 +779,7 @@ export class RestoreBackupVmComponent implements OnInit {
         this.getUnitPrice(0, 1, 0, 0, null);
         this.getTotalAmount();
         this.checkValidConfig();
+        this.cdr.detectChanges()
       });
   }
 
@@ -869,6 +872,7 @@ export class RestoreBackupVmComponent implements OnInit {
           this.listGPUType
         );
         console.log('list gpu config recommend', this.listGpuConfigRecommend);
+        this.cdr.detectChanges()
       });
   }
 
