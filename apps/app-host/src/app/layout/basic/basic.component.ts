@@ -38,12 +38,12 @@ import { environment } from '@env/environment';
       <a href="https://vnptcloud.onsmartcloud.com/" class="alain-default__header-logo-link">
           <img
             class="alain-default__header-logo-expanded"
-            src="assets/imgs/logo-vnpt-cloud.svg"
+            src="assets/imgs/logo_vnpt_white.svg"
             alt="Logo VNPT"
           />
           <img
             class="alain-default__header-logo-collapsed"
-            src="assets/imgs/logo-vnpt-cloud.svg"
+            src="assets/imgs/logo_vnpt_icon_white.svg"
             alt="Logo VNPT"
           />
         </a>
