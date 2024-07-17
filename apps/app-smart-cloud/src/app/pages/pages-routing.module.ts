@@ -909,7 +909,7 @@ const routes: Routes = [
     }
   },
   {
-    path: 'object-storage/sub-user-advance/list',
+    path: 'object-storage-advance/sub-user',
     component: ListSubUserComponent,
     canActivate: [PermissionGuard],
     data: {
@@ -917,7 +917,7 @@ const routes: Routes = [
     }
   },
   {
-    path: 'object-storage/sub-user/list',
+    path: 'object-storage/sub-user',
     component: ListSubUserComponent,
     canActivate: [PermissionGuard],
     data: {
@@ -933,6 +933,14 @@ const routes: Routes = [
     }
   },
   {
+    path: 'object-storage-advance/sub-user/create',
+    component: CreateSubUserComponent,
+    canActivate: [PermissionGuard],
+    data: {
+      permission: 'objectstorages:ObjectStorageUser'
+    }
+  },
+  {
     path: 'object-storage/dashboard',
     component: DashboardObjectStorageComponent,
     canActivate: [PermissionGuard],
@@ -941,7 +949,7 @@ const routes: Routes = [
     }
   },
   {
-    path: 'object-storage/dashboard-advance',
+    path: 'object-storage-advance/dashboard',
     component: DashboardObjectStorageComponent,
     canActivate: [PermissionGuard],
     data: {
@@ -1030,7 +1038,7 @@ const routes: Routes = [
     }
   },
   {
-    path: 'object-storage/bucket-advance',
+    path: 'object-storage-advance/bucket',
     component: BucketListComponent,
     canActivate: [PermissionGuard],
     data: {
@@ -1046,7 +1054,23 @@ const routes: Routes = [
     }
   },
   {
+    path: 'object-storage-advance/bucket/create',
+    component: BucketCreateComponent,
+    canActivate: [PermissionGuard],
+    data: {
+      permission: 'objectstorages:CreateBucket'
+    }
+  },
+  {
     path: 'object-storage/bucket/configure/:bucketName',
+    component: BucketConfigureComponent,
+    canActivate: [PermissionGuard],
+    data: {
+      permission: 'objectstorages:GetBucket'
+    }
+  },
+  {
+    path: 'object-storage-advance/bucket/configure/:bucketName',
     component: BucketConfigureComponent,
     canActivate: [PermissionGuard],
     data: {
@@ -1067,7 +1091,25 @@ const routes: Routes = [
 
   },
   {
+    path: 'object-storage-advance/create',
+    component: ObjectStorageCreateComponent,
+    canActivate: [PermissionGuard],
+    data: {
+      permission: 'order:Create'
+    }
+
+  },
+  {
     path: 'object-storage/extend/:id',
+    component: ObjectStorageExtendComponent,
+    canActivate: [PermissionGuard],
+    data: {
+      permission: 'order:Create'
+    }
+
+  },
+  {
+    path: 'object-storage-advance/extend/:id',
     component: ObjectStorageExtendComponent,
     canActivate: [PermissionGuard],
     data: {
@@ -1085,7 +1127,24 @@ const routes: Routes = [
 
   },
   {
+    path: 'object-storage-advance/edit/:id',
+    component: ObjectStorageEditComponent,
+    canActivate: [PermissionGuard],
+    data: {
+      permission: 'order:Create'
+    }
+
+  },
+  {
     path: 'object-storage/bucket/:name',
+    component: BucketDetailComponent,
+    canActivate: [PermissionGuard],
+    data: {
+      permission: 'objectstorages:GetBucket'
+    }
+  },
+  {
+    path: 'object-storage-advance/bucket/:name',
     component: BucketDetailComponent,
     canActivate: [PermissionGuard],
     data: {
@@ -1112,7 +1171,7 @@ const routes: Routes = [
     }
   },
   {
-    path: 'object-storage/s3-key-advance',
+    path: 'object-storage-advance/s3-key',
     component: S3KeyComponent,
     canActivate: [PermissionGuard],
     data: {

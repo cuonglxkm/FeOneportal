@@ -16,6 +16,7 @@ export class ServiceStatusPipe implements PipeTransform {
       case "CREATING":
         return new StatusModel("#0066b0", this.i18n.fanyi('service.status.init'));
       case "KHOITAO":
+        return new StatusModel("#008d47", this.i18n.fanyi('service.status.active'));
       case "AVAILABLE":
       case "ENABLE":
       case "ACTIVE":
@@ -42,6 +43,8 @@ export class ServiceStatusPipe implements PipeTransform {
       case "PROCESSING":
         return new StatusModel("#0066B0", this.i18n.fanyi('service.status.processing'));
       case "SUSPENDED":
+        return new StatusModel("#FFBB63", this.i18n.fanyi('app.suspend'));
+      case "TAMNGUNG":
         return new StatusModel("#FFBB63", this.i18n.fanyi('app.suspend'));
       default:
         return new StatusModel("#4c4f67", this.i18n.fanyi('service.status.unknown'));

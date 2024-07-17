@@ -11,6 +11,7 @@ import { RegionModel, ProjectModel } from '../../../../../../../../libs/common-u
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from '@core';
 import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
+import { RegionID } from 'src/app/shared/enums/common.enum';
 
 @Component({
   selector: 'one-portal-create-sub-user',
@@ -19,7 +20,6 @@ import { ProjectSelectDropdownComponent } from 'src/app/shared/components/projec
 })
 export class CreateSubUserComponent implements OnInit{
   region = JSON.parse(localStorage.getItem('regionId'));
-  project = JSON.parse(localStorage.getItem('projectId'));
 
   value: string
 
@@ -75,9 +75,6 @@ export class CreateSubUserComponent implements OnInit{
     this.region = region.regionId;
   }
 
-  projectChanged(project: ProjectModel) {
-    this.project = project?.id
-  }
 
   updateData(value) {
     this.name = value;
@@ -113,7 +110,11 @@ export class CreateSubUserComponent implements OnInit{
       }
       this.subUserService.createSubUser(formCreate).subscribe(data => {
         this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('app.create.subuser.success'))
-        this.router.navigate(['/app-smart-cloud/object-storage/sub-user/list'])
+        if(this.region === RegionID.ADVANCE){
+          this.router.navigate(['/app-smart-cloud/object-storage-advance/sub-user']);
+        }else{
+          this.router.navigate(['/app-smart-cloud/object-storage/sub-user']);
+        }
       }, error => {
         this.notification.error(this.i18n.fanyi('app.status.fail'),this.i18n.fanyi('app.create.subuser.fail'))
       })
@@ -127,14 +128,28 @@ export class CreateSubUserComponent implements OnInit{
     })
   }
 
+  navigateToSubUser() {
+    if(this.region === RegionID.ADVANCE){
+      this.router.navigate(['/app-smart-cloud/object-storage-advance/sub-user']);
+    }else{
+      this.router.navigate(['/app-smart-cloud/object-storage/sub-user']);
+    }
+  }
+
+  navigateToCreateSubUser() {
+    if(this.region === RegionID.ADVANCE){
+      this.router.navigate(['/app-smart-cloud/object-storage-advance/sub-user/create']);
+    }else{
+      this.router.navigate(['/app-smart-cloud/object-storage/sub-user/create']);
+    }
+  }
 
   ngOnInit() {
     let regionAndProject = getCurrentRegionAndProject();
     this.region = regionAndProject.regionId;
-    this.project = regionAndProject.projectId;
-
     this.getInformationOfUserObject()
     this.getListSubUser()
-
   }
+
+
 }
