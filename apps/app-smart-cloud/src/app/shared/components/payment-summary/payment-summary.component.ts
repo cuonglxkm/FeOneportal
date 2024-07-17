@@ -257,6 +257,21 @@ export class PaymentSummaryComponent implements OnInit {
             serviceItem.name = `Mongodb - ${specificationObj.serviceName}`;
             serviceItem.type = this.i18n.fanyi('app.text.upgrade');
             break;
+          case 'ecr_resize':
+            this.serviceType = 'ecr';
+            serviceItem.name = `ecr - ${specificationObj.serviceName}`;
+            serviceItem.type = this.i18n.fanyi('app.text.resize');
+            break;
+          case 'ecr_extend':
+            this.serviceType = 'ecr';
+            serviceItem.name = `ecr - ${specificationObj.serviceName}`;
+            serviceItem.type = this.i18n.fanyi('app.text.extend');
+            break;
+          case 'ecr_create':
+            this.serviceType = 'ecr';
+            serviceItem.name = `ecr - ${specificationObj.serviceName}`;
+            serviceItem.type = this.i18n.fanyi('app.text.create');
+            break;
           case 'vpc_create':
             serviceItem.name = `VPC - ${specificationObj.serviceName}`;
             serviceItem.type = this.i18n.fanyi('app.label.create');
