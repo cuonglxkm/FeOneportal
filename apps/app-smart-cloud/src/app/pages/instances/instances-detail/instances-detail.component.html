@@ -41,7 +41,13 @@
   </ng-template>
   <nz-row>
     <div class="non-pointer" style="width: 100%">
+      <style>
+        :host ::ng-deep .ant-btn:not(.ant-btn-link) + .ant-btn {
+          margin-left: 0px;
+        }
+      </style>
       <button
+        style="margin-right: 8px"
         nz-button
         [nzType]="'primary'"
         (click)="activeGSCard()"
@@ -56,6 +62,7 @@
         <i nz-icon nzType="eye"></i> <span>{{ 'app.monitor' | i18n }}</span>
       </button>
       <button
+        style="margin-right: 8px"
         *ngIf="
           instancesModel &&
           instancesModel.status.toUpperCase() == 'KHOITAO' &&
@@ -80,7 +87,6 @@
           (project != undefined && project.type) == 1 ? true : false
         "
         (valueChanged)="onReloadInstanceDetail($event)"
-        style="margin-left: 8px"
       />
     </div>
   </nz-row>
