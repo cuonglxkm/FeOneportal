@@ -19,6 +19,7 @@ export class SecurityGroupService extends BaseService {
     return new HttpHeaders({
       'Content-Type': 'application/json',
       'User-Root-Id': localStorage.getItem('UserRootId') && Number(localStorage.getItem('UserRootId')) > 0 ? Number(localStorage.getItem('UserRootId')) : this.tokenService.get()?.userId,
+      'Project-Id': localStorage.getItem('projectId') && Number(localStorage.getItem('projectId')) > 0 ? Number(localStorage.getItem('projectId')) : 0,
       'Authorization': 'Bearer ' + this.tokenService.get()?.token
     })
   }
