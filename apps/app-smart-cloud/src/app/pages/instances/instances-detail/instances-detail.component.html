@@ -56,7 +56,6 @@
         <i nz-icon nzType="eye"></i> <span>{{ 'app.monitor' | i18n }}</span>
       </button>
       <button
-        style="margin-right: 8px"
         *ngIf="
           instancesModel &&
           instancesModel.status.toUpperCase() == 'KHOITAO' &&
@@ -81,8 +80,8 @@
           (project != undefined && project.type) == 1 ? true : false
         "
         (valueChanged)="onReloadInstanceDetail($event)"
-      >
-      </one-portal-instances-btn>
+        style="margin-left: 8px"
+      />
     </div>
   </nz-row>
 </page-header>
