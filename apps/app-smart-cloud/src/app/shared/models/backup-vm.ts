@@ -16,6 +16,7 @@ export interface BackupVm {
   creationDate: any,
   suspendDate: any,
   suspendType: string,
+  suspendReason: string,
   vpcName: string,
   customerEmail: string,
   instanceName: string,
