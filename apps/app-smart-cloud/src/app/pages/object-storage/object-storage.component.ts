@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { RegionModel } from '../../../../../../libs/common-utils/src';
+import { RegionID } from 'src/app/shared/enums/common.enum';
 
 @Component({
   selector: 'one-portal-object-storage',
@@ -12,7 +13,11 @@ export class ObjectStorageComponent {
   region = JSON.parse(localStorage.getItem('regionId'));
   constructor(private router: Router) {}
   navigateCreate() {
-    this.router.navigate(['/app-smart-cloud/object-storage/create']);
+    if(this.region === RegionID.ADVANCE){
+      this.router.navigate(['/app-smart-cloud/object-storage-advance/create']);
+    }else{
+      this.router.navigate(['/app-smart-cloud/object-storage/create']);
+    }
   }
 
   onRegionChange(region: RegionModel) {

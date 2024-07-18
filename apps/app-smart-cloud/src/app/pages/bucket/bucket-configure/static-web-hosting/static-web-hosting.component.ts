@@ -15,6 +15,7 @@ import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { ClipboardService } from 'ngx-clipboard';
 import { FILE_NO_SPACE_REGEX } from 'src/app/shared/constants/constants';
+import { RegionID } from 'src/app/shared/enums/common.enum';
 import {
   BucketWebsite
 } from 'src/app/shared/models/bucket.model';
@@ -120,6 +121,10 @@ export class StaticWebHostingComponent implements OnInit {
   }
 
   cancel() {
-    this.router.navigate(['/app-smart-cloud/object-storage/bucket']);
+    if (this.region === RegionID.ADVANCE) {
+      this.router.navigate(['/app-smart-cloud/object-storage-advance/bucket']);
+    } else {
+      this.router.navigate(['/app-smart-cloud/object-storage/bucket']);
+    }
   }
 }

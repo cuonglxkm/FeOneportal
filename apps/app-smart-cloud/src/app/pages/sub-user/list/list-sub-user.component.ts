@@ -69,8 +69,8 @@ export class ListSubUserComponent implements OnInit {
       }
     } else {
       this.region = RegionID.ADVANCE;
-    this.hasObjectStorage();
     };
+    this.hasObjectStorage();
   }
 
   hasOS: boolean = undefined;
@@ -134,7 +134,12 @@ export class ListSubUserComponent implements OnInit {
   }
 
   navigateToCreateSubUser() {
-    this.router.navigate(['/app-smart-cloud/object-storage/sub-user/create']);
+    if(this.region === RegionID.ADVANCE){
+      this.router.navigate(['/app-smart-cloud/object-storage-advance/sub-user/create']);
+    }else{
+      this.router.navigate(['/app-smart-cloud/object-storage/sub-user/create']);
+    }
+    
   }
 
   getListSubUsers(isBegin) {

@@ -13,12 +13,12 @@ export const environment = {
     refreshTokenType: 'auth-refresh'
   },
   // @ts-ignore
-  baseUrl: 'https://api-cloud.vnpt.vn',
+  baseUrl: 'https://api.cloud.vnpt.vn',
   sso: {
-    issuer: 'https://identity-cloud.vnpt.vn',
+    issuer: 'https://identity.cloud.vnpt.vn',
     clientId: 'frontend-client',
-    callback: 'https://cloud.vnpt.vn/passport/callback/oneportal',
-    logout_callback: 'https://cloud.vnpt.vn',
+    callback: 'https://console.cloud.vnpt.vn/passport/callback/oneportal',
+    logout_callback: 'https://console.cloud.vnpt.vn',
     scope: 'openid email roles offline_access',
   },
   recaptcha: {

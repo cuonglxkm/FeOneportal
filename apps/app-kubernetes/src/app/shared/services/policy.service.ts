@@ -18,6 +18,7 @@ export class PolicyService extends BaseService {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer ' + this.tokenService.get()?.token,
       'User-Root-Id': localStorage.getItem('UserRootId') && Number(localStorage.getItem('UserRootId')) > 0 ? Number(localStorage.getItem('UserRootId')) : this.tokenService.get()?.userId,
+      'Project-Id': localStorage.getItem('projectId') && Number(localStorage.getItem('projectId')) > 0 ? Number(localStorage.getItem('projectId')) : 0,
     })
   };
 

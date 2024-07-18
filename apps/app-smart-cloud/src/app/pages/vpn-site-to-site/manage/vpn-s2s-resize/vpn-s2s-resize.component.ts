@@ -36,6 +36,7 @@ export class VpnS2sResizeComponent implements OnInit{
   vpn: any;
   oldOfferId = 0;
   vatDisplay;
+  today: Date = new Date();
   @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
   /**
    *
