@@ -116,14 +116,28 @@
             <td><a [routerLink]="'/app-smart-cloud/snapshot/packages/detail/'+ data.id">{{data.packageName}}</a></td>
             <td class='text-right'>{{data.totalSizeHDD}}</td>
             <td class='text-right'>{{data.totalSizeSSD}}</td>
+<!--            <ng-container *ngIf="data.status | ServiceStatusPipe as statusModel">-->
+<!--              <td nzBreakWord nzAlign="left" [ngStyle]="{ color: statusModel.color }">{{ statusModel.status }}</td>-->
+<!--            </ng-container>-->
             <ng-container *ngIf="data.status | ServiceStatusPipe as statusModel">
-              <td nzBreakWord nzAlign="left" [ngStyle]="{ color: statusModel.color }">{{ statusModel.status }}</td>
+              <td *ngIf="!!data.suspendType">
+              <span [ngStyle]="{color: statusModel.color}">
+                <img src="assets/imgs/warning-message.svg" alt="" style="cursor: pointer; margin-bottom: 4px;"
+                     nzTooltipTitle="{{ data.suspendType }}"
+                     nzTooltipPlacement="bottom"
+                     nz-tooltip>
+                {{ statusModel.status }}
+              </span>
+              </td>
+              <td *ngIf="data.suspendType == null || data.suspendType === ''">
+                <span [ngStyle]="{color: statusModel.color}">{{ statusModel.status }}</span>
+              </td>
             </ng-container>
             <td>{{data.creationDate | date:'dd/MM/yyyy'}}</td>
             <td>{{data.expirationDate | date:'dd/MM/yyyy'}}</td>
             <td>
               <div>
-                <img src="assets/imgs/edit-2.svg" alt="" (click)="showUpdate(data)" nz-tooltip nzTooltipTitle="{{'app.text.edit' | i18n}}"
+                <img *ngIf="data.suspendType == null || data.suspendType === ''" src="assets/imgs/edit-2.svg" alt="" (click)="showUpdate(data)" nz-tooltip nzTooltipTitle="{{'app.text.edit' | i18n}}"
                      style="cursor: pointer; width: 20px; height: 20px;" />
                 <img src="assets/imgs/delete.svg" style="width: 28px;height: 28px; cursor: pointer;"
                      nz-tooltip nzTooltipTitle="{{'app.delete' | i18n}}" nzTooltipPlacement="bottom"
@@ -248,9 +262,9 @@
                    class="input-custom"
                    [placeholder]="'Nhập tên gói'" [maxLength]="50"/>
             <ng-template #nameErrorTpl let-control>
-              <ng-container *ngIf="control.hasError('required')">Vui lòng nhập tên gói Snapshot</ng-container>
-              <ng-container *ngIf="control.hasError('pattern')">Không bao gồm ký tự đặc biệt, dấu cách, dấu tiếng Việt</ng-container>
-              <ng-container *ngIf="control.hasError('maxLength')">Tối đa 50 ký tự</ng-container>
+              <ng-container *ngIf="control.hasError('required')">{{'app.snapshot.schedule.enter.name' | i18n}}</ng-container>
+              <ng-container *ngIf="control.hasError('pattern')">{{'app.backup.package.name.pattern' | i18n}}</ng-container>
+              <ng-container *ngIf="control.hasError('maxLength')">{{'app.backup.package.name.maxLength' | i18n}}</ng-container>
             </ng-template>
           </nz-form-control>
         </nz-form-item>
@@ -268,7 +282,7 @@
                               [maxLength]="255"
                               [nzAutosize]="{ minRows: 3, maxRows: 5 }"></textarea>
             <ng-template #descriptionErrorTpl let-control>
-              <ng-container *ngIf="control.hasError('maxlength')">Cho phép nhập tối đa 255 ký tự
+              <ng-container *ngIf="control.hasError('maxlength')">{{'app.description.maxLength.255' | i18n}}
               </ng-container>
             </ng-template>
           </nz-form-control>

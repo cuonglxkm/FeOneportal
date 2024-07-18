@@ -1,7 +1,7 @@
 <page-header
   [breadcrumb]="breadcrumb"
   [action]="action"
-  [title]="'Chỉnh sửa lịch Snapshot'"
+  title="{{'app.snapshot.schedule.edit.label' | i18n}}"
 >
   <ng-template #breadcrumb>
     <nz-breadcrumb [nzSeparator]="separatorTemplate">
@@ -10,10 +10,10 @@
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>
         <a [routerLink]="['/app-smart-cloud/schedule/snapshot']"
-          >Lịch Snapshot</a
+          >{{'app.snapshot.schedule.label.name' | i18n}}</a
         >
       </nz-breadcrumb-item>
-      <nz-breadcrumb-item> Chỉnh sửa lịch Snapshot</nz-breadcrumb-item>
+      <nz-breadcrumb-item>{{'app.snapshot.schedule.edit.label' | i18n}}</nz-breadcrumb-item>
     </nz-breadcrumb>
     <ng-template #separatorTemplate
       ><img src="assets/imgs/arrow-square-right.svg" alt="" />
@@ -36,7 +36,7 @@
 
 <nz-card [nzBordered]="false" style="border-radius: 8px">
   <div style="margin-bottom: 20px" class="text-card-header">
-    Thông tin lịch Snapshot
+    {{'app.snapshot.schedule.info' | i18n}}
   </div>
   <form nz-form [formGroup]="form" [nzLayout]="'vertical'">
     <nz-spin [nzSpinning]="isLoading" nzSize="large">
@@ -48,17 +48,16 @@
             formControlName="name"
             [(ngModel)]="scheduleSnapshot.name"
             id="name"
-            placeholder="Nhập tên lịch Snapshot"
+            placeholder="{{'app.snapshot.schedule.enter.name1' | i18n}}"
             maxlength="64"
             minlength="1"
           />
           <ng-template #nameErrorTpl let-control>
             <ng-container *ngIf="control.hasError('required')"
-              >Vui lòng nhập tên lịch Snapshot
+              >{{'app.snapshot.schedule.enter.name1' | i18n}}
             </ng-container>
             <ng-container *ngIf="control.hasError('pattern')"
-              >Tên lịch Snapshot có thể có tối đa 64 ký tự. Ký tự hợp lệ: A-Z,
-              a-z, 0-9
+              >{{'app.snapshot.schedule.des.1' | i18n}}
             </ng-container>
           </ng-template>
         </nz-form-control>
@@ -75,7 +74,7 @@
               [nzShowSearch]="true"
               formControlName="volume"
               id="volume"
-              [nzPlaceHolder]="'-Chọn tên Volume-'"
+              [nzPlaceHolder]="'{{\'app.snapshot.schedule.volume.select.label\' | i18n}}--'"
               [(ngModel)]="scheduleSnapshot.serviceId"
               style="width: 100%"
               nzSize="large"
@@ -120,7 +119,7 @@
         </nz-col>
         <nz-col [nzLg]="12" [nzMd]="12" [nzSm]="24" [nzXl]="12" [nzXs]="24">
           <nz-form-item
-            ><nz-form-label>Số tuần</nz-form-label>
+            ><nz-form-label>{{'app.choose.week.number' | i18n}}</nz-form-label>
             <input
               nz-input
               [(ngModel)]="numberOfweek"
@@ -142,7 +141,7 @@
               [nzShowSearch]="true"
               formControlName="selectedDate"
               id="selectedDate"
-              [nzPlaceHolder]="'-Chọn ngày-'"
+              [nzPlaceHolder]="'{{\'app.choose.day\' | i18n}}'"
               [(ngModel)]="scheduleSnapshot.daysOfWeek"
               style="width: 100%"
               nzSize="large"
@@ -169,7 +168,7 @@
       </nz-row>
 
       <nz-form-item style="margin-bottom: 0px">
-        <nz-form-label>Mô tả</nz-form-label>
+        <nz-form-label>{{'app.service.description' | i18n}}</nz-form-label>
         <nz-form-control>
           <nz-textarea-count [nzMaxCharacterCount]="255">
             <textarea
@@ -204,6 +203,6 @@
       src="assets/imgs/confirm.svg"
       alt=""
     />
-    Cập nhật
+    {{'app.button.update' | i18n}}
   </button>
 </div>
