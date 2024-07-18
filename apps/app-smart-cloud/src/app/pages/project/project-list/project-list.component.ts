@@ -35,7 +35,7 @@ export class ProjectListComponent implements OnInit {
     { name: this.i18n.fanyi('app.status.all'), value: '' },
     { name: this.i18n.fanyi('status.enable'), value: 'ENABLE' },
     { name: this.i18n.fanyi('status.disable'), value: 'DISABLE' },
-    { name: this.i18n.fanyi('status.deleted'), value: 'DELETED' }];
+    { name: this.i18n.fanyi('status.suspended'), value: 'SUSPENDED' }];
 
   modalStyle = {
     'padding': '20px',

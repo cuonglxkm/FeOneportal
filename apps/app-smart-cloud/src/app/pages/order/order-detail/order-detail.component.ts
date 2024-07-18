@@ -108,7 +108,9 @@ export class OrderDetailComponent {
               this.serviceName = item.serviceName.split('-')[0].trim()
               if(this.serviceName.includes('Máy ảo')){
                 item.serviceNameLink = 'VM'
-              }else{
+              } else if(this.serviceName.includes('K8s Premium')) {
+                item.serviceNameLink = 'VPK';
+              } else{
                 item.serviceNameLink = this.serviceName
               }
             })
@@ -144,7 +146,9 @@ export class OrderDetailComponent {
               this.serviceName = item.serviceName.split('-')[0].trim()
               if(this.serviceName.includes('Máy ảo')){
                 item.serviceNameLink = 'VM'
-              }else{
+              } else if(this.serviceName.includes('K8s Premium')) {
+                item.serviceNameLink = 'VPK';
+              } else{
                 item.serviceNameLink = this.serviceName
               }
             })

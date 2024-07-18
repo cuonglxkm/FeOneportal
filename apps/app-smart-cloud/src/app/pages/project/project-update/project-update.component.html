@@ -1070,19 +1070,19 @@
           <div class="text-value">{{'custom.config.package' | i18n}}</div>
           <nz-row style="display: flex;justify-content: space-between;">
             <div style="margin-top: 10px" class="text-label">{{'app.payment-detail.quantity' | i18n}} vCPU:</div>
-            <div style="margin-top: 10px" class="text-label">{{vCPU}} vCPU</div>
+            <div style="margin-top: 10px" class="text-label">{{vCPU + vCPUOld}}  vCPU</div>
           </nz-row>
           <nz-row style="display: flex;justify-content: space-between;">
             <div style="margin-top: 10px" class="text-label">{{'app.payment-detail.quantity' | i18n}} RAM:</div>
-            <div style="margin-top: 10px" class="text-label">{{ram}} GB</div>
+            <div style="margin-top: 10px" class="text-label">{{ram + ramOld}}  GB</div>
           </nz-row>
           <nz-row style="display: flex;justify-content: space-between;">
             <div style="margin-top: 10px" class="text-label">{{'app.payment-detail.quantity' | i18n}} HDD:</div>
-            <div style="margin-top: 10px" class="text-label">{{hhd}} GB</div>
+            <div style="margin-top: 10px" class="text-label">{{hhd + hhdOld}}  GB</div>
           </nz-row>
           <nz-row style="display: flex;justify-content: space-between;">
             <div style="margin-top: 10px" class="text-label">{{'app.payment-detail.quantity' | i18n}} SSD:</div>
-            <div style="margin-top: 10px" class="text-label">{{ssd}} GB</div>
+            <div style="margin-top: 10px" class="text-label">{{ssd + ssdOld}}  GB</div>
           </nz-row>
           <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
         </div>
@@ -1098,46 +1098,46 @@
         </div>
         <nz-row *ngIf="numberIpFloating != 0" style="display: flex;justify-content: space-between;">
           <div style="margin-top: 10px" class="text-label">Số lượng IP Floating:</div>
-          <div style="margin-top: 10px" class="text-label">{{ numberIpFloating }}</div>
+          <div style="margin-top: 10px" class="text-label">{{ numberIpFloating +ipFloatingOld }} </div>
         </nz-row>
         <nz-row *ngIf="numberIpPublic != 0" style="display: flex;justify-content: space-between;">
           <div style="margin-top: 10px" class="text-label">Số lượng IP Public:</div>
-          <div style="margin-top: 10px" class="text-label">{{ numberIpPublic }}</div>
+          <div style="margin-top: 10px" class="text-label">{{ numberIpPublic + ipPublicTotal}} </div>
         </nz-row>
         <nz-row *ngIf="numberIpv6 != 0" style="display: flex;justify-content: space-between;">
           <div style="margin-top: 10px" class="text-label">Số lượng IPv6:</div>
-          <div style="margin-top: 10px" class="text-label">{{ numberIpv6 }}</div>
+          <div style="margin-top: 10px" class="text-label">{{ numberIpv6 + ipv6Old}}</div>
         </nz-row>
         <nz-row *ngIf="numberSnapshothdd != 0" style="display: flex;justify-content: space-between;">
           <div style="margin-top: 10px" class="text-label">Dung lượng Snapshot - HDD:</div>
-          <div style="margin-top: 10px" class="text-label">{{ numberSnapshothdd }} GB</div>
+          <div style="margin-top: 10px" class="text-label">{{ numberSnapshothdd + snapshothddOld}} GB</div>
         </nz-row>
         <nz-row *ngIf="numberSnapshotssd != 0" style="display: flex;justify-content: space-between;">
           <div style="margin-top: 10px" class="text-label">Dung lượng Snapshot - SSD:</div>
-          <div style="margin-top: 10px" class="text-label">{{ numberSnapshotssd }} GB</div>
+          <div style="margin-top: 10px" class="text-label">{{ numberSnapshotssd + snapshotssdOld}} GB</div>
         </nz-row>
         <nz-row *ngIf="numberBackup != 0" style="display: flex;justify-content: space-between;">
           <div style="margin-top: 10px" class="text-label">Backup:</div>
-          <div style="margin-top: 10px" class="text-label">{{numberBackup}} GB</div>
+          <div style="margin-top: 10px" class="text-label">{{numberBackup + backupOld}} GB</div>
         </nz-row>
         <nz-row *ngIf="numberLoadBalancer != 0"  style="display: flex;justify-content: space-between;">
           <div style="margin-top: 10px" class="text-label">Load Balancer:</div>
-          <div style="margin-top: 10px" class="text-label">{{numberLoadBalancer}} GB-{{loadBalancerName}}</div>
+          <div style="margin-top: 10px" class="text-label">{{numberLoadBalancer }} GB-{{loadBalancerName}}</div>
         </nz-row>
         <nz-row *ngIf="numberFileSystem != 0" style="display: flex;justify-content: space-between;">
           <div style="margin-top: 10px" class="text-label">Dung lượng File System:</div>
-          <div style="margin-top: 10px" class="text-label">{{ numberFileSystem }} GB</div>
+          <div style="margin-top: 10px" class="text-label">{{ numberFileSystem + fileSystemOld}} GB</div>
         </nz-row>
         <nz-row *ngIf="numberFileScnapsshot != 0" style="display: flex;justify-content: space-between;">
           <div style="margin-top: 10px" class="text-label">Dung lượng File System Snapshot:</div>
-          <div style="margin-top: 10px" class="text-label">{{ numberFileScnapsshot }} GB</div>
+          <div style="margin-top: 10px" class="text-label">{{ numberFileScnapsshot + fileSnapshotOld}} GB</div>
 
         </nz-row>
         <nz-row *ngIf="siteToSiteId != data?.vpnSiteToSiteOfferId" style="display: flex;justify-content: space-between;">
           <div style="margin-top: 10px" class="text-label">VPN site to site:</div>
           <div style="margin-top: 10px" class="text-label">{{ sitetositeName }}</div>
         </nz-row>
-        <nz-row *ngFor="let gpu of gpuQuotasGobal" style="display: flex;justify-content: space-between;">
+        <nz-row *ngFor="let gpu of newgpu" style="display: flex;justify-content: space-between;">
           <div *ngIf="gpu.GpuCount !=0" style="margin-top: 10px" class="text-label">Số lượng GPU {{gpu.GpuType}}:
           </div>
           <div *ngIf="gpu.GpuCount !=0" style="margin-top: 10px" class="text-label">{{ gpu.GpuCount }}</div>

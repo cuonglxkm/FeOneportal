@@ -315,6 +315,10 @@ export class PaymentSummaryComponent implements OnInit {
             serviceItem.name = `Backup Volume - ${specificationObj.serviceName}`;
             serviceItem.type = this.i18n.fanyi('app.restore')
             break;
+          case 'restore_instancebackup':
+              serviceItem.name = `Backup VM - ${specificationObj.serviceName}`;
+              serviceItem.type = this.i18n.fanyi('app.restore')
+              break;  
           default:
             serviceItem.name = '';
             break;
