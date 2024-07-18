@@ -1,12 +1,24 @@
-<page-header [breadcrumb]="breadcrumb" [action]="action" [title]="'app.order.title' | i18n">
+<page-header
+  [breadcrumb]="breadcrumb"
+  [action]="action"
+  [title]="'app.order.title' | i18n"
+>
   <ng-template #breadcrumb>
     <nz-breadcrumb [nzSeparator]="iconTemplate">
       <nz-breadcrumb-item>
-        <a [routerLink]="['/']">{{"app.breadcrumb.home" | i18n}}</a></nz-breadcrumb-item>
+        <a [routerLink]="['/']">{{
+          'app.breadcrumb.home' | i18n
+        }}</a></nz-breadcrumb-item
+      >
       <nz-breadcrumb-item>
-        <a [routerLink]="['/app-smart-cloud/order']">{{"app.breadcrumb.order" | i18n}}</a></nz-breadcrumb-item>
+        <a [routerLink]="['/app-smart-cloud/order']">{{
+          'app.breadcrumb.order' | i18n
+        }}</a></nz-breadcrumb-item
+      >
     </nz-breadcrumb>
-    <ng-template #iconTemplate><one-portal-svg-icon [icon]="'icon_breadcrumb'"></one-portal-svg-icon></ng-template>
+    <ng-template #iconTemplate
+      ><one-portal-svg-icon [icon]="'icon_breadcrumb'"></one-portal-svg-icon
+    ></ng-template>
   </ng-template>
   <ng-template #action>
     <div class="alain-custom-action text-right">
@@ -22,47 +34,94 @@
     <nz-row nzAlign="middle">
       <nz-space [nzSize]="24">
         <div *nzSpaceItem>
-          <nz-select class="input-select-custom" [(ngModel)]="searchStatusOrder" style="width: 180px;"
-            (ngModelChange)="onChange($event)" [nzPlaceHolder]="'app.order.status.order1' | i18n">
-            <nz-option *ngFor="let item of statusOrder" [nzValue]="item.value" [nzLabel]="item.label"></nz-option>
+          <nz-select
+            class="input-select-custom"
+            [(ngModel)]="searchStatusOrder"
+            style="width: 180px"
+            (ngModelChange)="onChange($event)"
+            [nzPlaceHolder]="'app.order.status.order1' | i18n"
+          >
+            <nz-option
+              *ngFor="let item of statusOrder"
+              [nzValue]="item.value"
+              [nzLabel]="item.label"
+            ></nz-option>
           </nz-select>
         </div>
       </nz-space>
-      <nz-space [nzSize]="24" style="margin-left: 10px;">
+      <nz-space [nzSize]="24" style="margin-left: 10px">
         <div *nzSpaceItem>
-          <nz-select class="input-select-custom" [(ngModel)]="searchStatus" style="width: 180px;"
-            (ngModelChange)="onChangeStatusInstall($event)" [nzPlaceHolder]="'app.order.status.installation' | i18n">
-            <nz-option *ngFor="let item of statusInstall" [nzValue]="item.value" [nzLabel]="item.label"></nz-option>
+          <nz-select
+            class="input-select-custom"
+            [(ngModel)]="searchStatus"
+            style="width: 180px"
+            (ngModelChange)="onChangeStatusInstall($event)"
+            [nzPlaceHolder]="'app.order.status.installation' | i18n"
+          >
+            <nz-option
+              *ngFor="let item of statusInstall"
+              [nzValue]="item.value"
+              [nzLabel]="item.label"
+            ></nz-option>
           </nz-select>
         </div>
       </nz-space>
-      <nz-range-picker class="input-date-picker" style="margin-left: 10px;" [(ngModel)]="date"
-        (ngModelChange)="onChanggeDate($event)"></nz-range-picker>
-      <div style="width: 300px; margin-left: 10px;">
-        <nz-input-group class="input-custom textbox-radius-lg" style="width: 380px" nzSearch
-          [nzPrefix]="prefixIconSearch">
-          <input [(ngModel)]="value"
-          #searchBox (keyup.enter)="search(searchBox.value)" (ngModelChange)="searchDelay.next(false)" type="text" nz-input
-            [placeholder]="'app.order.search' | i18n" />
+      <nz-range-picker
+        class="input-date-picker"
+        style="margin-left: 10px"
+        [(ngModel)]="date"
+        (ngModelChange)="onChanggeDate($event)"
+      ></nz-range-picker>
+      <div style="width: 300px; margin-left: 10px">
+        <nz-input-group
+          class="input-custom textbox-radius-lg"
+          style="width: 380px"
+          nzSearch
+          [nzPrefix]="prefixIconSearch"
+        >
+          <input
+            [(ngModel)]="value"
+            #searchBox
+            (keyup.enter)="search(searchBox.value)"
+            (ngModelChange)="searchDelay.next(false)"
+            type="text"
+            nz-input
+            [placeholder]="'app.order.search' | i18n"
+          />
         </nz-input-group>
         <ng-template #prefixIconSearch>
-          <img src="assets/imgs/search.svg" alt="" style="cursor: pointer" [nz-tooltip]="'app.button.search'|i18n" />
+          <img
+            src="assets/imgs/search.svg"
+            alt=""
+            style="cursor: pointer"
+            [nz-tooltip]="'app.button.search' | i18n"
+          />
         </ng-template>
       </div>
     </nz-row>
   </div>
 
-  <nz-table style="margin-top: 2%" class="table-data" #rowSelectionTable [nzData]="listOfData" nzShowSizeChanger
-    [nzFrontPagination]="false" [nzTotal]="totalData" [nzPageSize]="pageSize" [nzPageIndex]="currentPage"
-    [nzLoading]="isLoadingEntities" (nzQueryParams)="onQueryParamsChange($event)">
+  <nz-table
+    style="margin-top: 2%"
+    class="table-data"
+    #rowSelectionTable
+    [nzData]="listOfData"
+    nzShowSizeChanger
+    [nzFrontPagination]="false"
+    [nzTotal]="totalData"
+    [nzPageSize]="pageSize"
+    [nzPageIndex]="currentPage"
+    [nzLoading]="isLoadingEntities"
+    (nzQueryParams)="onQueryParamsChange($event)"
+  >
     <thead>
       <tr>
-        <th>{{"app.order.ordercode" | i18n}}</th>
-        <th>{{"app.order.name.service" | i18n}}</th>
-       
-        <th>{{"app.order.time.order" | i18n}}</th>
-        <th>{{"app.order.status.order" | i18n}}</th>
-        <th>{{"app.order.status.installation" | i18n}}</th>
+        <th>{{ 'app.order.ordercode' | i18n }}</th>
+        <th>{{ 'app.order.name.service' | i18n }}</th>
+
+        <th>{{ 'app.order.time.order' | i18n }}</th>
+        <th>{{ 'app.order.status.order' | i18n }}</th>
+        <th>{{ 'app.order.status.installation' | i18n }}</th>
       </tr>
     </thead>
     <tbody>
@@ -71,39 +130,45 @@
           <a (click)="navigateToDetail(data.id)">{{ data.orderCode }}</a>
         </td>
         <!-- <td>{{ data.note }}</td> -->
-        <td><div *ngFor="let item of data?.orderItems">{{ item }}</div></td>
-      
+        <td>
+          <div *ngFor="let item of data?.orderItems">{{ item }}</div>
+        </td>
+
         <td>{{ data.orderDate | date : 'HH:mm:ss dd/MM/YYYY' }}</td>
-        <td [ngStyle]="{
-          color:
-           data.statusCode === 'New'
-              ? '#0066B0'
-              : data.statusCode === 'InProcessing'
-              ? '#008D47'
-              : data.statusCode === 'Completed'
-              ? '#008D47'            
-              :data.statusCode === 'Cancelled'
-              ? 'red'
-              :data.statusCode === 'Error'
-              ? '#008D47'
-              : ''
-        }">
-        <!-- <span class="mr-2" style="cursor: pointer;" (click)="handleOpenError()"
+        <td
+          [ngStyle]="{
+            color:
+              data.statusCode === 'New'
+                ? '#0066B0'
+                : data.statusCode === 'InProcessing'
+                ? '#008D47'
+                : data.statusCode === 'Completed'
+                ? '#008D47'
+                : data.statusCode === 'Cancelled'
+                ? 'red'
+                : data.statusCode === 'Error'
+                ? '#008D47'
+                : ''
+          }"
+        >
+          <!-- <span class="mr-2" style="cursor: pointer;" (click)="handleOpenError()"
           *ngIf="data.statusCode === 'Cancelled'" nz-icon nzType="warning" nzTheme="outline"></span> -->
-        <span>
-          {{  data.statusCode === 'New'
-          ? ("app.order.status.orderplaced" | i18n)
-          : data.statusCode === 'InProcessing'
-          ? ("app.order.status.Paid" | i18n)
-          : data.statusCode === 'Completed'
-          ? ("app.order.status.Paid" | i18n)
-          : data.statusCode === 'Error'
-          ? ("app.order.status.Paid" | i18n)
-          :data.statusCode === 'Cancelled'
-          ? ("app.order.status.cancelled" | i18n)
-         
-          : '' }}</span>
-      </td>
+          <span>
+            {{
+              data.statusCode === 'New'
+                ? ('app.order.status.orderplaced' | i18n)
+                : data.statusCode === 'InProcessing'
+                ? ('app.order.status.Paid' | i18n)
+                : data.statusCode === 'Completed'
+                ? ('app.order.status.Paid' | i18n)
+                : data.statusCode === 'Error'
+                ? ('app.order.status.Paid' | i18n)
+                : data.statusCode === 'Cancelled'
+                ? ('app.order.status.cancelled' | i18n)
+                : ''
+            }}</span
+          >
+        </td>
         <!-- <td [ngStyle]="{
             color:
               data.statusCode === 'Cancelled'
@@ -133,63 +198,83 @@
             ? ("app.order.status.InProcessing" | i18n)
             : '' }}</span>
         </td> -->
-        <td [ngStyle]="{
-          color:
-           data.statusCode === 'New'
-              ? 'gray'
-              : data.statusCode === 'InProcessing'
-              ? '#0066B0'
-              : data.statusCode === 'Completed'
-              ? '#008D47'             
-              :data.statusCode === 'Cancelled'
-              ? 'gray'
-              :data.statusCode === 'Error'
-              ? 'red'
-              : ''
-        }">
-        <span class="mr-2" style="cursor: pointer;" (click)="handleOpenError()"
-          *ngIf="data.statusCode === 'Error'" nz-icon nzType="warning" nzTheme="outline"></span>
-        <span >
-          {{  data.statusCode === 'New'
-          ? '-'
-          : data.statusCode === 'InProcessing'
-          ? ("app.order.status.inprocessing" | i18n)
-          : data.statusCode === 'Completed'
-          ? ("app.order.status.installed" | i18n)
-          : data.statusCode === 'Error'
-          ? ("app.order.status.error" | i18n)
-          :data.statusCode === 'Cancelled'
-          ? '-'         
-          : '' }}</span>
-      </td>
+        <td
+          [ngStyle]="{
+            color:
+              data.statusCode === 'New'
+                ? 'gray'
+                : data.statusCode === 'InProcessing'
+                ? '#0066B0'
+                : data.statusCode === 'Completed'
+                ? '#008D47'
+                : data.statusCode === 'Cancelled'
+                ? 'gray'
+                : data.statusCode === 'Error'
+                ? 'red'
+                : ''
+          }"
+        >
+          <span
+            class="mr-2"
+            style="cursor: pointer"
+            (click)="handleOpenError()"
+            *ngIf="data.statusCode === 'Error'"
+            nz-icon
+            nzType="warning"
+            nzTheme="outline"
+          ></span>
+          <span>
+            {{
+              data.statusCode === 'New'
+                ? '-'
+                : data.statusCode === 'InProcessing'
+                ? ('app.order.status.inprocessing' | i18n)
+                : data.statusCode === 'Completed'
+                ? ('app.order.status.installed' | i18n)
+                : data.statusCode === 'Error'
+                ? ('app.order.status.error' | i18n)
+                : data.statusCode === 'Cancelled'
+                ? '-'
+                : ''
+            }}</span
+          >
+        </td>
       </tr>
     </tbody>
   </nz-table>
 </nz-card>
-<nz-modal [(nzVisible)]="isVisibleError" [nzFooter]="null" [nzTitle]="null" (nzOnCancel)="handleCancel()">
+<nz-modal
+  [(nzVisible)]="isVisibleError"
+  [nzFooter]="null"
+  [nzTitle]="null"
+  (nzOnCancel)="handleCancel()"
+>
   <ng-container *nzModalContent>
     <div class="d-flex justify-content-center mt-3">
       <img src="assets/imgs/warning.svg" alt="" />
     </div>
     <div class="mt-3 text-center">
-      <div class="title">
-        Thông báo
-      </div>
+      <div class="title">Thông báo</div>
       <div class="description">
-        Quý khách có thể liên hệ trực tiếp qua hotline <span style="color: red">19008198</span> hoặc gửi email đến địa
-        chỉ <span style="color: red">cskh@vnpt.vn</span>. Nhân viên hỗ trợ sẽ liên lạc với bạn trong thời gian sớm nhất
+        Quý khách có thể liên hệ trực tiếp qua hotline
+        <span style="color: red">19008198</span> hoặc gửi email đến địa chỉ
+        <span style="color: red">cskh@vnpt.vn</span>. Nhân viên hỗ trợ sẽ liên
+        lạc với bạn trong thời gian sớm nhất
       </div>
-      <button nz-button nzType="primary" style="
-        border: none;
-        width: 100%;
-        background-color: red;
-        margin-top: 15px
-      " nzSize="large" (click)="handleNavigateToContact()">
-        <span style="
-      color: #fff;
-    ">Liên hệ ngay</span>
+      <button
+        nz-button
+        nzType="primary"
+        style="
+          border: none;
+          width: 100%;
+          background-color: red;
+          margin-top: 15px;
+        "
+        nzSize="large"
+        (click)="handleNavigateToContact()"
+      >
+        <span style="color: #fff">Liên hệ ngay</span>
       </button>
     </div>
-
   </ng-container>
 </nz-modal>
