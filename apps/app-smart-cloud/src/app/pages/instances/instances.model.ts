@@ -170,16 +170,20 @@ export class InstancesModel {
   securityGroupStr: string;
   computeHost: string;
   keypair: string;
-  type: string;
-  flavorName: string;
+  offerGpuId: number;
   gpuType: string;
   gpuCount: number;
+  type: string;
+  flavorName: string;
+  flavorType: string;
   volumeType: number;
   createdDate: string;
   expiredDate: string;
   totalCount: number;
   imageName: string;
   offerId: number;
+  suspendType: string;
+  suspendReason: string;
 }
 
 export class InstanceFormSearch {
@@ -196,7 +200,7 @@ export class InstanceFormSearch {
   projectId: number;
 }
 
-export interface Instance {
+export class Instance {
   id: number;
   cloudId: string;
   name: string;
@@ -207,14 +211,18 @@ export interface Instance {
   ipPrivate: string;
   regionId: number;
   regionText: string;
-  createdDate: any;
+  createdDate: string;
   cloudIdentityId: number;
   projectName: string;
   projectId: number;
   volumeRootId: number;
+  storage: number;
   status: string;
   taskState: string;
   securityGroups: string;
+  suspendType: string;
+  suspendReason: string;
+  rootStatus: string;
 }
 
 export class InstanceCreate {

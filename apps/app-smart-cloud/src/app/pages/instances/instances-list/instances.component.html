@@ -213,6 +213,7 @@
         </td>
         <ng-container *ngIf="data.status | ServiceStatusPipe as statusModel">
           <td
+            [nz-tooltip]="data.status == 'TAMNGUNG' ? data.suspendReason : ''"
             nzBreakWord
             nzAlign="left"
             [ngStyle]="{ color: statusModel.color }"
