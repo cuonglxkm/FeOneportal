@@ -1,7 +1,7 @@
 import { Pipe, PipeTransform } from '@angular/core';
 
 @Pipe({
-  name: 'suspendStatus'
+  name: 'SuspendStatusPipe'
 })
 export class SuspendStatusPipe implements PipeTransform {
 

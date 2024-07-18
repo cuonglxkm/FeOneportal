@@ -93,6 +93,7 @@ export class ListPaymentComponent implements OnInit {
     this.searchDelay
       .pipe(debounceTime(TimeCommon.timeOutSearch))
       .subscribe(() => {
+        this.refreshParams()
         this.getListInvoices();
     });
 
@@ -111,11 +112,13 @@ export class ListPaymentComponent implements OnInit {
 
   onChange(value: string) {
     this.selectedValue = value;
+    this.refreshParams()
     this.getListInvoices();
   }
 
   search(search: string) {
     this.value = search.toUpperCase().trim();
+    this.refreshParams()
     this.getListInvoices();
   }
 
@@ -124,6 +127,7 @@ export class ListPaymentComponent implements OnInit {
     this.checked = false
     this.setOfCheckedId.clear()
     this.downloadList = []
+    this.refreshParams()
     this.getListInvoices();
   }
 
