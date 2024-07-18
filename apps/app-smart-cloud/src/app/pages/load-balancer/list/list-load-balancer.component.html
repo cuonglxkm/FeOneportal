@@ -147,14 +147,8 @@
                   <img *ngIf="typeVPC != 1" style="padding-right: 10px;" src="assets/imgs/calendar-tick.svg"
                        nz-tooltip nzTooltipTitle="{{'app.extend' | i18n}} Load Balancer" nzTooltipPlacement="bottom"
                        (click)="navigateToExtend(data.id)" />
-                  <span *ngIf="typeVPC != 1">
-                  <img nz-popover src="assets/imgs/edit-2.svg"
-                       alt=""
-                       nzPopoverPlacement="bottom"
-                       (click)="navigateToUpdateNormal(data.id)"
-                       style="cursor: pointer; margin-right: 10px"
-                       [nzPopoverContent]="'app.text.edit' | i18n" />
-                  </span>
+                  <one-portal-update-load-balancer-normal *ngIf="typeVPC != 1" [region]="region" [project]="project"
+                  [loadBalancer]="data" (onOk)="search(false)"></one-portal-update-load-balancer-normal>
                   <span *ngIf="typeVPC == 1">
                   <img nz-popover src="assets/imgs/edit-2.svg"
                        alt=""
@@ -184,7 +178,7 @@
             </nz-table>
             <nz-alert *ngIf="alertLB" nzShowIcon nzType="warning" [nzDescription]="des" style="margin-left: 10%;margin-right: 10%;margin-top: 10px">
               <ng-template #des>
-                <span class="text-intro-desc">VPC <a href="/app-smart-cloud/project/detail/{{project}}">{{ projectCurrentModel?.projectName }}</a> {{'app.lb.note.1' | i18n}}</span>
+                <span class="text-intro-desc">VPC <a [routerLink]="'/app-smart-cloud/project/detail/{{project}}'">{{ projectCurrentModel?.projectName }}</a> {{'app.lb.note.1' | i18n}}</span>
               </ng-template>
             </nz-alert>
           </ng-container>
@@ -231,7 +225,7 @@
           <nz-row style="margin-top: 20px">
             <nz-col class="text-center" style="width: 100%">
               <span class="text-intro-desc">{{'app.lb.note.2' | i18n}} <a
-                href="/app-smart-cloud/project/detail/{{project}}">{{ projectCurrentModel?.projectName }}</a> {{'app.lb.note.3' | i18n}}</span>
+                [routerLink]="'/app-smart-cloud/project/detail/{{project}}'">{{ projectCurrentModel?.projectName }}</a> {{'app.lb.note.3' | i18n}}</span>
             </nz-col>
           </nz-row>
         </result>
