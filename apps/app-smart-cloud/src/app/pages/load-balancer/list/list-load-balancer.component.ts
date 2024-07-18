@@ -217,8 +217,4 @@ export class ListLoadBalancerComponent implements OnInit {
       this.search(false);
     });
   }
-
-  navigateToUpdateNormal(id: number) {
-    this.router.navigate(['/app-smart-cloud/load-balancer/update/normal/' + id]);
-  }
 }

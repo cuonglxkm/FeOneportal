@@ -1,13 +1,13 @@
 <page-header [breadcrumb]="breadcrumb"
              [action]="action"
-             [title]="'Danh sách lịch Snapshot'" xmlns="http://www.w3.org/1999/html">
+             title="{{'app.snapshot.schedule.label.list' | i18n}}" xmlns="http://www.w3.org/1999/html">
   <ng-template #breadcrumb>
     <nz-breadcrumb [nzSeparator]="iconTemplate">
       <ng-template #iconTemplate><one-portal-svg-icon [icon]="'icon_breadcrumb'"></one-portal-svg-icon></ng-template>
       <nz-breadcrumb-item><a [routerLink]="['/']">{{ 'app.breadcrumb.home' | i18n }}</a></nz-breadcrumb-item>
       <nz-breadcrumb-item>{{'app.breadcrumb.infrastructure.service' | i18n }}</nz-breadcrumb-item>
       <nz-breadcrumb-item>Block Storage</nz-breadcrumb-item>
-      <nz-breadcrumb-item><a routerLink="/app-smart-cloud/schedule/snapshot">Lịch Snapshot</a></nz-breadcrumb-item>
+      <nz-breadcrumb-item><a routerLink="/app-smart-cloud/schedule/snapshot">{{'app.snapshot.schedule.label.name' | i18n}}</a></nz-breadcrumb-item>
     </nz-breadcrumb>
     <ng-template #separatorTemplate
     ><img src="assets/imgs/arrow-square-right.svg" alt="" />
@@ -48,7 +48,7 @@
           <nz-col nzSpan="12" style="flex:none;">
             <button nz-button nzType="primary" nzSize="large" (click)="navigateToCreate()">
               <img style="padding-right: 10px; margin-top: -4px" src="assets/imgs/add-circle.svg" alt="" />
-              <span class="button-text-primary">Tạo mới lịch Snapshot</span>
+              <span class="button-text-primary">{{'app.snapshot.schedule.label.create' | i18n}}</span>
             </button>
           </nz-col>
         </nz-row>
@@ -66,26 +66,29 @@
                   [nzLoading]="isLoadingEntities">
           <thead>
           <tr>
-            <th nzLeft>Tên lịch Snapshot</th>
-            <th nzLeft>Gói Snapshot</th>
-            <th nzLeft>Loại Snapshot</th>
+            <th nzLeft>{{'app.snapshot.schedule.name' | i18n}}</th>
+            <th nzLeft>{{'app.snapshot-package1' | i18n}}</th>
+            <th nzLeft>{{'app.snapshot.schedule.label.type' | i18n}}</th>
             <th nzLeft>Volume/VM</th>
-            <th nzLeft>Bản ghi tối đa</th>
-            <th nzLeft>Lần Snapshot tiếp theo</th>
+            <th nzLeft>{{'app.maximum.number.of.record' | i18n}}</th>
+            <th nzLeft>{{'app.next.snapshot' | i18n}}</th>
             <th nzLeft>{{ 'app.service.status' | i18n }}</th>
             <th nzLeft>{{ 'app.action-history.operation' | i18n }}</th>
           </tr>
           </thead>
           <tbody>
           <tr *ngFor="let data of fixedTable.data">
-            <td><a href="/app-smart-cloud/schedule/snapshot/detail/{{data.id}}">{{data.name}}</a></td>
-            <td><a href="/app-smart-cloud/snapshot/packages/detail/{{data.snapshotPackageId}}">{{data.packageName}}</a></td>
-            <td>{{data.snapshotType == 1 ? 'Snapshot máy ảo' : 'Snapshot Volume'}}</td>
+            <td><a [routerLink]="'/app-smart-cloud/schedule/snapshot/detail/{{data.id}}'">{{data.name}}</a></td>
+            <td><a [routerLink]="'/app-smart-cloud/snapshot/packages/detail/{{data.snapshotPackageId}}'">{{data.packageName}}</a></td>
+            <td>{{data.snapshotType == 1 ? '{{\'app.vm.snapshot\' | i18n }}' : 'Snapshot Volume'}}</td>
             <td>{{data.serviceName}}</td>
             <td>{{data.maxSnapshot}}</td>
             <td>{{data.nextRuntime | date : 'HH:mm:ss dd/MM/yyyy'}}</td>
             <ng-container *ngIf="data.status | ServiceStatusPipe as statusModel">
-              <td nzBreakWord nzAlign="left" [ngStyle]="{ color: statusModel.color }">{{ statusModel.status }}</td>
+              <td nzBreakWord nzAlign="left" [ngStyle]="{ color: statusModel.color }">
+                <img *ngIf="data.status == 'DISABLED'" nz-tooltip [nzTooltipTitle]="data.warningMessage" src="assets/imgs/warning-message2.svg" style="margin-bottom: 5px">
+                <img *ngIf="data.status == 'SUSPENDED'" nz-tooltip [nzTooltipTitle]="data.warningMessage" src="assets/imgs/warning-message.svg" style="margin-bottom: 5px">
+                {{ statusModel.status }}</td>
             </ng-container>
             <td>
               <img *ngIf="data.status == 'ACTIVE'" (click)="enableEdit(data)" src="assets/imgs/edit-2.svg" alt="" nzTooltipTitle="{{'app.text.edit' | i18n}}"
@@ -93,7 +96,9 @@
               <img nz-dropdown [nzDropdownMenu]="opMenu" src="assets/imgs/more1.svg" alt="" style="margin-left: 5px; cursor:pointer;" />
               <nz-dropdown-menu #opMenu="nzDropdownMenu">
                 <ul nz-menu>
-                  <li *ngIf="data.status == 'DISABLED'" nz-menu-item (click)="enableRestart(data)">Khôi phục</li>
+                  <li *ngIf="data.status == 'DISABLED' || data.status == 'SUSPENDED'" nz-menu-item (click)="enableRestart(data)">
+                    {{'app.restore' | i18n}}
+                  </li>
                   <li nz-menu-item (click)="enableDelete(data)" style="color: red">{{ 'app.delete' | i18n}}</li>
                 </ul>
               </nz-dropdown-menu>
@@ -112,18 +117,18 @@
           <nz-row style="margin-top: 20px">
             <nz-col class="text-center" style="width: 100%">
               <span class="text-intro-title"
-                    style="color: #0066b3">Lịch Snapshot</span>
+                    style="color: #0066b3">{{'app.restore"' | i18n}}</span>
             </nz-col>
           </nz-row>
           <nz-row style="margin-top: 20px">
             <nz-col class="text-center" style="width: 100%">
-              <span class="text-intro-desc">Giúp người dùng lưu lại trạng thái hiện tại của Volume/VM. Người dùng có thể sử dụng để sao lưu volume trước khi thực hiện 1 thao tác rủi ro đến dữ liệu trên VM.</span>
+              <span class="text-intro-desc">{{'app.snapshot.schedule.description' | i18n}}</span>
             </nz-col>
           </nz-row>
           <button style="margin-top: 20px" nz-button [nzType]="'primary'" (click)="navigateToCreate()"
                   nzSize="large">
             <img style="padding-right: 10px; margin-top: -4px" src="assets/imgs/cloud-plus-bold.svg" alt="" />
-            Khởi tạo Lịch Snapshot
+            {{'app.snapshot.schedule.init' | i18n}}
           </button>
         </result>
       </ng-container>
@@ -131,13 +136,13 @@
   </nz-card>
 </nz-content>
 
-<nz-modal [(nzVisible)]="isVisibleDelete" nzTitle="Xoá lịch Snapshot" (nzOnCancel)="handleCancel()" [nzStyle]="modalStyle">
+<nz-modal [(nzVisible)]="isVisibleDelete" nzTitle="{{'app.snapshot.schedule.delete' | i18n}}" (nzOnCancel)="handleCancel()" [nzStyle]="modalStyle">
   <ng-container *nzModalContent>
     <nz-alert nzBanner
               style="margin-bottom: 10px;"
-              nzMessage="Bạn đang thực hiện xoá lịch Snapshot {{dataAction.name}}. Hành động này không thể được hoàn tác"
+              nzMessage="{{ 'app.snapshot.schedule.descriptio.1' | i18n : { actionName: dataAction.name } }}"
               nzShowIcon></nz-alert>
-    <div class="text-label" style="margin-bottom: 3px; margin-top: 10px">Đế thực hiện xoá Snapshot, vui lòng nhập tên Snapshot để xác nhận.</div>
+    <div class="text-label" style="margin-bottom: 3px; margin-top: 10px">{{'app.snapshot.schedule.descriptio.2' | i18n}}</div>
     <input nz-input nzSize="large" style="margin-left: -3px" placeholder="{{dataAction.name}}" [(ngModel)]="nameDelete" (ngModelChange)="confirmNameDelete($event)" type="text"/>
   </ng-container>
   <div *nzModalFooter>
@@ -150,9 +155,9 @@
   </div>
 </nz-modal>
 
-<nz-modal [(nzVisible)]="isVisibleRestart" nzTitle="Khôi phục lịch Snapshot" (nzOnCancel)="handleCancel()" [nzStyle]="modalStyle">
+<nz-modal [(nzVisible)]="isVisibleRestart" nzTitle="{{'app.snapshot.schedule.restore' | i18n}}" (nzOnCancel)="handleCancel()" [nzStyle]="modalStyle">
   <ng-container *nzModalContent>
-    <div class="text-label" style="margin-bottom: 3px; margin-top: 10px">Quý khách muốn thực hiện khôi phục lịch Snapshot?</div>
+    <div class="text-label" style="margin-bottom: 3px; margin-top: 10px">{{'app.snapshot.schedule.restore.confirm' | i18n}}</div>
 <!--    <nz-alert nzBanner-->
 <!--              style="margin-bottom: 10px;"-->
 <!--              [nzMessage]="msgTpl"-->
@@ -172,37 +177,37 @@
 </nz-modal>
 
 <!--  modal Chinh sua-->
-<nz-modal [(nzVisible)]="isVisibleUpdate" nzTitle="Chỉnh sửa lịch Snapshot" nzTabScrollList="true"
+<nz-modal [(nzVisible)]="isVisibleUpdate" nzTitle="{{'app.snapshot.schedule.edit' | i18n}}" nzTabScrollList="true"
           (nzOnCancel)="handleCancel()" nzCentered>
   <div *nzModalTitle>
-    <span class="text-modal-title">Chỉnh sửa lịch Snapshot</span>
+    <span class="text-modal-title">{{'app.snapshot.schedule.edit' | i18n}}</span>
   </div>
   <div *nzModalContent style="padding-top: 0; padding-bottom: 0">
     <form nz-form [formGroup]="validateForm" nzLayout="vertical">
       <nz-form-item>
         <nz-form-label nzFor="name">
           <div style="margin-top: 15px;">
-            <span>Tên lịch Snapshot</span>
+            <span>{{'app.snapshot.schedule.name' | i18n}}</span>
             (<span style="color: rgba(252, 16, 16, 1); ">*</span>)
-            <img style="margin-left: 3px" [nz-tooltip]="'Tên lịch Snapshot của khách hàng. Không bao gồm ký tự đặc biệt, dấu cách, dấu tiếng Việt. Tối đa 50 ký tự.'" src="assets/imgs/pajamas_question.svg" alt="" />
+            <img style="margin-left: 3px" nz-tooltip="{{'app.snapshot.schedule.descriptio.3' | i18n}}" src="assets/imgs/pajamas_question.svg" alt="" />
           </div>
         </nz-form-label>
         <nz-form-control nzDisableAutoTips [nzErrorTip]="nameErrorTpl">
           <input nz-input
                  formControlName="name"
                  class="input-custom"
-                 [placeholder]="'Nhập tên'" [maxLength]="50"/>
+                 placeholder="{{'app.input.name' | i18n}}" [maxLength]="50"/>
           <ng-template #nameErrorTpl let-control>
-            <ng-container *ngIf="control.hasError('required')">Vui lòng nhập tên gói Snapshot</ng-container>
-            <ng-container *ngIf="control.hasError('pattern')">Không bao gồm ký tự đặc biệt, dấu cách, dấu tiếng Việt</ng-container>
-            <ng-container *ngIf="control.hasError('maxLength')">Tối đa 50 ký tự</ng-container>
+            <ng-container *ngIf="control.hasError('required')">{{'app.snapshot.schedule.enter.name1' | i18n}}</ng-container>
+            <ng-container *ngIf="control.hasError('pattern')">{{'app.backup.package.name.pattern' | i18n}}</ng-container>
+            <ng-container *ngIf="control.hasError('maxLength')">{{'app.backup.package.name.maxLength' | i18n}}</ng-container>
           </ng-template>
         </nz-form-control>
       </nz-form-item>
       <nz-form-item>
         <nz-form-label><span>{{ 'app.choose.perform.snapshot.time' | i18n }} (<span class="text-red">*</span>)
                 <img nz-popover
-                     [nzPopoverContent]="'Chọn Volume cần Snapshot'"
+                     [nzPopoverContent]="'{{\'app.snapshot.schedule.select.volume\' | i18n}}'"
                      nzPopoverPlacement="bottom" style="margin-left: 5px;"
                      src="assets/imgs/pajamas_question.svg" alt="" /></span></nz-form-label>
         <nz-time-picker
@@ -217,18 +222,18 @@
       <nz-form-item>
         <nz-form-label nzFor="description">
           <div class="label">
-            <span>Mô tả</span>
+            <span>{{'app.service.description' | i18n}}</span>
           </div>
         </nz-form-label>
         <nz-form-control nzDisableAutoTips [nzErrorTip]="descriptionErrorTpl">
                     <textarea nz-input
                               formControlName="description"
                               id="description"
-                              [placeholder]="'Nhập mô tả'"
+                              placeholder="{{'app.create-policy.des.input' | i18n}}"
                               [maxLength]="255"
                               [nzAutosize]="{ minRows: 3, maxRows: 5 }"></textarea>
           <ng-template #descriptionErrorTpl let-control>
-            <ng-container *ngIf="control.hasError('maxlength')">Cho phép nhập tối đa 255 ký tự
+            <ng-container *ngIf="control.hasError('maxlength')">{{'app.description.maxLength.255' | i18n}}
             </ng-container>
           </ng-template>
         </nz-form-control>
@@ -237,11 +242,11 @@
   </div>
   <div *nzModalFooter style="padding-left: 8px; padding-right: 8px;">
     <button nz-button nzType="default" (click)="handleCancel()" class="button-cancel">
-      <span nz-icon nzType="close" nzTheme="outline"></span>Hủy
+      <span nz-icon nzType="close" nzTheme="outline"></span>{{'app.button.cancel' | i18n}}
     </button>
     <button nz-button nzType="primary" [disabled]="!validateForm.valid"
             (click)="handleUpdateOk()" [nzLoading]="isLoadingUpdate" class="button-ok">
-      <span nz-icon nzType="check" nzTheme="outline"></span>Xác nhận
+      <span nz-icon nzType="check" nzTheme="outline"></span>{{'app.button.confirm' | i18n}}
     </button>
   </div>
 </nz-modal>

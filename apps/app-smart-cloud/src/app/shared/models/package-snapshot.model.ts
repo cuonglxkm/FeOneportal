@@ -26,6 +26,9 @@ export class PackageSnapshotModel {
   sizeSsdInGb: number
   postResizeSnapshotPackageId: number
   type: any
+  serviceStatus: any
+  suspendReason: any
+  suspendType: any
 }
 
 export class FormSearchPackageSnapshot{
