@@ -29,7 +29,7 @@
         </button>
       </div>
     </div>
-    <div nz-col nzSpan="4" *ngIf="fileSystem?.status === 'available'">
+    <div nz-col nzSpan="4" *ngIf="fileSystem?.status === 'available' || fileSystem?.status === 'TAMNGUNG'">
       <button class="button-fee"
               nz-button
               nzType="primary" (click)="navigateToExtend()">

@@ -119,7 +119,7 @@ export class BucketCreateComponent implements OnInit {
           this.i18n.fanyi('app.button.bucket.create.success')
         );
         if (this.region === RegionID.ADVANCE) {
-          this.router.navigate(['/app-smart-cloud/object-storage/bucket-advance']);
+          this.router.navigate(['/app-smart-cloud/object-storage-advance/bucket']);
         } else {
           this.router.navigate(['/app-smart-cloud/object-storage/bucket']);
         }
