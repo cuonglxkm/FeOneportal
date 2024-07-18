@@ -722,9 +722,9 @@ export class ProjectUpdateComponent implements OnInit {
           this.numberRouter = data.quotaRouterCount;
           this.numberSecurityGroup = data.quotaSecurityGroupCount;
 
-          this.ipPublicOffer = this.selectIndexTab == 0 ? (data.offerDetail?.ipPublic) : 0;
+          this.ipPublicOffer = this.data.offerDetail ? (data.offerDetail?.ipPublic) : 0;
           this.ipPublicTotal = data.quotaIpPublicCount;
-          this.ipPublicAddOld = this.selectIndexTab == 0 ? (this.ipPublicTotal - this.ipPublicOffer) : this.ipPublicTotal;
+          this.ipPublicAddOld = this.data.offerDetail ? (this.ipPublicTotal - this.ipPublicOffer) : this.ipPublicTotal;
           // this.ipPublicAddOld
           this.offerIdOld = data.offerId
 
@@ -761,7 +761,8 @@ export class ProjectUpdateComponent implements OnInit {
               }
               else{
                 this.listLoadbalancer = data;
-                this.loadBalancerId = this.listLoadbalancer[0].id;
+                // this.loadBalancerId = this.listLoadbalancer[0].id;
+                this.loadBalancerId =this.data?.offerIdLBSDN
                 this.findNameLoadBalance(this.loadBalancerId);
               }
             });
@@ -789,7 +790,8 @@ export class ProjectUpdateComponent implements OnInit {
               }
               else{
                 this.listSiteToSite = data;
-                this.siteToSiteId = this.listSiteToSite[0].id;
+                // this.siteToSiteId = this.listSiteToSite[0].id;
+                this.siteToSiteId= this.data?.vpnSiteToSiteOfferId
                 this.findNameSiteToSite(this.siteToSiteId);
               }
             });

@@ -123,11 +123,30 @@ export class DashboardObjectStorageComponent implements OnInit {
       }
     } else {
       this.region = RegionID.ADVANCE;
-    this.hasObjectStorage();
-      this.bucketSelected = this.bucketList[0].bucketName
-      console.log(this.bucketSelected)
-      console.log(this.bucketList)
-      this.getSummaryObjectStorage()
     };
+      this.hasObjectStorage();
+      this.bucketService.getListBucket(1, 9999, '', this.region).subscribe(data => {
+        this.bucketList = data.records;
+        this.bucketSelected = this.bucketList[0].bucketName
+        console.log(this.bucketSelected)
+        console.log(this.bucketList)
+        this.getSummaryObjectStorage()
+      });
+  }
+
+  navigateToDashboard(){
+    if(this.region === RegionID.ADVANCE){
+      this.router.navigate(['/app-smart-cloud/object-storage-advance/dashboard']);
+    }else{
+      this.router.navigate(['/app-smart-cloud/object-storage/dashboard']);
+    }
+  }
+
+  navigateToBucketList(){
+    if(this.region === RegionID.ADVANCE){
+      this.router.navigate(['/app-smart-cloud/object-storage-advance/bucket']);
+    }else{
+      this.router.navigate(['/app-smart-cloud/object-storage/bucket']);
+    }
   }
 }

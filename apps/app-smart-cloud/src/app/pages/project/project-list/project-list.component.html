@@ -75,13 +75,16 @@
           <td *ngIf="item.type == 'VPC'">{{ item.createDate | date : "dd/MM/yyyy" }}</td>
           <td *ngIf="item.type == 'VPC'">{{ item.expireDate | date : "dd/MM/yyyy" }}</td>
           <ng-container *ngIf="item.resourceStatus | ServiceStatusPipe as statusModel">
-            <td [ngStyle]="{color: statusModel.color}">{{statusModel.status}}</td>
+            <td [ngStyle]="{color: statusModel.color}" *ngIf="item.resourceStatus=='SUSPENDED'"   >
+            <span nzPopoverTitle="Chậm gia hạn" nz-popover  [nzPopoverTrigger]="'hover'"
+            [nzPopoverPlacement]="'top'">{{statusModel.status}}</span></td>
+            <td [ngStyle]="{color: statusModel.color}" *ngIf="statusModel!='EXPIRED'"  >{{statusModel.status}}</td>
           </ng-container>
           <td >{{ item.type == 'VPC' ? ('project.note4' | i18n) : (item.type == 'Default' ? ('project.default' | i18n) :('project.note5' | i18n))}}</td>
           <td>
             <div>
               <!----Chỉnh sửa    && item.serviceStatus != 'TAMNGUNG'    ----->
-              <img style="cursor: pointer;; margin-right: 10px;" *ngIf="item.resourceStatus != 'CREATING' && item.resourceStatus != 'RESIZING'&& item.resourceStatus != 'DELETING' "
+              <img style="cursor: pointer;; margin-right: 10px;" *ngIf="item.resourceStatus != 'CREATING' && item.resourceStatus != 'RESIZING'&& item.resourceStatus != 'DELETING' && item.resourceStatus!='SUSPENDED'"
                     src="assets/imgs/edit-2.svg"
                     nz-tooltip
                     nzTooltipTitle="{{ 'app.text.edit' | i18n }}" nzTooltipPlacement="bottom"

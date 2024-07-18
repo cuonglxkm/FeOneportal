@@ -6,7 +6,6 @@ import {
   OnInit,
   Output,
 } from '@angular/core';
-import { Router, ActivatedRoute } from '@angular/router';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { InstancesService } from '../../instances.service';
 import { BlockStorageAttachments } from '../../instances.model';
@@ -31,8 +30,6 @@ export class BlockstorageDetailComponent implements OnInit {
   constructor(
     private dataService: InstancesService,
     private cdr: ChangeDetectorRef,
-    private route: Router,
-    private router: ActivatedRoute,
     private catalogService: CatalogService,
     public message: NzMessageService
   ) {}
@@ -78,22 +75,5 @@ export class BlockstorageDetailComponent implements OnInit {
         this.listOfDataBlockStorage = data;
         this.cdr.detectChanges();
       });
-  }
-
-  navigateToCreate() {
-    this.route.navigate(['/app-smart-cloud/instances/instances-create']);
-  }
-  navigateToChangeImage() {
-    this.route.navigate([
-      '/app-smart-cloud/instances/instances-edit-info/' + this.instancesId,
-    ]);
-  }
-  navigateToEdit() {
-    this.route.navigate([
-      '/app-smart-cloud/instances/instances-edit/' + this.instancesId,
-    ]);
-  }
-  returnPage(): void {
-    this.route.navigate(['/app-smart-cloud/instances']);
   }
 }

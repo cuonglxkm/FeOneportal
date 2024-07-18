@@ -28,6 +28,7 @@ import { OrderItemObject } from 'src/app/shared/models/price';
 import { OrderService } from 'src/app/shared/services/order.service';
 import { getCurrentRegionAndProject } from '@shared';
 import { RegionModel } from '../../../../../../../libs/common-utils/src';
+import { RegionID } from 'src/app/shared/enums/common.enum';
 
 @Component({
   selector: 'one-portal-object-storage-extend',
@@ -214,5 +215,13 @@ export class ObjectStorageExtendComponent implements OnInit {
         this.minStorage = Number.parseInt(arr[0]);
         this.stepStorage = Number.parseInt(arr[1]);
       });
+  }
+
+  navigateToBucketList(){
+    if(this.region === RegionID.ADVANCE){
+      this.router.navigate(['/app-smart-cloud/object-storage-advance/bucket']);
+    }else{
+      this.router.navigate(['/app-smart-cloud/object-storage/bucket']);
+    }
   }
 }
