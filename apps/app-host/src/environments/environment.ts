@@ -19,6 +19,7 @@ export const environment = {
   //baseUrl: 'http://localhost:3000',
   sso: {
     issuer: 'https://identity-dev.onsmartcloud.com',
+    //issuer: 'https://localhost:1000',
     clientId: 'frontend-client',
     callback: 'http://localhost:4200/passport/callback/oneportal',
     logout_callback: 'http://localhost:4200',

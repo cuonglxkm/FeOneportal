@@ -2761,6 +2761,7 @@
   "status.enable": "Enable",
   "status.disable": "Disable",
   "status.deleted": "Deleted",
+  "status.suspended":"Pause",
   "custom.config.package": "Custom configuration package",
   "service.bonus": "Bonus services",
   "config.package": "Pre-configured package",
