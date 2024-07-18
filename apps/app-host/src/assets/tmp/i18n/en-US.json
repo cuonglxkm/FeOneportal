@@ -439,7 +439,7 @@
   "service.status.paused": "Paused",
   "service.status.processing": "In-Process",
   "service.status.unknown": "Unknown ",
-
+  "service.status.cancel": "Cancel",
 
 
   "app.breadcrumb.home": "Home",

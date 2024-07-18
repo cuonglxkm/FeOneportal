@@ -1388,6 +1388,7 @@ export class RestoreBackupVmComponent implements OnInit {
   configGPU: ConfigGPU = new ConfigGPU();
   restoreInstanceBackup: RestoreInstanceBackup = new RestoreInstanceBackup();
   instanceInit() {
+    debugger
     this.restoreInstanceBackup.instanceBackupId = this.backupVmModel?.id;
     let selectedVolumeExternal: VolumeExternalBackup[] = [];
     this.listOfDataBlockStorage.forEach((e) => {

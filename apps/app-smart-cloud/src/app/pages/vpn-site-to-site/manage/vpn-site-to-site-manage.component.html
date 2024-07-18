@@ -75,7 +75,7 @@
           <nz-dropdown-menu #opMenu="nzDropdownMenu">
             <ul nz-menu>
               <li nz-menu-item (click)="resizeVpn()" *ngIf="('order:Create' | IsPermissionPipe) && (projectObject && (projectObject.type == 0 || projectObject.type == 2))">{{'app.manage.site.to.site.Adjust' |i18n}}</li>
-              <li nz-menu-item (click)="modalDelete()" *ngIf="('VpnSiteToSites:Delete' | IsPermissionPipe)">{{'app.manage.site.to.site.delete' |i18n}}</li>
+              <li nz-menu-item (click)="modalDelete()" *ngIf="('VpnSiteToSites:Delete' | IsPermissionPipe) && (projectObject && (projectObject.type == 0 || projectObject.type == 2))">{{'app.manage.site.to.site.delete' |i18n}}</li>
             </ul>
           </nz-dropdown-menu>
         </button>

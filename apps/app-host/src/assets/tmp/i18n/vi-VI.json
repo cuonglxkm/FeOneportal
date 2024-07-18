@@ -48,6 +48,7 @@
   "service.status.paused": "Tạm dừng",
   "service.status.processing": "Đang xử lý",
   "service.status.unknown": "Không xác định",
+  "service.status.cancel": "Hủy",
 
 
   "form.clear.local.storage": "Làm sạch Local Storage",
