@@ -1,11 +1,11 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import {TotalVpcResource, VpcModel} from "../../../shared/models/vpc.model";
-import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
-import {VpcService} from "../../../shared/services/vpc.service";
-import {ActivatedRoute, Router} from "@angular/router";
-import {getCurrentRegionAndProject} from "@shared";
-import {finalize} from "rxjs";
-import {FormControl, FormGroup, Validators} from "@angular/forms";
+import { TotalVpcResource, VpcModel } from "../../../shared/models/vpc.model";
+import { DA_SERVICE_TOKEN, ITokenService } from "@delon/auth";
+import { VpcService } from "../../../shared/services/vpc.service";
+import { ActivatedRoute, Router } from "@angular/router";
+import { getCurrentRegionAndProject } from "@shared";
+import { finalize } from "rxjs";
+import { FormControl, FormGroup, Validators } from "@angular/forms";
 import { RegionModel } from '../../../../../../../libs/common-utils/src';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from '@core';
@@ -19,11 +19,11 @@ import { NzNotificationService } from 'ng-zorro-antd/notification';
   templateUrl: './project-extend.component.html',
   styleUrls: ['./project-extend.component.less'],
 })
-export class ProjectExtendComponent implements OnInit{
+export class ProjectExtendComponent implements OnInit {
   regionId: any;
   listOfData = [{}];
   data: VpcModel;
-  projectDetail:VpcModel;
+  projectDetail: VpcModel;
   dataTotal: TotalVpcResource;
   percentCpu: number = 0;
   percentRam: number = 0;
@@ -33,15 +33,15 @@ export class ProjectExtendComponent implements OnInit{
   percentBackup: number = 0;
   totalAmount = 0;
   totalPayment = 0;
-  totalVAT =0;
-  loadingCalculate= false;
+  totalVAT = 0;
+  loadingCalculate = false;
   form = new FormGroup({
-    numOfMonth: new FormControl(1, {validators: [Validators.required]}),
+    numOfMonth: new FormControl(1, { validators: [Validators.required] }),
   });
   today: any;
   expiredDate: any;
   expiredDateOld: any;
-  timeSelected:number=1;
+  timeSelected: number = 1;
 
   loading = true;
   total: any;
@@ -53,12 +53,12 @@ export class ProjectExtendComponent implements OnInit{
   }
 
   constructor(@Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
-              private service: VpcService,
-              private router: Router,
-              @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
-              private ipService: IpPublicService,
+    private service: VpcService,
+    private router: Router,
+    @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
+    private ipService: IpPublicService,
 
-              private activatedRoute: ActivatedRoute, private orderService: OrderService,  private notification: NzNotificationService) {
+    private activatedRoute: ActivatedRoute, private orderService: OrderService, private notification: NzNotificationService) {
   }
 
   ngOnInit() {
@@ -84,10 +84,10 @@ export class ProjectExtendComponent implements OnInit{
   private getData(id: any) {
     this.loading = true;
     this.service.getDetail(id)
-      .pipe(finalize(() => {this.loading = false;}))
+      .pipe(finalize(() => { this.loading = false; }))
       .subscribe(
         data => {
-          this.data  = data;
+          this.data = data;
 
           this.expiredDate = data.expireDate;
           this.today = data.createDate;
@@ -95,6 +95,14 @@ export class ProjectExtendComponent implements OnInit{
           expiredDateOld.setDate(expiredDateOld.getDate() + Number(this.form.controls['numOfMonth'].value * 30));
           this.expiredDateOld = expiredDateOld;
           this.caculate();
+        }
+        ,error =>{
+       
+          if(error.status===500){
+            this.router.navigate(['/app-smart-cloud/project']);
+          this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi(error.error.message));
+          }
+          this.loading = false;
         }
       )
 
@@ -113,26 +121,26 @@ export class ProjectExtendComponent implements OnInit{
     this.listOfData = [];
     let total = this.dataTotal.cloudProject;
     let used = this.dataTotal.cloudProjectResourceUsed;
-    this.listOfData.push({name : "CPU (vCPU)",total: total.quotavCpu + " vCPU",used:used.cpu + " vCPU",remain: (total.quotavCpu - used.cpu) + " vCPU"});
-    this.listOfData.push({name : "RAM (GB)",total: total.quotaRamInGb + " GB",used:used.ram + " GB",remain:(total.quotaRamInGb - used.ram) + " GB"});
-    this.listOfData.push({name : "HDD (GB)",total: total.quotaHddInGb + " GB",used:used.hdd + " GB",remain:(total.quotaHddInGb - used.hdd) + " GB"});
-    this.listOfData.push({name : "SSD (GB)",total: total.quotaSSDInGb + " GB",used:used.ssd + " GB",remain:(total.quotaSSDInGb - used.ssd) + " GB"});
-    this.listOfData.push({name : this.i18n.fanyi('app.capacity') + " Backup Volume/VN(GB)", total:total.quotaBackupVolumeInGb + " GB",used:used.backup + " GB",remain: (total.quotaBackupVolumeInGb - used.backup) + " GB"});
-    this.listOfData.push({name : this.i18n.fanyi('app.amount') + " IP Floating",total: total.quotaIpFloatingCount,used:"NON",remain:"10"});
-    this.listOfData.push({name : this.i18n.fanyi('app.amount') + " IP Public",total:total.quotaIpPublicCount,used:used.ipPublicCount,remain: (total.quotaIpPublicCount - used.ipPublicCount)});
-    this.listOfData.push({name : this.i18n.fanyi('app.amount') + " IPv6",total:total.quotaIpv6Count,used:used.ipv6Count,remain:(total.quotaIpv6Count - used.ipv6Count)});
-    this.listOfData.push({name : this.i18n.fanyi('app.amount') + " Network",total: total.quotaNetworkCount,used:used.networkCount,remain:(total.quotaNetworkCount - used.networkCount)});
-    this.listOfData.push({name : this.i18n.fanyi('app.amount') + " Security Group",total: total.quotaSecurityGroupCount,used:used.securityGroupCount,remain:(total.quotaSecurityGroupCount - used.securityGroupCount)});
-    this.listOfData.push({name : this.i18n.fanyi('app.amount') + " Router",total: total.quotaRouterCount,used:used.routerCount,remain:(total.quotaRouterCount - used.routerCount)});
-    this.listOfData.push({name : this.i18n.fanyi('app.amount') + " Load Balancer",total: total.quotaLoadBalancerSDNCount,used: used.loadBalancerSdnCount,remain:(total.quotaLoadBalancerSDNCount - used.loadBalancerSdnCount)});
-    this.listOfData.push({name : this.i18n.fanyi('app.capacity') + " File System (GB)",total: total.quotaShareInGb + " GB",used:  "NON GB",remain:"10" + " GB"});
-    this.listOfData.push({name : this.i18n.fanyi('app.capacity') + " File System Snapshot (GB)",total:total.quotaShareSnapshotInGb + " GB",used:used.quotaShareSnapshotInGb + " GB",remain:(total.quotaShareSnapshotInGb - used.quotaShareSnapshotInGb) + " GB"});
-    this.percentCpu = (used.cpu/total.quotavCpu)*100;
-    this.percentRam = (used.ram/total.quotaRamInGb)*100;
-    this.percentHHD = (used.hdd/total.quotaHddInGb)*100;
-    this.percentSSD = (used.ssd/total.quotaSSDInGb)*100;
-    this.percentIPFloating = (used.ssd/total.quotaSSDInGb)*100;
-    this.percentBackup = (used.backup/total.quotaBackupVolumeInGb)*100;
+    this.listOfData.push({ name: "CPU (vCPU)", total: total.quotavCpu + " vCPU", used: used.cpu + " vCPU", remain: (total.quotavCpu - used.cpu) + " vCPU" });
+    this.listOfData.push({ name: "RAM (GB)", total: total.quotaRamInGb + " GB", used: used.ram + " GB", remain: (total.quotaRamInGb - used.ram) + " GB" });
+    this.listOfData.push({ name: "HDD (GB)", total: total.quotaHddInGb + " GB", used: used.hdd + " GB", remain: (total.quotaHddInGb - used.hdd) + " GB" });
+    this.listOfData.push({ name: "SSD (GB)", total: total.quotaSSDInGb + " GB", used: used.ssd + " GB", remain: (total.quotaSSDInGb - used.ssd) + " GB" });
+    this.listOfData.push({ name: this.i18n.fanyi('app.capacity') + " Backup Volume/VN(GB)", total: total.quotaBackupVolumeInGb + " GB", used: used.backup + " GB", remain: (total.quotaBackupVolumeInGb - used.backup) + " GB" });
+    this.listOfData.push({ name: this.i18n.fanyi('app.amount') + " IP Floating", total: total.quotaIpFloatingCount, used: "NON", remain: "10" });
+    this.listOfData.push({ name: this.i18n.fanyi('app.amount') + " IP Public", total: total.quotaIpPublicCount, used: used.ipPublicCount, remain: (total.quotaIpPublicCount - used.ipPublicCount) });
+    this.listOfData.push({ name: this.i18n.fanyi('app.amount') + " IPv6", total: total.quotaIpv6Count, used: used.ipv6Count, remain: (total.quotaIpv6Count - used.ipv6Count) });
+    this.listOfData.push({ name: this.i18n.fanyi('app.amount') + " Network", total: total.quotaNetworkCount, used: used.networkCount, remain: (total.quotaNetworkCount - used.networkCount) });
+    this.listOfData.push({ name: this.i18n.fanyi('app.amount') + " Security Group", total: total.quotaSecurityGroupCount, used: used.securityGroupCount, remain: (total.quotaSecurityGroupCount - used.securityGroupCount) });
+    this.listOfData.push({ name: this.i18n.fanyi('app.amount') + " Router", total: total.quotaRouterCount, used: used.routerCount, remain: (total.quotaRouterCount - used.routerCount) });
+    this.listOfData.push({ name: this.i18n.fanyi('app.amount') + " Load Balancer", total: total.quotaLoadBalancerSDNCount, used: used.loadBalancerSdnCount, remain: (total.quotaLoadBalancerSDNCount - used.loadBalancerSdnCount) });
+    this.listOfData.push({ name: this.i18n.fanyi('app.capacity') + " File System (GB)", total: total.quotaShareInGb + " GB", used: "NON GB", remain: "10" + " GB" });
+    this.listOfData.push({ name: this.i18n.fanyi('app.capacity') + " File System Snapshot (GB)", total: total.quotaShareSnapshotInGb + " GB", used: used.quotaShareSnapshotInGb + " GB", remain: (total.quotaShareSnapshotInGb - used.quotaShareSnapshotInGb) + " GB" });
+    this.percentCpu = (used.cpu / total.quotavCpu) * 100;
+    this.percentRam = (used.ram / total.quotaRamInGb) * 100;
+    this.percentHHD = (used.hdd / total.quotaHddInGb) * 100;
+    this.percentSSD = (used.ssd / total.quotaSSDInGb) * 100;
+    this.percentIPFloating = (used.ssd / total.quotaSSDInGb) * 100;
+    this.percentBackup = (used.backup / total.quotaBackupVolumeInGb) * 100;
   }
 
   extendVpc() {
@@ -157,7 +165,7 @@ export class ProjectExtendComponent implements OnInit{
           orderItemQuantity: 1,
           specification: JSON.stringify(requestBody),
           specificationType: "vpc_extend",
-          price: this.total?.data?.totalAmount.amount/this.form.controls['numOfMonth'].value,
+          price: this.total?.data?.totalAmount.amount / this.form.controls['numOfMonth'].value,
           // serviceDuration: this.form.controls['numOfMonth'].value
           serviceDuration: this.timeSelected
         }
@@ -167,26 +175,27 @@ export class ProjectExtendComponent implements OnInit{
       (data) => {
         if (data.success) {
           console.log('request', request);
-           if(this.hasRoleSI) {
-             this.service.createIpPublic(request).subscribe(
-               data => {
-                 this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('project.action.extend'));
-                 this.router.navigate(['/app-smart-cloud/project']);
-               },
-               error => {
-                 this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('project.note52'));
-               }
-             );
-           } else {
-             var returnPath: string = window.location.pathname;
-             this.router.navigate(['/app-smart-cloud/order/cart'], { state: { data: request,path: returnPath } });
-           }
+          if (this.hasRoleSI) {
+            this.service.createIpPublic(request).subscribe(
+              data => {
+                this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('project.action.extend'));
+                this.router.navigate(['/app-smart-cloud/project']);
+              },
+              error => {
+                this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('project.note52'));
+              }
+            );
+          } else {
+            var returnPath: string = window.location.pathname;
+            this.router.navigate(['/app-smart-cloud/order/cart'], { state: { data: request, path: returnPath } });
+          }
         } else {
           this.isVisiblePopupError = true;
           this.errorList = data.data;
         }
       },
       (error) => {
+
         this.notification.error(
           this.i18n.fanyi('app.status.fail'),
           error.error.detail
@@ -208,7 +217,7 @@ export class ProjectExtendComponent implements OnInit{
   //   this.caculate();
   // }
 
-  onChangeTime(value:any) {
+  onChangeTime(value: any) {
 
     this.timeSelected = value
     console.log("timeSelected", this.timeSelected)
@@ -227,7 +236,7 @@ export class ProjectExtendComponent implements OnInit{
       actionType: 3,
       serviceInstanceId: this.activatedRoute.snapshot.paramMap.get('id'),
       newExpireDate: this.expiredDate,
-     
+
       userEmail: null,
       actorEmail: null
     }
