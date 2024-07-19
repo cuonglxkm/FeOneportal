@@ -194,7 +194,8 @@ export class ListPackagesBackupComponent implements OnInit, OnDestroy {
     switch (suspendedReason) {
       case "CHAMGIAHAN":
         return this.i18n.fanyi('app.status.low-renew')
-      case "":
+      case "VIPHAMDIEUKHOAN":
+        return this.i18n.fanyi('service.status.violation')
       default:
         break;
     }
