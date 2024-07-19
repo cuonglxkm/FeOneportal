@@ -30,6 +30,7 @@ export interface BackupVolume {
   customerEmail: string
   backupPackageName: string
   volumeType: string
+  suspendReason: string
 }
 
 export class FormCreateBackupVolume {
