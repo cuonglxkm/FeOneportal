@@ -115,6 +115,7 @@ const DIRECTIVES: Array<Type<any>> = [];
     ...DIRECTIVES,
     IsPermissionPipe,
     ServiceStatusPipe,
+    SuspendStatusPipe,
     ServiceTaskStatePipe,
     formatPrice,
   ],

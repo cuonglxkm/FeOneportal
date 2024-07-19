@@ -106,7 +106,7 @@ export class BucketListComponent implements OnInit {
   hasObjectStorage() {
     this.loadingSrv.open({ type: 'spin', text: 'Loading...' });
     this.objectSevice
-      .getObjectStorage()
+      .getObjectStorage(this.region)
       .pipe(finalize(() => this.loadingSrv.close()))
       .subscribe({
         next: (data) => {

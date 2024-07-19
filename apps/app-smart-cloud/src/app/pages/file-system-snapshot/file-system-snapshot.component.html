@@ -119,7 +119,7 @@
           <td nzAlign="right">{{ data.size }}</td>
           <ng-container *ngIf="data.serviceStatus | ServiceStatusPipe as statusModel">
             <td *ngIf="!!data.suspendReason">
-              <span [nzPopoverTitle]="data.suspendReason | suspendStatus" nz-popover  [nzPopoverTrigger]="'hover'"
+              <span [ngStyle]="{color: statusModel.color}" [nzPopoverContent]="data.suspendReason | SuspendStatusPipe" nz-popover  [nzPopoverTrigger]="'hover'"
             [nzPopoverPlacement]="'top'">{{statusModel.status}}</span>
             </td>
             <td *ngIf="data.suspendReason == null || data.suspendReason === ''">
@@ -159,7 +159,7 @@
                     {{ 'app.file.system.create.button' | i18n }}
                   </li>
                   <li
-                    *ngIf="projectType == 0 && data.status !== 'mất kết nối' && !data.serviceStatus.includes('TAMNGUNG')"
+                    *ngIf="projectType !== 1 && data.status !== 'mất kết nối' && !data.serviceStatus.includes('TAMNGUNG')"
                     nz-menu-item
                     [routerLink]="
                       '/app-smart-cloud/file-storage/file-system/create/normal/' +
