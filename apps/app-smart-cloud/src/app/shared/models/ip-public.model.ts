@@ -8,7 +8,7 @@ export class IpPublicModel {
   regionText?: string;
   createDate?: Date;
   expiredDate: Date;
-  status?: number;
+  status?: any;
   statusName?: number;
   cloudIdentity?: number;
   projectName?: string;
@@ -16,7 +16,9 @@ export class IpPublicModel {
   networkId?: string;
   iPv6Address?: string;
   serviceStatus?: string;
+  suspendReason: any;
   regionId?: number;
+  resourceStatus: any;
   useIpv6?: boolean;
   attachedVm: string;
   SuspendType: string;

@@ -13,6 +13,7 @@ import { I18NService } from '@core';
 import { TimeCommon } from '../../shared/utils/common';
 import { debounceTime, Subject } from 'rxjs';
 import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
+import { error } from 'console';
 
 @Component({
   selector: 'one-portal-ip-public',
@@ -185,7 +186,7 @@ export class IpPublicComponent implements OnInit {
             this.notification.warning(this.i18n.fanyi('app.status.warning'), this.i18n.fanyi('app.instances') + ' ' + this.instanceName + ' '
               + this.i18n.fanyi('app.ip.public.attach.warning'));
           } else {
-            this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.detach.fail') +' IP Public')
+            this.notification.error(this.i18n.fanyi('app.status.fail'), e.error.message)
           }
         },
       }
@@ -212,7 +213,7 @@ export class IpPublicComponent implements OnInit {
             this.notification.warning(this.i18n.fanyi('app.status.warning'), this.i18n.fanyi('app.instances') + ' ' + this.instanceName + ' '
               + this.i18n.fanyi('app.ip.public.attach.warning'));
           } else {
-            this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.delete.fail'))
+            this.notification.error(this.i18n.fanyi('app.status.fail'), e.error.message)
           }
         },
       }
@@ -243,7 +244,7 @@ export class IpPublicComponent implements OnInit {
               this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('app.attach.success') + ' IP Public')
             },
             error: e => {
-              this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.attach.fail') + ' IP Public')
+              this.notification.error(this.i18n.fanyi('app.status.fail'), e.error.message)
             },
           }
         )

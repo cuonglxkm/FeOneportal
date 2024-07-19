@@ -1,14 +1,21 @@
-import { Pipe, PipeTransform } from '@angular/core';
+import { Inject, Pipe, PipeTransform } from '@angular/core';
+import { I18NService } from '@core';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
 
 @Pipe({
-  name: 'suspendStatus'
+  name: 'SuspendStatusPipe'
 })
-export class SuspendStatusPipe implements PipeTransform {
 
+
+
+export class SuspendStatusPipe implements PipeTransform {
+  constructor(
+    @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
+  ) {}
   transform(protocol: string): string {
     switch(protocol) {
       case 'CHAMGIAHAN':
-        return 'Chậm gia hạn';
+        return this.i18n.fanyi('app.status.low-renew');
       default:
         return 'Chưa rõ lí do';
     }

@@ -83,8 +83,12 @@
             <td><a [routerLink]="'/app-smart-cloud/file-storage/file-system/detail/' + data.id">{{ data.name }}</a></td>
             <ng-container *ngIf="data.status | ServiceStatusPipe as statusModel">
               <td *ngIf="!!data.suspendReason">
-                <span [nzPopoverTitle]="data.suspendReason | suspendStatus" nz-popover  [nzPopoverTrigger]="'hover'"
-            [nzPopoverPlacement]="'top'">{{statusModel.status}}</span>
+                <span [ngStyle]="{color: statusModel.color}">
+                <img src="assets/imgs/warning-message.svg" alt="" style="cursor: pointer; margin-bottom: 4px;"
+                     [nzTooltipTitle]="data.suspendReason | SuspendStatusPipe"
+                     nzTooltipPlacement="bottom"
+                     nz-tooltip>
+                {{statusModel.status}}</span>
               </td>
               <td *ngIf="data.suspendReason == null || data.suspendReason === ''">
                 <span [ngStyle]="{color: statusModel.color}">{{ statusModel.status }}</span>
