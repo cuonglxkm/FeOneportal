@@ -252,6 +252,9 @@
                 <a *ngSwitchCase="'Kafka'" [routerLink]="['/app-kafka']">{{
                   item?.serviceName
                 }}</a>
+                <a *ngSwitchCase="'VPK'" [routerLink]="['/app-k8s-premium']">{{
+                  item?.serviceName
+                }}</a>
                 <a
                   *ngSwitchCase="'VPNSiteToSites'"
                   [routerLink]="['/app-smart-cloud/vpn-site-to-site']"

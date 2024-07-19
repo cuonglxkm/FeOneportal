@@ -81,8 +81,15 @@
           <tr *ngFor="let data of fixTable.data; index as i">
             <td>{{ i + 1 }}</td>
             <td><a [routerLink]="'/app-smart-cloud/file-storage/file-system/detail/' + data.id">{{ data.name }}</a></td>
-            <td *ngIf="data.statusDisplay.includes('Đang hoạt động')" style="color: #008D47;">{{ data.statusDisplay }}</td>
-            <td *ngIf="!data.statusDisplay.includes('Đang hoạt động')" style="color: #EA3829;">{{ data.statusDisplay }}</td>
+            <ng-container *ngIf="data.status | ServiceStatusPipe as statusModel">
+              <td *ngIf="!!data.suspendReason">
+                <span [ngStyle]="{color: statusModel.color}" [nzPopoverContent]="data.suspendReason | SuspendStatusPipe" nz-popover  [nzPopoverTrigger]="'hover'"
+                [nzPopoverPlacement]="'top'">{{statusModel.status}}</span>
+              </td>
+              <td *ngIf="data.suspendReason == null || data.suspendReason === ''">
+                <span [ngStyle]="{color: statusModel.color}">{{ statusModel.status }}</span>
+              </td>
+            </ng-container>
             <td>{{ data.taskState.toUpperCase() }}</td>
             <td>{{ data.type }}</td>
             <td>{{ data.protocol }}</td>
@@ -96,7 +103,8 @@
                                                (onOk)="handleOkDelete()" />
               </div>
               <div *ngIf="(data.taskState === 'available')">
-                <one-portal-edit-file-system [region]="region"
+                <one-portal-edit-file-system *ngIf="data.status !== 'TAMNGUNG'" 
+                                            [region]="region"
                                              [project]="project"
                                              [fileSystem]="data"
                                              (onOk)="handleOkEdit()" />
@@ -107,6 +115,7 @@
                                                (onOk)="handleOkDelete()" />
                 <img nz-dropdown
                      [nzDropdownMenu]="opMenu"
+                     *ngIf="data.status !== 'TAMNGUNG'"
                      src="assets/imgs/more1.svg" alt="" style="cursor: pointer;"/>
                 <nz-dropdown-menu #opMenu="nzDropdownMenu">
                   <ul nz-menu>

@@ -83,9 +83,9 @@ export class ObjectStorageService extends BaseService {
       );
   }
 
-  getObjectStorage(): Observable<any> {
+  getObjectStorage(regionId: number): Observable<any> {
     return this.http.get<any>(
-      this.baseUrl + this.ENDPOINT.provisions + '/object-storage/user'
+      this.baseUrl + this.ENDPOINT.provisions + `/object-storage/user?regionId=${regionId}`
     );
   }
 

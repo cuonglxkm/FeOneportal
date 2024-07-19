@@ -38,7 +38,7 @@
       <nz-card [nzBordered]="false" style="border-radius: 8px">
 
         <div style="margin-bottom: 20px" class="text-card-header">
-          Thông tin lịch Snapshot
+          {{'app.snapshot.schedule.info' | i18n}}
         </div>
           <nz-spin [nzSpinning]="isLoading" nzSize="large">
             <nz-alert  nzBanner *ngIf="disableCreate == false"
@@ -63,18 +63,17 @@
                     nz-input
                     formControlName="name"
                     [(ngModel)]="request.name"
-                    placeholder="Nhập tên lịch Snapshot"
+                    placeholder="{{'app.snapshot.schedule.enter.name1' | i18n}}"
                     maxlength="64"
                     minlength="1"
                     (change)="request.name = request.name.trim()"
                   />
                   <ng-template #nameErrorTpl let-control>
                     <ng-container *ngIf="control.hasError('required')"
-                    >Vui lòng nhập tên lịch Snapshot
+                    >{{'app.snapshot.schedule.enter.name1' | i18n}}
                     </ng-container>
                     <ng-container *ngIf="control.hasError('pattern')"
-                    >Tên lịch Snapshot có thể có tối đa 64 ký tự. Ký tự hợp lệ: A-Z,
-                      a-z, 0-9
+                    >{{'app.snapshot.schedule.des.1' | i18n}}
                     </ng-container>
                   </ng-template>
                 </nz-form-control>
@@ -93,18 +92,17 @@
                         nz-input
                         formControlName="name"
                         [(ngModel)]="request.name"
-                        placeholder="Nhập tên lịch Snapshot"
+                        placeholder="{{'app.snapshot.schedule.enter.name1' | i18n}}"
                         maxlength="64"
                         minlength="1"
                         (change)="request.name = request.name.trim()"
                       />
                       <ng-template #nameErrorTpl let-control>
                         <ng-container *ngIf="control.hasError('required')"
-                        >Vui lòng nhập tên lịch Snapshot
+                        >{{'app.snapshot.schedule.enter.name1' | i18n}}
                         </ng-container>
                         <ng-container *ngIf="control.hasError('pattern')"
-                        >Tên lịch Snapshot có thể có tối đa 64 ký tự. Ký tự hợp lệ: A-Z,
-                          a-z, 0-9
+                        >{{'app.snapshot.schedule.des.1' | i18n}}
                         </ng-container>
                       </ng-template>
                     </nz-form-control>
@@ -138,7 +136,7 @@
                     <nz-form-label>
                     <span>{{ 'schedule.backup.volume.select' | i18n }} (<span style="color: red;">*</span>)
                   <img nz-popover
-                       [nzPopoverContent]="'Chọn Volume cần Snapshot'"
+                       [nzPopoverContent]="'{{\'app.snapshot.schedule.select.volume\' | i18n}}'"
                        nzPopoverPlacement="bottom" style="margin-left: 5px;"
                        src="assets/imgs/pajamas_question.svg" alt="" /></span>
                     </nz-form-label>
@@ -207,18 +205,17 @@
                     nz-input
                     formControlName="name"
                     [(ngModel)]="request.name"
-                    placeholder="Nhập tên lịch Snapshot"
+                    placeholder="{{'app.snapshot.schedule.enter.name1' | i18n}}"
                     maxlength="64"
                     minlength="1"
                     (change)="request.name = request.name.trim()"
                   />
                   <ng-template #nameErrorTpl let-control>
                     <ng-container *ngIf="control.hasError('required')"
-                    >Vui lòng nhập tên lịch Snapshot
+                    >{{'app.snapshot.schedule.enter.name1' | i18n}}
                     </ng-container>
                     <ng-container *ngIf="control.hasError('pattern')"
-                    >Tên lịch Snapshot có thể có tối đa 64 ký tự. Ký tự hợp lệ: A-Z,
-                      a-z, 0-9
+                    >{{'app.snapshot.schedule.des.1' | i18n}}
                     </ng-container>
                   </ng-template>
                 </nz-form-control>
@@ -250,7 +247,7 @@
                     <nz-form-label>
                     <span>{{ 'schedule.backup.volume.select' | i18n }} (<span style="color: red;">*</span>)
                   <img nz-popover
-                       [nzPopoverContent]="'Chọn Volume cần Snapshot'"
+                       [nzPopoverContent]="'{{\'app.snapshot.schedule.select.volume\' | i18n}}'"
                        nzPopoverPlacement="bottom" style="margin-left: 5px;"
                        src="assets/imgs/pajamas_question.svg" alt="" /></span>
                     </nz-form-label>
@@ -288,7 +285,7 @@
                 <nz-form-label>
                     <span>{{ 'schedule.backup.volume.select' | i18n }} (<span style="color: red;">*</span>)
                   <img nz-popover
-                       [nzPopoverContent]="'Chọn Volume cần Snapshot'"
+                       [nzPopoverContent]="'{{\'app.snapshot.schedule.select.volume\' | i18n}}'"
                        nzPopoverPlacement="bottom" style="margin-left: 5px;"
                        src="assets/imgs/pajamas_question.svg" alt="" /></span>
                 </nz-form-label>
@@ -339,7 +336,7 @@
                 <nz-form-item>
                   <nz-form-label><span>{{ 'app.choose.perform.snapshot.time' | i18n }} (<span class="text-red">*</span>)
                 <img nz-popover
-                     [nzPopoverContent]="'Chọn Volume cần Snapshot'"
+                     [nzPopoverContent]="'{{\'app.snapshot.schedule.select.volume\' | i18n}}'"
                      nzPopoverPlacement="bottom" style="margin-left: 5px;"
                      src="assets/imgs/pajamas_question.svg" alt="" /></span></nz-form-label>
                   <nz-time-picker
@@ -357,7 +354,7 @@
             <nz-form-item style="width: 100%">
               <nz-form-label><span>Số bản Snapshot lưu trữ (<span class="text-red">*</span>)
                 <img nz-popover
-                     [nzPopoverContent]="'Chọn Volume cần Snapshot'"
+                     [nzPopoverContent]="'{{\'app.snapshot.schedule.select.volume\' | i18n}}'"
                      nzPopoverPlacement="bottom" style="margin-left: 5px;"
                      src="assets/imgs/pajamas_question.svg" alt="" /></span></nz-form-label>
               <nz-form-control>

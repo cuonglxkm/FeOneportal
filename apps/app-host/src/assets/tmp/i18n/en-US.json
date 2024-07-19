@@ -439,7 +439,7 @@
   "service.status.paused": "Paused",
   "service.status.processing": "In-Process",
   "service.status.unknown": "Unknown ",
-
+  "service.status.cancel": "Cancel",
 
 
   "app.breadcrumb.home": "Home",
@@ -3443,5 +3443,26 @@
   "app.register.phone.babel" : "Enter phone number",
   "app.register.1" : "I agree with",
   "app.register.2" : "the terms",
-  "app.register.3" : "You already have an account"
+  "app.register.3" : "You already have an account",
+
+  "app.snapshot.schedule.label.list": "Snapshot Schedule List",
+  "app.snapshot.schedule.label.name": "Snapshot Schedule",
+  "app.snapshot.schedule.label.create": "Create New Snapshot Schedule",
+  "app.snapshot.schedule.label.type": "Snapshot Type",
+  "app.snapshot.schedule.description": "Helps users save the current state of Volume/VM. Users can use it to back up the volume before performing a risky operation on the data in the VM.",
+  "app.snapshot.schedule.init": "Initialize Snapshot Schedule",
+  "app.snapshot.schedule.descriptio.1": "You are about to delete the Snapshot Schedule {{actionName}}. This action cannot be undone.",
+  "app.snapshot.schedule.delete": "Delete Snapshot Schedule",
+  "app.snapshot.schedule.descriptio.2": "To perform the Snapshot deletion, please enter the Snapshot name to confirm.",
+  "app.snapshot.schedule.restore": "Restore Snapshot Schedule",
+  "app.snapshot.schedule.restore.confirm": "Do you want to proceed with restoring the Snapshot Schedule?",
+  "app.snapshot.schedule.edit": "Edit Snapshot Schedule",
+  "app.snapshot.schedule.descriptio.3": "The Snapshot Schedule name of the customer. Does not include special characters, spaces, or Vietnamese diacritics. Maximum 50 characters.",
+  "app.snapshot.schedule.enter.name": "Please enter the Snapshot package name",
+  "app.snapshot.schedule.select.volume": "Select the Volume to be Snapshot",
+  "app.snapshot.schedule.edit.label": "Edit Snapshot Schedule",
+  "app.snapshot.schedule.info": "Snapshot Schedule Information",
+  "app.snapshot.schedule.enter.name1": "Enter Snapshot Schedule name",
+  "app.snapshot.schedule.des.1": "The Snapshot Schedule name can have up to 64 characters. Valid characters: A-Z, a-z, 0-9",
+  "app.snapshot.schedule.volume.select.label": "Select Volume name"
 }

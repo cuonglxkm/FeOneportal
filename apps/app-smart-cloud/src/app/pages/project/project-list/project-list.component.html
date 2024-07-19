@@ -88,16 +88,16 @@
             <td [ngStyle]="{color: statusModel.color}" *ngIf="item.resourceStatus!='SUSPENDED'"  >{{statusModel.status}}</td>
           </ng-container> -->
           <ng-container *ngIf="item.resourceStatus | ServiceStatusPipe as statusModel">
-            <td *ngIf="!!item.suspendReason">
+            <td *ngIf="item.resourceStatus=='SUSPENDED'">
               <span [ngStyle]="{color: statusModel.color}">
                 <img src="assets/imgs/warning-message.svg" alt="" style="cursor: pointer; margin-bottom: 4px;"
-                     nzTooltipTitle="{{ item.suspendReason }}"
-                     nzTooltipPlacement="top"
-                     nz-tooltip>
+            [nzTooltipTitle]="item.suspendReason"
+            nzTooltipPlacement="top"
+            nz-tooltip>
                 {{ statusModel.status }}
               </span>
             </td>
-            <td *ngIf="item.suspendReason == null || item.suspendReason === ''">
+            <td *ngIf="item.resourceStatus!='SUSPENDED'">
               <span [ngStyle]="{color: statusModel.color}">{{ statusModel.status }}</span>
             </td>
           </ng-container>
