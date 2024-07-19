@@ -223,11 +223,9 @@
               alt=""
               style="cursor: pointer; margin-bottom: 4px"
               [nzTooltipTitle]="
-                data.status == 'TAMNGUNG'
-                  ? data.suspendReason
-                    ? ('app.' + data.suspendReason | i18n)
-                    : data.suspendReason
-                  : ''
+                data.suspendReason
+                  ? ('app.' + data.suspendReason | i18n)
+                  : data.suspendReason
               "
               nzTooltipPlacement="bottom"
               nz-tooltip
