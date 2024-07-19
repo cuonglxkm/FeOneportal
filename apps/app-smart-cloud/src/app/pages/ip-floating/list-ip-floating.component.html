@@ -58,6 +58,7 @@
         <th>Mapped Fixed IP Address</th>
         <th>Network</th>
         <th>{{'app.create-user.type' | i18n}}</th>
+        <th>{{'app.text.status' | i18n}}</th>
         <th>{{'app.action-history.operation' | i18n}}</th>
       </tr>
       </thead>
@@ -71,18 +72,31 @@
         <td>{{data.fixedIpAddress}}</td>
         <td>{{data.network}}</td>
         <td>{{data.typeIP}}</td>
+        <ng-container *ngIf="data.serviceStatus | ServiceStatusPipe as statusModel">
+          <td *ngIf="!!data.suspendReason">
+              <span [ngStyle]="{color: statusModel.color}">
+                <img src="assets/imgs/warning-message.svg" alt="" style="cursor: pointer; margin-bottom: 4px;"
+                     nzTooltipTitle="{{ data.suspendReason }}"
+                     nzTooltipPlacement="bottom"
+                     nz-tooltip>
+                {{ statusModel.status }}</span>
+          </td>
+          <td *ngIf="data.suspendReason == null || data.suspendReason === ''">
+            <span [ngStyle]="{color: statusModel.color}">{{ statusModel.status }}</span>
+          </td>
+        </ng-container>
         <td>
           <div>
-            <one-portal-attach-ip-floating *ngIf="data.status != 2" [region]="region"
+            <one-portal-attach-ip-floating *ngIf="data.status != 2 && data.status != 'LOI' && data.resourceStatus != 'ERROR'" [region]="region"
                                            [project]="project"
                                            [idIpFloating]="data.id"
                                            (onOk)="handleOkAttachIpFloating()"/>
 
-            <one-portal-detach-ip-floating *ngIf="data.status == 2" [region]="region"
+            <one-portal-detach-ip-floating *ngIf="data.status == 2 && data.status != 'LOI' && data.resourceStatus != 'ERROR'" [region]="region"
                                            [project]="project"
                                            [idIpFloating]="data.id"
                                            (onOk)="handleOkDetachIpFloating()" />
-            <img *ngIf="projectType != 1" style="padding-right: 10px;" src="assets/imgs/calendar-tick.svg"
+            <img *ngIf="projectType != 1 && data.status != 'LOI' && data.resourceStatus != 'ERROR'" style="padding-right: 10px;" src="assets/imgs/calendar-tick.svg"
                  nz-tooltip nzTooltipTitle="{{'app.extend' | i18n}} IP Floating" nzTooltipPlacement="bottom"
                  [routerLink]="['/app-smart-cloud/networks/ip-floating-normal/' + data.id + '/extend']"/>
             <one-portal-delete-ip-floating *ngIf="data.typeIP == WanFloating || projectType != 1" [region]="region"

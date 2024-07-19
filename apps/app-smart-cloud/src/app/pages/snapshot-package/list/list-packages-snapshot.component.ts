@@ -186,6 +186,7 @@ export class ListPackagesSnapshotComponent implements OnInit {
       this.packageSnapshotService.delete(this.dataAction.id, this.project, this.region)
         .pipe(finalize(() => {
           this.handleDeleteCancel();
+          this.getListPackageSnapshot(true);
         }))
         .subscribe(data => {
         this.isLoadingDelete = false
@@ -251,7 +252,7 @@ export class ListPackagesSnapshotComponent implements OnInit {
           this.getListPackageSnapshot(true);
         },
         error => {
-          this.notification.error(this.i18n.fanyi('app.status.fail'),'Cập nhật gói snapshot thất bại')
+          this.notification.error(this.i18n.fanyi('app.status.fail'),error.error.message)
         }
       )
   }
