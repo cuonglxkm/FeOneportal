@@ -66,8 +66,6 @@ export class VpnSiteToSiteManage {
         if(data){
           this.isLoading = false
           this.response = data.body
-          console.log(this.response);
-          
         }
       if (isBegin) {
         this.isBegin = this.response ? false : true;
