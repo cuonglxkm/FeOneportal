@@ -1,7 +1,7 @@
 {
   "app": {
-    "name": "VNPT Cloud Portal",
-    "description": "VNPT Cloud Portal"
+    "name": "VNPT Cloud",
+    "description": "VNPT Cloud"
   },
   "user": {
     "name": "Admin",
