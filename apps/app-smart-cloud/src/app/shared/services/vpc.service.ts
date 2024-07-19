@@ -19,6 +19,7 @@ export class VpcService extends BaseService {
       'Content-Type': 'application/json' ,
       'Authorization': 'Bearer ' + this.tokenService.get()?.token,
       'User-Root-Id': localStorage.getItem('UserRootId') && Number(localStorage.getItem('UserRootId')) > 0 ? Number(localStorage.getItem('UserRootId')) : this.tokenService.get()?.userId,
+      'Project-Id': localStorage.getItem('projectId') && Number(localStorage.getItem('projectId')) > 0 ? Number(localStorage.getItem('projectId')) : 0,
     })
   };
 
@@ -68,10 +69,14 @@ export class VpcService extends BaseService {
   }
 
   delete(id: any):Observable<HttpResponse<any>> {
+    localStorage.removeItem("projects");
+    localStorage.removeItem("projectId");
     return this.http.delete<HttpResponse<any>>(this.baseUrl + this.ENDPOINT.provisions + "/vpcs/"+ id);
   }
 
   updateVpc(request: any, id: any) {
+    localStorage.removeItem("projects");
+    localStorage.removeItem("projectId");
     return this.http.put<HttpResponse<any>>(this.baseUrl + this.ENDPOINT.provisions + "/vpcs/" + id, request, this.httpOptions);
   }
   createIpPublic(IP: any): Observable<any>  {

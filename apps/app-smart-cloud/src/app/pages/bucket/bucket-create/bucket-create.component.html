@@ -6,7 +6,7 @@
           'app.breadcrumb.home' | i18n
         }}</a></nz-breadcrumb-item
       >
-      <nz-breadcrumb-item><a [routerLink]="['/app-smart-cloud/object-storage/bucket']">Bucket</a></nz-breadcrumb-item>
+      <nz-breadcrumb-item><a (click)="navigateToBucketList()">Bucket</a></nz-breadcrumb-item>
       <nz-breadcrumb-item>
         {{ 'app.bucket.create' | i18n }}
       </nz-breadcrumb-item>

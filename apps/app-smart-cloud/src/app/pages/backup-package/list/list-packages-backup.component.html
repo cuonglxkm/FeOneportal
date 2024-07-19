@@ -22,7 +22,7 @@
     <div class="alain-custom-action text-right">
       <share-users-combobox></share-users-combobox>
       <region-select-dropdown (regionChange)="onRegionChanged($event)" (valueChanged)="regionChanged($event)"></region-select-dropdown>
-      <project-select-dropdown (valueChanged)="projectChanged($event)"
+      <project-select-dropdown #projectCombobox (valueChanged)="projectChanged($event)"
                                (userChanged)="projectChanged($event)"
                                [regionId]="region"></project-select-dropdown>
     </div>
@@ -100,7 +100,20 @@
               <td nzBreakWord nzAlign="center">{{ data.creationDate | date: 'dd/MM/yyyy' }}</td>
               <td nzBreakWord nzAlign="center">{{ data.expirationDate | date:'dd/MM/yyyy' }}</td>
               <ng-container *ngIf="data.status | ServiceStatusPipe as statusModel">
-                <td nzBreakWord nzAlign="left" [ngStyle]="{color: statusModel.color}">{{ statusModel.status }}</td>
+                <td *ngIf="data.status != 'SUSPENDED'"
+                    nzBreakWord
+                    nzAlign="left"
+                    [ngStyle]="{color: statusModel.color}">{{ statusModel.status }}
+                </td>
+                <td *ngIf="data.status == 'SUSPENDED'"
+                    nzBreakWord nzAlign="left"
+                    [ngStyle]="{color: statusModel.color}">
+                <span nz-popover
+                      style="cursor: pointer;"
+                      [nzPopoverContent]="getSuspendedReason(data.suspendReason)"
+                      [nzPopoverTrigger]="'hover'"
+                      [nzPopoverPlacement]="'bottom'">{{ statusModel.status }}</span>
+                </td>
               </ng-container>
               <td nzBreakWord>
                 <div *ngIf="['ACTIVE', 'AVAILABLE'].includes(data.status)">

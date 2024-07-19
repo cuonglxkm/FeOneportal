@@ -2,24 +2,6 @@ import { Environment } from '@delon/theme';
 import {DelonMockModule} from "@delon/mock";
 import * as MOCKDATA from "@_mock";
 
-// export const environment = {
-//   production: true,
-//   useHash: true,
-//   api: {
-//     baseUrl: './',
-//     refreshTokenEnabled: true,
-//     refreshTokenType: 'auth-refresh'
-//   },
-//   baseUrl: 'https://api.onsmartcloud.com',
-//   sso: {
-//     issuer: 'https://identity.onsmartcloud.com',
-//     clientId: 'frontend-client',
-//     callback: 'https://oneportal.onsmartcloud.com/passport/callback/oneportal',
-//     logout_callback: 'https://oneportal.onsmartcloud.com',
-//     scope: 'openid email roles',
-//   },
-// } as Environment;
-
 // @ts-ignore
 let env = window['env'];
 export const environment = {
@@ -31,13 +13,13 @@ export const environment = {
     refreshTokenType: 'auth-refresh'
   },
   // @ts-ignore
-  baseUrl: env['baseUrl'] || 'http://localhosst:5151/api/v1',
+  baseUrl: 'https://api.cloud.vnpt.vn',
   sso: {
-    issuer: env['sso']['issuer'] || 'https://identity.onsmartcloud.com',
-    clientId: env['sso']['clientId'] || 'frontend-client',
-    callback: env['sso']['callback'] || 'https://oneportal.onsmartcloud.com/passport/callback/oneportal',
-    logout_callback: env['sso']['logout_callback'] || 'https://oneportal.onsmartcloud.com',
-    scope: env['sso']['scope'] || 'openid email roles offline_access',
+    issuer: 'https://identity.cloud.vnpt.vn',
+    clientId: 'frontend-client',
+    callback: 'https://console.cloud.vnpt.vn/passport/callback/oneportal',
+    logout_callback: 'https://console.cloud.vnpt.vn',
+    scope: 'openid email roles offline_access',
   },
   recaptcha: {
     siteKey: '6LfueB8cAAAAAD74PxsPKL7-GVr0T7dUoxuBL4iR',

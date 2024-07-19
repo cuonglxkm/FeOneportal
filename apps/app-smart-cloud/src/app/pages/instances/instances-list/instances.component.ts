@@ -14,7 +14,6 @@ import {
   InstanceAction,
   InstancesModel,
   Network,
-  SecurityGroupModel,
   UpdateInstances,
   VlanSubnet,
 } from '../instances.model';
@@ -36,6 +35,7 @@ import {
 import { VlanService } from 'src/app/shared/services/vlan.service';
 import { I18NService } from '@core';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
+import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
 
 class SearchParam {
   status: string = '';
@@ -72,7 +72,7 @@ export class InstancesComponent implements OnInit {
   activeCreate: boolean = false;
   isVisibleGanVLAN: boolean = false;
   isVisibleGoKhoiVLAN: boolean = false;
-
+  @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
   typeVpc: number;
 
   constructor(
@@ -93,13 +93,6 @@ export class InstancesComponent implements OnInit {
     this.region = regionAndProject.regionId;
     this.projectId = regionAndProject.projectId;
     this.userId = this.tokenService.get()?.userId;
-
-    this.getListNetwork();
-    this.getAllSecurityGroup();
-    if (this.notificationService.connection == undefined) {
-      this.notificationService.initiateSignalrConnection();
-    }
-
     this.notificationService.connection.on('UpdateInstance', (data) => {
       if (data) {
         let instanceId = data.serviceId;
@@ -114,7 +107,7 @@ export class InstancesComponent implements OnInit {
               this.reloadTable();
             case 'START':
               this.reloadTable();
-            case 'REBOOTING':
+            case 'REBOOT_STARTED':
               this.updateRowState(taskState, foundIndex);
             case 'REBOOT':
               this.updateRowState(taskState, foundIndex);
@@ -166,6 +159,7 @@ export class InstancesComponent implements OnInit {
     this.region = region.regionId;
   }
 
+  //#region chức năng tìm kiếm
   dataSubjectSearchParam: Subject<any> = new Subject<any>();
   private searchSubscription: Subscription;
   private enterPressed: boolean = false;
@@ -195,6 +189,7 @@ export class InstancesComponent implements OnInit {
       this.searchSubscription.unsubscribe();
     }
   }
+  //#endregion
 
   isFirstVisit: boolean = true;
   onRegionChange(region: RegionModel) {
@@ -203,6 +198,9 @@ export class InstancesComponent implements OnInit {
     this.activeCreate = false;
     this.loading = true;
     this.region = region?.regionId;
+    if(this.projectCombobox){
+      this.projectCombobox.loadProjects(true, region.regionId);
+    }
     console.log(this.tokenService.get()?.userId);
   }
 
@@ -214,7 +212,6 @@ export class InstancesComponent implements OnInit {
     this.projectId = project?.id;
     this.typeVpc = project?.type;
     this.getDataList();
-    this.getListNetwork();
   }
 
   doSearch() {
@@ -311,9 +308,12 @@ export class InstancesComponent implements OnInit {
     }
   }
 
+  //#region Gắn Vlan máy ảo
   listVlanNetwork: NetWorkModel[] = [];
   vlanCloudId: string;
+  isLoadingNetwork: boolean = true;
   getListNetwork(): void {
+    this.isLoadingNetwork = true;
     let formSearchNetwork: FormSearchNetwork = new FormSearchNetwork();
     formSearchNetwork.region = this.region;
     formSearchNetwork.project = this.projectId;
@@ -324,7 +324,9 @@ export class InstancesComponent implements OnInit {
       .getVlanNetworks(formSearchNetwork)
       .subscribe((data: any) => {
         this.listVlanNetwork = data.records;
+        this.isLoadingNetwork = false;
         this.vlanCloudId = this.listVlanNetwork[0].cloudId;
+        this.instanceAction.networkId = this.vlanCloudId;
         this.getListPort(this.vlanCloudId);
         this.getVlanSubnets(this.vlanCloudId);
         this.cdr.detectChanges();
@@ -397,7 +399,6 @@ export class InstancesComponent implements OnInit {
   showHandleGanVLAN(id: number) {
     this.isChoosePort = true;
     this.instanceAction = new InstanceAction();
-    this.instanceAction.networkId = this.vlanCloudId;
     this.getListNetwork();
     this.instanceAction.id = id;
     this.instanceAction.command = 'attachinterface';
@@ -454,6 +455,7 @@ export class InstancesComponent implements OnInit {
     this.dataSubjectGateway.next(value);
   }
 
+  //Validate ip address
   onCheckIPAddress() {
     this.dataSubjectGateway.pipe(debounceTime(500)).subscribe((res) => {
       if (res == null || res == '') {
@@ -494,7 +496,9 @@ export class InstancesComponent implements OnInit {
       }
     });
   }
+  //#endregion
 
+  //#region Gỡ khỏi Vlan
   listOfPrivateNetwork: Network[];
   getListIpPrivate(id: number) {
     this.dataService
@@ -541,7 +545,9 @@ export class InstancesComponent implements OnInit {
       },
     });
   }
+  //#endregion
 
+  //#region Tắt máy ảo
   isVisibleShutdown: boolean = false;
   instanceControlId: number = 0;
   showModalShutdown(id: number) {
@@ -575,7 +581,9 @@ export class InstancesComponent implements OnInit {
   handleCancelShutdown() {
     this.isVisibleShutdown = false;
   }
+  //#endregion
 
+  //#region Bật máy ảo
   isVisibleStart: boolean = false;
   showModalStart(id: number) {
     this.isVisibleStart = true;
@@ -608,7 +616,9 @@ export class InstancesComponent implements OnInit {
   handleCancelStart() {
     this.isVisibleStart = false;
   }
+  //#endregion
 
+  //#region Khởi động lại máy ảo
   isVisibleRestart: boolean = false;
   showModalRestart(id: number) {
     this.isVisibleRestart = true;
@@ -641,7 +651,9 @@ export class InstancesComponent implements OnInit {
   handleCancelRestart() {
     this.isVisibleRestart = false;
   }
+  //#endregion
 
+  //#region Rescuse, UnRescue
   isVisibleRescue: boolean = false;
   showModalRescue(id: number) {
     this.isVisibleRescue = true;
@@ -707,7 +719,9 @@ export class InstancesComponent implements OnInit {
   handleCancelUnRescue() {
     this.isVisibleUnRescue = false;
   }
+  //#endregion
 
+  //#region Chỉnh sửa tên máy ảo
   form = new FormGroup({
     name: new FormControl('', {
       nonNullable: true,
@@ -715,39 +729,11 @@ export class InstancesComponent implements OnInit {
     }),
   });
   updateInstances: UpdateInstances = new UpdateInstances();
-  selectedSecurityGroup: string[] = [];
   isVisibleEdit = false;
   instanceEdit: InstancesModel;
-  currentSecurityGroup: string[] = [];
   modalEdit(data: InstancesModel) {
     this.instanceEdit = data;
-    this.selectedSecurityGroup = [];
-    this.dataService
-      .getAllSecurityGroupByInstance(
-        data.cloudId,
-        data.regionId,
-        data.customerId,
-        data.projectId
-      )
-      .subscribe({
-        next: (datasg: any) => {
-          console.log('getAllSecurityGroupByInstance', datasg);
-          datasg.forEach((e) => {
-            this.selectedSecurityGroup.push(e.id);
-            this.currentSecurityGroup.push(e.id);
-          });
-          this.isVisibleEdit = true;
-          this.cdr.detectChanges();
-        },
-        error: (e) => {
-          this.isVisibleEdit = true;
-          this.notification.error(
-            e.statusText,
-            this.i18n.fanyi('app.notify.get.sg.of.instance.fail')
-          );
-          this.cdr.detectChanges();
-        },
-      });
+    this.isVisibleEdit = true
     this.updateInstances.name = data.name;
     this.updateInstances.customerId = this.userId;
     this.updateInstances.id = data.id;
@@ -790,7 +776,6 @@ export class InstancesComponent implements OnInit {
 
   handleOkEdit() {
     this.isVisibleEdit = false;
-    this.updateInstances.securityGroups = this.selectedSecurityGroup.join(',');
     this.dataService.update(this.updateInstances).subscribe({
       next: (next) => {
         this.notification.success(
@@ -806,17 +791,6 @@ export class InstancesComponent implements OnInit {
         );
       },
     });
-  }
-
-  //#region Chọn Security Group
-  listSecurityGroup: SecurityGroupModel[] = [];
-  getAllSecurityGroup() {
-    this.dataService
-      .getAllSecurityGroup(this.region, this.userId, this.projectId)
-      .subscribe((data: any) => {
-        console.log('getAllSecurityGroup', data);
-        this.listSecurityGroup = data;
-      });
   }
   //#endregion
 
@@ -836,15 +810,6 @@ export class InstancesComponent implements OnInit {
       this.router.navigate(['/app-smart-cloud/instances/instances-create-vpc']);
     } else {
       this.router.navigate(['/app-smart-cloud/instances/instances-create']);
-    }
-  }
-  navigateToEdit(id: number) {
-    if (this.project.type == 0) {
-      this.router.navigate(['/app-smart-cloud/instances/instances-edit/' + id]);
-    } else {
-      this.router.navigate([
-        '/app-smart-cloud/instances/instances-edit-vpc/' + id,
-      ]);
     }
   }
 

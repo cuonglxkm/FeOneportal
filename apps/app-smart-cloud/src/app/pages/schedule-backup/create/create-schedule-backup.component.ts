@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, Inject, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, Inject, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
 import { DatePipe, Location } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -20,6 +20,7 @@ import { BackupVolumeService } from '../../../shared/services/backup-volume.serv
 import { VolumeDTO } from '../../../shared/dto/volume.dto';
 import { BackupVolume } from '../../volume/component/backup-volume/backup-volume.model';
 import { VolumeService } from '../../../shared/services/volume.service';
+import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
 
 @Component({
   selector: 'one-portal-create-schedule-backup',
@@ -106,7 +107,7 @@ export class CreateScheduleBackupComponent implements OnInit {
     })
   });
 
-
+  @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
   id: number;
 
   volumeId: number;
@@ -158,13 +159,13 @@ export class CreateScheduleBackupComponent implements OnInit {
     // { label: '4 ' + this.i18n.fanyi('app.Week'), value: 4 }
   ];
   daysOfWeeks = [
-    { label: this.i18n.fanyi('schedule.backup.monday'), value: 1 },
-    { label: this.i18n.fanyi('schedule.backup.tuesday'), value: 2 },
-    { label: this.i18n.fanyi('schedule.backup.wednesday'), value: 3 },
-    { label: this.i18n.fanyi('schedule.backup.thursday'), value: 4 },
-    { label: this.i18n.fanyi('schedule.backup.friday'), value: 5 },
-    { label: this.i18n.fanyi('schedule.backup.saturday'), value: 6 },
-    { label: this.i18n.fanyi('schedule.backup.sunday'), value: 7 }
+    { label: this.i18n.fanyi('schedule.backup.monday'), value: "1" },
+    { label: this.i18n.fanyi('schedule.backup.tuesday'), value: "2" },
+    { label: this.i18n.fanyi('schedule.backup.wednesday'), value: "3" },
+    { label: this.i18n.fanyi('schedule.backup.thursday'), value: "4" },
+    { label: this.i18n.fanyi('schedule.backup.friday'), value: "5" },
+    { label: this.i18n.fanyi('schedule.backup.saturday'), value: "6" },
+    { label: this.i18n.fanyi('schedule.backup.sunday'), value: "7" }
   ];
 
   constructor(private fb: NonNullableFormBuilder,
@@ -187,6 +188,9 @@ export class CreateScheduleBackupComponent implements OnInit {
 
   regionChanged(region: RegionModel) {
     this.region = region.regionId;
+    if(this.projectCombobox){
+      this.projectCombobox.loadProjects(true, region.regionId);
+    }
     this.router.navigate(['/app-smart-cloud/schedule/backup/list']);
   }
 

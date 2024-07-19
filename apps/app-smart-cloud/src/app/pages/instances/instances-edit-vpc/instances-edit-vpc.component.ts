@@ -4,6 +4,7 @@ import {
   Component,
   Inject,
   OnInit,
+  ViewChild,
 } from '@angular/core';
 import {
   GpuConfigRecommend,
@@ -34,6 +35,7 @@ import { debounceTime, finalize, Subject } from 'rxjs';
 import { ConfigurationsService } from 'src/app/shared/services/configurations.service';
 import { OrderService } from 'src/app/shared/services/order.service';
 import { CatalogService } from 'src/app/shared/services/catalog.service';
+import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
 
 @Component({
   selector: 'one-portal-instances-edit-vpc',
@@ -52,7 +54,7 @@ export class InstancesEditVpcComponent implements OnInit {
   projectId: number;
   listSecurityGroupModel: SecurityGroupModel[] = [];
   listSecurityGroup: SecurityGroupModel[] = [];
-
+  @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
   handleKeyboardEvent(event: KeyboardEvent) {
     if (event.key === 'ArrowLeft' || event.key === 'ArrowRight') {
       event.preventDefault(); // Ngăn chặn hành vi mặc định của các phím mũi tên
@@ -283,7 +285,7 @@ export class InstancesEditVpcComponent implements OnInit {
       },
       error: (e) => {
         this.checkPermission = false;
-        this.notification.error(e.error.detail, '');
+        this.notification.error('', e.error.message);
         this.returnPage();
       },
     });
@@ -513,7 +515,7 @@ export class InstancesEditVpcComponent implements OnInit {
         error: (error) => {
           this.notification.error(
             this.i18n.fanyi('app.status.fail'),
-            error.error.detail
+            error.error.message
           );
         },
       });
@@ -585,6 +587,9 @@ export class InstancesEditVpcComponent implements OnInit {
   }
 
   onRegionChange(region: RegionModel) {
+    if (this.projectCombobox) {
+      this.projectCombobox.loadProjects(true, region.regionId);
+    }
     this.router.navigate(['/app-smart-cloud/instances']);
   }
 

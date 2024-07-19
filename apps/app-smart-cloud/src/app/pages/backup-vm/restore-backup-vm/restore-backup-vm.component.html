@@ -31,6 +31,7 @@
         (valueChanged)="regionChanged($event)"
       ></region-select-dropdown>
       <project-select-dropdown
+        #projectCombobox
         (valueChanged)="projectChanged($event)"
         (userChanged)="userChanged($event)"
         [regionId]="region"
@@ -487,7 +488,7 @@
                 </div>
               </nz-tab>
               <nz-tab
-                *ngIf="isVmGpu"
+                *ngIf="isVmGpu && activeBlockSSD"
                 [nzTitle]="'app.gpu.configuration' | i18n"
                 (nzClick)="onClickGpuConfig()"
               >

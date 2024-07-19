@@ -55,6 +55,7 @@ import { NguCarousel, NguCarouselConfig } from '@ngu/carousel';
 import { CatalogService } from 'src/app/shared/services/catalog.service';
 import { LoadingService } from '@delon/abc/loading';
 import { OrderService } from 'src/app/shared/services/order.service';
+import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
 
 class BlockStorage {
   id: number = 0;
@@ -126,7 +127,7 @@ export class RestoreBackupVmVpcComponent implements OnInit {
   remainingVolume: number = 0;
   remainingVCPU: number = 0;
   remainingGpu: number = 0;
-
+  @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
   validateForm = new FormGroup({
     formCurrent: new FormGroup({
       securityGroupIds: new FormControl(null as string[]),
@@ -308,6 +309,9 @@ export class RestoreBackupVmVpcComponent implements OnInit {
 
   regionChanged(region: RegionModel) {
     this.region = region.regionId;
+    if (this.projectCombobox) {
+      this.projectCombobox.loadProjects(true, region.regionId);
+    }
     this.router.navigate(['/app-smart-cloud/backup-vm']);
   }
 
@@ -379,7 +383,7 @@ export class RestoreBackupVmVpcComponent implements OnInit {
         if (
           this.backupVmModel?.volumeBackups
             .filter((e) => e.isBootable == true)[0]
-            .typeName.toUpperCase()
+            .volumeType.toUpperCase()
             .includes('HDD')
         ) {
           this.activeBlockHDD = true;
@@ -456,26 +460,25 @@ export class RestoreBackupVmVpcComponent implements OnInit {
 
   submitFormCurrent() {
     this.isLoadingCurrent = true;
-    console.log('current', 'confirm click');
     let formRestoreCurrent = new RestoreFormCurrent();
     formRestoreCurrent.instanceBackupId = this.backupVmModel?.id;
-    this.backupService.restoreCurrentBackupVm(formRestoreCurrent).subscribe(
-      (data) => {
+    this.backupService.restoreCurrentBackupVm(formRestoreCurrent).subscribe({
+      next: (data) => {
         this.isLoadingCurrent = false;
         this.notification.success(
           this.i18n.fanyi('app.status.success'),
-          'Khôi phục vào máy ảo hiện tại thành công'
+          this.i18n.fanyi('app.notification.restore.current.vm.success')
         );
         this.router.navigate(['/app-smart-cloud/backup-vm']);
       },
-      (error) => {
+      error: (error) => {
         this.isLoadingCurrent = false;
         this.notification.error(
           this.i18n.fanyi('app.status.fail'),
-          'Khôi phục vào máy ảo hiện tại thất bại' + error.error.detail
+          this.i18n.fanyi('app.notification.restore.current.vm.fail')
         );
-      }
-    );
+      },
+    });
   }
 
   //#region  cấu hình
@@ -530,8 +533,6 @@ export class RestoreBackupVmVpcComponent implements OnInit {
     this.isCustomconfig = false;
     this.isGpuConfig = true;
     this.resetData();
-    this.activeBlockHDD = false;
-    this.activeBlockSSD = true;
     this.remainingVolume =
       this.infoVPC.cloudProject.quotaSSDInGb -
       this.infoVPC.cloudProjectResourceUsed.ssd;

@@ -1,0 +1,8 @@
+{
+  "app-smart-cloud": "https://appsmartcloud-dev.onsmartcloud.com",
+  "app-kafka": "https://appkafka-dev.onsmartcloud.com",
+  "app-kubernetes": "https://appk8s-dev.onsmartcloud.com",
+  "app-mongodb-replicaset": "https://appmongodb-dev.onsmartcloud.com",
+  "app-k8s-premium": "https://appk8spre-dev.onsmartcloud.com",
+  "app-ecr": "https://appecr-dev.onsmartcloud.com"
+}

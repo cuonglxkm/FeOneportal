@@ -23,7 +23,7 @@
       <share-users-combobox></share-users-combobox>
       <region-select-dropdown (regionChange)="onRegionChanged($event)"
                               (valueChanged)="regionChanged($event)"></region-select-dropdown>
-      <project-select-dropdown (valueChanged)="projectChanged($event)"
+      <project-select-dropdown #projectCombobox (valueChanged)="projectChanged($event)"
                                (userChanged)="projectChanged($event)"
                                [regionId]="region"
                                [isFirstVisit]="isFirstVisit"
@@ -113,7 +113,20 @@
               <div *ngIf="data.iops != null">{{ data.iops }}</div>
             </td>
             <ng-container *ngIf="data.status | ServiceStatusPipe as statusModel">
-              <td nzBreakWord nzAlign="left" [ngStyle]="{color: statusModel.color}">{{ statusModel.status }}</td>
+              <td *ngIf="data.status != 'SUSPENDED'"
+                  nzBreakWord
+                  nzAlign="left"
+                  [ngStyle]="{color: statusModel.color}">{{ statusModel.status }}
+              </td>
+              <td *ngIf="data.status == 'SUSPENDED'"
+                  nzBreakWord nzAlign="left"
+                  [ngStyle]="{color: statusModel.color}">
+                <span nz-popover
+                      style="cursor: pointer;"
+                      [nzPopoverContent]="getSuspendedReason(data.suspendReason)"
+                      [nzPopoverTrigger]="'hover'"
+                      [nzPopoverPlacement]="'bottom'">{{ statusModel.status }}</span>
+              </td>
             </ng-container>
             <td nzBreakWord nzAlign="left">{{ data.serviceStatus }}</td>
             <td nzBreakWord nzAlign="left">
@@ -124,50 +137,61 @@
               </div>
             </td>
             <td nzBreakWord>
+              <!-----Các trạng thái liệt kê bên dưới không có thao tác---------->
               <div
                 *ngIf="!(['CREATING', 'ERROR', 'ATTACHING', 'DELETING','ERROR_DELETING','RESIZING'].includes(data.serviceStatus))
-                && !['DELETING', 'CREATING', 'ERROR_DELETING','RESIZING'].includes(data.status)">
+                && !['DELETING', 'CREATING', 'ERROR_DELETING','RESIZING', 'SUSPENDED'].includes(data.status)">
+                <!-----Gắn---------->
                 <one-portal-attach-volume [region]="region"
                                           [project]="project"
                                           [volumeId]="data.id"
                                           [multiple]="data.isMultiAttach"
                                           [instanceInVolume]="data.attachedInstances"
                                           (onOk)="handleOkAttachVm()" />
+                <!----Gỡ---------->
                 <one-portal-detach-volume [region]="region"
                                           [project]="project"
                                           [volumeId]="data.id"
                                           [isMultiple]="data.isMultiAttach"
                                           [instanceInVolume]="data.attachedInstances"
                                           (onOk)="handleOkDetachVm()" />
+                <!----Tạo backup---------->
                 <img style="padding-right: 10px; margin-left: 10px; cursor: pointer;"
                      src="assets/imgs/calendar-tick.svg" alt=""
                      nz-popover
                      [nzPopoverContent]="'volume.tooltip.content.create.backup' | i18n"
                      nzPopoverPlacement="bottom"
                      (click)="navigateToCreateBackup(data.id)" />
+                <!-----Xóa volume---------->
                 <one-portal-delete-volume [region]="region"
                                           [project]="project"
                                           [volumeId]="data.id"
                                           [volumeName]="data.name"
                                           (onOk)="handleOkDelete()" />
+                <!-----MENU THAO TÁC--------->
                 <img nz-dropdown
                      [nzDropdownMenu]="opMenu"
                      src="assets/imgs/more1.svg" alt="" style="cursor: pointer; margin-left: 5px;" />
                 <nz-dropdown-menu #opMenu="nzDropdownMenu">
                   <ul nz-menu>
+                    <!----TẠO LỊCH BACKUP---------->
                     <li nz-menu-item
                         (click)="navigateToCreateScheduleBackup(data.id)">{{ 'volume.menu.create.schedule.backup' | i18n }}
                     </li>
+                    <!-----TẠO SNAPSHOT---------->
                     <li nz-menu-item (click)="navigateToSnapshot(data.id)">{{ 'app.snapshot.create' | i18n }}</li>
+                    <!-----TẠO LỊCH SNAPSHOT--------->
                     <li nz-menu-item
                         (click)="navigateToCreateScheduleSnapshot(data.id)">{{ 'volume.menu.create.schedule.snapshot' | i18n }}
                     </li>
+                    <!-----CHỈNH SỬA--------->
                     <one-portal-update-volume [region]="region" [project]="project" [volume]="data"
                                               (onOk)="handleOkUpdate()" />
                   </ul>
                 </nz-dropdown-menu>
               </div>
-              <div *ngIf="data.serviceStatus == 'ERROR'">
+              <!-----Trạng thái = ERROR || SUSPENDED thì chỉ cho phép xóa---------->
+              <div *ngIf="data.serviceStatus == 'ERROR' || data.status == 'SUSPENDED'">
                 <one-portal-delete-volume [region]="region"
                                           [project]="project"
                                           [volumeId]="data.id"
@@ -179,6 +203,7 @@
           </tbody>
         </nz-table>
       </ng-container>
+      <!---------------TRANG GIỚI THIỆU-------------->
       <ng-container *ngSwitchDefault>
         <result>
           <nz-row>

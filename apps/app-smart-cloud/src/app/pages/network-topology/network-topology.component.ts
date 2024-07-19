@@ -6,6 +6,7 @@ import { forEach } from 'lodash';
 import { NetworkTopologyNode } from 'src/app/shared/models/network-topology,model';
 import { Subject } from 'rxjs';
 import { Network, DataSet, Data, Edge, Options } from 'vis';
+import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
 
 @Component({
   selector: 'one-portal-network-topology',
@@ -41,7 +42,7 @@ export class NetworkTopologyComponent {
 
   @ViewChild('treeContainer', { static: false }) treeContainer: ElementRef;
   @ViewChild('formContainer', { static: false }) formContainer: ElementRef;
-
+  @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
   constructor(private routerService: RouterService,
   private el: ElementRef,
   private renderer: Renderer2,
@@ -50,6 +51,9 @@ export class NetworkTopologyComponent {
   }
   onRegionChange(region: RegionModel) {
     this.region = region.regionId;
+    if(this.projectCombobox){
+      this.projectCombobox.loadProjects(true, region.regionId);
+    }
   }
 
   onRegionChanged(region: RegionModel) {

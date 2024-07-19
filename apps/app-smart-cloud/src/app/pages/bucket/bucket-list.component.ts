@@ -23,6 +23,7 @@ import { ObjectStorageService } from 'src/app/shared/services/object-storage.ser
 import { TimeCommon } from 'src/app/shared/utils/common';
 import { RegionModel } from '../../../../../../libs/common-utils/src';
 import { RegionSelectDropdownComponent } from 'src/app/shared/components/region-select-dropdown/region-select-dropdown.component';
+import { RegionID } from 'src/app/shared/enums/common.enum';
 
 @Component({
   selector: 'one-portal-bucket-list',
@@ -61,13 +62,13 @@ export class BucketListComponent implements OnInit {
 
   ngOnInit(): void {
     if (!this.url.includes('advance')) {
-      if(Number(localStorage.getItem('regionId')) === 7) {
-        this.region = 5
-      }else{
+      if (Number(localStorage.getItem('regionId')) === RegionID.ADVANCE) {
+        this.region = RegionID.NORMAL;
+      } else {
         this.region = Number(localStorage.getItem('regionId'));
       }
     } else {
-      this.region = 7;
+      this.region = RegionID.ADVANCE;
     }
     this.hasObjectStorageInfo();
     this.searchDelay
@@ -124,23 +125,23 @@ export class BucketListComponent implements OnInit {
 
   getUsageOfUser() {
     this.loadingSrv.open({ type: 'spin', text: 'Loading...' });
-      this.objectSevice
-        .getUsageOfUser(this.region)
-        .pipe(finalize(() => this.loadingSrv.close()))
-        .subscribe({
-          next: (data) => {
-            this.usage = data;
-            this.totalUsage =
-              (parseFloat(this.usage.usage) / parseInt(this.usage.total)) * 100;
-            this.cdr.detectChanges();
-          },
-          // error: (e) => {
-          //   this.notification.error(
-          //     this.i18n.fanyi('app.status.fail'),
-          //     this.i18n.fanyi('app.bucket.getObject.fail')
-          //   );
-          // },
-        });
+    this.objectSevice
+      .getUsageOfUser(this.region)
+      .pipe(finalize(() => this.loadingSrv.close()))
+      .subscribe({
+        next: (data) => {
+          this.usage = data;
+          this.totalUsage =
+            (parseFloat(this.usage.usage) / parseInt(this.usage.total)) * 100;
+          this.cdr.detectChanges();
+        },
+        // error: (e) => {
+        //   this.notification.error(
+        //     this.i18n.fanyi('app.status.fail'),
+        //     this.i18n.fanyi('app.bucket.getObject.fail')
+        //   );
+        // },
+      });
   }
 
   onRegionChange(region: RegionModel) {
@@ -208,25 +209,59 @@ export class BucketListComponent implements OnInit {
   }
 
   createBucket() {
-    this.router.navigate(['/app-smart-cloud/object-storage/bucket/create']);
+    if (this.region === RegionID.ADVANCE) {
+      this.router.navigate(['/app-smart-cloud/object-storage-advance/bucket/create']);
+    } else {
+      this.router.navigate(['/app-smart-cloud/object-storage/bucket/create']);
+    }
   }
 
-  configure(bucketName: string) {
-    this.router.navigate([
-      `/app-smart-cloud/object-storage/bucket/configure/${bucketName}`,
-    ]);
+  configure(bucketName: string) {   
+    if (this.region === RegionID.ADVANCE) {
+      this.router.navigate([
+        `/app-smart-cloud/object-storage-advance/bucket/configure/${bucketName}`,
+      ]);
+    } else {
+      this.router.navigate([
+        `/app-smart-cloud/object-storage/bucket/configure/${bucketName}`,
+      ]);
+    }
   }
 
   extendObjectStorage() {
-    this.router.navigate([
-      `/app-smart-cloud/object-storage/extend/${this.objectStorage.id}`,
-    ]);
+    if (this.region === RegionID.ADVANCE) {
+      this.router.navigate([
+        `/app-smart-cloud/object-storage-advance/extend/${this.objectStorage.id}`,
+      ]);
+    } else {
+      this.router.navigate([
+        `/app-smart-cloud/object-storage/extend/${this.objectStorage.id}`,
+      ]);
+    }
   }
 
   resizeObjectStorage() {
-    this.router.navigate([
-      `/app-smart-cloud/object-storage/edit/${this.objectStorage.id}`,
-    ]);
+    if (this.region === RegionID.ADVANCE) {
+      this.router.navigate([
+        `/app-smart-cloud/object-storage-advance/edit/${this.objectStorage.id}`,
+      ]);
+    } else {
+      this.router.navigate([
+        `/app-smart-cloud/object-storage/edit/${this.objectStorage.id}`,
+      ]);
+    }
+  }
+
+  handleGoToDetail(bucketName){
+    if (this.region === RegionID.ADVANCE) {
+      this.router.navigate([
+        `/app-smart-cloud/object-storage-advance/bucket/${bucketName}`,
+      ]);
+    } else {
+      this.router.navigate([
+        `/app-smart-cloud/object-storage/bucket/${bucketName}`,
+      ]);
+    }
   }
 
   deleteObjectStorage() {
@@ -298,7 +333,10 @@ export class BucketListComponent implements OnInit {
     this.bucketService.deleteOS(this.user.id).subscribe({
       next: (data) => {
         console.log(data);
-        this.notification.success('', 'Xóa Object Storage thành công');
+        this.notification.success(
+          this.i18n.fanyi('app.status.success'),
+          'Xóa Object Storage thành công'
+        );
         this.isVisibleDeleteOS = false;
         this.isLoadingDeleteOS = false;
         this.hasObjectStorageInfo();
@@ -306,7 +344,10 @@ export class BucketListComponent implements OnInit {
       },
       error: (error) => {
         console.log(error.error);
-        this.notification.error('', 'Xóa Object Storage không thành công');
+        this.notification.error(
+          this.i18n.fanyi('app.status.fail'),
+          'Xóa Object Storage không thành công'
+        );
         this.isLoadingDeleteOS = false;
         this.cdr.detectChanges();
       },

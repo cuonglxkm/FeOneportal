@@ -17,7 +17,7 @@
     <div class="alain-custom-action text-right">
       <share-users-combobox></share-users-combobox>
       <region-select-dropdown (regionChange)="onRegionChanged($event)" (valueChanged)="regionChanged($event)"></region-select-dropdown>
-      <project-select-dropdown (valueChanged)="projectChanged($event)"
+      <project-select-dropdown #projectCombobox (valueChanged)="projectChanged($event)"
                                (userChanged)="projectChanged($event)"
                                [regionId]="region"></project-select-dropdown>
     </div>
@@ -134,13 +134,13 @@
                   <td nzAlign="center" nzBreakWord>{{ data.ipPrivate }}</td>
                   <td nzAlign="center" nzBreakWord>{{ data.ipPublic }}</td>
                   <td nzAlign="center" nzBreakWord>
-                    <one-portal-attach-vm *ngIf="!(data?.securityGroups?.includes(selectedSG?.id))"
+                    <one-portal-attach-vm *ngIf="!(data?.securityGroupStr?.includes(selectedSG?.id))"
                                           [idVm]="data.id"
                                           [securityGroupId]="selectedSG?.id"
                                           [region]="region"
                                           [project]="project"
                                           (onOk)="handleAttachSG()" />
-                    <one-portal-detach-vm *ngIf="data?.securityGroups?.includes(selectedSG?.id)"
+                    <one-portal-detach-vm *ngIf="data?.securityGroupStr?.includes(selectedSG?.id)"
                                           [idVm]="data?.id"
                                           [securityGroupId]="selectedSG?.id"
                                           [region]="region"

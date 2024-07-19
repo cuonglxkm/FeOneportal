@@ -12,7 +12,7 @@
         }}</a></nz-breadcrumb-item
       >
       <nz-breadcrumb-item
-        ><a [routerLink]="['/app-smart-cloud/s3-key']"
+        ><a (click)="navigateToS3Key()"
           >S3 Key</a
         ></nz-breadcrumb-item
       >
@@ -196,17 +196,20 @@
 <!--Xóa-->
 <nz-modal
   [(nzVisible)]="isVisibleDelete"
-  nzTitle="Xác nhận xóa S3 Key"
+  [nzTitle]="'app.s3.key.delete.confirm' | i18n"
   (nzOnCancel)="isVisibleDelete = false"
 >
   <ng-container *nzModalContent>
     <nz-alert
       nzType="warning"
-      nzDescription="Bạn đang thực hiện xóa S3 Key."
+      [nzDescription]="alert"
       nzShowIcon
       style="margin-bottom: 10px"
     ></nz-alert>
-    <b>Quý khách có chắc chắn thực hiện xóa S3 Key không?</b>
+    <ng-template #alert>
+      <span class="text-label">{{ 'app.s3.key.delete.alert' | i18n }}</span>
+    </ng-template>
+    <span class="text-label">{{ 'app.s3.key.delete.des' | i18n }}</span>
   </ng-container>
   <div *nzModalFooter>
     <button nz-button (click)="handleCancelDelete()">
@@ -232,20 +235,23 @@
   </div>
 </nz-modal>
 
-<!--Nhân tạo-->
+<!--Tạo lại-->
 <nz-modal
   [(nzVisible)]="isVisibleReCreate"
-  nzTitle="Xác nhận tạo lại SecretKey ?"
+  [nzTitle]="'app.s3.key.recreate.confirm' | i18n"
   (nzOnCancel)="isVisibleReCreate = false"
 >
   <ng-container *nzModalContent>
     <nz-alert
       nzType="warning"
-      nzDescription="Bạn đang thực hiện tạo lại SecretKey."
+      [nzDescription]="alert"
       nzShowIcon
       style="margin-bottom: 10px"
     ></nz-alert>
-    <b>Quý khách chắc chắn muốn thực hiện tại lại SecretKey?</b>
+    <ng-template #alert>
+      <span class="text-label">{{ 'app.s3.key.recreate.alert' | i18n }}</span>
+    </ng-template>
+    <span class="text-label">{{ 'app.s3.key.recreate.des' | i18n }}</span>
   </ng-container>
   <div *nzModalFooter>
     <button nz-button (click)="handleCancelReCreate()">

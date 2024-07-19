@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FileSystemService } from '../../../../../shared/services/file-system.service';
@@ -16,6 +16,7 @@ import { ProjectService } from 'src/app/shared/services/project.service';
 import { debounceTime, Subject } from 'rxjs';
 import { ConfigurationsService } from '../../../../../shared/services/configurations.service';
 import { OrderService } from '../../../../../shared/services/order.service';
+import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
 
 @Component({
   selector: 'one-portal-resize-file-system',
@@ -51,6 +52,8 @@ export class ResizeFileSystemComponent implements OnInit {
   stepStorage: number = 0;
   valueStringConfiguration: string = '';
 
+  @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
+
   constructor(private fb: NonNullableFormBuilder,
               private router: Router,
               private activatedRoute: ActivatedRoute,
@@ -65,6 +68,9 @@ export class ResizeFileSystemComponent implements OnInit {
 
   regionChanged(region: RegionModel) {
     // this.region = region.regionId
+    if(this.projectCombobox){
+      this.projectCombobox.loadProjects(true, region.regionId);
+    }
     this.router.navigate(['/app-smart-cloud/file-storage/file-system/list']);
   }
 

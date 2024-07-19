@@ -260,7 +260,7 @@ export class ProjectCreateComponent implements OnInit {
 
     this.iconToggle = "icon_circle_minus"
     this.numOfMonth = this.form.controls['numOfMonth'].value;
-   
+
     this.getProductActivebyregion();
 
     this.getCatelogOffer();
@@ -675,8 +675,24 @@ export class ProjectCreateComponent implements OnInit {
           next: (result) => {
             if (result.success) {
               var returnPath: string = window.location.pathname;
-
+              localStorage.removeItem("projects");
+              localStorage.removeItem("projectId");
               this.router.navigate(['/app-smart-cloud/order/cart'], { state: { data: request, path: returnPath } });
+              if(this.hasRoleSI) {
+                this.vpc.createIpPublic(request).subscribe(
+                  data => {
+                    this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('project.action.creating'));
+                    this.router.navigate(['/app-smart-cloud/project']);
+                  },
+                  error => {
+                    this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('project.note51'));
+                  }
+                );
+              } else {
+                var returnPath: string = window.location.pathname;
+                this.router.navigate(['/app-smart-cloud/order/cart'], { state: { data: request, path: returnPath } });
+              }
+
             } else {
               this.isVisiblePopupError = true;
               this.errorList = result.data;

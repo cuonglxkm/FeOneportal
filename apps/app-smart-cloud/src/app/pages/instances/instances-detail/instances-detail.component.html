@@ -32,6 +32,7 @@
         (regionChange)="onRegionChanged($event)"
       ></region-select-dropdown>
       <project-select-dropdown
+        #projectCombobox
         [regionId]="regionId"
         (valueChanged)="onProjectChange($event)"
         (userChanged)="userChangeProject()"
@@ -40,28 +41,33 @@
   </ng-template>
   <nz-row>
     <div class="non-pointer" style="width: 100%">
+      <style>
+        :host ::ng-deep .ant-btn:not(.ant-btn-link) + .ant-btn {
+          margin-left: 0px;
+        }
+      </style>
       <button
+        style="margin-right: 8px"
         nz-button
         [nzType]="'primary'"
         (click)="activeGSCard()"
         *ngIf="
           !activeGS &&
           instancesModel &&
+          instancesModel.status.toUpperCase() == 'KHOITAO' &&
           instancesModel.taskState.toUpperCase() != 'REBUILDING' &&
-          !instancesModel.taskState.toUpperCase().includes('RESIZING') &&
-          instancesModel.taskState.toUpperCase() != 'POWERING-OFF' &&
-          instancesModel.taskState.toUpperCase() != 'REBOOTING'
+          !instancesModel.taskState.toUpperCase().includes('RESIZING')
         "
       >
         <i nz-icon nzType="eye"></i> <span>{{ 'app.monitor' | i18n }}</span>
       </button>
       <button
+        style="margin-right: 8px"
         *ngIf="
           instancesModel &&
-          instancesModel.taskState.toUpperCase() != 'REBUILDING' &&
-          !instancesModel.taskState.toUpperCase().includes('RESIZING') &&
-          instancesModel.taskState.toUpperCase() != 'POWERING-OFF' &&
-          instancesModel.taskState.toUpperCase() != 'REBOOTING'
+          instancesModel.status.toUpperCase() == 'KHOITAO' &&
+          !instancesModel.taskState.toUpperCase().includes('ING') &&
+          instancesModel.taskState.toUpperCase() != 'REBOOT_STARTED'
         "
         nz-button
         [nzType]="'primary'"
@@ -74,18 +80,14 @@
         *ngIf="
           instancesModel &&
           instancesModel.taskState.toUpperCase() != 'REBUILDING' &&
-          !instancesModel.taskState.toUpperCase().includes('RESIZING') &&
-          instancesModel.taskState.toUpperCase() != 'POWERING-OFF' &&
-          instancesModel.taskState.toUpperCase() != 'REBOOTING'
+          !instancesModel.taskState.toUpperCase().includes('RESIZING')
         "
         [instancesId]="id"
         [isProjectVPC]="
           (project != undefined && project.type) == 1 ? true : false
         "
         (valueChanged)="onReloadInstanceDetail($event)"
-        style="margin-left: 8px"
-      >
-      </one-portal-instances-btn>
+      />
     </div>
   </nz-row>
 </page-header>
@@ -244,48 +246,19 @@
           <span class="text-label customSpan" style="width: 35%"
             >{{ 'app.task.status' | i18n }}:</span
           >
-          <span
-            *ngIf="instancesModel.taskState.toUpperCase() == 'SHUTOFF'"
-            class="text-value-detail customSpan"
-            style="color: #ea3829"
-            >{{ instancesModel.taskState.toUpperCase() }}</span
+          <ng-container
+            *ngIf="
+              instancesModel.taskState.toUpperCase()
+                | ServiceTaskStatePipe as statusModel
+            "
           >
-          <span
-            *ngIf="instancesModel.taskState.toUpperCase() == 'POWERING-OFF'"
-            class="text-value-detail customSpan"
-            style="color: #ea3829"
-            >{{ instancesModel.taskState.toUpperCase() }}</span
-          >
-          <span
-            *ngIf="instancesModel.taskState.toUpperCase() == 'REBUILDING'"
-            class="text-value-detail customSpan"
-            style="color: #ea3829"
-            >{{ instancesModel.taskState.toUpperCase() }}</span
-          >
-          <span
-            *ngIf="instancesModel.taskState.toUpperCase().includes('RESIZING')"
-            class="text-value-detail customSpan"
-            style="color: #ea3829"
-            >{{ instancesModel.taskState.toUpperCase() }}</span
-          >
-          <span
-            *ngIf="instancesModel.taskState.toUpperCase() == 'REBOOTING'"
-            class="text-value-detail customSpan"
-            style="color: #ea3829"
-            >{{ instancesModel.taskState.toUpperCase() }}</span
-          >
-          <span
-            *ngIf="instancesModel.taskState.toUpperCase() == 'ACTIVE'"
-            class="text-value-detail customSpan"
-            style="color: #008d47"
-            >{{ instancesModel.taskState.toUpperCase() }}</span
-          >
-          <span
-            *ngIf="instancesModel.taskState.toUpperCase() == 'POWERING-ON'"
-            class="text-value-detail customSpan"
-            style="color: #008d47"
-            >{{ instancesModel.taskState.toUpperCase() }}</span
-          >
+            <span
+              class="text-value-detail customSpan"
+              [ngStyle]="{ color: statusModel.color }"
+            >
+              {{ statusModel.status }}
+            </span>
+          </ng-container>
         </nz-row>
       </nz-col>
       <nz-col nzSpan="12">

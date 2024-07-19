@@ -6,15 +6,13 @@
 >
   <ng-template #breadcrumb>
     <nz-breadcrumb [nzSeparator]="separatorTemplate">
-      <nz-breadcrumb-item [routerLink]="'/'">{{
-        'app.breadcrumb.home' | i18n
-      }}</nz-breadcrumb-item>
-      <nz-breadcrumb-item [routerLink]="'/'">{{
+      <nz-breadcrumb-item><a [routerLink]="'/'">{{ 'app.breadcrumb.home' | i18n }}</a></nz-breadcrumb-item>
+      <nz-breadcrumb-item>{{
         'app.breadcrumb.infrastructure.service' | i18n
       }}</nz-breadcrumb-item>
-      <nz-breadcrumb-item [routerLink]="'/'">Object Storage</nz-breadcrumb-item>
+      <nz-breadcrumb-item><a (click)="navigateToBucketList()">Object Storage</a></nz-breadcrumb-item>
       <nz-breadcrumb-item
-        [routerLink]="'/app-smart-cloud/object-storage/dashboard'"
+        (click)="navigateToDashboard()"
         >{{ 'app.object.storage.statistics' | i18n }}</nz-breadcrumb-item
       >
     </nz-breadcrumb>

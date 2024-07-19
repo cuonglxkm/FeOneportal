@@ -59,10 +59,6 @@ export class OrderDetailComponent {
     this.getUser()
     this.getOrderDetail()
 
-    if (this.notificationService.connection == undefined) {
-      this.notificationService.initiateSignalrConnection();
-    }
-
     this.notificationService.connection.on('UpdateOrder', (data) => {
       if (data.statusCode) {
         this.data.statusCode = data.statusCode;
@@ -112,7 +108,9 @@ export class OrderDetailComponent {
               this.serviceName = item.serviceName.split('-')[0].trim()
               if(this.serviceName.includes('Máy ảo')){
                 item.serviceNameLink = 'VM'
-              }else{
+              } else if(this.serviceName.includes('K8s Premium')) {
+                item.serviceNameLink = 'VPK';
+              } else{
                 item.serviceNameLink = this.serviceName
               }
             })
@@ -148,7 +146,9 @@ export class OrderDetailComponent {
               this.serviceName = item.serviceName.split('-')[0].trim()
               if(this.serviceName.includes('Máy ảo')){
                 item.serviceNameLink = 'VM'
-              }else{
+              } else if(this.serviceName.includes('K8s Premium')) {
+                item.serviceNameLink = 'VPK';
+              } else{
                 item.serviceNameLink = this.serviceName
               }
             })
@@ -252,8 +252,10 @@ export class OrderDetailComponent {
 
   getSpecType(){
     let serviceName = this.data.orderItems[0].serviceName.split('-')[0].trim()
+    if(serviceName.includes('Máy ảo')){
+      serviceName = 'VM'
+    }
     console.log(serviceName);
-
     if(serviceName === 'Backup vm' && this.data.orderItems[0].serviceType === 'Tạo mới'){
       this.specType = 'instancebackup_create'
     }else if(serviceName === 'Backup vm' && this.data.orderItems[0].serviceType === 'Khôi phục'){
@@ -276,6 +278,12 @@ export class OrderDetailComponent {
       this.specType = 'mongodb_extend'
     }else if(serviceName === 'Mongodb' && this.data.orderItems[0].serviceType.includes('Điều chỉnh')){
       this.specType = 'mongodb_resize'
+    }else if(serviceName === 'ECR' && this.data.orderItems[0].serviceType === 'Tạo mới'){
+      this.specType = 'ecr_create'
+    }else if(serviceName === 'ECR' && this.data.orderItems[0].serviceType === 'Gia hạn'){
+      this.specType = 'ecr_extend'
+    }else if(serviceName === 'ECR' && this.data.orderItems[0].serviceType.includes('Điều chỉnh')){
+      this.specType = 'ecr_resize'
     }else if(serviceName === 'File system snapshot' && this.data.orderItems[0].serviceType === 'Tạo mới'){
       this.specType = 'sharesnapshot_create'
     }else if(serviceName === 'File system snapshot' && this.data.orderItems[0].serviceType === 'Gia hạn'){
@@ -338,11 +346,11 @@ export class OrderDetailComponent {
       this.specType = 'volumebackup_create'
     }else if(serviceName === 'Volume Backup' && this.data.orderItems[0].serviceType === 'Khôi phục'){
       this.specType = 'restore_volumebackup'
-    }else if(this.serviceName.includes('Máy ảo') && this.data.orderItems[0].serviceType === 'Tạo mới'){
+    }else if(serviceName === 'VM' && this.data.orderItems[0].serviceType === 'Tạo mới'){
       this.specType = 'instance_create'
-    }else if(this.serviceName.includes('Máy ảo') && this.data.orderItems[0].serviceType === 'Gia hạn'){
+    }else if(serviceName === 'VM' && this.data.orderItems[0].serviceType === 'Gia hạn'){
       this.specType = 'instance_extend'
-    }else if(this.serviceName.includes('Máy ảo') && this.data.orderItems[0].serviceType.includes('Điều chỉnh')){
+    }else if(serviceName === 'VM' && this.data.orderItems[0].serviceType.includes('Điều chỉnh')){
       this.specType = 'instance_resize'
     }
   }

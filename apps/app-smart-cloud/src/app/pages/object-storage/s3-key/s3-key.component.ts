@@ -14,6 +14,8 @@ import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { Subject } from 'rxjs';
 import { TimeCommon } from 'src/app/shared/utils/common';
 import { getCurrentRegionAndProject } from '@shared';
+import { RegionID } from 'src/app/shared/enums/common.enum';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'one-portal-s3-key',
@@ -43,6 +45,7 @@ export class S3KeyComponent implements OnInit {
   value: string = ''
   searchDelay = new Subject<boolean>();
   region = JSON.parse(localStorage.getItem('regionId'));
+  url = window.location.pathname;
   constructor(
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
     @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
@@ -52,14 +55,21 @@ export class S3KeyComponent implements OnInit {
     private clipboard: Clipboard,
     private notification: NzNotificationService,
     private loadingSrv: LoadingService,
-    private subUserService: SubUserService
+    private subUserService: SubUserService,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
-    let regionAndProject = getCurrentRegionAndProject();
-    this.region = regionAndProject.regionId;
+    if (!this.url.includes('advance')) {
+      if(Number(localStorage.getItem('regionId')) === RegionID.ADVANCE) {
+        this.region = RegionID.NORMAL
+      }else{
+        this.region = Number(localStorage.getItem('regionId'));
+      }
+    } else {
+      this.region = RegionID.ADVANCE;
+    }
     this.hasObjectStorage();
-    this.getData()
     this.searchDelay.pipe(debounceTime(TimeCommon.timeOutSearch)).subscribe(() => {     
       this.getData();
     });
@@ -239,5 +249,13 @@ export class S3KeyComponent implements OnInit {
 
   handleCancelDelete() {
     this.isVisibleDelete = false;
+  }
+
+  navigateToS3Key(){
+    if(this.region === RegionID.ADVANCE){
+      this.router.navigate(['/app-smart-cloud/object-storage-advance/s3-key']);
+    }else{
+      this.router.navigate(['/app-smart-cloud/object-storage/s3-key']);
+    }
   }
 }

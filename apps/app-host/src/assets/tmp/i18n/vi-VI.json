@@ -104,7 +104,7 @@
   "app.notes": "Lưu ý",
   "app.here": "Tại đây",
   "app.this": "đây",
-  "app.to": "Đến",
+  "app.to": "đến",
   "app.monitor": "Giám sát",
   "app.ip.floating": "IP Floating",
   "app.choose.ip.floating": "Chọn IP Floating",
@@ -123,6 +123,7 @@
   "app.money.price": "Thành tiền/Đơn giá",
   "app.notify.error": "Thông báo lỗi",
   "app.project": "Dự án",
+  "app.disconnected": "MẤT KẾT NỐI",
 
   "app.encrypt": "Mã hóa",
   "app.monthly.price": "Giá theo tháng",
@@ -529,6 +530,8 @@
   "app.notify.create.instances.fail": "Khởi tạo máy ảo {{name}} không thành công",
   "app.notify.extend.instance.success": "Yêu cầu gia hạn máy ảo thành công",
   "app.notify.extend.instance.fail": "Yêu cầu gia hạn máy ảo không thành công",
+  "app.notify.resize.instance.success": "Yêu cầu điều chỉnh máy ảo thành công",
+  "app.notify.resize.instance.fail": "Yêu cầu điều chỉnh máy ảo không thành công",
 
 
   "app.choose.snapshot": "Chọn Snapshot",
@@ -769,6 +772,12 @@
   "app.s3.key.create": "Tạo mới S3 Key",
   "app.s3.key.choose": "Chọn User/SubUser",
   "app.s3.key.search": "Tìm kiếm theo tên User",
+  "app.s3.key.delete.alert": "Bạn đang thực hiện xóa SecretKey.",
+  "app.s3.key.delete.des": "Quý khách có chắc chắn thực hiện xóa S3 Key không?",
+  "app.s3.key.delete.confirm": "Xác nhận xóa S3 Key",
+  "app.s3.key.recreate.confirm": "Xác nhận tạo lại SecretKey",
+  "app.s3.key.recreate.alert": "Bạn đang thực hiện tạo lại SecretKey.",
+  "app.s3.key.recreate.des": "Quý khách chắc chắn muốn thực hiện tại lại SecretKey?",
 
   "validation.bucket.name": "Tên Bucket chỉ được phép dùng các ký tự chữ thường a-z các ký tự số 0 -9 dấu gạch ngang (-) và dấu chấm (.), tối thiểu 3 ký tự và tối đa 63 ký tự",
   "validation.bucket.name.invalid": "Tên Bucket không hợp lệ",
@@ -809,9 +818,12 @@
   "app.load.balancer.list": "Danh sách Load Balancer",
   "app.load.balancer.search": "Tìm kiếm theo tên, IP Address...",
   "app.load.balancing.service": "Dịch vụ cân bằng tải",
-  "app.load.balancing.intro": "Đối với dự án VPC, quý khách có thể mua kèm dịch vụ Load Balancer tại dịch vụ bổ sung",
+  "app.load.balancing.intro": "Giải pháp phân phối lưu lượng truy cập mạng nhằm tối ưu hóa việc sử dụng nguồn lực, nâng cao hiệu suất hệ thống và đảm bảo tính sẵn sàng của ứng dụng",
   "app.load.balancing.intro.next": "Đối với dự án thường, quý khách có thể khởi tạo Load Balancer tại đây",
   "app.listener.create": "Tạo Listener",
+  "app.lb.note.1": "đã hết quota Load Balancer, vui lòng điều chỉnh VPC để tiếp tục sử dụng dịch vụ",
+  "app.lb.note.2": "Quý khách chưa mua dịch vụ Load Balancer trong VPC tùy biến. Xin vui lòng nhấn vào đây",
+  "app.lb.note.3": "thực hiện mua dịch vụ",
   "app.load.balancer.attach.ipfloating": "Gắn IP Floating",
   "app.load.balancer.detach.ipfloating": "Gỡ IP Floating",
   "app.listener.create.button": "Tạo mới Listener",
@@ -2648,12 +2660,18 @@
   "project.note48": "Load Balancer giúp nhân phối tải hiệu quả, nâng cao khả năng chịu tải của hệ thống và tăng trải nghiệm người dùng",
   "project.note49": "Chọn gói Load Balancer",
   "project.action.creating": "Yêu cầu tạo dự án đã được gửi đi",
+  "project.action.extend": "Yêu cầu gia hạn dự án đã được gửi đi",
+  "project.action.resize": "Yêu cầu điều chỉnh dự án đã được gửi đi",
   "project.note51": "Tạo dự án thất bại",
+  "project.note52": "Gia hạn dự án thất bại",
+  "project.note53": "Điều chỉnh dự án thất bại",
   "project.create":"Khởi tạo dự án",
   "app.project.price": "Thành tiền",
   "status.enable":"Cho phép",
   "status.disable":"Không cho phép",
   "status.deleted":"Đã xóa",
+  "status.suspended":"Tạm ngưng",
+  
   "custom.config.package":"Gói cấu hình tùy chọn",
   "service.bonus":"Dịch vụ bổ sung",
   "config.package":"Gói cấu hình sẵn",
@@ -2896,7 +2914,11 @@
   "app.backup.package.placeholder.search.name": "Tìm kiếm theo tên",
   "app.notification.warning.input": "Vui lòng nhập đầy đủ thông tin",
   "app.notification.request.create.success": "Yêu cầu tạo gói backup thành công.",
-  "app.notification.request.create.fail": "Yêu cầu tạo gói backup thất bại. {{error}}",
+  "app.notification.request.resize.success": "Yêu cầu điều chỉnh gói backup thành công.",
+  "app.notification.request.extend.success": "Yêu cầu gia hạn gói backup thành công.",
+  "app.notification.request.create.fail": "Yêu cầu tạo gói backup thất bại.",
+  "app.notification.request.resize.fail": "Yêu cầu điều chỉnh gói backup thất bại.",
+  "app.notification.request.extend.fail": "Yêu cầu gia hạn gói backup thất bại.",
   "app.notification.delete.package.success": "Yêu cầu xóa gói backup thành công",
   "app.notification.delete.package.fail": "Yêu cầu xóa gói backup thất bại. {{ error }}",
   "app.notification.delete.confirm": "Vui lòng nhập đúng tên Backup Package",
@@ -3127,7 +3149,7 @@
 
   "app.validate.order.fail": "Lỗi khi kiểm tra order",
 
-  
+
 
 
   "app.manage.site.to.site.title":"Quản lý VPN site to site",

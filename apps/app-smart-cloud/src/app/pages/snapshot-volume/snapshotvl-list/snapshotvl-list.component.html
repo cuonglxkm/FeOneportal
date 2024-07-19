@@ -20,7 +20,7 @@
       <region-select-dropdown
         (valueChanged)="getRegionId($event)"
       ></region-select-dropdown>
-      <project-select-dropdown
+      <project-select-dropdown #projectCombobox
         (valueChanged)="getProjectId($event)"
         (userChanged)="getProjectId($event)"
         [regionId]="regionId"

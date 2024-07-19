@@ -7,7 +7,7 @@
         }}</a></nz-breadcrumb-item
       >
       <nz-breadcrumb-item
-        ><a [routerLink]="['/app-smart-cloud/object-storage/bucket']"
+        ><a (click)="navigateToBucketList()"
           >Bucket</a
         ></nz-breadcrumb-item
       >
@@ -172,13 +172,13 @@
     "
   >
     <img
-      style="padding-right: 10px; padding-left: 10px"
+      style="padding-right: 10px; padding-left: 10px; cursor: pointer"
       src="assets/imgs/box.svg"
       (click)="toFolder1('', true)"
     />
     <ng-container *ngFor="let item of listOfFolder">
       <div
-        style="font-weight: bold; padding-right: 10px"
+        style="font-weight: bold; padding-right: 10px; cursor: pointer;"
         (click)="toFolder1(item, false)"
       >
         > {{ item.name }}
@@ -317,7 +317,8 @@
   [nzTitle]="'app.bucket.detail.createFolder' | i18n"
   [nzOkText]="'app.button.confirm' | i18n"
   [nzCancelText]="'app.button.cancel' | i18n"
-  [nzStyle]="modalStyle"
+  [nzStyle]="modalStyle" 
+  (nzOnCancel)="handleCancelCreateFolder()"
 >
   <form nz-form [formGroup]="formCreateFolder">
   <ng-container *nzModalContent>
@@ -400,7 +401,8 @@
 <nz-modal
   [(nzVisible)]="isVisibleUploadFile"
   [nzTitle]="'app.bucket.detail.uploadFile' | i18n"
-  [nzStyle]="modalStyle"
+  [nzStyle]="modalStyle" 
+  (nzOnCancel)="handleCancelUploadFile()"
 >
   <ng-container *nzModalContent>
     <!--      2 case trống file-->
@@ -439,8 +441,7 @@
       </nz-radio-group>
       <nz-table
         [nzData]="lstFileUpdate"
-        style="margin-top: 10px"
-        [nzHideOnSinglePage]="true"
+        style="margin-top: 10px" nzHideOnSinglePage nzShowPagination="false"
       >
         <thead>
           <tr>
@@ -491,7 +492,7 @@
                 *ngIf="item.isUpload === true"
                 style="cursor: pointer"
                 nz-tooltip
-                nz[TooltipTitle]="'app.button.confirm' | i18n"
+                [nzTooltipTitle]="'app.button.confirm' | i18n"
                 src="assets/imgs/delete.svg"
                 (click)="removeFile(item)"
               />
@@ -574,7 +575,8 @@
     <button
       nz-button
       nzType="primary"
-      (click)="uploadAllFile()"
+      (click)="uploadAllFile()" 
+      [disabled]="lstFileUpdate.length === 0"
     >
       <div class="d-flex align-items-center">
         <one-portal-svg-icon class="icon-svg justify-center-icon" [icon]="'icon_download'"></one-portal-svg-icon>
@@ -601,7 +603,7 @@
         [ngModel]="dataAction.url"
         [disabled]="true"
         nzSize="large"
-        style="width: 80%"
+        style="width: 91%"
       />
       <button
         nz-button

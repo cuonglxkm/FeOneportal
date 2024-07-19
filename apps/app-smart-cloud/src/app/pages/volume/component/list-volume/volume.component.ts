@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, Inject, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, Inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { VolumeDTO } from '../../../../shared/dto/volume.dto';
 import { VolumeService } from '../../../../shared/services/volume.service';
@@ -15,6 +15,7 @@ import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from '@core';
 import { debounceTime, Subject, Subscription } from 'rxjs';
+import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
 
 @Component({
   selector: 'app-volume',
@@ -66,7 +67,7 @@ export class VolumeComponent implements OnInit, OnDestroy {
   dataSubjectInputSearch: Subject<any> = new Subject<any>();
   private searchSubscription: Subscription;
   private enterPressed: boolean = false;
-
+  @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
 
   constructor(@Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
               private router: Router,
@@ -82,6 +83,9 @@ export class VolumeComponent implements OnInit, OnDestroy {
   isFirstVisit: boolean = true;
   regionChanged(region: RegionModel) {
     this.region = region.regionId;
+    if(this.projectCombobox){
+      this.projectCombobox.loadProjects(true, region.regionId);
+    }
     setTimeout(() => {
       this.getListVolume(true);
     }, 2500);
@@ -105,6 +109,7 @@ export class VolumeComponent implements OnInit, OnDestroy {
     }
   }
 
+  // Tìm kiếm theo tên
   changeInputChange(event: Event) {
     const value = (event.target as HTMLInputElement).value;
     this.enterPressed = false;
@@ -130,6 +135,7 @@ export class VolumeComponent implements OnInit, OnDestroy {
     this.getListVolume(false);
   }
 
+  //tìm kiếm theo trạng thái
   onChange(value) {
     console.log('selected', value);
 
@@ -149,6 +155,7 @@ export class VolumeComponent implements OnInit, OnDestroy {
 
   volumeInstance: string = '';
 
+  //Lấy danh sách volume
   getListVolume(isBegin) {
     this.isLoading = true;
     this.customerId = this.tokenService.get()?.userId;
@@ -173,6 +180,9 @@ export class VolumeComponent implements OnInit, OnDestroy {
           this.isLoading = false;
           this.response = null;
         }
+
+        // begin = true: length < 1 => sang trang giới thiệu;
+        // begin = false: length < 1 => danh sách trả thông tin "không có dữ liệu"
         if (isBegin) {
           this.isBegin = this.response.records.length < 1 || this.response.records === null ? true : false;
         }
@@ -180,10 +190,11 @@ export class VolumeComponent implements OnInit, OnDestroy {
         this.isLoading = false;
         this.response = null;
         console.log(error);
-        this.notification.error(error.statusText, 'Lấy dữ liệu thất bại');
+        this.notification.error(error.statusText, this.i18n.fanyi('app.failData'));
       });
   }
 
+  //dẫn sang tạo volume
   navigateToCreateVolume() {
     if (this.typeVPC == 1) {
       this.router.navigate(['/app-smart-cloud/volume/vpc/create']);
@@ -250,13 +261,28 @@ export class VolumeComponent implements OnInit, OnDestroy {
 
   hasRoleSI: boolean = false;
 
+
+  getSuspendedReason(suspendedReason: string) {
+    switch (suspendedReason) {
+      case "CHAMGIAHAN":
+        return this.i18n.fanyi('app.status.low-renew')
+      case "":
+      default:
+        break;
+    }
+  }
+
   ngOnInit() {
+    // Lấy thong tin region & project từ local
     let regionAndProject = getCurrentRegionAndProject();
     this.region = regionAndProject.regionId;
     this.project = regionAndProject.projectId;
 
+    //lấy role
     this.hasRoleSI = localStorage.getItem('role').includes('SI');
     console.log('project', this.project);
+
+
     this.selectedValue = this.options[0].value;
     this.customerId = this.tokenService.get()?.userId;
     this.onChangeInputChange();
@@ -267,10 +293,7 @@ export class VolumeComponent implements OnInit, OnDestroy {
       this.router.navigate(['/exception/500']);
     }
 
-    if (this.notificationService.connection == undefined) {
-      this.notificationService.initiateSignalrConnection();
-    }
-
+    //thông báo signalR tự động reload khi trạng thái thay đổi
     this.notificationService.connection.on('UpdateVolume', (message) => {
       if (message) {
         switch (message.actionType) {

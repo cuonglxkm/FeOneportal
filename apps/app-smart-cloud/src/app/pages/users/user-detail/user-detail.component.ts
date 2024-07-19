@@ -22,6 +22,7 @@ import { NzMessageService } from 'ng-zorro-antd/message';
 import { RegionModel } from '../../../../../../../libs/common-utils/src';
 import { I18NService } from '@core';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
+import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
 
 @Component({
   selector: 'one-portal-user-detail',
@@ -49,7 +50,7 @@ export class UserDetailComponent implements OnInit {
     { text: this.i18n.fanyi('app.status.running'), value: 'KHOITAO' },
     { text: this.i18n.fanyi('app.status.suspended'), value: 'TAMNGUNG' },
   ];
-
+  @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
   changeFilterStatus(e: any): void {
     this.typePolicy = e;
   }
@@ -95,6 +96,9 @@ export class UserDetailComponent implements OnInit {
   onRegionChange(region: RegionModel) {
     // Handle the region change event
     this.regionId = region.regionId;
+    if(this.projectCombobox){
+      this.projectCombobox.loadProjects(true, region.regionId);
+    }
     this.cdr.detectChanges();
   }
 

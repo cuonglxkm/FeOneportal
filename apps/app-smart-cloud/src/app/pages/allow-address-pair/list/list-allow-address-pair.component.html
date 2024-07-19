@@ -15,7 +15,7 @@
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>
         <a
-          [routerLink]="['/app-smart-cloud/instances/instances-detail/' + id]"
+          [routerLink]="['/app-smart-cloud/instances/instances-detail/' + instanceId]"
           >{{ 'app.instances.detail' | i18n }}</a
         >
       </nz-breadcrumb-item>
@@ -34,7 +34,7 @@
         (valueChanged)="onRegionChange($event)"
         (regionChange)="onRegionChanged($event)"
       ></region-select-dropdown>
-      <project-select-dropdown
+      <project-select-dropdown #projectCombobox
         [regionId]="regionId"
         (valueChanged)="onProjectChange($event)"
         (userChanged)="userChangeProject()"

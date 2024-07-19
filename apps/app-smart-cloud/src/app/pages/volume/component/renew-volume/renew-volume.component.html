@@ -28,12 +28,12 @@
     <div class="alain-custom-action text-right">
       <share-users-combobox></share-users-combobox>
       <region-select-dropdown (regionChange)="onRegionChanged($event)" (valueChanged)="regionChanged($event)"></region-select-dropdown>
-      <project-select-dropdown (valueChanged)="projectChanged($event)"
+      <project-select-dropdown #projectCombobox (valueChanged)="projectChanged($event)"
                                (userChanged)="userChangeProject($event)"
                                [regionId]="region"></project-select-dropdown>
     </div>
   </ng-template>
-  <button class="button-cancel"
+  <button *ngIf="!['SUSPENDED'].includes(volumeInfo?.status) && !['CREATING', 'ATTACHING', 'DELETING', 'ERROR_DELETING', 'ERROR'].includes(volumeInfo?.serviceStatus)" class="button-cancel"
           (click)="navigateEditVolume(volumeInfo.id)"
           nz-button nzType="primary">
     <img src="assets/imgs/edit-1.svg" alt=""
@@ -237,15 +237,8 @@
               </div>
               <nz-row>
                 <nz-col style="width: 100%">
-                  <button *ngIf="!hasRoleSI" style="width: 100%" nz-button nzSize="large" nzType="primary"
+                  <button style="width: 100%" nz-button nzSize="large" nzType="primary"
                           (click)="navigateToPaymentSummary()"
-                          [nzLoading]="isLoadingAction"
-                          [disabled]="validateForm.invalid">
-                    <img src="assets/imgs/wallet.svg" style="margin-right: 5px; padding-bottom: 5px;" />
-                    <span [style.color]="validateForm.invalid ? 'gray' : 'white'">{{ 'app.extend'|i18n }}</span>
-                  </button>
-                  <button *ngIf="hasRoleSI" style="width: 100%" nz-button nzSize="large" nzType="primary"
-                          (click)="doRenew()"
                           [nzLoading]="isLoadingAction"
                           [disabled]="validateForm.invalid">
                     <img src="assets/imgs/wallet.svg" style="margin-right: 5px; padding-bottom: 5px;" />

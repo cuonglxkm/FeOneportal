@@ -1,12 +1,12 @@
 import { Clipboard } from '@angular/cdk/clipboard';
-import { Component, Inject, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, Inject, OnInit } from '@angular/core';
 import {
   FormControl,
   FormGroup,
   NonNullableFormBuilder,
   Validators,
 } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { I18NService } from '@core';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
@@ -30,6 +30,7 @@ import { RegionModel } from '../../../../../../../libs/common-utils/src';
 import { LoadingService } from '@delon/abc/loading';
 import { ObjectStorageService } from 'src/app/shared/services/object-storage.service';
 import { FOLDER_NAME_REGEX } from 'src/app/shared/constants/constants';
+import { RegionID } from 'src/app/shared/enums/common.enum';
 
 @Component({
   selector: 'one-portal-bucket-detail',
@@ -111,6 +112,7 @@ export class BucketDetailComponent extends BaseService implements OnInit {
   activePrivate = true;
   filterQuery: string = '';
   listFile = [];
+  hostNameUrl = window.location.origin;
 
   isLoadingCreateFolder: boolean = false;
   isLoadingAuthorize: boolean = false;
@@ -129,7 +131,9 @@ export class BucketDetailComponent extends BaseService implements OnInit {
     private clipboard: Clipboard,
     private modalService: NzModalService,
     private fb: NonNullableFormBuilder,
-    private loadingSrv: LoadingService
+    private loadingSrv: LoadingService,
+    private cdr: ChangeDetectorRef,
+    private router: Router
   ) {
     super();
   }
@@ -197,11 +201,17 @@ export class BucketDetailComponent extends BaseService implements OnInit {
 
   onPageSizeChange(event: any) {
     this.size = event;
+    this.checked = false
+    this.setOfCheckedId.clear();
+    this.countObjectSelected = 0;
     this.loadData();
   }
 
   onPageIndexChange(event: any) {
     this.index = event;
+    this.checked = false
+    this.setOfCheckedId.clear();
+    this.countObjectSelected = 0;
     this.loadData();
   }
 
@@ -236,10 +246,10 @@ export class BucketDetailComponent extends BaseService implements OnInit {
           this.usage = data;
         },
         error: (e) => {
-          this.notification.error(
-            this.i18n.fanyi('app.status.fail'),
-            this.i18n.fanyi('app.bucket.getObject.fail')
-          );
+          // this.notification.error(
+          //   this.i18n.fanyi('app.status.fail'),
+          //   this.i18n.fanyi('app.bucket.getObject.fail')
+          // );
         },
       });
   }
@@ -438,6 +448,7 @@ export class BucketDetailComponent extends BaseService implements OnInit {
       .getBucketDetail(this.activatedRoute.snapshot.paramMap.get('name'), this.region)
       .subscribe((data) => {
         this.bucket = data;
+        this.cdr.detectChanges()
       });
   }
 
@@ -812,7 +823,7 @@ export class BucketDetailComponent extends BaseService implements OnInit {
   }
 
   uploadAllFile() {
-    const filesToUpload = this.lstFileUpdate.filter((item) => !item.uploaded);
+    const filesToUpload = this.lstFileUpdate.filter((item) => !item.isUpload);
 
     console.log(filesToUpload);
 
@@ -837,7 +848,7 @@ export class BucketDetailComponent extends BaseService implements OnInit {
   }
 
   uploadSingleFile(item) {
-    if (item.uploaded) {
+    if (item.isUpload) {
       this.notification.warning(
         this.i18n.fanyi('app.status.warning'),
         this.i18n.fanyi('app.bucket.detail.uploadFile.warning1')
@@ -868,11 +879,8 @@ export class BucketDetailComponent extends BaseService implements OnInit {
           regionId: this.region
         };
 
-        console.log(params);
-
         this.service.createMultiPartUpload(params).subscribe(
           (data) => {
-            console.log(data);
             upload_id = data.data;
             item.uploadId = data.data;
             createChunk(start);
@@ -930,7 +938,6 @@ export class BucketDetailComponent extends BaseService implements OnInit {
           };
           xhr.onload = () => {
             if (xhr.status === 200) {
-              item.uploaded = true;
               this.notification.success(
                 this.i18n.fanyi('app.status.success'),
                 this.i18n.fanyi('app.bucket.detail.uploadFile.success')
@@ -947,6 +954,7 @@ export class BucketDetailComponent extends BaseService implements OnInit {
           };
 
           xhr.onerror = () => {
+            item.uploaded = false;
             this.notification.error(
               this.i18n.fanyi('app.status.fail'),
               this.i18n.fanyi('app.bucket.detail.uploadFile.fail')
@@ -964,7 +972,7 @@ export class BucketDetailComponent extends BaseService implements OnInit {
             partNumber: index.toString(),
             uploadId: upload_id,
             expiryTime: addDays(new Date(), 1),
-            urlOrigin: 'https://oneportal.onsmartcloud.com',
+            urlOrigin: this.hostNameUrl,
             regionId: this.region
           };
 
@@ -1041,11 +1049,13 @@ export class BucketDetailComponent extends BaseService implements OnInit {
     } else {
       return new Promise<void>((resolve, reject) => {
         item.isUpload = true;
+        console.log(item);
+        
         let data = {
           bucketName: this.activatedRoute.snapshot.paramMap.get('name'),
           key: this.currentKey + item.name,
           expiryTime: addDays(this.date, 1),
-          urlOrigin: 'https://oneportal.onsmartcloud.com',
+          urlOrigin: this.hostNameUrl,
           regionId: this.region
         };
         this.service.getSignedUrl(data).subscribe(
@@ -1070,6 +1080,7 @@ export class BucketDetailComponent extends BaseService implements OnInit {
               resolve();
             };
             xhr.onerror = () => {
+              item.isUpload = false
               this.notification.error(
                 this.i18n.fanyi('app.status.fail'),
                 this.i18n.fanyi('app.bucket.detail.uploadFile.fail')
@@ -1079,6 +1090,7 @@ export class BucketDetailComponent extends BaseService implements OnInit {
             xhr.send(item.originFileObj);
           },
           (error) => {
+            item.isUpload = false
             this.notification.error(
               this.i18n.fanyi('app.status.fail'),
               this.i18n.fanyi('app.bucket.detail.uploadFile.fail')
@@ -1191,5 +1203,13 @@ export class BucketDetailComponent extends BaseService implements OnInit {
         );
       }
     );
+  }
+
+  navigateToBucketList(){
+    if(this.region === RegionID.ADVANCE){
+      this.router.navigate(['/app-smart-cloud/object-storage-advance/bucket']);
+    }else{
+      this.router.navigate(['/app-smart-cloud/object-storage/bucket']);
+    }
   }
 }

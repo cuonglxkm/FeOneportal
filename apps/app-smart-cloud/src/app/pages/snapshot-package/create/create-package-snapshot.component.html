@@ -26,7 +26,7 @@
       (regionChange)="onRegionChanged($event)"
         (valueChanged)="regionChanged($event)"
       ></region-select-dropdown>
-      <project-select-dropdown
+      <project-select-dropdown #projectCombobox
         (valueChanged)="projectChanged($event)"
         (userChanged)="userChanged($event)"
         [regionId]="region"

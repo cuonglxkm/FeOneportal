@@ -1,4 +1,4 @@
-import { Component, Inject, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
+import { Component, Inject, Input, OnChanges, OnInit, SimpleChanges, ViewChild } from '@angular/core';
 import { getCurrentRegionAndProject } from '@shared';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ProjectModel, RegionModel } from '../../../../../../../libs/common-utils/src';
@@ -14,6 +14,7 @@ import { I18NService } from '@core';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { LoadingService } from '@delon/abc/loading';
 import { VpcService } from '../../../shared/services/vpc.service';
+import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
 
 @Component({
   selector: 'one-portal-snapshot-create',
@@ -65,7 +66,7 @@ export class SnapshotCreateComponent implements OnInit, OnChanges {
   quotaUsed: any;
   quotaRemain: any;
   selectedVolumeRoot: any;
-
+  @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
 
   constructor(private router: Router,
               private packageSnapshotService: PackageSnapshotService,
@@ -93,6 +94,9 @@ export class SnapshotCreateComponent implements OnInit, OnChanges {
   }
 
   regionChanged(region: RegionModel) {
+    if(this.projectCombobox){
+      this.projectCombobox.loadProjects(true, region.regionId);
+    }
     this.region = region.regionId;
   }
 

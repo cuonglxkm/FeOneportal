@@ -57,6 +57,7 @@ export class ProjectExtendComponent implements OnInit{
               private router: Router,
               @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
               private ipService: IpPublicService,
+
               private activatedRoute: ActivatedRoute, private orderService: OrderService,  private notification: NzNotificationService) {
   }
 
@@ -166,8 +167,20 @@ export class ProjectExtendComponent implements OnInit{
       (data) => {
         if (data.success) {
           console.log('request', request);
-           var returnPath: string = window.location.pathname;
-            this.router.navigate(['/app-smart-cloud/order/cart'], { state: { data: request,path: returnPath } });
+           if(this.hasRoleSI) {
+             this.service.createIpPublic(request).subscribe(
+               data => {
+                 this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('project.action.extend'));
+                 this.router.navigate(['/app-smart-cloud/project']);
+               },
+               error => {
+                 this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('project.note52'));
+               }
+             );
+           } else {
+             var returnPath: string = window.location.pathname;
+             this.router.navigate(['/app-smart-cloud/order/cart'], { state: { data: request,path: returnPath } });
+           }
         } else {
           this.isVisiblePopupError = true;
           this.errorList = data.data;
@@ -183,6 +196,8 @@ export class ProjectExtendComponent implements OnInit{
     // var returnPath: string = window.location.pathname;
     // this.router.navigate(['/app-smart-cloud/order/cart'], { state: { data: request,path: returnPath } });
   }
+
+
 
   // onChangeTime() {
   //   const dateNow =new Date(this.expiredDateOld);
@@ -212,6 +227,7 @@ export class ProjectExtendComponent implements OnInit{
       actionType: 3,
       serviceInstanceId: this.activatedRoute.snapshot.paramMap.get('id'),
       newExpireDate: this.expiredDate,
+     
       userEmail: null,
       actorEmail: null
     }

@@ -30,7 +30,7 @@
         (regionChange)="onRegionChanged($event)"
         (valueChanged)="regionChanged($event)"
       ></region-select-dropdown>
-      <project-select-dropdown
+      <project-select-dropdown #projectCombobox
         [isDetail]="true"
         (valueChanged)="projectChanged($event)"
         (userChanged)="projectChanged($event)"
@@ -104,6 +104,9 @@
           </tr>
         </tbody>
       </nz-table>
+      <div class="text-label">
+        {{ 'app.adjust.date' | i18n }}: {{ today | date : 'dd/MM/yyyy' }}
+      </div>
     </nz-card>
     <one-portal-guide-formula></one-portal-guide-formula>
   </nz-col>
@@ -115,6 +118,36 @@
             'app.estimated.cost' | i18n
           }}</span>
         </div>
+        <nz-row nzGutter="16">
+          <nz-col nzSpan="16">
+            <span class="text-value">{{ 'app.fee.resize' | i18n }}</span>
+          </nz-col>
+          <nz-col class="text-right" nzSpan="8">
+            <span
+              class="text-value"
+              style="color: #0066b3"
+              nzAlign="right"
+              *ngIf="totalAmount == null || totalAmount < 0"
+              >0 VND</span
+            >
+            <span
+              class="text-value"
+              style="color: #0066b3"
+              nzAlign="right"
+              *ngIf="totalAmount === 0"
+              >0 VND</span
+            >
+            <span
+              class="text-value"
+              style="color: #0066b3"
+              nzAlign="right"
+              *ngIf="totalAmount != undefined && totalAmount > 0"
+            >
+              {{ totalAmount | number }} VND
+            </span>
+          </nz-col>
+        </nz-row>
+        <nz-divider style="margin: 10px 0" />
         <nz-row style="margin-bottom: 10px" nzGutter="16">
           <nz-col nzSpan="16">
             <span class="text-value">{{ 'app.cost.vat' | i18n }}</span>

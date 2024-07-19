@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import PairInfo, {
   AllowAddressPair,
@@ -18,6 +18,7 @@ import {
 import { debounceTime, Subject, Subscription } from 'rxjs';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from '../../../../../../app-kafka/src/app/core/i18n/i18n.service';
+import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
 
 @Component({
   selector: 'list-allow-address-pair',
@@ -31,7 +32,7 @@ export class ListAllowAddressPairComponent implements OnInit {
     private allowAddressPairService: AllowAddressPairService,
     private notification: NzNotificationService,
     private activatedRoute: ActivatedRoute,
-    private router: Router,
+    private router: Router
   ) {}
 
   portId: string;
@@ -69,8 +70,13 @@ export class ListAllowAddressPairComponent implements OnInit {
   pageNumber: number = 1;
 
   instanceId: string;
+
+  @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
   regionChanged(region: RegionModel) {
     this.region = region.regionId;
+    if (this.projectCombobox) {
+      this.projectCombobox.loadProjects(true, region.regionId);
+    }
   }
 
   userChangeProject(project: ProjectModel) {
@@ -78,7 +84,7 @@ export class ListAllowAddressPairComponent implements OnInit {
   }
 
   onProjectChange(project: ProjectModel) {
-    this.project = project;
+    this.project = project.id;
   }
 
   getParam(): AllowAddressPairSearchForm {

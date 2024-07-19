@@ -58,7 +58,7 @@ export class Action2Label implements PipeTransform {
       case 'STOP':
         return 'cluster.instance.stop-action';
 
-      case 'REBOOT':
+      case 'REBOOT-SOFT':
         return 'cluster.instance.reboot-action';
 
       default:

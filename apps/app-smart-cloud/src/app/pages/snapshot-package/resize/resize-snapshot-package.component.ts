@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { PackageBackupService } from '../../../shared/services/package-backup.service';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
@@ -26,6 +26,7 @@ import { ConfigurationsService } from '../../../shared/services/configurations.s
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from '../../../../../../app-kafka/src/app/core/i18n/i18n.service';
 import { OrderService } from '../../../shared/services/order.service';
+import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
 
 @Component({
   selector: 'one-portal-resize-snapshot-package',
@@ -63,7 +64,7 @@ export class ResizeSnapshotPackageComponent implements OnInit {
   closePopupError() {
     this.isVisiblePopupError = false;
   }
-
+  @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
   constructor(private router: Router,
               private orderService: OrderService,
               private packageBackupService: PackageBackupService,
@@ -107,6 +108,9 @@ export class ResizeSnapshotPackageComponent implements OnInit {
   }
   regionChanged(region: RegionModel) {
     this.region = region.regionId;
+    if(this.projectCombobox){
+      this.projectCombobox.loadProjects(true, region.regionId);
+    }
     this.projectService.getByRegion(this.region).subscribe(data => {
       if (data.length) {
         localStorage.setItem('projectId', data[0].id.toString());
@@ -275,6 +279,7 @@ export class ResizeSnapshotPackageComponent implements OnInit {
   totalVat: number;
   hddPrice = 0;
   ssdPrice = 0;
+  today = new Date();
 
   loadProjects() {
     this.projectService.getByRegion(this.region).subscribe(data => {

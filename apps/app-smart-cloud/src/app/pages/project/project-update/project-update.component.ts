@@ -222,10 +222,14 @@ export class ProjectUpdateComponent implements OnInit {
   typeFile_storage_snapshot: boolean;
   typeVpns2s: boolean;
   typeVm_gpu: boolean;
+  isChangegpu : boolean = false;
 
-  
   isShowAlertGpu: boolean;
   keySSD: boolean;
+  loadBalancerPrice!:any;
+  loadBalancerLowerPrices!:any;
+  sitetositePrice!:any;
+  listSiteToSitePrice!:any;
 
   form = new FormGroup({
     name: new FormControl({ value: 'loading data....', disabled: false }, { validators: [Validators.required, Validators.pattern(/^[A-Za-z0-9]+$/),] }),
@@ -275,11 +279,11 @@ export class ProjectUpdateComponent implements OnInit {
     this.dateNow = new Date();
     this.calculate()
 
- 
       this.getProductActivebyregion();
 
     this.getCatelogOffer()
     this.hasRoleSI = localStorage.getItem('role').includes('SI')
+   
 
   }
   openIpSubnet() {
@@ -318,7 +322,8 @@ export class ProjectUpdateComponent implements OnInit {
         ipName = lstIp[1];
 
       }
-
+      console.log("new gpu 12300", this.newgpu)
+      console.log("new gpuOld 12300", this.gpuOld)
       const requestBody =
       {
 
@@ -350,8 +355,9 @@ export class ProjectUpdateComponent implements OnInit {
         newVpnSiteToSiteOfferId: this.siteToSiteId,
 
         // NewGpuQuotas: this.data?.gpuProjects ? this.gpuQuotasGobal : this.newgpu,
-        gpuQuotas: this.newgpu  ?this.newgpu : this.gpuOld,
-
+        gpuQuotas: this.isChangegpu ?this.newgpu : this.gpuOld,
+        
+      
 
         newQuotaSecurityGroupCount: this.numberSecurityGroup,
         newQuotaNetworkCount: this.numberNetwork,
@@ -494,6 +500,7 @@ export class ProjectUpdateComponent implements OnInit {
     this.router.navigate(['/app-smart-cloud/project'])
   }
 
+
   updateVpc() {
 
     console.log("this.ipConnectInternet update", this.ipConnectInternet)
@@ -546,7 +553,10 @@ export class ProjectUpdateComponent implements OnInit {
 
         newVpnSiteToSiteOfferId: this.siteToSiteId,
 
-        gpuQuotas: (this.gpuQuotasGobal && this.gpuQuotasGobal.length > 0) ?this.newgpu : this.gpuOld,
+        gpuQuotas: this.isChangegpu ?this.newgpu : this.gpuOld,
+
+        // gpuQuotas: this.newgpu  ?this.newgpu : this.gpuOld,
+        // gpuQuotas: (this.gpuQuotasGobal && this.gpuQuotasGobal.length > 0) ?this.newgpu : this.gpuOld,
 
         newQuotaSecurityGroupCount: this.numberSecurityGroup,
         newQuotaNetworkCount: this.numberNetwork,
@@ -591,9 +601,20 @@ export class ProjectUpdateComponent implements OnInit {
         .subscribe({
           next: (result) => {
             if (result.success) {
-              var returnPath: string = window.location.pathname;
-              this.router.navigate(['/app-smart-cloud/order/cart'], { state: { data: request, path: returnPath } });
-
+              if(this.hasRoleSI) {
+                this.vpc.createIpPublic(request).subscribe(
+                  data => {
+                    this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('project.action.resize'));
+                    this.router.navigate(['/app-smart-cloud/project']);
+                  },
+                  error => {
+                    this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('project.note53'));
+                  }
+                );
+              } else {
+                var returnPath: string = window.location.pathname;
+                this.router.navigate(['/app-smart-cloud/order/cart'], { state: { data: request, path: returnPath } });
+              }
             } else {
               this.isVisiblePopupError = true;
               this.errorList = result.data;
@@ -701,9 +722,9 @@ export class ProjectUpdateComponent implements OnInit {
           this.numberRouter = data.quotaRouterCount;
           this.numberSecurityGroup = data.quotaSecurityGroupCount;
 
-          this.ipPublicOffer = this.selectIndexTab == 0 ? (data.offerDetail?.ipPublic) : 0;
+          this.ipPublicOffer = this.data.offerDetail ? (data.offerDetail?.ipPublic) : 0;
           this.ipPublicTotal = data.quotaIpPublicCount;
-          this.ipPublicAddOld = this.selectIndexTab == 0 ? (this.ipPublicTotal - this.ipPublicOffer) : this.ipPublicTotal;
+          this.ipPublicAddOld = this.data.offerDetail ? (this.ipPublicTotal - this.ipPublicOffer) : this.ipPublicTotal;
           // this.ipPublicAddOld
           this.offerIdOld = data.offerId
 
@@ -728,8 +749,22 @@ export class ProjectUpdateComponent implements OnInit {
           this.instancesService
             .getListOffersByProductId(data[0].id, this.regionId)
             .subscribe((data: any) => {
-              this.listLoadbalancer = data;
-              // this.loadBalancerId = this.listLoadbalancer[0].id
+             
+              if(this.data?.offerIdLBSDN){
+                const loadBalancerIdOld = data.find(lb => lb.id === this.data?.offerIdLBSDN)
+                console.log("lbpriceId", loadBalancerIdOld?.price?.fixedPrice?.amount)
+                this.loadBalancerPrice = loadBalancerIdOld?.price?.fixedPrice?.amount
+                this.listLoadbalancer = data.filter(item =>item.price.fixedPrice.amount>= this.loadBalancerPrice )
+              console.log("huyn loadBalancerLowerPrices", this.listLoadbalancer)
+              this.loadBalancerId = this.data?.offerIdLBSDN;
+              this.findNameLoadBalance(this.loadBalancerId);
+              }
+              else{
+                this.listLoadbalancer = data;
+                // this.loadBalancerId = this.listLoadbalancer[0].id;
+                this.loadBalancerId =this.data?.offerIdLBSDN
+                this.findNameLoadBalance(this.loadBalancerId);
+              }
             });
         }
       );
@@ -742,113 +777,27 @@ export class ProjectUpdateComponent implements OnInit {
           this.instancesService
             .getListOffersByProductId(data[0].id, this.regionId)
             .subscribe((data: any) => {
-              this.listSiteToSite = data;
+              // this.listSiteToSite = data;
+              // this.findSiteToSitePriceId()
+              if(this.data?.vpnSiteToSiteOfferId){
+                const sitetositeIdOld = data.find(vpn => vpn.id === this.data?.vpnSiteToSiteOfferId)
+                this.sitetositePrice = sitetositeIdOld?.price?.fixedPrice?.amount
+                this.listSiteToSite = data.filter(item =>item.price.fixedPrice.amount>= this.sitetositePrice )
+                  console.log("object sitetositeIdOld 444", this.sitetositePrice)
+                  console.log("list listSiteToSitePrice", this.listSiteToSite)
+                  this.siteToSiteId = this.data?.vpnSiteToSiteOfferId;
+              this.findNameSiteToSite(this.siteToSiteId);
+              }
+              else{
+                this.listSiteToSite = data;
+                // this.siteToSiteId = this.listSiteToSite[0].id;
+                this.siteToSiteId= this.data?.vpnSiteToSiteOfferId
+                this.findNameSiteToSite(this.siteToSiteId);
+              }
             });
         }
       );
   }
-
-  // calculateReal() {
-  //   this.refreshValue();
-  //   if (this.vpcType == '1') {
-  //     let lstIp = this.ipConnectInternet?.split('--');
-  //     let ip = '';
-  //     let ipName = '';
-  //     if (lstIp != null && lstIp != undefined) {
-  //       ip = lstIp[0];
-  //     }
-
-
-  //     let IPPublicNum = this.numberIpPublic;
-  //     let IPFloating = this.ipConnectInternet != null && this.ipConnectInternet != '' ? this.numberIpFloating : 0;
-  //     let IPV6 = this.numberIpv6;
-  //     // if (( this.offerFlavor != undefined) || ( this.vCPU != 0 && this.ram != 0)) {
-  //     // if ((this.selectIndexTab == 0 && this.offerFlavor != undefined) || (this.selectIndexTab == 1 && this.vCPU != 0 && this.ram != 0)) {
-  //     console.log("offerFlavor", this.offerFlavor)
-  //     if ((this.selectIndexTab == 0 || this.offerFlavor != undefined) || (this.selectIndexTab == 1 || (this.vCPU != 0 && this.ram != 0))) {
-  //       console.log("lstIp", lstIp)
-  //       if (lstIp != null && lstIp != undefined && lstIp[1] != null) {
-  //         let listString = lstIp[1].split(' ');
-  //         if (listString.length == 3) {
-  //           ipName = listString[2].trim();
-  //         }
-  //       }
-
-  //       this.loadingCalculate = true;
-  //       const requestBody = {
-  //         quotavCpu: this.vCPU,
-  //         quotaRamInGb: this.ram,
-  //         quotaHddInGb: this.hhd,
-
-
-  //         quotaSSDInGb: this.ssd,
-  //         quotaBackupVolumeInGb: this.numberBackup,
-  //         quotaSecurityGroupCount: this.numberSecurityGroup,
-  //         projectType: this.vpcType,
-  //         // quotaKeypairCount: 0,// NON
-  //         // quotaVolumeSnapshotCount: 0,//NON
-  //         quotaIpPublicCount: IPPublicNum,
-  //         quotaIpFloatingCount: IPFloating,
-  //         quotaNetworkCount: this.numberNetwork,
-  //         quotaRouterCount: this.numberRouter,
-  //         quotaLoadBalancerSDNCount: this.numberLoadBalancer,
-  //         loadBalancerOfferId: this.loadBalancerId,
-  //         vpnSiteToSiteOfferId: this.siteToSiteId,
-  //         quotaShareInGb: this.numberFileSystem,
-  //         QuotaShareSnapshotInGb: this.numberFileScnapsshot,
-  //         publicNetworkId: ip,
-  //         publicNetworkAddress: ipName,
-  //         quotaIPv6Count: IPV6,
-
-
-  //         gpuQuotas: this.gpuQuotasGobal,
-  //         quotaVolumeSnapshotInGb: this.numberSnapshothdd,
-
-  //         // typeName: 'SharedKernel.IntegrationEvents.Orders.Specifications.VpcCreateSpecification,SharedKernel.IntegrationEvents, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null',
-  //         // serviceType: 12,
-  //         serviceInstanceId: 0,
-  //         customerId: this.tokenService.get()?.userId,
-  //         offerId: this.selectIndexTab == 0 ? (this.offerFlavor == null ? 0 : this.offerFlavor.id) : 0,
-
-
-  //         actionType: 0,
-  //         regionId: this.regionId,
-  //         serviceName: this.form.controls['name'].value
-  //       };
-  //       console.log("requestBody", requestBody)
-  //       const request = {
-  //         orderItems: [
-  //           {
-  //             orderItemQuantity: 1,
-  //             specificationString: JSON.stringify(requestBody),
-  //             specificationType: 'vpc_create',
-  //             sortItem: 0,
-  //             serviceDuration: this.numOfMonth
-  //           }
-  //         ]
-  //       };
-  //       this.ipService.getTotalAmount(request)
-  //         .pipe(finalize(() => {
-  //           this.loadingCalculate = false;
-  //         }))
-  //         .subscribe(
-  //           data => {
-  //             this.total = data;
-  //             this.totalAmount = this.total.data.totalAmount.amount
-  //             this.totalPayment = this.total.data.totalPayment.amount;
-  //             this.totalVAT = this.total.data.totalVAT.amount;
-  //             this.getPriceEachComponent(data.data);
-
-  //           }
-  //         );
-  //     } else {
-  //       this.total = undefined;
-  //     }
-  //   }
-  // }
-
-
-
 
   private getPriceEachComponent(data: any) {
     // let fileStorage = 0
@@ -905,9 +854,9 @@ export class ProjectUpdateComponent implements OnInit {
         for (let gpu of this.gpuQuotasGobal) {
           if (gpu.GpuType == 'NVIDIA-A30') {
             gpu.GpuPrice = item.totalAmount.amount;
-            console.log("gpu.GpuPrice", gpu.GpuPrice)
+           
             gpu.GpuPriceUnit = item.unitPrice.amount;
-            console.log("gpu.GpuPriceUnit", gpu.GpuPriceUnit)
+            
           }
         }
 
@@ -916,9 +865,9 @@ export class ProjectUpdateComponent implements OnInit {
         for (let gpu of this.gpuQuotasGobal) {
           if (gpu.GpuType == 'NVIDIA-A100') {
             gpu.GpuPrice = item.totalAmount.amount;
-            console.log("gpu.GpuPrice 2", gpu.GpuPrice)
+          
             gpu.GpuPriceUnit = item.unitPrice.amount;
-            console.log("gpu.GpuPriceUnit 2", gpu.GpuPriceUnit)
+           
           }
         }
       }
@@ -1043,13 +992,28 @@ export class ProjectUpdateComponent implements OnInit {
     }
     this.calculate();
   }
+findPriceLowerId(){
+  // if(this.data?.offerIdLBSDN){
+  //   const loadBalancerIdOld = this.listLoadbalancer.find(lb => lb.id === this.data?.offerIdLBSDN)
+  //   console.log("lbpriceId", loadBalancerIdOld?.price?.fixedPrice?.amount)
+  //   this.loadBalancerPrice = loadBalancerIdOld?.price?.fixedPrice?.amount
+  //   this.listLoadbalancer = this.listLoadbalancer.filter(item =>item.price.fixedPrice.amount>= this.loadBalancerPrice )
+  // console.log("huyn loadBalancerLowerPrices", this.listLoadbalancer)
+  // }
+  // else{
+  //   this.listLoadbalancer
+  // }
+  
+}
 
   findNameLoadBalance(loadBalancerId: number) {
     if (loadBalancerId) {
       const selectedLoadBalancer = this.listLoadbalancer.find(lb => lb.id === loadBalancerId)
       this.loadBalancerName = selectedLoadBalancer ? selectedLoadBalancer.offerName : null;
+      
     } else {
       this.loadBalancerName = null;
+      
     }
     this.calculate();
   }
@@ -1064,20 +1028,31 @@ export class ProjectUpdateComponent implements OnInit {
     }
     this.calculate();
   }
+  findSiteToSitePriceId(){
+    const sitetositeIdOld = this.listSiteToSite.find(lb => lb.id === this.data?.vpnSiteToSiteOfferId)
+   this.sitetositePrice = sitetositeIdOld?.price?.fixedPrice?.amount
+   this.listSiteToSitePrice = this.listSiteToSite.filter(item =>item.price.fixedPrice.amount>= this.sitetositePrice )
+    console.log("object sitetositeIdOld 444", this.sitetositePrice)
+    console.log("list listSiteToSitePrice", this.listSiteToSitePrice)
+  }
   getCatelogOffer() {
     
     this.instancesService.getTypeCatelogOffers(this.regionId, 'vm-gpu').subscribe(
       res => {
         this.listTypeCatelogOffer = res
-        this.gpuQuotasGobal = this.listTypeCatelogOffer.map((item: any) => ({
+        this.newgpu= this.gpuQuotasGobal = this.listTypeCatelogOffer.map((item: any) => ({
           GpuOfferId: item.id,
           GpuCount: 0,
           GpuType: item.offerName,
-          GpuPrice: null,
+          GpuPrice: 0,
           GpuPriceUnit: item?.price?.fixedPrice?.amount
         }));
+      
        
-        console.log("this.gpuQuotasGobal", this.gpuQuotasGobal)
+        console.log("this.gpuQuotasGobal dc", this.gpuQuotasGobal)
+        console.log("this.newgpu dc", this.newgpu)
+       
+        
       }
     );
   }
@@ -1096,8 +1071,10 @@ export class ProjectUpdateComponent implements OnInit {
 
     }
     console.log("object this.gpuQuotasGobal", this.gpuQuotasGobal)
-
-    this.getValueNewgpu();
+    if(value!=0){
+      this.getValueNewgpu();
+    }
+   
     this.calculate();
 
   }
@@ -1108,14 +1085,17 @@ export class ProjectUpdateComponent implements OnInit {
   // }
 
   getValueNewgpu() {
+    // this.isChangegpu = false;
     const dict2 = this.gpuQuotasGobal.reduce((acc, item) => {
       acc[item.GpuOfferId] = item;
       return acc;
     }, {});
     this.newgpu = this.gpuOld.map((item: any) => {
       const gpuOfferId = item.gpuOfferId;
+    
       const array2Item = dict2[gpuOfferId];
       const totalCountGpu = item.gpuCount + (array2Item ? array2Item.GpuCount : 0);
+      if (totalCountGpu != 0) this.isChangegpu = true;
       return {
         GpuOfferId: gpuOfferId,
         GpuType: item.gpuType,
@@ -1191,6 +1171,9 @@ export class ProjectUpdateComponent implements OnInit {
     }
 
   }
+  findLbLowerPrices(){
+
+  } 
 
   initIP() {
     this.activeIP = true;
@@ -1234,14 +1217,23 @@ export class ProjectUpdateComponent implements OnInit {
   initLoadBalancer() {
     this.activeLoadBalancer = true;
     this.trashLoadBalancer = true;
-    this.loadBalancerId = this.listLoadbalancer[0].id;
+    // this.initLoadBalancerData()
+    // this.loadBalancerId = this.data?.offerIdLBSDN;
+    // this.findNameLoadBalance(this.loadBalancerId);
+    if(this.data?.offerIdLBSDN){
+      this.loadBalancerId = this.data?.offerIdLBSDN;
     this.findNameLoadBalance(this.loadBalancerId);
+    }
+    else{
+      this.loadBalancerId = this.listLoadbalancer[0].id;
+      this.findNameLoadBalance(this.loadBalancerId);
+    }
   }
   deleteLoadBalancer() {
     this.activeLoadBalancer = false;
     this.trashLoadBalancer = false
     this.numberLoadBalancer = 0;
-    this.loadBalancerId = null;
+    this.loadBalancerId = this.data?.offerIdLBSDN;
     this.calculate()
   }
 
@@ -1259,9 +1251,17 @@ export class ProjectUpdateComponent implements OnInit {
   initVpnSiteToSite() {
     this.activeSiteToSite = true;
     this.trashVpnSiteToSite = true;
-    if (this.siteToSiteId == null) {
-      this.siteToSiteId = this.listSiteToSite[1].id;
-      this.findNameSiteToSite(this.siteToSiteId)
+    // if (this.siteToSiteId == null) {
+    //   this.siteToSiteId = this.listSiteToSite[1].id;
+    //   this.findNameSiteToSite(this.siteToSiteId)
+    // }
+    if(this.data?.vpnSiteToSiteOfferId){
+      this.siteToSiteId = this.data?.vpnSiteToSiteOfferId;
+      this.sitetositeName = this.data?.vpnSiteToSiteOfferName;
+    }
+    else{
+      this.siteToSiteId = this.listSiteToSite[0].id;
+      this.findNameSiteToSite(this.siteToSiteId);
     }
 
 
@@ -1283,6 +1283,7 @@ export class ProjectUpdateComponent implements OnInit {
     this.activeVpnGpu = false;
     this.trashVpnGpu = false;
     this.getCatelogOffer();
+    this.isChangegpu = false;
     this.calculate()
   }
   initSnapshot() {

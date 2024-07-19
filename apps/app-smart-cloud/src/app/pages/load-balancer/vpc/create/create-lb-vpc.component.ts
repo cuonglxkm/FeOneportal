@@ -21,6 +21,7 @@ import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { debounceTime, finalize, Subject } from 'rxjs';
 import { ProjectService } from 'src/app/shared/services/project.service';
 import { OrderService } from '../../../../shared/services/order.service';
+import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
 
 @Component({
   selector: 'one-portal-create-lb-vpc',
@@ -77,6 +78,7 @@ export class CreateLbVpcComponent implements OnInit {
   private validateIpaddress = new Subject<string>();
   private readonly debounceTimeMs = 2000;
   loadingSubnet = true;
+  @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
   constructor(private router: Router,
               private fb: NonNullableFormBuilder,
               @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
@@ -134,6 +136,9 @@ export class CreateLbVpcComponent implements OnInit {
 
   regionChanged(region: RegionModel) {
     this.region = region.regionId;
+    if(this.projectCombobox){
+      this.projectCombobox.loadProjects(true, region.regionId);
+    }
     this.router.navigate(['/app-smart-cloud/load-balancer/list']);
   }
 

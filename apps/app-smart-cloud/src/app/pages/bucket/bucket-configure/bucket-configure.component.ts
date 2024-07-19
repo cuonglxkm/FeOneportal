@@ -15,6 +15,7 @@ import { finalize } from 'rxjs';
 import { BucketDetail } from 'src/app/shared/models/bucket.model';
 import { BucketService } from 'src/app/shared/services/bucket.service';
 import { RegionModel } from '../../../../../../../libs/common-utils/src';
+import { RegionID } from 'src/app/shared/enums/common.enum';
 
 @Component({
   selector: 'one-portal-bucket-configure',
@@ -43,14 +44,17 @@ export class BucketConfigureComponent implements OnInit {
     let regionAndProject = getCurrentRegionAndProject();
     this.region = regionAndProject.regionId;
     this.bucketName = this.activatedRoute.snapshot.paramMap.get('bucketName');
+    this.getBucketDetail()
+  }
+
+  getBucketDetail(){
     this.bucketService
       .getBucketDetail(this.bucketName, this.region)
       .pipe(finalize(() => this.loadingSrv.close()))
       .subscribe((data) => {
-        console.log(data);
-        
+        console.log(data);     
         this.bucketDetail = data;
-        
+        this.cdr.detectChanges()
       });
   }
 
@@ -108,6 +112,18 @@ export class BucketConfigureComponent implements OnInit {
   }
 
   cancel() {
-    this.router.navigate(['/app-smart-cloud/object-storage/bucket']);
+    if (this.region === RegionID.ADVANCE) {
+      this.router.navigate(['/app-smart-cloud/object-storage-advance/bucket']);
+    } else {
+      this.router.navigate(['/app-smart-cloud/object-storage/bucket']);
+    }
+  }
+
+  navigateToBucketList(){
+    if(this.region === RegionID.ADVANCE){
+      this.router.navigate(['/app-smart-cloud/object-storage-advance/bucket']);
+    }else{
+      this.router.navigate(['/app-smart-cloud/object-storage/bucket']);
+    }
   }
 }

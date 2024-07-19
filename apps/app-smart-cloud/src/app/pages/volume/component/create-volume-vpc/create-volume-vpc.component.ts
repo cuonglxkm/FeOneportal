@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, Inject, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, Inject, OnInit, ViewChild } from '@angular/core';
 import { CreateVolumeRequestModel } from '../../../../shared/models/volume.model';
 import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
 import { InstancesModel, VolumeCreate } from '../../../instances/instances.model';
@@ -20,6 +20,7 @@ import { ConfigurationsService } from '../../../../shared/services/configuration
 import { getCurrentRegionAndProject } from '@shared';
 import { SupportService } from '../../../../shared/models/catalog.model';
 import { OrderService } from '../../../../shared/services/order.service';
+import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
 
 @Component({
   selector: 'one-portal-create-volume-vpc',
@@ -101,7 +102,7 @@ export class CreateVolumeVpcComponent implements OnInit {
   typeEncrypt: boolean;
 
   snapshotList = [];
-
+  @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
   constructor(
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
     private volumeService: VolumeService,
@@ -162,6 +163,9 @@ export class CreateVolumeVpcComponent implements OnInit {
 
   regionChanged(region: RegionModel) {
     this.region = region.regionId;
+    if(this.projectCombobox){
+      this.projectCombobox.loadProjects(true, region.regionId);
+    }
     this.router.navigate(['/app-smart-cloud/volumes']);
   }
 
@@ -218,7 +222,7 @@ export class CreateVolumeVpcComponent implements OnInit {
   }
 
   getDetailSnapshotVolume(id) {
-    this.snapshotvlService.getDetailSnapshotSchedule(id).subscribe(data => {
+    this.snapshotvlService.getSnapshotVolumeById(id).subscribe(data => {
       console.log('data', data);
       this.snapshot = data;
       this.validateForm.controls.storage.setValue(data.sizeInGB);

@@ -27,7 +27,7 @@
     <div class="alain-custom-action text-right">
       <share-users-combobox></share-users-combobox>
       <!-- <region-select-dropdown (valueChanged)="onRegionChange($event)"></region-select-dropdown> -->
-      <!-- <project-select-dropdown [regionId]="regionId" (userChanged)="projectChange($event)"></project-select-dropdown> -->
+      <!-- <project-select-dropdown #projectCombobox [regionId]="regionId" (userChanged)="projectChange($event)"></project-select-dropdown> -->
     </div>
   </ng-template>
 </page-header>
@@ -250,6 +250,9 @@
                   item?.serviceName
                 }}</a>
                 <a *ngSwitchCase="'Kafka'" [routerLink]="['/app-kafka']">{{
+                  item?.serviceName
+                }}</a>
+                <a *ngSwitchCase="'VPK'" [routerLink]="['/app-k8s-premium']">{{
                   item?.serviceName
                 }}</a>
                 <a

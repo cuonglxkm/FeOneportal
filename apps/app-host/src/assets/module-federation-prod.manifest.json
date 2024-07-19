@@ -1,8 +1,8 @@
 {
-  "app-smart-cloud": "${APP_SMART_CLOUD_URL}",
-  "app-kubernetes": "${APP_KUBERNETES_URL}",
-  "app-kafka": "${APP_KAFKA_URL}",
-  "app-mongodb-replicaset": "${APP_MONGODB_REPLICASET_URL}",
-  "app-k8s-premium": "${APP_K8S_PREMIUM_URL}",
-  "app-ecr": "${APP_ECR_URL}"
+  "app-smart-cloud": "https://app-portal.cloud.vnpt.vn",
+  "app-kafka": "https://app-kafka.cloud.vnpt.vn",
+  "app-kubernetes": "https://app-k8s.cloud.vnpt.vn",
+  "app-mongodb-replicaset": "https://app-mongodb.cloud.vnpt.vn",
+  "app-k8s-premium": "https://app-k8spre.cloud.vnpt.vn",
+  "app-ecr": "https://app-ecr.cloud.vnpt.vn"
 }
