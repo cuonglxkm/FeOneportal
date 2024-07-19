@@ -7,6 +7,7 @@ import { BaseResponse, ProjectModel, RegionModel } from '../../../../../../libs/
 import { debounceTime, Subject } from 'rxjs';
 import { TimeCommon } from '../../shared/utils/common';
 import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
+import { da } from 'date-fns/locale';
 
 @Component({
   selector: 'one-portal-list-ip-floating',
@@ -136,4 +137,6 @@ export class ListIpFloatingComponent implements OnInit {
     });
     // this.getData(true)
   }
+
+  protected readonly da = da;
 }
