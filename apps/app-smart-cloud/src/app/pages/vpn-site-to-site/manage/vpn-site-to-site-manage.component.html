@@ -70,11 +70,12 @@
           nzType="primary"
           nz-dropdown
           [nzDropdownMenu]="opMenu"
+          *ngIf="('order:Create' | IsPermissionPipe) && (projectObject && (projectObject.type == 0 || projectObject.type == 2))"
         >
           <img src="assets/imgs/dots.svg" alt="" />
           <nz-dropdown-menu #opMenu="nzDropdownMenu">
             <ul nz-menu>
-              <li nz-menu-item (click)="resizeVpn()" *ngIf="('order:Create' | IsPermissionPipe) && (projectObject && (projectObject.type == 0 || projectObject.type == 2))">{{'app.manage.site.to.site.Adjust' |i18n}}</li>
+              <li nz-menu-item (click)="resizeVpn()" *ngIf="('order:Create' | IsPermissionPipe) && (projectObject && (projectObject.type == 0 || projectObject.type == 2)) && response?.serviceStatus !== 'TAMNGUNG'">{{'app.manage.site.to.site.Adjust' |i18n}}</li>
               <li nz-menu-item (click)="modalDelete()" *ngIf="('VpnSiteToSites:Delete' | IsPermissionPipe) && (projectObject && (projectObject.type == 0 || projectObject.type == 2))">{{'app.manage.site.to.site.delete' |i18n}}</li>
             </ul>
           </nz-dropdown-menu>
@@ -99,8 +100,11 @@
     <div style="margin-bottom: 15px" class="text-label label-fontsize">
       {{'app.service.expiration-date' |i18n}}: <span class="text-bold">{{response?.expiredDate | date: 'dd/MM/YYYY'}}</span>
     </div>
+    <div *ngIf="response?.serviceStatus === 'TAMNGUNG'" style="margin-bottom: 15px" class="text-label label-fontsize">
+      {{'app.payment.status' |i18n}}: <span class="text-bold">{{ 'app.suspend' | i18n }} ({{response?.suspendReason | SuspendStatusPipe}})</span>
+    </div>
   </nz-card>
-  <nz-card class="custom-tab" style="border-radius: 8px">
+  <nz-card *ngIf="response?.serviceStatus !== 'TAMNGUNG'" class="custom-tab" style="border-radius: 8px">
     <nz-tabset nzSelectedIndex nzSize="large">
       <nz-tab nzTitle="IKE Policies" class="label-fontsize">
         <ng-template nz-tab>

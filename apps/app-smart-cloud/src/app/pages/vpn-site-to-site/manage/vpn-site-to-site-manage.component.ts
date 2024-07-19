@@ -2,10 +2,9 @@ import { Component, QueryList, ViewChildren } from '@angular/core';
 import { Router } from '@angular/router';
 import { getCurrentRegionAndProject } from '@shared';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
-import { VpnSiteToSiteDTO } from 'src/app/shared/models/vpn-site-to-site';
+import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
 import { VpnSiteToSiteService } from 'src/app/shared/services/vpn-site-to-site.service';
 import { ProjectModel, RegionModel } from '../../../../../../../libs/common-utils/src';
-import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
 
 @Component({
   selector: 'one-portal-vpn-site-to-site-manage',
