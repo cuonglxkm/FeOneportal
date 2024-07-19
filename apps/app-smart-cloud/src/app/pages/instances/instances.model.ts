@@ -168,6 +168,7 @@ export class InstancesModel {
   taskState: string;
   rootStatus: string;
   securityGroupStr: string;
+  securityGroups: string
   computeHost: string;
   keypair: string;
   offerGpuId: number;
