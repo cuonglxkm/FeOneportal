@@ -22,7 +22,7 @@ export class PolicyDetachComponent implements OnInit {
 
   project = JSON.parse(localStorage.getItem('projectId'));
 
-  typeSearch: number;
+  typeSearch: number = 2;
 
   entitiesNameSearch: string;
 
@@ -86,7 +86,20 @@ export class PolicyDetachComponent implements OnInit {
   }
 
   detachPolicy() {
-    const requestData = this.listOfData.filter(data => this.setOfCheckedId.has(data.name));
+    let requestData;
+    if(this.typeSearch == 2){
+      requestData = this.listOfData.filter(data => this.setOfCheckedId.has(data.name));
+    }else{
+      requestData = this.listOfData.filter(data => this.setOfCheckedId.has(data.userName));
+    }
+    for (let item of requestData) {
+      if(item.name != undefined) {
+        item.type = 2;
+      } else {
+        item.name = item.userName
+        item.type = 1;
+      }
+    }
 
     const modal: NzModalRef = this.modalService.create({
       nzTitle: this.i18n.fanyi("app.button.detach-policy"),
@@ -114,7 +127,7 @@ export class PolicyDetachComponent implements OnInit {
 
     let request = {
       policyName : policyName,
-      action : 'attach',
+      action : 'detach',
       items : requestData,
     }
     this.policiService.attachOrDetach(request).subscribe(data => {
