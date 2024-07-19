@@ -2109,6 +2109,7 @@
   "ecr.overview.description":"Description",
   "ecr.overview.chart":"Observation Chart",
   "ecr.overview.choose.time":"Choose time",
+  "ecr.overview.choose.repo":"Choose repositories",
 
   "app.cluster.summary": "VNPT Kubernetes Service is a Kubernetes-based platform ensuring high efficiency for enterprises by running containerized applications in the cloud, securely, stably, and with high performance",
   "app.cluster.platform-service": "Platform Services",
