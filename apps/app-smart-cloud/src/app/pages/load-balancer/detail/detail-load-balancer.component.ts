@@ -46,6 +46,7 @@ export class DetailLoadBalancerComponent implements OnInit{
 
   projectChanged(project: ProjectModel) {
     this.project = project?.id;
+    this.typeVPC = project?.type;
   }
 
   userChanged(project: ProjectModel){
@@ -74,6 +75,7 @@ export class DetailLoadBalancerComponent implements OnInit{
   }
 
   checkCreate: boolean = false;
+  typeVPC: number;
   handleCreatePoolOk() {
     this.checkCreate = !this.checkCreate
   }
@@ -89,5 +91,9 @@ export class DetailLoadBalancerComponent implements OnInit{
 
   loadToCreateListener() {
     this.router.navigate(['/app-smart-cloud/load-balancer/' + this.idLoadBalancer + '/listener/create'])
+  }
+
+  navigateToExtend() {
+    this.router.navigate(['/app-smart-cloud/load-balancer/extend/normal/' + this.idLoadBalancer]);
   }
 }
