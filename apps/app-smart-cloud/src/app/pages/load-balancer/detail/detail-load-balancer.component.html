@@ -1,6 +1,6 @@
 <page-header [breadcrumb]="breadcrumb"
              [action]="action"
-             [title]="'app.load.balancer.detail' | i18n" xmlns="http://www.w3.org/1999/html">
+             [title]="'app.load.balancer.detail' | i18n" xmlns="http://www.w3.org/1999/html" [extra]="extra" [content]="content">
   <ng-template #breadcrumb>
     <nz-breadcrumb [nzSeparator]="iconTemplate">
       <ng-template #iconTemplate><one-portal-svg-icon [icon]="'icon_breadcrumb'"></one-portal-svg-icon></ng-template>
@@ -33,6 +33,16 @@
                                (userChanged)="userChanged($event)"
                                [regionId]="region"></project-select-dropdown>
     </div>
+  </ng-template>
+
+  <ng-template #content>
+    <h3 style="display: none;">.</h3>
+  </ng-template>
+  <ng-template #extra>
+    <button *ngIf="typeVPC != 1" nz-button nzType="primary" (click)="navigateToExtend()" nzSize="large">
+      <img style="padding-right: 10px;" src="assets/imgs/extend.png" alt="" />
+      <span class="button-text-primary">Gia hạn</span>
+    </button>
   </ng-template>
 </page-header>
 <nz-content>
