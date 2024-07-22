@@ -12,6 +12,7 @@ import {
   RegionModel,
 } from '../../../../../../../libs/common-utils/src';
 import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
+import { RegionID } from 'src/app/shared/enums/common.enum';
 
 @Component({
   selector: 'app-snapshot-volume-list',
@@ -48,11 +49,20 @@ export class SnapshotVolumeListComponent implements OnInit {
     private notification: NzNotificationService,
     private cdr: ChangeDetectorRef
   ) {}
-
+  url = window.location.pathname;
   ngOnInit(): void {
     let regionAndProject = getCurrentRegionAndProject();
     this.regionId = regionAndProject.regionId;
     this.projectId = regionAndProject.projectId;
+    if (!this.url.includes('advance')) {
+      if (Number(localStorage.getItem('regionId')) === RegionID.ADVANCE) {
+        this.regionId = RegionID.NORMAL;
+      } else {
+        this.regionId = Number(localStorage.getItem('regionId'));
+      }
+    } else {
+      this.regionId = RegionID.ADVANCE;
+    }
     this.userId = this.tokenService.get()?.userId;
   }
 
@@ -69,20 +79,38 @@ export class SnapshotVolumeListComponent implements OnInit {
   }
 
   initVolume(snapshotVl: SnapshotVolumeDto) {
-    this.router.navigate(['/app-smart-cloud/volume/create'], {
-      queryParams: {
-        createdFromSnapshot: 'true',
-        idSnapshot: snapshotVl.id,
-        sizeSnapshot: snapshotVl.sizeInGB,
-        typeSnapshot: snapshotVl.iops > 0 ? 'ssd' : 'hdd',
-      },
-    });
+    
+    if (this.regionId === RegionID.ADVANCE) {
+      this.router.navigate(['/app-smart-cloud/volume-advance/create'], {
+        queryParams: {
+          createdFromSnapshot: 'true',
+          idSnapshot: snapshotVl.id,
+          sizeSnapshot: snapshotVl.sizeInGB,
+          typeSnapshot: snapshotVl.iops > 0 ? 'ssd' : 'hdd',
+        },
+      });
+    } else {
+      this.router.navigate(['/app-smart-cloud/volume/create'], {
+        queryParams: {
+          createdFromSnapshot: 'true',
+          idSnapshot: snapshotVl.id,
+          sizeSnapshot: snapshotVl.sizeInGB,
+          typeSnapshot: snapshotVl.iops > 0 ? 'ssd' : 'hdd',
+        },
+      });
+    }
   }
 
   navigateToEdit(id: any) {
-    this.router.navigate(['/app-smart-cloud/snapshotvls/detail', id], {
-      queryParams: { edit: 'true' },
-    });
+    if (this.regionId === RegionID.ADVANCE) {
+      this.router.navigate(['/app-smart-cloud/snapshotvls/detail', id], {
+        queryParams: { edit: 'true' },
+      });
+    } else {
+      this.router.navigate(['/app-smart-cloud/snapshotvls/detail', id], {
+        queryParams: { edit: 'true' },
+      });
+    }
   }
 
   getListSnapshotVl() {

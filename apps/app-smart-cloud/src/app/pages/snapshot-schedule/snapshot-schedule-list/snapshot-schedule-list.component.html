@@ -78,8 +78,8 @@
           </thead>
           <tbody>
           <tr *ngFor="let data of fixedTable.data">
-            <td><a [routerLink]="'/app-smart-cloud/schedule/snapshot/detail/{{data.id}}'">{{data.name}}</a></td>
-            <td><a [routerLink]="'/app-smart-cloud/snapshot/packages/detail/{{data.snapshotPackageId}}'">{{data.packageName}}</a></td>
+            <td><a (click)="navigateToDetail(data.id)">{{data.name}}</a></td>
+            <td><a (click)="navigateToPackageDetail(data.snapshotPackageId)">{{data.packageName}}</a></td>
             <td>{{data.snapshotType == 1 ? '{{\'app.vm.snapshot\' | i18n }}' : 'Snapshot Volume'}}</td>
             <td>{{data.serviceName}}</td>
             <td>{{data.maxSnapshot}}</td>

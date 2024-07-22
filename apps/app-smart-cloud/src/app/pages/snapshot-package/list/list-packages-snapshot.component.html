@@ -113,7 +113,7 @@
           </thead>
           <tbody>
           <tr *ngFor="let data of fixedTable.data">
-            <td><a [routerLink]="'/app-smart-cloud/snapshot/packages/detail/'+ data.id">{{data.packageName}}</a></td>
+            <td><a (click)="navigateToPackageDetail(data.id)">{{data.packageName}}</a></td>
             <td class='text-right'>{{data.totalSizeHDD}}</td>
             <td class='text-right'>{{data.totalSizeSSD}}</td>
 <!--            <ng-container *ngIf="data.status | ServiceStatusPipe as statusModel">-->
