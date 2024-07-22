@@ -17,6 +17,7 @@ import { debounceTime, Subject } from 'rxjs';
 import { getCurrentRegionAndProject } from '@shared';
 import { ConfigurationsService } from '../../../../shared/services/configurations.service';
 import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
+import { RegionID } from 'src/app/shared/enums/common.enum';
 
 @Component({
   selector: 'one-portal-resize-volume-vpc',
@@ -114,11 +115,27 @@ export class ResizeVolumeVpcComponent implements OnInit {
     }
   }
 
+  navigateToVolume() {
+    if (this.region === RegionID.ADVANCE) {
+      this.router.navigate(['/app-smart-cloud/volumes-advance']);
+    } else {
+      this.router.navigate(['/app-smart-cloud/volumes']);
+    }
+  }
+
+  navigateToUpdateProject(project){
+    if (this.region === RegionID.ADVANCE) {
+      this.router.navigate(['/app-smart-cloud/project-advance/update', project]);
+      }else{
+        this.router.navigate(['/app-smart-cloud/project/update', project]);
+      }
+  }
+
   regionChanged(region: RegionModel) {
     if(this.projectCombobox){
       this.projectCombobox.loadProjects(true, region.regionId);
     }
-    this.router.navigate(['/app-smart-cloud/volumes']);
+    this.navigateToVolume()
   }
 
   onRegionChanged(region: RegionModel) {
@@ -130,7 +147,7 @@ export class ResizeVolumeVpcComponent implements OnInit {
   }
 
   userChangeProject(project: ProjectModel) {
-    this.router.navigate(['/app-smart-cloud/volumes']);
+    this.navigateToVolume()
     //
   }
 
@@ -196,7 +213,7 @@ export class ResizeVolumeVpcComponent implements OnInit {
 
     }, error => {
       this.isLoading = false;
-      this.router.navigate(['/app-smart-cloud/volumes']);
+      this.navigateToVolume()
       this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.failData'));
     });
   }
@@ -260,7 +277,7 @@ export class ResizeVolumeVpcComponent implements OnInit {
     this.volumeService.editSizeVolume(request).subscribe(data => {
         if (data.code == 200) {
           this.isLoadingConfirm = false;
-          this.router.navigate(['/app-smart-cloud/volumes']);
+          this.navigateToVolume()
           this.notification.success(this.i18n.fanyi('app.status.success'), 'Yêu cầu điều chỉnh dung lượng thành công.');
           console.log(data);
         } else if (data.code == 310) {
@@ -320,7 +337,7 @@ export class ResizeVolumeVpcComponent implements OnInit {
       this.maxStorage = Number.parseInt(this.valueString?.split('#')[2])
     })
   }
-
+  url = window.location.pathname;
   ngOnInit() {
     this.validateForm.controls.storage.markAsDirty()
     this.validateForm.controls.storage.updateValueAndValidity()
@@ -328,7 +345,15 @@ export class ResizeVolumeVpcComponent implements OnInit {
     let regionAndProject = getCurrentRegionAndProject();
     this.region = regionAndProject.regionId;
     this.project = regionAndProject.projectId;
-
+    if (!this.url.includes('advance')) {
+      if (Number(localStorage.getItem('regionId')) === RegionID.ADVANCE) {
+        this.region = RegionID.NORMAL;
+      } else {
+        this.region = Number(localStorage.getItem('regionId'));
+      }
+    } else {
+      this.region = RegionID.ADVANCE;
+    }
     this.volumeId = Number.parseInt(this.route.snapshot.paramMap.get('id'));
     this.getConfiguration();
     if (this.volumeId != undefined || this.volumeId != null) {
