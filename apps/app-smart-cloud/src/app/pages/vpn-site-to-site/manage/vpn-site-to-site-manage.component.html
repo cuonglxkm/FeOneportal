@@ -32,132 +32,138 @@
       </div>
     </ng-template>
   </page-header>
-  <ng-container [ngSwitch]="isBegin">
-    <nz-content *ngSwitchCase="false">
-  <nz-card style="border-radius: 8px; margin-bottom: 20px">
-    <nz-row style="margin-bottom: 20px" nzGutter="24">
-      <div
-        nz-col
-        [nzLg]="12"
-        [nzMd]="12"
-        [nzSm]="24"
-        [nzXl]="12"
-        [nzXs]="24"
-        [nzXXl]="12"
-      >
-        <span class="text-card-header">{{'app.manage.site.to.site.title.infomation' |i18n}}</span>
-      </div>
-      <div
-        class="text-right p-0 m-b-0"
-        nz-col
-        [nzLg]="12"
-        [nzMd]="12"
-        [nzSm]="24"
-        [nzXl]="12"
-        [nzXs]="24"
-        [nzXXl]="12"
-      >
-        <button nz-button nzType="primary" (click)="extendVpn()" *ngIf="('order:Create' | IsPermissionPipe) && (projectObject && (projectObject.type == 0 || projectObject.type == 2))">
-          <img
-            style="padding-right: 10px; margin-top: -4px"
-            src="assets/imgs/calendar-tick2.svg"
-            alt=""
-          />
-        {{'app.manage.site.to.site.extend' |i18n}}
-        </button>
-        <button
-          nz-button
-          nzType="primary"
-          nz-dropdown
-          [nzDropdownMenu]="opMenu"
+  <nz-spin [nzSpinning]="isLoading">
+    <ng-container [ngSwitch]="isBegin">
+      <nz-content *ngSwitchCase="false">
+    <nz-card style="border-radius: 8px; margin-bottom: 20px">
+      <nz-row style="margin-bottom: 20px" nzGutter="24">
+        <div
+          nz-col
+          [nzLg]="12"
+          [nzMd]="12"
+          [nzSm]="24"
+          [nzXl]="12"
+          [nzXs]="24"
+          [nzXXl]="12"
         >
-          <img src="assets/imgs/dots.svg" alt="" />
-          <nz-dropdown-menu #opMenu="nzDropdownMenu">
-            <ul nz-menu>
-              <li nz-menu-item (click)="resizeVpn()" *ngIf="('order:Create' | IsPermissionPipe) && (projectObject && (projectObject.type == 0 || projectObject.type == 2))">{{'app.manage.site.to.site.Adjust' |i18n}}</li>
-              <li nz-menu-item (click)="modalDelete()" *ngIf="('VpnSiteToSites:Delete' | IsPermissionPipe) && (projectObject && (projectObject.type == 0 || projectObject.type == 2))">{{'app.manage.site.to.site.delete' |i18n}}</li>
-            </ul>
-          </nz-dropdown-menu>
-        </button>
+          <span class="text-card-header">{{'app.manage.site.to.site.title.infomation' |i18n}}</span>
+        </div>
+        <div
+          class="text-right p-0 m-b-0"
+          nz-col
+          [nzLg]="12"
+          [nzMd]="12"
+          [nzSm]="24"
+          [nzXl]="12"
+          [nzXs]="24"
+          [nzXXl]="12"
+        >
+          <button nz-button nzType="primary" (click)="extendVpn()" *ngIf="('order:Create' | IsPermissionPipe) && (projectObject && (projectObject.type == 0 || projectObject.type == 2))">
+            <img
+              style="padding-right: 10px; margin-top: -4px"
+              src="assets/imgs/calendar-tick2.svg"
+              alt=""
+            />
+          {{'app.manage.site.to.site.extend' |i18n}}
+          </button>
+          <button
+            nz-button
+            nzType="primary"
+            nz-dropdown
+            [nzDropdownMenu]="opMenu"
+            *ngIf="('order:Create' | IsPermissionPipe) && (projectObject && (projectObject.type == 0 || projectObject.type == 2))"
+          >
+            <img src="assets/imgs/dots.svg" alt="" />
+            <nz-dropdown-menu #opMenu="nzDropdownMenu">
+              <ul nz-menu>
+                <li nz-menu-item (click)="resizeVpn()" *ngIf="('order:Create' | IsPermissionPipe) && (projectObject && (projectObject.type == 0 || projectObject.type == 2)) && response?.serviceStatus !== 'TAMNGUNG'">{{'app.manage.site.to.site.Adjust' |i18n}}</li>
+                <li nz-menu-item (click)="modalDelete()" *ngIf="('VpnSiteToSites:Delete' | IsPermissionPipe) && (projectObject && (projectObject.type == 0 || projectObject.type == 2))">{{'app.manage.site.to.site.delete' |i18n}}</li>
+              </ul>
+            </nz-dropdown-menu>
+          </button>
+        </div>
+      </nz-row>
+      <div style="margin-bottom: 15px" class="text-label label-fontsize">
+        {{'app.manage.site.to.site.name.package' |i18n}}: <span class="text-bold">{{response?.offerName}}</span>
+      </div>
+      <div style="margin-bottom: 15px" class="text-label label-fontsize">
+        Bandwidth: <span class="text-bold">{{response?.bandwidth}}</span>
+      </div>
+      <div style="margin-bottom: 15px" class="text-label label-fontsize">
+        Router VPN site to site: 
+        <a class="text-bold" target="_blank" nz-tooltip nzTooltipTitle="{{'app.view.detail' | i18n}}" nzTooltipPlacement="bottom" [routerLink]="['/app-smart-cloud/network/router/detail/' + response?.routerName + '/' + response?.routerId]">
+          {{ response?.routerName }}
+          </a>
+      </div>
+      <div style="margin-bottom: 15px" class="text-label label-fontsize">
+        {{'app.service.start.date' |i18n}}: <span class="text-bold">{{response?.createdDate | date: 'dd/MM/YYYY'}}</span>
+      </div>
+      <div style="margin-bottom: 15px" class="text-label label-fontsize">
+        {{'app.service.expiration-date' |i18n}}: <span class="text-bold">{{response?.expiredDate | date: 'dd/MM/YYYY'}}</span>
+      </div>
+      <div *ngIf="response?.serviceStatus === 'TAMNGUNG'" style="margin-bottom: 15px" class="text-label label-fontsize">
+        {{'app.payment.status' |i18n}}: <span class="text-bold">{{ 'app.suspend' | i18n }} ({{response?.suspendReason | SuspendStatusPipe}})</span>
+      </div>
+    </nz-card>
+    <nz-card *ngIf="response?.serviceStatus !== 'TAMNGUNG'" class="custom-tab" style="border-radius: 8px">
+      <nz-tabset nzSelectedIndex nzSize="large">
+        <nz-tab nzTitle="IKE Policies" class="label-fontsize">
+          <ng-template nz-tab>
+            <one-portal-ike-policies [region]="region"
+            [project]="project"></one-portal-ike-policies
+          ></ng-template>
+        </nz-tab>
+        <nz-tab nzTitle="IPsec Policies" class="label-fontsize">
+          <ng-template nz-tab>
+            <one-portal-ipsec-policies
+              [region]="region"
+              [project]="project"
+            ></one-portal-ipsec-policies>
+          </ng-template>
+        </nz-tab>
+        <nz-tab nzTitle="VPN Service" class="label-fontsize">
+          <ng-template nz-tab>
+            <one-portal-vpn-service
+            [region]="region"
+              [project]="project"
+            ></one-portal-vpn-service>
+          </ng-template>
+        </nz-tab>
+        <nz-tab nzTitle="Endpoint Group" class="label-fontsize">
+          <ng-template nz-tab>
+            <one-portal-endpoint-group [region]="region"
+            [project]="project"></one-portal-endpoint-group>
+          </ng-template>
+        </nz-tab>
+        <nz-tab nzTitle="VPN Connections" class="label-fontsize">
+          <ng-template nz-tab>
+            <one-portal-vpn-connection [region]="region"
+            [project]="project"></one-portal-vpn-connection>
+          </ng-template>
+        </nz-tab>
+      </nz-tabset>
+    </nz-card>
+  </nz-content>
+  <nz-content *ngSwitchDefault>
+  <nz-card style="border-radius: 8px;">
+    <nz-row nzJustify="center" class="pt-15">
+      <img src="/assets/imgs/vpn-site-to-site-bg.png" width="500" height="250" alt="blank-vpn-site-to-site">
+    </nz-row>
+    <nz-row nzJustify="center" style="margin-top:15px;">
+      <div class="text-title">
+        <h1>VPN site to site <br /> {{'app.manage.site.to.site.present.title' |i18n}}</h1>
       </div>
     </nz-row>
-    <div style="margin-bottom: 15px" class="text-label label-fontsize">
-      {{'app.manage.site.to.site.name.package' |i18n}}: <span class="text-bold">{{response?.offerName}}</span>
-    </div>
-    <div style="margin-bottom: 15px" class="text-label label-fontsize">
-      Bandwidth: <span class="text-bold">{{response?.bandwidth}}</span>
-    </div>
-    <div style="margin-bottom: 15px" class="text-label label-fontsize">
-      Router VPN site to site: 
-      <a class="text-bold" target="_blank" nz-tooltip nzTooltipTitle="{{'app.view.detail' | i18n}}" nzTooltipPlacement="bottom" [routerLink]="['/app-smart-cloud/network/router/detail/' + response?.routerName + '/' + response?.routerId]">
-        {{ response?.routerName }}
-        </a>
-    </div>
-    <div style="margin-bottom: 15px" class="text-label label-fontsize">
-      {{'app.service.start.date' |i18n}}: <span class="text-bold">{{response?.createdDate | date: 'dd/MM/YYYY'}}</span>
-    </div>
-    <div style="margin-bottom: 15px" class="text-label label-fontsize">
-      {{'app.service.expiration-date' |i18n}}: <span class="text-bold">{{response?.expiredDate | date: 'dd/MM/YYYY'}}</span>
-    </div>
+    <nz-row nzJustify="center" class="mb-6">
+      <div class="text-subtitle" style="text-align: center;">{{'app.manage.site.to.site.present.des1' |i18n}} <br /> {{'app.manage.site.to.site.present.des2' |i18n}}</div>
+    </nz-row>
+    <nz-row nzJustify="center" class="pb-15">
+      <button style="text-align: center; margin-top: 10px" nz-button nzType="primary" *ngIf="('order:Create' | IsPermissionPipe) && (projectObject && (projectObject.type == 0 || projectObject.type == 2))" (click)="createVpn()">{{'app.manage.site.to.site.present.create' |i18n}}</button>
+    </nz-row>
   </nz-card>
-  <nz-card class="custom-tab" style="border-radius: 8px">
-    <nz-tabset nzSelectedIndex nzSize="large">
-      <nz-tab nzTitle="IKE Policies" class="label-fontsize">
-        <ng-template nz-tab>
-          <one-portal-ike-policies [region]="region"
-          [project]="project"></one-portal-ike-policies
-        ></ng-template>
-      </nz-tab>
-      <nz-tab nzTitle="IPsec Policies" class="label-fontsize">
-        <ng-template nz-tab>
-          <one-portal-ipsec-policies
-            [region]="region"
-            [project]="project"
-          ></one-portal-ipsec-policies>
-        </ng-template>
-      </nz-tab>
-      <nz-tab nzTitle="VPN Service" class="label-fontsize">
-        <ng-template nz-tab>
-          <one-portal-vpn-service
-          [region]="region"
-            [project]="project"
-          ></one-portal-vpn-service>
-        </ng-template>
-      </nz-tab>
-      <nz-tab nzTitle="Endpoint Group" class="label-fontsize">
-        <ng-template nz-tab>
-          <one-portal-endpoint-group [region]="region"
-          [project]="project"></one-portal-endpoint-group>
-        </ng-template>
-      </nz-tab>
-      <nz-tab nzTitle="VPN Connections" class="label-fontsize">
-        <ng-template nz-tab>
-          <one-portal-vpn-connection [region]="region"
-          [project]="project"></one-portal-vpn-connection>
-        </ng-template>
-      </nz-tab>
-    </nz-tabset>
-  </nz-card>
-</nz-content>
-<nz-content *ngSwitchDefault>
-<nz-card style="border-radius: 8px;">
-  <nz-row nzJustify="center" class="pt-15">
-    <img src="/assets/imgs/vpn-site-to-site-bg.png" width="500" height="250" alt="blank-vpn-site-to-site">
-  </nz-row>
-  <nz-row nzJustify="center" style="margin-top:15px;">
-    <div class="text-title">
-      <h1>VPN site to site <br /> {{'app.manage.site.to.site.present.title' |i18n}}</h1>
-    </div>
-  </nz-row>
-  <nz-row nzJustify="center" class="mb-6">
-    <div class="text-subtitle" style="text-align: center;">{{'app.manage.site.to.site.present.des1' |i18n}} <br /> {{'app.manage.site.to.site.present.des2' |i18n}}</div>
-  </nz-row>
-  <nz-row nzJustify="center" class="pb-15">
-    <button style="text-align: center; margin-top: 10px" nz-button nzType="primary" *ngIf="('order:Create' | IsPermissionPipe) && (projectObject && (projectObject.type == 0 || projectObject.type == 2))" (click)="createVpn()">{{'app.manage.site.to.site.present.create' |i18n}}</button>
-  </nz-row>
-</nz-card>
-</nz-content>
-</ng-container>
+  </nz-content>
+  </ng-container>
+  </nz-spin>
 
 
 <nz-modal

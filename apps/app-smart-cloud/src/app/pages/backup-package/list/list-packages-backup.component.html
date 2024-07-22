@@ -109,10 +109,12 @@
                     nzBreakWord nzAlign="left"
                     [ngStyle]="{color: statusModel.color}">
                 <span nz-popover
-                      style="cursor: pointer;"
-                      [nzPopoverContent]="getSuspendedReason(data.suspendReason)"
-                      [nzPopoverTrigger]="'hover'"
-                      [nzPopoverPlacement]="'bottom'">{{ statusModel.status }}</span>
+                      style="cursor: pointer;">
+                  <img src="assets/imgs/warning-message.svg" alt="" style="cursor: pointer; margin-bottom: 4px;"
+                       nzTooltipTitle="{{ getSuspendedReason(data.suspendReason) }}"
+                       nzTooltipPlacement="bottom"
+                       nz-tooltip>
+                  {{ statusModel.status }}</span>
                 </td>
               </ng-container>
               <td nzBreakWord>

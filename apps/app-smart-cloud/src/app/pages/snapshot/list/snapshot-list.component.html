@@ -78,8 +78,8 @@
           </thead>
           <tbody>
           <tr *ngFor="let data of fixedTable.data">
-            <td><a [routerLink]="'/app-smart-cloud/snapshot/detail/{{data.id}}'">{{data.name}}</a></td>
-            <td><a [routerLink]="'/app-smart-cloud/snapshot/packages/detail/{{data.snapshotPackageId}}'">{{data.packageName}}</a></td>
+            <td><a (click)="navigateToDetail(data.id)">{{data.name}}</a></td>
+            <td><a (click)="navigateToPackageDetail(data.snapshotPackageId)">{{data.packageName}}</a></td>
             <td style="text-align: right">{{data.sizeInGB}}</td>
             <td>{{data.fromRootVolume == true ? data.instanceName : data.volumeName}}</td>
             <td>{{data.fromRootVolume == true ? 'Snapshot máy ảo' : 'Snapshot Volume'}}</td>
@@ -92,7 +92,7 @@
               <td *ngIf="!!data.suspendReason">
               <span [ngStyle]="{color: statusModel.color}">
                 <img src="assets/imgs/warning-message.svg" alt="" style="cursor: pointer; margin-bottom: 4px;"
-                     nzTooltipTitle="{{ data.suspendReason }}"
+                     nzTooltipTitle="{{ data.suspendReason | SuspendStatusPipe }}"
                      nzTooltipPlacement="bottom"
                      nz-tooltip>
                 {{ statusModel.status }}

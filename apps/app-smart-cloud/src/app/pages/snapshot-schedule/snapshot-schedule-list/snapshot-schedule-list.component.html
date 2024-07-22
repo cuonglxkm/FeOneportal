@@ -78,16 +78,16 @@
           </thead>
           <tbody>
           <tr *ngFor="let data of fixedTable.data">
-            <td><a [routerLink]="'/app-smart-cloud/schedule/snapshot/detail/{{data.id}}'">{{data.name}}</a></td>
-            <td><a [routerLink]="'/app-smart-cloud/snapshot/packages/detail/{{data.snapshotPackageId}}'">{{data.packageName}}</a></td>
+            <td><a (click)="navigateToDetail(data.id)">{{data.name}}</a></td>
+            <td><a (click)="navigateToPackageDetail(data.snapshotPackageId)">{{data.packageName}}</a></td>
             <td>{{data.snapshotType == 1 ? '{{\'app.vm.snapshot\' | i18n }}' : 'Snapshot Volume'}}</td>
             <td>{{data.serviceName}}</td>
             <td>{{data.maxSnapshot}}</td>
             <td>{{data.nextRuntime | date : 'HH:mm:ss dd/MM/yyyy'}}</td>
             <ng-container *ngIf="data.status | ServiceStatusPipe as statusModel">
               <td nzBreakWord nzAlign="left" [ngStyle]="{ color: statusModel.color }">
-                <img *ngIf="data.status == 'DISABLED'" nz-tooltip [nzTooltipTitle]="data.warningMessage" src="assets/imgs/warning-message2.svg" style="margin-bottom: 5px">
-                <img *ngIf="data.status == 'SUSPENDED'" nz-tooltip [nzTooltipTitle]="data.warningMessage" src="assets/imgs/warning-message.svg" style="margin-bottom: 5px">
+                <img *ngIf="data.status == 'DISABLED'" nz-tooltip [nzTooltipTitle]="data.warningMessage | SuspendStatusPipe" src="assets/imgs/warning-message2.svg" style="margin-bottom: 5px">
+                <img *ngIf="data.status == 'SUSPENDED'" nz-tooltip [nzTooltipTitle]="data.warningMessage | SuspendStatusPipe" src="assets/imgs/warning-message.svg" style="margin-bottom: 5px">
                 {{ statusModel.status }}</td>
             </ng-container>
             <td>
@@ -117,7 +117,7 @@
           <nz-row style="margin-top: 20px">
             <nz-col class="text-center" style="width: 100%">
               <span class="text-intro-title"
-                    style="color: #0066b3">{{'app.restore"' | i18n}}</span>
+                    style="color: #0066b3">{{'app.restore' | i18n}}</span>
             </nz-col>
           </nz-row>
           <nz-row style="margin-top: 20px">

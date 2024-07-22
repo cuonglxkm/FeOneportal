@@ -16,6 +16,7 @@ import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from '@core';
 import { debounceTime, Subject, Subscription } from 'rxjs';
 import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
+import { RegionID } from 'src/app/shared/enums/common.enum';
 
 @Component({
   selector: 'app-volume',
@@ -197,11 +198,27 @@ export class VolumeComponent implements OnInit, OnDestroy {
   //dẫn sang tạo volume
   navigateToCreateVolume() {
     if (this.typeVPC == 1) {
-      this.router.navigate(['/app-smart-cloud/volume/vpc/create']);
+      if (this.region === RegionID.ADVANCE) {
+        this.router.navigate(['/app-smart-cloud/volume/vpc/create']);
+      }else{
+        this.router.navigate(['/app-smart-cloud/volume-advance/vpc/create']);
+      }
     } else {
-      this.router.navigate(['/app-smart-cloud/volume/create']);
+      if (this.region === RegionID.ADVANCE) {
+      this.router.navigate(['/app-smart-cloud/volume-advance/create']);
+      }else{
+        this.router.navigate(['/app-smart-cloud/volume/create']);
+      }
     }
 
+  }
+
+  navigateToDetail(id){
+    if (this.region === RegionID.ADVANCE) {
+      this.router.navigate(['/app-smart-cloud/volume-advance/detail', id]);
+      }else{
+        this.router.navigate(['/app-smart-cloud/volume/detail', id]);
+      }
   }
 
   //attach
@@ -235,28 +252,52 @@ export class VolumeComponent implements OnInit, OnDestroy {
   //create backup
   navigateToCreateBackup(idVolume) {
     if (this.typeVPC == 1) {
-      this.router.navigate(['/app-smart-cloud/backup-volume/create/vpc', { volumeId: idVolume }]);
+      if (this.region === RegionID.ADVANCE) {
+        this.router.navigate(['/app-smart-cloud/backup-volume-advance/create/vpc', { volumeId: idVolume }]);
+      }else{
+        this.router.navigate(['/app-smart-cloud/backup-volume/create/vpc', { volumeId: idVolume }]);
+      }
     } else {
-      this.router.navigate(['/app-smart-cloud/backup-volume/create/normal', { volumeId: idVolume }]);
+      if (this.region === RegionID.ADVANCE) {
+        this.router.navigate(['/app-smart-cloud/backup-volume-advance/create/normal', { volumeId: idVolume }]);
+      }else{
+        this.router.navigate(['/app-smart-cloud/backup-volume/create/normal', { volumeId: idVolume }]);
+      }
     }
   }
 
   //create schedule backup
   navigateToCreateScheduleBackup(id) {
-    if (this.typeVPC == 1) {
+    if (this.typeVPC == 1) { 
+      if (this.region === RegionID.ADVANCE) {
+      this.router.navigate(['/app-smart-cloud/schedule/backup-advance/create/vpc'], {
+        queryParams: { type: 'VOLUME', idVolume: id }
+      });
+    }else{
       this.router.navigate(['/app-smart-cloud/schedule/backup/create/vpc'], {
         queryParams: { type: 'VOLUME', idVolume: id }
       });
+    }
     } else {
+      if (this.region === RegionID.ADVANCE) {
+      this.router.navigate(['/app-smart-cloud/schedule/backup-advance/create'], {
+        queryParams: { type: 'VOLUME', idVolume: id }
+      });
+    }else{
       this.router.navigate(['/app-smart-cloud/schedule/backup/create'], {
         queryParams: { type: 'VOLUME', idVolume: id }
       });
+    }
     }
   }
 
   //create snapshot
   navigateToSnapshot(idVolume: number) {
-    this.router.navigate(['/app-smart-cloud/snapshot/create', { volumeId: idVolume }], { queryParams: { navigateType: 0 } });
+    if (this.region === RegionID.ADVANCE) {
+    this.router.navigate(['/app-smart-cloud/snapshot-advance/create', { volumeId: idVolume }], { queryParams: { navigateType: 0 } });
+    }else{
+      this.router.navigate(['/app-smart-cloud/snapshot/create', { volumeId: idVolume }], { queryParams: { navigateType: 0 } });
+    }
   }
 
   hasRoleSI: boolean = false;
@@ -271,13 +312,22 @@ export class VolumeComponent implements OnInit, OnDestroy {
         break;
     }
   }
+  url = window.location.pathname;
 
   ngOnInit() {
     // Lấy thong tin region & project từ local
     let regionAndProject = getCurrentRegionAndProject();
     this.region = regionAndProject.regionId;
     this.project = regionAndProject.projectId;
-
+    if (!this.url.includes('advance')) {
+      if (Number(localStorage.getItem('regionId')) === RegionID.ADVANCE) {
+        this.region = RegionID.NORMAL;
+      } else {
+        this.region = Number(localStorage.getItem('regionId'));
+      }
+    } else {
+      this.region = RegionID.ADVANCE;
+    }
     //lấy role
     this.hasRoleSI = localStorage.getItem('role').includes('SI');
     console.log('project', this.project);

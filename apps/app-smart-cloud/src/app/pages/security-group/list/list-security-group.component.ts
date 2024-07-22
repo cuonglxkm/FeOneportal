@@ -110,16 +110,16 @@ export class ListSecurityGroupComponent implements OnInit {
   handleDetachSG() {
     this.getListSG(false)
   }
+
   getInstances() {
     this.isLoadingVm = true;
     this.instanceService.search(this.pageIndex, this.pageSize, this.region,
       this.project, '', '', true, this.tokenService.get()?.userId).subscribe(data => {
       this.isLoadingVm = false;
-      console.log('data', data.records)
       this.listInstances = data?.records
 
-      this.listInstances?.filter(item => item?.taskState.includes('ACTIVE'))
-
+      this.listInstances = this.listInstances?.filter(item => ['ACTIVE'].includes(item?.taskState))
+      console.log('data filter', this.listInstances)
     }, error => {
       this.isLoadingVm = false;
       this.listInstances = null;

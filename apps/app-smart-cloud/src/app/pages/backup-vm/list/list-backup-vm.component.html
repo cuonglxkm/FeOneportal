@@ -98,7 +98,17 @@
             <td nzBreakWord nzAlign="center">{{ data.creationDate | date: "dd/MM/yyyy" }}</td>
             <td nzBreakWord nzAlign="center">{{ data.expirationDate | date: "dd/MM/yyyy" }}</td>
             <ng-container *ngIf="data.status | ServiceStatusPipe as statusModel">
-              <td nzBreakWord nzAlign="left" [ngStyle]="{color: statusModel.color}">{{statusModel.status}}</td>
+              <td *ngIf="data.status != 'SUSPENDED'" nzBreakWord nzAlign="left" [ngStyle]="{color: statusModel.color}">
+                {{statusModel.status}}</td>
+              <td *ngIf="data.status == 'SUSPENDED'" nzBreakWord nzAlign="left" [ngStyle]="{color: statusModel.color}">
+                <span nz-popover
+                      style="cursor: pointer;">
+                      <img src="assets/imgs/warning-message.svg" alt="" style="cursor: pointer; margin-bottom: 4px;"
+                           nzTooltipTitle="{{ getSuspendedReason(data.suspendReason) }}"
+                           nzTooltipPlacement="bottom"
+                           nz-tooltip>
+                  {{ statusModel.status }}</span>
+              </td>
             </ng-container>
 <!--            <td nzBreakWord>-->
 <!--              <span *ngIf="data.serviceStatus === 'KHOITAO'">-</span>-->

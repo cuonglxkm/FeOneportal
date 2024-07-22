@@ -26,6 +26,7 @@ import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from '@core';
 import { VpcService } from '../../../shared/services/vpc.service';
 import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
+import { RegionID } from 'src/app/shared/enums/common.enum';
 
 @Component({
   selector: 'one-portal-create-schedule-snapshot',
@@ -97,12 +98,21 @@ export class SnapshotScheduleCreateComponent implements OnInit {
     volume: [null as number, []],
     snapshotPackage: [null as number, []]
   })
-
+  url = window.location.pathname;
   ngOnInit(): void {
     let regionAndProject = getCurrentRegionAndProject()
     this.region = regionAndProject.regionId
     this.project = regionAndProject.projectId
     this.userId = this.tokenService.get()?.userId;
+    if (!this.url.includes('advance')) {
+      if (Number(localStorage.getItem('regionId')) === RegionID.ADVANCE) {
+        this.region = RegionID.NORMAL;
+      } else {
+        this.region = Number(localStorage.getItem('regionId'));
+      }
+    } else {
+      this.region = RegionID.ADVANCE;
+    }
     this.doGetListSnapshotPackage();
     this.loadSnapshotPackage();
     this.packageSnapshotService.getExistedSchedule(this.project)
@@ -205,14 +215,10 @@ export class SnapshotScheduleCreateComponent implements OnInit {
             // this.request.dates = 0;
             // this.request.duration = 0;
             // this.request.volumeId = ((this.selectedSnapshotType==0 && this.snapshotTypeCreate==2) || this.snapshotTypeCreate==0) ?  : '';
-            this.request.runtime = this.datepipe.transform(
-              this.time,
-              'yyyy-MM-ddTHH:mm:ss',
-              'vi-VI'
-            );
+            this.request.runtime = new Date();
             // this.request.intervalMonth = 0;
             // this.request.maxBaxup = 1; // fix cứng số bản
-            this.request.snapshotPacketId = this.projectType == 1 ? '' :this.selectedSnapshotPackage.id;
+            this.request.snapshotPacketId = this.projectType == 1 ? null :this.selectedSnapshotPackage.id;
             this.request.serviceInstanceId = ((this.selectedSnapshotType==1 && this.snapshotTypeCreate==2) || this.snapshotTypeCreate==1) ? this.selectedVM.id : this.selectedVolume.id;
             this.request.maxSnapshot = this.numOfVersion
             this.request.snapshotType = ((this.selectedSnapshotType==1 && this.snapshotTypeCreate==2) || this.snapshotTypeCreate==1) ? 1 : 0;
@@ -224,7 +230,7 @@ export class SnapshotScheduleCreateComponent implements OnInit {
                   console.log(data);
                   this.isLoading = false;
                   this.notification.success('Success', 'Tạo lịch thành công');
-                  this.router.navigate(['/app-smart-cloud/schedule/snapshot']);
+                  this.navigateToSnapshotSchedule();
               },
               error => {
                 this.notification.error(this.i18n.fanyi("app.status.fail"), 'Tạo lịch thất bại',error.error.message);
@@ -236,6 +242,14 @@ export class SnapshotScheduleCreateComponent implements OnInit {
         },
       ],
     });
+  }
+
+  navigateToSnapshotSchedule() {
+    if (this.region === RegionID.ADVANCE) {
+      this.router.navigate(['/app-smart-cloud/schedule-advance/snapshot']);
+    } else {
+      this.router.navigate(['/app-smart-cloud/schedule/snapshot']);
+    }
   }
   onRegionChange(region: RegionModel) {
     this.region = region.regionId;
@@ -266,7 +280,7 @@ export class SnapshotScheduleCreateComponent implements OnInit {
   }
 
   onUserChange(project: ProjectModel) {
-    this.router.navigate(['/app-smart-cloud/schedule/snapshot'])
+    this.navigateToSnapshotSchedule()
   }
 
   private loadSnapshotPackage() {

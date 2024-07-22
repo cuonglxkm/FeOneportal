@@ -24,6 +24,7 @@ export interface BackupSchedule {
   backupScheduleItems: BackupScheduleItem[]
   serviceName: string
   backupPackageName: string
+  suspendReason: string
 }
 
 export class BackupScheduleItem {

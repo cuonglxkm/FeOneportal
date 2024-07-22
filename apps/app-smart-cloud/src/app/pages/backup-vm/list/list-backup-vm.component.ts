@@ -261,6 +261,16 @@ export class ListBackupVmComponent implements OnInit, OnDestroy {
     }
   }
 
+  getSuspendedReason(suspendedReason: string) {
+    switch (suspendedReason) {
+      case "CHAMGIAHAN":
+        return this.i18n.fanyi('app.status.low-renew')
+      case "":
+      default:
+        break;
+    }
+  }
+
   selectedActionChange(value: any, data: BackupVm) {
     this.selectedOptionAction = value
     this.selectedAction = data
