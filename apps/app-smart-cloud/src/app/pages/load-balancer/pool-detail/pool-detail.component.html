@@ -5,7 +5,9 @@
 >
   <ng-template #breadcrumb>
     <nz-breadcrumb [nzSeparator]="iconTemplate">
-      <ng-template #iconTemplate><one-portal-svg-icon [icon]="'icon_breadcrumb'"></one-portal-svg-icon></ng-template>
+      <ng-template #iconTemplate
+        ><one-portal-svg-icon [icon]="'icon_breadcrumb'"></one-portal-svg-icon
+      ></ng-template>
       <nz-breadcrumb-item>
         <a [routerLink]="['/']">{{ 'app.breadcrumb.home' | i18n }}</a>
       </nz-breadcrumb-item>
@@ -30,7 +32,8 @@
         (valueChanged)="onRegionChange($event)"
         (regionChange)="onRegionChanged($event)"
       ></region-select-dropdown>
-      <project-select-dropdown #projectCombobox
+      <project-select-dropdown
+        #projectCombobox
         [regionId]="regionId"
         (userChanged)="userChangeProject()"
       ></project-select-dropdown>
@@ -316,7 +319,7 @@
                 class="input-custom"
                 nz-input
                 formControlName="name"
-                [(ngModel)]="healthForm.name"
+                [ngModel]="healthForm.name"
                 [placeholder]="'app.input.name' | i18n"
                 [maxlength]="50"
               />
@@ -382,7 +385,7 @@
             >
               <nz-input-number
                 style="width: 100%; margin-left: 0px"
-                [(ngModel)]="healthForm.maxRetriesDown"
+                [ngModel]="healthForm.maxRetriesDown"
                 (keydown)="onKeyDown($event)"
                 formControlName="maxRetriesDown"
                 [nzMin]="1"
@@ -408,7 +411,7 @@
             <nz-form-control nzDisableAutoTips [nzErrorTip]="delayErrorTpl">
               <nz-input-number
                 style="width: 100%; margin-left: 0px"
-                [(ngModel)]="healthForm.delay"
+                [ngModel]="healthForm.delay"
                 (keydown)="onKeyDown($event)"
                 formControlName="delay"
                 [nzMin]="1"
@@ -435,7 +438,7 @@
             >
               <nz-input-number
                 style="width: 100%; margin-left: 0px"
-                [(ngModel)]="healthForm.maxRetries"
+                [ngModel]="healthForm.maxRetries"
                 (keydown)="onKeyDown($event)"
                 formControlName="maxRetries"
                 [nzMin]="1"
@@ -459,7 +462,7 @@
             <nz-form-control nzDisableAutoTips [nzErrorTip]="timeoutErrorTpl">
               <nz-input-number
                 style="width: 100%; margin-left: 0px"
-                [(ngModel)]="healthForm.timeout"
+                [ngModel]="healthForm.timeout"
                 (keydown)="onKeyDown($event)"
                 formControlName="timeout"
                 [nzMin]="1"
@@ -487,7 +490,7 @@
                 [nzPlaceHolder]="'-- ' + ('app.choose.method' | i18n) + ' --'"
                 [nzShowSearch]="true"
                 formControlName="httpMethod"
-                [(ngModel)]="healthForm.httpMethod"
+                [ngModel]="healthForm.httpMethod"
                 nzSize="large"
               >
                 <nz-option
@@ -522,9 +525,12 @@
                 [maxlength]="3"
               />
               <ng-template #expectedCodeErrorTpl let-control>
-                <ng-container *ngIf="control.hasError('required')"
-                  >{{ 'validation.info.required' | i18n }}
-                </ng-container>
+                <ng-container *ngIf="control.hasError('required')">{{
+                  'validation.info.required' | i18n
+                }}</ng-container>
+                <ng-container *ngIf="control.hasError('pattern')">{{
+                  'validation.expected.code' | i18n
+                }}</ng-container>
               </ng-template>
             </nz-form-control>
           </nz-form-item>
@@ -532,12 +538,12 @@
         <div style="flex: 1">
           <nz-form-item>
             <nz-form-label> Path </nz-form-label>
-            <nz-form-control>
+            <nz-form-control [nzErrorTip]="'validation.url.path' | i18n">
               <input
                 class="input-custom"
                 nz-input
-                [(ngModel)]="healthForm.urlPath"
-                [ngModelOptions]="{ standalone: true }"
+                [ngModel]="healthForm.urlPath"
+                formControlName="url"
                 [placeholder]="'app.input.url' | i18n"
               />
             </nz-form-control>
@@ -586,7 +592,7 @@
             class="input-custom"
             nz-input
             formControlName="name"
-            [(ngModel)]="memberForm.name"
+            [ngModel]="memberForm.name"
             [placeholder]="'app.input.name' | i18n"
             [maxlength]="50"
           />
@@ -681,7 +687,7 @@
             <nz-form-control nzDisableAutoTips [nzErrorTip]="weightErrorTpl">
               <nz-input-number
                 style="width: 100%; margin-left: 0px"
-                [(ngModel)]="memberForm.weight"
+                [ngModel]="memberForm.weight"
                 (keydown)="onKeyDown($event)"
                 formControlName="weight"
                 [nzMin]="1"
@@ -702,7 +708,8 @@
       <nz-switch
         style="margin-left: 20px"
         nzSize="small"
-        [(ngModel)]="memberForm.backup"
+        [ngModel]="memberForm.backup"
+        (ngModelChange)="changeBackup($event)"
         [ngModelOptions]="{ standalone: true }"
       ></nz-switch>
       <nz-alert
