@@ -281,4 +281,15 @@ export class SnapshotListComponent implements OnInit{
     }
     
   }
+
+  getSuspendedReason(suspendedReason: any) {
+    switch (suspendedReason) {
+      case "CHAMGIAHAN":
+        return this.i18n.fanyi('app.status.low-renew')
+      case "VIPHAMDIEUKHOAN":
+        return this.i18n.fanyi('service.status.violation')
+      default:
+        break;
+    }
+  }
 }

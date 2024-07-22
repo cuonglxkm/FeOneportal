@@ -208,10 +208,10 @@ export class ProjectListComponent implements OnInit {
               localStorage.setItem('projects', JSON.stringify(listProject));
             }
 
-            this.notification.success('Thành công', 'Xóa dự án thành công');
+            this.notification.success('Thành công', 'Xóa VPC thành công');
           },
           error: e => {
-            this.notification.error('Thất bại', 'Xóa dự án thất bại');
+            this.notification.error('Thất bại', 'Xóa VPC thất bại');
           }
         }
       );

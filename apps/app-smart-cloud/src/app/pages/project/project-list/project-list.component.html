@@ -74,11 +74,32 @@
           <td *ngIf="item.type != 'VPC'">-</td>
           <td *ngIf="item.type == 'VPC'">{{ item.createDate | date : "dd/MM/yyyy" }}</td>
           <td *ngIf="item.type == 'VPC'">{{ item.expireDate | date : "dd/MM/yyyy" }}</td>
-          <ng-container *ngIf="item.resourceStatus | ServiceStatusPipe as statusModel">
+          <!-- <ng-container *ngIf="item.resourceStatus | ServiceStatusPipe as statusModel">
             <td [ngStyle]="{color: statusModel.color}" *ngIf="item.resourceStatus=='SUSPENDED'"   >
-            <span nzPopoverTitle="Chậm gia hạn" nz-popover  [nzPopoverTrigger]="'hover'"
-            [nzPopoverPlacement]="'top'">{{statusModel.status}}</span></td>
-            <td [ngStyle]="{color: statusModel.color}" *ngIf="statusModel!='EXPIRED'"  >{{statusModel.status}}</td>
+            
+           <span>
+            <img src="assets/imgs/warning-message.svg" alt="" style="cursor: pointer; margin-bottom: 4px;"
+            nzTooltipTitle="Chậm gia hạn"
+            nzTooltipPlacement="top"
+            nz-tooltip>
+            {{statusModel.status}}
+           </span> 
+          </td> 
+            <td [ngStyle]="{color: statusModel.color}" *ngIf="item.resourceStatus!='SUSPENDED'"  >{{statusModel.status}}</td>
+          </ng-container> -->
+          <ng-container *ngIf="item.resourceStatus | ServiceStatusPipe as statusModel">
+            <td *ngIf="item.resourceStatus=='SUSPENDED'">
+              <span [ngStyle]="{color: statusModel.color}">
+                <img src="assets/imgs/warning-message.svg" alt="" style="cursor: pointer; margin-bottom: 4px;"
+            [nzTooltipTitle]="item.suspendReason"
+            nzTooltipPlacement="top"
+            nz-tooltip>
+                {{ statusModel.status }}
+              </span>
+            </td>
+            <td *ngIf="item.resourceStatus!='SUSPENDED'">
+              <span [ngStyle]="{color: statusModel.color}">{{ statusModel.status }}</span>
+            </td>
           </ng-container>
           <td >{{ item.type == 'VPC' ? ('project.note4' | i18n) : (item.type == 'Default' ? ('project.default' | i18n) :('project.note5' | i18n))}}</td>
           <td>

@@ -730,6 +730,13 @@ export class ProjectUpdateComponent implements OnInit {
 
 
 
+        },error =>{
+       
+          if(error.status===500){
+            this.router.navigate(['/app-smart-cloud/project']);
+          this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi(error.error.message));
+          }
+         
         }
       )
       this.calculate();

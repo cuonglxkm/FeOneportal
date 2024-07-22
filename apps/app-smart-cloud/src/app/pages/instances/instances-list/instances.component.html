@@ -213,11 +213,23 @@
         </td>
         <ng-container *ngIf="data.status | ServiceStatusPipe as statusModel">
           <td
-            [nz-tooltip]="data.status == 'TAMNGUNG' ? data.suspendReason : ''"
             nzBreakWord
             nzAlign="left"
             [ngStyle]="{ color: statusModel.color }"
           >
+            <img
+              *ngIf="data.status == 'TAMNGUNG'"
+              src="assets/imgs/warning-message.svg"
+              alt=""
+              style="cursor: pointer; margin-bottom: 4px"
+              [nzTooltipTitle]="
+                data.suspendReason
+                  ? ('app.' + data.suspendReason | i18n)
+                  : data.suspendReason
+              "
+              nzTooltipPlacement="bottom"
+              nz-tooltip
+            />
             {{ statusModel.status }}
           </td>
         </ng-container>

@@ -115,7 +115,18 @@
                   </span>
                 </td>
                 <td *ngIf="data.warningMessage == null || data.warningMessage === ''">
-                  <span [ngStyle]="{color: statusModel.color}">{{ statusModel.status }}</span>
+                  <span *ngIf="data.status == 'SUSPENDED'"
+                        [ngStyle]="{color: statusModel.color}">
+                    <span nz-popover
+                          style="cursor: pointer;">
+                      <img src="assets/imgs/warning-message.svg" alt="" style="cursor: pointer; margin-bottom: 4px;"
+                         nzTooltipTitle="{{ getSuspendedReason(data.suspendReason) }}"
+                         nzTooltipPlacement="bottom"
+                         nz-tooltip>
+                        {{ statusModel.status }}</span>
+                  </span>
+                  <span *ngIf="data.status != 'SUSPENDED'" [ngStyle]="{color: statusModel.color}">
+                    {{ statusModel.status }}</span>
                 </td>
               </ng-container>
               <td>{{ data.nextRuntime | date: 'HH:mm dd/MM/yyyy' }}</td>

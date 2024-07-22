@@ -123,7 +123,7 @@
               <td *ngIf="!!data.suspendType">
               <span [ngStyle]="{color: statusModel.color}">
                 <img src="assets/imgs/warning-message.svg" alt="" style="cursor: pointer; margin-bottom: 4px;"
-                     nzTooltipTitle="{{ data.suspendType }}"
+                     nzTooltipTitle="{{ data.suspendType | SuspendStatusPipe }}"
                      nzTooltipPlacement="bottom"
                      nz-tooltip>
                 {{ statusModel.status }}
