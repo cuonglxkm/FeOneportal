@@ -8,6 +8,8 @@ import { debounceTime, Subject } from 'rxjs';
 import { TimeCommon } from '../../shared/utils/common';
 import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
 import { da } from 'date-fns/locale';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
+import { I18NService } from '@core';
 
 @Component({
   selector: 'one-portal-list-ip-floating',
@@ -33,6 +35,7 @@ export class ListIpFloatingComponent implements OnInit {
   searchDelay = new Subject<boolean>();
   @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
   constructor(private ipFloatingService: IpFloatingService,
+              @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
               @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService) {
   }
 
@@ -139,4 +142,14 @@ export class ListIpFloatingComponent implements OnInit {
   }
 
   protected readonly da = da;
+
+  getSuspendedReason(suspendReason: any) {
+    switch (suspendReason) {
+      case "CHAMGIAHAN":
+        return this.i18n.fanyi('app.status.low-renew')
+      case "":
+      default:
+        break;
+    }
+  }
 }

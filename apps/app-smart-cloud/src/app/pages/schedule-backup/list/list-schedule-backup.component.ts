@@ -99,6 +99,7 @@ export class ListScheduleBackupComponent implements OnInit, OnDestroy {
     this.getListScheduleBackup(false);
   }
 
+
   ngOnDestroy(): void {
     if (this.searchSubscription) {
       this.searchSubscription.unsubscribe();
@@ -240,6 +241,16 @@ export class ListScheduleBackupComponent implements OnInit, OnDestroy {
       this.isLoadingBackupPackage = false
       this.notification.error(error.statusText, this.i18n.fanyi('app.failData'))
     })
+  }
+
+  getSuspendedReason(suspendedReason: string) {
+    switch (suspendedReason) {
+      case "CHAMGIAHAN":
+        return this.i18n.fanyi('app.status.low-renew')
+      case "":
+      default:
+        break;
+    }
   }
 
   ngOnInit(): void {

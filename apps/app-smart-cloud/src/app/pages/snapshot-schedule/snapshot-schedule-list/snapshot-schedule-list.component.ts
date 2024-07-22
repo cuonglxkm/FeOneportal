@@ -122,6 +122,7 @@ export class SnapshotScheduleListComponent implements OnInit {
     this.searchDelay.pipe(debounceTime(TimeCommon.timeOutSearch)).subscribe((checkBegin: boolean) => {
       this.searchSnapshotScheduleList(checkBegin);
     });
+    this.VMsnap = this.i18n.fanyi('app.vm.snapshot')
   }
 
   navigateToUpdate(id: number) {
@@ -393,4 +394,16 @@ export class SnapshotScheduleListComponent implements OnInit {
   }
 
    time : any;
+  VMsnap: string;
+
+  getSuspendedReason(warningMessage: any) {
+    switch (warningMessage) {
+      case "CHAMGIAHAN":
+        return this.i18n.fanyi('app.status.low-renew')
+      case "VIPHAMDIEUKHOAN":
+        return this.i18n.fanyi('service.status.violation')
+      default:
+        break;
+    }
+  }
 }

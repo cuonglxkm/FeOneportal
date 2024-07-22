@@ -104,7 +104,14 @@ export class PolicyAttachComponent implements OnInit {
     }else{
       requestData = this.listOfData.filter(data => this.setOfCheckedId.has(data.userName));
     }
-
+    for (let item of requestData) {
+      if(item.name != undefined) {
+        item.type = 2;
+      } else {
+        item.name = item.userName
+        item.type = 1;
+      }
+    }
 
     const modal: NzModalRef = this.modalService.create({
       nzTitle: this.i18n.fanyi("app.button.attach-policy"),
