@@ -17,13 +17,7 @@ import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
   providedIn: 'root',
 })
 export class SnapshotVolumeService extends BaseService {
-  httpOptions = {
-    headers: new HttpHeaders({
-      'Content-Type': 'application/json',
-      Authorization: 'Bearer ' + this.tokenService.get()?.token,
-      'User-Root-Id': localStorage?.getItem('UserRootId') && Number(localStorage?.getItem('UserRootId')) > 0 ? Number(localStorage?.getItem('UserRootId')) : this.tokenService?.get()?.userId,
-    }),
-  };
+
   //API GW
   private urlSnapshotVl =
     this.baseUrl + this.ENDPOINT.provisions + '/vlsnapshots';
@@ -40,35 +34,35 @@ export class SnapshotVolumeService extends BaseService {
     let url_ =
       this.urlSnapshotVl +
       `?pageSize=${pageSize}&pageNumber=${pageNumber}&regionId=${regionId}&projectId=${projectId}&name=${name}&volumeName=${volumeName}&status=${status}`;
-    return this.http.get<any>(url_, this.httpOptions);
+    return this.http.get<any>(url_, this.getHeaders());
   }
 
   getSnapshotVolumeById(snapshotVlID: string): Observable<any> {
     return this.http.get<any>(
       this.urlSnapshotVl + `/${snapshotVlID}`,
-      this.httpOptions
+      this.getHeaders()
     );
   }
 
   editSnapshotVolume(request: EditSnapshotVolume): Observable<any> {
-    return this.http.put(this.urlSnapshotVl, request, this.httpOptions);
+    return this.http.put(this.urlSnapshotVl, request, this.getHeaders());
   }
 
   deleteSnapshotVolume(idSnapshotVolume: number): Observable<boolean> {
     return this.http.delete<boolean>(
       this.urlSnapshotVl + '/' + idSnapshotVolume,
-      this.httpOptions
+      this.getHeaders()
     );
   }
 
   createSnapshotSchedule(request: CreateScheduleSnapshotDTO): Observable<any> {
     let urlResult = this.urlSnapshotVl + '/schedule';
     return this.http
-      .post(urlResult, request, this.httpOptions);
+      .post(urlResult, request, this.getHeaders());
   }
 
   getDetailSnapshotSchedule(id): Observable<any> {
-    return this.http.get<SnapshotVolumeDto>(this.baseUrl + this.ENDPOINT.provisions + `/vlsnapshots/schedule/${id}`, this.httpOptions);
+    return this.http.get<SnapshotVolumeDto>(this.baseUrl + this.ENDPOINT.provisions + `/vlsnapshots/schedule/${id}`, this.getHeaders());
   }
 
   getListSchedule(
@@ -84,7 +78,7 @@ export class SnapshotVolumeService extends BaseService {
     return this.http
       .get<any>(
         this.baseUrl + this.ENDPOINT.provisions + urlResult,
-        this.httpOptions
+        this.getHeaders()
       )
       .pipe(
         catchError(
@@ -99,7 +93,7 @@ export class SnapshotVolumeService extends BaseService {
     return this.http.put<any>(
       this.urlSnapshotVl + '/schedule',
       editRequest,
-      this.httpOptions
+      this.getHeaders()
     );
   }
 
@@ -120,7 +114,7 @@ export class SnapshotVolumeService extends BaseService {
         regionId +
         '&projectId=' +
         projectId,
-      this.httpOptions
+      this.getHeaders()
     );
   }
 
@@ -144,15 +138,15 @@ export class SnapshotVolumeService extends BaseService {
       regionId +
       '&projectId=' +
       projectId;
-    return this.http.post<boolean>(urlResult, null, this.httpOptions);
+    return this.http.post<boolean>(urlResult, null, this.getHeaders());
   }
 
   constructor(
     private http: HttpClient,
     private message: NzMessageService,
-    @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService
+    @Inject(DA_SERVICE_TOKEN) public tokenService: ITokenService
   ) {
-    super();
+    super(tokenService);
   }
   private handleError<T>(operation = 'operation', result?: T) {
     return (error: any): Observable<T> => {

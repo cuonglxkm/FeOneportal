@@ -192,20 +192,20 @@ export class StartupService {
               this.menuService.add(this.menuData.menu);
               this.regionProjectService.getCoreData(baseUrl);
               this.checkisShowMenu(this.menuData.menu);
-              if (localStorage?.getItem('PermissionOPA')) {
-                this.checkPermissionAction(this.menuData.menu);
-              } else if (localStorage?.getItem('UserRootId')) {
-                this.policyService
-                  .getUserPermissions()
-                  .pipe()
-                  .subscribe((permission) => {
-                    localStorage.setItem(
-                      'PermissionOPA',
-                      JSON.stringify(permission)
-                    );
-                    this.checkPermissionAction(this.menuData.menu);
-                  });
-              }
+              // if (localStorage?.getItem('PermissionOPA')) {
+              //   this.checkPermissionAction(this.menuData.menu);
+              // } else if (localStorage?.getItem('UserRootId')) {
+              //   this.policyService
+              //     .getUserPermissions()
+              //     .pipe()
+              //     .subscribe((permission) => {
+              //       localStorage.setItem(
+              //         'PermissionOPA',
+              //         JSON.stringify(permission)
+              //       );
+              //       this.checkPermissionAction(this.menuData.menu);
+              //     });
+              // }
               
               console.log(this.menuData.menu);
               

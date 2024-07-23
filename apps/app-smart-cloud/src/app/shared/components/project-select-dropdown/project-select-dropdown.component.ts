@@ -1,6 +1,7 @@
 import {
   Component,
   EventEmitter,
+  Inject,
   Input,
   OnChanges,
   OnInit,
@@ -10,6 +11,8 @@ import {
 import { ProjectModel } from '../../../../../../../libs/common-utils/src';
 import { ProjectService } from '../../services/project.service';
 import { RegionService } from '../../services/region.service';
+import { PolicyService } from '../../services/policy.service';
+import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 
 @Component({
   selector: 'project-select-dropdown',
@@ -27,11 +30,16 @@ export class ProjectSelectDropdownComponent implements OnInit, OnChanges {
   selectedProject: ProjectModel;
   listProject: ProjectModel[] = [];
 
-  constructor(private projectService: ProjectService, private regionService: RegionService) {}
+  constructor(
+    private projectService: ProjectService, 
+    private regionService: RegionService, 
+    private policyService: PolicyService,
+    @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService
+  ) {}
 
   projectChange(project: ProjectModel) {
     localStorage.setItem('projectId', project.id + '');
-    this.userChanged.emit(project);
+    this.valueProjectChange(this.userChanged, project);
   }
 
   ngOnInit(): void {
@@ -56,11 +64,11 @@ export class ProjectSelectDropdownComponent implements OnInit, OnChanges {
             this.selectedProject = this.listProject[0];
             localStorage.setItem('projectId', this.selectedProject.id + '');
           }
-          this.valueChanged.emit(this.selectedProject);
+          this.valueProjectChange(this.valueChanged, this.selectedProject);
         } else {
           this.selectedProject = this.listProject[0];
-          this.valueChanged.emit(this.listProject[0]);
           localStorage.setItem('projectId', this.selectedProject.id + '');
+          this.valueProjectChange(this.valueChanged, this.selectedProject);
         }
       }
     } else {
@@ -80,16 +88,16 @@ export class ProjectSelectDropdownComponent implements OnInit, OnChanges {
                 this.selectedProject = this.listProject[0];
                 localStorage.setItem('projectId', this.selectedProject.id + '');
               }
-              this.valueChanged.emit(this.selectedProject);
+              this.valueProjectChange(this.valueChanged, this.selectedProject);
             } else {
               this.selectedProject = this.listProject[0];
-              this.valueChanged.emit(this.listProject[0]);
               localStorage.setItem('projectId', this.selectedProject.id + '');
+              this.valueProjectChange(this.valueChanged, this.selectedProject);
             }
           } else {
             this.listProject = [];
             this.selectedProject = null;
-            this.valueChanged.emit(null);
+            this.valueProjectChange(this.valueChanged, null);
             localStorage.removeItem("projects");
             localStorage.removeItem("projectId");
           }
@@ -97,11 +105,33 @@ export class ProjectSelectDropdownComponent implements OnInit, OnChanges {
         (error) => {
           this.listProject = [];
           this.selectedProject = null;
-          this.valueChanged.emit(null);
+          this.valueProjectChange(this.valueChanged, null);
           localStorage.removeItem("projects");
           localStorage.removeItem("projectId");
         }
       );
+    }
+  }
+
+  valueProjectChange(valueChanged = new EventEmitter(), projectData: any){
+    var isAdmin = !(localStorage?.getItem('UserRootId')) || 
+      (localStorage?.getItem('UserRootId') && Number(localStorage?.getItem('UserRootId')) > 0 
+      && this.tokenService?.get()?.userId && Number(localStorage?.getItem('UserRootId')) == Number(this.tokenService?.get()?.userId));
+    if(isAdmin || 
+      (localStorage?.getItem('PermissionOPA') && 
+      JSON.parse(localStorage.getItem('PermissionOPA') || '{}').ProjectId && 
+      Number(JSON.parse(localStorage.getItem('PermissionOPA') || '{}').ProjectId) == Number(JSON.parse(localStorage?.getItem('projectId') || '0').ProjectId)
+    )){
+      valueChanged.emit(projectData);
+    }
+    else {
+      this.policyService
+      .getUserPermissions()
+      .pipe()
+      .subscribe((permission) => {
+        localStorage.setItem('PermissionOPA', JSON.stringify(permission));
+        valueChanged.emit(projectData);
+      });
     }
   }
 

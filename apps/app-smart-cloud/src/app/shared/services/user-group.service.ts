@@ -23,8 +23,8 @@ import {catchError} from "rxjs/operators";
 export class UserGroupService extends BaseService {
 
     constructor(public http: HttpClient,
-                @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService) {
-        super();
+                @Inject(DA_SERVICE_TOKEN) public tokenService: ITokenService) {
+        super(tokenService);
     }
 
     search(form: FormSearchUserGroup) {
