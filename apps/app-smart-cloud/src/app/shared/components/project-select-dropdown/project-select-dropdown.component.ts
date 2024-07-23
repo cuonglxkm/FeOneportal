@@ -116,11 +116,11 @@ export class ProjectSelectDropdownComponent implements OnInit, OnChanges {
           this.loadProjects(true);
         }
       } else {
-        this.loadProjects(false);
+        this.loadProjects(true);
         this.regionService.isInit = true;
       }
 
       this.regionService.previousRegionId = changes.regionId.currentValue;
     }
-    }
+  }
 }
