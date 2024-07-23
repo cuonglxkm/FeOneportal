@@ -12,24 +12,16 @@ import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
   providedIn: 'root'
 })
 export class DashboardService extends BaseService {
-  httpOptions = {
-    headers: new HttpHeaders({
-      'Content-Type': 'application/json',
-      'User-Root-Id': localStorage.getItem('UserRootId') && Number(localStorage.getItem('UserRootId')) > 0 ? Number(localStorage.getItem('UserRootId')) : this.tokenService.get()?.userId,
-      'Project-Id': localStorage.getItem('projectId') && Number(localStorage.getItem('projectId')) > 0 ? Number(localStorage.getItem('projectId')) : 0,
-      'Authorization': 'Bearer ' + this.tokenService.get()?.token
-    })
-  };
 
   constructor(private http: HttpClient,
               private router: Router,
-              @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService) {
-    super();
+              @Inject(DA_SERVICE_TOKEN) public tokenService: ITokenService) {
+    super(tokenService);
   }
 
   getSubscriptionsDashboard() {
     return this.http.get<SubscriptionsDashboard[]>(this.baseUrl + this.ENDPOINT.subscriptions + '/dashboard', {
-      headers: this.httpOptions.headers
+      headers: this.getHeaders().headers
     })
       .pipe(catchError((error: HttpErrorResponse) => {
         if (error.status === 401) {
@@ -47,7 +39,7 @@ export class DashboardService extends BaseService {
   getSubscriptionsNearExpire(pageSize: number, pageIndex: number, searchValue: string) {
     if(searchValue == undefined) searchValue = ''
     return this.http.get<BaseResponse<SubscriptionsNearExpire[]>>(this.baseUrl + this.ENDPOINT.subscriptions + `/near-expire?pageSize=${pageSize}&currentPage=${pageIndex}&searchValue=${searchValue}`, {
-      headers: this.httpOptions.headers
+      headers: this.getHeaders().headers
     })
       .pipe(catchError((error: HttpErrorResponse) => {
         if (error.status === 401) {
@@ -64,7 +56,7 @@ export class DashboardService extends BaseService {
 
   paymentCostUsePaging(pageSize: number, pageIndex: number) {
     return this.http.get<BaseResponse<PaymentCostUse[]>>(this.baseUrl + this.ENDPOINT.payments + `/cost-use/paging?pageSize=${pageSize}&pageNumber=${pageIndex}`, {
-      headers: this.httpOptions.headers
+      headers: this.getHeaders().headers
     })
       .pipe(catchError((error: HttpErrorResponse) => {
         if (error.status === 401) {
@@ -81,7 +73,7 @@ export class DashboardService extends BaseService {
 
   paymentCostUseTotal() {
     return this.http.get<DataChart[]>(this.baseUrl + this.ENDPOINT.payments + `/cost-use/total`, {
-      headers: this.httpOptions.headers
+      headers: this.getHeaders().headers
     })
       .pipe(catchError((error: HttpErrorResponse) => {
         if (error.status === 401) {

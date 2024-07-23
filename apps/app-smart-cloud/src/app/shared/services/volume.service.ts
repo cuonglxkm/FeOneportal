@@ -19,14 +19,6 @@ import { BaseResponse } from '../../../../../../libs/common-utils/src';
   providedIn: 'root'
 })
 export class VolumeService extends BaseService {
-  httpOptions = {
-    headers: new HttpHeaders({
-      'Content-Type': 'application/json',
-      'User-Root-Id': localStorage.getItem('UserRootId') && Number(localStorage.getItem('UserRootId')) > 0 ? Number(localStorage.getItem('UserRootId')) : this.tokenService.get()?.userId,
-      'Project-Id': localStorage.getItem('projectId') && Number(localStorage.getItem('projectId')) > 0 ? Number(localStorage.getItem('projectId')) : 0,
-      Authorization: 'Bearer ' + this.tokenService.get()?.token,
-    }),
-  };
 
   //API GW
   private urlVolumeGW = this.baseUrl + this.ENDPOINT.provisions + '/volumes';
@@ -50,7 +42,7 @@ export class VolumeService extends BaseService {
 
     return this.http.get<BaseResponse<VolumeDTO[]>>(this.baseUrl + this.ENDPOINT.provisions + '/volumes', {
       params: param,
-      headers: this.httpOptions.headers
+      headers: this.getHeaders().headers
     }).pipe(
       catchError((error: HttpErrorResponse) => {
         if (error.status === 401) {
@@ -65,7 +57,7 @@ export class VolumeService extends BaseService {
 
   getVolumeById(volumeId: number, projectId: number) {
     return this.http.get<VolumeDTO>(this.baseUrl+this.ENDPOINT.provisions + `/volumes/${volumeId}?projectId=${projectId}`, {
-      headers: this.httpOptions.headers
+      headers: this.getHeaders().headers
     }).pipe(
       catchError((error: HttpErrorResponse) => {
         if (error.status === 401) {
@@ -86,30 +78,30 @@ export class VolumeService extends BaseService {
     if (userId != null){
       url += '&userId='+userId;
     }
-    return this.http.get<GetAllVmModel>(url, {headers: this.httpOptions.headers}).pipe(
+    return this.http.get<GetAllVmModel>(url, {headers: this.getHeaders().headers}).pipe(
       catchError(this.handleError<GetAllVmModel>('get all-vms error'))
     );
   }
 
   createNewVolume(request: CreateVolumeRequestModel): Observable<CreateVolumeResponseModel> {
-    return this.http.post<CreateVolumeResponseModel>(this.urlOrderGW, request,{headers: this.httpOptions.headers})
+    return this.http.post<CreateVolumeResponseModel>(this.urlOrderGW, request,{headers: this.getHeaders().headers})
   }
 
   editSizeVolume(request: EditSizeVolumeModel): Observable<any> {
-    return this.http.post<any>(this.urlOrderGW, request, {headers: this.httpOptions.headers})
+    return this.http.post<any>(this.urlOrderGW, request, {headers: this.getHeaders().headers})
   }
 
   deleteVolume(idVolume: number): Observable<boolean> {
-    return this.http.delete<boolean>(this.urlVolumeGW + '/' + idVolume, {headers: this.httpOptions.headers})
+    return this.http.delete<boolean>(this.urlVolumeGW + '/' + idVolume, {headers: this.getHeaders().headers})
   }
 
   addVolumeToVm(request: AddVolumetoVmModel) {
-    return this.http.post<boolean>(this.urlVolumeGW + '/attach', Object.assign(request), {headers: this.httpOptions.headers})
+    return this.http.post<boolean>(this.urlVolumeGW + '/attach', Object.assign(request), {headers: this.getHeaders().headers})
   }
 
 
   detachVolumeToVm(request: AddVolumetoVmModel): Observable<boolean> {
-    return this.http.post<boolean>(this.urlVolumeGW + '/detach', Object.assign(request),{headers: this.httpOptions.headers}).pipe(
+    return this.http.post<boolean>(this.urlVolumeGW + '/detach', Object.assign(request),{headers: this.getHeaders().headers}).pipe(
       catchError(this.handleError<boolean>('Add Volume to VM error.'))
     );
   }
@@ -121,18 +113,18 @@ export class VolumeService extends BaseService {
   // }
 
   extendsVolume(request: EditSizeVolumeModel): Observable<any>{
-    return this.http.post<any>(this.urlOrderGW, Object.assign(request),{headers: this.httpOptions.headers}).pipe(
+    return this.http.post<any>(this.urlOrderGW, Object.assign(request),{headers: this.getHeaders().headers}).pipe(
       catchError(this.handleError<any>('Extends size volume error.'))
     );
   }
 
   updateVolume(request: EditTextVolumeModel) {
-    return this.http.put<any>(this.baseUrl + this.ENDPOINT.provisions + `/volumes/${request.volumeId}`, Object.assign(request), {headers: this.httpOptions.headers})
+    return this.http.put<any>(this.baseUrl + this.ENDPOINT.provisions + `/volumes/${request.volumeId}`, Object.assign(request), {headers: this.getHeaders().headers})
   }
 
   constructor(private http: HttpClient,
-              @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,) {
-    super();
+              @Inject(DA_SERVICE_TOKEN) public tokenService: ITokenService,) {
+    super(tokenService);
   }
 
 

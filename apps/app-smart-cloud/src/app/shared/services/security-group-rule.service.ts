@@ -16,22 +16,14 @@ import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 })
 
 export class SecurityGroupRuleService extends BaseService {
-  httpOptions = {
-    headers: new HttpHeaders({
-      'Content-Type': 'application/json',
-      'User-Root-Id': localStorage.getItem('UserRootId') && Number(localStorage.getItem('UserRootId')) > 0 ? Number(localStorage.getItem('UserRootId')) : this.tokenService.get()?.userId,
-      'Project-Id': localStorage.getItem('projectId') && Number(localStorage.getItem('projectId')) > 0 ? Number(localStorage.getItem('projectId')) : 0,
-      Authorization: 'Bearer ' + this.tokenService.get()?.token
-    })
-  };
 
   constructor(public http: HttpClient,
-              @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService) {
-    super();
+              @Inject(DA_SERVICE_TOKEN) public tokenService: ITokenService) {
+    super(tokenService);
   }
 
   create(form: SecurityGroupRuleCreateForm) {
-    return this.http.post<any>(this.baseUrl + this.ENDPOINT.provisions + '/security_group/rule', Object.assign(form), { headers: this.httpOptions.headers })
+    return this.http.post<any>(this.baseUrl + this.ENDPOINT.provisions + '/security_group/rule', Object.assign(form), { headers: this.getHeaders().headers })
       .pipe(
         catchError((error: HttpErrorResponse) => {
           if (error.status === 401) {
@@ -47,7 +39,7 @@ export class SecurityGroupRuleService extends BaseService {
   delete(id: string, condition: SecurityGroupSearchCondition) {
     return this.http.delete(this.baseUrl + this.ENDPOINT.provisions + '/security_group/rule', {
       body: JSON.stringify({ id, ...condition }),
-      headers: this.httpOptions.headers
+      headers: this.getHeaders().headers
     }).pipe(
       catchError((error: HttpErrorResponse) => {
         if (error.status === 401) {
@@ -63,7 +55,7 @@ export class SecurityGroupRuleService extends BaseService {
   deleteRule(formDeleteRule: FormDeleteRule) {
     return this.http.delete(this.baseUrl + this.ENDPOINT.provisions + '/security_group/rule', {
       body: formDeleteRule,
-      headers: this.httpOptions.headers
+      headers: this.getHeaders().headers
     }).pipe(catchError((error: HttpErrorResponse) => {
       if (error.status === 401) {
         console.error('login');
@@ -88,7 +80,7 @@ export class SecurityGroupRuleService extends BaseService {
 
     return this.http.get<Pagination<SecurityGroupRule>>(this.baseUrl + this.ENDPOINT.provisions + '/security_group/rule/getpaging', {
       params: params,
-      headers: this.httpOptions.headers
+      headers: this.getHeaders().headers
     }).pipe(
       catchError((error: HttpErrorResponse) => {
         if (error.status === 401) {

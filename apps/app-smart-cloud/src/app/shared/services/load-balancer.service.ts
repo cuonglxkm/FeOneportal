@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Inject, Injectable } from '@angular/core';
 import { BaseService } from './base.service';
 import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http';
 import { BehaviorSubject, Observable, throwError } from 'rxjs';
@@ -17,6 +17,7 @@ import {
 import { BaseResponse } from '../../../../../../libs/common-utils/src';
 import { catchError } from 'rxjs/internal/operators/catchError';
 import { Router } from '@angular/router';
+import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 
 @Injectable({
   providedIn: 'root'
@@ -25,8 +26,9 @@ export class LoadBalancerService extends BaseService {
   public model: BehaviorSubject<String> = new BehaviorSubject<String>('1');
 
   constructor(private http: HttpClient,
-              private router: Router) {
-    super();
+              private router: Router,
+              @Inject(DA_SERVICE_TOKEN) public tokenService: ITokenService) {
+    super(tokenService);
   }
 
   search(formSearch: FormSearchListBalancer) {

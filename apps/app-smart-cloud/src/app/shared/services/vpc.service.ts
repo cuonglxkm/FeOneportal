@@ -14,47 +14,39 @@ import {TotalVpcResource, VpcModel} from "../models/vpc.model";
   providedIn: 'root'
 })
 export class VpcService extends BaseService {
-  httpOptions = {
-    headers: new HttpHeaders({
-      'Content-Type': 'application/json' ,
-      'Authorization': 'Bearer ' + this.tokenService.get()?.token,
-      'User-Root-Id': localStorage.getItem('UserRootId') && Number(localStorage.getItem('UserRootId')) > 0 ? Number(localStorage.getItem('UserRootId')) : this.tokenService.get()?.userId,
-      'Project-Id': localStorage.getItem('projectId') && Number(localStorage.getItem('projectId')) > 0 ? Number(localStorage.getItem('projectId')) : 0,
-    })
-  };
 
   constructor(private http: HttpClient,
               private message: NzMessageService,
-              @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,) {
-    super();
+              @Inject(DA_SERVICE_TOKEN) public tokenService: ITokenService,) {
+    super(tokenService);
   }
 
   // detachVolumeToVm(request: AddVolumetoVmModel): Observable<boolean> {
-  //   return this.http.post<boolean>(this.urlVolumeGW + '/detach', request,this.httpOptions).pipe(
+  //   return this.http.post<boolean>(this.urlVolumeGW + '/detach', request,this.getHeaders()).pipe(
   //     catchError(this.handleError<boolean>('Add Volume to VM error.'))
   //   );
   // }
   //
   // editTextVolume(request: EditTextVolumeModel): Observable<any> {
-  //   return this.http.put(this.urlVolumeGW + '/' + request.volumeId, request,this.httpOptions).pipe(
+  //   return this.http.put(this.urlVolumeGW + '/' + request.volumeId, request,this.getHeaders()).pipe(
   //     catchError(this.handleError<any>('Edit Volume to VM error.'))
   //   );
   // }
   //
   // extendsVolume(request: EditSizeVolumeModel): Observable<any>{
-  //   return this.http.post<any>(this.urlOrderGW, request,this.httpOptions).pipe(
+  //   return this.http.post<any>(this.urlOrderGW, request,this.getHeaders()).pipe(
   //     catchError(this.handleError<any>('Extends size volume error.'))
   //   );
   // }
   //
   // updateVolume(request: EditTextVolumeModel) {
   //   return this.http.put<any>(this.baseUrl + this.ENDPOINT.provisions + `/volumes/${request.volumeId}`, Object.assign(request),
-  //     {headers: this.httpOptions.headers})
+  //     {headers: this.getHeaders().headers})
   // }
 
   getData(searchKey: string, selectedStatus: string, userId: any, regionId: any, size: number, index: number): Observable<BaseResponse<VpcModel[]>> {
     return this.http.get<BaseResponse<VpcModel[]>>(this.baseUrl + this.ENDPOINT.provisions + '/vpcs?projectName=' + searchKey + '&status=' + selectedStatus+ '&customerId=' + userId+
-      '&regionId=' + regionId+'&pageSize=' + size+ '&currentPage=' + index,this.httpOptions);
+      '&regionId=' + regionId+'&pageSize=' + size+ '&currentPage=' + index,this.getHeaders());
   }
 
   getDetail(id: any): Observable<VpcModel> {
@@ -77,10 +69,10 @@ export class VpcService extends BaseService {
   updateVpc(request: any, id: any) {
     localStorage.removeItem("projects");
     localStorage.removeItem("projectId");
-    return this.http.put<HttpResponse<any>>(this.baseUrl + this.ENDPOINT.provisions + "/vpcs/" + id, request, this.httpOptions);
+    return this.http.put<HttpResponse<any>>(this.baseUrl + this.ENDPOINT.provisions + "/vpcs/" + id, request, this.getHeaders());
   }
   createIpPublic(IP: any): Observable<any>  {
-    return this.http.post<HttpResponse<any>>(this.baseUrl + this.ENDPOINT.orders, IP, this.httpOptions);
+    return this.http.post<HttpResponse<any>>(this.baseUrl + this.ENDPOINT.orders, IP, this.getHeaders());
   }
   getStepBlock(name:string): Observable<any> {
     return this.http.get<any>(this.baseUrl + this.ENDPOINT.configurations + '?name=' +name);

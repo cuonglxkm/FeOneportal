@@ -8,21 +8,13 @@ import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
   providedIn: 'root',
 })
 export class UserService extends BaseService {
-  httpOptions = {
-    headers: new HttpHeaders({
-      'Content-Type': 'application/json',
-      'User-Root-Id': localStorage?.getItem('UserRootId') && Number(localStorage?.getItem('UserRootId')) > 0 ? Number(localStorage?.getItem('UserRootId')) : this.tokenService?.get()?.userId,
-      Authorization: 'Bearer ' + this.tokenService.get()?.token,
-    }),
-  };
-
   public model: BehaviorSubject<String> = new BehaviorSubject<String>('1');
 
   constructor(
     private http: HttpClient,
-    @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService
+    @Inject(DA_SERVICE_TOKEN) public tokenService: ITokenService
   ) {
-    super();
+    super(tokenService);
   }
 
   search(
@@ -35,7 +27,7 @@ export class UserService extends BaseService {
 
     return this.http.get<any>(
       this.baseUrl + this.ENDPOINT.iam + url_,
-      this.httpOptions
+      this.getHeaders()
     );
   }
 
@@ -44,7 +36,7 @@ export class UserService extends BaseService {
 
     return this.http.get<any>(
       this.baseUrl + this.ENDPOINT.iam + url_,
-      this.httpOptions
+      this.getHeaders()
     );
   }
 
@@ -53,7 +45,7 @@ export class UserService extends BaseService {
 
     return this.http.get<any>(
       this.baseUrl + this.ENDPOINT.users + url_,
-      this.httpOptions
+      this.getHeaders()
     );
   }
 
@@ -62,7 +54,7 @@ export class UserService extends BaseService {
 
     return this.http.get<any>(
       this.baseUrl + this.ENDPOINT.users + url_,
-      this.httpOptions
+      this.getHeaders()
     );
   }
 
@@ -72,7 +64,7 @@ export class UserService extends BaseService {
     return this.http.post<any>(
       this.baseUrl + this.ENDPOINT.iam + url_,
       data,
-      this.httpOptions
+      this.getHeaders()
     );
   }
 
@@ -84,7 +76,7 @@ export class UserService extends BaseService {
     url_ = url_.replace(/[?&]$/, '');
     return this.http.delete<any>(
       this.baseUrl + this.ENDPOINT.iam + url_,
-      this.httpOptions
+      this.getHeaders()
     );
   }
 
@@ -98,7 +90,7 @@ export class UserService extends BaseService {
 
     return this.http.get<any>(
       this.baseUrl + this.ENDPOINT.iam + url_,
-      this.httpOptions
+      this.getHeaders()
     );
   }
 
@@ -107,7 +99,7 @@ export class UserService extends BaseService {
 
     return this.http.get<any>(
       this.baseUrl + this.ENDPOINT.iam + url_,
-      this.httpOptions
+      this.getHeaders()
     );
   }
 
@@ -121,7 +113,7 @@ export class UserService extends BaseService {
 
     return this.http.get<any>(
       this.baseUrl + this.ENDPOINT.iam + url_,
-      this.httpOptions
+      this.getHeaders()
     );
   }
 
@@ -130,7 +122,7 @@ export class UserService extends BaseService {
 
     return this.http.get<any>(
       this.baseUrl + this.ENDPOINT.iam + url_,
-      this.httpOptions
+      this.getHeaders()
     );
   }
 
@@ -142,7 +134,7 @@ export class UserService extends BaseService {
     let url_ = `/users/group?groupName=${groupName}&pageSize=${pageSize}&currentPage=${currentPage}`;
     return this.http.get<any>(
       this.baseUrl + this.ENDPOINT.iam + url_,
-      this.httpOptions
+      this.getHeaders()
     );
   }
 
@@ -151,7 +143,7 @@ export class UserService extends BaseService {
     return this.http.put<any>(
       this.baseUrl + this.ENDPOINT.iam + url_,
       data,
-      this.httpOptions
+      this.getHeaders()
     );
   }
 }
