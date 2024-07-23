@@ -69,8 +69,8 @@ export class SubUserService extends BaseService {
       }))
   }
 
-  createSubUser(formCreate: FormCreateSubUser) {
-    return this.http.post(this.baseUrl + this.ENDPOINT.provisions + '/object-storage/subuser',
+  createSubUser(regionId: number, formCreate: FormCreateSubUser) {
+    return this.http.post(this.baseUrl + this.ENDPOINT.provisions + '/object-storage/subuser?regionId=' + regionId,
       Object.assign(formCreate)).pipe(catchError((error: HttpErrorResponse) => {
         if (error.status === 401) {
           console.error('login');
