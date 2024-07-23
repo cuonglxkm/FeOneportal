@@ -88,7 +88,6 @@ export class PaymentSummaryComponent implements OnInit {
     { label: this.i18n.fanyi('app.invoice.export.customer2'), value: 2 },
   ];
 
-
   constructor(
     private service: InstancesService,
     private psService: PaymentSummaryService,
@@ -301,24 +300,36 @@ export class PaymentSummaryComponent implements OnInit {
             break;
           case 'backuppackage_create':
             serviceItem.name = `Backup Package - ${specificationObj.serviceName}`;
-            serviceItem.type = this.i18n.fanyi('app.label.create')
+            serviceItem.type = this.i18n.fanyi('app.label.create');
             break;
           case 'backuppacket_resize':
             serviceItem.name = `Backup Package - ${specificationObj.serviceName}`;
-            serviceItem.type = this.i18n.fanyi('app.button.resize')
+            serviceItem.type = this.i18n.fanyi('app.button.resize');
             break;
           case 'backuppacket_extend':
             serviceItem.name = `Backup Package - ${specificationObj.serviceName}`;
-            serviceItem.type = this.i18n.fanyi('app.button.extend')
+            serviceItem.type = this.i18n.fanyi('app.button.extend');
             break;
           case 'restore_volumebackup':
             serviceItem.name = `Backup Volume - ${specificationObj.serviceName}`;
-            serviceItem.type = this.i18n.fanyi('app.restore')
+            serviceItem.type = this.i18n.fanyi('app.restore');
+            break;
+          case 'snapshotpackage_create':
+            serviceItem.name = `Snapshot Package - ${specificationObj.serviceName}`;
+            serviceItem.type = this.i18n.fanyi('app.label.create');
+            break;
+          case 'snapshotpackage_resize':
+            serviceItem.name = `Snapshot Package - ${specificationObj.serviceName}`;
+            serviceItem.type = this.i18n.fanyi('app.button.resize');
+            break;
+          case 'snapshotpackage_extend':
+            serviceItem.name = `Snapshot Package - ${specificationObj.serviceName}`;
+            serviceItem.type = this.i18n.fanyi('app.button.extend');
             break;
           case 'restore_instancebackup':
-              serviceItem.name = `Backup VM - ${specificationObj.serviceName}`;
-              serviceItem.type = this.i18n.fanyi('app.restore')
-              break;  
+            serviceItem.name = `Backup VM - ${specificationObj.serviceName}`;
+            serviceItem.type = this.i18n.fanyi('app.restore');
+            break;
           default:
             serviceItem.name = '';
             break;

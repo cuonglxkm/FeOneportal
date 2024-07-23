@@ -21,6 +21,7 @@ import { getCurrentRegionAndProject } from '@shared';
 import { SupportService } from '../../../../shared/models/catalog.model';
 import { OrderService } from '../../../../shared/services/order.service';
 import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
+import { RegionID } from 'src/app/shared/enums/common.enum';
 
 @Component({
   selector: 'one-portal-create-volume-vpc',
@@ -166,7 +167,7 @@ export class CreateVolumeVpcComponent implements OnInit {
     if(this.projectCombobox){
       this.projectCombobox.loadProjects(true, region.regionId);
     }
-    this.router.navigate(['/app-smart-cloud/volumes']);
+    this.navigateToVolume()
   }
 
   onRegionChanged(region: RegionModel) {
@@ -182,7 +183,15 @@ export class CreateVolumeVpcComponent implements OnInit {
   }
 
   userChangeProject(project: ProjectModel) {
-    this.router.navigate(['/app-smart-cloud/volumes']);
+    this.navigateToVolume()
+  }
+
+  navigateToVolume(){
+    if (this.region === RegionID.ADVANCE) {
+      this.router.navigate(['/app-smart-cloud/volumes-advance']);
+      }else{
+        this.router.navigate(['/app-smart-cloud/volumes']);
+      }
   }
 
   getListSnapshot() {
@@ -364,10 +373,20 @@ export class CreateVolumeVpcComponent implements OnInit {
     });
   }
 
+  url = window.location.pathname;
   ngOnInit() {
     let regionAndProject = getCurrentRegionAndProject();
     this.region = regionAndProject.regionId;
     this.project = regionAndProject.projectId;
+    if (!this.url.includes('advance')) {
+      if (Number(localStorage.getItem('regionId')) === RegionID.ADVANCE) {
+        this.region = RegionID.NORMAL;
+      } else {
+        this.region = Number(localStorage.getItem('regionId'));
+      }
+    } else {
+      this.region = RegionID.ADVANCE;
+    }
     this.getActiveServiceByRegion();
     this.getListSnapshot();
     this.getConfiguration();
@@ -412,6 +431,14 @@ export class CreateVolumeVpcComponent implements OnInit {
 
     // this.getListInstance();
     this.changeValueInput();
+  }
+
+  navigateToUpdateProject(project){
+    if (this.region === RegionID.ADVANCE) {
+      this.router.navigate(['/app-smart-cloud/project-advance/update', project]);
+      }else{
+        this.router.navigate(['/app-smart-cloud/project/update', project]);
+      }
   }
 
   duplicateNameValidator(control) {
@@ -563,7 +590,7 @@ export class CreateVolumeVpcComponent implements OnInit {
                   this.isLoadingAction = false;
                   this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('volume.notification.require.create.success'));
                   setTimeout(() => {
-                    this.router.navigate(['/app-smart-cloud/volumes']);
+                    this.navigateToVolume()
                   }, 2500);
                 }
               } else {

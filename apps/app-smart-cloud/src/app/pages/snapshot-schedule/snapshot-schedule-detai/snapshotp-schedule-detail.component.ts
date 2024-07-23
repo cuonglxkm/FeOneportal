@@ -6,6 +6,7 @@ import { VolumeService } from '../../../shared/services/volume.service';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { RegionModel, ProjectModel } from '../../../../../../../libs/common-utils/src';
 import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
+import { RegionID } from 'src/app/shared/enums/common.enum';
 
 @Component({
   selector: 'one-portal-detail-schedule-snapshot',
@@ -37,7 +38,17 @@ export class SnapshotScheduleDetailComponent implements OnInit {
   typeProject: number;
   labelMode = 'Hằng ngày';
   @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
+  url = window.location.pathname;
   ngOnInit(): void {
+    if (!this.url.includes('advance')) {
+      if (Number(localStorage.getItem('regionId')) === RegionID.ADVANCE) {
+        this.region = RegionID.NORMAL;
+      } else {
+        this.region = Number(localStorage.getItem('regionId'));
+      }
+    } else {
+      this.region = RegionID.ADVANCE;
+    }
     const id = Number.parseInt(this.activatedRoute.snapshot.paramMap.get('id'));
     this.customerID = this.tokenService.get()?.userId;
     this.dateList.set('0', 'Chủ nhật');
@@ -95,8 +106,15 @@ export class SnapshotScheduleDetailComponent implements OnInit {
         }
       });
   }
+  navigateToSnapshotSchedule() {
+    if (this.region === RegionID.ADVANCE) {
+      this.router.navigate(['/app-smart-cloud/schedule-advance/snapshot']);
+    } else {
+      this.router.navigate(['/app-smart-cloud/schedule/snapshot']);
+    }
+  }
   goBack() {
-    this.router.navigate(['/app-smart-cloud/schedule/snapshot']);
+    this.navigateToSnapshotSchedule()
   }
   onRegionChange(region: RegionModel) {
     this.region = region.regionId;
@@ -115,6 +133,6 @@ export class SnapshotScheduleDetailComponent implements OnInit {
   }
 
   onUserProjectChange($event: any) {
-    this.router.navigate(['/app-smart-cloud/schedule/snapshot'])
+    this.navigateToSnapshotSchedule()
   }
 }

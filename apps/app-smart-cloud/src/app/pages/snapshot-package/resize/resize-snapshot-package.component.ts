@@ -18,7 +18,7 @@ import {
   SnapshotPackageRequestModel
 } from 'src/app/shared/models/package-snapshot.model';
 import { PackageSnapshotService } from 'src/app/shared/services/package-snapshot.service';
-import { ServiceActionType, ServiceType } from 'src/app/shared/enums/common.enum';
+import { RegionID, ServiceActionType, ServiceType } from 'src/app/shared/enums/common.enum';
 import { RegionModel, ProjectModel } from '../../../../../../../libs/common-utils/src';
 import { ProjectService } from 'src/app/shared/services/project.service';
 import { debounceTime, finalize, Subject } from 'rxjs';
@@ -106,6 +106,15 @@ export class ResizeSnapshotPackageComponent implements OnInit {
       this.maxStorage = Number.parseInt(this.valueString?.split('#')[2]);
     });
   }
+
+  navigateToSnapshotPackage(){
+    if (this.region === RegionID.ADVANCE) {
+      this.router.navigate(['/app-smart-cloud/snapshot-advance/packages']);
+    } else {
+      this.router.navigate(['/app-smart-cloud/snapshot/packages']);
+    }
+  }
+
   regionChanged(region: RegionModel) {
     this.region = region.regionId;
     if(this.projectCombobox){
@@ -114,7 +123,7 @@ export class ResizeSnapshotPackageComponent implements OnInit {
     this.projectService.getByRegion(this.region).subscribe(data => {
       if (data.length) {
         localStorage.setItem('projectId', data[0].id.toString());
-        this.router.navigate(['/app-smart-cloud/snapshot/packages']);
+        this.navigateToSnapshotPackage()
       }
     });
   }
@@ -254,7 +263,12 @@ export class ResizeSnapshotPackageComponent implements OnInit {
     this.orderService.validaterOrder(request).subscribe(
       data => {
         if (data.success) {
-          var returnPath: string = `/app-smart-cloud/snapshot/packages/edit/${this.idSnapshotPackage}`;
+          if (this.region === RegionID.ADVANCE) {
+            var returnPath: string = `/app-smart-cloud/snapshot-advance/packages/edit/${this.idSnapshotPackage}`;
+          } else {
+            var returnPath: string = `/app-smart-cloud/snapshot/packages/edit/${this.idSnapshotPackage}`;
+          }
+          
           console.log('request', request);
           this.router.navigate(['/app-smart-cloud/order/cart'], { state: { data: request, path: returnPath } });
         } else {
@@ -289,7 +303,7 @@ export class ResizeSnapshotPackageComponent implements OnInit {
       }
     });
   }
-
+  url = window.location.pathname;
   ngOnInit() {
     this.validateForm.controls['description'].disable();
     this.getConfiguration();
@@ -297,6 +311,15 @@ export class ResizeSnapshotPackageComponent implements OnInit {
     let regionAndProject = getCurrentRegionAndProject();
     this.region = regionAndProject.regionId;
     this.project = regionAndProject.projectId;
+    if (!this.url.includes('advance')) {
+      if (Number(localStorage.getItem('regionId')) === RegionID.ADVANCE) {
+        this.region = RegionID.NORMAL;
+      } else {
+        this.region = Number(localStorage.getItem('regionId'));
+      }
+    } else {
+      this.region = RegionID.ADVANCE;
+    }
     // this.customerId = this.tokenService.get()?.userId
     if (this.project && this.region) {
       this.loadProjects();

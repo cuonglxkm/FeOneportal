@@ -19,6 +19,7 @@ import { ConfigurationsService } from '../../../../shared/services/configuration
 import { OrderService } from '../../../../shared/services/order.service';
 import { SupportService } from '../../../../shared/models/catalog.model';
 import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
+import { RegionID } from 'src/app/shared/enums/common.enum';
 
 @Component({
   selector: 'app-create-volume',
@@ -216,7 +217,7 @@ export class CreateVolumeComponent implements OnInit {
     if(this.projectCombobox){
       this.projectCombobox.loadProjects(true, region.regionId);
     }
-    this.router.navigate(['/app-smart-cloud/volumes']);
+    this.navigateToVolume()
   }
 
   onRegionChanged(region: RegionModel) {
@@ -240,7 +241,7 @@ export class CreateVolumeComponent implements OnInit {
   }
 
   userChangeProject(project: ProjectModel) {
-    this.router.navigate(['/app-smart-cloud/volumes']);
+    this.navigateToVolume()
   }
 
   // tắt bật tạo từ snapshot
@@ -345,7 +346,7 @@ export class CreateVolumeComponent implements OnInit {
   }
 
   goBack(): void {
-    this.router.navigate(['/app-smart-cloud/volumes']);
+    this.navigateToVolume()
   }
 
   volumeCreate: VolumeCreate = new VolumeCreate();
@@ -442,6 +443,14 @@ export class CreateVolumeComponent implements OnInit {
     this.isVisiblePopupError = false;
   }
 
+  navigateToVolume(){
+    if (this.region === RegionID.ADVANCE) {
+      this.router.navigate(['/app-smart-cloud/volumes-advance']);
+      }else{
+        this.router.navigate(['/app-smart-cloud/volumes']);
+      }
+  }
+
   navigateToPaymentSummary() {
     // this.getTotalAmount()
     this.volumeInit();
@@ -470,7 +479,7 @@ export class CreateVolumeComponent implements OnInit {
                 if (data.code == 200) {
                   this.isLoadingAction = false;
                   this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('volume.notification.require.create.success'));
-                  this.router.navigate(['/app-smart-cloud/volumes']);
+                  this.navigateToVolume()
                 }
               } else {
                 this.isLoadingAction = false;
@@ -481,7 +490,12 @@ export class CreateVolumeComponent implements OnInit {
               this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('volume.notification.request.create.fail'));
             });
         } else {
-          var returnPath: string = '/app-smart-cloud/volume/create';
+          if (this.region === RegionID.ADVANCE) {
+            var returnPath: string = '/app-smart-cloud/volume-advance/create';
+            }else{
+              var returnPath: string = '/app-smart-cloud/volume/create';
+            }
+          
           console.log('request', request);
           console.log('service name', this.volumeCreate.serviceName);
           this.router.navigate(['/app-smart-cloud/order/cart'], {
@@ -581,11 +595,20 @@ export class CreateVolumeComponent implements OnInit {
   }
 
   hasRoleSI: boolean;
-
+  url = window.location.pathname;
   ngOnInit() {
     let regionAndProject = getCurrentRegionAndProject();
     this.region = regionAndProject.regionId;
     this.project = regionAndProject.projectId;
+    if (!this.url.includes('advance')) {
+      if (Number(localStorage.getItem('regionId')) === RegionID.ADVANCE) {
+        this.region = RegionID.NORMAL;
+      } else {
+        this.region = Number(localStorage.getItem('regionId'));
+      }
+    } else {
+      this.region = RegionID.ADVANCE;
+    }
     this.getListSnapshot();
     this.getConfiguration();
     this.onChangeValueStorage();

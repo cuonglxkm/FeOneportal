@@ -11,6 +11,7 @@ import { da } from 'date-fns/locale';
 import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
 import { PackageSnapshotService } from '../../../shared/services/package-snapshot.service';
 import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
+import { RegionID } from 'src/app/shared/enums/common.enum';
 
 @Component({
   selector: 'one-portal-snapshot-detail',
@@ -39,8 +40,17 @@ export class SnapshotDetailComponent implements OnInit{
               private packageSnapshotService: PackageSnapshotService,
               private notification: NzNotificationService) {
   }
-
+  url = window.location.pathname;
   ngOnInit() {
+    if (!this.url.includes('advance')) {
+      if (Number(localStorage.getItem('regionId')) === RegionID.ADVANCE) {
+        this.region = RegionID.NORMAL;
+      } else {
+        this.region = Number(localStorage.getItem('regionId'));
+      }
+    } else {
+      this.region = RegionID.ADVANCE;
+    }
     const id = this.activatedRoute.snapshot.paramMap.get('id');
     this.id = id;
     this.loadData(id);
@@ -79,8 +89,20 @@ export class SnapshotDetailComponent implements OnInit{
     )
   }
 
+  navigateToDetail(){
+    if (this.region === RegionID.ADVANCE) {
+      this.router.navigate([`/app-smart-cloud/snapshot-advance/detail`, this.id])
+    } else {
+      this.router.navigate([`/app-smart-cloud/snapshot/detail`, this.id])
+    }
+  }
+
   userChanged($event: any) {
-    this.router.navigate(['/app-smart-cloud/load-balancer/list'])
+    if (this.region === RegionID.ADVANCE) {
+      this.router.navigate(['/app-smart-cloud/snapshot-advance'])
+    } else {
+      this.router.navigate(['/app-smart-cloud/snapshot'])
+    }
   }
 
   private loadPackageSnapshot(snapshotPackageId) {

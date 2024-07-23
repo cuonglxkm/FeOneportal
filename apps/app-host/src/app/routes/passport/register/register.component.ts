@@ -1,8 +1,10 @@
 import { HttpContext } from '@angular/common/http';
 import {
+  ApplicationRef,
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component, Inject,
+  Input,
   OnDestroy,
   OnInit
 } from '@angular/core';
@@ -12,18 +14,19 @@ import {
   FormControl,
   Validators,
 } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { ALLOW_ANONYMOUS } from '@delon/auth';
 import { _HttpClient, ALAIN_I18N_TOKEN, SettingsService } from '@delon/theme';
 import { MatchControl } from '@delon/util/form';
 import { NzSafeAny } from 'ng-zorro-antd/core/types';
-import { finalize } from 'rxjs';
+import { filter, finalize } from 'rxjs';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { environment } from '@env/environment';
 import { AppValidator } from '../../../../../../../libs/common-utils/src';
 import { noAllWhitespace } from '../../user-profile/user-profile.component';
 import { I18NService } from '@core';
 import { DOCUMENT } from '@angular/common';
+import { BooleanInput, InputBoolean } from '@delon/util/decorator';
 
 export interface UserCreateDto {
   email: string;
@@ -56,6 +59,8 @@ export class UserRegisterComponent implements OnInit, OnDestroy {
     private settings: SettingsService,
     @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
     @Inject(DOCUMENT) private doc: any,
+    private activatedRoute: ActivatedRoute,
+    private appRef: ApplicationRef
   ) {
   }
 
@@ -107,7 +112,7 @@ export class UserRegisterComponent implements OnInit, OnDestroy {
     pass: 'normal',
     pool: 'exception',
   };
-
+  langFromCMS: string
   // #endregion
 
   // #region get captcha
@@ -116,8 +121,27 @@ export class UserRegisterComponent implements OnInit, OnDestroy {
   interval$: NzSafeAny;
 
   ngOnInit(): void {
-    this.langRegister = localStorage.getItem('lang') == null ? this.i18n.defaultLang : localStorage.getItem('lang');
+    this.updateLanguage();
     this.loadProvinces();
+  }
+
+  private updateLanguage(): void {
+    const lang = this.activatedRoute.snapshot.paramMap.get('lang') || null;
+    const previousLang = localStorage.getItem('lang');
+    this.langRegister = lang === 'vi' ? 'vi-VI' : lang === 'en' ? 'en-US' : lang === null && localStorage.getItem('lang') == null ? this.i18n.defaultLang : lang === null && localStorage.getItem('lang') !== null ? localStorage.getItem('lang') : this.i18n.defaultLang;
+
+    localStorage.setItem('lang', this.langRegister);
+
+    if (lang !== null && lang !== '') {
+      this.i18n.loadLangData(this.langRegister).subscribe(res => {
+        this.i18n.use(this.langRegister, res);
+        this.settings.setLayout('lang', this.langRegister);
+        if (this.langRegister === 'vi-VI' && previousLang !== 'vi-VI' || this.langRegister === 'en-US' && previousLang !== 'en-US') {
+          setTimeout(() => this.doc.location.reload());
+        }
+      });
+
+    }
   }
 
   public addTokenLog(message: string, token: string | null) {
@@ -173,7 +197,7 @@ export class UserRegisterComponent implements OnInit, OnDestroy {
   // #endregion
   passwordVisible = false;
   passwordVisible1 = false;
-  langRegister: any;
+  langRegister: any = '';
   provinces: any;
 
   submit(): void {
@@ -257,12 +281,19 @@ export class UserRegisterComponent implements OnInit, OnDestroy {
     //     setTimeout(() => this.doc.location.reload());
     //   });
     // }
-
-    this.i18n.loadLangData(this.langRegister).subscribe(res => {
-      this.i18n.use(this.langRegister, res);
-      this.settings.setLayout('lang', this.langRegister);
-      setTimeout(() => this.doc.location.reload());
-    });
+    if(this.langRegister === 'en-US'){
+      this.i18n.loadLangData(this.langRegister).subscribe(res => {
+        this.i18n.use(this.langRegister, res);
+        this.settings.setLayout('lang', this.langRegister);
+        setTimeout(() => window.location.href = '/passport/register/en');
+      });
+    }else{
+      this.i18n.loadLangData(this.langRegister).subscribe(res => {
+        this.i18n.use(this.langRegister, res);
+        this.settings.setLayout('lang', this.langRegister);
+        setTimeout(() => window.location.href = '/passport/register/vi');
+      });
+    }
   }
 
   private loadProvinces() {

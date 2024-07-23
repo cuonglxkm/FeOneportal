@@ -15,6 +15,7 @@ import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { LoadingService } from '@delon/abc/loading';
 import { VpcService } from '../../../shared/services/vpc.service';
 import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
+import { RegionID } from 'src/app/shared/enums/common.enum';
 
 @Component({
   selector: 'one-portal-snapshot-create',
@@ -81,11 +82,20 @@ export class SnapshotCreateComponent implements OnInit, OnChanges {
               @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
               private fb: NonNullableFormBuilder) {
   }
-
+  url = window.location.pathname;
   ngOnInit() {
     let regionAndProject = getCurrentRegionAndProject();
     this.region = regionAndProject.regionId;
     this.project = regionAndProject.projectId;
+    if (!this.url.includes('advance')) {
+      if (Number(localStorage.getItem('regionId')) === RegionID.ADVANCE) {
+        this.region = RegionID.NORMAL;
+      } else {
+        this.region = Number(localStorage.getItem('regionId'));
+      }
+    } else {
+      this.region = RegionID.ADVANCE;
+    }
     // this.projectType = regionAndProject.type;
     this.loadSnapshotPackage();
     this.loadVolumeList();
@@ -120,6 +130,14 @@ export class SnapshotCreateComponent implements OnInit, OnChanges {
     }
   }
 
+  navigateToCreateVolume(){
+    if (this.region === RegionID.ADVANCE) {
+      this.router.navigate([`/app-smart-cloud/volume-advance/create`])
+    } else {
+      this.router.navigate([`/app-smart-cloud/volume/create`])
+    }
+  }
+
   navigateToPaymentSummary() {
     this.loadingCreate = true;
     const data = {
@@ -140,7 +158,7 @@ export class SnapshotCreateComponent implements OnInit, OnChanges {
       .subscribe(
         data => {
           this.notification.success(this.i18n.fanyi('app.status.success'), 'Tạo thành công');
-          this.router.navigate(['/app-smart-cloud/snapshot']);
+          this.navigateToSnapshot()
         },
         error => {
           this.notification.error(this.i18n.fanyi('app.status.fail'), error.error.message);
@@ -148,9 +166,17 @@ export class SnapshotCreateComponent implements OnInit, OnChanges {
       );
   }
 
+  navigateToSnapshot(){
+    if (this.region === RegionID.ADVANCE) {
+      this.router.navigate(['/app-smart-cloud/snapshot-advance'])
+    } else {
+      this.router.navigate(['/app-smart-cloud/snapshot'])
+    }
+  }
+
   userChanged($event: any) {
     //navigate list
-    this.router.navigate(['/app-smart-cloud/snapshot']);
+    this.navigateToSnapshot()
   }
 
   formSearchPackageSnapshot: FormSearchPackageSnapshot = new FormSearchPackageSnapshot();

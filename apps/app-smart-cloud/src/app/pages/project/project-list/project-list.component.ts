@@ -11,6 +11,7 @@ import { NotificationService, RegionModel } from '../../../../../../../libs/comm
 import { IpPublicService } from '../../../shared/services/ip-public.service';
 import { I18NService } from '@core';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
+import { RegionID } from 'src/app/shared/enums/common.enum';
 
 @Component({
   selector: 'one-portal-project-list',
@@ -63,10 +64,19 @@ export class ProjectListComponent implements OnInit {
   ) {
 
   }
-
+  url = window.location.pathname;
   ngOnInit(): void {
     let regionAndProject = getCurrentRegionAndProject();
     this.regionId = regionAndProject.regionId;
+    if (!this.url.includes('advance')) {
+      if (Number(localStorage.getItem('regionId')) === RegionID.ADVANCE) {
+        this.regionId = RegionID.NORMAL;
+      } else {
+        this.regionId = Number(localStorage.getItem('regionId'));
+      }
+    } else {
+      this.regionId = RegionID.ADVANCE;
+    }
     this.getData(true);
 
     this.notificationService.connection.on('UpdateProject', (data) => {
@@ -112,6 +122,11 @@ export class ProjectListComponent implements OnInit {
 
   onRegionChange(region: RegionModel) {
     this.regionId = region.regionId;
+    if (this.regionId === RegionID.ADVANCE) {
+      this.router.navigate(['/app-smart-cloud/project-advance']);
+    } else {
+      this.router.navigate(['/app-smart-cloud/project']);
+    }
     this.getData(true);
   }
 
@@ -210,7 +225,11 @@ export class ProjectListComponent implements OnInit {
   }
 
   createProject() {
-    this.router.navigate(['/app-smart-cloud/project/create']);
+    if (this.regionId === RegionID.ADVANCE) {
+      this.router.navigate(['/app-smart-cloud/project-advance/create']);
+    } else {
+      this.router.navigate(['/app-smart-cloud/project/create']);
+    }
   }
 
   viewDetail(id: number) {

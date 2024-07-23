@@ -20,6 +20,7 @@ import { DataPayment, ItemPayment } from '../../instances/instances.model';
 import { getCurrentRegionAndProject } from '@shared';
 import { OrderService } from '../../../shared/services/order.service';
 import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
+import { RegionID } from 'src/app/shared/enums/common.enum';
 
 @Component({
   selector: 'one-portal-extend-package-snapshot',
@@ -70,9 +71,17 @@ export class ExtendPackageSnapshotComponent implements OnInit{
     this.projectService.getByRegion(this.region).subscribe(data => {
       if (data.length) {
         localStorage.setItem('projectId', data[0].id.toString());
-        this.router.navigate(['/app-smart-cloud/snapshot/packages']);
+        this.navigateToSnapshotPackage()
       }
     });
+  }
+
+  navigateToSnapshotPackage(){
+    if (this.region === RegionID.ADVANCE) {
+      this.router.navigate(['/app-smart-cloud/snapshot-advance/packages']);
+    } else {
+      this.router.navigate(['/app-smart-cloud/snapshot/packages']);
+    }
   }
 
   onRegionChanged(region: RegionModel) {
@@ -190,8 +199,12 @@ export class ExtendPackageSnapshotComponent implements OnInit{
     ];
     this.orderService.validaterOrder(request).subscribe(
       data => {
-        if (data.success) {
-          var returnPath: string = `/app-smart-cloud/snapshot/packages/extend/${this.idSnapshotPackage}`;
+        if (data.success) {        
+          if (this.region === RegionID.ADVANCE) {
+            var returnPath: string = `/app-smart-cloud/snapshot-advance/packages/extend/${this.idSnapshotPackage}`;
+            }else{
+              var returnPath: string = `/app-smart-cloud/snapshot/packages/extend/${this.idSnapshotPackage}`;
+            }
           this.router.navigate(['/app-smart-cloud/order/cart'], { state: { data: request, path: returnPath } });
         } else {
           this.isVisiblePopupError = true;
@@ -216,13 +229,22 @@ export class ExtendPackageSnapshotComponent implements OnInit{
       let project = data.find(project => project.id === +this.project);
     });
   }
-
+  url = window.location.pathname;
   ngOnInit() {
     this.validateForm.controls['description'].disable();
     this.idSnapshotPackage = Number.parseInt(this.route.snapshot.paramMap.get('id'));
     let regionAndProject = getCurrentRegionAndProject();
     this.region = regionAndProject.regionId;
     this.project = regionAndProject.projectId;
+    if (!this.url.includes('advance')) {
+      if (Number(localStorage.getItem('regionId')) === RegionID.ADVANCE) {
+        this.region = RegionID.NORMAL;
+      } else {
+        this.region = Number(localStorage.getItem('regionId'));
+      }
+    } else {
+      this.region = RegionID.ADVANCE;
+    }
     // this.customerId = this.tokenService.get()?.userId
     if (this.project && this.region) {
       this.loadProjects();
