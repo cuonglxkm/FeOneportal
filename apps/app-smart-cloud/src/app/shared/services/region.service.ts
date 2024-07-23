@@ -6,6 +6,7 @@ import { Injectable } from '@angular/core';
 export class RegionService {
   private _previousRegionId: number;
   private _isInit: boolean = false;
+  private _isFirstLoad: boolean = true;
 
   get previousRegionId(): number {
     return this._previousRegionId;
@@ -21,5 +22,13 @@ export class RegionService {
 
   set isInit(value: boolean) {
     this._isInit = value;
+  }
+
+  get isFirstLoad(): boolean {
+    return this._isFirstLoad;
+  }
+
+  set isFirstLoad(value: boolean) {
+    this._isFirstLoad = value;
   }
 }
