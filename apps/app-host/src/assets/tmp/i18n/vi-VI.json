@@ -35,6 +35,8 @@
   "validation.choose.required": "Vui lòng chọn {{name}}",
   "validation.project.required.name":"Không bao gồm ký tự đặc biệt, dấu cách, tiếng Việt, tối đa 20 ký tự, có thể có dấu _ (ký tự đặc biệt: @, #, $, %, &, *, +, -, arrow, star, biểu tượng cảm xúc, dấu câu, dấu ngoặc, hình tròn, hình vuông, hình chữ nhật...)",
 
+  "app.footer": "Một sản phẩm của VNPT-IT",
+
   "service.status.init": "Đang khởi tạo",
   "service.status.active": "Đang hoạt động",
   "service.status.resizing": "Đang điều chỉnh",
@@ -3358,7 +3360,8 @@
   "app.invoice.export.customer1": "Khách hàng doanh nghiệp",
   "app.invoice.export.customer2": "Khách hàng cá nhân",
   "app.vpn-connection.create.fail": "Kiểm tra lại Router Interface! Vui lòng thêm Router Interface với Subnet giống trong Endpoint Group!",
-
+  "app.register.firstName": "Tên",
+  "app.register.lastName": "Họ",
   "app.register.project" :"Dự án",
   "app.register.email.label" :"Email đăng ký",
   "app.register.email.press" :"Nhập e-mail đăng ký",
