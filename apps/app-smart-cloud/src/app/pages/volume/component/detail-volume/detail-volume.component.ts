@@ -48,6 +48,14 @@ export class DetailVolumeComponent implements OnInit {
       this.router.navigate(['/app-smart-cloud/volumes']);
     }
   }
+
+  navigateToDetail(id){
+    if (this.region === RegionID.ADVANCE) {
+      this.router.navigate(['/app-smart-cloud/volume-advance/detail', id]);
+      }else{
+        this.router.navigate(['/app-smart-cloud/volume/detail', id]);
+      }
+  }
   regionChanged(region: RegionModel) {
     this.region = region.regionId;
     // this.projectService.getByRegion(this.region).subscribe(data => {
@@ -150,6 +158,7 @@ export class DetailVolumeComponent implements OnInit {
       this.router.navigate(['/app-smart-cloud/volume/edit/' + idVolume]);
     }
   }
+
 
   navigateToRenew(idVolume: number) {
     if (this.region === RegionID.ADVANCE) {
