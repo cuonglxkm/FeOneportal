@@ -1,7 +1,8 @@
-import { Injectable } from '@angular/core';
+import { Inject, Injectable } from '@angular/core';
 import { BaseService } from "./base.service";
 import { Observable } from "rxjs";
 import { HttpClient, HttpHeaders } from "@angular/common/http";
+import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 
 @Injectable({
     providedIn: 'root'
@@ -13,8 +14,8 @@ export class OperationHistoryService extends BaseService {
     };
 
 
-    constructor(private http: HttpClient) {
-        super();
+    constructor(private http: HttpClient, @Inject(DA_SERVICE_TOKEN) public tokenService: ITokenService) {
+        super(tokenService);
     }
 
     getData(ipAddress: string, status: number, customerId: number, regionId: number, pageSize: any, currentPage: any, isCheckState: boolean): Observable<any> {

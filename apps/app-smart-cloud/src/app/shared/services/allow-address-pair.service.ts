@@ -15,8 +15,8 @@ import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
 export class AllowAddressPairService extends BaseService {
 
   constructor(public http: HttpClient,
-              @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService) {
-    super();
+              @Inject(DA_SERVICE_TOKEN) public tokenService: ITokenService) {
+    super(tokenService);
   }
 
   search(form: AllowAddressPairSearchForm): Observable<Pagination<PairInfo>> {

@@ -15,17 +15,8 @@ export class IpsecPolicyService extends BaseService {
   public model: BehaviorSubject<String> = new BehaviorSubject<String>("1");
 
   constructor(private http: HttpClient,
-              @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService) {
-    super();
-  }
-
-  private getHeaders() {
-    return new HttpHeaders({
-      'Content-Type': 'application/json',
-      'User-Root-Id': localStorage.getItem('UserRootId') && Number(localStorage.getItem('UserRootId')) > 0 ? Number(localStorage.getItem('UserRootId')) : this.tokenService.get()?.userId,
-      'Project-Id': localStorage.getItem('projectId') && Number(localStorage.getItem('projectId')) > 0 ? Number(localStorage.getItem('projectId')) : 0,
-      'Authorization': 'Bearer ' + this.tokenService.get()?.token
-    })
+              @Inject(DA_SERVICE_TOKEN) public tokenService: ITokenService) {
+    super(tokenService);
   }
 
   getIpsecpolicy(formSearch: FormSearchIpsecPolicy) {
@@ -47,19 +38,19 @@ export class IpsecPolicyService extends BaseService {
     }
 
     return this.http.get<BaseResponse<any>>(this.baseUrl + this.ENDPOINT.provisions + '/vpn-sitetosite/ipsecpolicy/paging', {
-      headers: this.getHeaders(),
+      headers: this.getHeaders().headers,
       params: params
     })
   }
 
   create(formCreate: FormCreateIpsecPolicy) {
     return this.http.post(this.baseUrl + this.ENDPOINT.provisions + '/vpn-sitetosite/ipsecpolicy',
-        Object.assign(formCreate), {headers: this.getHeaders()})
+        Object.assign(formCreate), {headers: this.getHeaders().headers})
   }
 
   getIpsecPoliciesById(id: number, vpcid: number, region: number){
     return this.http.get<IpsecPolicyDetail>(this.baseUrl + this.ENDPOINT.provisions +
-      `/vpn-sitetosite/ipsecpolicy/${id}?vpcId=${vpcid}&regionId=${region}`, {headers: this.getHeaders()}).pipe(
+      `/vpn-sitetosite/ipsecpolicy/${id}?vpcId=${vpcid}&regionId=${region}`, {headers: this.getHeaders().headers}).pipe(
       catchError((error: HttpErrorResponse) => {
         if (error.status === 401) {
           console.error('login');
@@ -72,7 +63,7 @@ export class IpsecPolicyService extends BaseService {
   }
 
   deleteIpsecPolicy(formDelete: FormDeleteIpsecPolicy) {
-    return this.http.delete(this.baseUrl + this.ENDPOINT.provisions + `/vpn-sitetosite/ipsecpolicy/${formDelete.id}?vpcId=${formDelete.vpcId}&regionId=${formDelete.regionId}`, {headers: this.getHeaders()}).pipe(
+    return this.http.delete(this.baseUrl + this.ENDPOINT.provisions + `/vpn-sitetosite/ipsecpolicy/${formDelete.id}?vpcId=${formDelete.vpcId}&regionId=${formDelete.regionId}`, {headers: this.getHeaders().headers}).pipe(
       catchError((error: HttpErrorResponse) => {
         if (error.status === 401) {
           console.error('login');
@@ -86,7 +77,7 @@ export class IpsecPolicyService extends BaseService {
 
   edit(id: string, formEdit: FormEditIpsecPolicy) {
     return this.http.put(this.baseUrl + this.ENDPOINT.provisions + `/vpn-sitetosite/ipsecpolicy/${id}`,
-      Object.assign(formEdit), {headers: this.getHeaders()}).pipe(
+      Object.assign(formEdit), {headers: this.getHeaders().headers}).pipe(
       catchError((error: HttpErrorResponse) => {
         if (error.status === 401) {
         } else if (error.status === 404) {
