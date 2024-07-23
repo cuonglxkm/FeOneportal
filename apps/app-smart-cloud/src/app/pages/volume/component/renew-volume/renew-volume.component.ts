@@ -79,6 +79,14 @@ export class RenewVolumeComponent implements OnInit {
       this.router.navigate(['/app-smart-cloud/volumes']);
     }
   }
+
+  navigateToDetail(id){
+    if (this.region === RegionID.ADVANCE) {
+      this.router.navigate(['/app-smart-cloud/volume-advance/detail', id]);
+      }else{
+        this.router.navigate(['/app-smart-cloud/volume/detail', id]);
+      }
+  }
   regionChanged(region: RegionModel) {
     this.region = region.regionId;
     if(this.projectCombobox){

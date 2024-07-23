@@ -221,6 +221,14 @@ export class VolumeComponent implements OnInit, OnDestroy {
       }
   }
 
+  navigateToVolume(){
+    if (this.region === RegionID.ADVANCE) {
+      this.router.navigate(['/app-smart-cloud/volumes-advance']);
+      }else{
+        this.router.navigate(['/app-smart-cloud/volumes']);
+      }
+  }
+
   //attach
   handleOkAttachVm() {
     // console.log('volume', this.volumeDTO)

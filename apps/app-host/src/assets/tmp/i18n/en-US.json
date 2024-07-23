@@ -139,7 +139,7 @@
   "app.register-result.back-home": "Back to home",
   "app.register-result.view-mailbox": "View mailbox",
   "validation.email.required": "Please enter your email!",
-  "validation.email.wrong-format": "Email is not in the wrong format",
+  "validation.email.wrong-format": "Email is not in the correct format",
   "validation.password.required": "Please enter your password!",
   "validation.password.twice": "The passwords entered twice do not match!",
   "validation.password.strength.msg": "Please enter at least 6 characters and don't use passwords that are easy to guess.",

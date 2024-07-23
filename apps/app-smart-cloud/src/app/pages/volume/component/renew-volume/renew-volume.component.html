@@ -13,10 +13,10 @@
         {{ 'app.breadcrumb.block.storage' | i18n }}
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>
-        <a routerLink="/app-smart-cloud/volumes">Volume</a>
+        <a (click)="navigateToVolume()">Volume</a>
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>
-        <a routerLink="/app-smart-cloud/volume/detail/{{idVolume}}">{{ 'volume.title.detail'|i18n }}</a>
+        <a (click)="navigateToDetail(idVolume)">{{ 'volume.title.detail'|i18n }}</a>
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>{{ 'volume.breadcrumb.extend'|i18n }}</nz-breadcrumb-item>
     </nz-breadcrumb>
