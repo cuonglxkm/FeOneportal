@@ -383,12 +383,6 @@ export class CreateScheduleBackupComponent implements OnInit {
     });
   }
 
-  getVolumeById(id) {
-    this.volumeService.getVolumeById(id, this.project).subscribe(data => {
-      this.volumeName = data.name;
-    });
-  }
-
   modeChange(value) {
     if (value != undefined) {
       console.log('mode change', value);

@@ -984,6 +984,8 @@
   "validation.member.name.pattern": "The member name consists only of letters and numbers, without spaces",
   "validation.correct.member.or.health.name": "Please enter the correct {{typeDelete}} name",
   "validation.member.or.health.name.required": "Please enter the {{typeDelete}} name",
+  "validation.url.path": "Invalid URL format",
+  "validation.expected.code": "Invalid Code format",
 
   "app.placeholder.name.load.balancer": "Enter LoadBalancer",
   "app.tooltip.vip.address": "Virtual IP is a private IP used to communicate with Members",

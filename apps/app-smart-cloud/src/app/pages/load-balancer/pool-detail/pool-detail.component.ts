@@ -29,7 +29,11 @@ import {
 import { InstanceService } from 'src/app/shared/services/instance.service';
 import { LoadBalancerService } from 'src/app/shared/services/load-balancer.service';
 import { InstancesModel } from '../../instances/instances.model';
-import { RegionModel } from '../../../../../../../libs/common-utils/src';
+import {
+  AppValidator,
+  RegionModel,
+  startsWithSingleSlashValidator,
+} from '../../../../../../../libs/common-utils/src';
 import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
 
 @Component({
@@ -187,7 +191,7 @@ export class PoolDetailComponent implements OnInit {
     if (this.isCreate) {
       this.healthForm.httpMethod = null;
       this.healthForm.expectedCodes = null;
-      this.healthForm.urlPath = null;
+      this.healthForm.urlPath = '/';
     }
     if (event != 'HTTP') {
       this.isHttpType = false;
@@ -225,6 +229,7 @@ export class PoolDetailComponent implements OnInit {
   isCreate: boolean;
   healthForm: any;
   form: FormGroup;
+  code: number;
   modalHealth(checkCreate: boolean, data: m_LBSDNHealthMonitor) {
     if (checkCreate) {
       this.form = new FormGroup({
@@ -255,9 +260,18 @@ export class PoolDetailComponent implements OnInit {
         expectedCode: new FormControl('', {
           validators: [Validators.required],
         }),
+        url: new FormControl('', {
+          validators: [startsWithSingleSlashValidator()],
+        }),
       });
       this.healthForm = new HealthCreate();
       this.healthForm.type = 'HTTP';
+      this.healthForm.maxRetriesDown = 3;
+      this.healthForm.maxRetries = 3;
+      this.healthForm.delay = 5;
+      this.healthForm.timeout = 5;
+      this.code = 200
+      this.healthForm.urlPath = '/';
       this.isCreate = true;
       this.titleModalHealth = this.i18n.fanyi('app.health.monitor.create');
       setTimeout(() => {
@@ -295,22 +309,52 @@ export class PoolDetailComponent implements OnInit {
         expectedCode: new FormControl('', {
           validators: [Validators.required],
         }),
+        url: new FormControl('', {
+          validators: [startsWithSingleSlashValidator()],
+        }),
       });
       this.healthForm = data;
+      this.code = (Number).parseInt(this.healthForm.expectedCodes);
       this.isCreate = false;
       this.titleModalHealth = this.i18n.fanyi('app.health.monitor.edit');
     }
     this.isVisibleHealth = true;
   }
 
+  delay: number;
+  onChangeDelay(event) {
+    this.delay = event;
+  }
+
+  timeout: number;
+  onChangeTimeout(event) {
+    this.timeout = event;
+  }
+
   handleOkHealth() {
     this.isVisibleHealth = false;
     this.loadingSrv.open({ type: 'spin', text: 'Loading...' });
     if (this.isCreate) {
+      this.healthForm.name = this.form.get('name')?.value;
+      this.healthForm.delay = this.form.get('delay')?.value;
+      this.healthForm.maxRetries = this.form.get('maxRetries')?.value;
+      this.healthForm.timeout = this.form.get('timeout')?.value;
+      this.healthForm.adminStateUp = true;
       this.healthForm.poolId = this.id;
+      this.healthForm.maxRetriesDown = this.form.get('maxRetriesDown')?.value;
       this.healthForm.customerId = this.tokenService.get()?.userId;
       this.healthForm.projectId = this.projectId;
       this.healthForm.regionId = this.regionId;
+      if (this.healthForm.type == 'HTTP') {
+        this.healthForm.expectedCodes = this.form.get('expectedCode')?.value.toString();
+        this.healthForm.httpMethod = this.form.get('httpMethod')?.value;
+        if (
+          this.form.get('url')?.value &&
+          this.form.get('url')?.value.length != 0
+        ) {
+          this.healthForm.urlPath = this.form.get('url')?.value;
+        }
+      }
       this.service
         .createHealth(this.healthForm)
         .pipe(
@@ -336,15 +380,20 @@ export class PoolDetailComponent implements OnInit {
     } else {
       let healthUpdate: HealthUpdate = new HealthUpdate();
       healthUpdate.id = this.healthForm.id;
-      healthUpdate.name = this.healthForm.name;
-      healthUpdate.delay = this.healthForm.delay;
-      healthUpdate.maxRetries = this.healthForm.maxRetries;
-      healthUpdate.timeout = this.healthForm.timeout;
+      healthUpdate.name = this.form.get('name')?.value;
+      healthUpdate.delay = this.form.get('delay')?.value;
+      healthUpdate.maxRetries = this.form.get('maxRetries')?.value;
+      healthUpdate.timeout = this.form.get('timeout')?.value;
       healthUpdate.adminStateUp = true;
-      healthUpdate.expectedCodes = this.healthForm.expectedCodes;
-      healthUpdate.httpMethod = this.healthForm.httpMethod;
-      healthUpdate.urlPath = this.healthForm.urlPath;
-      healthUpdate.maxRetriesDown = this.healthForm.maxRetriesDown;
+      healthUpdate.expectedCodes = this.form.get('expectedCode')?.value.toString();
+      healthUpdate.httpMethod = this.form.get('httpMethod')?.value;
+      if (
+        this.form.get('url')?.value &&
+        this.form.get('url')?.value.length != 0
+      ) {
+        healthUpdate.urlPath = this.form.get('url')?.value;
+      }
+      healthUpdate.maxRetriesDown = this.form.get('maxRetriesDown')?.value;
       healthUpdate.customerId = this.tokenService.get()?.userId;
       healthUpdate.projectId = this.projectId;
       healthUpdate.regionId = this.regionId;
@@ -365,7 +414,7 @@ export class PoolDetailComponent implements OnInit {
           },
           error: (e) => {
             this.notification.error(
-              e.statusText,
+              '',
               this.i18n.fanyi('app.notification.edit.health.fail')
             );
             this.getListHealth();
@@ -589,6 +638,8 @@ export class PoolDetailComponent implements OnInit {
     this.isVisibleMember = false;
     this.loadingSrv.open({ type: 'spin', text: 'Loading...' });
     if (this.isCreate) {
+      this.memberForm.weight = this.formMember.get('weight')?.value;
+      this.memberForm.backup = this.backup;
       this.service
         .createMember(this.memberForm)
         .pipe(
@@ -620,12 +671,12 @@ export class PoolDetailComponent implements OnInit {
       memberUpdate.customerId = this.tokenService.get()?.userId;
       memberUpdate.regionId = this.regionId;
       memberUpdate.vpcId = this.projectId;
-      memberUpdate.name = this.memberForm.name;
+      memberUpdate.name = this.formMember.get('name')?.value;
       memberUpdate.address = this.memberForm.ipAddress;
       memberUpdate.protocol_port = this.memberForm.port;
-      memberUpdate.weight = this.memberForm.weight;
+      memberUpdate.weight = this.formMember.get('weight')?.value;
       memberUpdate.poolId = this.id;
-      memberUpdate.backup = this.memberForm.backup;
+      memberUpdate.backup = this.backup;
       this.service
         .updateMember(memberUpdate)
         .pipe(
@@ -657,14 +708,19 @@ export class PoolDetailComponent implements OnInit {
         });
     }
   }
-  //#endregion
+
+  backup: boolean;
+  changeBackup(event) {
+    this.backup = event;
+  }
 
   handleCancelMember() {
     this.isVisibleMember = false;
   }
+  //#endregion
 
   onRegionChange(region: RegionModel) {
-    if(this.projectCombobox){
+    if (this.projectCombobox) {
       this.projectCombobox.loadProjects(true, region.regionId);
     }
     this.router.navigate(['/app-smart-cloud/load-balancer/list']);

@@ -886,6 +886,8 @@
   "validation.member.name.pattern": "Tên Member chỉ gồm ký tự chữ cái và số, không bao gồm dấu cách",
   "validation.correct.member.or.health.name": "Vui lòng nhập đúng tên {{typeDelete}}",
   "validation.member.or.health.name.required": "Vui lòng nhập tên {{typeDelete}}",
+  "validation.url.path": "URL không đúng định dạng",
+  "validation.expected.code": "Code không đúng định dạng",
 
   "app.placeholder.name.load.balancer": "Nhập tên LoadBalancer",
   "app.tooltip.vip.address": "Virtual IP là IP private dùng để giao tiếp với các Member",
