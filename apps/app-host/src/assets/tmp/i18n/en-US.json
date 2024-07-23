@@ -2158,6 +2158,7 @@
   "app.cluster.vpc-network-description-1": "Select a VPC for your Kubernetes cluster.",
   "app.cluster.vpc-network-description-2": "Click here to manage your VPCs",
   "app.cluster.none-dhcp": "DHCP is not enabled yet",
+  "app.cluster.disabled-gw": "GatewayIP is not enabled yet",
   "app.cluster.subnet-description": "Choose a subnet for this cluster.",
   "app.cluster.title-cancel": "Payment processing in progress",
   "app.cluster.cancel-desciption-1": "Your payment is being processed. If you leave this page, the transaction will be canceled.",

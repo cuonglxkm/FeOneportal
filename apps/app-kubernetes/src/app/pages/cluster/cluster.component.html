@@ -342,16 +342,23 @@
                 <nz-select nzShowSearch [nzPlaceHolder]="'app.choose.subnet' | i18n" formControlName="subnet" id="subnet" class="w-85" nzSize="large"
                   (ngModelChange)="checkOverLapseIP(); onSelectSubnet($event); checkOverlapPodCidr();">
                   <ng-container *ngFor="let item of listOfSubnets">
-                    <ng-container *ngIf="item.enableDhcp; else disableSubnetTpl">
+                    <ng-container *ngIf="item.enableDhcp && item.gatewayIp != null; else disableSubnetTpl">
                       <nz-option [nzLabel]="item.subnetAddressRequired"
                         [nzValue]="item.id"></nz-option>
                     </ng-container>
                     <ng-template #disableSubnetTpl>
                       <nz-option nzCustomContent [nzLabel]="item.subnetAddressRequired"
                         [nzValue]="item.subnetAddressRequired" [nzDisabled]="true">
-                        <div [nzTooltipTitle]="'app.cluster.none-dhcp' | i18n" nzTooltipPlacement="bottom" nz-tooltip>
-                          {{item.subnetAddressRequired}}
-                        </div>
+                        <ng-container *ngIf="!item.enableDhcp; else gatewayIpDisableTpl">
+                          <div [nzTooltipTitle]="'app.cluster.none-dhcp' | i18n" nzTooltipPlacement="bottom" nz-tooltip>
+                            {{item.subnetAddressRequired}}
+                          </div>
+                        </ng-container>
+                        <ng-template #gatewayIpDisableTpl>
+                          <div [nzTooltipTitle]="'app.cluster.disabled-gw' | i18n" nzTooltipPlacement="bottom" nz-tooltip>
+                            {{item.subnetAddressRequired}}
+                          </div>
+                        </ng-template>
                       </nz-option>
                     </ng-template>
                   </ng-container>
@@ -552,25 +559,6 @@
           <div class="ml-3"><label class="weight-600 content">{{ 'app.text.version' | i18n }}</label></div>
           <div class="ml-3"><label class="content">{{kubernetesVersion}}</label></div>
 
-          <nz-divider class="divider-style"></nz-divider>
-
-          <div nz-row [nzGutter]="8">
-            <div nz-col [nzSpan]="12">
-              <div class="ml-3"><label class="weight-600 content">{{ 'app.cost.month' | i18n : { month: usageTime } }}</label></div>
-            </div>
-
-            <div nz-col [nzSpan]="12">
-              <div class="price-style price-color mr-3">
-                <ng-container *ngIf="isCalculating; else workerPriceTpl">
-                  <span nz-icon [nzType]="'loading'"></span>
-                </ng-container>
-                <ng-template #workerPriceTpl>
-                  {{(workerPrice && workerPrice >= 0 ? workerPrice: 0) | number: '1.0-0'}} VND
-                </ng-template>
-              </div>
-            </div>
-          </div>
-
           <ng-container *ngIf="isChangeInfo">
             <nz-divider class="divider-style"></nz-divider>
             <ng-container *ngIf="chooseItem; else customPackSummaryTpl">
@@ -596,6 +584,25 @@
 
           <div nz-row [nzGutter]="8">
             <div nz-col [nzSpan]="12">
+              <div class="ml-3"><label class="weight-600 content">{{ 'app.cost.month' | i18n : { month: usageTime } }}</label></div>
+            </div>
+
+            <div nz-col [nzSpan]="12">
+              <div class="price-style price-color mr-3">
+                <ng-container *ngIf="isCalculating; else workerPriceTpl">
+                  <span nz-icon [nzType]="'loading'"></span>
+                </ng-container>
+                <ng-template #workerPriceTpl>
+                  {{(workerPrice && workerPrice >= 0 ? workerPrice: 0) | number: '1.0-0'}} VND
+                </ng-template>
+              </div>
+            </div>
+          </div>
+
+          <nz-divider class="divider-style"></nz-divider>
+
+          <div nz-row [nzGutter]="8">
+            <div nz-col [nzSpan]="12">
               <div class="ml-3"><label class="weight-600 content">
                 {{ 'app.cluster.vat-cost-2' | i18n : {vat: vatPercent ? vatPercent * 100 : 10} }}</label>
               </div>
@@ -613,9 +620,9 @@
             </div>
           </div>
 
-          <div nz-row [nzGutter]="8" class="mt-5 price-panel">
+          <div nz-row [nzGutter]="8" class="mt-3 price-panel">
             <div nz-col [nzSpan]="12">
-              <div class="mt-3 ml-3"><label class="content">{{ 'app.service.price-title' | i18n }}</label></div>
+              <div class="mt-3 ml-3"><label class="weight-600 content">{{ 'app.service.price-title' | i18n }}</label></div>
               <div class="mt-1 ml-3 mb-3 unit-color"><i>({{ 'app.cluster.vat-cost-1' | i18n : {vat: vatPercent ? vatPercent * 100 : 10} }})</i></div>
             </div>
             <div nz-col [nzSpan]="12">
