@@ -2071,6 +2071,7 @@
   "app.cluster.vpc-network-description-1": "Chọn một VPC cho kubernetes cluster của bạn.",
   "app.cluster.vpc-network-description-2": "Nhấp vào đây để quản lý các VPC của bạn",
   "app.cluster.none-dhcp": "Chưa mở DHCP",
+  "app.cluster.disabled-gw": "Chưa bật GatewayIP",
   "app.cluster.subnet-description": "Lựa chọn subnet cho cluster này",
   "app.cluster.title-cancel": "Đang tiến hành thanh toán",
   "app.cluster.cancel-desciption-1": "Thanh toán của bạn đang được thực hiện, nếu bạn thoát khỏi trang này, giao dịch sẽ bị hủy bỏ.",
@@ -2676,7 +2677,7 @@
   "status.disable":"Không cho phép",
   "status.deleted":"Đã xóa",
   "status.suspended":"Tạm ngưng",
-  
+
   "custom.config.package":"Gói cấu hình tùy chọn",
   "service.bonus":"Dịch vụ bổ sung",
   "config.package":"Gói cấu hình sẵn",
