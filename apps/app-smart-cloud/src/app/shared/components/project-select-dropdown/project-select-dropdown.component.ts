@@ -26,7 +26,6 @@ export class ProjectSelectDropdownComponent implements OnInit, OnChanges {
 
   selectedProject: ProjectModel;
   listProject: ProjectModel[] = [];
-
   constructor(private projectService: ProjectService, private regionService: RegionService) {}
 
   projectChange(project: ProjectModel) {
@@ -110,12 +109,18 @@ export class ProjectSelectDropdownComponent implements OnInit, OnChanges {
       return;
     }
     if (changes.regionId) {
-      if (this.regionService.previousRegionId !== undefined && changes.regionId.currentValue === this.regionService.previousRegionId) {
-        this.loadProjects(false);
+      if (this.regionService.isInit) {
+        if (this.regionService.previousRegionId !== undefined && changes.regionId.currentValue === this.regionService.previousRegionId) {
+          this.loadProjects(false);
+        } else {
+          this.loadProjects(true);
+        }
       } else {
-        this.loadProjects(true);
+        this.loadProjects(false);
+        this.regionService.isInit = true;
       }
+
       this.regionService.previousRegionId = changes.regionId.currentValue;
     }
-  }
+    }
 }
