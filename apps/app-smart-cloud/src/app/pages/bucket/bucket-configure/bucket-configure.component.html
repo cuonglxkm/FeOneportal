@@ -156,6 +156,7 @@
     </nz-tab>
     <nz-tab nzTitle="Static Web Hosting">
       <one-portal-static-web-hosting
+        *ngIf="bucketDetail"
         [bucketName]="bucketName"
         [bucketDetail]="bucketDetail"
       ></one-portal-static-web-hosting>
