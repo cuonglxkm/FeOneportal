@@ -2124,6 +2124,10 @@
   "ecr.overview.chart":"Observation Chart",
   "ecr.overview.choose.time":"Choose time",
   "ecr.overview.choose.repo":"Choose repositories",
+  "ecr.vulnerability.search":"Search for vulnerability code",
+  "ecr.vulnerability.level":"Critical level",
+  "ecr.vulnerability.code":"Vulnerability code",
+  "ecr.vulnerability.current.version":"Curremt version",
 
   "app.cluster.summary": "VNPT Kubernetes Service is a Kubernetes-based platform ensuring high efficiency for enterprises by running containerized applications in the cloud, securely, stably, and with high performance",
   "app.cluster.platform-service": "Platform Services",

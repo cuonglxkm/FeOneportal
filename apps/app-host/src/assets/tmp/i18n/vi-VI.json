@@ -2031,6 +2031,12 @@
   "ecr.overview.chart":"Biểu đồ theo dõi",
   "ecr.overview.choose.time":"Chọn thời gian",
   "ecr.overview.choose.repo":"Chọn repositories",
+  "ecr.vulnerability.search":"Tìm kiếm mã lỗ hổng bảo mật",
+  "ecr.vulnerability.level":"Mức độ",
+  "ecr.vulnerability.code":"Mã lỗ hổng bảo mật",
+  "ecr.vulnerability.current.version":"Version hiện tại",
+
+
   
 
   "app.cluster.summary": "VNPT Kubernetes Service là một nền tảng dựa trên Kubernetes đảm bảo hiệu quả cao cho doanh nghiệp bằng cách chạy các ứng dụng được đóng gói container trên đám mây, an toàn bảo mật, ổn định và hiệu năng cao",
