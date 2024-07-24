@@ -19,6 +19,7 @@ export const environment = {
     clientId: 'frontend-client',
     callback: 'https://console.cloud.vnpt.vn/passport/callback/oneportal',
     logout_callback: 'https://console.cloud.vnpt.vn',
+    domain: '.cloud.vnpt.vn',
     scope: 'openid email roles offline_access',
   },
   recaptcha: {
