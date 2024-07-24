@@ -13,16 +13,10 @@ import { formDeleteS3Key, s3KeyGenerate } from '../models/s3key.model';
 })
 export class ObjectObjectStorageService extends BaseService {
 
-  httpOptions = {
-    headers: new HttpHeaders({
-      'Content-Type': 'application/json',
-    })
-  };
-
   public model: BehaviorSubject<String> = new BehaviorSubject<String>("1");
 
-  constructor(private http: HttpClient, @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService) {
-    super();
+  constructor(private http: HttpClient, @Inject(DA_SERVICE_TOKEN) public tokenService: ITokenService) {
+    super(tokenService);
   }
 
   getData(bucketName: any, folderName: any, filterQuery: any, customerId: any, regionId: any, pageSize: any, currentPage: any): Observable<any> {
@@ -37,11 +31,11 @@ export class ObjectObjectStorageService extends BaseService {
   }
 
   createS3Key(subUser: string, regionId: number) {
-    return this.http.post<any>(this.baseUrl + this.ENDPOINT.provisions + '/object-storage/createS3Key?subUser=' + subUser + '&regionId=' + regionId, this.httpOptions);
+    return this.http.post<any>(this.baseUrl + this.ENDPOINT.provisions + '/object-storage/createS3Key?subUser=' + subUser + '&regionId=' + regionId, this.getHeaders());
   }
 
   generateS3Key(data: s3KeyGenerate, regionId: number) {
-    return this.http.post<any>(this.baseUrl + this.ENDPOINT.provisions + `/object-storage/generateS3Key?regionId=${regionId}`, data, this.httpOptions);
+    return this.http.post<any>(this.baseUrl + this.ENDPOINT.provisions + `/object-storage/generateS3Key?regionId=${regionId}`, data, this.getHeaders());
   }
 
   deleteS3key(data: formDeleteS3Key) {
@@ -51,15 +45,15 @@ export class ObjectObjectStorageService extends BaseService {
   }
 
   createFolder(data: any) {
-    return this.http.post<HttpResponse<any>>(this.baseUrl + this.ENDPOINT.provisions + '/object-storage/createFolder', data, this.httpOptions);
+    return this.http.post<HttpResponse<any>>(this.baseUrl + this.ENDPOINT.provisions + '/object-storage/createFolder', data, this.getHeaders());
   }
 
   GetBucketTreeData(data: any): Observable<any> {
-    return this.http.post<any>(this.baseUrl + this.ENDPOINT.provisions + '/object-storage/GetBucketTreeData', data, this.httpOptions);
+    return this.http.post<any>(this.baseUrl + this.ENDPOINT.provisions + '/object-storage/GetBucketTreeData', data, this.getHeaders());
   }
 
   copyProject(data: any) {
-    return this.http.post<any>(this.baseUrl + this.ENDPOINT.provisions + '/object-storage/CopyObject', data, this.httpOptions);
+    return this.http.post<any>(this.baseUrl + this.ENDPOINT.provisions + '/object-storage/CopyObject', data, this.getHeaders());
   }
 
   downloadFile(bucketName: string, key: string, versionId: string, regionId: number) {
@@ -81,42 +75,42 @@ export class ObjectObjectStorageService extends BaseService {
   }
 
   deleteObject(data: any) {
-    return this.http.post<any>(this.baseUrl + this.ENDPOINT.provisions + '/object-storage/DeleteMultipleObject', data, this.httpOptions);
+    return this.http.post<any>(this.baseUrl + this.ENDPOINT.provisions + '/object-storage/DeleteMultipleObject', data, this.getHeaders());
   }
 
   deleteObjectSimple(data: any) {
-    return this.http.post<any>(this.baseUrl + this.ENDPOINT.provisions + '/object-storage/DeleteObject', data, this.httpOptions);
+    return this.http.post<any>(this.baseUrl + this.ENDPOINT.provisions + '/object-storage/DeleteObject', data, this.getHeaders());
   }
 
   getLinkShare(data: any) {
-    return this.http.post<any>(this.baseUrl + this.ENDPOINT.provisions + '/object-storage/ShareObject', data, this.httpOptions);
+    return this.http.post<any>(this.baseUrl + this.ENDPOINT.provisions + '/object-storage/ShareObject', data, this.getHeaders());
   }
 
   editPermission(bucketName: string, keyName: string, role: string, regionId: number) {
-    return this.http.post<any>(this.baseUrl + this.ENDPOINT.provisions + '/object-storage/ObjectAcl?bucketName=' + bucketName + '&keyName=' + keyName + '&role=' + role + '&regionId=' + regionId, this.httpOptions);
+    return this.http.post<any>(this.baseUrl + this.ENDPOINT.provisions + '/object-storage/ObjectAcl?bucketName=' + bucketName + '&keyName=' + keyName + '&role=' + role + '&regionId=' + regionId, this.getHeaders());
   }
 
   loadDataVersion(data: any) {
-    return this.http.post<any>(this.baseUrl + this.ENDPOINT.provisions + '/object-storage/GetObjectVersions', data, this.httpOptions);
+    return this.http.post<any>(this.baseUrl + this.ENDPOINT.provisions + '/object-storage/GetObjectVersions', data, this.getHeaders());
   }
 
   restoreObject(data: { bucketName: string; versionId: string; key: string; regionId: number }) {
-    return this.http.post<any>(this.baseUrl + this.ENDPOINT.provisions + '/object-storage/RestoreObjectVersion', data, this.httpOptions);
+    return this.http.post<any>(this.baseUrl + this.ENDPOINT.provisions + '/object-storage/RestoreObjectVersion', data, this.getHeaders());
   }
 
   getSignedUrl(data: any) {
-    return this.http.post<any>(this.baseUrl + this.ENDPOINT.provisions + '/object-storage/GeneratePreSignedForUpload', data, this.httpOptions);
+    return this.http.post<any>(this.baseUrl + this.ENDPOINT.provisions + '/object-storage/GeneratePreSignedForUpload', data, this.getHeaders());
   }
 
   createMultiPartUpload(data: any) {
-    return this.http.post<any>(this.baseUrl + this.ENDPOINT.provisions + '/object-storage/CreateMultipartUpload', data, this.httpOptions);
+    return this.http.post<any>(this.baseUrl + this.ENDPOINT.provisions + '/object-storage/CreateMultipartUpload', data, this.getHeaders());
   }
 
   completemultipart(data: any) {
-    return this.http.post<any>(this.baseUrl + this.ENDPOINT.provisions + '/object-storage/CompleteMultipartUpload', data, this.httpOptions);
+    return this.http.post<any>(this.baseUrl + this.ENDPOINT.provisions + '/object-storage/CompleteMultipartUpload', data, this.getHeaders());
   }
 
   abortmultipart(data: any) {
-    return this.http.post<any>(this.baseUrl + this.ENDPOINT.provisions + '/object-storage/AbortMultipartUpload', data, this.httpOptions);
+    return this.http.post<any>(this.baseUrl + this.ENDPOINT.provisions + '/object-storage/AbortMultipartUpload', data, this.getHeaders());
   }
 }

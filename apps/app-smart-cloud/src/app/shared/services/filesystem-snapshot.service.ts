@@ -19,17 +19,8 @@ export class FileSystemSnapshotService extends BaseService {
 
   constructor(private http: HttpClient,
     private router: Router,
-              @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService) {
-    super();
-  }
-
-  private getHeaders() {
-    return new HttpHeaders({
-      'Content-Type': 'application/json',
-      'User-Root-Id': localStorage.getItem('UserRootId') && Number(localStorage.getItem('UserRootId')) > 0 ? Number(localStorage.getItem('UserRootId')) : this.tokenService.get()?.userId,
-      'Project-Id': localStorage.getItem('projectId') && Number(localStorage.getItem('projectId')) > 0 ? Number(localStorage.getItem('projectId')) : 0,
-      'Authorization': 'Bearer ' + this.tokenService.get()?.token
-    })
+              @Inject(DA_SERVICE_TOKEN) public tokenService: ITokenService) {
+    super(tokenService);
   }
 
   getFileSystemSnapshot(formSearch: FormSearchFileSystemSnapshot) {
@@ -57,19 +48,19 @@ export class FileSystemSnapshotService extends BaseService {
     }
 
     return this.http.get<BaseResponse<any>>(this.baseUrl + this.ENDPOINT.provisions + '/file-storage/sharesnapshot/paging', {
-      headers: this.getHeaders(),
+      headers: this.getHeaders().headers,
       params: params
     })
   }
 
   create(formCreate: FormCreateFileSystemSnapShot) {
     return this.http.post(this.baseUrl + this.ENDPOINT.provisions + '/file-storage/sharesnapshot',
-        Object.assign(formCreate), {headers: this.getHeaders()})
+        Object.assign(formCreate), {headers: this.getHeaders().headers})
   }
 
   getFileSystemSnapshotById(id: number, projectId: number){
     return this.http.get<any>(this.baseUrl + this.ENDPOINT.provisions +
-      `/file-storage/sharesnapshot/${id}?projectId=${projectId}`, {headers: this.getHeaders()}).pipe(
+      `/file-storage/sharesnapshot/${id}?projectId=${projectId}`, {headers: this.getHeaders().headers}).pipe(
       catchError((error: HttpErrorResponse) => {
         if (error.status === 401) {
           console.error('login');
@@ -85,7 +76,7 @@ export class FileSystemSnapshotService extends BaseService {
 
   edit(formEdit: FormEditFileSystemSnapShot) {
     return this.http.put(this.baseUrl + this.ENDPOINT.provisions + `/file-storage/sharesnapshot`,
-      Object.assign(formEdit), {headers: this.getHeaders()}).pipe(
+      Object.assign(formEdit), {headers: this.getHeaders().headers}).pipe(
       catchError((error: HttpErrorResponse) => {
         if (error.status === 401) {
           console.error('login');
@@ -100,7 +91,7 @@ export class FileSystemSnapshotService extends BaseService {
   }
 
   deleteFileSystemSnapshot(formDelete: FormDeleteFileSystemSnapshot) {
-    return this.http.delete(this.baseUrl + this.ENDPOINT.provisions + `/file-storage/sharesnapshot/${formDelete.id}?regionId=${formDelete.regionId}&customerId=${formDelete.customerId}`, {headers: this.getHeaders()}).pipe(
+    return this.http.delete(this.baseUrl + this.ENDPOINT.provisions + `/file-storage/sharesnapshot/${formDelete.id}?regionId=${formDelete.regionId}&customerId=${formDelete.customerId}`, {headers: this.getHeaders().headers}).pipe(
       catchError((error: HttpErrorResponse) => {
         if (error.status === 401) {
           console.error('login');

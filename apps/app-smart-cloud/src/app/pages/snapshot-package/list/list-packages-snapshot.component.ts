@@ -16,6 +16,7 @@ import { I18NService } from '@core';
 import { VolumeService } from '../../../shared/services/volume.service';
 import { SnapshotVolumeService } from '../../../shared/services/snapshot-volume.service';
 import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
+import { RegionID } from 'src/app/shared/enums/common.enum';
 
 
 @Component({
@@ -112,7 +113,11 @@ export class ListPackagesSnapshotComponent implements OnInit {
   }
 
   navigateToCreate() {
-    this.router.navigate(['/app-smart-cloud/snapshot/packages/create'])
+    if (this.region === RegionID.ADVANCE) {
+      this.router.navigate(['/app-smart-cloud/snapshot-advance/packages/create'])
+    } else {
+      this.router.navigate(['/app-smart-cloud/snapshot/packages/create'])
+    }
   }
 
   onPageSizeChange(value) {
@@ -162,7 +167,11 @@ export class ListPackagesSnapshotComponent implements OnInit {
 
 
   navigateToEdit(id) {
-    this.router.navigate(['/app-smart-cloud/snapshot/packages/edit/' + id])
+    if (this.region === RegionID.ADVANCE) {
+      this.router.navigate(['/app-smart-cloud/snapshot-advance/packages/edit/' + id])
+    } else {
+      this.router.navigate(['/app-smart-cloud/snapshot/packages/edit/' + id])
+    }
   }
 
 
@@ -217,13 +226,29 @@ export class ListPackagesSnapshotComponent implements OnInit {
     this.isVisibleUpdate = false
   }
 
-
+  url = window.location.pathname;
   ngOnInit() {
     this.customerId = this.tokenService.get()?.userId
     let regionAndProject = getCurrentRegionAndProject()
     this.region = regionAndProject.regionId
     this.project = regionAndProject.projectId
+    if (!this.url.includes('advance')) {
+      if (Number(localStorage.getItem('regionId')) === RegionID.ADVANCE) {
+        this.region = RegionID.NORMAL;
+      } else {
+        this.region = Number(localStorage.getItem('regionId'));
+      }
+    } else {
+      this.region = RegionID.ADVANCE;
+    }
+  }
 
+  navigateToPackageDetail(id){
+    if (this.region === RegionID.ADVANCE) {
+      this.router.navigate([`/app-smart-cloud/snapshot-advance/packages/detail/`, id])
+    } else {
+      this.router.navigate([`/app-smart-cloud/snapshot/packages/detail/`, id])
+    }
   }
 
   showUpdate(data: PackageSnapshotModel) {

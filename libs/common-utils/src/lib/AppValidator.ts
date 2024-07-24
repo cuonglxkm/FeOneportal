@@ -468,6 +468,17 @@ export function storageValidator(sizeInGB: number): ValidatorFn {
   };
 }
 
+// Validator function check url chỉ chứa duy nhất 1 dấu '/' ở đầu
+export function startsWithSingleSlashValidator(): ValidatorFn { 
+  return (control: AbstractControl): ValidationErrors | null => {
+    if (control.value) {
+      const isValid = control.value.startsWith('/') && !control.value.slice(1).startsWith('/');
+      return isValid ? null : { startsWithSingleSlash: { value: control.value } };
+    }
+    return null;
+  };
+}
+
 
 
 

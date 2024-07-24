@@ -9,7 +9,7 @@ import { FormCreateSnapshotPackage, SnapshotPackageRequestModel } from 'src/app/
 import { PackageBackupService } from '../../../shared/services/package-backup.service';
 import { DataPayment, ItemPayment } from '../../instances/instances.model';
 import { InstancesService } from '../../instances/instances.service';
-import { ServiceActionType, ServiceType } from 'src/app/shared/enums/common.enum';
+import { RegionID, ServiceActionType, ServiceType } from 'src/app/shared/enums/common.enum';
 import { RegionModel, ProjectModel } from '../../../../../../../libs/common-utils/src';
 import { debounceTime, finalize, Subject } from 'rxjs';
 import { OrderService } from '../../../shared/services/order.service';
@@ -108,7 +108,7 @@ export class CreatePackageSnapshotComponent implements OnInit {
     if(this.projectCombobox){
       this.projectCombobox.loadProjects(true, region.regionId);
     }
-    this.router.navigate(['/app-smart-cloud/snapshot/packages']);
+    this.navigateToSnapshotPackage()
   }
 
   onRegionChanged(region: RegionModel) {
@@ -120,7 +120,15 @@ export class CreatePackageSnapshotComponent implements OnInit {
   }
 
   userChanged(project: ProjectModel) {
-    this.router.navigate(['/app-smart-cloud/snapshot/packages']);
+    this.navigateToSnapshotPackage()
+  }
+
+  navigateToSnapshotPackage(){
+    if (this.region === RegionID.ADVANCE) {
+      this.router.navigate(['/app-smart-cloud/snapshot-advance/packages']);
+    } else {
+      this.router.navigate(['/app-smart-cloud/snapshot/packages']);
+    }
   }
 
   navigateToPaymentSummary() {
@@ -246,11 +254,20 @@ export class CreatePackageSnapshotComponent implements OnInit {
     }
   }
 
-
+  url = window.location.pathname;
   ngOnInit() {
     let regionAndProject = getCurrentRegionAndProject();
     this.region = regionAndProject.regionId;
     this.project = regionAndProject.projectId;
+    if (!this.url.includes('advance')) {
+      if (Number(localStorage.getItem('regionId')) === RegionID.ADVANCE) {
+        this.region = RegionID.NORMAL;
+      } else {
+        this.region = Number(localStorage.getItem('regionId'));
+      }
+    } else {
+      this.region = RegionID.ADVANCE;
+    }
     // this.customerId = this.tokenService.get()?.userId
     this.getTotalAmount();
     console.log(this.tokenService.get());

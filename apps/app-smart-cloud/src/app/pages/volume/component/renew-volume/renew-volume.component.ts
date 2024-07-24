@@ -15,6 +15,7 @@ import { I18NService } from '@core';
 import { ProjectService } from 'src/app/shared/services/project.service';
 import { OrderService } from '../../../../shared/services/order.service';
 import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
+import { RegionID } from 'src/app/shared/enums/common.enum';
 
 @Component({
   selector: 'one-portal-renew-volume',
@@ -71,13 +72,27 @@ export class RenewVolumeComponent implements OnInit {
     // });
   }
 
+  navigateToVolume() {
+    if (this.region === RegionID.ADVANCE) {
+      this.router.navigate(['/app-smart-cloud/volumes-advance']);
+    } else {
+      this.router.navigate(['/app-smart-cloud/volumes']);
+    }
+  }
 
+  navigateToDetail(id){
+    if (this.region === RegionID.ADVANCE) {
+      this.router.navigate(['/app-smart-cloud/volume-advance/detail', id]);
+      }else{
+        this.router.navigate(['/app-smart-cloud/volume/detail', id]);
+      }
+  }
   regionChanged(region: RegionModel) {
     this.region = region.regionId;
     if(this.projectCombobox){
       this.projectCombobox.loadProjects(true, region.regionId);
     }
-    this.router.navigate(['/app-smart-cloud/volumes']);
+    this.navigateToVolume()
   }
 
   onRegionChanged(region: RegionModel) {
@@ -89,12 +104,16 @@ export class RenewVolumeComponent implements OnInit {
   }
 
   userChangeProject(project: ProjectModel) {
-    this.router.navigate(['/app-smart-cloud/volumes']);
+    this.navigateToVolume()
   }
 
 
   navigateEditVolume(idVolume: number) {
-    this.router.navigate(['/app-smart-cloud/volume/edit/' + idVolume]);
+    if (this.region === RegionID.ADVANCE) {
+      this.router.navigate(['/app-smart-cloud/volume-advance/edit/' + idVolume]);
+    } else {
+      this.router.navigate(['/app-smart-cloud/volume/edit/' + idVolume]);
+    }
   }
 
   getVolumeById(id) {
@@ -121,7 +140,7 @@ export class RenewVolumeComponent implements OnInit {
       this.attachedDto = null;
       this.listVMs = null;
       this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.failData'));
-      this.router.navigate(['/app-smart-cloud/volumes']);
+      this.navigateToVolume()
     });
   }
 
@@ -219,14 +238,19 @@ export class RenewVolumeComponent implements OnInit {
                 if (data.code == 200) {
                   this.isLoadingAction = false;
                   this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('volume.notification.require.renew.success'));
-                  this.router.navigate(['/app-smart-cloud/volumes']);
+                  this.navigateToVolume()
                 }
               } else {
                 this.isLoadingAction = false;
               }
             });
           } else {
-            var returnPath: string = '/app-smart-cloud/volumes/renew/' + this.idVolume;
+
+            if (this.region === RegionID.ADVANCE) {
+              var returnPath: string = '/app-smart-cloud/volumes-advance/renew/' + this.idVolume;
+            } else {
+              var returnPath: string = '/app-smart-cloud/volumes/renew/' + this.idVolume;
+            }
             console.log('request', request);
             this.router.navigate(['/app-smart-cloud/order/cart'], { state: { data: request, path: returnPath } });
           }
@@ -272,7 +296,11 @@ export class RenewVolumeComponent implements OnInit {
   }
 
   goBack() {
-    this.router.navigate(['/app-smart-cloud/volume/detail/' + this.idVolume]);
+    if (this.region === RegionID.ADVANCE) {
+      this.router.navigate(['/app-smart-cloud/volume-advance/detail/' + this.idVolume]);
+    } else {
+      this.router.navigate(['/app-smart-cloud/volume/detail/' + this.idVolume]);
+    }
   }
 
   onChangeTime(value) {
@@ -282,9 +310,18 @@ export class RenewVolumeComponent implements OnInit {
   }
 
   hasRoleSI: boolean;
-
+  url = window.location.pathname;
   ngOnInit(): void {
     this.idVolume = Number.parseInt(this.activatedRoute.snapshot.paramMap.get('id'));
+    if (!this.url.includes('advance')) {
+      if (Number(localStorage.getItem('regionId')) === RegionID.ADVANCE) {
+        this.region = RegionID.NORMAL;
+      } else {
+        this.region = Number(localStorage.getItem('regionId'));
+      }
+    } else {
+      this.region = RegionID.ADVANCE;
+    }
     this.getVolumeById(this.idVolume);
     this.hasRoleSI = localStorage.getItem('role').includes('SI');
   }

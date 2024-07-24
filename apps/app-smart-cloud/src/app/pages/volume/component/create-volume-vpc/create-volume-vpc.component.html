@@ -11,10 +11,10 @@
         {{ 'app.breadcrumb.block.storage' | i18n }}
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>
-        <a routerLink="/app-smart-cloud/volumes">Volume</a>
+        <a (click)="navigateToVolume()">Volume</a>
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>
-        <a routerLink="/app-smart-cloud/volume/create">{{ 'volume.button.create' | i18n }}</a>
+        {{ 'volume.button.create' | i18n }}
       </nz-breadcrumb-item>
     </nz-breadcrumb>
     <ng-template #iconTemplate>
@@ -197,8 +197,8 @@
                 <ng-container *ngIf="control.hasError('pattern')">{{ 'volume.input.storage.required'|i18n }}
                 </ng-container>
                 <ng-container *ngIf="control.hasError('notEnough') || control.hasError('outOfStorage')">
-                  {{ 'app.alert.quota.vpc' | i18n }} <a
-                  [routerLink]="'/app-smart-cloud/project/update/' + this.project">{{ 'app.this' | i18n }}</a> {{ 'app.alert.quota.vpc.next' | i18n }}
+                  {{ 'app.alert.quota.vpc' | i18n }} <a (click)="navigateToUpdateProject(this.project)"
+                  >{{ 'app.this' | i18n }}</a> {{ 'app.alert.quota.vpc.next' | i18n }}
                 </ng-container>
                 <ng-container *ngIf="control.hasError('outOfStorageSnapshot')">{{'app.file.system.not.enough.quota.snapshot'|i18n: {name: snapshot.sizeInGB + 'GB'} }}</ng-container>
               </ng-template>

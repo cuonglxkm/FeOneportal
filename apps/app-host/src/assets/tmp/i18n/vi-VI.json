@@ -35,6 +35,8 @@
   "validation.choose.required": "Vui lòng chọn {{name}}",
   "validation.project.required.name":"Không bao gồm ký tự đặc biệt, dấu cách, tiếng Việt, tối đa 20 ký tự, có thể có dấu _ (ký tự đặc biệt: @, #, $, %, &, *, +, -, arrow, star, biểu tượng cảm xúc, dấu câu, dấu ngoặc, hình tròn, hình vuông, hình chữ nhật...)",
 
+  "app.footer": "Một sản phẩm của VNPT-IT",
+
   "service.status.init": "Đang khởi tạo",
   "service.status.active": "Đang hoạt động",
   "service.status.resizing": "Đang điều chỉnh",
@@ -884,6 +886,8 @@
   "validation.member.name.pattern": "Tên Member chỉ gồm ký tự chữ cái và số, không bao gồm dấu cách",
   "validation.correct.member.or.health.name": "Vui lòng nhập đúng tên {{typeDelete}}",
   "validation.member.or.health.name.required": "Vui lòng nhập tên {{typeDelete}}",
+  "validation.url.path": "URL không đúng định dạng",
+  "validation.expected.code": "Code không đúng định dạng",
 
   "app.placeholder.name.load.balancer": "Nhập tên LoadBalancer",
   "app.tooltip.vip.address": "Virtual IP là IP private dùng để giao tiếp với các Member",
@@ -2067,6 +2071,7 @@
   "app.cluster.vpc-network-description-1": "Chọn một VPC cho kubernetes cluster của bạn.",
   "app.cluster.vpc-network-description-2": "Nhấp vào đây để quản lý các VPC của bạn",
   "app.cluster.none-dhcp": "Chưa mở DHCP",
+  "app.cluster.disabled-gw": "Chưa bật GatewayIP",
   "app.cluster.subnet-description": "Lựa chọn subnet cho cluster này",
   "app.cluster.title-cancel": "Đang tiến hành thanh toán",
   "app.cluster.cancel-desciption-1": "Thanh toán của bạn đang được thực hiện, nếu bạn thoát khỏi trang này, giao dịch sẽ bị hủy bỏ.",
@@ -3358,7 +3363,8 @@
   "app.invoice.export.customer1": "Khách hàng doanh nghiệp",
   "app.invoice.export.customer2": "Khách hàng cá nhân",
   "app.vpn-connection.create.fail": "Kiểm tra lại Router Interface! Vui lòng thêm Router Interface với Subnet giống trong Endpoint Group!",
-
+  "app.register.firstName": "Tên",
+  "app.register.lastName": "Họ",
   "app.register.project" :"Dự án",
   "app.register.email.label" :"Email đăng ký",
   "app.register.email.press" :"Nhập e-mail đăng ký",

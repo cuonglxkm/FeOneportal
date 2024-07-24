@@ -19,19 +19,11 @@ import { throwError } from 'rxjs';
 })
 
 export class PackageBackupService extends BaseService {
-  httpOptions = {
-    headers: new HttpHeaders({
-      'Content-Type': 'application/json',
-      'User-Root-Id': localStorage.getItem('UserRootId') && Number(localStorage.getItem('UserRootId')) > 0 ? Number(localStorage.getItem('UserRootId')) : this.tokenService.get()?.userId,
-      'Project-Id': localStorage.getItem('projectId') && Number(localStorage.getItem('projectId')) > 0 ? Number(localStorage.getItem('projectId')) : 0,
-      Authorization: 'Bearer ' + this.tokenService.get()?.token,
-    }),
-  };
 
   constructor(public http: HttpClient,
-              @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
+              @Inject(DA_SERVICE_TOKEN) public tokenService: ITokenService,
               private notification: NzNotificationService) {
-    super();
+    super(tokenService);
   }
 
   search(packageName: string, status: string, project: number, region: number, pageSize: number, currentPage: number) {
@@ -49,7 +41,7 @@ export class PackageBackupService extends BaseService {
     }
     return this.http.get<BaseResponse<PackageBackupModel[]>>(this.baseUrl + this.ENDPOINT.provisions
       + `/backups/packages?packageName=${packageName}&status=${status}&regionId=${region}&projectId=${project}&pageSize=${pageSize}&currentPage=${currentPage}`, {
-      headers: this.httpOptions.headers
+      headers: this.getHeaders().headers
     })
       .pipe(catchError((error: HttpErrorResponse) => {
         if (error.status === 401) {
@@ -71,7 +63,7 @@ export class PackageBackupService extends BaseService {
 
   detail(id: number, projectId: number) {
     return this.http.get<PackageBackupModel>(this.baseUrl + this.ENDPOINT.provisions
-      + `/backups/packages/${id}?projectId=${projectId}`, {headers: this.httpOptions.headers}).pipe(
+      + `/backups/packages/${id}?projectId=${projectId}`, {headers: this.getHeaders().headers}).pipe(
       catchError((error: HttpErrorResponse) => {
         if (error.status === 401) {
           console.error('login');
@@ -85,7 +77,7 @@ export class PackageBackupService extends BaseService {
 
   delete(id: number, regionId: number, projectId: number) {
     return this.http.delete(this.baseUrl + this.ENDPOINT.provisions
-      + `/backups/packages/${id}?regionId=${regionId}&projectId=${projectId}`, {headers: this.httpOptions.headers}).pipe(
+      + `/backups/packages/${id}?regionId=${regionId}&projectId=${projectId}`, {headers: this.getHeaders().headers}).pipe(
       catchError((error: HttpErrorResponse) => {
         if (error.status === 401) {
           console.error('login');
@@ -99,7 +91,7 @@ export class PackageBackupService extends BaseService {
 
   createOrder(request: BackupPackageRequestModel) {
     return this.http.post<BackupPackageResponseModel>(this.baseUrl + this.ENDPOINT.orders,
-      Object.assign(request), {headers: this.httpOptions.headers}).pipe(
+      Object.assign(request), {headers: this.getHeaders().headers}).pipe(
       catchError((error: HttpErrorResponse) => {
         if (error.status === 401) {
           console.error('login');
@@ -113,7 +105,7 @@ export class PackageBackupService extends BaseService {
 
   update(form: FormUpdate) {
     return this.http.put(this.baseUrl + this.ENDPOINT.provisions
-      + `/backups/packages/${form.packageId}`, Object.assign(form), {headers: this.httpOptions.headers}).pipe(
+      + `/backups/packages/${form.packageId}`, Object.assign(form), {headers: this.getHeaders().headers}).pipe(
       catchError((error: HttpErrorResponse) => {
         if (error.status === 401) {
           console.error('login');
@@ -127,7 +119,7 @@ export class PackageBackupService extends BaseService {
 
   getServiceInPackage(id: number) {
     console.log('url', this.baseUrl + this.ENDPOINT.provisions + '/backups/packages/' +id +'/services')
-    return this.http.get<ServiceInPackage>(this.baseUrl + this.ENDPOINT.provisions + `/backups/packages/${id}/services`, {headers: this.httpOptions.headers})
+    return this.http.get<ServiceInPackage>(this.baseUrl + this.ENDPOINT.provisions + `/backups/packages/${id}/services`, {headers: this.getHeaders().headers})
       .pipe(catchError((error: HttpErrorResponse) => {
         if (error.status === 401) {
           console.error('login');

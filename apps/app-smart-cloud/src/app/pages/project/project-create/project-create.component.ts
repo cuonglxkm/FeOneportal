@@ -20,6 +20,7 @@ import { Interface } from 'readline';
 import { VpcService } from 'src/app/shared/services/vpc.service';
 import { OrderService } from 'src/app/shared/services/order.service';
 import { LoadingService } from '@delon/abc/loading';
+import { RegionID } from 'src/app/shared/enums/common.enum';
 
 
 
@@ -240,11 +241,20 @@ export class ProjectCreateComponent implements OnInit {
     ).subscribe(data => this.checkNumberInput(data.value, data.name));
 
   }
-
+  url = window.location.pathname;
   hasRoleSI: boolean
   ngOnInit() {
     let regionAndProject = getCurrentRegionAndProject();
     this.regionId = regionAndProject.regionId;
+    if (!this.url.includes('advance')) {
+      if (Number(localStorage.getItem('regionId')) === RegionID.ADVANCE) {
+        this.regionId = RegionID.NORMAL;
+      } else {
+        this.regionId = Number(localStorage.getItem('regionId'));
+      }
+    } else {
+      this.regionId = RegionID.ADVANCE;
+    }
     this.initFlavors();
     this.initVpnSiteToSiteData();
     this.initLoadBalancerData();
@@ -524,7 +534,6 @@ export class ProjectCreateComponent implements OnInit {
 
   onRegionChange(region: RegionModel) {
     this.regionId = region.regionId;
-    this.router.navigate(['/app-smart-cloud/project']);
   }
 
   onRegionChanged(region: RegionModel) {

@@ -125,7 +125,7 @@ export class BucketDetailComponent extends BaseService implements OnInit {
     private objectSevice: ObjectStorageService,
     private bucketservice: BucketService,
     private activatedRoute: ActivatedRoute,
-    @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
+    @Inject(DA_SERVICE_TOKEN) public tokenService: ITokenService,
     @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
     private notification: NzNotificationService,
     private clipboard: Clipboard,
@@ -135,7 +135,7 @@ export class BucketDetailComponent extends BaseService implements OnInit {
     private cdr: ChangeDetectorRef,
     private router: Router
   ) {
-    super();
+    super(tokenService);
   }
 
   formCreateFolder: FormGroup<{
