@@ -52,14 +52,14 @@
       [ngModelOptions]="{ standalone: true }"
       placeholder="index.html"
       formControlName="indexDocumentSuffix"
-      (change)="
-        bucketDetail.indexDocumentSuffix =
-          bucketDetail.indexDocumentSuffix.trim()
-      "
+      [disabled]="bucketDetail.indexDocumentSuffix"
     />
     <ng-template #indexDocumentSuffixErrorTpl let-control>
       <ng-container *ngIf="control.hasError('pattern')">{{
         'app.file.static.web.space.error' | i18n
+      }}</ng-container>
+      <ng-container *ngIf="control.hasError('required')">{{
+        'app.file.static.web.space.require' | i18n
       }}</ng-container>
     </ng-template>
     </nz-form-control>
@@ -68,7 +68,8 @@
       class="text-label"
       nz-checkbox
       [(ngModel)]="bucketDetail.checkRedirectAllRequests"
-      [ngModelOptions]="{ standalone: true }"
+      [ngModelOptions]="{ standalone: true }" 
+      (ngModelChange)="handleChangeRedirect($event)"
       >{{ 'app.label.static.web.hosting' | i18n }}</label
     >
     <input
@@ -125,11 +126,14 @@
       formControlName="errorDocument"
       [ngModelOptions]="{ standalone: true }"
       placeholder="error.html"
-      (change)="bucketDetail.errorDocument = bucketDetail.errorDocument.trim()"
+      [disabled]="bucketDetail.errorDocument === null"
     />
     <ng-template #errorDocumentSuffixErrorTpl let-control>
       <ng-container *ngIf="control.hasError('pattern')">{{
         'app.file.static.web.space.error' | i18n
+      }}</ng-container>
+      <ng-container *ngIf="control.hasError('required')">{{
+        'app.file.static.web.space.require' | i18n
       }}</ng-container>
     </ng-template>
     </nz-form-control>
@@ -145,9 +149,9 @@
       alt=""
     />{{ 'app.button.cancel' | i18n }}
   </button>
-  <button nz-button nzType="primary" [nzLoading]="isLoading" (click)="update()">
+  <button nz-button nzType="primary" [disabled]="formUpdate.invalid" [nzLoading]="isLoading" (click)="update()">
     <img
-    *ngIf="isLoading === false"
+      *ngIf="isLoading === false"
       style="padding-right: 10px; margin-top: -4px"
       src="assets/imgs/confirm.svg"
       alt=""
