@@ -35,7 +35,7 @@ import { environment } from '@env/environment';
       <!--      </layout-default-header-item>-->
 
       <ng-template #logoTemplate>
-      <a href="https://vnptcloud.onsmartcloud.com/" class="alain-default__header-logo-link">
+      <a href="https://cloud.vnpt.vn/" class="alain-default__header-logo-link">
           <img
             class="alain-default__header-logo-expanded"
             src="assets/imgs/logo_vnpt_white.svg"
