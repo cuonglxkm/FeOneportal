@@ -102,13 +102,12 @@ export class CreateSubUserComponent implements OnInit{
       formCreate.generate_secret = true
       formCreate.secret_key = ""
       formCreate.key_type = "s3"
-      formCreate.regionId = this.region
       if(this.validateForm.controls.access.value.includes('none')) {
         formCreate.access = ""
       } else {
         formCreate.access = this.validateForm.controls.access.value
       }
-      this.subUserService.createSubUser(formCreate).subscribe(data => {
+      this.subUserService.createSubUser(this.region, formCreate).subscribe(data => {
         this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('app.create.subuser.success'))
         if(this.region === RegionID.ADVANCE){
           this.router.navigate(['/app-smart-cloud/object-storage-advance/sub-user']);

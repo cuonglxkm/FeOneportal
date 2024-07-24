@@ -11,19 +11,10 @@ import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
 })
 export class InstanceService extends BaseService {
 
-    constructor(private http: HttpClient,
-                @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService) {
-        super();
-    }
-
-    private getHeaders() {
-        return new HttpHeaders({
-            'Content-Type': 'application/json',
-          'User-Root-Id': localStorage.getItem('UserRootId') && Number(localStorage.getItem('UserRootId')) > 0 ? Number(localStorage.getItem('UserRootId')) : this.tokenService.get()?.userId,
-      'Project-Id': localStorage.getItem('projectId') && Number(localStorage.getItem('projectId')) > 0 ? Number(localStorage.getItem('projectId')) : 0,
-          'Authorization': 'Bearer ' + this.tokenService.get()?.token
-        })
-    }
+  constructor(private http: HttpClient,
+              @Inject(DA_SERVICE_TOKEN) public tokenService: ITokenService) {
+      super(tokenService);
+  }
 
   search(
     pageNumber: number,
@@ -53,7 +44,7 @@ export class InstanceService extends BaseService {
         params = params.append('pageSize', form.pageSize)
         params = params.append('pageNumber', form.pageNumber)
         return this.http.get<Pagination<Instance>>(this.baseUrl + this.ENDPOINT.provisions + '/security_group/getinstace', {
-            headers: this.getHeaders(),
+            headers: this.getHeaders().headers,
             params: params
         })
     }

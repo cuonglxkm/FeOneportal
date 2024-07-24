@@ -649,6 +649,7 @@
   "app.file.static.web.hosting": "File chứa nội dung hiển thị trang chủ của website có link là Endpoint bên dưới",
   "app.file.static.web.hosting.error": "File chứa nội dung hiển thị lỗi của website",
   "app.file.static.web.space.error": "Tên File không được chứa dấu cách",
+  "app.file.static.web.space.require": "Tên File không được để trống",
   "app.note.static.web.hosting": "Lưu ý: Để website hoạt động hãy đảm bảo file đã được public",
   "app.label.static.web.hosting": "Chuyển hướng đến một địa chỉ web khác",
   "app.static.web.hosting": "Chuyển hướng đến một địa chỉ web khác",
@@ -2071,6 +2072,7 @@
   "app.cluster.vpc-network-description-1": "Chọn một VPC cho kubernetes cluster của bạn.",
   "app.cluster.vpc-network-description-2": "Nhấp vào đây để quản lý các VPC của bạn",
   "app.cluster.none-dhcp": "Chưa mở DHCP",
+  "app.cluster.disabled-gw": "Chưa bật GatewayIP",
   "app.cluster.subnet-description": "Lựa chọn subnet cho cluster này",
   "app.cluster.title-cancel": "Đang tiến hành thanh toán",
   "app.cluster.cancel-desciption-1": "Thanh toán của bạn đang được thực hiện, nếu bạn thoát khỏi trang này, giao dịch sẽ bị hủy bỏ.",
@@ -2542,7 +2544,7 @@
   "app.vlan.note12": "Hiện tại đang cung cấp IPv4",
   "app.vlan.note13": "Subnet phải là dải con của network x.x.0.0/16 (CRID của network được chọn)",
   "app.vlan.note14": "IP Version",
-  "app.vlan.note15": "Địa chỉ không được phép để trống",
+  "app.vlan.note15": "Địa chỉ không được phép để trống. ",
   "app.vlan.note16": "DHCP là cơ chế cấp phát động địa chỉ IP cho subnet đó. Tức là khi tạo Port mà không chỉ định IP nào thì DHCP sẽ tự gán vào Port vừa tạo 1 IP Ưu điểm: Không cần quản lý địa chỉ IP, hệ thống sẽ tự động cấp phát địa chỉ IP Nhược điểm: DHCP nó sẽ dùng ngay 03 IP cho DHCP server. điều này dẫn tới việc nếu subnet chỉ có 8 IP chẳng hạn, sẽ chỉ dùng dc có 5 IP",
   "app.vlan.note17": "Vui lòng chọn các dải trong khoảng: “10.10.0.0 - 10.100.0.0, 172.16.0.0 - 172.31.0.0” và “192.168.0.0” và nhập địa chỉ đúng quy định, định dạng: x.x.0.0/16, x.x.x.0/24",
   "app.vlan.note18": "Subnet được add Router interface thì sẽ không Disable Gateway IP và ngược lại Subnet không có gateway thì không add Router interface",
@@ -2676,7 +2678,7 @@
   "status.disable":"Không cho phép",
   "status.deleted":"Đã xóa",
   "status.suspended":"Tạm ngưng",
-  
+
   "custom.config.package":"Gói cấu hình tùy chọn",
   "service.bonus":"Dịch vụ bổ sung",
   "config.package":"Gói cấu hình sẵn",

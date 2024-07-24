@@ -19,22 +19,10 @@ export class ObjectStorageService extends BaseService {
 
   constructor(
     private http: HttpClient,
-    @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService
+    @Inject(DA_SERVICE_TOKEN) public tokenService: ITokenService
   ) {
-    super();
+    super(tokenService);
   }
-
-  httpOptions = {
-    headers: new HttpHeaders({
-      'Content-Type': 'application/json',
-      'User-Root-Id':
-        localStorage?.getItem('UserRootId') &&
-        Number(localStorage?.getItem('UserRootId')) > 0
-          ? Number(localStorage?.getItem('UserRootId'))
-          : this.tokenService?.get()?.userId,
-      Authorization: 'Bearer ' + this.tokenService.get()?.token,
-    }),
-  };
 
   getUserInfo(regionId: number) {
     return this.http
@@ -100,7 +88,7 @@ export class ObjectStorageService extends BaseService {
   getUsageOfBucket(bucketName: string, regionId: number): Observable<any> {
     let url_ = `/object-storage/UsageOfBucket?bucketname=${bucketName}&regionId=${regionId}`;
     return this.http.get(this.baseUrl + this.ENDPOINT.provisions + url_, {
-      headers: this.httpOptions.headers,
+      headers: this.getHeaders().headers,
       responseType: 'text',
     });
   }

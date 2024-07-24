@@ -1,9 +1,10 @@
-import { Injectable } from '@angular/core';
+import { Inject, Injectable } from '@angular/core';
 import { BaseService } from './base.service';
 import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http';
 import { FormCreateSubUser, FormDeleteSubUser, FormUpdateSubUser, SubUser } from '../models/sub-user.model';
 import { catchError, throwError } from 'rxjs';
 import { BaseResponse } from '../../../../../../libs/common-utils/src';
+import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 
 @Injectable({
   providedIn: 'root'
@@ -11,8 +12,8 @@ import { BaseResponse } from '../../../../../../libs/common-utils/src';
 
 export class SubUserService extends BaseService {
 
-  constructor(public http: HttpClient) {
-    super();
+  constructor(public http: HttpClient, @Inject(DA_SERVICE_TOKEN) public tokenService: ITokenService) {
+    super(tokenService);
   }
 
   getListSubUser(subuserName: string, pageSize: number, currentPage: number, regionId: number) {
@@ -69,8 +70,8 @@ export class SubUserService extends BaseService {
       }))
   }
 
-  createSubUser(formCreate: FormCreateSubUser) {
-    return this.http.post(this.baseUrl + this.ENDPOINT.provisions + '/object-storage/subuser',
+  createSubUser(regionId: number, formCreate: FormCreateSubUser) {
+    return this.http.post(this.baseUrl + this.ENDPOINT.provisions + '/object-storage/subuser?regionId=' + regionId,
       Object.assign(formCreate)).pipe(catchError((error: HttpErrorResponse) => {
         if (error.status === 401) {
           console.error('login');

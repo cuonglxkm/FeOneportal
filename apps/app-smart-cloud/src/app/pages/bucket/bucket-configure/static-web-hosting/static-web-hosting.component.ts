@@ -5,6 +5,7 @@ import {
   Inject,
   Input,
   OnInit,
+  SimpleChanges,
 } from '@angular/core';
 import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -32,6 +33,8 @@ export class StaticWebHostingComponent implements OnInit {
   @Input() bucketDetail: any;
   bucketWebsitecreate: BucketWebsite = new BucketWebsite();
   isLoading: boolean = false;
+  bucket: any;
+  indexDocument: string | null = null
   region = JSON.parse(localStorage.getItem('regionId'));
   constructor(
     private bucketService: BucketService,
@@ -43,10 +46,21 @@ export class StaticWebHostingComponent implements OnInit {
     @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
     private fb: NonNullableFormBuilder
   ) {}
-
   ngOnInit(): void {
     let regionAndProject = getCurrentRegionAndProject();
     this.region = regionAndProject.regionId;
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['bucketDetail'] && changes['bucketDetail'].currentValue) {
+      console.log('bucketDetail in ngOnChanges:', this.bucketDetail);
+      if (this.bucketDetail.indexDocumentSuffix !== null && this.bucketDetail.indexDocumentSuffix !== undefined) {
+        this.indexDocument = this.bucketDetail.indexDocumentSuffix;
+        console.log('indexDocument set to:', this.indexDocument);
+      } else {
+        console.log('indexDocumentSuffix is null or undefined');
+      }
+    }
   }
 
   formUpdate: FormGroup<{
@@ -60,6 +74,22 @@ export class StaticWebHostingComponent implements OnInit {
   copyText(endPoint: string) {
     this.clipboardService.copyFromContent(endPoint);
     this.message.success('Copied to clipboard');
+  }
+
+  handleChangeRedirect(event){
+    console.log(event);
+    
+    if (event === false) {
+     this.formUpdate.controls.errorDocument.setValidators([Validators.required, Validators.pattern(FILE_NO_SPACE_REGEX)])
+     this.formUpdate.controls.indexDocumentSuffix.setValidators([Validators.required, Validators.pattern(FILE_NO_SPACE_REGEX)])
+     this.formUpdate.controls.indexDocumentSuffix.updateValueAndValidity()
+     this.formUpdate.controls.errorDocument.updateValueAndValidity();
+    } else {
+      this.formUpdate.controls.errorDocument.setValidators([Validators.pattern(FILE_NO_SPACE_REGEX)])
+     this.formUpdate.controls.indexDocumentSuffix.setValidators([Validators.pattern(FILE_NO_SPACE_REGEX)])
+     this.formUpdate.controls.indexDocumentSuffix.updateValueAndValidity()
+     this.formUpdate.controls.errorDocument.updateValueAndValidity();
+    }
   }
 
   update() {

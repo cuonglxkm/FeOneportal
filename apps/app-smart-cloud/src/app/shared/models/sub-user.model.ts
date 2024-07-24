@@ -36,5 +36,4 @@ export class FormCreateSubUser {
   key_type: string
   access: string
   generate_secret: true
-  regionId: number
 }

@@ -15,17 +15,8 @@ export class EndpointGroupService extends BaseService {
   public model: BehaviorSubject<String> = new BehaviorSubject<String>("1");
 
   constructor(private http: HttpClient,
-    @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService) {
-    super();
-  }
-
-  private getHeaders() {
-    return new HttpHeaders({
-      'Content-Type': 'application/json',
-      'User-Root-Id': localStorage.getItem('UserRootId') && Number(localStorage.getItem('UserRootId')) > 0 ? Number(localStorage.getItem('UserRootId')) : this.tokenService.get()?.userId,
-      'Project-Id': localStorage.getItem('projectId') && Number(localStorage.getItem('projectId')) > 0 ? Number(localStorage.getItem('projectId')) : 0,
-      'Authorization': 'Bearer ' + this.tokenService.get()?.token
-    })
+    @Inject(DA_SERVICE_TOKEN) public tokenService: ITokenService) {
+    super(tokenService);
   }
 
   getListEndpointGroup(formSearch: FormSearchEndpointGroup) {
@@ -47,19 +38,19 @@ export class EndpointGroupService extends BaseService {
     }
 
     return this.http.get<BaseResponse<any>>(this.baseUrl + this.ENDPOINT.provisions + '/vpn-sitetosite/endpoint_groups/paging', {
-      headers: this.getHeaders(),
+      headers: this.getHeaders().headers,
       params: params
     })
   }
 
   create(formCreate: FormCreateEndpointGroup) {
     return this.http.post(this.baseUrl + this.ENDPOINT.provisions + '/vpn-sitetosite/endpoint_groups',
-      Object.assign(formCreate), { headers: this.getHeaders() })
+      Object.assign(formCreate), { headers: this.getHeaders().headers })
   }
 
   getEndpointGroupById(id: number, vpcid: number, region: number) {
     return this.http.get<FormDetailEndpointGroup>(this.baseUrl + this.ENDPOINT.provisions +
-      `/vpn-sitetosite/endpoint_groups/${id}?vpcId=${vpcid}&regionId=${region}`, {headers: this.getHeaders()}).pipe(
+      `/vpn-sitetosite/endpoint_groups/${id}?vpcId=${vpcid}&regionId=${region}`, {headers: this.getHeaders().headers}).pipe(
         catchError((error: HttpErrorResponse) => {
           if (error.status === 401) {
             console.error('login');
@@ -72,7 +63,7 @@ export class EndpointGroupService extends BaseService {
   }
 
   deleteEndpointGroup(formDelete: FormDeleteEndpointGroup) {
-    return this.http.delete(this.baseUrl + this.ENDPOINT.provisions + `/vpn-sitetosite/endpoint_groups/${formDelete.id}?regionId=${formDelete.regionId}&vpcId=${formDelete.vpcId}`, {headers: this.getHeaders()}).pipe(
+    return this.http.delete(this.baseUrl + this.ENDPOINT.provisions + `/vpn-sitetosite/endpoint_groups/${formDelete.id}?regionId=${formDelete.regionId}&vpcId=${formDelete.vpcId}`, {headers: this.getHeaders().headers}).pipe(
       catchError((error: HttpErrorResponse) => {
         if (error.status === 401) {
           console.error('login');
@@ -86,7 +77,7 @@ export class EndpointGroupService extends BaseService {
 
   editEndpoinGroup(formEdit: FormEditEndpointGroup) {
     return this.http.put(this.baseUrl + this.ENDPOINT.provisions + `/vpn-sitetosite/endpoint_groups/${formEdit.id}?name=${formEdit.name}&description=${formEdit.description}&vpcId=${formEdit.vpcId}&regionId=${formEdit.regionId}&`,
-      Object.assign(formEdit), {headers: this.getHeaders()}).pipe(
+      Object.assign(formEdit), {headers: this.getHeaders().headers}).pipe(
         catchError((error: HttpErrorResponse) => {
           if (error.status === 401) {
           } else if (error.status === 404) {
@@ -99,7 +90,7 @@ export class EndpointGroupService extends BaseService {
   
   listSubnetEndpointGroup(projectId: number, region: number){
     return this.http.get(this.baseUrl + this.ENDPOINT.provisions +
-      `/vpn-sitetosite/endpoint_groups/list_subnet?projectId=${projectId}&regionId=${region}`, {headers: this.getHeaders()}).pipe(
+      `/vpn-sitetosite/endpoint_groups/list_subnet?projectId=${projectId}&regionId=${region}`, {headers: this.getHeaders().headers}).pipe(
         catchError((error: HttpErrorResponse) => {
           if (error.status === 401) {
             console.error('login');

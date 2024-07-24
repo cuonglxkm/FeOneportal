@@ -9,19 +9,11 @@ import { RouterUpdate } from '../models/router.model';
   providedIn: 'root',
 })
 export class BucketService extends BaseService {
-  httpOptions = {
-    headers: new HttpHeaders({
-      'Content-Type': 'application/json',
-      'User-Root-Id': localStorage?.getItem('UserRootId') && Number(localStorage?.getItem('UserRootId')) > 0 ? Number(localStorage?.getItem('UserRootId')) : this.tokenService?.get()?.userId,
-      Authorization: 'Bearer ' + this.tokenService.get()?.token,
-    }),
-  };
-
   constructor(
     private http: HttpClient,
-    @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService
+    @Inject(DA_SERVICE_TOKEN) public tokenService: ITokenService
   ) {
-    super();
+    super(tokenService);
   }
 
 
@@ -35,7 +27,7 @@ export class BucketService extends BaseService {
 
     return this.http.get<any>(
       this.baseUrl + this.ENDPOINT.provisions + url_,
-      this.httpOptions
+      this.getHeaders()
     );
   }
 
@@ -43,14 +35,14 @@ export class BucketService extends BaseService {
     let url_ = `/object-storage/id?id=${id}`;
     return this.http.get<any>(
       this.baseUrl + this.ENDPOINT.provisions + url_,
-      this.httpOptions
+      this.getHeaders()
     );
   }
 
   deleteBucket(bucketName: string, regionId: number) {
     let url_ = `/object-storage/Bucket/Delete?bucketName=${bucketName}&regionId=${regionId}`;
     return this.http.delete(this.baseUrl + this.ENDPOINT.provisions + url_, {
-      headers: this.httpOptions.headers,
+      headers: this.getHeaders().headers,
       responseType: 'text',
     });
   }
@@ -58,7 +50,7 @@ export class BucketService extends BaseService {
   deleteOS(id: number) {
     let url_ = `/object-storage/user/${id}`;
     return this.http.delete(this.baseUrl + this.ENDPOINT.provisions + url_, {
-      headers: this.httpOptions.headers,
+      headers: this.getHeaders().headers,
       responseType: 'text',
     });
   }
@@ -69,7 +61,7 @@ export class BucketService extends BaseService {
       this.baseUrl + this.ENDPOINT.provisions + url_,
       null,
       {
-        headers: this.httpOptions.headers,
+        headers: this.getHeaders().headers,
         responseType: 'text',
       }
     );
@@ -79,7 +71,7 @@ export class BucketService extends BaseService {
     let url_ = `/object-storage/Bucket/Detail?bucketName=${bucketName}&regionId=${region}`;
     return this.http.get<any>(
       this.baseUrl + this.ENDPOINT.provisions + url_,
-      this.httpOptions
+      this.getHeaders()
     );
   }
 
@@ -89,7 +81,7 @@ export class BucketService extends BaseService {
       this.baseUrl + this.ENDPOINT.provisions + url_,
       null,
       {
-        headers: this.httpOptions.headers,
+        headers: this.getHeaders().headers,
         responseType: 'text',
       }
     );
@@ -101,7 +93,7 @@ export class BucketService extends BaseService {
       this.baseUrl + this.ENDPOINT.provisions + url_,
       null,
       {
-        headers: this.httpOptions.headers,
+        headers: this.getHeaders().headers,
         responseType: 'text',
       }
     );
@@ -118,7 +110,7 @@ export class BucketService extends BaseService {
 
     return this.http.get<any>(
       this.baseUrl + this.ENDPOINT.provisions + url_,
-      this.httpOptions
+      this.getHeaders()
     );
   }
 
@@ -126,7 +118,7 @@ export class BucketService extends BaseService {
     let url_ = `/object-storage/BucketPolicy/Detail?id=${id}&bucketName=${bucketName}&regionId=${regionId}`;
     return this.http.get<any>(
       this.baseUrl + this.ENDPOINT.provisions + url_,
-      this.httpOptions
+      this.getHeaders()
     );
   }
 
@@ -142,7 +134,7 @@ export class BucketService extends BaseService {
     return this.http.post(
       this.baseUrl + this.ENDPOINT.provisions + url_,
       listAction,
-      { headers: this.httpOptions.headers, responseType: 'text' }
+      { headers: this.getHeaders().headers, responseType: 'text' }
     );
   }
 
@@ -158,14 +150,14 @@ export class BucketService extends BaseService {
     return this.http.put(
       this.baseUrl + this.ENDPOINT.provisions + url_,
       listAction,
-      { headers: this.httpOptions.headers, responseType: 'text' }
+      { headers: this.getHeaders().headers, responseType: 'text' }
     );
   }
 
   deleteBucketPolicy(bucketName: string, id: string, regionId: number) {
     let url_ = `/object-storage/BucketPolicy?bucketName=${bucketName}&id=${id}&regionId=${regionId}`;
     return this.http.delete(this.baseUrl + this.ENDPOINT.provisions + url_, {
-      headers: this.httpOptions.headers,
+      headers: this.getHeaders().headers,
       responseType: 'text',
     });
   }
@@ -174,7 +166,7 @@ export class BucketService extends BaseService {
     let url_ = `/object-storage/ListBucketCORS?bucketName=${bucketName}&regionId=${regionId}`;
     return this.http.get<any>(
       this.baseUrl + this.ENDPOINT.provisions + url_,
-      this.httpOptions
+      this.getHeaders()
     );
   }
 
@@ -189,7 +181,7 @@ export class BucketService extends BaseService {
 
     return this.http.get<any>(
       this.baseUrl + this.ENDPOINT.provisions + url_,
-      this.httpOptions
+      this.getHeaders()
     );
   }
 
@@ -199,7 +191,7 @@ export class BucketService extends BaseService {
       this.baseUrl + this.ENDPOINT.provisions + url_,
       data,
       {
-        headers: this.httpOptions.headers,
+        headers: this.getHeaders().headers,
         responseType: 'text',
       }
     );
@@ -211,7 +203,7 @@ export class BucketService extends BaseService {
       this.baseUrl + this.ENDPOINT.provisions + url_,
       data,
       {
-        headers: this.httpOptions.headers,
+        headers: this.getHeaders().headers,
         responseType: 'text',
       }
     );
@@ -220,7 +212,7 @@ export class BucketService extends BaseService {
   deleteBucketCORS(data: any, regionId: number) {
     let url_ = `/object-storage/DeleteBucketCORS?regionId=${regionId}`;
     return this.http.delete(this.baseUrl + this.ENDPOINT.provisions + url_, {
-      headers: this.httpOptions.headers,
+      headers: this.getHeaders().headers,
       responseType: 'text',
       body: data,
     });
@@ -232,7 +224,7 @@ export class BucketService extends BaseService {
       this.baseUrl + this.ENDPOINT.provisions + url_,
       data,
       {
-        headers: this.httpOptions.headers,
+        headers: this.getHeaders().headers,
         responseType: 'text',
       }
     );
@@ -241,7 +233,7 @@ export class BucketService extends BaseService {
   deleteBucketWebsite(data: any, regionId: number) {
     let url_ = `/object-storage/DeleteBucketWebsite?regionId=${regionId}`;
     return this.http.delete(this.baseUrl + this.ENDPOINT.provisions + url_, {
-      headers: this.httpOptions.headers,
+      headers: this.getHeaders().headers,
       body: data,
       responseType: 'text',
     });
@@ -258,7 +250,7 @@ export class BucketService extends BaseService {
 
     return this.http.get<any>(
       this.baseUrl + this.ENDPOINT.provisions + url_,
-      this.httpOptions
+      this.getHeaders()
     );
   }
 
@@ -268,7 +260,7 @@ export class BucketService extends BaseService {
       this.baseUrl + this.ENDPOINT.provisions + url_,
       data,
       {
-        headers: this.httpOptions.headers,
+        headers: this.getHeaders().headers,
         responseType: 'text',
       }
     );
@@ -280,7 +272,7 @@ export class BucketService extends BaseService {
       this.baseUrl + this.ENDPOINT.provisions + url_,
       data,
       {
-        headers: this.httpOptions.headers,
+        headers: this.getHeaders().headers,
         responseType: 'text',
       }
     );
@@ -289,7 +281,7 @@ export class BucketService extends BaseService {
   deleteBucketLifecycle(data: any, regionId: number) {
     let url_ = `/object-storage/DeleteBucketLifecycle?regionId=${regionId}`;
     return this.http.delete(this.baseUrl + this.ENDPOINT.provisions + url_, {
-      headers: this.httpOptions.headers,
+      headers: this.getHeaders().headers,
       responseType: 'text',
       body: data,
     });
@@ -300,7 +292,7 @@ export class BucketService extends BaseService {
 
     return this.http.get<any>(
       this.baseUrl + this.ENDPOINT.provisions + url_,
-      this.httpOptions
+      this.getHeaders()
     );
   }
 }
