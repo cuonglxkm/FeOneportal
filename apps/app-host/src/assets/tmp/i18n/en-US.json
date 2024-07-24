@@ -2629,7 +2629,7 @@
   "app.vlan.note12": "Currently only supports IPv4",
   "app.vlan.note13": "Subnet must be a subnet range of network x.x.0.0/16 (selected network CRID)",
   "app.vlan.note14": "IP version",
-  "app.vlan.note15": "Address cannot be empty",
+  "app.vlan.note15": "Address cannot be empty. ",
   "app.vlan.note16": "DHCP is a dynamic IP address allocation mechanism for that subnet. That means when creating a Port without specifying any IP, DHCP will automatically assign an IP to the created Port. Advantages: No need to manage IP addresses, the system will automatically assign IP addresses. Disadvantages: DHCP will use 03 IPs for the DHCP server. This leads to the situation where if the subnet has only 8 IPs, for example, only 5 IPs will be available.",
   "app.vlan.note17": "Please select ranges within: '10.10.0.0 - 10.100.0.0, 172.16.0.0 - 172.31.0.0, and 192.168.0.0', and enter the correct address format: x.x.0.0/16, x.x.x.0/24",
   "app.vlan.note18": "If a subnet is added to Router interface, the Gateway IP cannot be disabled, and vice versa, if a subnet does not have a gateway, it cannot be added to Routerinterface",
