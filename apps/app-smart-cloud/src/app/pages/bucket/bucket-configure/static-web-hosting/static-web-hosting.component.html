@@ -48,11 +48,11 @@
       style="margin-top: 16px"
       class="input-custom"
       nz-input
-      [(ngModel)]="bucketDetail.indexDocumentSuffix"
+      [(ngModel)]="bucketDetail.indexDocumentSuffix" 
+      [disabled]="true"
       [ngModelOptions]="{ standalone: true }"
       placeholder="index.html"
       formControlName="indexDocumentSuffix"
-      [disabled]="bucketDetail.indexDocumentSuffix"
     />
     <ng-template #indexDocumentSuffixErrorTpl let-control>
       <ng-container *ngIf="control.hasError('pattern')">{{
@@ -64,6 +64,8 @@
     </ng-template>
     </nz-form-control>
     </nz-form-item>
+    <nz-form-item>
+      <nz-form-control [nzErrorTip]="redirectAllRequestsToErrorTpl">
     <label
       class="text-label"
       nz-checkbox
@@ -79,12 +81,18 @@
       [(ngModel)]="bucketDetail.redirectAllRequestsTo"
       [ngModelOptions]="{ standalone: true }"
       placeholder="http://www.example.com"
-      (change)="
-        bucketDetail.redirectAllRequestsTo =
-          bucketDetail.redirectAllRequestsTo.trim()
-      "
-      [disabled]="!bucketDetail.checkRedirectAllRequests"
+      formControlName="redirectAllRequestsTo"
     />
+    <ng-template #redirectAllRequestsToErrorTpl let-control>
+      <ng-container *ngIf="control.hasError('pattern')">{{
+        'app.file.static.web.space.error' | i18n
+      }}</ng-container>
+      <ng-container *ngIf="control.hasError('required')">{{
+        'app.file.static.web.space.require' | i18n
+      }}</ng-container>
+    </ng-template>
+    </nz-form-control>
+    </nz-form-item>
     <div class="text-label" style="margin-top: 16px" class="text-label">
       Endpoint
       <img

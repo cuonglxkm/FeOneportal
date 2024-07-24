@@ -102,7 +102,6 @@ export class VpnSiteToSiteManage {
 
   handleOkDelete() {
     this.isVisibleDelete = false;
-    this.notification.success('', 'Xóa VPN site to site thành công');
     if(this.response['id']){
       this.vpnSiteToSiteService
       .deteleVpnSiteToSite(this.response['id'])
@@ -110,6 +109,7 @@ export class VpnSiteToSiteManage {
         next: (data) => {
           console.log(data);
           this.notification.success('', 'Xóa VPN site to site thành công');
+          this.getData(true)
         },
         error: (error) => {
           console.log(error.error);
