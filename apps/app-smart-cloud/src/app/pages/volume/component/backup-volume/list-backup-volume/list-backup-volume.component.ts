@@ -181,6 +181,16 @@ export class ListBackupVolumeComponent implements OnInit, OnDestroy{
 
   }
 
+  getSuspendedReason(suspendedReason: string) {
+    switch (suspendedReason) {
+      case "CHAMGIAHAN":
+        return this.i18n.fanyi('app.status.low-renew')
+      case "":
+      default:
+        break;
+    }
+  }
+
   ngOnInit() {
     let regionAndProject = getCurrentRegionAndProject();
     this.region = regionAndProject.regionId;

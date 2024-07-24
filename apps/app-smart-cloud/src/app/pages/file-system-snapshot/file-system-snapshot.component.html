@@ -120,14 +120,13 @@
           <ng-container *ngIf="data.serviceStatus | ServiceStatusPipe as statusModel">
             <td *ngIf="!!data.suspendReason">
               <span [ngStyle]="{color: statusModel.color}">
-                <img src="assets/imgs/warning-message.svg" alt="" style="cursor: pointer; margin-bottom: 4px;"
-                     nzTooltipTitle="{{ data.suspendReason }}"
+            <img src="assets/imgs/warning-message.svg" alt="" style="cursor: pointer; margin-bottom: 4px;"
+                     [nzTooltipTitle]="data.suspendReason | SuspendStatusPipe"
                      nzTooltipPlacement="bottom"
                      nz-tooltip>
-                {{ statusModel.status }}
-              </span>
+            {{statusModel.status}}</span>
             </td>
-            <td *ngIf="data.suspendReason == null || data.suspendReason === ''">
+            <td *ngIf="data.serviceStatus !== 'TAMNGUNG'">
               <span [ngStyle]="{color: statusModel.color}">{{ statusModel.status }}</span>
             </td>
           </ng-container>
@@ -164,7 +163,7 @@
                     {{ 'app.file.system.create.button' | i18n }}
                   </li>
                   <li
-                    *ngIf="projectType == 0 && data.status !== 'mất kết nối' && !data.serviceStatus.includes('TAMNGUNG')"
+                    *ngIf="projectType !== 1 && data.status !== 'mất kết nối' && !data.serviceStatus.includes('TAMNGUNG')"
                     nz-menu-item
                     [routerLink]="
                       '/app-smart-cloud/file-storage/file-system/create/normal/' +

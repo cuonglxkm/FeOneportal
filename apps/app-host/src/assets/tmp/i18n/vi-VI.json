@@ -48,6 +48,7 @@
   "service.status.paused": "Tạm dừng",
   "service.status.processing": "Đang xử lý",
   "service.status.unknown": "Không xác định",
+  "service.status.cancel": "Hủy",
 
 
   "form.clear.local.storage": "Làm sạch Local Storage",
@@ -124,6 +125,7 @@
   "app.notify.error": "Thông báo lỗi",
   "app.project": "Dự án",
   "app.disconnected": "MẤT KẾT NỐI",
+  "app.CHAMGIAHAN": "Chậm gia hạn",
 
   "app.encrypt": "Mã hóa",
   "app.monthly.price": "Giá theo tháng",
@@ -882,6 +884,8 @@
   "validation.member.name.pattern": "Tên Member chỉ gồm ký tự chữ cái và số, không bao gồm dấu cách",
   "validation.correct.member.or.health.name": "Vui lòng nhập đúng tên {{typeDelete}}",
   "validation.member.or.health.name.required": "Vui lòng nhập tên {{typeDelete}}",
+  "validation.url.path": "URL không đúng định dạng",
+  "validation.expected.code": "Code không đúng định dạng",
 
   "app.placeholder.name.load.balancer": "Nhập tên LoadBalancer",
   "app.tooltip.vip.address": "Virtual IP là IP private dùng để giao tiếp với các Member",
@@ -3373,5 +3377,26 @@
   "app.register.phone.babel" :"Nhập số điện thoại",
   "app.register.1" :"Tôi đồng ý với",
   "app.register.2" :"các điều khoản",
-  "app.register.3" :"Bạn đã có tài khoản"
+  "app.register.3" :"Bạn đã có tài khoản",
+
+  "app.snapshot.schedule.label.list" : "Danh sách lịch Snapshot",
+  "app.snapshot.schedule.label.name" : "Lịch Snapshot",
+  "app.snapshot.schedule.label.create" : "Tạo mới lịch Snapshot",
+  "app.snapshot.schedule.label.type" : "Loại Snapshot",
+  "app.snapshot.schedule.description" : "Giúp người dùng lưu lại trạng thái hiện tại của Volume/VM. Người dùng có thể sử dụng để sao lưu volume trước khi thực hiện 1 thao tác rủi ro đến dữ liệu trên VM.",
+  "app.snapshot.schedule.init" : "Khởi tạo Lịch Snapshot",
+  "app.snapshot.schedule.descriptio.1" : "Bạn đang thực hiện xoá lịch Snapshot {{actionName}}. Hành động này không thể được hoàn tác",
+  "app.snapshot.schedule.delete" : "Xoá lịch Snapshot",
+  "app.snapshot.schedule.descriptio.2" : "Đế thực hiện xoá Snapshot, vui lòng nhập tên Snapshot để xác nhận.",
+  "app.snapshot.schedule.restore" : "Khôi phục lịch Snapshot",
+  "app.snapshot.schedule.restore.confirm" : "Quý khách muốn thực hiện khôi phục lịch Snapshot?",
+  "app.snapshot.schedule.edit" : "Chỉnh sửa lịch Snapshot",
+  "app.snapshot.schedule.descriptio.3" : "Tên lịch Snapshot của khách hàng. Không bao gồm ký tự đặc biệt, dấu cách, dấu tiếng Việt. Tối đa 50 ký tự.",
+  "app.snapshot.schedule.enter.name" : "Vui lòng nhập tên gói Snapshot",
+  "app.snapshot.schedule.select.volume" : "Chọn Volume cần Snapshot",
+  "app.snapshot.schedule.edit.label" : "Chỉnh sửa lịch Snapshot",
+  "app.snapshot.schedule.info" : "Thông tin lịch Snapshot",
+  "app.snapshot.schedule.enter.name1" : "Nhập tên lịch Snapshot",
+  "app.snapshot.schedule.des.1" : "Tên lịch Snapshot có thể có tối đa 64 ký tự. Ký tự hợp lệ: A-Z, a-z, 0-9",
+  "app.snapshot.schedule.volume.select.label" : "Chọn tên Volume"
 }

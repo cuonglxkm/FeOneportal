@@ -11,6 +11,7 @@ import { data } from 'vis-network';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
 import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
+import { RegionID } from 'src/app/shared/enums/common.enum';
 
 @Component({
   selector: 'one-portal-snapshot-list',
@@ -68,11 +69,20 @@ export class SnapshotListComponent implements OnInit{
     this.region = regionAndProject.regionId;
     this.project = regionAndProject.projectId;
   }
-
+  url = window.location.pathname;
   ngOnInit() {
     let regionAndProject = getCurrentRegionAndProject();
     this.region = regionAndProject.regionId;
     this.project = regionAndProject.projectId;
+    if (!this.url.includes('advance')) {
+      if (Number(localStorage.getItem('regionId')) === RegionID.ADVANCE) {
+        this.region = RegionID.NORMAL;
+      } else {
+        this.region = Number(localStorage.getItem('regionId'));
+      }
+    } else {
+      this.region = RegionID.ADVANCE;
+    }
     this.searchDelay.pipe(debounceTime(TimeCommon.timeOutSearch)).subscribe(() => {
       this.search(false);
     });
@@ -97,9 +107,31 @@ export class SnapshotListComponent implements OnInit{
   }
 
   navigateToCreate() {
-    this.router.navigate(['/app-smart-cloud/snapshot/create',  {
-      navigateType: 2
-    }])
+    if (this.region === RegionID.ADVANCE) {
+      this.router.navigate(['/app-smart-cloud/snapshot-advance/create',  {
+        navigateType: 2
+      }])
+    } else {
+      this.router.navigate(['/app-smart-cloud/snapshot/create',  {
+        navigateType: 2
+      }])
+    }
+  }
+
+  navigateToDetail(id){
+    if (this.region === RegionID.ADVANCE) {
+      this.router.navigate([`/app-smart-cloud/snapshot-advance/detail`, id])
+    } else {
+      this.router.navigate([`/app-smart-cloud/snapshot/detail`, id])
+    }
+  }
+
+  navigateToPackageDetail(id){
+    if (this.region === RegionID.ADVANCE) {
+      this.router.navigate([`/app-smart-cloud/snapshot-advance/packages/detail/`, id])
+    } else {
+      this.router.navigate([`/app-smart-cloud/snapshot/packages/detail/`, id])
+    }
   }
 
   search(isBegin: boolean) {
@@ -137,15 +169,32 @@ export class SnapshotListComponent implements OnInit{
   navigateToCreateVolumeVM(idSnapshot, type: any) {
     if (type == 0) {
       if(this.typeVpc == 1) {
-        this.router.navigate(['/app-smart-cloud/volume/vpc/create', {idSnapshot: idSnapshot}])
+        if (this.region === RegionID.ADVANCE) {
+          this.router.navigate(['/app-smart-cloud/volume-advance/vpc/create', {idSnapshot: idSnapshot}])
+        } else {
+          this.router.navigate(['/app-smart-cloud/volume/vpc/create', {idSnapshot: idSnapshot}])
+        } 
       } else {
-        this.router.navigate(['/app-smart-cloud/volume/create', {idSnapshot: idSnapshot}])
+        if (this.region === RegionID.ADVANCE) {
+          this.router.navigate(['/app-smart-cloud/volume-advance/create', {idSnapshot: idSnapshot}])
+        } else {
+          this.router.navigate(['/app-smart-cloud/volume/create', {idSnapshot: idSnapshot}])
+        } 
       }
     } else if (type == 1) {
       if(this.typeVpc == 1) {
-        this.router.navigate(['/app-smart-cloud/instances/instances-create-vpc', {idSnapshot: idSnapshot}])
+        if (this.region === RegionID.ADVANCE) {
+          this.router.navigate(['/app-smart-cloud/instances-advance/instances-create-vpc', {idSnapshot: idSnapshot}])
+        } else {
+          this.router.navigate(['/app-smart-cloud/instances/instances-create-vpc', {idSnapshot: idSnapshot}])
+        } 
+        
       } else {
-        this.router.navigate(['/app-smart-cloud/instances/instances-create', {idSnapshot: idSnapshot}])
+        if (this.region === RegionID.ADVANCE) {
+          this.router.navigate(['/app-smart-cloud/instances-advance/instances-create', {idSnapshot: idSnapshot}])
+        } else {
+          this.router.navigate(['/app-smart-cloud/instances/instances-create', {idSnapshot: idSnapshot}])
+        } 
       }
     }
   }
@@ -225,6 +274,22 @@ export class SnapshotListComponent implements OnInit{
   }
 
   navigateCreateVl() {
-    this.router.navigate(['/app-smart-cloud/volume/create'])
+    if (this.region === RegionID.ADVANCE) {
+      this.router.navigate(['/app-smart-cloud/volume-advance/create'])
+    } else {
+      this.router.navigate(['/app-smart-cloud/volume/create'])
+    }
+    
+  }
+
+  getSuspendedReason(suspendedReason: any) {
+    switch (suspendedReason) {
+      case "CHAMGIAHAN":
+        return this.i18n.fanyi('app.status.low-renew')
+      case "VIPHAMDIEUKHOAN":
+        return this.i18n.fanyi('service.status.violation')
+      default:
+        break;
+    }
   }
 }

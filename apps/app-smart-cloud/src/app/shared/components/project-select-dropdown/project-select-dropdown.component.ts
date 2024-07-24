@@ -9,6 +9,7 @@ import {
 } from '@angular/core';
 import { ProjectModel } from '../../../../../../../libs/common-utils/src';
 import { ProjectService } from '../../services/project.service';
+import { RegionService } from '../../services/region.service';
 
 @Component({
   selector: 'project-select-dropdown',
@@ -16,7 +17,6 @@ import { ProjectService } from '../../services/project.service';
   styleUrls: ['./project-select-dropdown.component.less'],
 })
 export class ProjectSelectDropdownComponent implements OnInit, OnChanges {
-  selectedProject: ProjectModel;
   @Input() isDetail = false;
   @Input() disabledProject = false;
   @Input() isFirstVisit = true;
@@ -24,9 +24,10 @@ export class ProjectSelectDropdownComponent implements OnInit, OnChanges {
   @Output() valueChanged = new EventEmitter();
   @Output() userChanged = new EventEmitter();
 
+  selectedProject: ProjectModel;
   listProject: ProjectModel[] = [];
 
-  constructor(private projectService: ProjectService) {}
+  constructor(private projectService: ProjectService, private regionService: RegionService) {}
 
   projectChange(project: ProjectModel) {
     localStorage.setItem('projectId', project.id + '');
@@ -36,17 +37,15 @@ export class ProjectSelectDropdownComponent implements OnInit, OnChanges {
   ngOnInit(): void {
     if (localStorage.getItem('regionId') != null) {
       this.regionId = JSON.parse(localStorage.getItem('regionId'));
-      // this.valueChanged.emit(this.selectedRegion)
     }
-    this.loadProjects(false);
   }
 
   loadProjects(reload: boolean, regionId = 0) {
-    if(regionId){
+    if (regionId) {
       this.regionId = regionId;
     }
     if (this.regionId == null) return;
-    if (localStorage.getItem('projects') && reload == false) {
+    if (localStorage.getItem('projects') && !reload) {
       this.listProject = JSON.parse(localStorage.getItem('projects'));
       if (this.listProject.length > 0) {
         if (localStorage.getItem('projectId') != null) {
@@ -110,11 +109,13 @@ export class ProjectSelectDropdownComponent implements OnInit, OnChanges {
     if (changes.disabledProject && !this.isFirstVisit) {
       return;
     }
-    // if (changes.regionId) {
-    //   this.loadProjects(true);
-    // } else {
-    //   this.selectedProject = null;
-    //   this.loadProjects(true);
-    // }
+    if (changes.regionId) {
+      if (this.regionService.previousRegionId !== undefined && changes.regionId.currentValue === this.regionService.previousRegionId) {
+        this.loadProjects(false);
+      } else {
+        this.loadProjects(true);
+      }
+      this.regionService.previousRegionId = changes.regionId.currentValue;
+    }
   }
 }

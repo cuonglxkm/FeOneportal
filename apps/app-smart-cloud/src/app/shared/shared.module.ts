@@ -33,6 +33,7 @@ import { ServiceTimeExtendComponent } from './components/service-time-extend/ser
 import { TrimDirective } from '../pages/file-storage/TrimDirective';
 import { PhoneValidatorDirective } from './directive/PhoneValidatorDirective';
 import { ServiceTaskStatePipe } from './pipes/task-state.pipe';
+import { SuspendStatusPipe } from './pipes/suspend-status.pipe';
 
 const antDesignIcons = AllIcons as {
   [key: string]: any;
@@ -92,6 +93,7 @@ const DIRECTIVES: Array<Type<any>> = [];
     PaymentSummaryComponent,
     IsPermissionPipe,
     ServiceStatusPipe,
+    SuspendStatusPipe,
     ServiceTaskStatePipe,
     formatPrice,
 
@@ -113,6 +115,7 @@ const DIRECTIVES: Array<Type<any>> = [];
     ...DIRECTIVES,
     IsPermissionPipe,
     ServiceStatusPipe,
+    SuspendStatusPipe,
     ServiceTaskStatePipe,
     formatPrice,
   ],

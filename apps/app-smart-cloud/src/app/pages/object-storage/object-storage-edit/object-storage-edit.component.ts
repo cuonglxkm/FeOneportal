@@ -88,7 +88,7 @@ export class ObjectStorageEditComponent implements OnInit {
   getObjectStorage() {
     this.loadingSrv.open({ type: 'spin', text: 'Loading...' });
     this.service
-      .getObjectStorage()
+      .getObjectStorage(this.region)
       .pipe(finalize(() => this.loadingSrv.close()))
       .subscribe({
         next: (data) => {

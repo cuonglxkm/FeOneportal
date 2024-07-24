@@ -334,7 +334,7 @@ export class ProjectUpdateComponent implements OnInit {
 
         newPublicNetworkId: this.ipConnectInternet ? (ip ? ip : '') : this.ipOld,
         newPublicNetworkAddress: this.ipConnectInternet ? ((ipName != '' && ipName != undefined) ? ipName : '') : this.ipNameOld,
-        newQuotaIpPublicCount: this.data?.offerId ? (this.numberIpPublic + this.ipPublicAddOld) : (this.numberIpPublic + this.ipPublicTotal),
+        newQuotaIpPublicCount: this.data?.offerDetail ? (this.numberIpPublic + this.ipPublicAddOld) : (this.numberIpPublic + this.ipPublicTotal),
 
 
         newQuotaIpFloatingCount: this.numberIpFloating + this.ipFloatingOld,
@@ -536,7 +536,7 @@ export class ProjectUpdateComponent implements OnInit {
 
         newPublicNetworkId: this.ipConnectInternet ? (ip ? ip : '') : this.ipOld,
         newPublicNetworkAddress: this.ipConnectInternet ? ((ipName != '' && ipName != undefined) ? ipName : '') : this.ipNameOld,
-        newQuotaIpPublicCount: this.data?.offerId ? (this.numberIpPublic + this.ipPublicAddOld) : (this.numberIpPublic + this.ipPublicTotal),
+        newQuotaIpPublicCount: this.data?.offerDetail ? (this.numberIpPublic + this.ipPublicAddOld) : (this.numberIpPublic + this.ipPublicTotal),
         newQuotaIpFloatingCount: this.numberIpFloating + this.ipFloatingOld,
         newQuotaIpv6Count: this.numberIpv6 + this.ipv6Old,
 
@@ -730,6 +730,13 @@ export class ProjectUpdateComponent implements OnInit {
 
 
 
+        },error =>{
+       
+          if(error.status===500){
+            this.router.navigate(['/app-smart-cloud/project']);
+          this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi(error.error.message));
+          }
+         
         }
       )
       this.calculate();

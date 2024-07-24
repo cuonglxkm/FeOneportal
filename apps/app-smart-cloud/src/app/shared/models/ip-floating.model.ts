@@ -14,6 +14,7 @@ export class IpFloating {
   networkId: string
   iPv6Address: string
   serviceStatus: string
+  suspendReason: any
   attachedVm: string
   expiredDate: Date
   resourceStatus: string

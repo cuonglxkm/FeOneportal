@@ -3,7 +3,6 @@ import {
   Component,
   Inject,
   OnInit,
-  TemplateRef,
   ViewChild,
 } from '@angular/core';
 import { Router } from '@angular/router';
@@ -11,6 +10,7 @@ import { finalize } from 'rxjs/operators';
 import { InstancesService } from '../instances.service';
 import {
   CheckIPAddressModel,
+  Instance,
   InstanceAction,
   InstancesModel,
   Network,
@@ -48,9 +48,8 @@ class SearchParam {
   styleUrls: ['./instances.component.less'],
 })
 export class InstancesComponent implements OnInit {
-  @ViewChild('operationTpl', { static: true }) operationTpl!: TemplateRef<any>;
-  searchParam: Partial<SearchParam> = {};
-  dataList: InstancesModel[] = [];
+  searchParam: SearchParam = new SearchParam();
+  dataList: Instance[] = [];
   userId: number;
 
   pageIndex = 1;
@@ -87,8 +86,6 @@ export class InstancesComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    console.log('current language', this.i18n.currentLang);
-    this.searchParam.status = '';
     let regionAndProject = getCurrentRegionAndProject();
     this.region = regionAndProject.regionId;
     this.projectId = regionAndProject.projectId;
@@ -730,8 +727,8 @@ export class InstancesComponent implements OnInit {
   });
   updateInstances: UpdateInstances = new UpdateInstances();
   isVisibleEdit = false;
-  instanceEdit: InstancesModel;
-  modalEdit(data: InstancesModel) {
+  instanceEdit: Instance;
+  modalEdit(data: Instance) {
     this.instanceEdit = data;
     this.isVisibleEdit = true
     this.updateInstances.name = data.name;

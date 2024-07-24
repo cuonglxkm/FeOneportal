@@ -104,10 +104,9 @@ export class BucketListComponent implements OnInit {
       });
   }
   hasObjectStorage() {
-    this.loadingSrv.open({ type: 'spin', text: 'Loading...' });
     this.objectSevice
-      .getObjectStorage()
-      .pipe(finalize(() => this.loadingSrv.close()))
+      .getObjectStorage(this.region)
+
       .subscribe({
         next: (data) => {
           this.user = data;
@@ -153,7 +152,10 @@ export class BucketListComponent implements OnInit {
   }
 
   getUserById(id: number) {
-    this.bucketService.getUserById(id).subscribe({
+    this.loadingSrv.open({ type: 'spin', text: 'Loading...' });
+    this.bucketService.getUserById(id)
+    .pipe(finalize(() => this.loadingSrv.close()))
+    .subscribe({
       next: (data) => {
         this.objectStorage = data;
         console.log(this.objectStorage);

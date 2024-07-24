@@ -38,7 +38,7 @@
           nz-input
           [placeholder]="'app.action-history.search' | i18n"
           [(ngModel)]="searchParam"
-          (keyup.enter)="getData()"
+          #searchBox (keyup.enter)="search(searchBox.value)" (ngModelChange)="searchDelay.next(false)"
         />
       </nz-input-group>
       <ng-template #prefixIconSearch>
@@ -54,14 +54,12 @@
   <nz-table
     #rowSelectionTable
     [nzFrontPagination]="false"
-    nzShowPagination
     nzShowSizeChanger
     [nzData]="listOfActionHistory"
     [nzTotal]="total"
-    [(nzPageSize)]="pageSize"
-    [(nzPageIndex)]="pageNumber"
-    (nzPageSizeChange)="getData()"
-    (nzPageIndexChange)="getData()"
+    [nzPageSize]="pageSize"
+    [nzPageIndex]="pageNumber"
+    (nzQueryParams)="onQueryParamsChange($event)"
     [nzScroll]="{ x: '100%', y: '55vh' }"
     [nzLoading]="isLoading"
   >

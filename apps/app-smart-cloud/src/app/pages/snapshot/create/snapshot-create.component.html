@@ -90,7 +90,7 @@
                   <nz-form-label>
                     <span>{{'schedule.backup.volume.select' | i18n}} (<span style="color: red;">*</span>)
                   <img nz-popover
-                       [nzPopoverContent]="'Chọn Volume cần Snapshot'"
+                       [nzPopoverContent]="'{{\'app.snapshot.schedule.select.volume\' | i18n}}'"
                        nzPopoverPlacement="bottom" style="margin-left: 5px;"
                        src="assets/imgs/pajamas_question.svg" alt="" /></span>
                   </nz-form-label>
@@ -232,7 +232,7 @@
                   <nz-form-label>
                     <span>{{'schedule.backup.volume.select' | i18n}} (<span style="color: red;">*</span>)
                   <img nz-popover
-                       [nzPopoverContent]="'Chọn Volume cần Snapshot'"
+                       [nzPopoverContent]="'{{\'app.snapshot.schedule.select.volume\' | i18n}}'"
                        nzPopoverPlacement="bottom" style="margin-left: 5px;"
                        src="assets/imgs/pajamas_question.svg" alt="" /></span>
                   </nz-form-label>
@@ -284,7 +284,7 @@
           <ng-template #nzMessage>
             <div>
               Quý khách chưa có gói Snapshot nào, để có thể sử dụng dịch vụ Snapshot, vui lòng tạo gói Snapshot
-              <a [routerLink]="'/app-smart-cloud/volume/create'">tại đây</a>
+              <a (click)="navigateToCreateVolume()" [routerLink]="'/app-smart-cloud/volume/create'">tại đây</a>
             </div>
           </ng-template>
           <nz-form-item>
