@@ -77,6 +77,7 @@ export class StaticWebHostingComponent implements OnInit {
     }
   }
 
+
   formUpdate: FormGroup<{
     errorDocument: FormControl<string>;
     indexDocumentSuffix: FormControl<string>;

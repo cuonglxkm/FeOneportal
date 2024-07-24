@@ -65,7 +65,7 @@ export class LoadBalancerService extends BaseService {
   }
 
   totalAmount(data: any) {
-    return this.http.post<any>(this.baseUrl + this.ENDPOINT.orders + '/totalamount', data).pipe(catchError((error: HttpErrorResponse) => {
+    return this.http.post<any>(this.baseUrl + this.ENDPOINT.orders + '/totalamount', data, this.getHeaders()).pipe(catchError((error: HttpErrorResponse) => {
         if (error.status === 401) {
           console.error('login');
           // Redirect to login page or show unauthorized message
@@ -80,7 +80,7 @@ export class LoadBalancerService extends BaseService {
   }
 
   createLoadBalancer(formCreate: FormOrder) {
-    return this.http.post<any>(this.baseUrl + this.ENDPOINT.orders, formCreate).pipe(catchError((error: HttpErrorResponse) => {
+    return this.http.post<any>(this.baseUrl + this.ENDPOINT.orders, formCreate, this.getHeaders()).pipe(catchError((error: HttpErrorResponse) => {
         if (error.status === 401) {
           console.error('login');
           // Redirect to login page or show unauthorized message
@@ -95,7 +95,7 @@ export class LoadBalancerService extends BaseService {
   }
 
   updateLoadBalancer(formUpdate: FormUpdateLB) {
-    return this.http.put(this.baseUrl + this.ENDPOINT.provisions + '/loadbalancer', Object.assign(formUpdate)).pipe(catchError((error: HttpErrorResponse) => {
+    return this.http.put(this.baseUrl + this.ENDPOINT.provisions + '/loadbalancer', Object.assign(formUpdate), this.getHeaders()).pipe(catchError((error: HttpErrorResponse) => {
         if (error.status === 401) {
           console.error('login');
           // Redirect to login page or show unauthorized message
@@ -111,7 +111,7 @@ export class LoadBalancerService extends BaseService {
 
   getIPBySubnet(subnetId: string, projectId: number, regionId: number) {
     return this.http.get<IPBySubnet[]>(this.baseUrl + this.ENDPOINT.provisions +
-      `/Ip/subnet-ips?subnetId=${subnetId}&projectId=${projectId}&regionId=${regionId}`).pipe(catchError((error: HttpErrorResponse) => {
+      `/Ip/subnet-ips?subnetId=${subnetId}&projectId=${projectId}&regionId=${regionId}`, this.getHeaders()).pipe(catchError((error: HttpErrorResponse) => {
         if (error.status === 401) {
           console.error('login');
           // Redirect to login page or show unauthorized message
@@ -126,7 +126,7 @@ export class LoadBalancerService extends BaseService {
   }
 
   getLoadBalancerById(id: number, isCheckState: boolean) {
-    return this.http.get<LoadBalancerModel>(this.baseUrl + this.ENDPOINT.provisions + `/loadbalancer/${id}?isCheckState=${isCheckState}`).pipe(catchError((error: HttpErrorResponse) => {
+    return this.http.get<LoadBalancerModel>(this.baseUrl + this.ENDPOINT.provisions + `/loadbalancer/${id}?isCheckState=${isCheckState}`, this.getHeaders()).pipe(catchError((error: HttpErrorResponse) => {
         if (error.status === 401) {
           console.error('login');
           // Redirect to login page or show unauthorized message
@@ -141,7 +141,7 @@ export class LoadBalancerService extends BaseService {
   }
 
   deleteLoadBalancer(id: number) {
-    return this.http.delete(this.baseUrl + this.ENDPOINT.provisions + `/loadbalancer?id=${id}`).pipe(catchError((error: HttpErrorResponse) => {
+    return this.http.delete(this.baseUrl + this.ENDPOINT.provisions + `/loadbalancer?id=${id}`, this.getHeaders()).pipe(catchError((error: HttpErrorResponse) => {
       if (error.status === 401) {
         console.error('login');
         // Redirect to login page or show unauthorized message
@@ -155,7 +155,7 @@ export class LoadBalancerService extends BaseService {
   }
 
   getListenerInLB(idLB) {
-    return this.http.get<m_LBSDNListener[]>(this.baseUrl + this.ENDPOINT.provisions + `/loadbalancer/lb-listeners?idLB=${idLB}`)
+    return this.http.get<m_LBSDNListener[]>(this.baseUrl + this.ENDPOINT.provisions + `/loadbalancer/lb-listeners?idLB=${idLB}`, this.getHeaders())
       .pipe(catchError((error: HttpErrorResponse) => {
         if (error.status === 401) {
           console.error('login');
@@ -186,7 +186,7 @@ export class LoadBalancerService extends BaseService {
   }
 
   getListPoolInLB(lbId: number) {
-    return this.http.get<Pool[]>(this.baseUrl + this.ENDPOINT.provisions + `/loadbalancer/lb_listpool?lbId=${lbId}`)
+    return this.http.get<Pool[]>(this.baseUrl + this.ENDPOINT.provisions + `/loadbalancer/lb_listpool?lbId=${lbId}`, this.getHeaders())
       .pipe(catchError((error: HttpErrorResponse) => {
         if (error.status === 401) {
           console.error('login');
@@ -201,7 +201,7 @@ export class LoadBalancerService extends BaseService {
   }
 
   createL7Policy(formCreateL7: FormCreateL7Policy) {
-    return this.http.post(this.baseUrl + this.ENDPOINT.provisions + '/loadbalancer/l7policy', Object.assign(formCreateL7))
+    return this.http.post(this.baseUrl + this.ENDPOINT.provisions + '/loadbalancer/l7policy', Object.assign(formCreateL7), this.getHeaders())
       .pipe(catchError((error: HttpErrorResponse) => {
         if (error.status === 401) {
           console.error('login');
@@ -224,7 +224,7 @@ export class LoadBalancerService extends BaseService {
   }
 
   updatePool(idPool: string, formUpdate: FormUpdatePool) {
-    return this.http.put(this.baseUrl + this.ENDPOINT.provisions + `/loadbalancer/pool/${idPool}`, Object.assign(formUpdate))
+    return this.http.put(this.baseUrl + this.ENDPOINT.provisions + `/loadbalancer/pool/${idPool}`, Object.assign(formUpdate), this.getHeaders())
       .pipe(catchError((error: HttpErrorResponse) => {
         if (error.status === 401) {
           console.error('login');
@@ -239,7 +239,7 @@ export class LoadBalancerService extends BaseService {
   }
 
   deletePool(idPool: string, regionId: number, vpcId: number) {
-    return this.http.delete(this.baseUrl + this.ENDPOINT.provisions + `/loadbalancer/pool/${idPool}?regionId=${regionId}&vpcId=${vpcId}`)
+    return this.http.delete(this.baseUrl + this.ENDPOINT.provisions + `/loadbalancer/pool/${idPool}?regionId=${regionId}&vpcId=${vpcId}`, this.getHeaders())
       .pipe(catchError((error: HttpErrorResponse) => {
         if (error.status === 401) {
           console.error('login');
@@ -257,54 +257,54 @@ export class LoadBalancerService extends BaseService {
     return this.http.get<any>(
       this.baseUrl +
       this.ENDPOINT.provisions +
-      `/loadbalancer/pool/${id}?lbId=${lbId}`
+      `/loadbalancer/pool/${id}?lbId=${lbId}`, this.getHeaders()
     );
   }
 
   getListHealth(regionId: number, projectId: number, poolId: string, pageSize: number, currentPage: number): Observable<any> {
     return this.http.get<any>(this.baseUrl + this.ENDPOINT.provisions +
-      `/loadbalancer/listHealth?regionId=${regionId}&projectId=${projectId}&poolId=${poolId}&pageSize=${pageSize}&currentPage=${currentPage}`
+      `/loadbalancer/listHealth?regionId=${regionId}&projectId=${projectId}&poolId=${poolId}&pageSize=${pageSize}&currentPage=${currentPage}`, this.getHeaders()
     );
   }
 
   createHealth(data: any): Observable<any> {
     let url_ = `/loadbalancer/createHealth`;
-    return this.http.post<any>(this.baseUrl + this.ENDPOINT.provisions + url_, data);
+    return this.http.post<any>(this.baseUrl + this.ENDPOINT.provisions + url_, data, this.getHeaders());
   }
 
   updateHealth(data: any): Observable<any> {
     let url_ = `/loadbalancer/updateHealth`;
-    return this.http.put<any>(this.baseUrl + this.ENDPOINT.provisions + url_, data);
+    return this.http.put<any>(this.baseUrl + this.ENDPOINT.provisions + url_, data, this.getHeaders());
   }
 
   deleteHealth(id: string, regionId: number, projectId: number): Observable<boolean> {
     let url_ = `/loadbalancer/deleteHealth?id=${id}&regionId=${regionId}&projectId=${projectId}`;
-    return this.http.delete<any>(this.baseUrl + this.ENDPOINT.provisions + url_);
+    return this.http.delete<any>(this.baseUrl + this.ENDPOINT.provisions + url_, this.getHeaders());
   }
 
   getListMember(poolId: string, regionId: number, vpcId: number): Observable<any> {
     return this.http.get<any>(this.baseUrl + this.ENDPOINT.provisions +
-      `/loadbalancer/listmember?poolId=${poolId}&regionId=${regionId}&vpcId=${vpcId}`
+      `/loadbalancer/listmember?poolId=${poolId}&regionId=${regionId}&vpcId=${vpcId}`, this.getHeaders()
     );
   }
 
   createMember(data: any): Observable<any> {
     let url_ = `/loadbalancer/member`;
-    return this.http.post<any>(this.baseUrl + this.ENDPOINT.provisions + url_, data);
+    return this.http.post<any>(this.baseUrl + this.ENDPOINT.provisions + url_, data, this.getHeaders());
   }
 
   updateMember(data: any): Observable<any> {
     let url_ = `/loadbalancer/member`;
-    return this.http.put<any>(this.baseUrl + this.ENDPOINT.provisions + url_, data);
+    return this.http.put<any>(this.baseUrl + this.ENDPOINT.provisions + url_, data, this.getHeaders());
   }
 
   deleteMember(id: string, poolid: string, regionId: number, vpcId: number): Observable<boolean> {
     let url_ = `/loadbalancer/member/${id}?poolid=${poolid}&regionId=${regionId}&vpcId=${vpcId}`;
-    return this.http.delete<any>(this.baseUrl + this.ENDPOINT.provisions + url_);
+    return this.http.delete<any>(this.baseUrl + this.ENDPOINT.provisions + url_, this.getHeaders());
   }
 
   getDetailL7Policy(idL7Policy: string, regionId: number, vpcId: number) {
-    return this.http.get<L7Policy>(this.baseUrl + this.ENDPOINT.provisions + `/loadbalancer/l7policy/${idL7Policy}?regionId=${regionId}&vpcId=${vpcId}`)
+    return this.http.get<L7Policy>(this.baseUrl + this.ENDPOINT.provisions + `/loadbalancer/l7policy/${idL7Policy}?regionId=${regionId}&vpcId=${vpcId}`, this.getHeaders())
       .pipe(catchError((error: HttpErrorResponse) => {
         if (error.status === 401) {
           console.error('login');
@@ -319,7 +319,7 @@ export class LoadBalancerService extends BaseService {
   }
 
   getListL7Policy(regionId: number, vpcId: number, listenerId: string) {
-    return this.http.get<L7Policy[]>(this.baseUrl + this.ENDPOINT.provisions + `/loadbalancer/l7policy?regionId=${regionId}&vpcId=${vpcId}&listenerId=${listenerId}`)
+    return this.http.get<L7Policy[]>(this.baseUrl + this.ENDPOINT.provisions + `/loadbalancer/l7policy?regionId=${regionId}&vpcId=${vpcId}&listenerId=${listenerId}`, this.getHeaders())
       .pipe(catchError((error: HttpErrorResponse) => {
         if (error.status === 401) {
           console.error('login');
@@ -334,7 +334,7 @@ export class LoadBalancerService extends BaseService {
   }
 
   updateL7Policy(idL7Policy: string, formUpdate: FormUpdateL7Policy) {
-    return this.http.put(this.baseUrl + this.ENDPOINT.provisions + `/loadbalancer/l7policy/${idL7Policy}`, Object.assign(formUpdate))
+    return this.http.put(this.baseUrl + this.ENDPOINT.provisions + `/loadbalancer/l7policy/${idL7Policy}`, Object.assign(formUpdate), this.getHeaders())
       .pipe(catchError((error: HttpErrorResponse) => {
         if (error.status === 401) {
           console.error('login');
@@ -349,7 +349,7 @@ export class LoadBalancerService extends BaseService {
   }
 
   createL7Rule(formCreateL7Rule: FormCreateL7Rule) {
-    return this.http.post(this.baseUrl + this.ENDPOINT.provisions + '/loadbalancer/l7rule', Object.assign(formCreateL7Rule))
+    return this.http.post(this.baseUrl + this.ENDPOINT.provisions + '/loadbalancer/l7rule', Object.assign(formCreateL7Rule), this.getHeaders())
       .pipe(catchError((error: HttpErrorResponse) => {
         if (error.status === 401) {
           console.error('login');
@@ -364,7 +364,7 @@ export class LoadBalancerService extends BaseService {
   }
 
   getListL7Rule(regionId: number, vpcId: number, l7PolicyId: string) {
-    return this.http.get<L7Rule[]>(this.baseUrl + this.ENDPOINT.provisions + `/loadbalancer/l7rule?regionId=${regionId}&vpcId=${vpcId}&policyId=${l7PolicyId}`)
+    return this.http.get<L7Rule[]>(this.baseUrl + this.ENDPOINT.provisions + `/loadbalancer/l7rule?regionId=${regionId}&vpcId=${vpcId}&policyId=${l7PolicyId}`, this.getHeaders())
       .pipe(catchError((error: HttpErrorResponse) => {
         if (error.status === 401) {
           console.error('login');
@@ -409,7 +409,7 @@ export class LoadBalancerService extends BaseService {
   }
 
   deleteL7Rule(idRule: string, idL7Policy: string, regionId: number, vpcId: number) {
-    return this.http.delete(this.baseUrl + this.ENDPOINT.provisions + `/loadbalancer/l7rule/${idRule}?l7policyId=${idL7Policy}&regionId=${regionId}&vpcId=${vpcId}`)
+    return this.http.delete(this.baseUrl + this.ENDPOINT.provisions + `/loadbalancer/l7rule/${idRule}?l7policyId=${idL7Policy}&regionId=${regionId}&vpcId=${vpcId}`, this.getHeaders())
       .pipe(catchError((error: HttpErrorResponse) => {
         if (error.status === 401) {
           console.error('login');
@@ -424,7 +424,7 @@ export class LoadBalancerService extends BaseService {
   }
 
   deleteL7Policy(idL7Policy: string, regionId: number, vpcId: number) {
-    return this.http.delete(this.baseUrl + this.ENDPOINT.provisions + `/loadbalancer/l7policy/${idL7Policy}?regionId=${regionId}&vpcId=${vpcId}`)
+    return this.http.delete(this.baseUrl + this.ENDPOINT.provisions + `/loadbalancer/l7policy/${idL7Policy}?regionId=${regionId}&vpcId=${vpcId}`, this.getHeaders())
       .pipe(catchError((error: HttpErrorResponse) => {
         if (error.status === 401) {
           console.error('login');
@@ -439,7 +439,7 @@ export class LoadBalancerService extends BaseService {
   }
 
   getListSubnetInternetFacing(projectId: number, region: number) {
-    return this.http.post<any>(this.baseUrl + this.ENDPOINT.provisions + `/loadbalancer/subnet?projectId=${projectId}&region=${region}`, null)
+    return this.http.post<any>(this.baseUrl + this.ENDPOINT.provisions + `/loadbalancer/subnet?projectId=${projectId}&region=${region}`, null, this.getHeaders())
   }
   attachOrDetachIpFloating(ipId: number, idLb: number, regionId: number, vpcId: number, vipPortId: string){
     return this.http.post<any>(this.baseUrl + this.ENDPOINT.provisions + `/loadbalancer/floatinglb`, null, {
