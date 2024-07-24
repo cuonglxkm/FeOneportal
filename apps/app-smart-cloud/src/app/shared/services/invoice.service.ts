@@ -1,33 +1,19 @@
-import { HttpClient, HttpHeaders } from "@angular/common/http";
+import { HttpClient } from "@angular/common/http";
 import { Inject, Injectable } from "@angular/core";
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
-import { BaseService } from "./base.service";
 import { FormCreateUserInvoice, FormUpdateUserInvoice } from "../models/invoice";
-import { environment } from "@env/environment";
+import { BaseService } from "./base.service";
 
 @Injectable({
   providedIn: 'root'
 })
 
-export class InvoiceService {
-  ENDPOINT = {
-    provisions: '/provisions',
-    configurations: '/configurations',
-    orders: '/orders',
-    subscriptions: '/subscriptions',
-    users: '/users',
-    catalogs: '/catalogs',
-    actionlogs: '/actionlogs',
-    iam: '/iam',
-    payments: '/payments'
-  }
-  public baseUrl: string;
+export class InvoiceService extends BaseService {
   constructor(
     private http: HttpClient,
-    @Inject(DA_SERVICE_TOKEN) public tokenService: ITokenService
+    @Inject(DA_SERVICE_TOKEN) tokenService: ITokenService
   ) {
-    this.baseUrl = environment.baseUrl;
-    // super(tokenService);
+    super(tokenService);
   }
 
   createInvoice(formCreate: FormCreateUserInvoice) {
@@ -40,19 +26,5 @@ export class InvoiceService {
         Object.assign(formUpdate), {headers: this.getHeaders().headers})
   }
 
-  protected getHeaders() {
-    return {
-      headers: new HttpHeaders({
-        'Content-Type': 'application/json',
-        Authorization: 'Bearer ' + this.tokenService.get()?.token,
-        'User-Root-Id':
-          localStorage.getItem('UserRootId') &&
-          Number(localStorage.getItem('UserRootId')) > 0
-            ? Number(localStorage.getItem('UserRootId'))
-            : this.tokenService.get()?.userId,
-        'Project-Id': localStorage.getItem('projectId') && Number(localStorage.getItem('projectId')) > 0 ? Number(localStorage.getItem('projectId')) : 0,
-      }),
-    };
-  }
 
 }
