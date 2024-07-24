@@ -297,6 +297,7 @@ export class FormUpdatePool {
   customerId: number;
   vpcId: number;
   regionId: number;
+  actorEmail: string;
 }
 
 export class MemberOfPool {
