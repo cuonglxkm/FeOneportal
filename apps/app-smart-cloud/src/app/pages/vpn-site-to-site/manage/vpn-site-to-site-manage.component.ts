@@ -20,6 +20,7 @@ export class VpnSiteToSiteManage {
   isLoading: boolean = false
   response: any
   isVisibleDelete: boolean = false;
+  isLoadingDelete: boolean = false;
   @ViewChildren('projectCombobox') projectComboboxs:  QueryList<ProjectSelectDropdownComponent>;
   constructor(
     private vpnSiteToSiteService: VpnSiteToSiteService, 
@@ -101,19 +102,21 @@ export class VpnSiteToSiteManage {
   }
 
   handleOkDelete() {
-    this.isVisibleDelete = false;
+    this.isLoadingDelete = true
     if(this.response['id']){
       this.vpnSiteToSiteService
       .deteleVpnSiteToSite(this.response['id'])
       .subscribe({
         next: (data) => {
-          console.log(data);
           this.notification.success('', 'Xóa VPN site to site thành công');
+          this.isVisibleDelete = false;
+          this.isLoadingDelete = false
           this.getData(true)
         },
         error: (error) => {
           console.log(error.error);
           this.notification.error('', 'Xóa VPN site to site không thành công');
+          this.isLoadingDelete = false
         },
       });
     }
