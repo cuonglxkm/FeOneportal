@@ -82,7 +82,7 @@
               padding: 0 10px;
             "
           >
-            {{ titleStepFour }}
+            {{ this.data.statusCode == 4 ? ('app.order.status.Success' | i18n) : this.data.statusCode == 5 && ('app.order.status.Trouble' | i18n)}}
           </span>
         </div>
         <div
