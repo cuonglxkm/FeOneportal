@@ -63,7 +63,11 @@
         <img src="assets/imgs/dots.svg" alt="" />
         <nz-dropdown-menu #opMenu="nzDropdownMenu">
           <ul nz-menu>
-            <li *ngIf="objectStorage?.status !== 'TAMNGUNG'" nz-menu-item (click)="resizeObjectStorage()">
+            <li
+              *ngIf="objectStorage?.status !== 'TAMNGUNG'"
+              nz-menu-item
+              (click)="resizeObjectStorage()"
+            >
               {{ 'app.button.resize' | i18n }}
             </li>
             <li nz-menu-item (click)="deleteObjectStorage()">
@@ -74,9 +78,17 @@
       </button>
     </div>
   </nz-row>
-  <div *ngIf="objectStorage?.status !== 'TAMNGUNG'" style="margin-bottom: 10px" class="text-label">
+  <div
+    *ngIf="objectStorage?.status !== 'TAMNGUNG'"
+    style="margin-bottom: 10px"
+    class="text-label"
+  >
     {{ 'app.capacity' | i18n }}:
-    <span class="text-value">{{ usage?.usage }} GB / {{ usage?.total }} GB ({{totalUsage | number : '1.0-2' }}%)</span>
+    <span class="text-value"
+      >{{ usage?.usage }} GB / {{ usage?.total }} GB ({{
+        totalUsage | number : '1.0-2'
+      }}%)</span
+    >
   </div>
   <div style="margin-bottom: 10px" class="text-label">
     {{ 'app.service.creation-date' | i18n }}:
@@ -90,16 +102,34 @@
       objectStorage.expiredDate | date : 'dd/MM/yyyy'
     }}</span>
   </div>
-  <ng-container *ngIf="objectStorage?.suspendReason !== '' && objectStorage?.suspendReason !== null">
-  <div style="margin-bottom: 10px" class="text-label">
-    {{ 'app.payment.status' | i18n }}:
-    <span class="text-value">
-      {{ 'app.suspend' | i18n }} ({{objectStorage?.suspendReason | SuspendStatusPipe}})
-    </span>
-  </div>
+  <ng-container *ngIf="objectStorage">
+    <div
+      *ngIf="
+      objectStorage?.status !== 'TAMNGUNG'"
+      style="margin-bottom: 10px"
+      class="text-label"
+    >
+      {{ 'app.payment.status' | i18n }}:
+      <span class="text-value">
+        {{ objectStorage.statusDisplay }}
+      </span>
+    </div>
+    <div
+      *ngIf="
+      objectStorage?.status === 'TAMNGUNG'"
+      style="margin-bottom: 10px"
+      class="text-label"
+    >
+      {{ 'app.payment.status' | i18n }}:
+      <span class="text-value">
+        {{ 'app.suspend' | i18n }} ({{
+          objectStorage?.suspendReason | SuspendStatusPipe
+        }})
+      </span>
+    </div>
   </ng-container>
 </nz-card>
-<nz-card *ngIf="hasOS" style="border-radius: 4px" [nzBordered]="false">
+<nz-card *ngIf="hasOS && objectStorage?.status !== 'TAMNGUNG'" style="border-radius: 4px" [nzBordered]="false">
   <div nz-row [nzGutter]="24">
     <div
       nz-col
@@ -132,17 +162,19 @@
           nz-input
           [placeholder]="'app.placeholder.search' | i18n"
           [(ngModel)]="value"
-          #searchBox (keyup.enter)="searchBucket(searchBox.value)" (ngModelChange)="searchDelay.next(false)"
+          #searchBox
+          (keyup.enter)="searchBucket(searchBox.value)"
+          (ngModelChange)="searchDelay.next(false)"
         />
       </nz-input-group>
       <ng-template #prefixIconSearch>
-        <img
-          src="assets/imgs/search.svg"
-          alt=""   
-          (click)="search()"
-        />
+        <img src="assets/imgs/search.svg" alt="" (click)="search()" />
       </ng-template>
-      <button *ngIf="objectStorage?.status !== 'TAMNGUNG'" nz-button nzType="primary" (click)="createBucket()">
+      <button
+        nz-button
+        nzType="primary"
+        (click)="createBucket()"
+      >
         <img
           style="padding-right: 10px; margin-top: -4px"
           src="assets/imgs/add-circle.svg"
@@ -251,8 +283,9 @@
         alt=""
       />{{ 'app.button.cancel' | i18n }}
     </button>
-    <button nz-button nzType="primary" (click)="handleOkDeleteBucket()">
+    <button [nzLoading]="isLoadingDeleteBucket" nz-button nzType="primary" (click)="handleOkDeleteBucket()">
       <img
+        *ngIf="isLoadingDeleteBucket === false"
         style="padding-right: 10px; margin-top: -4px"
         src="assets/imgs/confirm.svg"
         alt=""
@@ -279,7 +312,9 @@
         <b>{{ 'app.alert.delete.instance.warn.next' | i18n }}</b>
       </div>
     </ng-template>
-    <div class="text-label mt-3">{{ 'app.alert.delete.object.storage' | i18n }}</div>
+    <div class="text-label mt-3">
+      {{ 'app.alert.delete.object.storage' | i18n }}
+    </div>
   </ng-container>
   <div *nzModalFooter>
     <button nz-button (click)="handleCancelDeleteOS()">
@@ -289,7 +324,12 @@
         alt=""
       />{{ 'app.button.cancel' | i18n }}
     </button>
-    <button nz-button nzType="primary" (click)="handleOkDeleteOS()" [nzLoading]="isLoadingDeleteOS">
+    <button
+      nz-button
+      nzType="primary"
+      (click)="handleOkDeleteOS()"
+      [nzLoading]="isLoadingDeleteOS"
+    >
       <img
         *ngIf="isLoadingDeleteOS === false"
         style="padding-right: 10px; margin-top: -4px"

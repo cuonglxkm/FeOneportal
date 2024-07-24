@@ -22,18 +22,9 @@ import { FormSearchVpnConnection } from '../models/vpn-connection';
 
 export class PackageSnapshotService extends BaseService {
   constructor(public http: HttpClient,
-              @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
+              @Inject(DA_SERVICE_TOKEN) public tokenService: ITokenService,
               private notification: NzNotificationService) {
-    super();
-  }
-
-  private getHeaders() {
-    return new HttpHeaders({
-      'Content-Type': 'application/json',
-      'User-Root-Id': localStorage.getItem('UserRootId') && Number(localStorage.getItem('UserRootId')) > 0 ? Number(localStorage.getItem('UserRootId')) : this.tokenService.get()?.userId,
-      'Project-Id': localStorage.getItem('projectId') && Number(localStorage.getItem('projectId')) > 0 ? Number(localStorage.getItem('projectId')) : 0,
-      'Authorization': 'Bearer ' + this.tokenService.get()?.token
-    })
+    super(tokenService);
   }
 
   getPackageSnapshot(formSearch: FormSearchPackageSnapshot) {
@@ -58,7 +49,7 @@ export class PackageSnapshotService extends BaseService {
     }
 
     return this.http.get<BaseResponse<PackageSnapshotModel[]>>(this.baseUrl + this.ENDPOINT.provisions + '/snapshots/packages', {
-      headers: this.getHeaders(),
+      headers: this.getHeaders().headers,
       params: params
     })
   }
@@ -67,7 +58,7 @@ export class PackageSnapshotService extends BaseService {
   //   return this.http.put(this.baseUrl + this.ENDPOINT.provisions
   //     + `/backups/packages/${form.id}`,
   //     Object.assign(form),
-  //     {headers: this.getHeaders()})
+  //     {headers: this.getHeaders().headers})
   // }
 
   detail(id: number, projectId: any) {

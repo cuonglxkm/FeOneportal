@@ -11,18 +11,10 @@ import { Observable, throwError } from 'rxjs';
 })
 
 export class CatalogService extends BaseService {
-  httpOptions = {
-    headers: new HttpHeaders({
-      'Content-Type': 'application/json',
-      'User-Root-Id': localStorage.getItem('UserRootId') && Number(localStorage.getItem('UserRootId')) > 0 ? Number(localStorage.getItem('UserRootId')) : this.tokenService.get()?.userId,
-      'Project-Id': localStorage.getItem('projectId') && Number(localStorage.getItem('projectId')) > 0 ? Number(localStorage.getItem('projectId')) : 0,
-      'Authorization': 'Bearer ' + this.tokenService.get()?.token
-    })
-  };
 
   constructor(public http: HttpClient,
-              @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService) {
-    super();
+              @Inject(DA_SERVICE_TOKEN) public tokenService: ITokenService) {
+    super(tokenService);
   }
 
   getCatalogOffer(productId: number, regionId: number, unitOfMeasure: string, unitOfMeasureProduct: string) {
@@ -33,7 +25,7 @@ export class CatalogService extends BaseService {
     if(unitOfMeasureProduct != undefined || unitOfMeasureProduct != null) param = param.append('unitOfMeasureProduct', unitOfMeasureProduct)
     return this.http.get<OfferDetail[]>(this.baseUrl + this.ENDPOINT.catalogs + '/offers', {
       params: param,
-      headers: this.httpOptions.headers
+      headers: this.getHeaders().headers
     }).pipe(catchError((error: HttpErrorResponse) => {
       if (error.status === 401) {
         console.error('login');
@@ -47,7 +39,7 @@ export class CatalogService extends BaseService {
 
   getDetailOffer(id: number) {
     return this.http.get<OfferDetail>(this.baseUrl + this.ENDPOINT.catalogs + `/offers/${id}`, {
-      headers: this.httpOptions.headers
+      headers: this.getHeaders().headers
     }).pipe(catchError((error: HttpErrorResponse) => {
       if (error.status === 401) {
         console.error('login');
@@ -61,7 +53,7 @@ export class CatalogService extends BaseService {
 
   searchProduct(uniqueName: string) {
     return this.http.get<Product[]>(this.baseUrl + this.ENDPOINT.catalogs + `/products?uniqueName=${uniqueName}&containsSearch=true`, {
-      headers: this.httpOptions.headers
+      headers: this.getHeaders().headers
     }).pipe(catchError((error: HttpErrorResponse) => {
       if (error.status === 401) {
         console.error('login');
@@ -81,6 +73,6 @@ export class CatalogService extends BaseService {
       this.baseUrl + this.ENDPOINT.catalogs + '/products/activebyregion?';
     serviceArray.forEach((e) => (url_ = url_ + `catalogs=${e}&`));
     url_ = url_ + `regionid=${regionid}`;
-    return this.http.get<any>(url_, this.httpOptions);
+    return this.http.get<any>(url_, this.getHeaders());
   }
 }

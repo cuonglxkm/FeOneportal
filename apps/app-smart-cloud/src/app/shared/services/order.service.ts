@@ -15,21 +15,12 @@ import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 export class OrderService extends BaseService {
   private urlSnapshotVl = this.baseUrl + this.ENDPOINT.orders;
 
-  httpOptions = {
-    headers: new HttpHeaders({
-      'Content-Type': 'application/json',
-      Authorization: 'Bearer ' + this.tokenService.get()?.token,
-      'User-Root-Id': localStorage.getItem('UserRootId') && Number(localStorage.getItem('UserRootId')) > 0 ? Number(localStorage.getItem('UserRootId')) : this.tokenService.get()?.userId,
-      'Project-Id': localStorage.getItem('projectId') && Number(localStorage.getItem('projectId')) > 0 ? Number(localStorage.getItem('projectId')) : 0,
-    }),
-  };
-
   constructor(
     private http: HttpClient,
     private message: NzMessageService,
-    @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService
+    @Inject(DA_SERVICE_TOKEN) public tokenService: ITokenService
   ) {
-    super();
+    super(tokenService);
   }
 
   getOrders(
@@ -61,7 +52,7 @@ export class OrderService extends BaseService {
     );
   
     return this.http
-      .post<BaseResponse<OrderDTO[]>>(urlResult, status, this.httpOptions)
+      .post<BaseResponse<OrderDTO[]>>(urlResult, status, this.getHeaders())
       .pipe(
         catchError(
           this.handleError<BaseResponse<OrderDTO[]>>('get order-list error')
@@ -191,14 +182,14 @@ export class OrderService extends BaseService {
   getDetail(id: any): Observable<OrderDetailDTO> {
     return this.http.get<OrderDetailDTO>(
       this.urlSnapshotVl + '/' + id,
-      this.httpOptions
+      this.getHeaders()
     );
   }
 
   getOrderBycode(code: any): Observable<any> {
     return this.http.get<OrderDetailDTO>(
       this.urlSnapshotVl + `/getbycode?code=${code}`,
-      this.httpOptions
+      this.getHeaders()
     );
   }
 
@@ -206,7 +197,7 @@ export class OrderService extends BaseService {
     return this.http.post<any>(
       this.baseUrl + this.ENDPOINT.orders,
       data,
-      this.httpOptions
+      this.getHeaders()
     );
   }
 
@@ -214,14 +205,14 @@ export class OrderService extends BaseService {
     return this.http.post<any>(
       this.baseUrl + this.ENDPOINT.orders + `/new-payment`,
       id,
-      this.httpOptions
+      this.getHeaders()
     );
   }
 
   cancelOrder(id: number): Observable<any> {
     return this.http.get<any>(
       this.baseUrl + this.ENDPOINT.orders + `/${id}/cancel`,
-      this.httpOptions
+      this.getHeaders()
     );
   }
   
@@ -229,14 +220,14 @@ export class OrderService extends BaseService {
   getTotalAmount(data: any): Observable<any> {
     return this.http.post<any>(
       this.baseUrl + this.ENDPOINT.orders + '/totalamount',
-      data, this.httpOptions
+      data, this.getHeaders()
     );
   }
 
   validaterOrder(data: any): Observable<any> {
     return this.http.post<any>(
       this.baseUrl + this.ENDPOINT.orders + '/validate',
-      data, this.httpOptions
+      data, this.getHeaders()
     );
   }
 }

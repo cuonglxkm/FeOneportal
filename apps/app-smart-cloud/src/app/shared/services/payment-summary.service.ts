@@ -8,19 +8,12 @@ import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
   providedIn: 'root',
 })
 export class PaymentSummaryService extends BaseService {
-  httpOptions = {
-    headers: new HttpHeaders({
-      'Content-Type': 'application/json',
-      'User-Root-Id': localStorage?.getItem('UserRootId') && Number(localStorage?.getItem('UserRootId')) > 0 ? Number(localStorage?.getItem('UserRootId')) : this.tokenService?.get()?.userId,
-      Authorization: 'Bearer ' + this.tokenService.get()?.token,
-    }),
-  };
 
   constructor(
     private http: HttpClient,
-    @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService
+    @Inject(DA_SERVICE_TOKEN) public tokenService: ITokenService
   ) {
-    super();
+    super(tokenService);
   }
 
   getDiscounts(
@@ -33,7 +26,7 @@ export class PaymentSummaryService extends BaseService {
 
     return this.http.get<any>(
       this.baseUrl + this.ENDPOINT.catalogs + url_,
-      this.httpOptions
+      this.getHeaders()
     );
   }
 
@@ -41,7 +34,7 @@ export class PaymentSummaryService extends BaseService {
     let url_ = `/discounts/${promotionCode}`;
     return this.http.get<any>(
       this.baseUrl + this.ENDPOINT.catalogs + url_,
-      this.httpOptions
+      this.getHeaders()
     );
   }
 }

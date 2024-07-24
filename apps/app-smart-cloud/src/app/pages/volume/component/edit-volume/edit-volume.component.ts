@@ -17,6 +17,7 @@ import { ProjectService } from 'src/app/shared/services/project.service';
 import { ConfigurationsService } from '../../../../shared/services/configurations.service';
 import { OrderService } from '../../../../shared/services/order.service';
 import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
+import { RegionID } from 'src/app/shared/enums/common.enum';
 
 @Component({
   selector: 'app-extend-volume',
@@ -93,6 +94,14 @@ export class EditVolumeComponent implements OnInit {
     }
   }
 
+  navigateToVolume() {
+    if (this.region === RegionID.ADVANCE) {
+      this.router.navigate(['/app-smart-cloud/volumes-advance']);
+    } else {
+      this.router.navigate(['/app-smart-cloud/volumes']);
+    }
+  }
+
   regionChanged(region: RegionModel) {
     // this.region = region.regionId
     // this.projectService.getByRegion(this.region).subscribe(data => {
@@ -101,7 +110,7 @@ export class EditVolumeComponent implements OnInit {
     if(this.projectCombobox){
       this.projectCombobox.loadProjects(true, region.regionId);
     }
-    this.router.navigate(['/app-smart-cloud/volumes']);
+    this.navigateToVolume()
     //   }
     // });
   }
@@ -117,7 +126,7 @@ export class EditVolumeComponent implements OnInit {
   }
 
   userChangeProject(project: ProjectModel) {
-    this.router.navigate(['/app-smart-cloud/volumes']);
+    this.navigateToVolume()
     //
   }
 
@@ -173,14 +182,18 @@ export class EditVolumeComponent implements OnInit {
                 if (data.code == 200) {
                   this.isLoadingAction = false;
                   this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('volume.notification.require.resize.success'));
-                  this.router.navigate(['/app-smart-cloud/volumes']);
+                  this.navigateToVolume()
                 }
               } else {
                 this.isLoadingAction = false;
               }
             })
           } else {
-            var returnPath: string = '/app-smart-cloud/volume/edit/' + this.volumeId;
+            if (this.region === RegionID.ADVANCE) {
+              var returnPath: string = '/app-smart-cloud/volume-advance/edit/' + this.volumeId;
+            } else {
+              var returnPath: string = '/app-smart-cloud/volume/edit/' + this.volumeId;
+            }
             console.log('request', request);
             this.router.navigate(['/app-smart-cloud/order/cart'], { state: { data: request, path: returnPath } });
           }
@@ -244,8 +257,18 @@ export class EditVolumeComponent implements OnInit {
   }
 
   hasRoleSI: boolean;
+  url = window.location.pathname;
   ngOnInit() {
     this.volumeId = Number.parseInt(this.route.snapshot.paramMap.get('id'));
+    if (!this.url.includes('advance')) {
+      if (Number(localStorage.getItem('regionId')) === RegionID.ADVANCE) {
+        this.region = RegionID.NORMAL;
+      } else {
+        this.region = Number(localStorage.getItem('regionId'));
+      }
+    } else {
+      this.region = RegionID.ADVANCE;
+    }
     this.getConfiguration();
     this.dateEdit = new Date();
     if (this.volumeId != undefined || this.volumeId != null) {
@@ -310,7 +333,7 @@ export class EditVolumeComponent implements OnInit {
       this.expiryTime = (exdDate.getFullYear() - createDate.getFullYear()) * 12 + (exdDate.getMonth() - createDate.getMonth());
     }, error => {
       this.isLoading = false;
-      this.router.navigate(['/app-smart-cloud/volumes']);
+      this.navigateToVolume()
       this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.failData'));
     });
   }
@@ -447,7 +470,12 @@ export class EditVolumeComponent implements OnInit {
     ];
     console.log('request', request);
     console.log('price', this.orderItem?.orderItemPrices[0]?.totalAmount.amount);
-    var returnPath: string = '/app-smart-cloud/volume/detail/' + this.volumeId;
+    if (this.region === RegionID.ADVANCE) {
+      var returnPath: string = '/app-smart-cloud/volume-advance/detail/' + this.volumeId;
+    } else {
+      var returnPath: string = '/app-smart-cloud/volume/detail/' + this.volumeId;
+    }
+ 
     this.router.navigate(['/app-smart-cloud/order/cart'], {
       state: { data: request, path: returnPath }
     });

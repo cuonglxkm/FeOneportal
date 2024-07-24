@@ -16,8 +16,8 @@ export class FileStorageService extends BaseService {
 
   constructor(private http: HttpClient,
               private router: Router,
-              @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService) {
-    super();
+              @Inject(DA_SERVICE_TOKEN) public tokenService: ITokenService) {
+    super(tokenService);
   }
 
   createFileStorage(formOrder: FormOrderCreateStorage) {

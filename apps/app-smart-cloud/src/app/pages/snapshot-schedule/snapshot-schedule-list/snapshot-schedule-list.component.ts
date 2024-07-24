@@ -16,6 +16,7 @@ import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@ang
 import { time } from 'echarts';
 import { DatePipe } from '@angular/common';
 import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
+import { RegionID } from 'src/app/shared/enums/common.enum';
 
 @Component({
   selector: 'one-portal-list-schedule-snapshot',
@@ -113,16 +114,34 @@ export class SnapshotScheduleListComponent implements OnInit {
     private notification: NzNotificationService
   ) {
   }
-
+  url = window.location.pathname;
   ngOnInit(): void {
     this.customerId = this.tokenService.get()?.userId;
     let regionAndProject = getCurrentRegionAndProject();
     this.region = regionAndProject.regionId;
     this.project = regionAndProject.projectId;
+    if (!this.url.includes('advance')) {
+      if (Number(localStorage.getItem('regionId')) === RegionID.ADVANCE) {
+        this.region = RegionID.NORMAL;
+      } else {
+        this.region = Number(localStorage.getItem('regionId'));
+      }
+    } else {
+      this.region = RegionID.ADVANCE;
+    }
     this.searchDelay.pipe(debounceTime(TimeCommon.timeOutSearch)).subscribe((checkBegin: boolean) => {
       this.searchSnapshotScheduleList(checkBegin);
     });
     this.VMsnap = this.i18n.fanyi('app.vm.snapshot')
+  }
+
+
+  navigateToPackageDetail(id){
+    if (this.region === RegionID.ADVANCE) {
+      this.router.navigate([`/app-smart-cloud/snapshot-advance/packages/detail/`, id])
+    } else {
+      this.router.navigate([`/app-smart-cloud/snapshot/packages/detail/`, id])
+    }
   }
 
   navigateToUpdate(id: number) {
@@ -266,17 +285,31 @@ export class SnapshotScheduleListComponent implements OnInit {
   // }
 
   navigateToDetail(id: number) {
-    this.router.navigate(['/app-smart-cloud/schedule/snapshot/detail/' + id]);
+    if (this.region === RegionID.ADVANCE) {
+      this.router.navigate(['/app-smart-cloud/schedule/snapshot-advance/detail/' + id]);
+    } else {
+      this.router.navigate(['/app-smart-cloud/schedule/snapshot/detail/' + id]);
+    }
   }
 
   navigateToEdit(id: number) {
-    this.router.navigate(['/app-smart-cloud/schedule/snapshot/edit/' + id]);
+    if (this.region === RegionID.ADVANCE) {
+      this.router.navigate(['/app-smart-cloud/schedule/snapshot-advance/edit/' + id]);
+    } else {
+      this.router.navigate(['/app-smart-cloud/schedule/snapshot/edit/' + id]);
+    }
   }
 
   navigateToCreate() {
-    this.router.navigate(['/app-smart-cloud/schedule/snapshot/create', {
-      snapshotTypeCreate: 2
-    }]);
+    if (this.region === RegionID.ADVANCE) {
+      this.router.navigate(['/app-smart-cloud/schedule/snapshot-advance/create', {
+        snapshotTypeCreate: 2
+      }]);
+    } else {
+      this.router.navigate(['/app-smart-cloud/schedule/snapshot/create', {
+        snapshotTypeCreate: 2
+      }]);
+    }
   }
 
   onRegionChange(region: RegionModel) {

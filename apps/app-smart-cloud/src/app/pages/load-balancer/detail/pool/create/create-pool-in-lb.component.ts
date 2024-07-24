@@ -103,6 +103,7 @@ export class CreatePoolInLbComponent implements OnInit {
   }
 
   handleOk() {
+    this.isLoading = true;
     this.createPool.customerId = this.tokenService.get()?.userId;
     this.createPool.regionId = this.region;
     this.createPool.vpcId = this.project;
