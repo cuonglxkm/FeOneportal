@@ -100,7 +100,7 @@ export class OrderDetailComponent {
         .subscribe({
           next: (data) => {
             this.data = data;
-            if(this.data.paymentUrl === '' && this.data.statusCode == 0){
+            if(this.data.paymentUrl === '' && this.data.statusCode == 0 && this.specType !== undefined){
               this.getTotalAmount()
               this.isLoadingTotalAmount = false
             }
@@ -138,7 +138,7 @@ export class OrderDetailComponent {
         .subscribe({
           next: (data) => {
             this.data = data;
-            if(this.data.paymentUrl === '' && this.data.statusCode == 0){
+            if(this.data.paymentUrl === '' && this.data.statusCode == 0  && this.specType !== undefined){
               this.getTotalAmount()
               this.isLoadingTotalAmount = false
             }
