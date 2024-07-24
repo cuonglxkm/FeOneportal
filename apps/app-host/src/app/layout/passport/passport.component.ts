@@ -19,4 +19,9 @@ export class LayoutPassportComponent implements OnInit {
   ngOnInit(): void {
     this.tokenService.clear();
   }
+
+  navigateToCloud(){
+    window.location.href = 'https://cloud.vnpt.vn/';
+    
+  }
 }
