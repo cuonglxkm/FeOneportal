@@ -23,7 +23,7 @@ export class IpPublicService extends BaseService{
   }
 
   getTest() : Observable<BaseResponse<IpPublicModel[]>> {
-    return this.http.get<BaseResponse<IpPublicModel[]>>("/ip");
+    return this.http.get<BaseResponse<IpPublicModel[]>>("/ip", this.getHeaders());
   }
   createIpPublic(IP: any): Observable<any>  {
     return this.http.post<HttpResponse<any>>(this.baseUrl + this.ENDPOINT.orders, IP, this.getHeaders());
@@ -33,7 +33,7 @@ export class IpPublicService extends BaseService{
     return this.http.post<HttpResponse<any>>(this.baseUrl + this.ENDPOINT.orders, IP, this.getHeaders());
   }
   remove(id: any) :Observable<HttpResponse<any>>  {
-    return this.http.delete<HttpResponse<any>>(this.baseUrl + this.ENDPOINT.provisions + "/Ip?id="+ id);
+    return this.http.delete<HttpResponse<any>>(this.baseUrl + this.ENDPOINT.provisions + "/Ip?id="+ id, this.getHeaders());
   }
 
   attachIpPublic(IP: any): Observable<HttpResponse<any>>  {
@@ -41,20 +41,20 @@ export class IpPublicService extends BaseService{
   }
 
   getDetailIpPublic(id: number): Observable<any> {
-    return this.http.get<any>(this.baseUrl + this.ENDPOINT.provisions + '/Ip/'+id);
+    return this.http.get<any>(this.baseUrl + this.ENDPOINT.provisions + '/Ip/'+id, this.getHeaders());
   }
 
   getTotalAmount(data: any): Observable<any> {
     return this.http.post<any>(
       this.baseUrl + this.ENDPOINT.orders + '/totalamount',
-      data
+      data, this.getHeaders()
     );
   }
   getStepBlock(name:string): Observable<any> {
-    return this.http.get<any>(this.baseUrl + this.ENDPOINT.configurations + '?name=' +name);
+    return this.http.get<any>(this.baseUrl + this.ENDPOINT.configurations + '?name=' +name, this.getHeaders());
   }
 
   ValidateIpByNetwork(regionId: number, networkId: string): Observable<any> {
-    return this.http.get<any>(this.baseUrl + this.ENDPOINT.provisions + '/Ip/validate-by-network/' + regionId + "?networkId=" + networkId);
+    return this.http.get<any>(this.baseUrl + this.ENDPOINT.provisions + '/Ip/validate-by-network/' + regionId + "?networkId=" + networkId, this.getHeaders());
   }
 }

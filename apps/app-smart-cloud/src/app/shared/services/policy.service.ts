@@ -28,16 +28,16 @@ export class PolicyService extends BaseService {
   //   return this.http.get<BaseResponse<PolicyModel[]>>("/policy");
   // }
   searchPolicy(policyName: any, size: any, page: any, userId: any, token: any, status: any): Observable<BaseResponse<PolicyModel[]>> {
-    return this.http.get<BaseResponse<PolicyModel[]>>(this.urlIAM + "?policyName=" + policyName + "&pageSize=" + page + "&currentPage=" + size + "&policyType=" + status, { headers: this.getHeaders().headers } );
+    return this.http.get<BaseResponse<PolicyModel[]>>(this.urlIAM + "?policyName=" + policyName + "&pageSize=" + page + "&currentPage=" + size + "&policyType=" + status, this.getHeaders() );
   }
 
   searchPolicyPermisstion(): Observable<BaseResponse<PermissionPolicyModel[]>> {
-    return this.http.get<BaseResponse<PermissionPolicyModel[]>>("/policy/permission");
+    return this.http.get<BaseResponse<PermissionPolicyModel[]>>("/policy/permission", this.getHeaders());
   }
 
   getAttachedEntities(policyName: string, entityName: string, type: number, pageSize: number, currentPage: number): Observable<BaseResponse<AttachedEntitiesDTO[]>> {
     let url = this.getConditionSearchAttachedEntities(policyName, entityName, type, pageSize, currentPage);
-    return this.http.get<BaseResponse<AttachedEntitiesDTO[]>>(url, { headers: this.getHeaders().headers } );
+    return this.http.get<BaseResponse<AttachedEntitiesDTO[]>>(url, this.getHeaders());
   }
 
   getListService(): Observable<any> {
@@ -58,7 +58,7 @@ export class PolicyService extends BaseService {
 
   getPermisssions(policyName: string, actionName: string, pageSize: number, currentPage: number): Observable<BaseResponse<PermissionDTO[]>> {
     let url = this.getConditionSearchPermission(policyName, actionName, pageSize, currentPage);
-    return this.http.get<BaseResponse<PermissionDTO[]>>(url, { headers: this.getHeaders().headers } );
+    return this.http.get<BaseResponse<PermissionDTO[]>>(url, this.getHeaders() );
   }
 
 
