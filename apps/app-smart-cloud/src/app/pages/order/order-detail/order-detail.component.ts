@@ -100,7 +100,7 @@ export class OrderDetailComponent {
         .subscribe({
           next: (data) => {
             this.data = data;
-            if(this.data.paymentUrl === '' && this.data.statusCode == 0){
+            if(this.data.paymentUrl === '' && this.data.statusCode == 0 && this.specType !== undefined){
               this.getTotalAmount()
               this.isLoadingTotalAmount = false
             }
@@ -116,10 +116,10 @@ export class OrderDetailComponent {
             })
             
 
-            if(data.statusCode == 0){
-              data.statusCode = 1
-            }else if(data.statusCode == 1){
+            if(data.statusCode == 1){
               data.statusCode = 6
+            }else if(data.statusCode == 0){
+              data.statusCode = 1
             }
 
             this.setTitleStepFour()
@@ -138,7 +138,7 @@ export class OrderDetailComponent {
         .subscribe({
           next: (data) => {
             this.data = data;
-            if(this.data.paymentUrl === '' && this.data.statusCode == 0){
+            if(this.data.paymentUrl === '' && this.data.statusCode == 0  && this.specType !== undefined){
               this.getTotalAmount()
               this.isLoadingTotalAmount = false
             }
@@ -153,10 +153,10 @@ export class OrderDetailComponent {
               }
             })
 
-            if(data.statusCode == 0){
-              data.statusCode = 1
-            }else if(data.statusCode == 1){
+            if(data.statusCode == 1){
               data.statusCode = 6
+            }else if(data.statusCode == 0){
+              data.statusCode = 1
             }
 
             this.setTitleStepFour()
@@ -284,6 +284,12 @@ export class OrderDetailComponent {
       this.specType = 'ecr_extend'
     }else if(serviceName === 'ECR' && this.data.orderItems[0].serviceType.includes('Điều chỉnh')){
       this.specType = 'ecr_resize'
+    }else if(serviceName === 'VPK' && this.data.orderItems[0].serviceType === 'Tạo mới'){
+      this.specType = 'k8s_prem_create'
+    }else if(serviceName === 'VPK' && this.data.orderItems[0].serviceType === 'Gia hạn'){
+      this.specType = 'k8s_prem_extend'
+    }else if(serviceName === 'VPK' && this.data.orderItems[0].serviceType.includes('Điều chỉnh')){
+      this.specType = 'k8s_prem_resize'
     }else if(serviceName === 'File system snapshot' && this.data.orderItems[0].serviceType === 'Tạo mới'){
       this.specType = 'sharesnapshot_create'
     }else if(serviceName === 'File system snapshot' && this.data.orderItems[0].serviceType === 'Gia hạn'){

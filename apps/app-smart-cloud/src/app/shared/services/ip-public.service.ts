@@ -11,59 +11,50 @@ import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
 })
 export class IpPublicService extends BaseService{
 
-  httpOptions = {
-    headers: new HttpHeaders({
-      'Content-Type': 'application/json' ,
-      'Authorization': 'Bearer ' + this.tokenService.get()?.token,
-      'User-Root-Id': localStorage.getItem('UserRootId') && Number(localStorage.getItem('UserRootId')) > 0 ? Number(localStorage.getItem('UserRootId')) : this.tokenService.get()?.userId,
-      'Project-Id': localStorage.getItem('projectId') && Number(localStorage.getItem('projectId')) > 0 ? Number(localStorage.getItem('projectId')) : 0,
-    })
-  };
-
   public model: BehaviorSubject<String> = new BehaviorSubject<String>("1");
 
-  constructor(private http: HttpClient, @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService) {
-    super();
+  constructor(private http: HttpClient, @Inject(DA_SERVICE_TOKEN) public tokenService: ITokenService) {
+    super(tokenService);
   }
 
   getData( ipAddress: any, status: any, customerId: any, projectId: any, regionId: any, isCheckState: any, pageSize: any, currentPage: any): Observable<BaseResponse<IpPublicModel[]>> {
     return this.http.get<BaseResponse<IpPublicModel[]>>(this.baseUrl + this.ENDPOINT.provisions + '/Ip?ipAddress=' + ipAddress + '&serviceStatus=' + status+ '&customerId=' + customerId+
-      '&regionId=' + regionId+ '&isCheckState=' + isCheckState+ '&pageSize=' + pageSize+ '&currentPage=' + currentPage+ '&projectId=' + projectId);
+      '&regionId=' + regionId+ '&isCheckState=' + isCheckState+ '&pageSize=' + pageSize+ '&currentPage=' + currentPage+ '&projectId=' + projectId, this.getHeaders());
   }
 
   getTest() : Observable<BaseResponse<IpPublicModel[]>> {
-    return this.http.get<BaseResponse<IpPublicModel[]>>("/ip");
+    return this.http.get<BaseResponse<IpPublicModel[]>>("/ip", this.getHeaders());
   }
   createIpPublic(IP: any): Observable<any>  {
-    return this.http.post<HttpResponse<any>>(this.baseUrl + this.ENDPOINT.orders, IP, this.httpOptions);
+    return this.http.post<HttpResponse<any>>(this.baseUrl + this.ENDPOINT.orders, IP, this.getHeaders());
   }
 
   extendIpPublic(IP: any): Observable<any>  {
-    return this.http.post<HttpResponse<any>>(this.baseUrl + this.ENDPOINT.orders, IP, this.httpOptions);
+    return this.http.post<HttpResponse<any>>(this.baseUrl + this.ENDPOINT.orders, IP, this.getHeaders());
   }
   remove(id: any) :Observable<HttpResponse<any>>  {
-    return this.http.delete<HttpResponse<any>>(this.baseUrl + this.ENDPOINT.provisions + "/Ip?id="+ id);
+    return this.http.delete<HttpResponse<any>>(this.baseUrl + this.ENDPOINT.provisions + "/Ip?id="+ id, this.getHeaders());
   }
 
   attachIpPublic(IP: any): Observable<HttpResponse<any>>  {
-    return this.http.put<HttpResponse<any>>(this.baseUrl + this.ENDPOINT.provisions + "/Ip", IP, this.httpOptions);
+    return this.http.put<HttpResponse<any>>(this.baseUrl + this.ENDPOINT.provisions + "/Ip", IP, this.getHeaders());
   }
 
   getDetailIpPublic(id: number): Observable<any> {
-    return this.http.get<any>(this.baseUrl + this.ENDPOINT.provisions + '/Ip/'+id);
+    return this.http.get<any>(this.baseUrl + this.ENDPOINT.provisions + '/Ip/'+id, this.getHeaders());
   }
 
   getTotalAmount(data: any): Observable<any> {
     return this.http.post<any>(
       this.baseUrl + this.ENDPOINT.orders + '/totalamount',
-      data
+      data, this.getHeaders()
     );
   }
   getStepBlock(name:string): Observable<any> {
-    return this.http.get<any>(this.baseUrl + this.ENDPOINT.configurations + '?name=' +name);
+    return this.http.get<any>(this.baseUrl + this.ENDPOINT.configurations + '?name=' +name, this.getHeaders());
   }
 
   ValidateIpByNetwork(regionId: number, networkId: string): Observable<any> {
-    return this.http.get<any>(this.baseUrl + this.ENDPOINT.provisions + '/Ip/validate-by-network/' + regionId + "?networkId=" + networkId);
+    return this.http.get<any>(this.baseUrl + this.ENDPOINT.provisions + '/Ip/validate-by-network/' + regionId + "?networkId=" + networkId, this.getHeaders());
   }
 }

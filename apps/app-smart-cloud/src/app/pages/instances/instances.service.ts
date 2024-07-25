@@ -15,24 +15,13 @@ import { OfferDetail } from '../../shared/models/catalog.model';
   providedIn: 'root',
 })
 export class InstancesService extends BaseService {
-  httpOptions = {
-    headers: new HttpHeaders({
-      'Content-Type': 'application/json',
-      Authorization: 'Bearer ' + this.tokenService.get()?.token,
-      'User-Root-Id':
-        localStorage.getItem('UserRootId') &&
-        Number(localStorage.getItem('UserRootId')) > 0
-          ? Number(localStorage.getItem('UserRootId'))
-          : this.tokenService.get()?.userId,
-    }),
-  };
 
   constructor(
     private http: HttpClient,
     private router: Router,
-    @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService
+    @Inject(DA_SERVICE_TOKEN) public tokenService: ITokenService
   ) {
-    super();
+    super(tokenService);
   }
 
   //	Mã hành động : shutdown, resume, suspend, rescue, unrescue,attachinterface,detachinterface, start, restart
@@ -40,7 +29,7 @@ export class InstancesService extends BaseService {
     return this.http.post(
       this.baseUrl + this.ENDPOINT.provisions + '/instances/action',
       data,
-      this.httpOptions
+      this.getHeaders()
     );
   }
 
@@ -56,7 +45,7 @@ export class InstancesService extends BaseService {
     url_ = url_.replace(/[?&]$/, '');
     return this.http.get<any>(
       this.baseUrl + this.ENDPOINT.provisions + url_,
-      this.httpOptions
+      this.getHeaders()
     );
   }
 
@@ -65,7 +54,7 @@ export class InstancesService extends BaseService {
     url_ = url_.replace(/[?&]$/, '');
     return this.http.get<any>(
       this.baseUrl + this.ENDPOINT.provisions + url_,
-      this.httpOptions
+      this.getHeaders()
     );
   }
 
@@ -78,7 +67,7 @@ export class InstancesService extends BaseService {
     url_ = url_.replace(/[?&]$/, '');
     return this.http.get<any>(
       this.baseUrl + this.ENDPOINT.provisions + url_,
-      this.httpOptions
+      this.getHeaders()
     );
   }
 
@@ -95,7 +84,7 @@ export class InstancesService extends BaseService {
     url_ = url_.replace(/[?&]$/, '');
     return this.http.get<any>(
       this.baseUrl + this.ENDPOINT.provisions + url_,
-      this.httpOptions
+      this.getHeaders()
     );
   }
 
@@ -109,7 +98,7 @@ export class InstancesService extends BaseService {
     url_ = url_.replace(/[?&]$/, '');
     return this.http.get<any>(
       this.baseUrl + this.ENDPOINT.provisions + url_,
-      this.httpOptions
+      this.getHeaders()
     );
   }
 
@@ -124,7 +113,7 @@ export class InstancesService extends BaseService {
     url_ = url_.replace(/[?&]$/, '');
     return this.http.get<any>(
       this.baseUrl + this.ENDPOINT.provisions + url_,
-      this.httpOptions
+      this.getHeaders()
     );
   }
 
@@ -133,7 +122,7 @@ export class InstancesService extends BaseService {
     url_ = url_.replace(/[?&]$/, '');
     return this.http.get(
       this.baseUrl + this.ENDPOINT.provisions + url_,
-      this.httpOptions
+      this.getHeaders()
     );
   }
 
@@ -142,7 +131,7 @@ export class InstancesService extends BaseService {
     url_ = url_.replace(/[?&]$/, '');
     return this.http.get(
       this.baseUrl + this.ENDPOINT.provisions + url_,
-      this.httpOptions
+      this.getHeaders()
     );
   }
 
@@ -162,7 +151,7 @@ export class InstancesService extends BaseService {
 
     return this.http.get<any>(
       this.baseUrl + this.ENDPOINT.provisions + url_,
-      this.httpOptions
+      this.getHeaders()
     );
   }
 
@@ -171,7 +160,7 @@ export class InstancesService extends BaseService {
     url_ = url_.replace(/[?&]$/, '');
 
     return this.http.get<any>(this.baseUrl + this.ENDPOINT.provisions + url_, {
-      headers: this.httpOptions.headers,
+      headers: this.getHeaders().headers,
     });
   }
 
@@ -180,7 +169,7 @@ export class InstancesService extends BaseService {
     url_ = url_.replace(/[?&]$/, '');
     return this.http.delete<any>(
       this.baseUrl + this.ENDPOINT.provisions + url_,
-      this.httpOptions
+      this.getHeaders()
     );
   }
 
@@ -188,7 +177,7 @@ export class InstancesService extends BaseService {
     return this.http.post<any>(
       this.baseUrl + this.ENDPOINT.orders,
       data,
-      this.httpOptions
+      this.getHeaders()
     );
   }
 
@@ -197,7 +186,7 @@ export class InstancesService extends BaseService {
     return this.http.post<any>(
       this.baseUrl + this.ENDPOINT.provisions + url_,
       '',
-      this.httpOptions
+      this.getHeaders()
     );
   }
 
@@ -205,7 +194,7 @@ export class InstancesService extends BaseService {
     const encodedPassword = encodeURIComponent(newPassword);
     let url_ = `/instances/${id}/change_password?newPassword=${encodedPassword}`;
     return this.http.post(this.baseUrl + this.ENDPOINT.provisions + url_, '', {
-      headers: this.httpOptions.headers,
+      headers: this.getHeaders().headers,
       responseType: 'text',
     });
   }
@@ -216,7 +205,7 @@ export class InstancesService extends BaseService {
     return this.http.post(
       this.baseUrl + this.ENDPOINT.provisions + url_,
       data,
-      { responseType: 'text', headers: this.httpOptions.headers }
+      { responseType: 'text', headers: this.getHeaders().headers }
     );
   }
 
@@ -226,14 +215,14 @@ export class InstancesService extends BaseService {
     return this.http.put<any>(
       this.baseUrl + this.ENDPOINT.provisions + url_,
       data,
-      this.httpOptions
+      this.getHeaders()
     );
   }
 
   getInstanceById(id: number) {
     return this.http.get<InstancesModel>(
       this.baseUrl + this.ENDPOINT.provisions + `/instances/${id}`,
-      this.httpOptions
+      this.getHeaders()
     );
   }
 
@@ -247,14 +236,14 @@ export class InstancesService extends BaseService {
     url_ = url_.replace(/[?&]$/, '');
     return this.http.get<any>(
       this.baseUrl + this.ENDPOINT.provisions + url_,
-      this.httpOptions
+      this.getHeaders()
     );
   }
 
   getConsoleUrl(id: number): Observable<any> {
     return this.http.get(
       `${this.baseUrl + this.ENDPOINT.provisions}/instances/${id}/console`,
-      this.httpOptions
+      this.getHeaders()
     );
   }
 
@@ -263,7 +252,7 @@ export class InstancesService extends BaseService {
     url_ = url_.replace(/[?&]$/, '');
     return this.http.get<any>(
       this.baseUrl + this.ENDPOINT.provisions + url_,
-      this.httpOptions
+      this.getHeaders()
     );
   }
 
@@ -272,14 +261,14 @@ export class InstancesService extends BaseService {
       `${
         this.baseUrl + this.ENDPOINT.provisions
       }/instances/${id}/instance-attachments`,
-      this.httpOptions
+      this.getHeaders()
     );
   }
 
   updatePortVM(data: any) {
     let url_ = `/instances/updateport`;
     return this.http.put(this.baseUrl + this.ENDPOINT.provisions + url_, data, {
-      headers: this.httpOptions.headers,
+      headers: this.getHeaders().headers,
       responseType: 'text',
     });
   }
@@ -289,7 +278,7 @@ export class InstancesService extends BaseService {
       `${
         this.baseUrl + this.ENDPOINT.catalogs
       }/offers?regionId=${regionId}&unitOfMeasure=${unitOfMeasure}`,
-      this.httpOptions
+      this.getHeaders()
     );
   }
   getTypeCatelogOffers(
@@ -300,7 +289,7 @@ export class InstancesService extends BaseService {
       `${
         this.baseUrl + this.ENDPOINT.catalogs
       }/offers?regionId=${regionId}&unitOfMeasureProduct=${unitOfMeasureProduct}`,
-      this.httpOptions
+      this.getHeaders()
     );
   }
 
@@ -309,7 +298,7 @@ export class InstancesService extends BaseService {
       .post<any>(
         this.baseUrl + this.ENDPOINT.orders + '/totalamount',
         data,
-        this.httpOptions
+        this.getHeaders()
       )
       .pipe(
         catchError((error: HttpErrorResponse) => {
@@ -330,7 +319,7 @@ export class InstancesService extends BaseService {
     return this.http.post<any>(
       this.baseUrl + this.ENDPOINT.orders + '/totalamount',
       data,
-      this.httpOptions
+      this.getHeaders()
     );
   }
 
@@ -342,14 +331,14 @@ export class InstancesService extends BaseService {
       `${
         this.baseUrl + this.ENDPOINT.catalogs
       }/offers?productId=${productId}&regionId=${regionId}`,
-      this.httpOptions
+      this.getHeaders()
     );
   }
 
   getDetailProductByUniqueName(name: string): Observable<any> {
     return this.http.get<any>(
       `${this.baseUrl + this.ENDPOINT.catalogs}/products?uniqueName=${name}`,
-      this.httpOptions
+      this.getHeaders()
     );
   }
 
@@ -357,14 +346,14 @@ export class InstancesService extends BaseService {
     let url_ = `/vlans/listallportbynetworkid?networkId=${networkId}&region=${region}`;
     return this.http.get<any>(
       this.baseUrl + this.ENDPOINT.provisions + url_,
-      this.httpOptions
+      this.getHeaders()
     );
   }
 
   getInfoVPC(productId: number): Observable<any> {
     return this.http.get<any>(
       this.baseUrl + this.ENDPOINT.provisions + '/projects/' + productId,
-      this.httpOptions
+      this.getHeaders()
     );
   }
 
@@ -377,7 +366,7 @@ export class InstancesService extends BaseService {
     url_ = url_.replace(/[?&]$/, '');
     return this.http.get<boolean>(
       this.baseUrl + this.ENDPOINT.provisions + url_,
-      this.httpOptions
+      this.getHeaders()
     );
   }
 
@@ -391,7 +380,7 @@ export class InstancesService extends BaseService {
       this.baseUrl +
         this.ENDPOINT.provisions +
         `/vlans/vlansubnets?pageSize=${pageSize}&pageNumber=${pageNumber}&region=${region}&networkCloudId=${networkCloudId}`,
-      this.httpOptions
+      this.getHeaders()
     );
   }
 
@@ -411,7 +400,7 @@ export class InstancesService extends BaseService {
         this.ENDPOINT.provisions +
         '/vlans/CheckIpAvailableToListSubnet',
       data,
-      this.httpOptions
+      this.getHeaders()
     );
   }
 }

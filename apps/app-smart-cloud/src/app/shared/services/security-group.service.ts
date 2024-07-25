@@ -16,18 +16,10 @@ import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
   providedIn: 'root'
 })
 export class SecurityGroupService extends BaseService {
-  httpOptions = {
-    headers: new HttpHeaders({
-      'Content-Type': 'application/json',
-      'User-Root-Id': localStorage.getItem('UserRootId') && Number(localStorage.getItem('UserRootId')) > 0 ? Number(localStorage.getItem('UserRootId')) : this.tokenService.get()?.userId,
-      'Project-Id': localStorage.getItem('projectId') && Number(localStorage.getItem('projectId')) > 0 ? Number(localStorage.getItem('projectId')) : 0,
-      Authorization: 'Bearer ' + this.tokenService.get()?.token
-    })
-  };
 
   constructor(public http: HttpClient,
-              @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService) {
-    super();
+              @Inject(DA_SERVICE_TOKEN) public tokenService: ITokenService) {
+    super(tokenService);
   }
 
   search(condition: SecurityGroupSearchCondition) {
@@ -38,7 +30,7 @@ export class SecurityGroupService extends BaseService {
 
     return this.http.get<SecurityGroup[]>(this.baseUrl + this.ENDPOINT.provisions + '/security_group/getall', {
       params: params,
-      headers: this.httpOptions.headers
+      headers: this.getHeaders().headers
     }).pipe(catchError((error: HttpErrorResponse) => {
       if (error.status === 401) {
         console.error('login');
@@ -51,7 +43,7 @@ export class SecurityGroupService extends BaseService {
   }
 
   createSecurityGroup(form: FormCreateSG) {
-    return this.http.post(this.baseUrl + this.ENDPOINT.provisions + '/security_group', Object.assign(form), {headers: this.httpOptions.headers})
+    return this.http.post(this.baseUrl + this.ENDPOINT.provisions + '/security_group', Object.assign(form), {headers: this.getHeaders().headers})
       .pipe(catchError((error: HttpErrorResponse) => {
         if (error.status === 401) {
           console.error('login');
@@ -65,7 +57,7 @@ export class SecurityGroupService extends BaseService {
 
   create(form: SecurityGroupCreateForm, condition: SecurityGroupSearchCondition) {
     return this.http
-      .post(this.baseUrl + this.ENDPOINT.provisions + '/security_group', Object.assign(form, condition), {headers: this.httpOptions.headers})
+      .post(this.baseUrl + this.ENDPOINT.provisions + '/security_group', Object.assign(form, condition), {headers: this.getHeaders().headers})
       .pipe(catchError((error: HttpErrorResponse) => {
         if (error.status === 401) {
           console.error('login');
@@ -80,7 +72,7 @@ export class SecurityGroupService extends BaseService {
   delete(id: string, condition: SecurityGroupSearchCondition) {
     return this.http.delete(this.baseUrl + this.ENDPOINT.provisions + '/security_group', {
       body: JSON.stringify({ id, ...condition }),
-      headers: this.httpOptions.headers
+      headers: this.getHeaders().headers
     }).pipe(
       catchError((error: HttpErrorResponse) => {
         if (error.status === 401) {
@@ -97,7 +89,7 @@ export class SecurityGroupService extends BaseService {
   deleteSG(form: FormDeleteSG) {
     return this.http.delete(this.baseUrl + this.ENDPOINT.provisions + '/security_group', {
       body: form,
-      headers: this.httpOptions.headers
+      headers: this.getHeaders().headers
     }).pipe(catchError((error: HttpErrorResponse) => {
       if (error.status === 401) {
         console.error('login');
@@ -111,7 +103,7 @@ export class SecurityGroupService extends BaseService {
 
   attachOrDetach(form: ExecuteAttachOrDetach) {
     return this.http.post(this.baseUrl + this.ENDPOINT.provisions + '/security_group/action',
-      Object.assign(form), {headers: this.httpOptions.headers})
+      Object.assign(form), {headers: this.getHeaders().headers})
       .pipe(
         catchError((error: HttpErrorResponse) => {
           if (error.status === 401) {

@@ -38,21 +38,9 @@ export class SSLCertService extends BaseService {
   constructor(
     private http: HttpClient,
     private router: Router,
-    @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService
+    @Inject(DA_SERVICE_TOKEN) public tokenService: ITokenService
   ) {
-    super();
-  }
-
-  private getHeaders() {
-    return new HttpHeaders({
-      'Content-Type': 'application/json',
-      'User-Root-Id':
-        localStorage.getItem('UserRootId') &&
-        Number(localStorage.getItem('UserRootId')) > 0
-          ? Number(localStorage.getItem('UserRootId'))
-          : this.tokenService.get()?.userId,
-      Authorization: 'Bearer ' + this.tokenService.get()?.token,
-    });
+    super(tokenService);
   }
 
   getSslCert(formSearch: FormSearchSslSearch) {
@@ -75,7 +63,7 @@ export class SSLCertService extends BaseService {
     return this.http.get<any>(
       this.baseUrl + this.ENDPOINT.provisions + '/loadbalancer/ssl',
       {
-        headers: this.getHeaders(),
+        headers: this.getHeaders().headers,
         params: params,
       }
     );
@@ -85,7 +73,7 @@ export class SSLCertService extends BaseService {
     return this.http.post(
       this.baseUrl + this.ENDPOINT.provisions + '/loadbalancer/ssl',
       Object.assign(formCreate),
-      { headers: this.getHeaders() }
+      { headers: this.getHeaders().headers }
     );
   }
 
@@ -95,7 +83,7 @@ export class SSLCertService extends BaseService {
         this.baseUrl +
           this.ENDPOINT.provisions +
           `/loadbalancer/ssl?uuid=${formDelete.uuid}&regionId=${formDelete.regionId}&projectId=${formDelete.projectId}`,
-        { headers: this.getHeaders(), observe: 'response' }
+        { headers: this.getHeaders().headers, observe: 'response' }
       )
       .pipe(
         catchError((error: HttpErrorResponse) => {

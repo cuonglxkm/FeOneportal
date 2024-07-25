@@ -8,16 +8,12 @@ import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
   providedIn: 'root',
 })
 export class ActionHistoryService extends BaseService {
-  httpOptions = {
-    headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
-    Authorization: 'Bearer ' + this.tokenService.get()?.token,
-  };
 
   constructor(
     private http: HttpClient,
-    @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService
+    @Inject(DA_SERVICE_TOKEN) public tokenService: ITokenService
   ) {
-    super();
+    super(tokenService);
   }
 
   getData(
@@ -45,7 +41,7 @@ export class ActionHistoryService extends BaseService {
         resourceName +
         '&resourceType=' +
         resourceType,
-      this.httpOptions
+      this.getHeaders()
     );
   }
 }

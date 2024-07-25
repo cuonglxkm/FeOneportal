@@ -87,12 +87,12 @@
         </ng-container>
         <td>
           <div>
-            <one-portal-attach-ip-floating *ngIf="data.status != 2 && data.status != 'LOI' && data.resourceStatus != 'ERROR'" [region]="region"
+            <one-portal-attach-ip-floating *ngIf="data.status != 'DANGSUDUNG' && data.status != 'LOI' && data.resourceStatus != 'ERROR'" [region]="region"
                                            [project]="project"
                                            [idIpFloating]="data.id"
                                            (onOk)="handleOkAttachIpFloating()"/>
 
-            <one-portal-detach-ip-floating *ngIf="data.status == 2 && data.status != 'LOI' && data.resourceStatus != 'ERROR'" [region]="region"
+            <one-portal-detach-ip-floating *ngIf="data.status == 'DANGSUDUNG' && data.status != 'LOI' && data.resourceStatus != 'ERROR'" [region]="region"
                                            [project]="project"
                                            [idIpFloating]="data.id"
                                            (onOk)="handleOkDetachIpFloating()" />

@@ -61,7 +61,6 @@ export class AttachIpFloatingComponent implements OnInit {
     this.isVisible = false
     this.isLoading = false
     this.validateForm.reset()
-    this.onCancel.emit()
   }
 
   submitForm() {

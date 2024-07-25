@@ -10,35 +10,27 @@ import { ProjectModel } from '../../../../../../libs/common-utils/src';
 })
 export class ProjectService extends BaseService {
 
-  private getHeaders() {
-    return new HttpHeaders({
-      'Content-Type': 'application/json',
-      'User-Root-Id': localStorage.getItem('UserRootId') && Number(localStorage.getItem('UserRootId')) > 0 ? Number(localStorage.getItem('UserRootId')) : this.tokenService.get()?.userId,
-      'Project-Id': localStorage.getItem('projectId') && Number(localStorage.getItem('projectId')) > 0 ? Number(localStorage.getItem('projectId')) : 0,
-      'Authorization': 'Bearer ' + this.tokenService.get()?.token
-    })
-  }
-  constructor(private http: HttpClient, @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService) {
-    super();
+  constructor(private http: HttpClient, @Inject(DA_SERVICE_TOKEN) public tokenService: ITokenService) {
+    super(tokenService);
   }
 
   getByRegion(regionId: number) {
     return this.http.get<ProjectModel[]>
     (this.baseUrl + this.ENDPOINT.provisions  + `/projects?regionId=${regionId}`, {
-      headers: this.getHeaders()
+      headers: this.getHeaders().headers
     });
   }
 
   getByProjectId(id: number) {
     return this.http.get<SizeInCloudProject>
     (this.baseUrl + this.ENDPOINT.provisions  + `/projects/${id}`, {
-      headers: this.getHeaders()
+      headers: this.getHeaders().headers
     });
   }
 
   getProjectVpc(id: number) {
     return this.http.get<SizeInCloudProject>(this.baseUrl + this.ENDPOINT.provisions + `/projects/${id}`, {
-      headers: this.getHeaders()
+      headers: this.getHeaders().headers
     })
   }
   getCatelogOffer(unitOfMeasureProduct:string){
