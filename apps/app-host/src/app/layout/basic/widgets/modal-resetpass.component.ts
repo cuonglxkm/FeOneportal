@@ -351,7 +351,7 @@ export class ModalResetPassComponent implements OnInit {
     let id_token = this.tokenService.get()!['id_token'];
     console.log('logout host');
     sessionStorage.clear();
-    this.cookieService.deleteAll( "/",".onsmartcloud.com",true,"None");
+    this.cookieService.deleteAll( "/",environment.sso.domain,true,"None");
     this.tokenService.clear();
     localStorage.removeItem('UserRootId');
     localStorage.removeItem('ShareUsers');
