@@ -1369,6 +1369,8 @@
   "app.breadcrumb.create-user-groups": "Khởi tạo Group",
   "app.create-user-groups.info":"Thông tin của Group",
   "app.create-user-groups.nameGroup": "Tên Group",
+  "app.create-user-groups.select.project": "Chọn dự án",
+  "app.create-user-groups.select.project.tooltip": "Khi thực hiện lựa chọn một hoặc nhiều dự án, các permission policies sẽ được áp dụng cho Group tại các dự án này",
   "app.create-user-groups.nameGroup.alert": "Tối đa 128 ký tự. Sử dụng các ký tự chữ và số và '+=,.@-_'.",
   "app.create-user-groups.addUser": "Thêm User vào Group",
   "app.create-user-groups.optional": "Không bắt buộc",

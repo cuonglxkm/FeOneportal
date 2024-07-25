@@ -27,6 +27,20 @@ nz-content {
 .title {
   margin-bottom: 16px;
 }
-.custom-input{
-  height: 40px;
+//.custom-input{
+//  height: 40px;
+//}
+
+.custom-select .ant-select-selection-overflow {
+  max-height: 200px; /* Set a max height for the dropdown */
+  overflow-y: auto; /* Add scroll if the height exceeds max-height */
+}
+
+
+:host ::ng-deep .ant-select-show-search.ant-select:not(.ant-select-customize-input)
+.ant-select-selector {
+  cursor: text;
+  //border-radius: 8px;
+  height: auto !important;
+  font-size: 16px;
 }

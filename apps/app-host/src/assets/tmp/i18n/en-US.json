@@ -1469,6 +1469,8 @@
   "app.breadcrumb.create-user-groups": "Create User Group",
   "app.create-user-groups.info":"Group information",
   "app.create-user-groups.nameGroup": "Group name",
+  "app.create-user-groups.select.project": "Select project",
+  "app.create-user-groups.select.project.tooltip": "When selecting one or more projects, the permission policies will be applied to the Group in these projects.",
   "app.create-user-groups.nameGroup.alert": "Maximum 128 characters. Use alphanumeric characters and '+=,.@-_'.",
   "app.create-user-groups.addUser": "Add Users to Group",
   "app.create-user-groups.optional": "Optional",
