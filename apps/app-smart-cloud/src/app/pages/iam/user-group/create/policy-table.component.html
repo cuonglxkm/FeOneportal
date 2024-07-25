@@ -14,10 +14,8 @@
           [nz-tooltip]="'app.service.search-text'|i18n" />
       </ng-template>
     </div>
-    <button style="border: none;" nz-button nzSize="large" nz-tooltip [nzTooltipTitle]="'app.cluster.refresh'|i18n"
-      nzTooltipPlacement="bottom" (click)="reload()">
-      <img style="margin-top: -4px" src="assets/imgs/refresh.svg" alt="" />
-    </button>
+      <img style="margin-top: -4px; cursor: pointer;" src="assets/imgs/refresh.svg" alt="" nz-tooltip [nzTooltipTitle]="'app.cluster.refresh'|i18n"
+           nzTooltipPlacement="bottom" (click)="reload()"/>
   </div>
 
   <nz-table #rowSelectionTable nzShowSizeChanger [nzFrontPagination]="false" [nzData]="filteredPolicies"

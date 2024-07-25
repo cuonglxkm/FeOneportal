@@ -21,9 +21,6 @@ export interface UserGroup {
 })
 export class ListUserGroupComponent implements OnInit, OnChanges {
 
-  region = JSON.parse(localStorage.getItem('regionId'));
-  project = JSON.parse(localStorage.getItem('projectId'));
-
   value?: string;
 
   checked = false
@@ -54,16 +51,6 @@ export class ListUserGroupComponent implements OnInit, OnChanges {
               private userGroupService: UserGroupService) {
   }
 
-  regionChanged(region: RegionModel) {
-    this.region = region.regionId
-    // this.formSearch.regionId = this.region
-  }
-
-  projectChanged(project: ProjectModel) {
-    this.project = project?.id
-    // this.formSearch.project = this.project
-  }
-
   onInputChange(value: string) {
     this.value = value;
     this.getData()
@@ -83,8 +70,6 @@ export class ListUserGroupComponent implements OnInit, OnChanges {
     const listOfEnabledData = this.listOfCurrentPageData;
     this.checked = listOfEnabledData.every(({name}) => this.setOfCheckedId.has(name));
     this.indeterminate = listOfEnabledData.some(({name}) => this.setOfCheckedId.has(name)) && !this.checked;
-
-
   }
 
   updateCheckedSet(name: string, checked: boolean): void {
@@ -150,7 +135,6 @@ export class ListUserGroupComponent implements OnInit, OnChanges {
     })
   }
 
-
   getCount() {
     if (this.collection.records == null || this.collection.records.length == 0)
       return
@@ -167,6 +151,7 @@ export class ListUserGroupComponent implements OnInit, OnChanges {
     })
     console.log(listGroup)
   }
+
   searchDelay = new Subject<boolean>();
   ngOnInit(): void {
     this.form.currentPage = 1
