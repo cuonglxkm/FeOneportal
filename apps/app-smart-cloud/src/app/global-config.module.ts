@@ -23,6 +23,7 @@ const alainConfig: AlainConfig = {
     token_send_place: 'header',
     token_send_template: 'Bearer ${token}',
     token_send_key: 'Authorization',
+    token_invalid_redirect: true,
     ignores: [/\/login/, /assets\//, /passport\//],
   }
 };

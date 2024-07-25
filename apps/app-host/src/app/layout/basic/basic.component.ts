@@ -35,7 +35,7 @@ import { environment } from '@env/environment';
       <!--      </layout-default-header-item>-->
 
       <ng-template #logoTemplate>
-      <a href="https://cloud.vnpt.vn/" class="alain-default__header-logo-link">
+      <a (click)="navigateToCloud($event)" class="alain-default__header-logo-link">
           <img
             class="alain-default__header-logo-expanded"
             src="assets/imgs/logo_vnpt_white.svg"
@@ -131,6 +131,11 @@ export class LayoutBasicComponent {
   showSettingDrawer = !environment.production;
   get user(): User {
     return this.settings.user;
+  }
+
+  navigateToCloud(event: Event){
+    event.preventDefault()
+    window.location.href = environment.sso.cloud_baseUrl;
   }
 
   constructor(private settings: SettingsService) {}
