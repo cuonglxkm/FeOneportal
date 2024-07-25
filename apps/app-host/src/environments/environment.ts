@@ -25,6 +25,9 @@ export const environment = {
     logout_callback: 'http://localhost:4200',
     domain: '.onsmartcloud.com',
     scope: 'openid email roles offline_access',
+    cms_baseUrl: 'https://cms.onsmartcloud.com',
+    vnpt_cloud_baseUrl: 'https://vnptcloud.onsmartcloud.com',
+    cloud_baseUrl: 'https://cloud.vnpt.vn/'
   },
   recaptcha: {
     siteKey: '6LfueB8cAAAAAD74PxsPKL7-GVr0T7dUoxuBL4iR',

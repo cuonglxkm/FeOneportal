@@ -125,6 +125,12 @@ export class UserRegisterComponent implements OnInit, OnDestroy {
     this.loadProvinces();
   }
 
+  navigateToTerm(event: Event){
+    event.preventDefault()
+    const url = environment.sso.vnpt_cloud_baseUrl + '/terms-and-conditions';
+    window.open(url, '_blank');
+  }
+
   private updateLanguage(): void {
     const lang = this.activatedRoute.snapshot.paramMap.get('lang') || null;
     const previousLang = localStorage.getItem('lang');
