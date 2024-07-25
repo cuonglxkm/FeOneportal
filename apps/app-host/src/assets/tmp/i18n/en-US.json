@@ -373,6 +373,7 @@
   "app.extension.info": "Extension Information",
   "app.service.start.date": "Start Date",
   "app.months.for.extend": "Number of Months for extension",
+  "app.months.for.extend-2": "Number of Months for extension",
   "app.expected.expiry.date": "Expected Expiry Date",
   "app.extend.start.date": "Expiry Start Date",
   "app.extend.tooltip": "Each month equals 30 days",
