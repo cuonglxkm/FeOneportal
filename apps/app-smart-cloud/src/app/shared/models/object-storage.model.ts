@@ -18,6 +18,8 @@ export class ObjectStorage {
   note: any;
   oneSMESubId: any;
   statusDisplay: string;
+  suspendReason: string;
+  suspendType: string
 }
 export class ObjectStorageCreate {
   quota: number = 1;

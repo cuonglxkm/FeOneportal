@@ -11,6 +11,7 @@ import { ProjectService } from 'src/app/shared/services/project.service';
 import { PackageSnapshotModel } from '../../../shared/models/package-snapshot.model';
 import { PackageSnapshotService } from '../../../shared/services/package-snapshot.service';
 import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
+import { RegionID } from 'src/app/shared/enums/common.enum';
 
 @Component({
   selector: 'one-portal-detail-package-snapshot',
@@ -37,6 +38,14 @@ export class DetailSnapshotComponent implements OnInit{
               private projectService: ProjectService) {
   }
 
+  navigateToSnapshotPackage(){
+    if (this.region === RegionID.ADVANCE) {
+      this.router.navigate(['/app-smart-cloud/snapshot-advance/packages']);
+    } else {
+      this.router.navigate(['/app-smart-cloud/snapshot/packages']);
+    }
+  }
+
   regionChanged(region: RegionModel) {
     this.region = region.regionId
     if(this.projectCombobox){
@@ -45,7 +54,7 @@ export class DetailSnapshotComponent implements OnInit{
     this.projectService.getByRegion(this.region).subscribe(data => {
       if (data.length) {
         localStorage.setItem("projectId", data[0].id.toString())
-        this.router.navigate(['/app-smart-cloud/backup/packages'])
+        this.navigateToSnapshotPackage()
       }
     });
   }
@@ -73,11 +82,20 @@ export class DetailSnapshotComponent implements OnInit{
   }
 
   navigateToExtend() {
-    this.router.navigate(['/app-smart-cloud/snapshot/packages/extend/' + this.idPackageBackup])
+    if (this.region === RegionID.ADVANCE) {
+      this.router.navigate(['/app-smart-cloud/snapshot-advance/packages/extend/' + this.idPackageBackup])
+    } else {
+      this.router.navigate(['/app-smart-cloud/snapshot/packages/extend/' + this.idPackageBackup])
+    }
+    
   }
 
   navigateToEdit() {
-    this.router.navigate(['/app-smart-cloud/snapshot/packages/edit/' + this.idPackageBackup])
+    if (this.region === RegionID.ADVANCE) {
+      this.router.navigate(['/app-smart-cloud/snapshot-advance/packages/edit/' + this.idPackageBackup])
+    } else {
+      this.router.navigate(['/app-smart-cloud/snapshot/packages/edit/' + this.idPackageBackup])
+    }
   }
 
   loadProjects() {
@@ -88,11 +106,21 @@ export class DetailSnapshotComponent implements OnInit{
       }
     });
   }
+  url = window.location.pathname;
   ngOnInit() {
     this.idPackageBackup = Number.parseInt(this.route.snapshot.paramMap.get('id'));
     const { regionId, projectId } = getCurrentRegionAndProject();
     this.region = regionId;
     this.project = projectId;
+    if (!this.url.includes('advance')) {
+      if (Number(localStorage.getItem('regionId')) === RegionID.ADVANCE) {
+        this.region = RegionID.NORMAL;
+      } else {
+        this.region = Number(localStorage.getItem('regionId'));
+      }
+    } else {
+      this.region = RegionID.ADVANCE;
+    }
     if (this.project && this.region) {
       this.loadProjects();
     }

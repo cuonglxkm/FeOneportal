@@ -19,7 +19,7 @@ export class SuspendStatusPipe implements PipeTransform {
       case "VIPHAMDIEUKHOAN":
         return this.i18n.fanyi('service.status.violation')
       default:
-        return 'Chưa rõ lí do';
+        return protocol;
     }
   }
 

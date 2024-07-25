@@ -20,17 +20,8 @@ import { catchError, throwError } from "rxjs";
 export class FileSystemSnapshotScheduleService extends BaseService {
 
   constructor(private http: HttpClient,
-              @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService) {
-    super();
-  }
-
-  private getHeaders() {
-    return new HttpHeaders({
-      'Content-Type': 'application/json',
-      'User-Root-Id': localStorage.getItem('UserRootId') && Number(localStorage.getItem('UserRootId')) > 0 ? Number(localStorage.getItem('UserRootId')) : this.tokenService.get()?.userId,
-      'Project-Id': localStorage.getItem('projectId') && Number(localStorage.getItem('projectId')) > 0 ? Number(localStorage.getItem('projectId')) : 0,
-      'Authorization': 'Bearer ' + this.tokenService.get()?.token
-    })
+              @Inject(DA_SERVICE_TOKEN) public tokenService: ITokenService) {
+    super(tokenService);
   }
 
   getFileSystemSsSchedule(formSearch: FormSearchFileSystemSsSchedule) {
@@ -65,7 +56,7 @@ export class FileSystemSnapshotScheduleService extends BaseService {
 
   detail(id: number) {
     return this.http.get<FileSystemSnapshotScheduleDetail>(this.baseUrl + this.ENDPOINT.provisions +
-        `/file-storage/schedulesharesnapshot/${id}`, {headers: this.getHeaders()})
+        `/file-storage/schedulesharesnapshot/${id}`, {headers: this.getHeaders().headers})
   }
 
 
@@ -73,7 +64,7 @@ export class FileSystemSnapshotScheduleService extends BaseService {
     return this.http.delete<any>(this.baseUrl + this.ENDPOINT.provisions +
         `/file-storage/schedulesharesnapshot/${id}`, 
           {
-            headers: this.getHeaders(),
+            headers: this.getHeaders().headers,
           }
       ).pipe(
         catchError((error: HttpErrorResponse) => {
@@ -90,12 +81,12 @@ export class FileSystemSnapshotScheduleService extends BaseService {
 
   create(formCreate: FormCreateFileSystemSsSchedule) {
     return this.http.post(this.baseUrl + this.ENDPOINT.provisions + '/file-storage/schedulesharesnapshot',
-        Object.assign(formCreate), {headers: this.getHeaders()})
+        Object.assign(formCreate), {headers: this.getHeaders().headers})
   }
 
   edit(formEdit: FormEditFileSystemSsSchedule) {
     return this.http.put(this.baseUrl + this.ENDPOINT.provisions + '/file-storage/schedulesharesnapshot',
-         Object.assign(formEdit), {headers: this.getHeaders()})
+         Object.assign(formEdit), {headers: this.getHeaders().headers})
   }
 
 }

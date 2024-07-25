@@ -46,6 +46,7 @@ export class BucketListComponent implements OnInit {
   usage: any;
   totalUsage: number;
   url = window.location.pathname;
+  isLoadingDeleteBucket: boolean = false;
   constructor(
     @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
     private bucketService: BucketService,
@@ -104,10 +105,9 @@ export class BucketListComponent implements OnInit {
       });
   }
   hasObjectStorage() {
-    this.loadingSrv.open({ type: 'spin', text: 'Loading...' });
     this.objectSevice
       .getObjectStorage(this.region)
-      .pipe(finalize(() => this.loadingSrv.close()))
+
       .subscribe({
         next: (data) => {
           this.user = data;
@@ -153,19 +153,23 @@ export class BucketListComponent implements OnInit {
   }
 
   getUserById(id: number) {
-    this.bucketService.getUserById(id).subscribe({
-      next: (data) => {
-        this.objectStorage = data;
-        console.log(this.objectStorage);
-        this.cdr.detectChanges();
-      },
-      error: (e) => {
-        this.notification.error(
-          this.i18n.fanyi('app.status.fail'),
-          this.i18n.fanyi('app.bucket.getObject.fail')
-        );
-      },
-    });
+    this.loadingSrv.open({ type: 'spin', text: 'Loading...' });
+    this.bucketService
+      .getUserById(id)
+      .pipe(finalize(() => this.loadingSrv.close()))
+      .subscribe({
+        next: (data) => {
+          this.objectStorage = data;
+          console.log(this.objectStorage);
+          this.cdr.detectChanges();
+        },
+        error: (e) => {
+          this.notification.error(
+            this.i18n.fanyi('app.status.fail'),
+            this.i18n.fanyi('app.bucket.getObject.fail')
+          );
+        },
+      });
   }
 
   search() {
@@ -210,13 +214,15 @@ export class BucketListComponent implements OnInit {
 
   createBucket() {
     if (this.region === RegionID.ADVANCE) {
-      this.router.navigate(['/app-smart-cloud/object-storage-advance/bucket/create']);
+      this.router.navigate([
+        '/app-smart-cloud/object-storage-advance/bucket/create',
+      ]);
     } else {
       this.router.navigate(['/app-smart-cloud/object-storage/bucket/create']);
     }
   }
 
-  configure(bucketName: string) {   
+  configure(bucketName: string) {
     if (this.region === RegionID.ADVANCE) {
       this.router.navigate([
         `/app-smart-cloud/object-storage-advance/bucket/configure/${bucketName}`,
@@ -252,7 +258,7 @@ export class BucketListComponent implements OnInit {
     }
   }
 
-  handleGoToDetail(bucketName){
+  handleGoToDetail(bucketName) {
     if (this.region === RegionID.ADVANCE) {
       this.router.navigate([
         `/app-smart-cloud/object-storage-advance/bucket/${bucketName}`,
@@ -286,32 +292,31 @@ export class BucketListComponent implements OnInit {
 
   handleOkDeleteBucket() {
     if (this.codeVerify == this.bucketDeleteName) {
+      this.isLoadingDeleteBucket = true;
       this.bucketService
         .deleteBucket(this.bucketDeleteName, this.region)
         .subscribe({
           next: (data) => {
-            if (data == 'Thao tác thành công') {
-              this.notification.success(
-                this.i18n.fanyi('app.status.success'),
-                this.i18n.fanyi('app.bucket.delete.bucket.success')
-              );
-              this.isVisibleDeleteBucket = false;
-              this.search();
-            } else {
-              this.notification.error(
-                this.i18n.fanyi('app.status.fail'),
-                this.i18n.fanyi('app.bucket.delete.bucket.fail')
-              );
-            }
+            this.isLoadingDeleteBucket = false
+            this.isVisibleDeleteBucket = false
+            this.notification.success(
+              this.i18n.fanyi('app.status.success'),
+              this.i18n.fanyi('app.bucket.delete.bucket.success')
+            );
+            this.search()
+            this.cdr.detectChanges();
           },
           error: (error) => {
+            this.isLoadingDeleteBucket = false
             this.notification.error(
               this.i18n.fanyi('app.status.fail'),
               this.i18n.fanyi('app.bucket.delete.bucket.fail')
             );
+            this.cdr.detectChanges();
           },
         });
     } else {
+      this.isLoadingDeleteBucket = false
       this.notification.error(
         this.i18n.fanyi('app.status.fail'),
         this.i18n.fanyi('app.bucket.delete.bucket.fail1')

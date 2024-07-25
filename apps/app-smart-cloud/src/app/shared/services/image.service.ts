@@ -9,14 +9,8 @@ import Image from "../models/image";
 })
 
 export class ImageService extends BaseService {
-  constructor(public http: HttpClient, @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService) {
-    super();
-  }
-
-  private getHeaders() {
-    return new HttpHeaders({
-      'Content-Type': 'application/json'
-    })
+  constructor(public http: HttpClient, @Inject(DA_SERVICE_TOKEN) public tokenService: ITokenService) {
+    super(tokenService);
   }
 
   search(regionId: number) {

@@ -1,13 +1,16 @@
 <div class="container">
-  <nz-row style="height: 100vh">
+  <nz-row>
     <div nz-col nzFlex="2">
       <div class="container" style="background: #0066B3; width: 100%">
         <div nz-row class="" style="width: 468px; margin-left: 38px; padding-top: 35px">
           <div class="space-align-container" style="">
+            <a (click)="navigateToCloud()">
             <div nz-space nzAlign="center" class="space-align-block">
-              <ng-container *nzSpaceItem><img width="274" height="40" src="assets/imgs/logo_vnpt_white.svg"/>
-              </ng-container>
-            </div>
+              <ng-container *nzSpaceItem>
+                  <img width="274" height="40" src="assets/imgs/logo_vnpt_white.svg"/>
+                </ng-container>
+              </div>
+            </a>
           </div>
 
           <p style="margin-top: 120px" class="text-1">Chào mừng đến với</p> <br/>
@@ -33,12 +36,7 @@
         </div>
 
 
-        <div nz-row>
-          <div class="image-bg">
-          </div>
-
-
-        </div>
+       
         <img class="image-bg-2" src="assets/imgs/web_hosting_image.png"/>
       </div>
 
@@ -51,7 +49,7 @@
       <div class="wrap">
         <router-outlet/>
         <global-footer [links]="links">
-          Một sản phẩm của VNPT-IT
+          {{'app.footer' | i18n}} 
           <!--          <i nz-icon nzType="copyright"></i> 2021 <a href="//github.com/cipchk" target="_blank">卡色</a>出品-->
         </global-footer>
       </div>

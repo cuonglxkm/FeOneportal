@@ -19,18 +19,9 @@ export class BackupVolumeService extends BaseService {
   receivedData: BehaviorSubject<BackupVolume> = new BehaviorSubject<BackupVolume>(null);
   sharedData$ = this.receivedData.asObservable();
 
-  httpOptions = {
-    headers: new HttpHeaders({
-      'Content-Type': 'application/json',
-      'User-Root-Id': localStorage.getItem('UserRootId') && Number(localStorage.getItem('UserRootId')) > 0 ? Number(localStorage.getItem('UserRootId')) : this.tokenService.get()?.userId,
-      'Project-Id': localStorage.getItem('projectId') && Number(localStorage.getItem('projectId')) > 0 ? Number(localStorage.getItem('projectId')) : 0,
-      'Authorization': 'Bearer ' + this.tokenService.get()?.token
-    })
-  };
-
   constructor(private http: HttpClient,
-              @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService) {
-    super();
+              @Inject(DA_SERVICE_TOKEN) public tokenService: ITokenService) {
+    super(tokenService);
   }
 
   //getAll
@@ -44,7 +35,7 @@ export class BackupVolumeService extends BaseService {
     if (currentPage != undefined || currentPage != null) param = param.append('currentPage', currentPage);
     return this.http.get<BaseResponse<BackupVolume[]>>(this.baseUrl + this.ENDPOINT.provisions + '/backups/volumes', {
       params: param,
-      headers: this.httpOptions.headers
+      headers: this.getHeaders().headers
     }).pipe(catchError((error: HttpErrorResponse) => {
       if (error.status === 401) {
         console.error('login');
@@ -59,7 +50,7 @@ export class BackupVolumeService extends BaseService {
   //delete
   deleteVolume(idBackupVolume) {
     return this.http.delete(this.baseUrl + this.ENDPOINT.provisions + `/backups/volumes/${idBackupVolume}`, {
-      headers: this.httpOptions.headers
+      headers: this.getHeaders().headers
     })
       .pipe(catchError((error: HttpErrorResponse) => {
         if (error.status === 401) {
@@ -76,7 +67,7 @@ export class BackupVolumeService extends BaseService {
   //create
   createBackupVolume(data: CreateBackupVolumeOrderData) {
     return this.http.post(this.baseUrl + this.ENDPOINT.orders, Object.assign(data), {
-      headers: this.httpOptions.headers
+      headers: this.getHeaders().headers
     })
       .pipe(catchError((error: HttpErrorResponse) => {
         if (error.status === 401) {
@@ -92,7 +83,7 @@ export class BackupVolumeService extends BaseService {
   //detail
   detail(id) {
     return this.http.get<BackupVolume>(this.baseUrl + this.ENDPOINT.provisions + `/backups/volumes/${id}`, {
-      headers: this.httpOptions.headers
+      headers: this.getHeaders().headers
     })
       .pipe(catchError((error: HttpErrorResponse) => {
         if (error.status === 401) {
@@ -108,7 +99,7 @@ export class BackupVolumeService extends BaseService {
   //update
   updateBackupVolume(formUpdate: FormUpdateBackupVolume) {
     return this.http.put(this.baseUrl + this.ENDPOINT.provisions + '/backups/volumes', Object.assign(formUpdate), {
-      headers: this.httpOptions.headers
+      headers: this.getHeaders().headers
     })
       .pipe(catchError((error: HttpErrorResponse) => {
         if (error.status === 401) {
@@ -124,7 +115,7 @@ export class BackupVolumeService extends BaseService {
   //restore current
   restoreBackupVolumeCurrent(formRestoreCurrent: FormRestoreCurrentBackupVolume) {
     return this.http.post(this.baseUrl + this.ENDPOINT.provisions + '/backups/volumes/restore', Object.assign(formRestoreCurrent), {
-      headers: this.httpOptions.headers
+      headers: this.getHeaders().headers
     })
       .pipe(catchError((error: HttpErrorResponse) => {
         if (error.status === 401) {
@@ -140,7 +131,7 @@ export class BackupVolumeService extends BaseService {
   //restore new
   restoreBackupVolumeNew(formRestoreNew: FormOrderRestoreBackupVolume) {
     return this.http.post(this.baseUrl + this.ENDPOINT.orders, Object.assign(formRestoreNew), {
-      headers: this.httpOptions.headers
+      headers: this.getHeaders().headers
     })
       .pipe(catchError((error: HttpErrorResponse) => {
         if (error.status === 401) {

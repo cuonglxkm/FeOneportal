@@ -48,27 +48,30 @@
       style="margin-top: 16px"
       class="input-custom"
       nz-input
-      [(ngModel)]="bucketDetail.indexDocumentSuffix"
+      [(ngModel)]="bucketDetail.indexDocumentSuffix" 
+      [disabled]="true"
       [ngModelOptions]="{ standalone: true }"
       placeholder="index.html"
       formControlName="indexDocumentSuffix"
-      (change)="
-        bucketDetail.indexDocumentSuffix =
-          bucketDetail.indexDocumentSuffix.trim()
-      "
     />
     <ng-template #indexDocumentSuffixErrorTpl let-control>
       <ng-container *ngIf="control.hasError('pattern')">{{
         'app.file.static.web.space.error' | i18n
       }}</ng-container>
+      <ng-container *ngIf="control.hasError('required')">{{
+        'app.file.static.web.space.require' | i18n
+      }}</ng-container>
     </ng-template>
     </nz-form-control>
     </nz-form-item>
+    <nz-form-item>
+      <nz-form-control [nzErrorTip]="redirectAllRequestsToErrorTpl">
     <label
       class="text-label"
       nz-checkbox
       [(ngModel)]="bucketDetail.checkRedirectAllRequests"
-      [ngModelOptions]="{ standalone: true }"
+      [ngModelOptions]="{ standalone: true }" 
+      (ngModelChange)="handleChangeRedirect($event)"
       >{{ 'app.label.static.web.hosting' | i18n }}</label
     >
     <input
@@ -78,12 +81,18 @@
       [(ngModel)]="bucketDetail.redirectAllRequestsTo"
       [ngModelOptions]="{ standalone: true }"
       placeholder="http://www.example.com"
-      (change)="
-        bucketDetail.redirectAllRequestsTo =
-          bucketDetail.redirectAllRequestsTo.trim()
-      "
-      [disabled]="!bucketDetail.checkRedirectAllRequests"
+      formControlName="redirectAllRequestsTo"
     />
+    <ng-template #redirectAllRequestsToErrorTpl let-control>
+      <ng-container *ngIf="control.hasError('pattern')">{{
+        'app.file.static.web.space.error' | i18n
+      }}</ng-container>
+      <ng-container *ngIf="control.hasError('required')">{{
+        'app.file.static.web.space.require' | i18n
+      }}</ng-container>
+    </ng-template>
+    </nz-form-control>
+    </nz-form-item>
     <div class="text-label" style="margin-top: 16px" class="text-label">
       Endpoint
       <img
@@ -125,11 +134,14 @@
       formControlName="errorDocument"
       [ngModelOptions]="{ standalone: true }"
       placeholder="error.html"
-      (change)="bucketDetail.errorDocument = bucketDetail.errorDocument.trim()"
+      [disabled]="bucketDetail.errorDocument === null"
     />
     <ng-template #errorDocumentSuffixErrorTpl let-control>
       <ng-container *ngIf="control.hasError('pattern')">{{
         'app.file.static.web.space.error' | i18n
+      }}</ng-container>
+      <ng-container *ngIf="control.hasError('required')">{{
+        'app.file.static.web.space.require' | i18n
       }}</ng-container>
     </ng-template>
     </nz-form-control>
@@ -145,9 +157,9 @@
       alt=""
     />{{ 'app.button.cancel' | i18n }}
   </button>
-  <button nz-button nzType="primary" [nzLoading]="isLoading" (click)="update()">
+  <button nz-button nzType="primary" [disabled]="formUpdate.invalid" [nzLoading]="isLoading" (click)="update()">
     <img
-    *ngIf="isLoading === false"
+      *ngIf="isLoading === false"
       style="padding-right: 10px; margin-top: -4px"
       src="assets/imgs/confirm.svg"
       alt=""

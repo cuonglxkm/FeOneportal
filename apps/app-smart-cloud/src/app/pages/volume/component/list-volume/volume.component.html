@@ -11,7 +11,7 @@
         {{ 'app.breadcrumb.block.storage' | i18n }}
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>
-        <a routerLink="/app-smart-cloud/volumes">Volume</a>
+        <a (click)="navigateToVolume()">Volume</a>
       </nz-breadcrumb-item>
     </nz-breadcrumb>
     <ng-template #iconTemplate>
@@ -98,7 +98,7 @@
           </thead>
           <tbody>
           <tr *ngFor="let data of fixedTable.data">
-            <td nzLeft><a [routerLink]="'/app-smart-cloud/volume/detail/' + data.id">{{ data.name }}</a></td>
+            <td nzLeft><a (click)="navigateToDetail(data.id)">{{ data.name }}</a></td>
             <td nzBreakWord>
               <span *ngIf="data.volumeType == 'hdd'">HDD</span>
               <span *ngIf="data.volumeType == 'ssd'">SSD</span>

@@ -190,7 +190,7 @@ const routes: Routes = [
     }
   },
   {
-    path: 'volumesadvance',
+    path: 'volumes-advance',
     component: VolumeComponent,
     canActivate: [PermissionGuard],
     data: {
@@ -206,6 +206,14 @@ const routes: Routes = [
     }
   },
   {
+    path: 'volume-advance/create',
+    component: CreateVolumeComponent,
+    canActivate: [PermissionGuard],
+    data: {
+      permission: 'order:create'
+    }
+  },
+  {
     path: 'volume/detail/:id',
     component: DetailVolumeComponent,
     canActivate: [PermissionGuard],
@@ -214,7 +222,23 @@ const routes: Routes = [
     }
   },
   {
+    path: 'volume-advance/detail/:id',
+    component: DetailVolumeComponent,
+    canActivate: [PermissionGuard],
+    data: {
+      permission: 'volume:Get'
+    }
+  },
+  {
     path: 'volume/edit/:id',
+    component: EditVolumeComponent,
+    canActivate: [PermissionGuard],
+    data: {
+      permission: 'volume:Update'
+    }
+  },
+  {
+    path: 'volume-advance/edit/:id',
     component: EditVolumeComponent,
     canActivate: [PermissionGuard],
     data: {
@@ -391,7 +415,25 @@ const routes: Routes = [
 
   },
   {
+    path: 'backup-volume-advance/create/vpc',
+    component: CreateBackupVolumeVpcComponent,
+    canActivate: [PermissionGuard],
+    data: {
+      permission: 'order:create'
+    }
+
+  },
+  {
     path: 'backup-volume/create/normal',
+    component: CreateBackupVolumeNormalComponent,
+    canActivate: [PermissionGuard],
+    data: {
+      permission: 'order:create'
+    }
+
+  },
+  {
+    path: 'backup-volume-advance/create/normal',
     component: CreateBackupVolumeNormalComponent,
     canActivate: [PermissionGuard],
     data: {
@@ -592,6 +634,15 @@ const routes: Routes = [
 
   },
   {
+    path: 'schedule/backup-advance/create',
+    component: CreateScheduleBackupComponent,
+    canActivate: [PermissionGuard],
+    data: {
+      permission: 'order:create'
+    }
+
+  },
+  {
     path: 'schedule/backup/create/vpc',
     component: CreateScheduleBackupVpcComponent,
     canActivate: [PermissionGuard],
@@ -599,6 +650,14 @@ const routes: Routes = [
       permission: 'order:create'
     }
 
+  },
+  {
+    path: 'schedule/backup-advance/create/vpc',
+    component: CreateScheduleBackupVpcComponent,
+    canActivate: [PermissionGuard],
+    data: {
+      permission: 'order:create'
+    }
   },
   {
     path: 'schedule/backup/edit/vm/:id',
@@ -625,7 +684,23 @@ const routes: Routes = [
     }
   },
   {
+    path: 'schedule/snapshot-advance',
+    component: SnapshotScheduleListComponent,
+    canActivate: [PermissionGuard],
+    data: {
+      permission: 'volumesnapshotschedule:List'
+    }
+  },
+  {
     path: 'schedule/snapshot/create',
+    component: SnapshotScheduleCreateComponent,
+    canActivate: [PermissionGuard],
+    data: {
+      permission: 'volumesnapshotschedule:Create'
+    }
+  },
+  {
+    path: 'schedule/snapshot-advance/create',
     component: SnapshotScheduleCreateComponent,
     canActivate: [PermissionGuard],
     data: {
@@ -641,7 +716,23 @@ const routes: Routes = [
     }
   },
   {
+    path: 'schedule/snapshot-advance/detail/:id',
+    component: SnapshotScheduleDetailComponent,
+    canActivate: [PermissionGuard],
+    data: {
+      permission: 'volumesnapshotschedule:Get'
+    }
+  },
+  {
     path: 'schedule/snapshot/edit/:id',
+    component: SnapshotScheduleEditComponent,
+    canActivate: [PermissionGuard],
+    data: {
+      permission: 'volumesnapshotschedule:Update'
+    }
+  },
+  {
+    path: 'schedule/snapshot-advance/edit/:id',
     component: SnapshotScheduleEditComponent,
     canActivate: [PermissionGuard],
     data: {
@@ -651,10 +742,10 @@ const routes: Routes = [
   {
     path: 'billing/payments/detail/:id/:orderNumber',
     component: PaymentDetailComponent,
-    canActivate: [PermissionGuard],
-    data: {
-      permission: 'payment:Get'
-    }
+    // canActivate: [PermissionGuard],
+    // data: {
+    //   permission: 'payment:Get'
+    // }
 
   },
   {
@@ -672,32 +763,41 @@ const routes: Routes = [
   {
     path: 'billing/payments',
     component: ListPaymentComponent,
-    canActivate: [PermissionGuard],
-    data: {
-      permission: 'payment:List'
-    }
+    // canActivate: [PermissionGuard],
+    // data: {
+    //   permission: 'payment:List'
+    // }
 
   },
   {
     path: 'order',
     component: OrderListComponent,
-    canActivate: [PermissionGuard],
-    data: {
-      permission: 'order:List'
-    }
+    // canActivate: [PermissionGuard],
+    // data: {
+    //   permission: 'order:List'
+    // }
 
   },
   {
     path: 'order/detail/:id',
     component: OrderDetailComponent,
-    canActivate: [PermissionGuard],
-    data: {
-      permission: 'order:Get'
-    }
+    // canActivate: [PermissionGuard],
+    // data: {
+    //   permission: 'order:Get'
+    // }
 
   },
   {
     path: 'volumes/renew/:id',
+    component: RenewVolumeComponent,
+    canActivate: [PermissionGuard],
+    data: {
+      permission: 'order:Create'
+    }
+
+  },
+  {
+    path: 'volumes-advance/renew/:id',
     component: RenewVolumeComponent,
     canActivate: [PermissionGuard],
     data: {
@@ -761,7 +861,25 @@ const routes: Routes = [
 
   },
   {
+    path: 'volume-advance/vpc/create',
+    component: CreateVolumeVpcComponent,
+    canActivate: [PermissionGuard],
+    data: {
+      permission: 'order:Create'
+    }
+
+  },
+  {
     path: 'volume/vpc/resize/:id',
+    component: ResizeVolumeVpcComponent,
+    canActivate: [PermissionGuard],
+    data: {
+      permission: 'order:Create'
+    }
+
+  },
+  {
+    path: 'volume-advance/vpc/resize/:id',
     component: ResizeVolumeVpcComponent,
     canActivate: [PermissionGuard],
     data: {
@@ -788,6 +906,16 @@ const routes: Routes = [
   },
   {
     path: 'project',
+    loadChildren: () =>
+      import('../pages/project/project.module').then((m) => m.ProjectModule),
+
+    canActivate: [PermissionGuard],
+    data: {
+      permission: 'project:List'
+    }
+  },
+  {
+    path: 'project-advance',
     loadChildren: () =>
       import('../pages/project/project.module').then((m) => m.ProjectModule),
 
@@ -1190,6 +1318,17 @@ const routes: Routes = [
     }
   },
   {
+    path: 'snapshot-advance/packages',
+    loadChildren: () =>
+      import('../pages/snapshot-package/packages-snapshot.module').then(
+        (m) => m.PackageSnapshotModule
+      ),
+    canActivate: [PermissionGuard],
+    data: {
+      permission: 'SnapshotPackage:List'
+    }
+  },
+  {
     path: 'security-group/list',
     component: ListSecurityGroupComponent,
     canActivate: [PermissionGuard],
@@ -1377,11 +1516,23 @@ const routes: Routes = [
     component: SnapshotCreateComponent,
   },
   {
+    path: 'snapshot-advance/create',
+    component: SnapshotCreateComponent,
+  },
+  {
     path: 'snapshot',
     component: SnapshotListComponent,
   },
   {
+    path: 'snapshot-advance',
+    component: SnapshotListComponent,
+  },
+  {
     path: 'snapshot/detail/:id',
+    component: SnapshotDetailComponent,
+  },
+  {
+    path: 'snapshot-advance/detail/:id',
     component: SnapshotDetailComponent,
   }
 ];

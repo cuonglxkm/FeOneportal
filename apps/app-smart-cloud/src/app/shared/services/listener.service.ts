@@ -11,21 +11,13 @@ import { IpPublicModel } from '../models/ip-public.model';
 })
 
 export class ListenerService extends BaseService{
-  httpOptions = {
-    headers: new HttpHeaders({
-      'Content-Type': 'application/json' ,
-      'Authorization': 'Bearer ' + this.tokenService.get()?.token,
-      'User-Root-Id': localStorage.getItem('UserRootId') && Number(localStorage.getItem('UserRootId')) > 0 ? Number(localStorage.getItem('UserRootId')) : this.tokenService.get()?.userId,
-      'Project-Id': localStorage.getItem('projectId') && Number(localStorage.getItem('projectId')) > 0 ? Number(localStorage.getItem('projectId')) : 0,
-    })
-  };
 
   listenerUrl = '/loadbalancer/listener';
 
   poolUrl = '/loadbalancer/pool';
 
-  constructor(private http: HttpClient, @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService) {
-    super();
+  constructor(private http: HttpClient, @Inject(DA_SERVICE_TOKEN) public tokenService: ITokenService) {
+    super(tokenService);
   }
 
   getData( ipAddress: any, status: any, customerId: any, projectId: any, regionId: any, isCheckState: any, pageSize: any, currentPage: any): Observable<BaseResponse<IpPublicModel[]>> {
@@ -37,20 +29,20 @@ export class ListenerService extends BaseService{
     return this.http.get<BaseResponse<IpPublicModel[]>>("/ip");
   }
   createIpPublic(IP: any): Observable<any>  {
-    return this.http.post<HttpResponse<any>>(this.baseUrl + this.ENDPOINT.orders, IP, this.httpOptions);
+    return this.http.post<HttpResponse<any>>(this.baseUrl + this.ENDPOINT.orders, IP, this.getHeaders());
   }
 
 
   createListener(data: any): Observable<any> {
-    return this.http.post<HttpResponse<any>>(this.baseUrl + this.ENDPOINT.provisions + "/loadbalancer/CreateListenerPoolHealthyMember", data, this.httpOptions);
+    return this.http.post<HttpResponse<any>>(this.baseUrl + this.ENDPOINT.provisions + "/loadbalancer/CreateListenerPoolHealthyMember", data, this.getHeaders());
   }
 
   createPool(data: any): Observable<any> {
-    return this.http.post<HttpResponse<any>>(this.baseUrl + this.ENDPOINT.provisions + this.poolUrl, data, this.httpOptions);
+    return this.http.post<HttpResponse<any>>(this.baseUrl + this.ENDPOINT.provisions + this.poolUrl, data, this.getHeaders());
   }
 
   createHealth(data: any) {
-    return this.http.post<HttpResponse<any>>(this.baseUrl + this.ENDPOINT.provisions + '/loadbalancer/createHealth', data, this.httpOptions);
+    return this.http.post<HttpResponse<any>>(this.baseUrl + this.ENDPOINT.provisions + '/loadbalancer/createHealth', data, this.getHeaders());
   }
 
   getDetail(id: string, lbId: string) {
@@ -58,7 +50,7 @@ export class ListenerService extends BaseService{
   }
 
   updateListener(data: any) {
-    return this.http.put<HttpResponse<any>>(this.baseUrl + this.ENDPOINT.provisions + this.listenerUrl, data, this.httpOptions);
+    return this.http.put<HttpResponse<any>>(this.baseUrl + this.ENDPOINT.provisions + this.listenerUrl, data, this.getHeaders());
   }
 
   getPool(id: string, region: any, vpcId: number) {

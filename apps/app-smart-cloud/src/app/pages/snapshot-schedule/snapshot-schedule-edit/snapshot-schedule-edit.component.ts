@@ -25,6 +25,7 @@ import {
 import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
 import { RegionModel, ProjectModel } from '../../../../../../../libs/common-utils/src';
 import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
+import { RegionID } from 'src/app/shared/enums/common.enum';
 
 @Component({
   selector: 'one-portal-snapshot-schedule-extend',
@@ -63,8 +64,18 @@ export class SnapshotScheduleEditComponent implements OnInit {
   }> = this.fb.group({
     name: ['', [Validators.required, Validators.pattern(/^[\w\d]{1,64}$/)]],
   });
+  url = window.location.pathname;
   @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
   ngOnInit(): void {
+    if (!this.url.includes('advance')) {
+      if (Number(localStorage.getItem('regionId')) === RegionID.ADVANCE) {
+        this.region = RegionID.NORMAL;
+      } else {
+        this.region = Number(localStorage.getItem('regionId'));
+      }
+    } else {
+      this.region = RegionID.ADVANCE;
+    }
     const id = Number.parseInt(this.activatedRoute.snapshot.paramMap.get('id'));
     this.customerId = this.tokenService.get()?.userId;
     this.doGetDetailSnapshotSchedule(id, this.customerId);
@@ -123,8 +134,16 @@ export class SnapshotScheduleEditComponent implements OnInit {
       });
   }
 
+  navigateToSnapshotSchedule() {
+    if (this.region === RegionID.ADVANCE) {
+      this.router.navigate(['/app-smart-cloud/schedule-advance/snapshot']);
+    } else {
+      this.router.navigate(['/app-smart-cloud/schedule/snapshot']);
+    }
+  }
+
   goBack() {
-    this.router.navigate(['/app-smart-cloud/schedule/snapshot']);
+    this.navigateToSnapshotSchedule()
   }
   onRegionChange(region: RegionModel) {
     this.region = region.regionId;
@@ -181,9 +200,7 @@ export class SnapshotScheduleEditComponent implements OnInit {
                     '',
                     'Điều chỉnh lịch Snapshot thành công'
                   );
-                  this.router.navigate([
-                    '/app-smart-cloud/schedule/snapshot',
-                  ]);
+                  this.navigateToSnapshotSchedule()
                 },
                 error: (e) => {
                   console.log(e);

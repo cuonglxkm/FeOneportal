@@ -17,21 +17,13 @@ import { Router } from '@angular/router';
   providedIn: 'root',
 })
 export class FileSystemService extends BaseService {
-  httpOptions = {
-    headers: new HttpHeaders({
-      'Content-Type': 'application/json',
-      'User-Root-Id': localStorage.getItem('UserRootId') && Number(localStorage.getItem('UserRootId')) > 0 ? Number(localStorage.getItem('UserRootId')) : this.tokenService.get()?.userId,
-      'Project-Id': localStorage.getItem('projectId') && Number(localStorage.getItem('projectId')) > 0 ? Number(localStorage.getItem('projectId')) : 0,
-      Authorization: 'Bearer ' + this.tokenService.get()?.token,
-    }),
-  };
 
   public model: BehaviorSubject<String> = new BehaviorSubject<String>("1");
 
   constructor(private http: HttpClient,
               private router: Router,
-              @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService) {
-    super();
+              @Inject(DA_SERVICE_TOKEN) public tokenService: ITokenService) {
+    super(tokenService);
   }
 
   search(formSearch: FormSearchFileSystem) {
@@ -57,7 +49,7 @@ export class FileSystemService extends BaseService {
     return this.http.get<BaseResponse<FileSystemModel[]>>(this.baseUrl +
       this.ENDPOINT.provisions + '/file-storage/shares/paging', {
       params: params,
-      headers: this.httpOptions.headers
+      headers: this.getHeaders().headers
     }).pipe(
       catchError((error: HttpErrorResponse) => {
         if (error.status === 401) {
@@ -75,7 +67,7 @@ export class FileSystemService extends BaseService {
   edit(formEdit: FormEditFileSystem) {
     return this.http.put(this.baseUrl + this.ENDPOINT.provisions + `/file-storage/shares/${formEdit.id}`,
       Object.assign(formEdit), {
-        headers: this.httpOptions.headers
+        headers: this.getHeaders().headers
       }).pipe(
       catchError((error: HttpErrorResponse) => {
         if (error.status === 401) {
@@ -93,7 +85,7 @@ export class FileSystemService extends BaseService {
   getFileSystemById(id: number, region: number, project: number){
     return this.http.get<FileSystemDetail>(this.baseUrl + this.ENDPOINT.provisions +
       `/file-storage/shares/${id}?regionId=${region}&projectId=${project}`, {
-      headers: this.httpOptions.headers
+      headers: this.getHeaders().headers
     }).pipe(
       catchError((error: HttpErrorResponse) => {
         if (error.status === 401) {
@@ -110,7 +102,7 @@ export class FileSystemService extends BaseService {
 
   create(request: CreateFileSystemRequestModel) {
     return this.http.post<CreateFileSystemResponseModel>(this.baseUrl + this.ENDPOINT.orders, Object.assign(request), {
-      headers: this.httpOptions.headers
+      headers: this.getHeaders().headers
     }).pipe(
       catchError((error: HttpErrorResponse) => {
         if (error.status === 401) {
@@ -127,7 +119,7 @@ export class FileSystemService extends BaseService {
 
   deleteFileSystem(formDelete: FormDeleteFileSystem) {
     return this.http.delete(this.baseUrl + this.ENDPOINT.provisions
-      + `/file-storage/shares/${formDelete.id}?regionId=${formDelete.regionId}&projectId=${formDelete.project}`, {headers: this.httpOptions.headers}).pipe(
+      + `/file-storage/shares/${formDelete.id}?regionId=${formDelete.regionId}&projectId=${formDelete.project}`, {headers: this.getHeaders().headers}).pipe(
       catchError((error: HttpErrorResponse) => {
         if (error.status === 401) {
           console.error('login');
@@ -144,7 +136,7 @@ export class FileSystemService extends BaseService {
 
   resize(request: ResizeFileSystemRequestModel) {
     return this.http.post<ResizeFileSystemResponseModel>(this.baseUrl + this.ENDPOINT.orders, Object.assign(request), {
-      headers: this.httpOptions.headers
+      headers: this.getHeaders().headers
     }).pipe(
       catchError((error: HttpErrorResponse) => {
         if (error.status === 401) {
@@ -167,7 +159,7 @@ export class FileSystemService extends BaseService {
 
     return this.http.get<any>(
       this.baseUrl + this.ENDPOINT.provisions + url_,
-      this.httpOptions
+      this.getHeaders()
     );
   }
 }

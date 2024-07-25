@@ -138,6 +138,7 @@ export class EditPoolInLbComponent implements AfterViewInit {
       formUpdate.adminStateUp = this.pool?.adminStateUp;
       formUpdate.lb_algorithm = this.validateForm.controls.algorithm.value;
       formUpdate.customerId = this.tokenService.get()?.userId;
+      formUpdate.actorEmail = this.tokenService.get()?.email;
       this.loadBalancerService.updatePool(this.poolId, formUpdate).subscribe({
         next: (data) => {
           this.isVisible = false;
