@@ -389,7 +389,7 @@
                 (keydown)="onKeyDown($event)"
                 formControlName="maxRetriesDown"
                 [nzMin]="1"
-                [nzMax]="100"
+                [nzMax]="10"
                 [nzStep]="1"
                 nzSize="large"
               ></nz-input-number>
@@ -413,9 +413,9 @@
                 style="width: 100%; margin-left: 0px"
                 [ngModel]="healthForm.delay"
                 (keydown)="onKeyDown($event)"
+                (ngModelChange)="onChangeDelay($event)"
                 formControlName="delay"
-                [nzMin]="1"
-                [nzMax]="100"
+                [nzMin]="timeout"
                 [nzStep]="1"
                 nzSize="large"
               ></nz-input-number>
@@ -442,7 +442,7 @@
                 (keydown)="onKeyDown($event)"
                 formControlName="maxRetries"
                 [nzMin]="1"
-                [nzMax]="100"
+                [nzMax]="10"
                 [nzStep]="1"
                 nzSize="large"
               ></nz-input-number>
@@ -464,9 +464,10 @@
                 style="width: 100%; margin-left: 0px"
                 [ngModel]="healthForm.timeout"
                 (keydown)="onKeyDown($event)"
+                (ngModelChange)="onChangeTimeout($event)"
                 formControlName="timeout"
                 [nzMin]="1"
-                [nzMax]="100"
+                [nzMax]="delay"
                 [nzStep]="1"
                 nzSize="large"
               ></nz-input-number>
@@ -516,20 +517,19 @@
               nzDisableAutoTips
               [nzErrorTip]="expectedCodeErrorTpl"
             >
-              <input
-                class="input-custom"
-                nz-input
+              <nz-input-number
+                style="width: 100%; margin-left: 0px"
+                [ngModel]="code"
+                (keydown)="onKeyDown($event)"
                 formControlName="expectedCode"
-                [(ngModel)]="healthForm.expectedCodes"
-                [placeholder]="'app.input.code' | i18n"
-                [maxlength]="3"
-              />
+                [nzMin]="100"
+                [nzMax]="599"
+                [nzStep]="1"
+                nzSize="large"
+              ></nz-input-number>
               <ng-template #expectedCodeErrorTpl let-control>
                 <ng-container *ngIf="control.hasError('required')">{{
                   'validation.info.required' | i18n
-                }}</ng-container>
-                <ng-container *ngIf="control.hasError('pattern')">{{
-                  'validation.expected.code' | i18n
                 }}</ng-container>
               </ng-template>
             </nz-form-control>

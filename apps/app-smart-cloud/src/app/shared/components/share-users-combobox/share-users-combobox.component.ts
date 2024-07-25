@@ -66,15 +66,18 @@ export class ShareUsersComboboxComponent implements OnInit {
     localStorage.setItem('UserRootId', JSON.stringify(user.id));
     localStorage.removeItem('projectId');
     localStorage.removeItem('projects');
-    this.policyService
-      .getUserPermissions()
-      .pipe()
-      .subscribe((permission) => {
-        localStorage.setItem('PermissionOPA', JSON.stringify(permission));
-        this.router.navigate(['/app-smart-cloud/dashboard',]).then(() => {
-          window.location.reload();
-        });
-        this.valueChanged.emit(user);
-      });
+    localStorage.removeItem('PermissionOPA');
+    this.valueChanged.emit(user);
+    window.location.reload();
+    // this.policyService
+    //   .getUserPermissions()
+    //   .pipe()
+    //   .subscribe((permission) => {
+    //     localStorage.setItem('PermissionOPA', JSON.stringify(permission));
+    //     this.router.navigate(['/app-smart-cloud/dashboard',]).then(() => {
+    //       window.location.reload();
+    //     });
+    //     this.valueChanged.emit(user);
+    //   });
   }
 }

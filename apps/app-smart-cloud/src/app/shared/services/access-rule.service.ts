@@ -14,19 +14,10 @@ import { AccessRule, FormCreateAccessRule } from '../models/access-rule.model';
 export class AccessRuleService extends BaseService {
   public model: BehaviorSubject<String> = new BehaviorSubject<String>('1');
 
-  httpOptions = {
-    headers: new HttpHeaders({
-      'Content-Type': 'application/json',
-      'User-Root-Id': localStorage.getItem('UserRootId') && Number(localStorage.getItem('UserRootId')) > 0 ? Number(localStorage.getItem('UserRootId')) : this.tokenService.get()?.userId,
-      'Project-Id': localStorage.getItem('projectId') && Number(localStorage.getItem('projectId')) > 0 ? Number(localStorage.getItem('projectId')) : 0,
-      Authorization: 'Bearer ' + this.tokenService.get()?.token,
-    }),
-  };
-
   constructor(private http: HttpClient,
               private router: Router,
-              @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService) {
-    super();
+              @Inject(DA_SERVICE_TOKEN) public tokenService: ITokenService) {
+    super(tokenService);
   }
 
   getListAccessRule(cloudId: string, vpcId: number, regionId: number, pageSize: number, currentPage: number, accessTo: string, accessLevel: string) {
@@ -54,7 +45,7 @@ export class AccessRuleService extends BaseService {
     }
     return this.http.get<BaseResponse<AccessRule[]>>(this.baseUrl + this.ENDPOINT.provisions + '/file-storage/share_rule/paging', {
       params: params,
-      headers: this.httpOptions.headers
+      headers: this.getHeaders().headers
     }).pipe(catchError((error: HttpErrorResponse) => {
       if (error.status === 401) {
         console.error('login');
@@ -71,7 +62,7 @@ export class AccessRuleService extends BaseService {
   createAccessRule(formCreate: FormCreateAccessRule) {
     return this.http.post(this.baseUrl + this.ENDPOINT.provisions + '/file-storage/share_rule',
       Object.assign(formCreate), {
-        headers: this.httpOptions.headers
+        headers: this.getHeaders().headers
       }).pipe(catchError((error: HttpErrorResponse) => {
       if (error.status === 401) {
         console.error('login');
@@ -88,7 +79,7 @@ export class AccessRuleService extends BaseService {
   deleteAccessRule(idShareRule: string, regionId: number, vpcId: number, shareId: string, accessTo: string) {
     return this.http.delete(this.baseUrl + this.ENDPOINT.provisions +
       `/file-storage/share_rule/${idShareRule}?regionId=${regionId}&vpcId=${vpcId}&shareId=${shareId}&accessTo=${accessTo}`, {
-      headers: this.httpOptions.headers
+      headers: this.getHeaders().headers
     })
       .pipe(catchError((error: HttpErrorResponse) => {
         if (error.status === 401) {

@@ -8,19 +8,12 @@ import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
   providedIn: 'root',
 })
 export class ConfigurationsService extends BaseService {
-  httpOptions = {
-    headers: new HttpHeaders({
-      'Content-Type': 'application/json',
-      'User-Root-Id': localStorage?.getItem('UserRootId') && Number(localStorage?.getItem('UserRootId')) > 0 ? Number(localStorage?.getItem('UserRootId')) : this.tokenService?.get()?.userId,
-      Authorization: 'Bearer ' + this.tokenService.get()?.token,
-    }),
-  };
 
   constructor(
     private http: HttpClient,
-    @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService
+    @Inject(DA_SERVICE_TOKEN) public tokenService: ITokenService
   ) {
-    super();
+    super(tokenService);
   }
 
   getConfigurations(
@@ -30,7 +23,7 @@ export class ConfigurationsService extends BaseService {
 
     return this.http.get<any>(
       this.baseUrl + this.ENDPOINT.configurations + url_,
-      this.httpOptions
+      this.getHeaders()
     );
   }
 

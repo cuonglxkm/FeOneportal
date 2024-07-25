@@ -10,28 +10,12 @@ import { BaseResponse } from '../../../../../../libs/common-utils/src';
   providedIn: 'root',
 })
 export class RouterService extends BaseService {
-  httpOptions = {
-    headers: new HttpHeaders({
-      'Content-Type': 'application/json',
-      'User-Root-Id': localStorage?.getItem('UserRootId') && Number(localStorage?.getItem('UserRootId')) > 0 ? Number(localStorage?.getItem('UserRootId')) : this.tokenService?.get()?.userId,
-      Authorization: 'Bearer ' + this.tokenService.get()?.token,
-    }),
-  };
-
-  private getHeaders() {
-    return new HttpHeaders({
-      'Content-Type': 'application/json',
-      'User-Root-Id': localStorage.getItem('UserRootId') && Number(localStorage.getItem('UserRootId')) > 0 ? Number(localStorage.getItem('UserRootId')) : this.tokenService.get()?.userId,
-      'Project-Id': localStorage.getItem('projectId') && Number(localStorage.getItem('projectId')) > 0 ? Number(localStorage.getItem('projectId')) : 0,
-      'Authorization': 'Bearer ' + this.tokenService.get()?.token
-    })
-  }
 
   constructor(
     private http: HttpClient,
-    @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService
+    @Inject(DA_SERVICE_TOKEN) public tokenService: ITokenService
   ) {
-    super();
+    super(tokenService);
   }
 
 
@@ -57,7 +41,7 @@ export class RouterService extends BaseService {
     }
     return this.http.get<BaseResponse<RouterModel[]>>(this.baseUrl + this.ENDPOINT.provisions + '/routers/list_router', {
       params: params,
-      headers: this.getHeaders()
+      headers: this.getHeaders().headers
     }).pipe(
       catchError((error: HttpErrorResponse) => {
         if (error.status === 401) {
@@ -78,7 +62,7 @@ export class RouterService extends BaseService {
 
     return this.http.get<any>(
       this.baseUrl + this.ENDPOINT.provisions + url_,
-      this.httpOptions
+      this.getHeaders()
     );
   }
 
@@ -87,7 +71,7 @@ export class RouterService extends BaseService {
 
     return this.http.get<any>(
       this.baseUrl + this.ENDPOINT.provisions + url_,
-      this.httpOptions
+      this.getHeaders()
     );
   }
 
@@ -96,7 +80,7 @@ export class RouterService extends BaseService {
 
     return this.http.delete<any>(
       this.baseUrl + this.ENDPOINT.provisions + url_,
-      this.httpOptions
+      this.getHeaders()
     );
   }
 
@@ -105,7 +89,7 @@ export class RouterService extends BaseService {
     return this.http.post<any>(
       this.baseUrl + this.ENDPOINT.provisions + url_,
       data,
-      this.httpOptions
+      this.getHeaders()
     );
   }
 
@@ -114,7 +98,7 @@ export class RouterService extends BaseService {
     return this.http.put<any>(
       this.baseUrl + this.ENDPOINT.provisions + url_,
       data,
-      this.httpOptions
+      this.getHeaders()
     );
   }
 
@@ -127,7 +111,7 @@ export class RouterService extends BaseService {
 
     return this.http.get<any>(
       this.baseUrl + this.ENDPOINT.provisions + url_,
-      this.httpOptions
+      this.getHeaders()
     );
   }
 
@@ -136,7 +120,7 @@ export class RouterService extends BaseService {
     return this.http.post<any>(
       this.baseUrl + this.ENDPOINT.provisions + url_,
       data,
-      this.httpOptions
+      this.getHeaders()
     );
   }
 
@@ -149,7 +133,7 @@ export class RouterService extends BaseService {
     let url_ = `/router_interfaces/${id}?regionId=${regionId}&subnetId=${subnetId}&vpcId=${vpcId}`;
     return this.http.delete<any>(
       this.baseUrl + this.ENDPOINT.provisions + url_,
-      this.httpOptions
+      this.getHeaders()
     );
   }
 
@@ -162,7 +146,7 @@ export class RouterService extends BaseService {
 
     return this.http.get<any>(
       this.baseUrl + this.ENDPOINT.provisions + url_,
-      this.httpOptions
+      this.getHeaders()
     );
   }
 
@@ -170,7 +154,7 @@ export class RouterService extends BaseService {
     let url_ = `/route_static`;
     return this.http.post<any>(
       this.baseUrl + this.ENDPOINT.provisions + url_,data,
-      this.httpOptions
+      this.getHeaders()
     );
   }
 
@@ -184,7 +168,7 @@ export class RouterService extends BaseService {
     let url_ = `/route_static/${id}?destinationCIDR=${destinationCIDR}&nextHop=${nextHop}&regionId=${regionId}&vpcId=${vpcId}`;
     return this.http.delete<any>(
       this.baseUrl + this.ENDPOINT.provisions + url_,
-      this.httpOptions
+      this.getHeaders()
     );
   }
 
@@ -197,7 +181,7 @@ export class RouterService extends BaseService {
 
     return this.http.get<any>(
       this.baseUrl + this.ENDPOINT.provisions + url_,
-      this.httpOptions
+      this.getHeaders()
     );
   }
 
@@ -205,7 +189,7 @@ export class RouterService extends BaseService {
     let url_ = `/networktopology?regionId=${regionId}&vpcId=${projectId}`;
     return this.http.get<any>(
       this.baseUrl + this.ENDPOINT.provisions + url_,
-      this.httpOptions
+      this.getHeaders()
     );
   }
 }

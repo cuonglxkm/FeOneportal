@@ -279,6 +279,8 @@
           </div>
         </div>
 
+        <nz-divider class="divider-style"></nz-divider>
+
         <div nz-row [nzGutter]="8">
           <div nz-col [nzSpan]="12">
             <div class="ml-3"><label class="weight-600">{{ 'app.cluster.vat-cost-2' | i18n : {vat: vatPercent ? vatPercent * 100 : 10} }}</label>
@@ -297,7 +299,7 @@
           </div>
         </div>
 
-        <div nz-row [nzGutter]="8" class="mt-5 price-panel">
+        <div nz-row [nzGutter]="8" class="mt-3 price-panel">
           <div nz-col [nzSpan]="12">
             <div class="mt-3 ml-3"><label class="weight-600">{{ 'app.cluster.total-cost' | i18n }}</label></div>
             <div class="mt-1 ml-3 mb-3 unit-color"><i>({{ 'app.cluster.vat-cost-1' | i18n : {vat: vatPercent ? vatPercent * 100 : 10} }})</i></div>

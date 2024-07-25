@@ -191,7 +191,7 @@ export class PoolDetailComponent implements OnInit {
     if (this.isCreate) {
       this.healthForm.httpMethod = null;
       this.healthForm.expectedCodes = null;
-      this.healthForm.urlPath = null;
+      this.healthForm.urlPath = '/';
     }
     if (event != 'HTTP') {
       this.isHttpType = false;
@@ -218,7 +218,7 @@ export class PoolDetailComponent implements OnInit {
       this.form.setControl(
         'expectedCode',
         new FormControl('', {
-          validators: [Validators.required, Validators.pattern('^[0-9]{3}$')],
+          validators: [Validators.required],
         })
       );
     }
@@ -229,6 +229,7 @@ export class PoolDetailComponent implements OnInit {
   isCreate: boolean;
   healthForm: any;
   form: FormGroup;
+  code: number;
   modalHealth(checkCreate: boolean, data: m_LBSDNHealthMonitor) {
     if (checkCreate) {
       this.form = new FormGroup({
@@ -257,7 +258,7 @@ export class PoolDetailComponent implements OnInit {
           validators: [Validators.required],
         }),
         expectedCode: new FormControl('', {
-          validators: [Validators.required, Validators.pattern('^[0-9]{3}$')],
+          validators: [Validators.required],
         }),
         url: new FormControl('', {
           validators: [startsWithSingleSlashValidator()],
@@ -265,6 +266,12 @@ export class PoolDetailComponent implements OnInit {
       });
       this.healthForm = new HealthCreate();
       this.healthForm.type = 'HTTP';
+      this.healthForm.maxRetriesDown = 3;
+      this.healthForm.maxRetries = 3;
+      this.healthForm.delay = 5;
+      this.healthForm.timeout = 5;
+      this.code = 200
+      this.healthForm.urlPath = '/';
       this.isCreate = true;
       this.titleModalHealth = this.i18n.fanyi('app.health.monitor.create');
       setTimeout(() => {
@@ -300,17 +307,28 @@ export class PoolDetailComponent implements OnInit {
           validators: [Validators.required],
         }),
         expectedCode: new FormControl('', {
-          validators: [Validators.required, Validators.pattern('^[0-9]{3}$')],
+          validators: [Validators.required],
         }),
         url: new FormControl('', {
           validators: [startsWithSingleSlashValidator()],
         }),
       });
       this.healthForm = data;
+      this.code = (Number).parseInt(this.healthForm.expectedCodes);
       this.isCreate = false;
       this.titleModalHealth = this.i18n.fanyi('app.health.monitor.edit');
     }
     this.isVisibleHealth = true;
+  }
+
+  delay: number;
+  onChangeDelay(event) {
+    this.delay = event;
+  }
+
+  timeout: number;
+  onChangeTimeout(event) {
+    this.timeout = event;
   }
 
   handleOkHealth() {
@@ -328,7 +346,7 @@ export class PoolDetailComponent implements OnInit {
       this.healthForm.projectId = this.projectId;
       this.healthForm.regionId = this.regionId;
       if (this.healthForm.type == 'HTTP') {
-        this.healthForm.expectedCodes = this.form.get('expectedCode')?.value;
+        this.healthForm.expectedCodes = this.form.get('expectedCode')?.value.toString();
         this.healthForm.httpMethod = this.form.get('httpMethod')?.value;
         if (
           this.form.get('url')?.value &&
@@ -367,9 +385,14 @@ export class PoolDetailComponent implements OnInit {
       healthUpdate.maxRetries = this.form.get('maxRetries')?.value;
       healthUpdate.timeout = this.form.get('timeout')?.value;
       healthUpdate.adminStateUp = true;
-      healthUpdate.expectedCodes = this.form.get('expectedCode')?.value;
+      healthUpdate.expectedCodes = this.form.get('expectedCode')?.value.toString();
       healthUpdate.httpMethod = this.form.get('httpMethod')?.value;
-      healthUpdate.urlPath = this.form.get('url')?.value;
+      if (
+        this.form.get('url')?.value &&
+        this.form.get('url')?.value.length != 0
+      ) {
+        healthUpdate.urlPath = this.form.get('url')?.value;
+      }
       healthUpdate.maxRetriesDown = this.form.get('maxRetriesDown')?.value;
       healthUpdate.customerId = this.tokenService.get()?.userId;
       healthUpdate.projectId = this.projectId;
@@ -391,7 +414,7 @@ export class PoolDetailComponent implements OnInit {
           },
           error: (e) => {
             this.notification.error(
-              e.statusText,
+              '',
               this.i18n.fanyi('app.notification.edit.health.fail')
             );
             this.getListHealth();

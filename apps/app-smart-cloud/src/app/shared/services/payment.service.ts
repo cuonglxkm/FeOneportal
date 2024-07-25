@@ -13,17 +13,9 @@ import { catchError } from 'rxjs/internal/operators/catchError';
 
 export class PaymentService extends BaseService {
   constructor(private http: HttpClient,
-              @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService) {
-    super();
+              @Inject(DA_SERVICE_TOKEN) public tokenService: ITokenService) {
+    super(tokenService);
   }
-
-  httpOptions = {
-    headers: new HttpHeaders({
-      'Content-Type': 'application/json',
-      'User-Root-Id': localStorage?.getItem('UserRootId') && Number(localStorage?.getItem('UserRootId')) > 0 ? Number(localStorage?.getItem('UserRootId')) : this.tokenService?.get()?.userId,
-      Authorization: 'Bearer ' + this.tokenService.get()?.token,
-    }),
-  };
 
   search(paymentSearch: PaymentSearch) {
     let params = new HttpParams()
@@ -121,7 +113,7 @@ export class PaymentService extends BaseService {
 
   cancelPayment(paymentNumber: string): Observable<any> {
     return this.http.put<any>(
-      this.baseUrl + this.ENDPOINT.payments + `/cancel?paymentNumber=${paymentNumber}`, this.httpOptions
+      this.baseUrl + this.ENDPOINT.payments + `/cancel?paymentNumber=${paymentNumber}`, this.getHeaders()
     );
   }
 }

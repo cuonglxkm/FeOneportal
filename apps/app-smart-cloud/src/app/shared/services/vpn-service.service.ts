@@ -15,17 +15,8 @@ export class VpnServiceService extends BaseService {
   public model: BehaviorSubject<String> = new BehaviorSubject<String>("1");
 
   constructor(private http: HttpClient,
-              @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService) {
-    super();
-  }
-
-  private getHeaders() {
-    return new HttpHeaders({
-      'Content-Type': 'application/json',
-      'User-Root-Id': localStorage.getItem('UserRootId') && Number(localStorage.getItem('UserRootId')) > 0 ? Number(localStorage.getItem('UserRootId')) : this.tokenService.get()?.userId,
-      'Project-Id': localStorage.getItem('projectId') && Number(localStorage.getItem('projectId')) > 0 ? Number(localStorage.getItem('projectId')) : 0,
-      'Authorization': 'Bearer ' + this.tokenService.get()?.token
-    })
+              @Inject(DA_SERVICE_TOKEN) public tokenService: ITokenService) {
+    super(tokenService);
   }
 
   getVpnService(formSearch: FormSearchVpnService) {
@@ -47,14 +38,14 @@ export class VpnServiceService extends BaseService {
     }
 
     return this.http.get<BaseResponse<any>>(this.baseUrl + this.ENDPOINT.provisions + '/vpn-sitetosite/vpnservice/paging', {
-      headers: this.getHeaders(),
+      headers: this.getHeaders().headers,
       params: params
     })
   }
 
   getVpnServiceById(id: number, vpcid: number, region: number){
     return this.http.get<VPNServiceDetail>(this.baseUrl + this.ENDPOINT.provisions +
-      `/vpn-sitetosite/vpnservice/${id}?projectId=${vpcid}&regionId=${region}`, {headers: this.getHeaders()}).pipe(
+      `/vpn-sitetosite/vpnservice/${id}?projectId=${vpcid}&regionId=${region}`, {headers: this.getHeaders().headers}).pipe(
       catchError((error: HttpErrorResponse) => {
         if (error.status === 401) {
           console.error('login');
@@ -68,12 +59,12 @@ export class VpnServiceService extends BaseService {
 
   create(formCreate: FormCreateVpnService) {
     return this.http.post(this.baseUrl + this.ENDPOINT.provisions + '/vpn-sitetosite/vpnservice/create',
-        Object.assign(formCreate), {headers: this.getHeaders()})
+        Object.assign(formCreate), {headers: this.getHeaders().headers})
   }
 
   deleteVpnService(formDelete: FormDeleteVpnService) {
     return this.http.delete(this.baseUrl + this.ENDPOINT.provisions + `/vpn-sitetosite/vpnservice/delete`, 
-    {body: formDelete, headers: this.getHeaders()}
+    {body: formDelete, headers: this.getHeaders().headers}
     ).pipe(
       catchError((error: HttpErrorResponse) => {
         if (error.status === 401) {
@@ -88,6 +79,6 @@ export class VpnServiceService extends BaseService {
 
   edit(formEdit: FormEditVpnService) {
     return this.http.put(this.baseUrl + this.ENDPOINT.provisions + '/vpn-sitetosite/vpnservice/update',
-        Object.assign(formEdit), {headers: this.getHeaders()})
+        Object.assign(formEdit), {headers: this.getHeaders().headers})
   }
 }

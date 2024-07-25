@@ -24,18 +24,9 @@ import { BackupSchedule } from '../models/schedule.model';
 export class BackupVmService extends BaseService {
 
     constructor(public http: HttpClient,
-                @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
+                @Inject(DA_SERVICE_TOKEN) public tokenService: ITokenService,
                 private notification: NzNotificationService) {
-        super();
-    }
-
-    private getHeaders() {
-        return new HttpHeaders({
-            'Content-Type': 'application/json',
-            'User-Root-Id': localStorage.getItem('UserRootId') && Number(localStorage.getItem('UserRootId')) > 0 ? Number(localStorage.getItem('UserRootId')) : this.tokenService.get()?.userId,
-      'Project-Id': localStorage.getItem('projectId') && Number(localStorage.getItem('projectId')) > 0 ? Number(localStorage.getItem('projectId')) : 0,
-            'Authorization': 'Bearer ' + this.tokenService.get()?.token
-        })
+        super(tokenService);
     }
 
     search(form: BackupVMFormSearch) {
@@ -59,7 +50,7 @@ export class BackupVmService extends BaseService {
         params = params.append('currentPage', form.currentPage);
 
         return this.http.get<Pagination<BackupVm>>(this.baseUrl + this.ENDPOINT.provisions + '/backups/intances', {
-            headers: this.getHeaders(),
+            headers: this.getHeaders().headers,
             params: params
         }).pipe(
           catchError((error: HttpErrorResponse) => {
@@ -76,7 +67,7 @@ export class BackupVmService extends BaseService {
 
     detail(id: number) {
         return this.http.get<BackupVm>(this.baseUrl + this.ENDPOINT.provisions + `/backups/intances/${id}`, {
-            headers: this.getHeaders()
+            headers: this.getHeaders().headers
         }).pipe(
           catchError((error: HttpErrorResponse) => {
             if (error.status === 401) {
@@ -92,7 +83,7 @@ export class BackupVmService extends BaseService {
 
     delete(id: number) {
         return this.http.delete(this.baseUrl + this.ENDPOINT.provisions + `/backups/intances/${id}`, {
-            headers: this.getHeaders()
+            headers: this.getHeaders().headers
         }).pipe(
           catchError((error: HttpErrorResponse) => {
             if (error.status === 401) {
@@ -108,14 +99,14 @@ export class BackupVmService extends BaseService {
 
     restoreCurrentBackupVm(form: RestoreFormCurrent) {
         return this.http.post(this.baseUrl + this.ENDPOINT.provisions + `/backups/intances/restore`, form, {
-            headers: this.getHeaders()
+            headers: this.getHeaders().headers
         });
     }
 
     getVolumeInstanceAttachment(id: number) {
         return this.http.get<VolumeAttachment[]>(this.baseUrl + this.ENDPOINT.provisions
           + `/instances/${id}/instance-attachments?includeVolumeRoot=false`,
-          {headers: this.getHeaders()}).pipe(
+          {headers: this.getHeaders().headers}).pipe(
           catchError((error: HttpErrorResponse) => {
             if (error.status === 401) {
               console.error('login');
@@ -129,7 +120,7 @@ export class BackupVmService extends BaseService {
     }
 
     getBackupPackages() {
-        return this.http.get<BaseResponse<BackupPackage[]>>(this.baseUrl + this.ENDPOINT.provisions + `/backups/packages`, {headers: this.getHeaders()})
+        return this.http.get<BaseResponse<BackupPackage[]>>(this.baseUrl + this.ENDPOINT.provisions + `/backups/packages`, {headers: this.getHeaders().headers})
           .pipe(catchError((error: HttpErrorResponse) => {
             if (error.status === 401) {
               console.error('login');
@@ -143,7 +134,7 @@ export class BackupVmService extends BaseService {
 
     create(data: CreateBackupVmOrderData) {
         return this.http.post<BackupVm>(this.baseUrl + this.ENDPOINT.orders, Object.assign(data), {
-          headers: this.getHeaders()
+          headers: this.getHeaders().headers
         })
           .pipe(catchError((error: HttpErrorResponse) => {
             if (error.status === 401) {
@@ -158,7 +149,7 @@ export class BackupVmService extends BaseService {
 
     update(formUpdate: FormUpdateBackupVm) {
       return this.http.put(this.baseUrl + this.ENDPOINT.provisions + '/backups/intances', Object.assign(formUpdate), {
-        headers: this.getHeaders()
+        headers: this.getHeaders().headers
       })
         .pipe(catchError((error: HttpErrorResponse) => {
           if (error.status === 401) {

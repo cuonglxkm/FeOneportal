@@ -11,10 +11,10 @@
         {{ 'app.breadcrumb.block.storage' | i18n }}
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>
-        <a routerLink="/app-smart-cloud/volumes">Volume</a>
+        <a (click)="navigateToVolume()">Volume</a>
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>
-        <a routerLink="/app-smart-cloud/volume/create">{{ 'volume.button.create' | i18n }}</a>
+        {{ 'volume.button.create' | i18n }}
       </nz-breadcrumb-item>
     </nz-breadcrumb>
     <ng-template #iconTemplate>

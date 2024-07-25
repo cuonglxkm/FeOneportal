@@ -742,10 +742,10 @@ const routes: Routes = [
   {
     path: 'billing/payments/detail/:id/:orderNumber',
     component: PaymentDetailComponent,
-    canActivate: [PermissionGuard],
-    data: {
-      permission: 'payment:Get'
-    }
+    // canActivate: [PermissionGuard],
+    // data: {
+    //   permission: 'payment:Get'
+    // }
 
   },
   {
@@ -763,28 +763,28 @@ const routes: Routes = [
   {
     path: 'billing/payments',
     component: ListPaymentComponent,
-    canActivate: [PermissionGuard],
-    data: {
-      permission: 'payment:List'
-    }
+    // canActivate: [PermissionGuard],
+    // data: {
+    //   permission: 'payment:List'
+    // }
 
   },
   {
     path: 'order',
     component: OrderListComponent,
-    canActivate: [PermissionGuard],
-    data: {
-      permission: 'order:List'
-    }
+    // canActivate: [PermissionGuard],
+    // data: {
+    //   permission: 'order:List'
+    // }
 
   },
   {
     path: 'order/detail/:id',
     component: OrderDetailComponent,
-    canActivate: [PermissionGuard],
-    data: {
-      permission: 'order:Get'
-    }
+    // canActivate: [PermissionGuard],
+    // data: {
+    //   permission: 'order:Get'
+    // }
 
   },
   {
