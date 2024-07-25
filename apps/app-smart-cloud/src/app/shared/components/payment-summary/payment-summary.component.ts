@@ -259,17 +259,17 @@ export class PaymentSummaryComponent implements OnInit {
           case 'ecr_resize':
             this.serviceType = 'ecr';
             serviceItem.name = `ecr - ${specificationObj.serviceName}`;
-            serviceItem.type = this.i18n.fanyi('app.text.resize');
+            serviceItem.type = this.i18n.fanyi('app.button.resize');
             break;
           case 'ecr_extend':
             this.serviceType = 'ecr';
             serviceItem.name = `ecr - ${specificationObj.serviceName}`;
-            serviceItem.type = this.i18n.fanyi('app.text.extend');
+            serviceItem.type = this.i18n.fanyi('app.button.extend');
             break;
           case 'ecr_create':
             this.serviceType = 'ecr';
             serviceItem.name = `ecr - ${specificationObj.serviceName}`;
-            serviceItem.type = this.i18n.fanyi('app.text.create');
+            serviceItem.type = this.i18n.fanyi('app.label.create');
             break;
           case 'vpc_create':
             serviceItem.name = `VPC - ${specificationObj.serviceName}`;
@@ -609,6 +609,12 @@ export class PaymentSummaryComponent implements OnInit {
       ]);
       this.formCustomerInvoice.controls.nameCompany.updateValueAndValidity();
     }
+  }
+
+  navigateToTerm(event: Event){
+    event.preventDefault()
+    const url = environment.vnpt_cloud_baseUrl + '/terms-and-conditions';
+    window.open(url, '_blank');
   }
 
   changeCustomerType(id) {

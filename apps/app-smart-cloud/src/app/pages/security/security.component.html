@@ -73,7 +73,7 @@
       </div>
       <span class="support"
         >{{ 'app.security.note' | i18n }}
-        <a href="https://vnptcloud.onsmartcloud.com/terms-and-conditions" target="_blank">{{ 'app.security.note1' | i18n }}</a></span
+        <a (click)="navigateToTerm($event)">{{ 'app.security.note1' | i18n }}</a></span
       >
     </div>
     <!-- <div class="d-flex justify-content-end gap-3 mt-5">
