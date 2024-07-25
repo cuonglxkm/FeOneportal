@@ -1534,7 +1534,14 @@ const routes: Routes = [
   {
     path: 'snapshot-advance/detail/:id',
     component: SnapshotDetailComponent,
-  }
+  },
+  {
+    path: 'waf',
+    loadChildren: () =>
+      import('../pages/waf/waf.module').then(
+        (m) => m.WAFModule
+      ),
+  },
 ];
 
 @NgModule({

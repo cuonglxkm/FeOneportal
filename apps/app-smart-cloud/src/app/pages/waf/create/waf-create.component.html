@@ -1,0 +1,375 @@
+<page-header [breadcrumb]="breadcrumb" title="Khởi tạo WAF">
+  <ng-template #breadcrumb>
+    <nz-breadcrumb [nzSeparator]="iconTemplate">
+      <nz-breadcrumb-item
+        ><a [routerLink]="['/']">{{
+          'app.breadcrumb.home' | i18n
+        }}</a></nz-breadcrumb-item
+      >
+      <nz-breadcrumb-item> {{ 'app.breadcrumb.infrastructure.service' | i18n }} </nz-breadcrumb-item>
+      <nz-breadcrumb-item><a>Web Application Firewall</a> </nz-breadcrumb-item>
+      <nz-breadcrumb-item>WAF</nz-breadcrumb-item>
+      <nz-breadcrumb-item>Tạo mới WAF</nz-breadcrumb-item>
+    </nz-breadcrumb>
+    <ng-template #iconTemplate
+      ><one-portal-svg-icon [icon]="'icon_breadcrumb'"></one-portal-svg-icon
+    ></ng-template>
+  </ng-template>
+</page-header>
+<!---------------FORM-------------->
+<form nz-form [formGroup]="form" [nzLayout]="'vertical'">
+  <nz-row nzGutter="24">
+    <nz-col nzSpan="16">
+      <!---------------CARD-THÔNG TIN VPC-------------->
+      <nz-card class="text-label" nzTitle="" style="border-radius: 8px">
+        <div style="margin-bottom: 20px">
+          <span class="text-card-header">Thông tin chung</span>
+        </div>
+        <nz-form-item>
+          <nz-form-label
+            >Tên WAF(<span class="text-red">*</span>)<img
+              style="margin-left: 10px"
+              nz-tooltip="{{ 'project.note16' | i18n }}"
+              src="assets/imgs/pajamas_question.svg"
+              alt=""
+          /></nz-form-label>
+          <nz-form-control [nzErrorTip]="nameErrorTpl">
+            <input
+              nz-input
+              placeholder="Nhập tên WAF"
+              style="width: 100%"
+              formControlName="name"
+              maxlength="50"
+              class="custom-input"
+            />
+            <ng-template #nameErrorTpl let-control>
+              <ng-container *ngIf="control.hasError('required')"
+                >{{ 'validation.info.required' | i18n }}
+              </ng-container>
+              <ng-container *ngIf="control.hasError('pattern')"
+                >{{ 'validation.project.required.name' | i18n }}
+              </ng-container>
+            </ng-template>
+          </nz-form-control>
+        </nz-form-item>
+
+        <nz-form-item>
+          <nz-form-label
+            >Chọn gói dịch vụ (<span class="text-red">*</span>)</nz-form-label
+          >
+          <ngu-carousel
+            #myCarouselFlavor
+            [inputs]="carouselTileConfig"
+            [dataSource]="listOfferFlavors"
+            class="preconfigured-package"
+          >
+            <ngu-tile
+              *nguCarouselDef="let item; index as i; let ani = animate"
+              [@slider]="ani"
+            >
+              <div
+                style="cursor: pointer"
+                (click)="onInputFlavors(item.id, item.offerName)"
+                [id]="'flavor_' + item.id"
+              >
+                <nz-row class="border-bottom">
+                  <nz-col
+                    style="padding-bottom: 5px"
+                    class="newClassFlavor text-center"
+                    [class.initialClassFlavor]="
+                      selectedElementFlavor === 'flavor_' + item.id
+                    "
+                  >
+                    <div style="position: relative">
+                      <div>
+                        <p
+                          class="nameFlavor pt-3 mb-0"
+                          [class.initialNameFlavor]="
+                            selectedElementFlavor === 'flavor_' + item.id
+                          "
+                        >
+                          {{ item.offerName }}
+                        </p>
+                        <div style="margin-top: -10px">
+                          <img
+                            style="width: 80%"
+                            [src]="
+                              selectedElementFlavor === 'flavor_' + item.id
+                                ? 'assets/imgs/line2.svg'
+                                : 'assets/imgs/line.svg'
+                            "
+                            alt=""
+                          />
+                        </div>
+                        <span class="priceFlavor">{{
+                          item.price.fixedPrice.amount
+                            | number : '1.0-0' : 'en-US'
+                        }}</span>
+                        <span> {{ 'app.payment-detail.month' | i18n }}</span>
+                      </div>
+                    </div>
+                  </nz-col>
+                </nz-row>
+                <nz-row>
+                  <nz-col
+                    style="width: 100%; padding-top: 5px"
+                    [class.flavor-footer-active]="
+                      selectedElementFlavor === 'flavor_' + item.id
+                    "
+                    [class.flavor-footer]="
+                      selectedElementFlavor != 'flavor_' + item.id
+                    "
+                  >
+                    <div class="mt-3">
+                      <p>{{ item.description }}</p>
+                    </div>
+                  </nz-col>
+                </nz-row>
+              </div>
+            </ngu-tile>
+
+            <ul class="myPoint" NguCarouselPoint>
+              <li
+                *ngFor="let i of myCarouselFlavor?.pointNumbers"
+                [class.active]="i === myCarouselFlavor?.activePoint"
+                (click)="myCarouselFlavor?.moveTo(i)"
+              ></li>
+            </ul>
+          </ngu-carousel>
+        </nz-form-item>
+      </nz-card>
+      <nz-card>
+        <div
+          class="d-flex"
+          style="justify-content: space-between; align-items: center"
+        >
+          <div style="align-items: center" class="d-flex">
+            <span class="text-card-header">Cấu hình Domain</span>
+          </div>
+        </div>
+        <div *ngFor="let bonusService of bonusServices.controls; let i = index">
+          <div [formGroup]="bonusService" class="d-flex justify-content-between gap-2 align-items-center">
+            <div class="bonus-services">
+              <div nz-row [nzGutter]="16">
+                <!-- Domain Field -->
+                <div nz-col [nzSpan]="12" class="gutter-row">
+                  <nz-form-item class="mb-5">
+                    <nz-form-control [nzErrorTip]="nameErrorTpl">
+                      <nz-form-label nzFor="domain">
+                        Domain (<span style="color: rgba(252, 16, 16, 1)">*</span>)
+                      </nz-form-label>
+                      <input nz-input type="text" appTrim placeholder="www.example.com" formControlName="domain" class="input-custom" [maxlength]="50" minlength="1" />
+                      <ng-template #nameErrorTpl let-control>
+                        <ng-container *ngIf="control.hasError('required')">{{ 'app.ike.policy-create.name.alert1' | i18n }}</ng-container>
+                        <ng-container *ngIf="control.hasError('pattern')">{{ 'app.ike.policy-create.name.alert2' | i18n }}</ng-container>
+                      </ng-template>
+                    </nz-form-control>
+                  </nz-form-item>
+                </div>
+        
+                <!-- IP Public Field -->
+                <div nz-col [nzSpan]="12" class="gutter-row">
+                  <nz-form-item class="mb-5">
+                    <nz-form-control [nzErrorTip]="nameErrorTpl">
+                      <nz-form-label nzFor="ipPublic">
+                        IP Public (<span style="color: rgba(252, 16, 16, 1)">*</span>)
+                      </nz-form-label>
+                      <input nz-input type="text" appTrim placeholder="Nhập IP Public" formControlName="ipPublic" class="input-custom" [maxlength]="50" minlength="1" />
+                      <ng-template #nameErrorTpl let-control>
+                        <ng-container *ngIf="control.hasError('required')">{{ 'app.ike.policy-create.name.alert1' | i18n }}</ng-container>
+                        <ng-container *ngIf="control.hasError('pattern')">{{ 'app.ike.policy-create.name.alert2' | i18n }}</ng-container>
+                      </ng-template>
+                    </nz-form-control>
+                  </nz-form-item>
+                </div>
+
+                <div nz-col [nzSpan]="12" class="gutter-row">
+                  <nz-form-item class="mb-5">
+                    <nz-form-control [nzErrorTip]="nameErrorTpl">
+                      <nz-form-label nzFor="host">Host </nz-form-label>
+                      <input nz-input type="text" appTrim placeholder="Nhập host" formControlName="host" class="input-custom" [maxlength]="50" minlength="1" />
+                      <ng-template #nameErrorTpl let-control>
+                        <ng-container *ngIf="control.hasError('required')">{{ 'app.ike.policy-create.name.alert1' | i18n }}</ng-container>
+                        <ng-container *ngIf="control.hasError('pattern')">{{ 'app.ike.policy-create.name.alert2' | i18n }}</ng-container>
+                      </ng-template>
+                    </nz-form-control>
+                  </nz-form-item>
+                </div>
+        
+                <div nz-col [nzSpan]="12" class="gutter-row">
+                  <nz-form-item class="mb-5">
+                    <nz-form-control [nzErrorTip]="nameErrorTpl">
+                      <nz-form-label nzFor="port">Port </nz-form-label>
+                      <input nz-input type="text" appTrim placeholder="Nhập port" formControlName="port" class="input-custom" [maxlength]="50" minlength="1" />
+                      <ng-template #nameErrorTpl let-control>
+                        <ng-container *ngIf="control.hasError('required')">{{ 'app.ike.policy-create.name.alert1' | i18n }}</ng-container>
+                        <ng-container *ngIf="control.hasError('pattern')">{{ 'app.ike.policy-create.name.alert2' | i18n }}</ng-container>
+                      </ng-template>
+                    </nz-form-control>
+                  </nz-form-item>
+                </div>
+      
+                <div nz-col [nzSpan]="12" class="gutter-row">
+                  <nz-form-item class="mb-5">
+                    <nz-form-control [nzErrorTip]="nameErrorTpl">
+                      <nz-form-label nzFor="sslCert">Chọn SSL Cert (Chọn Cert hoặc <a>Tạo mới</a>)</nz-form-label>
+                      <nz-select class="input-select-custom" nzPlaceHolder="Chọn SSL Cert" formControlName="sslCert">
+                        <nz-option nzLabel="SSL Cert 1" [nzValue]="1"></nz-option>
+                      </nz-select>
+                    </nz-form-control>
+                  </nz-form-item>
+                </div>
+              </div>
+            </div>
+            <div>
+              <button (click)="removeBonusService(i)" style="border: none" nz-button nzSize="large">
+                <img style="margin-top: -4px" src="assets/imgs/delete.svg" />
+              </button>
+            </div>
+          </div>
+        </div>
+        
+        <button (click)="addBonusService()" nz-button nzType="default" nzSize="large">
+          <i nz-icon nzType="plus"></i>
+          <span class="button-text-primary">Thêm mới</span>
+        </button>
+      </nz-card>
+      <nz-card>
+        <div>
+          <div style="align-items: center" class="d-flex">
+            <span class="text-card-header mb-4">Security Settings</span>
+          </div>
+          <nz-form-item>
+            <nz-form-control [nzErrorTip]="nameErrorTpl">
+              <nz-form-label
+                >Chọn Policy (<span style="color: rgba(252, 16, 16, 1)"
+                >*</span
+              >)
+              </nz-form-label>
+              <nz-select
+                class="input-select-custom"
+                nzPlaceHolder="Default"
+              >
+                <nz-option nzLabel="SSL Cert 1" [nzValue]="1"></nz-option>
+              </nz-select>
+            </nz-form-control>
+          </nz-form-item>
+          </div>
+      </nz-card>
+        <one-portal-service-usage-period
+          [nameService]="'project'"
+          (valueChanged)="onChangeTime($event)"
+        ></one-portal-service-usage-period>
+    </nz-col>
+
+    <!---------------CARD-THÀNH TIỀN-------------->
+    <!-- [nzLoading]="loadingCalculate" -->
+    <nz-col nzSpan="8">
+      <nz-affix nzOffsetTop="72">
+        <nz-card class="right-form card-price">
+          <div class="right-title">
+            <span class="text-card-header">Chi phí ước tính</span>
+          </div>
+          <div class="text-label" style="margin-bottom: 12px">
+            <h3 class="custom-subtitle">Tên WAF</h3>
+            <span>zxczxczxc</span>
+          </div>
+          <div class="text-label" style="margin-bottom: 12px">
+            <h3 class="custom-subtitle">Gói dịch vụ @gói</h3>
+            <span>zxczxczxc</span>
+          </div>
+          <div class="text-label" style="margin-bottom: 12px">
+            <h3 class="custom-subtitle">Tên miền</h3>
+            <span>zxczxczxc</span>
+          </div>
+          <div class="text-label" style="margin-bottom: 12px">
+            <h3 class="custom-subtitle">Certificate SSL</h3>
+            <span>zxczxczxc</span>
+          </div>
+          <div class="text-label" style="margin-bottom: 12px">
+            <h3 class="custom-subtitle">Policy</h3>
+            <span>zxczxczxc</span>
+          </div>
+          <nz-row class="right-form-content-month" nzGutter="16">
+            <nz-col nzSpan="16">
+              <span
+                    class="text-value">Chi phí 2 tháng</span>
+            </nz-col>
+            <nz-col class="text-right" nzSpan="8">
+              <span class="text-value month-money" nzAlign="right">
+                <span
+                 
+                  class="text-value"
+                  style="color: #0066b3"
+                  nzAlign="right"
+                  >0 VNĐ</span
+                >
+                <!-- <span
+                  *ngIf="orderItem?.orderItemPrices?.length > 0"
+                  class="text-value"
+                  style="color: #0066b3"
+                  nzAlign="right"
+                >
+                  {{ orderItem?.orderItemPrices[0].totalAmount.amount | number }}
+                  {{ orderItem?.orderItemPrices[0].totalAmount.currency }}
+                </span> -->
+              </span>
+            </nz-col>
+          </nz-row>
+          <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
+          <nz-row style="margin-bottom: 10px" nzGutter="16">
+            <nz-col nzSpan="16">
+              <span class="text-value">{{ 'app.cost.vat' | i18n }}</span>
+            </nz-col>
+            </nz-row>
+          <nz-row class="right-form-content-total" nzGutter="16">
+            <nz-col nzSpan="16">
+              <span class="text-label">Tổng thanh toán</span><br />
+              <span class="text-note-italicized">(Đã bao gồm 10% VAT)</span>
+            </nz-col>
+            <nz-col class="text-right" nzSpan="8">
+              <span class="text-value vat-money" nzAlign="right">
+                <!-- <span
+                  *ngIf="orderItem != undefined"
+                  class="text-value"
+                  style="color: #ea3829"
+                  nzAlign="right"
+                >
+                  {{ orderItem?.totalPayment?.amount | number }}
+                  {{ orderItem?.totalPayment?.currency }}
+                </span> -->
+                <span
+                  class="text-value"
+                  style="color: #ea3829"
+                  nzAlign="right"
+                >
+                  0 VND
+                </span>
+              </span>
+            </nz-col>
+          </nz-row>
+          <nz-row>
+            <nz-col style="width: 100%" class="text-right">
+              <button
+                style="width: 100%"
+                nz-button
+                nzSize="large"
+                nzType="primary"
+                (click)="handleSubmit()"
+              >
+                <span nz-icon nzType="wallet" nzTheme="outline"></span>
+                Khởi tạo
+              </button>
+            </nz-col>
+          </nz-row>
+        </nz-card>
+      </nz-affix>
+    </nz-col>
+  </nz-row>
+</form>
+
+<one-portal-popup-list-error
+  [isVisible]="isVisiblePopupError"
+  [errorList]="errorList"
+  (onCancel)="closePopupError()"
+></one-portal-popup-list-error>
