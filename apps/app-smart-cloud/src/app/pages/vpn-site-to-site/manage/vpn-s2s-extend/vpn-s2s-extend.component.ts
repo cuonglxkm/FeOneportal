@@ -71,6 +71,7 @@ export class VpnS2sExtendComponent implements OnInit{
     if(this.projectCombobox){
       this.projectCombobox.loadProjects(true, region.regionId);
     }
+    this.router.navigate(['/app-smart-cloud/vpn-site-to-site']);
   }
 
   onRegionChanged(region: RegionModel) {
@@ -80,6 +81,10 @@ export class VpnS2sExtendComponent implements OnInit{
   projectChanged(project: ProjectModel) {
     this.project = project.id;
 
+  }
+
+  userChangeProject(){
+    this.router.navigate(['/app-smart-cloud/vpn-site-to-site']);
   }
 
   getOffers(){

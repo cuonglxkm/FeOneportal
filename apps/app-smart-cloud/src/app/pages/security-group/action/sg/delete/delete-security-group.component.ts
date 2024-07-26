@@ -86,7 +86,8 @@ export class DeleteSecurityGroupComponent implements AfterViewInit{
           this.isVisible = false;
           this.isLoading = false;
           this.value = null
-          this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('sg.notification.remove.fail') + error.error.detail);
+          console.log('error', error)
+          this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('sg.notification.remove.fail') + '. ' + error.error.message);
         })
     } else {
       this.isInput = true

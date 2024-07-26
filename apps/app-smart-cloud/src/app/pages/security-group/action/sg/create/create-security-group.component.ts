@@ -113,7 +113,7 @@ export class CreateSecurityGroupComponent implements AfterViewInit{
       }, error => {
         this.isVisible = false
         this.isLoading = false
-        this.notification.error(this.i18n.fanyi('app.status.fail'), error.error.detail)
+        this.notification.error(this.i18n.fanyi('app.status.fail'), error.error.message)
         this.validateForm.reset()
       })
     }

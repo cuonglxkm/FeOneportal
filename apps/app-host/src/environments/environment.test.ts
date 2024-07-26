@@ -19,8 +19,11 @@ export const environment = {
     clientId: 'frontend-client',
     callback: 'https://oneportal.onsmartcloud.com/passport/callback/oneportal',
     logout_callback: 'https://oneportal.onsmartcloud.com',
-    domain: '.onsmartcloud.com',
     scope: 'openid email roles offline_access',
+    domain: '.onsmartcloud.com',
+    cms_baseUrl: 'https://cms.onsmartcloud.com',
+    vnpt_cloud_baseUrl: 'https://vnptcloud.onsmartcloud.com',
+    cloud_baseUrl: 'https://vnptcloud.onsmartcloud.com/'
   },
   recaptcha: {
     siteKey: '6LfueB8cAAAAAD74PxsPKL7-GVr0T7dUoxuBL4iR',

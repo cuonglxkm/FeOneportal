@@ -611,6 +611,12 @@ export class PaymentSummaryComponent implements OnInit {
     }
   }
 
+  navigateToTerm(event: Event){
+    event.preventDefault()
+    const url = environment.vnpt_cloud_baseUrl + '/terms-and-conditions';
+    window.open(url, '_blank');
+  }
+
   changeCustomerType(id) {
     console.log(this.customerType);
 

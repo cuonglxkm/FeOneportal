@@ -6,7 +6,7 @@
         <a [routerLink]="['/']">{{ 'app.breadcrumb.home' | i18n }}</a>
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>
-        <a [routerLink]="['/app-smart-cloud/iam/user-group']">{{"app.breadcrumb.account"|i18n}}</a>
+        <a [routerLink]="['/app-smart-cloud/iam/user-group']">{{ "app.breadcrumb.account"|i18n }}</a>
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>
         <a [routerLink]="['/app-smart-cloud/iam/user-group']">IAM</a>
@@ -15,10 +15,12 @@
         <a [routerLink]="['/app-smart-cloud/iam/user-group']">Groups</a>
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>
-        <a routerLink="/app-smart-cloud/iam/user-group/create" >{{ 'app.breadcrumb.create-user-groups' | i18n }}</a>
+        <a routerLink="/app-smart-cloud/iam/user-group/create">{{ 'app.breadcrumb.create-user-groups' | i18n }}</a>
       </nz-breadcrumb-item>
     </nz-breadcrumb>
-    <ng-template #iconTemplate><one-portal-svg-icon [icon]="'icon_breadcrumb'"></one-portal-svg-icon></ng-template>
+    <ng-template #iconTemplate>
+      <one-portal-svg-icon [icon]="'icon_breadcrumb'"></one-portal-svg-icon>
+    </ng-template>
   </ng-template>
 </page-header>
 <nz-content>
@@ -31,39 +33,69 @@
         <nz-form-item nz-col nzSpan="11">
           <nz-form-label nzFor="groupName">
             <div class="name-rule d-flex">
-              <span>{{ 'app.create-user-groups.nameGroup' | i18n }}</span>
-             <p style="margin-bottom:0px">(<span style="color: rgba(252, 16, 16, 1); ">*</span>)</p> 
+              <span>{{ 'app.create-user-groups.nameGroup' | i18n }} (<span
+                style="color: rgba(252, 16, 16, 1); ">*</span>)</span>
             </div>
           </nz-form-label>
           <nz-form-control>
-            <input class="custom-input" nz-input formControlName="groupName" id="groupName" [maxlength]="128" [minLength]="3" [placeholder]="'app.create-user-groups.placeholder'| i18n "/>
+            <input appAutofocus class="custom-input" nz-input formControlName="groupName" id="groupName"
+                   [maxlength]="128"
+                   [minLength]="3" [placeholder]="'app.create-user-groups.placeholder'| i18n " />
             <span style="margin-top:5px"
-              [ngStyle]="{'color': validateForm.controls.groupName.touched && validateForm.controls.groupName.invalid ? 'rgba(252, 16, 16, 1)' : '#00000040'}">
+                  [ngStyle]="{'color': validateForm.controls.groupName.touched && validateForm.controls.groupName.invalid ? 'rgba(252, 16, 16, 1)' : '#00000040'}">
               {{ 'app.create-user-groups.nameGroup.alert' | i18n }}
                               </span>
           </nz-form-control>
         </nz-form-item>
-
       </div>
+      <nz-form-item nz-col nzSpan="11">
+        <nz-form-label nzFor="groupName">
+          <div class="name-rule d-flex">
+            <span>{{ 'app.create-user-groups.select.project' | i18n }} (<span
+              style="color: rgba(252, 16, 16, 1); ">*</span>)</span>
+            <img nz-popover
+                 [nzPopoverContent]="'app.create-user-groups.select.project.tooltip'|i18n"
+                 [nzPopoverPlacement]="'bottom'" style="margin-left: 5px; cursor: pointer;"
+                 src="assets/imgs/pajamas_question.svg" alt="" />
+          </div>
+        </nz-form-label>
+        <nz-form-control>
+          <nz-select nzMode="multiple"
+                     nzSize="large"
+                     nzAllowClear
+                     formControlName="projectIds"
+                     [nzPlaceHolder]="'app.create-user-groups.select.project'|i18n"
+                     [nzLoading]="isLoadingProject"
+                     [(ngModel)]="listProjectSelected"
+                     (ngModelChange)="onSelectedProject($event)">
+            <nz-option *ngFor="let item of listProject"
+                       [nzLabel]="item.projectName + ' (' + item.projectRegionText + ')'"
+                       [nzValue]="item.id"></nz-option>
+          </nz-select>
+        </nz-form-control>
+      </nz-form-item>
     </nz-card>
     <nz-form-item>
       <nz-form-control>
         <one-portal-users-table formControlName="userNames" id="userNames"
-                                (listUsersSelected)="receivedListUsersSelected($event)"/>
+                                (listUsersSelected)="receivedListUsersSelected($event)" />
       </nz-form-control>
     </nz-form-item>
     <div>
-      <one-portal-policy-table (listPoliciesSelected)="receivedListPoliciesSelected($event)"/>
+      <one-portal-policy-table (listPoliciesSelected)="receivedListPoliciesSelected($event)" />
     </div>
     <nz-card>
       <nz-form-item nzAlign="bottom" nzJustify="center">
         <nz-space nzSize="middle">
-          <button *nzSpaceItem nz-button nzType="default" (click)="goBack()" class="button-back"><img style="padding-right: 10px; margin-top: -4px" src="assets/imgs/arrow-left-2.svg" alt="" />{{ 'app.button.back' | i18n }}</button>
+          <button *nzSpaceItem nz-button nzType="default" (click)="goBack()" class="button-back"><img
+            style="padding-right: 10px; margin-top: -4px" src="assets/imgs/arrow-left-2.svg"
+            alt="" />{{ 'app.button.back' | i18n }}
+          </button>
           <nz-form-control *nzSpaceItem>
             <button nz-button nzType="primary" [nzLoading]="isLoading" class="button-create"
                     [disabled]="!validateForm.valid" (click)="showCreate()">
-                    <img style="padding-right: 10px; margin-top: -4px" src="assets/imgs/add_white.svg" alt="" />
-                    {{ 'app.create-user-groups.createNew' | i18n }}
+              <img style="padding-right: 10px; margin-top: -4px" src="assets/imgs/add_white.svg" alt="" />
+              {{ 'app.create-user-groups.createNew' | i18n }}
             </button>
           </nz-form-control>
         </nz-space>
@@ -72,20 +104,25 @@
   </form>
   <!-- [nzOkText]="'app.button.agree' | i18n" [nzCancelText]="'app.button.cancel' | i18n" -->
   <nz-modal [(nzVisible)]="isVisibleCreate" [nzTitle]="'app.create-user-groups.modal.title' | i18n"
-            
+
             [nzOkLoading]="isLoadingConfirm">
     <ng-container *nzModalContent>
-      <nz-alert nzBanner [nzMessage]="('app.create-user-groups.modal.alert' | i18n) + ' ' + this.validateForm.value.groupName"></nz-alert>
+      <nz-alert nzBanner
+                [nzMessage]="('app.create-user-groups.modal.alert' | i18n) + ' ' + this.validateForm.value.groupName"></nz-alert>
       <h3 style="margin-top: 10px;">{{ 'app.create-user-groups.modal.des' | i18n }}</h3>
     </ng-container>
     <div *nzModalFooter>
       <button nz-button nzType="default" (click)="handleCancel()" class="button-cancel"><img
-          style="padding-right: 10px; margin-top: -4px" src="assets/imgs/cancel.svg" alt="" />{{ 'app.button.cancel' |
-        i18n }}
+        style="padding-right: 10px; margin-top: -4px" src="assets/imgs/cancel.svg" alt="" />{{
+          'app.button.cancel' |
+            i18n
+        }}
       </button>
-      <button nz-button nzType="primary" (click)="handleCreate()" [nzLoading]="isLoading" class="button-ok"> <img
-          style="padding-right: 10px; margin-top: -4px" src="assets/imgs/confirm.svg" alt="" />{{ 'app.button.confirm' |
-        i18n }}
+      <button nz-button nzType="primary" (click)="handleCreate()" [nzLoading]="isLoading" class="button-ok"><img
+        style="padding-right: 10px; margin-top: -4px" src="assets/imgs/confirm.svg" alt="" />{{
+          'app.button.confirm' |
+            i18n
+        }}
       </button>
     </div>
   </nz-modal>

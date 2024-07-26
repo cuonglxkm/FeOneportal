@@ -54,6 +54,7 @@ export class DefaultInterceptor implements HttpInterceptor {
               private httpClient: HttpClient,
               private settingsSrv: SettingsService,
               private cookieService: CookieService,
+              private router: Router,
               @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,) {
     if (this.refreshTokenType === 'auth-refresh') {
       // this.buildAuthRefresh();
@@ -73,7 +74,7 @@ export class DefaultInterceptor implements HttpInterceptor {
   }
 
   private goTo(url: string): void {
-    setTimeout(() => this.injector.get(Router).navigateByUrl(url), 1000);
+    setTimeout(() => this.injector.get(Router).navigateByUrl(url));
   }
 
   private checkStatus(ev: HttpResponseBase): void {
@@ -209,7 +210,7 @@ export class DefaultInterceptor implements HttpInterceptor {
     // this.notification.error(`Hết phiên đăng nhập`, ``);
     this.goTo(this.tokenSrv.login_url!);
     sessionStorage.clear();
-    this.cookieService.deleteAll( "/",".onsmartcloud.com",true,"None");
+    this.cookieService.deleteAll( "/",environment.sso.domain,true,"None");
     this.tokenService.clear();
     localStorage.removeItem('UserRootId');
     localStorage.removeItem('ShareUsers');
@@ -298,7 +299,6 @@ export class DefaultInterceptor implements HttpInterceptor {
     if (!this.isRefreshing) {
       this.isRefreshing = true;
       this.refreshToken$.next(null);
-
       const token = this.tokenSrv.get()?.['refresh_token'];
       if (token) {
         return this.refreshTokenRequest().pipe(
@@ -330,15 +330,15 @@ export class DefaultInterceptor implements HttpInterceptor {
           }),
           catchError((err) => {
             // this.notification.error('Thất bại', 'Tái tạo token thất bại');
+            this.toLogin();
             this.isRefreshing = false;
             this.tokenSrv.clear()
-            this.toLogin();
             return throwError(err);
           })
         );
       } else {
-        this.tokenSrv.clear()
         this.toLogin();
+        this.tokenSrv.clear()
       }
 
     } else {
