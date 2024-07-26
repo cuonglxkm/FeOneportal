@@ -8,6 +8,7 @@ import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from '@core';
 import { RegionModel, ProjectModel } from '../../../../../../libs/common-utils/src';
+import { environment } from '@env/environment';
 
 @Component({
   selector: 'one-portal-security',
@@ -142,6 +143,11 @@ export class SecurityComponent implements OnInit {
     this.form.reset()
   }
 
+  navigateToTerm(event: Event){
+    event.preventDefault()
+    const url = environment.vnpt_cloud_baseUrl + '/terms-and-conditions';
+    window.open(url, '_blank');
+  }
   // Authenticator
   handleChangeSwitchAuthenticator(event){
     this.toggleSwitchGoogleAuthenticator = event

@@ -1,7 +1,3 @@
-// This file can be replaced during build by using the `fileReplacements` array.
-// `ng build ---prod` replaces `environment.ts` with `environment.prod.ts`.
-// The list of file replacements can be found in `angular.json`.
-
 import { DelonMockModule } from '@delon/mock';
 import { Environment } from '@delon/theme';
 
@@ -22,6 +18,10 @@ export const environment = {
     callback: 'https://oneportal-dev.onsmartcloud.com/passport/callback/oneportal',
     logout_callback: 'https://oneportal-dev.onsmartcloud.com',
     scope: 'openid email roles offline_access',
+    domain: '.onsmartcloud.com',
+    cms_baseUrl: 'https://cms.onsmartcloud.com',
+    vnpt_cloud_baseUrl: 'https://vnptcloud.onsmartcloud.com',
+    cloud_baseUrl: 'https://vnptcloud.onsmartcloud.com/'
   },
   recaptcha: {
     siteKey: '6LfueB8cAAAAAD74PxsPKL7-GVr0T7dUoxuBL4iR',

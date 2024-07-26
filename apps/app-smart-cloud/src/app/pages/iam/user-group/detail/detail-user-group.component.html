@@ -50,7 +50,19 @@
           </nz-form-control>
         </nz-form-item>
       </nz-col>
-     
+      <nz-col nzSpan="7">
+        <nz-form-item>
+          <nz-form-label>
+            <div>
+              <span>{{ 'app.project' | i18n }}</span>
+            </div>
+          </nz-form-label>
+          <nz-form-control>
+            <input style="border-radius: 8px;" nz-input class="custom-input"
+                   value="{{ listProjectNameStr }}" disabled="true" />
+          </nz-form-control>
+        </nz-form-item>
+      </nz-col>
     </form>
   </nz-card>
   <nz-card [nzTitle]="'app.group-detail.additionalInformation' | i18n">
@@ -88,7 +100,7 @@
             </button>
           </div>
         </div>
-        
+
         <nz-table #rowSelectionTable nzShowPagination nzShowSizeChanger [nzData]="filteredUsers"
           [nzLoading]="isLoadingUser" (nzQueryParams)="onQueryParamsUserChange($event)"
           (nzCurrentPageDataChange)="onCurrentPageDataChangeUser($event)">
@@ -144,9 +156,9 @@
               [nzTooltipTitle]="'app.group-detail.deletePolicy' | i18n" nzTooltipPlacement="bottom"
               (click)="removePolicy()" id="deletePolicy" [ngClass]="setOfCheckedIdPolicy.size>0 ?'activeDelete':''" >
               <one-portal-svg-icon [icon]="'icon_trash'"></one-portal-svg-icon>
-          
+
             </button>
-            
+
             <button nz-button nzType="primary" nzSize="large" nz-tooltip
               [nzTooltipTitle]="'app.group-detail.tooltip.assignPolicy' | i18n" nzTooltipPlacement="bottom"
               (click)="navigateToAttachPolicy()">

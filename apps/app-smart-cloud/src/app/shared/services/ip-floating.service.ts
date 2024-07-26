@@ -45,7 +45,7 @@ export class IpFloatingService extends BaseService {
       params = params.append('currentPage', formSearch.currentPage)
     }
     return this.http.get<BaseResponse<IpFloating[]>>(this.baseUrl + this.ENDPOINT.provisions + '/ip-internet-vpc',{
-      params: params
+      params: params,
     }).pipe(catchError((error: HttpErrorResponse) => {
         if (error.status === 401) {
           console.error('login');
@@ -58,7 +58,7 @@ export class IpFloatingService extends BaseService {
   }
 
   createIp(formCreate: FormCreateIp) {
-    return this.http.post(this.baseUrl + this.ENDPOINT.provisions + '/vpc-wan', Object.assign(formCreate))
+    return this.http.post(this.baseUrl + this.ENDPOINT.provisions + '/vpc-wan', Object.assign(formCreate), this.getHeaders())
       .pipe(catchError((error: HttpErrorResponse) => {
         if (error.status === 401) {
           console.error('login');
@@ -91,7 +91,7 @@ export class IpFloatingService extends BaseService {
 
 
   action(formAction: FormAction) {
-    return this.http.put(this.baseUrl + this.ENDPOINT.provisions+'/ip-internet-vpc', Object.assign(formAction))
+    return this.http.put(this.baseUrl + this.ENDPOINT.provisions+'/ip-internet-vpc', Object.assign(formAction), this.getHeaders())
       .pipe(catchError((error: HttpErrorResponse) => {
         if (error.status === 401) {
           console.error('login');

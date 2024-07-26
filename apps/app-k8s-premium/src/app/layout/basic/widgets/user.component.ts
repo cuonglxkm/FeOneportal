@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, Inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { SettingsService, User } from '@delon/theme';
+import { environment } from '@env/environment';
 import { CookieService } from 'ngx-cookie-service';
 
 @Component({
@@ -50,7 +51,7 @@ export class HeaderUserComponent {
 
   logout(): void {
     sessionStorage.clear();
-    this.cookieService.deleteAll("/",".onsmartcloud.com",true,"None");
+    this.cookieService.deleteAll("/",environment.domain,true,"None");
     localStorage.removeItem('UserRootId');
     localStorage.removeItem('ShareUsers');
     localStorage.removeItem('PermissionOPA');
