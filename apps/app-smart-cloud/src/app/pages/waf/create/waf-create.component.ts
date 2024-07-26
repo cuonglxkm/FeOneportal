@@ -1,5 +1,5 @@
 import { ChangeDetectorRef, Component, Inject, OnInit } from '@angular/core';
-import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { AbstractControl, FormArray, FormBuilder, FormControl, FormGroup, ValidationErrors, Validators } from '@angular/forms';
 import { NguCarouselConfig } from '@ngu/carousel';
 import { ImageTypesModel, OfferItem } from '../../instances/instances.model';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
@@ -7,7 +7,7 @@ import { InstancesService } from '../../instances/instances.service';
 import { getCurrentRegionAndProject } from '@shared';
 import { Router } from '@angular/router';
 import { finalize } from 'rxjs/operators';
-import { RegionModel, slider } from '../../../../../../../libs/common-utils/src';
+import { duplicateDomainValidator, ipValidatorMany, RegionModel, slider } from '../../../../../../../libs/common-utils/src';
 import { IpPublicService } from '../../../shared/services/ip-public.service';
 import { OfferDetail, SupportService } from '../../../shared/models/catalog.model';
 import { da } from 'date-fns/locale';
@@ -21,6 +21,8 @@ import { VpcService } from 'src/app/shared/services/vpc.service';
 import { OrderService } from 'src/app/shared/services/order.service';
 import { LoadingService } from '@delon/abc/loading';
 import { RegionID } from 'src/app/shared/enums/common.enum';
+import { DOMAIN_REGEX } from 'src/app/shared/constants/constants';
+import { DomSanitizer } from '@angular/platform-browser';
 
 
 
@@ -33,9 +35,12 @@ import { RegionID } from 'src/app/shared/enums/common.enum';
 })
 
 
+
+
+
 export class WAFCreateComponent implements OnInit {
   public carouselTileConfig: NguCarouselConfig = {
-    grid: { xs: 1, sm: 1, md: 2, lg: 3, all: 0 },
+    grid: { xs: 1, sm: 2, md: 3, lg: 4, all: 0 },
     speed: 250,
     point: {
       visible: true
@@ -47,11 +52,8 @@ export class WAFCreateComponent implements OnInit {
   iconToggle: string;
 
   listOfferFlavors: OfferItem[] = [];
-  listLoadbalancer: OfferDetail[] = [];
-  listSiteToSite: OfferDetail[] = [];
   offerFlavor: OfferItem;
   selectedElementFlavor: any;
-
   regionId: any;
   loadingCalculate = false;
   today = new Date();
@@ -62,11 +64,6 @@ export class WAFCreateComponent implements OnInit {
   totalAmount = 0;
   totalPayment = 0;
   totalVAT = 0;
-  defaultDomain = { domain: '', ip: '', host: '', port: '', ssl: ''  };
-
-
-  gpuQuotasGobal: { GpuOfferId: number, GpuCount: number, GpuType: string, GpuPrice: number, GpuPriceUnit: number }[] = [];
-
 
   prices: any;
 
@@ -74,23 +71,28 @@ export class WAFCreateComponent implements OnInit {
   stepBlock: number = 0;
   maxBlock: number = 0;
 
-  loadBalancerName: string;
-  sitetositeName: string;
-  listTypeCatelogOffer: any;
+  selectedDescription: string = '';
   listOfDomain: any = [];
 
   isRequired: boolean = true;
 
   isLoading = false;
+  isVisibleCreateSSLCert = false;
+ 
+  openModalSSlCert(){
+    this.isVisibleCreateSSLCert = true
+  }
   isVisiblePopupError: boolean = false;
   errorList: string[] = [];
+
+  policy: string
   closePopupError() {
     this.isVisiblePopupError = false;
   }
   productByRegion: any
 
-  isShowAlertGpu: boolean;
   form: FormGroup = this.fb.group({
+    nameWAF: ['', [Validators.required]],
     bonusServices: this.fb.array([this.createBonusService()])
   });
   private inputChangeSubject = new Subject<{ value: number, name: string }>();
@@ -108,7 +110,8 @@ export class WAFCreateComponent implements OnInit {
     private vpc: VpcService,
     private orderService: OrderService,
     private loadingSrv: LoadingService,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private sanitizer: DomSanitizer
 
   ) {
   
@@ -132,35 +135,30 @@ export class WAFCreateComponent implements OnInit {
     // this.onChangeTime();
     this.getStepBlock('BLOCKSTORAGE')
     this.iconToggle = "icon_circle_minus"
-    this.numOfMonth = this.form.controls['numOfMonth'].value;
+    // this.numOfMonth = this.form.controls['numOfMonth'].value;
 
   }
-  offervCpu: number;
 
-
-   get bonusServices(): FormArray {
+  get bonusServices(): FormArray {
     return this.form.get('bonusServices') as FormArray;
   }
 
   createBonusService(): FormGroup {
     return this.fb.group({
-      domain: ['', [Validators.required]],
-      ipPublic: ['', [Validators.required]],
-      host: ['', [Validators.required]],
-      port: ['', [Validators.required]],
-      sslCert: ['', [Validators.required]]
+      nameWAF: ['', [Validators.required]],
+      domain: ['', [Validators.required,Validators.pattern(DOMAIN_REGEX) ,duplicateDomainValidator]],
+      ipPublic: ['', [Validators.required, ipValidatorMany]],
+      host: [''],
+      port: [''],
+      sslCert: ['']
     });
   }
 
+
+
+
   addBonusService() {
-    const bonusService = this.fb.group({
-      domain: ['', [Validators.required]],
-      ipPublic: ['', [Validators.required]],
-      host: ['', [Validators.required]],
-      port: ['', [Validators.required]],
-      sslCert: ['', [Validators.required]]
-    });
-    this.bonusServices.push(bonusService);
+    this.bonusServices.push(this.createBonusService());
   }
 
   removeBonusService(index: number) {
@@ -171,9 +169,20 @@ export class WAFCreateComponent implements OnInit {
     }
   }
 
+
+
+
   handleSubmit(){
-    const domainValues = this.bonusServices.controls.map(group => group.get('domain')?.value)
-    console.log(domainValues);
+    const nameWAFValue = this.form.get('nameWAF')?.value;
+    const domainValues = this.bonusServices.controls.map(group => group.get('ipPublic')?.value);
+    console.log('Domains:', domainValues);
+  }
+
+  getDomainValues(): string {
+    return this.bonusServices.controls
+      .map(control => control.get('domain')?.value)
+      .filter(value => value)
+      .join(', ');
   }
 
   onChangeTime(numberMonth: number) {
@@ -228,46 +237,61 @@ export class WAFCreateComponent implements OnInit {
       (flavor) => flavor.id === event
     );
     this.selectedElementFlavor = 'flavor_' + event;
-    console.log("objeselectedElementFlavorct", this.selectedElementFlavor)
+    console.log("selectedElementFlavor", this.selectedElementFlavor);
+
+    if (this.offerFlavor?.description) {
+      this.selectedDescription = this.offerFlavor.description.replace(/<\/?b>/g, '');
+    } else {
+      this.selectedDescription = '';
+    }
+  
     this.calculate(null);
   }
 
 
 
   initFlavors(): void {
-    this.instancesService.getDetailProductByUniqueName('vpc-oneportal')
+    this.instancesService.getDetailProductByUniqueName('waf')
       .subscribe(
         data => {
           this.instancesService
-            .getListOffersByProductId(data[0].id, this.regionId)
+            .getListOffersByProductIdNoRegion(data[0].id)
             .subscribe((data: any) => {
               this.listOfferFlavors = data.filter(
                 (e: OfferItem) => e.status.toUpperCase() == 'ACTIVE'
               );
 
-              this.listOfferFlavors.forEach((e: OfferItem) => {
-                e.description = '0 vCPU / 0 GB RAM / HHH GB SSS / 0 IP';
-                e.characteristicValues.forEach((ch) => {
-                  if (ch.charName.toUpperCase() == 'CPU') {
-                    e.description = e.description.replace(/0 vCPU/g, ch.charOptionValues[0] + ' vCPU');
-                  } else if (ch.charName.toUpperCase() == 'RAM') {
-                    e.description = e.description.replace(/0 GB RAM/g, ch.charOptionValues[0] + ' GB RAM');
-                  } else if (ch.charName == 'Storage') {
-                    e.description = e.description.replace(/HHH/g, ch.charOptionValues[0]);
-                  } else if (ch.charName == 'VolumeType') {
-                    e.description = e.description.replace(/SSS/g, ch.charOptionValues[0]);
-                  } else if (ch.charName.toUpperCase() == 'IP') {
-                    e.description = e.description.replace(/0 IP/g, ch.charOptionValues[0] + ' IP');
+              console.log("listOfferFlavors", this.listOfferFlavors);
+              
 
-                    e.ipNumber = ch.charOptionValues[0];
-                    console.log(" e.ipNumber", e.ipNumber)
+              this.listOfferFlavors.forEach((e: OfferItem) => {
+                e.description = '';
+                e.characteristicValues.forEach((ch) => {
+                  if (ch.charName == 'Domain') {
+                    e.description += `<b>${ch.charOptionValues}</b> Domain`;
                   }
+                });
+
+                e.characteristicValues.forEach((ch) => {
+                   if(ch.charName == 'DDOS' && ch.charOptionValues[0] == 'true'){
+                    e.description += `<br/><b>Có</b> chống tấn công DDOS`
+                  }else if(ch.charName == 'WAF' && ch.charOptionValues[0] == 'true'){
+                    e.description += `<br/><b>Có</b> tường lửa (WAF) chặn tấn công Top 10 OWASP`
+                   }else if(ch.charName == 'IP/GeoBlock' && ch.charOptionValues[0] == 'true'){
+                    e.description += `<br/><b>Có</b> giới hạn truy cập theo IP, dải IP...`
+                   }else if(ch.charName == 'UsageTraffic'){
+                    e.description += `<br/><b>${ch.charOptionValues} GB</b> Lưu lượng sử dụng`
+                   }
                 });
               });
               this.cdr.detectChanges();
             });
         }
       );
+  }
+
+  handleCancelCreateSSLCert(){
+    this.isVisibleCreateSSLCert = false
   }
 
 }
