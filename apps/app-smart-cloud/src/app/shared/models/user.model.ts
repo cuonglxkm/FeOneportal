@@ -8,6 +8,7 @@ export class User {
 export class UserCreate {
   userName: string;
   email: string;
+  projectIds: number[];
   groupNames: string[];
   policyNames: string[];
 }
