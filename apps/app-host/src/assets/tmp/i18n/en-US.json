@@ -3145,6 +3145,7 @@
   "sg.title.create": "Create new Security Group",
   "sg.alert.select": "Select Security Group",
   "sg.alert.remove.k8s": "Cannot delete default Security Group for K8S service",
+  "sg.alert.remove.default": "Cannot delete Security Group default",
   "sg.title.detach.attach": "Manage Attach/Detach Security Group",
   "sg.alert.secu.access": "Access, Security",
   "sg.des1": "Block storage service designed to accommodate various types of servers for applications that require high throughput or capacity.",

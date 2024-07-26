@@ -2083,7 +2083,7 @@
   "ecr.vulnerability.current.version":"Version hiện tại",
 
 
-  
+
 
   "app.cluster.summary": "VNPT Kubernetes Service là một nền tảng dựa trên Kubernetes đảm bảo hiệu quả cao cho doanh nghiệp bằng cách chạy các ứng dụng được đóng gói container trên đám mây, an toàn bảo mật, ổn định và hiệu năng cao",
   "app.cluster.platform-service": "Dịch vụ nền tảng",
@@ -3061,7 +3061,8 @@
   "sg.title.list": "Danh sách Security Group",
   "sg.title.create": "Tạo mới Security Group",
   "sg.alert.select": "Chọn Security Group",
-  "sg.alert.remove.k8s": "Không thể xóa Security Group default và Security Group mặc định dịch vụ K8S",
+  "sg.alert.remove.k8s": "Không thể xóa Security Group mặc định của dịch vụ K8S",
+  "sg.alert.remove.default": "Không thể xóa Security Group default",
   "sg.title.detach.attach":"Quản lý Gắn/Gỡ Security Group",
   "sg.alert.secu.access": "Truy cập, bảo mật",
   "sg.des1": "Dịch vụ cung cấp lưu trữ dạng Block cho máy chủ được thiết kế phân nhiều loại để đáp ứng nhiều ứng dụng đòi hỏi về mặt thông lượng hoặc dung lượng.",
