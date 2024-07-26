@@ -209,7 +209,7 @@ table.custom-table {
 }
 
 .text-header-attach-volume {
-  color: #0066B3;
+  color: #0066b3;
   font-size: 16px;
   font-weight: 600;
   line-height: 24px;
@@ -230,4 +230,13 @@ table.custom-table {
   padding-right: 10px;
   scrollbar-width: thin;
   scrollbar-color: auto;
+}
+
+:host
+  ::ng-deep
+  .ant-select-show-search.ant-select:not(.ant-select-customize-input)
+  .ant-select-selector {
+  cursor: text;
+  height: auto !important;
+  font-size: 16px;
 }
