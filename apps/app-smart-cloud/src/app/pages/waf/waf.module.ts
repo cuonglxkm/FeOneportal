@@ -10,10 +10,12 @@ import { TrimDirective } from '../file-storage/TrimDirective';
 import { WAFCreateComponent } from './create/waf-create.component';
 import { CommonModule } from '@angular/common';
 import { WAFRoutingModule } from './waf-routing.module';
+import { CreateSSLCertPopupComponent } from './pop-up/create-ssl-cert/create-ssl-cert.component';
 
 @NgModule({
   declarations: [
-   WAFCreateComponent
+   WAFCreateComponent,
+   CreateSSLCertPopupComponent
   ],
   imports: [
     CommonModule,
