@@ -33,35 +33,50 @@
     <span class="text-card-header">{{ 'app.user-detail.mainInfo' | i18n }}</span>
   </div>
   <form nz-form nzLayout="vertical">
-    <div nz-row>
-      <div nz-col nzSpan="8">
-        <nz-form-item style="margin-top: 20px">
+    <nz-row nzGutter="24">
+      <nz-col nzSpan="12">
+        <nz-form-item>
           <nz-form-label> {{ 'app.create-user.nameUser' | i18n }} </nz-form-label>
           <nz-form-control>
-            <input style="border-radius: 8px; width: 90%" nz-input [(ngModel)]="user.userName"
+            <input style="border-radius: 8px;" nz-input [(ngModel)]="user.userName"
               [ngModelOptions]="{ standalone: true }" disabled="true" type="text" nzSize="large" />
           </nz-form-control>
         </nz-form-item>
-      </div>
-      <div nz-col nzSpan="8">
-        <nz-form-item style="margin-top: 20px">
+      </nz-col>
+      <nz-col nzSpan="12">
+        <nz-form-item>
           <nz-form-label> Email </nz-form-label>
           <nz-form-control>
-            <input style="border-radius: 8px; width: 90%" nz-input [(ngModel)]="user.email"
+            <input style="border-radius: 8px;" nz-input [(ngModel)]="user.email"
               [ngModelOptions]="{ standalone: true }" disabled="true" type="text" nzSize="large" />
           </nz-form-control>
         </nz-form-item>
-      </div>
-      <div nz-col nzSpan="8">
-        <nz-form-item style="margin-top: 20px">
+      </nz-col>
+    </nz-row>
+    <nz-row nzGutter="24">
+      <nz-col nzSpan="12">
+        <nz-form-item>
           <nz-form-label> {{ 'app.create-user.createDate' | i18n }} </nz-form-label>
           <nz-form-control>
-            <input style="border-radius: 8px; width: 90%" nz-input [(ngModel)]="createdDate"
-              [ngModelOptions]="{ standalone: true }" disabled="true" type="text" nzSize="large" />
+            <input style="border-radius: 8px;" nz-input [(ngModel)]="createdDate"
+                   [ngModelOptions]="{ standalone: true }" disabled="true" type="text" nzSize="large" />
           </nz-form-control>
         </nz-form-item>
-      </div>
-    </div>
+      </nz-col>
+      <nz-col nzSpan="12">
+        <nz-form-item>
+          <nz-form-label>
+            <div>
+              <span>{{ 'app.project' | i18n }}</span>
+            </div>
+          </nz-form-label>
+          <nz-form-control>
+            <input style="border-radius: 8px;" nz-input class="custom-input"
+                   value="{{ listProjectNameStr }}" disabled="true" />
+          </nz-form-control>
+        </nz-form-item>
+      </nz-col>
+    </nz-row>
   </form>
 </nz-card>
 
@@ -74,7 +89,7 @@
       <div class="tab-policies">
         <div nz-row [nzGutter]="24" style="align-items: center;margin:20px 0px;">
           <div nz-col [nzLg]="8" [nzMd]="12" [nzSm]="24" [nzXl]="12" [nzXs]="24" [nzXXl]="12" class="d-flex">
-            <nz-form-item style="margin-bottom:0px">            
+            <nz-form-item style="margin-bottom:0px">
               <nz-form-control>
                 <nz-select style="width: 180px" [ngModel]="typePolicy" [ngModelOptions]="{ standalone: true }"
                   [nzPlaceHolder]="'Tất cả các loại'" [nzShowSearch]="false" (ngModelChange)="changeFilterStatus($event)"
@@ -97,8 +112,8 @@
           </div>
           <div class="text-right p-0 m-b-0 d-flex " nz-col [nzLg]="12" [nzMd]="12" [nzSm]="24" [nzXl]="12" [nzXs]="24" style="justify-content: end;"
             [nzXXl]="12">
-            
-  
+
+
             <button style="border: none; border-radius: 8px" nz-button (click)="reloadPolicies()">
               <img style="margin-top: -4px" src="assets/imgs/refresh.svg" alt="" />
             </button>
@@ -150,14 +165,14 @@
           </tbody>
         </nz-table>
       </div>
-      
+
     </nz-tab>
     <nz-tab nzTitle="Groups">
       <div class="tab-group">
         <div nz-row [nzGutter]="24">
           <div nz-col [nzLg]="8" [nzMd]="8" [nzSm]="24" [nzXl]="8" [nzXs]="24" [nzXXl]="12" class="items-center-text">
             <p class="custom-text">{{"app.user.group.join"|i18n}}  <span style="margin-left:5px">({{user.userGroups.length}})</span></p>
-           
+
           </div>
           <div class="text-right p-0 m-b-0 d-flex" nz-col [nzLg]="16" [nzMd]="16" [nzSm]="24" [nzXl]="16" [nzXs]="24" style="justify-content: end;"
             [nzXXl]="12">
@@ -169,7 +184,7 @@
               <img src="assets/imgs/search.svg" alt="" style="cursor: pointer" [nz-tooltip]="'app.button.search' | i18n"
                 (click)="searchGroup()" />
             </ng-template>
-            
+
             <button style="border: none; border-radius: 8px" nz-button (click)="reloadGroupOfUser()">
               <img style="margin-top: -4px" src="assets/imgs/refresh.svg" alt="" />
             </button>

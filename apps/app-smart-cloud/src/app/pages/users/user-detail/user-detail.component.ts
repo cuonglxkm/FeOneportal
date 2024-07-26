@@ -23,6 +23,7 @@ import { RegionModel } from '../../../../../../../libs/common-utils/src';
 import { I18NService } from '@core';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
+import { ProjectService } from '../../../shared/services/project.service';
 
 @Component({
   selector: 'one-portal-user-detail',
@@ -62,6 +63,7 @@ export class UserDetailComponent implements OnInit {
     private activatedRoute: ActivatedRoute,
     private datePipe: DatePipe,
     private cdr: ChangeDetectorRef,
+    private projectService: ProjectService,
     private clipboardService: ClipboardService,
     public message: NzMessageService
   ) {
@@ -74,11 +76,19 @@ export class UserDetailComponent implements OnInit {
     this.getUserByUserName();
   }
 
+  listProjectName: string[] = []
+  listProjectNameStr: string = ''
   getUserByUserName() {
     this.listGroupNames = [];
     this.listPolicyNames = [];
     this.service.getUserByUsername(this.userName).subscribe((data: any) => {
       this.user = data;
+      data.projectIds.forEach(item => {
+        this.projectService.getByProjectId(item).subscribe(data2 => {
+          this.listProjectName?.push(data2?.cloudProject?.displayName)
+          this.listProjectNameStr = this.listProjectName.join(', ')
+        })
+      })
       this.createdDate = this.datePipe.transform(
         this.user.createdDate,
         'HH:mm:ss dd/MM/yyyy'
