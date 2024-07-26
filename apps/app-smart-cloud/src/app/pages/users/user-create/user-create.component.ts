@@ -20,6 +20,9 @@ import { LoadingService } from '@delon/abc/loading';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from '@core';
+import { ProjectModel } from '../../../../../../../libs/common-utils/src';
+import { ProjectService } from '../../../shared/services/project.service';
+import { RegionService } from '../../../shared/services/region.service';
 @Component({
   selector: 'one-portal-user-create',
   templateUrl: './user-create.component.html',
@@ -36,15 +39,20 @@ export class UserCreateComponent implements OnInit {
   groupNames: any[] = [];
   policyNames: any[] = [];
 
+  listProject: ProjectModel[] = [];
+  listProjectSelected: number[];
+
   form: FormGroup<{
     name: FormControl<string>;
     email: FormControl<string>;
+    projectIds: FormControl<number[]>
   }> = this.fb.group({
     name: [
       '',
       [Validators.required, Validators.pattern(/^[\w\d+=,.@\-_]{1,64}$/)],
     ],
     email: ['', [Validators.required, Validators.email]],
+    projectIds: [null as number[] | null, Validators.required]
   });
 
   constructor(
@@ -54,6 +62,8 @@ export class UserCreateComponent implements OnInit {
     private notification: NzNotificationService,
     private cdr: ChangeDetectorRef,
     private loadingSrv: LoadingService,
+    private projectService: ProjectService,
+    private regionService: RegionService,
     @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService
   ) {}
 
@@ -61,6 +71,7 @@ export class UserCreateComponent implements OnInit {
     this.service.model.subscribe((data) => {
       console.log(data);
     });
+    this.getListProject();
   }
 
   onChangeGroupNames(event: any[]) {
@@ -86,6 +97,7 @@ export class UserCreateComponent implements OnInit {
   handleOkCreate(): void {
     this.userCreate.groupNames = this.groupNames;
     this.userCreate.policyNames = this.policyNames;
+    this.userCreate.projectIds = this.listProjectSelected;
     this.isVisibleCreate = false;
     console.log('user create', this.userCreate);
     this.service
@@ -108,6 +120,34 @@ export class UserCreateComponent implements OnInit {
           );
         },
       });
+  }
+
+  //Lấy danh sách project
+  isLoadingProject: boolean = true;
+  getListProject() {
+    this.listProject = [];
+    this.isLoadingProject = true;
+    this.regionService.getListRegions().subscribe(data => {
+      this.isLoadingProject = false;
+      data.forEach(item => {
+        this.projectService.getByRegion(item.regionId).subscribe(data2 => {
+          data2.forEach(project => {
+            this.listProject?.push(project);
+          });
+        }, error => {
+          this.isLoadingProject = false;
+          this.notification.error(error.statusText, this.i18n.fanyi('app.failData'));
+        });
+      }, error => {
+        this.listProject = [];
+        this.isLoadingProject = false;
+        this.notification.error(error.statusText, this.i18n.fanyi('app.failData'));
+      });
+    });
+  }
+
+  onSelectedProject(value: number[]) {
+    this.listProjectSelected = value;
   }
 
   //Router
