@@ -1,4 +1,4 @@
-import { AbstractControl, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
+import { AbstractControl, FormArray, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 
 export class AppValidator {
   // @ts-ignore
@@ -432,6 +432,71 @@ export function ipAddressExistsValidator(ipAddresses: string[]): ValidatorFn {
   };
 
 }
+
+export function duplicateDomainValidator(control: AbstractControl): ValidationErrors | null {
+  if (!control.parent || !(control.parent instanceof FormArray)) {
+    return null;
+  }
+
+  const parent = control.parent as FormArray;
+  const currentDomain = control.value;
+  const domains = parent.controls
+    .map(ctrl => ctrl.get('domain')?.value)
+    .filter(value => value);
+
+  if (domains.indexOf(currentDomain) !== domains.lastIndexOf(currentDomain)) {
+    return { duplicateDomain: true };
+  }
+
+  return null;
+}
+
+export function ipValidatorMany(control: AbstractControl): ValidationErrors | null {
+  if (!control.value) {
+    return null;
+  }
+
+  const ipPattern = /^(?:\d{1,3}\.){3}\d{1,3}$/;
+  const ips = control.value.split(';');
+
+  for (const ip of ips) {
+    if (!ipPattern.test(ip.trim())) {
+      return { invalidIP: true };
+    }
+  }
+
+  return null;
+}
+
+export const fileValidator: ValidatorFn = (control: AbstractControl): ValidationErrors | null => {
+  const files = control.value as File[]; // Type assertion to File[]
+  
+  if (!files || !Array.isArray(files)) {
+    return { invalidFiles: true };
+  }
+
+  const maxFiles = 10;
+  const maxSize = 44 * 1024; // 44 KB in bytes
+  const allowedFormats = ['pem', 'key', 'crt', 'cer', 'der', 'pfx', 'jks'];
+
+  let error: ValidationErrors | null = null;
+
+  if (files.length > maxFiles) {
+    error = { maxFilesExceeded: true };
+  }
+
+  files.forEach(file => {
+    if (file.size > maxSize) {
+      error = { maxSizeExceeded: true };
+    }
+    const fileExtension = file.name.split('.').pop()?.toLowerCase() || '';
+    if (!allowedFormats.includes(fileExtension)) {
+      error = { invalidFormat: true };
+    }
+  });
+
+  return error;
+};
 
 
 export function ipAddressValidatorRouter(subnetIP: string): ValidatorFn {
