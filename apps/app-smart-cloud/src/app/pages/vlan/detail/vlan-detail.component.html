@@ -165,9 +165,9 @@
               </div>
             </td>
             <td *ngIf="!(index.attachedDevice.includes('network:dhcp')
-    || index.attachedDevice.includes('octavia')
+    || index.attachedDevice.includes('Octavia')
     || index.attachedDevice.includes('snat')
-    || index.attachedDevice.includes('interface'))">
+    || index.attachedDevice.includes('interface') || index.name.includes('octavia'))">
               <div style="display: flex;">
                 <div *ngIf="!(index.instanceName)">
                   <one-portal-attach-port [region]="region"
@@ -191,9 +191,9 @@
 
             </td>
             <td *ngIf="index.attachedDevice.includes('network:dhcp')
-    || index.attachedDevice.includes('octavia')
+    || index.attachedDevice.includes('Octavia')
     || index.attachedDevice.includes('snat')
-    || index.attachedDevice.includes('interface')">
+    || index.attachedDevice.includes('interface') || index.name.includes('octavia')">
               <div *ngIf="!(index.instanceName)">
                 <img src="assets/imgs/add.svg"
                      style="height: 20px; cursor: pointer;opacity: 0.5; pointer-events: none; filter: grayscale(100%); margin-right: 5px;"

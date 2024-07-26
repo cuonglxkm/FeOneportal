@@ -20,6 +20,10 @@ export const environment = {
     callback: 'https://console.cloud.vnpt.vn/passport/callback/oneportal',
     logout_callback: 'https://console.cloud.vnpt.vn',
     scope: 'openid email roles offline_access',
+    domain: '.cloud.vnpt.vn',
+    cms_baseUrl: 'https://cms..cloud.vnpt.vn',
+    vnpt_cloud_baseUrl: 'https://cloud.vnpt.vn',
+    cloud_baseUrl: 'https://cloud.vnpt.vn/'
   },
   recaptcha: {
     siteKey: '6LfueB8cAAAAAD74PxsPKL7-GVr0T7dUoxuBL4iR',

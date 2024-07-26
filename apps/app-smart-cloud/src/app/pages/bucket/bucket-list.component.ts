@@ -87,7 +87,6 @@ export class BucketListComponent implements OnInit {
       .subscribe({
         next: (data) => {
           if (data) {
-            this.hasOS = true;
             this.hasObjectStorage();
             this.getUsageOfUser();
             this.search();
@@ -110,9 +109,11 @@ export class BucketListComponent implements OnInit {
 
       .subscribe({
         next: (data) => {
-          this.user = data;
-          this.getUserById(this.user.id);
-          this.cdr.detectChanges();
+          console.log(data);
+            this.hasOS = true;
+            this.user = data;
+            this.getUserById(this.user.id);
+            this.cdr.detectChanges();
         },
         error: (e) => {
           this.notification.error(
@@ -159,9 +160,17 @@ export class BucketListComponent implements OnInit {
       .pipe(finalize(() => this.loadingSrv.close()))
       .subscribe({
         next: (data) => {
+          if(data.status !== 'LOI' && data.status !== 'HUY'){
+          this.hasOS = true;
           this.objectStorage = data;
           console.log(this.objectStorage);
           this.cdr.detectChanges();
+          }else{
+            this.notification.error(
+              this.i18n.fanyi('app.status.fail'),
+              this.i18n.fanyi('Không tìm thấy tài nguyên')
+            );
+          }
         },
         error: (e) => {
           this.notification.error(

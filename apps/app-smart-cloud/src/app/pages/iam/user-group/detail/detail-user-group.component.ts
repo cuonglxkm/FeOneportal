@@ -17,6 +17,7 @@ import {NzTableQueryParams} from "ng-zorro-antd/table";
 import {debounceTime} from "rxjs";
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from '@core';
+import { ProjectService } from '../../../../shared/services/project.service';
 
 @Component({
   selector: 'one-portal-detail-user-group',
@@ -98,6 +99,7 @@ export class DetailUserGroupComponent {
               private userGroupService: UserGroupService,
               private notification: NzNotificationService,
               private fb: NonNullableFormBuilder,
+              private projectService: ProjectService,
               @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService) {
   }
 
@@ -242,7 +244,8 @@ export class DetailUserGroupComponent {
     return this.listOfDataPolicies.filter(item => (!item || item.name.includes(keyword)) && (status === 'all' || item.type === status))
   }
 
-
+  listProjectName: string[] = []
+  listProjectNameStr: string = ''
   getData(groupName: string) {
     this.loading = true;
 
@@ -256,6 +259,16 @@ export class DetailUserGroupComponent {
       .subscribe(data => {
         this.groupModel = data
         this.loading = false
+        this.groupModel?.projectIds.forEach(item => {
+          this.projectService.getByProjectId(item).subscribe(data2 => {
+            this.listProjectName?.push(data2?.cloudProject?.displayName)
+            this.listProjectNameStr = this.listProjectName.join(', ')
+            console.log(this.listProjectName)
+          }, error => {
+            this.projectName = ""
+          })
+          console.log(this.listProjectName)
+        })
         //this.parentGroup = this.groupModel.parent
       })
     //get policy
@@ -263,6 +276,7 @@ export class DetailUserGroupComponent {
     //get user
     this.getUsersByGroupName()
   }
+
 
 
   refreshUsers() {
@@ -344,6 +358,14 @@ export class DetailUserGroupComponent {
     }, error => {
       this.notification.error(this.i18n.fanyi("app.status.fail"), this.i18n.fanyi("app.users.users.remove.fail"))
     })
+  }
+
+  projectName: string;
+  getDetailProject(projectId) : string {
+    this.projectService.getByProjectId(projectId).subscribe(data => {
+       this.projectName = data.cloudProject.displayName
+    })
+    return this.projectName;
   }
 
   ngOnInit(): void {

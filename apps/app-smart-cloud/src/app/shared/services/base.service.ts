@@ -45,7 +45,7 @@ export abstract class BaseService {
     return throwError(() => new Error('Đã có lỗi xảy ra, vui lòng thử lại sau!'));
   }
 
-  protected getHeaders() {
+  public getHeaders() {
     return {
       headers: new HttpHeaders({
         'Content-Type': 'application/json',

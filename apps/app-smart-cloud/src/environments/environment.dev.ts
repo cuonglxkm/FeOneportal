@@ -11,4 +11,7 @@ export const environment = {
   baseUrl: 'https://idg-api-gw-dev.onsmartcloud.com',
   issuer: 'https://identity-dev.onsmartcloud.com',
   unitOfMeasureVpn: 'vpns2s',
+  domain: '.onsmartcloud.com',
+  cms_baseUrl: 'https://cms.onsmartcloud.com',
+  vnpt_cloud_baseUrl: 'https://vnptcloud.onsmartcloud.com',
 } as Environment;

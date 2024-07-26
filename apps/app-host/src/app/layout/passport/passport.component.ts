@@ -2,6 +2,7 @@ import { Component, Inject, OnInit } from '@angular/core';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import {ALAIN_I18N_TOKEN} from "@delon/theme";
 import {I18NService} from "@core";
+import { environment } from '@env/environment';
 
 @Component({
   selector: 'layout-passport',
@@ -18,5 +19,10 @@ export class LayoutPassportComponent implements OnInit {
 
   ngOnInit(): void {
     this.tokenService.clear();
+  }
+
+  navigateToCloud(event: Event){
+    event.preventDefault()
+    window.location.href = environment.sso.cloud_baseUrl;
   }
 }

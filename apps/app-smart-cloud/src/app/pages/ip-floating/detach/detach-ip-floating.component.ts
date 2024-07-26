@@ -33,8 +33,6 @@ export class DetachIpFloatingComponent implements OnInit {
 
   handleCancel() {
     this.isVisible = false
-    this.isLoading = false
-    this.onCancel.emit()
   }
 
   handleOk() {
