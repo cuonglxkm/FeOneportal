@@ -544,6 +544,7 @@ export class BucketDetailComponent extends BaseService implements OnInit {
       this.isVisibleDelete = true;
     } else if (action == 6) {
       this.isVisibleShare = true;
+      this.getLinkShare(this.nextDay)
     } else if (action == 7) {
       this.isVisibleVersioning = true;
       this.loadDataVersion();
