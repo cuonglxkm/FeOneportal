@@ -1,0 +1,194 @@
+import { ChangeDetectorRef, Component, Inject, OnDestroy, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
+import { NonNullableFormBuilder } from '@angular/forms';
+import { NzNotificationService } from 'ng-zorro-antd/notification';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
+import { I18NService } from '@core';
+import { debounceTime, Subject, Subscription } from 'rxjs';
+import { BaseResponse, NotificationService } from '../../../../../../../libs/common-utils/src';
+
+export class WafDTO{
+  name:string;
+  package:string;
+  begin:Date;
+  end:Date;
+  status:string;
+}
+
+@Component({
+  selector: 'app-waf-list',
+  templateUrl: './waf-list.component.html',
+  styleUrls: ['./waf-list.component.less']
+})
+
+export class WafListComponent implements OnInit, OnDestroy {
+  isLoading: boolean = true;
+  selectedValue: string;
+  value: string;
+
+  options = [
+    { label: this.i18n.fanyi('app.status.all'), value: '' },
+    { label: this.i18n.fanyi('service.status.active'), value: 'ACTIVE' },
+    { label: this.i18n.fanyi('app.suspend'), value: 'SUSPENDED' },
+  ];
+
+  pageSize: number = 10;
+  pageIndex: number = 1;
+
+  response: BaseResponse<WafDTO[]>;
+
+  isBegin: boolean = false;
+
+  dataSubjectInputSearch: Subject<any> = new Subject<any>();
+  private searchSubscription: Subscription;
+  private enterPressed: boolean = false;
+
+
+  constructor(@Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
+              private router: Router,
+              //private wafService: WafService,
+              private fb: NonNullableFormBuilder,
+              private cdr: ChangeDetectorRef,
+              private notificationService: NotificationService,
+              private notification: NzNotificationService,
+              @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService) {
+  }
+
+
+  isFirstVisit: boolean = true;
+  ngOnDestroy(): void {
+    if (this.searchSubscription) {
+      this.searchSubscription.unsubscribe();
+    }
+  }
+
+  changeInputChange(event: Event) {
+    const value = (event.target as HTMLInputElement).value;
+    this.enterPressed = false;
+    this.dataSubjectInputSearch.next(value);
+  }
+
+  onChangeInputChange() {
+    this.searchSubscription = this.dataSubjectInputSearch.pipe(
+      debounceTime(700)
+    ).subscribe(res => {
+      if (!this.enterPressed) {
+        this.value = res.trim();
+        this.getListWaf();
+      }
+    });
+  }
+
+  onEnter(event: Event) {
+    event.preventDefault();
+    this.enterPressed = true;
+    const value = (event.target as HTMLInputElement).value;
+    this.value = value.trim();
+    this.getListWaf();
+  }
+
+  onChange(value) {
+    this.selectedValue = value;
+    this.getListWaf();
+  }
+
+  onPageSizeChange(value) {
+    this.pageSize = value;
+    this.getListWaf();
+  }
+
+  onPageIndexChange(value) {
+    this.pageIndex = value;
+    this.getListWaf();
+  }
+
+  wafInstance: string = '';
+
+  getListWaf() {
+    //this.isLoading = true;
+
+    // this.wafService.getWafs(this.customerId, this.project,
+    //   this.region, this.pageSize, this.pageIndex, this.selectedValue, this.value)
+    //   .pipe(debounceTime(500))
+    //   .subscribe(data => {
+    //     if (data) {
+    //       this.isLoading = false;
+    //       this.response = data;
+    //     } else {
+    //       this.isLoading = false;
+    //       this.response = null;
+    //     }
+    //     if (isBegin) {
+    //       this.isBegin = this.response.records.length < 1 || this.response.records === null ? true : false;
+    //     }
+    //   }, error => {
+    //     this.isLoading = false;
+    //     this.response = null;
+    //     console.log(error);
+    //     this.notification.error(error.statusText, this.i18n.fanyi('app.failData'));
+    //   });
+
+    this.response = {
+      currentPage: 1,
+      pageSize: 10,
+      totalCount: 100,
+      previousPage: 0,
+      records: [{
+        name:"waf_01",
+        package:"CMC01",
+        begin:new Date(),
+        end:new Date(),
+        status:"SUSPENDED",
+      }]
+    }
+    this.isLoading=false;
+  }
+
+  navigateToCreateWaf() {
+      this.router.navigate(['/app-smart-cloud/waf/create']);
+  }
+  
+  
+  navigateToAddDomain() {
+    this.router.navigate(['/app-smart-cloud/waf/create-domain']);
+  }
+
+  //delete
+  handleOkDelete() {
+    this.getListWaf();
+  }
+
+  //update
+  handleOkUpdate() {
+    this.getListWaf();
+  }
+
+  //create schedule snapshot
+  navigateToCreateScheduleSnapshot(idWaf: number) {
+    this.router.navigate(['/app-smart-cloud/schedule/snapshot/create', { wafId: idWaf }], { queryParams: { snapshotTypeCreate: 0 } });
+  }
+
+
+  ngOnInit() {
+    this.selectedValue = this.options[0].value;
+    this.onChangeInputChange();
+    this.getListWaf();
+    this.notificationService.connection.on('UpdateWaf', (message) => {
+      if (message) {
+        switch (message.actionType) {
+          case 'CREATING':
+          case 'CREATED':
+          case 'RESIZING':
+          case 'RESIZED':
+          case 'EXTENDING':
+          case 'EXTENDED':
+          case 'DELETED':
+          case 'DELETING':
+            this.getListWaf();
+            break;
+        }
+      }
+    });
+  }
+}

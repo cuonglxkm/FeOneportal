@@ -26,7 +26,7 @@ export const environment = {
     cloud_baseUrl: 'https://cloud.vnpt.vn/'
   },
   recaptcha: {
-    siteKey: '6LciGRgqAAAAAPRnkuX2TC-IbLWUe2tALrbZcQBp',
+    siteKey: '6LciGRgqAAAAAPvyRuPN5hcUa9LSuvwss7Iv11lE',
   },
   modules: [DelonMockModule.forRoot({ data: MOCKDATA })]
 } as Environment;

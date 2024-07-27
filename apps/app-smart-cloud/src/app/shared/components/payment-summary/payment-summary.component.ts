@@ -342,6 +342,14 @@ export class PaymentSummaryComponent implements OnInit {
             serviceItem.name = `WAF - ${specificationObj.serviceName}`;
             serviceItem.type = this.i18n.fanyi('app.button.extend');
             break;
+          case 'loadbalancer_create':
+            serviceItem.name = `Load Balancer SDN - ${specificationObj.serviceName}`;
+            serviceItem.type = this.i18n.fanyi('app.label.create');
+            break;
+          case 'loadbalancer_extend':
+            serviceItem.name = `Load Balancer SDN - ${specificationObj.serviceName}`;
+            serviceItem.type = this.i18n.fanyi('app.button.extend');
+            break;
           default:
             serviceItem.name = '';
             break;
