@@ -1,9 +1,18 @@
 @import '@delon/theme/index';
 
 .text-header-attach-volume {
-    color: #0066B3;
-    font-size: 16px;
-    font-weight: 600;
-    line-height: 24px;
-    letter-spacing: 0.10000000149011612px;
-  }
+  color: #0066b3;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 24px;
+  letter-spacing: 0.10000000149011612px;
+}
+
+:host
+  ::ng-deep
+  .ant-select-show-search.ant-select:not(.ant-select-customize-input)
+  .ant-select-selector {
+  cursor: text;
+  height: auto !important;
+  font-size: 16px;
+}
