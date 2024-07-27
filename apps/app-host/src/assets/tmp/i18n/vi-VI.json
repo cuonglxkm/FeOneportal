@@ -3516,5 +3516,29 @@
   "app.snapshot.schedule.info" : "Thông tin lịch Snapshot",
   "app.snapshot.schedule.enter.name1" : "Nhập tên lịch Snapshot",
   "app.snapshot.schedule.des.1" : "Tên lịch Snapshot có thể có tối đa 64 ký tự. Ký tự hợp lệ: A-Z, a-z, 0-9",
-  "app.snapshot.schedule.volume.select.label" : "Chọn tên Volume"
+  "app.snapshot.schedule.volume.select.label" : "Chọn tên Volume",
+
+  "waf.placeholder.filter.name": "Tìm kiếm theo WAF và gói dịch vụ",
+  "waf.domain.placeholder.filter.name": "Tìm kiếm theo domain",
+  "app.waf.status.running":"Đang hoạt động",
+  "app.waf.status.suspend":"Tạm ngưng",
+  "waf.button.create":"Tạo mới WAF",
+  "waf.alert.delete": "Bạn chắc chắn muốn xóa WAF?",
+  "waf.action.delete": "Xóa dịch vụ",
+  "waf.modal.subtitle.delete": "Để thực hiện xóa dịch vụ {{name}}, vui lòng nhập tên waf để xác nhận.",
+  "waf.notification.input.name": "Vui lòng nhập đúng tên waf",
+
+  "waf.domain.button.create":"Thêm domain",
+  "waf.table.title.name": "Tên WAF",
+  "waf.table.title.package": "Gói dịch vụ",
+  "waf.table.title.startdate": "Ngày khởi tạo",
+  "waf.table.title.enddate": "Ngày hết hạn",
+  "waf.table.title.status": "Trạng thái dịch vụ",
+  "waf.table.title.action": "Thao tác",
+  "waf.domain.table.title.domain":"Domain",
+  "waf.domain.table.title.ip":"IP Public",
+  "waf.domain.table.title.cname":"CNAME",
+  "waf.domain.table.title.https":"HTTPS",
+  "waf.domain.table.title.status":"Trạng thái domain",
+  "waf.domain.table.title.action":"Thao tác"
 }
