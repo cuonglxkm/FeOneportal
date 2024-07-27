@@ -27,7 +27,7 @@
     ></region-select-dropdown>
     <project-select-dropdown #projectCombobox
       (valueChanged)="projectChanged($event)"
-      (userChanged)="projectChanged($event)"
+      (userChanged)="userChangeProject($event)"
       [regionId]="region"
     ></project-select-dropdown>
   </div>

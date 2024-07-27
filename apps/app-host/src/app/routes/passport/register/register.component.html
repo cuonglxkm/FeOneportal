@@ -309,9 +309,7 @@
         <span class="text-agreement">
           {{ 'app.register.1' | i18n }}
           <a
-            href="https://vnptcloud.onsmartcloud.com/terms-and-conditions"
-            (click)="$event.stopPropagation()"
-            target="_blank"
+            (click)="navigateToTerm($event)"
             >{{ 'app.register.2' | i18n }}
           </a></span
         >

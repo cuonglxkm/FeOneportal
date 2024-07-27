@@ -335,6 +335,17 @@ export class InstancesService extends BaseService {
     );
   }
 
+  getListOffersByProductIdNoRegion(
+    productId: string,
+  ): Observable<OfferDetail[]> {
+    return this.http.get<OfferDetail[]>(
+      `${
+        this.baseUrl + this.ENDPOINT.catalogs
+      }/offers?productId=${productId}`,
+      this.getHeaders()
+    );
+  }
+
   getDetailProductByUniqueName(name: string): Observable<any> {
     return this.http.get<any>(
       `${this.baseUrl + this.ENDPOINT.catalogs}/products?uniqueName=${name}`,
