@@ -125,13 +125,15 @@ export class ObjectStorageCreateComponent implements OnInit {
     this.dataSubject.next(value);
   }
   onChangeCapacity() {
-    this.dataSubject
-      .pipe(
-        debounceTime(500) // Đợi 500ms sau khi người dùng dừng nhập trước khi xử lý sự kiện
-      )
-      .subscribe((res) => {
-        this.getTotalAmount();
-      });
+    this.dataSubject.pipe(debounceTime(500))
+    .subscribe((res) => {
+      if ((res % this.stepStorage) > 0) {
+        this.notification.warning('', this.i18n.fanyi('app.notify.amount.capacity', { number: this.stepStorage }));
+        this.objectStorageCreate.quota = res - (res % this.stepStorage);
+      }
+      console.log('total amount');
+      this.getTotalAmount();
+    });
   }
 
   orderObject: OrderItemObject = new OrderItemObject();

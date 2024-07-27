@@ -408,6 +408,7 @@
   "app.execution.date": "Execution date",
 
   "app.input.name": "Enter name",
+  "app.input.firstname": "Enter first name",
   "app.input.password": "Enter password",
   "app.input.code": "Enter code",
   "app.input.url": "Enter url",

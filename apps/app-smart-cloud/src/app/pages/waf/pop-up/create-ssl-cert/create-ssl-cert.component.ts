@@ -93,7 +93,7 @@ export class CreateSSLCertPopupComponent {
 
     if (fileList.length > maxFiles) {
       this.notification.error('File Limit Exceeded', `Không thể tải quá  ${maxFiles} files.`);
-      fileList = fileList.slice(0, maxFiles);
+      fileList = fileList.slice(0, maxFiles); 
     }
 
     if (validationErrors.size > 0) {

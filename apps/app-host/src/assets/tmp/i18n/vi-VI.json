@@ -311,6 +311,7 @@
   "app.create.port": "Tạo port",
 
   "app.input.name": "Nhập tên",
+  "app.input.firstname": "Nhập tên",
   "app.input.password": "Nhập mật khẩu",
   "app.input.code": "Nhập code",
   "app.input.url": "Nhập url",
