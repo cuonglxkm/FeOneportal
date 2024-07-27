@@ -155,8 +155,7 @@ export class ListBackupVolumeComponent implements OnInit, OnDestroy{
   }
 
   navigateToCreate(){
-    let hasRoleSI = localStorage.getItem('role').includes('SI')
-    if(this.typeVpc == 1 || hasRoleSI) {
+    if(this.typeVpc == 1) {
       this.router.navigate(['/app-smart-cloud/backup-volume/create/vpc']);
     }
     if(this.typeVpc != 1) {
