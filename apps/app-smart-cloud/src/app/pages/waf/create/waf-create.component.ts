@@ -105,7 +105,7 @@ export class WAFCreateComponent implements OnInit {
 
   form: FormGroup = this.fb.group({
     nameWAF: ['', [Validators.required]],
-    bonusServices: this.fb.array([this.createBonusService()]),
+    bonusServices: this.fb.array([this.createBonusService(), this.policySelected]),
     time: [1]
   });
   private inputChangeSubject = new Subject<{ value: number, name: string }>();
@@ -185,7 +185,7 @@ export class WAFCreateComponent implements OnInit {
 
 
   addBonusService() {
-    this.bonusServices.push(this.createBonusService());
+    this.bonusServices.push([this.createBonusService(), this.policySelected]);
   }
 
   removeBonusService(index: number) {
