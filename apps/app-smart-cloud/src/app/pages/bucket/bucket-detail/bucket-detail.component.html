@@ -697,8 +697,9 @@
 
 <!--Sao chép-->
 <nz-modal
+*ngIf="dataAction != undefined"
   [(nzVisible)]="isVisibleCopy"
-  [nzTitle]="'app.copy' | i18n"
+  [nzTitle]="'Sao chép Object : ' + dataAction.key"
   (nzOnCancel)="handleCancel()"
   [nzStyle]="modalStyle"
 >
@@ -763,6 +764,28 @@
           </div>
         </div>
       </div>
+      <div class="mt-2">Đường dẫn</div>
+      <div
+    style="
+      border: 1px solid #e2e2e9;
+      margin-bottom: 10px;
+      height: 40px; 
+      display: flex;
+      align-items: center;
+    "
+  >
+    <img
+      style="padding-right: 10px; padding-left: 10px; cursor: pointer"
+      src="assets/imgs/box.svg"
+    />
+    <ng-container *ngFor="let item of listOfFolderCopy; let i = index">
+      <div
+        style="font-weight: bold; padding-right: 10px; cursor: pointer;"
+      >
+      <span *ngIf="i > 0"> > </span> {{ item.name }}
+      </div>
+    </ng-container>
+  </div>
     </div>
   </ng-container>
   <div *nzModalFooter>
@@ -803,7 +826,7 @@
       nzFormat="yyyy-MM-dd HH:mm:ss"
       [nzDisabledDate]="disabledDate"
       [nzDisabledTime]="disabledDateTime"
-      [ngModel]="dateShare"
+      [ngModel]="nextDay"
       (ngModelChange)="getLinkShare($event)"
       [nzShowTime]="{ nzDefaultOpenValue: timeDefaultValue }"
       style="width: 100%; border-radius: 4px"

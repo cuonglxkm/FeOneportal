@@ -9,7 +9,7 @@
         <a [routerLink]="['/']">{{ 'app.breadcrumb.home' | i18n }}</a>
       </nz-breadcrumb-item>
       <nz-breadcrumb-item
-        ><a (click)="navigateToBucketList()">Object Storage</a
+        ><a [routerLink]="getBucketListUrl()">Object Storage</a
         ></nz-breadcrumb-item
       >
       <nz-breadcrumb-item>
@@ -42,15 +42,21 @@
         </div>
         <nz-form-item>
           <nz-form-label nzFor="name"
-            >{{ 'app.capacity' | i18n }} - GB (<span class="text-red">*</span
-            >)</nz-form-label
+            >{{ 'app.capacity' | i18n }} - GB (<span class="text-red">*)<img
+              style="margin-left: 10px"
+              nz-tooltip="{{ 'app.object.storage.tooltip' | i18n }}"
+              src="assets/imgs/pajamas_question.svg"
+              alt=""
+          /></span
+            ></nz-form-label
           >
-          <nz-form-control>
+          <nz-form-control nzErrorTip="Dung lượng không được để trống">
             <nz-input-number
               style="width: 100%; margin-left: 0px"
               [nzMin]="minStorage"
               [nzStep]="stepStorage"
               [nzMax]="maxStorage"
+              formControlName="quota"
               [(ngModel)]="objectStorageCreate.quota"
               (ngModelChange)="changeCapacity($event)"
               [ngModelOptions]="{ standalone: true }"
@@ -74,7 +80,7 @@
           </nz-form-control>
         </nz-form-item> 
       </nz-card>
-      <one-portal-service-usage-period [nameService]="'file-system'" (valueChanged)="onChangeTime($event)"/>
+      <one-portal-service-usage-period [nameService]="'object-storage'" (valueChanged)="onChangeTime($event)"/>
     </nz-col>
     <nz-col nzSpan="8">
       <nz-affix>
@@ -111,7 +117,7 @@
           <nz-row class="right-form-content-month" nzGutter="16">
             <nz-col nzSpan="16">
               <span class="text-value">{{
-                'app.cost.n.month' | i18n : { numberMonth: numberMonth }
+                'app.cost.n.month' | i18n : { numberMonth: validateForm.get('time').value }
               }}</span>
             </nz-col>
             <nz-col class="text-right" nzSpan="8">
@@ -187,6 +193,7 @@
           <nz-row>
             <nz-col style="width: 100%" class="text-right">
               <button
+                [disabled]="validateForm.invalid || objectStorageCreate.quota <= 0"
                 style="width: 100%"
                 nz-button
                 nzSize="large"
