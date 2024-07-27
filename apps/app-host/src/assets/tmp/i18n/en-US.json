@@ -692,6 +692,7 @@
   "app.object.storage.create": "Create Object Storage",
   "app.button.object.storage.create": "Create new Object Storage",
   "app.object.storage.info": "Object Storage information",
+  "app.object.storage.tooltip": "Storage of Object Storage",
   "app.object.storage.resize": "Resize Object Storage",
   "app.object.storage.extend": "Extend Object Storage",
   "app.object.storage.intro": "Unlimited, secure, fast, and stable storage",

@@ -1,10 +1,10 @@
-<page-header [breadcrumb]="breadcrumb" [action]="action" [autoTitle]="false">
+<page-header [breadcrumb]="breadcrumb" [action]="action" [title]="'Object Storage'">
   <ng-template #breadcrumb>
     <nz-breadcrumb [nzSeparator]="separatorTemplate">
       <nz-breadcrumb-item>
         <a [routerLink]="['/']">{{ 'app.breadcrumb.home' | i18n }}</a>
       </nz-breadcrumb-item>
-      <nz-breadcrumb-item> Object Storage </nz-breadcrumb-item>
+      <nz-breadcrumb-item><a [routerLink]="['/app-smart-cloud/object-storage/bucket']">Object Storage</a></nz-breadcrumb-item>
     </nz-breadcrumb>
     <ng-template #separatorTemplate
       ><img src="assets/imgs/arrow-square-right.svg" alt="" />
