@@ -660,15 +660,42 @@ export class ProjectCreateComponent implements OnInit {
 
     if (this.vpcType == '0') {
       console.log("ha")
-      this.vpc.createIpPublic(request).subscribe(
-        data => {
-          this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('project.action.creating'));
-          this.router.navigate(['/app-smart-cloud/project']);
-        },
-        error => {
-          this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('project.note51'));
-        }
-      );
+      this.orderService
+        .validaterOrder(request)
+        .pipe(
+          finalize(() => {
+            this.loadingSrv.close()
+            // this.isLoading = false;
+            this.cdr.detectChanges();
+          })
+        )
+        .subscribe({
+          next: (result) => {
+            if (result.success) {
+              this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('project.action.creating'));
+                  this.router.navigate(['/app-smart-cloud/project']);
+            }
+            else {
+              this.isVisiblePopupError = true;
+              this.errorList = result.data;
+            }
+          },
+          error: (error) => {
+            this.notification.error(
+              this.i18n.fanyi('app.status.fail'),
+              error.error.detail
+            );
+          },
+        })
+      // this.vpc.createIpPublic(request).subscribe(
+      //   data => {
+      //     this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('project.action.creating'));
+      //     this.router.navigate(['/app-smart-cloud/project']);
+      //   },
+      //   error => {
+      //     this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('project.note51'));
+      //   }
+      // );
     } else {
       this.loadingSrv.open({ type: 'spin', text: 'Loading...' });
       this.orderService

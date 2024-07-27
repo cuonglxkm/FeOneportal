@@ -158,7 +158,7 @@
   "validation.name.pattern": "Excluding Vietnamese accents, spaces, and special characters (except _)",
   "validation.exist.name": "This {{name}} name has already been used, please choose another name",
   "validation.choose.required": "Please choose {{name}}",
-  "validation.project.required.name":"Does not include special characters, spaces, Vietnamese, maximum 20 characters, may contain _ (special characters: @, #, $, %, &, *, +, -, arrow, star , emoticons, punctuation, brackets, circles, squares, rectangles...)",
+  "validation.project.required.name":"Does not include special characters, spaces, Vietnamese, maximum 50 characters, may contain _ (special characters: @, #, $, %, &, *, +, -, arrow, star , emoticons, punctuation, brackets, circles, squares, rectangles...)",
   "form.account.information": "Account Information",
   "form.account.update.information":"Update account information",
   "form.account.update.invoice":"Update invoicing information",
@@ -2821,6 +2821,7 @@
   "project.note4": "Custom VPC",
   "project.note5": "Default VPC",
   "project.status.enable": "Active",
+  
   "project.status.delete": "Scheduled automatic deletion",
   "project.default": "Default VPC",
   "project.note6": "Customers can create either a regular project or a VPC project - providing a comprehensive package of compute, storage, and network infrastructure that allows customers to set up virtualized data centers on VNPT Cloud.",
@@ -2877,7 +2878,8 @@
   "app.project.price": "Total Amount",
 
   "status.enable": "Enable",
-  "status.disable": "Disable",
+  "status.active":"Active",
+  "status.disable": "Discontinuity",
   "status.deleted": "Deleted",
   "status.suspended":"Pause",
   "custom.config.package": "Custom configuration package",
