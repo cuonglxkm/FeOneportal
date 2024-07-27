@@ -5,21 +5,21 @@ export class ObjectStorage {
   customerEmail: string;
   customerName: string;
   id: number;
-  regionText: any;
+  regionText: string;
   regionId: number;
   userName: string;
   status: string;
   quota: number;
-  saleDept: any;
-  contactPersonName: any;
-  dSubScriptionType: any;
-  dSubScriptionNumber: any;
-  saler2: any;
-  note: any;
-  oneSMESubId: any;
+  saleDept: string;
+  contactPersonName: string;
+  dSubScriptionType: string;
+  dSubScriptionNumber: string;
+  saler2: string;
+  note: string;
+  oneSMESubId: number;
   statusDisplay: string;
+  suspendType: string;
   suspendReason: string;
-  suspendType: string
 }
 export class ObjectStorageCreate {
   quota: number = 0;
@@ -51,6 +51,7 @@ export class ObjectStorageCreate {
   dSubscriptionType: any;
   oneSMEAddonId: any;
   oneSME_SubscriptionId: any;
+  isSendMail: boolean;
   typeName: string;
 }
 
