@@ -3584,5 +3584,29 @@
   "app.snapshot.schedule.info": "Snapshot Schedule Information",
   "app.snapshot.schedule.enter.name1": "Enter Snapshot Schedule name",
   "app.snapshot.schedule.des.1": "The Snapshot Schedule name can have up to 64 characters. Valid characters: A-Z, a-z, 0-9",
-  "app.snapshot.schedule.volume.select.label": "Select Volume name"
+  "app.snapshot.schedule.volume.select.label": "Select Volume name",
+
+  "waf.placeholder.filter.name": "Search by WAF and package",
+  "waf.domain.placeholder.filter.name": "Search by domain",
+  "app.waf.status.running":"Running",
+  "app.waf.status.suspend":"Stop",
+  "waf.button.create":"Create WAF",
+  "waf.alert.delete": "Are you sure you want to delete WAF?",
+  "waf.action.delete": "Delete",
+  "waf.modal.subtitle.delete": "To delete a waf {{name}}, Please enter the waf name to confirm",
+  "waf.notification.input.name": "Please enter the correct waf name.",
+
+  "waf.domain.button.create":"Add domain",
+  "waf.table.title.name": "WAF name",
+  "waf.table.title.package": "WAF package",
+  "waf.table.title.startdate": "Creation Date",
+  "waf.table.title.enddate": "Expiration Date",
+  "waf.table.title.status": "Status",
+  "waf.table.title.action": "Action",
+  "waf.domain.table.title.domain":"Domain",
+  "waf.domain.table.title.ip":"IP Public",
+  "waf.domain.table.title.cname":"CNAME",
+  "waf.domain.table.title.https":"HTTPS",
+  "waf.domain.table.title.status":"Status domain",
+  "waf.domain.table.title.action":"Action"
 }
