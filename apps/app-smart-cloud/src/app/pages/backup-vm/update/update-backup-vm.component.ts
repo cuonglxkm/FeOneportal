@@ -117,8 +117,8 @@ export class UpdateBackupVmComponent implements AfterViewInit {
 
     let formUpdate = new FormUpdateBackupVm()
     formUpdate.instanceBackupId = this.idBackupVm
-    formUpdate.name = this.validateForm.controls.nameBackup.value
-    formUpdate.description = this.validateForm.controls.description.value
+    formUpdate.name = this.validateForm.controls.nameBackup.value.trimStart().trimEnd()
+    formUpdate.description = this.validateForm.controls.description.value.trimStart().trimEnd()
     this.backupVmService.update(formUpdate).subscribe(data => {
       this.isLoading = false
       this.isVisible = false
