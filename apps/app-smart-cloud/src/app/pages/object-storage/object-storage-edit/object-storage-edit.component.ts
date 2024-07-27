@@ -135,9 +135,9 @@ export class ObjectStorageEditComponent implements OnInit {
       debounceTime(500)
     )
     .subscribe((res) => {
-      if ((res % this.stepStorage) > 0) {
+      if ((this.addQuota % this.stepStorage) > 0) {
         this.notification.warning('', this.i18n.fanyi('app.notify.amount.capacity', { number: this.stepStorage }));
-        this.addQuota = res - (res % this.stepStorage);
+        this.addQuota = this.addQuota - (this.addQuota % this.stepStorage);
       }
         this.getTotalAmount()
       })
