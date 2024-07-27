@@ -199,9 +199,9 @@ export class VolumeComponent implements OnInit, OnDestroy {
   navigateToCreateVolume() {
     if (this.typeVPC == 1) {
       if (this.region === RegionID.ADVANCE) {
-        this.router.navigate(['/app-smart-cloud/volume/vpc/create']);
-      }else{
         this.router.navigate(['/app-smart-cloud/volume-advance/vpc/create']);
+      }else{
+        this.router.navigate(['/app-smart-cloud/volume/vpc/create']);
       }
     } else {
       if (this.region === RegionID.ADVANCE) {
