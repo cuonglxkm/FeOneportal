@@ -1014,7 +1014,7 @@
                   src="assets/imgs/refresh.svg"
                   style="padding-right: 10px; height: 25px; cursor: pointer;"
                   nz-tooltip
-                  nzTooltipTitle="'app.restore' | i18n"
+                  [nzTooltipTitle]="'app.restore' | i18n"
                   nzTooltipPlacement="bottom"
                   (click)="doActionVersion('2', item)"
                 />
