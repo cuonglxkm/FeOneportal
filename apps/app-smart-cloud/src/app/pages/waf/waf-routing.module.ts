@@ -2,8 +2,13 @@ import {RouterModule, Routes} from "@angular/router";
 import {NgModule, inject} from "@angular/core";
 import { WAFCreateComponent } from "./create/waf-create.component";
 import { WAFResizeComponent } from "./resize/waf-resize.component";
+import { WafComponent } from "./waf.component";
 
 const routes: Routes = [
+  {
+    path: '',
+    component: WafComponent,
+  },
   {
     path: 'create',
     component: WAFCreateComponent,
