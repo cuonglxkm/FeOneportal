@@ -75,59 +75,82 @@
       appCode: '87bf13f0-2305-11ef-852e-75e07483a7b8',
       themes: "",
       appName: {
-  line1: 'VNPT Cloud Portal',
+  line1: 'VNPT Cloud Smartbot',
   line2: '' },
   thumb: '', 
-  icon_bot: 'https://storage-ic.icenter.ai/smartbot-v2/chatbot_images/12282023/94698700-5459-4713-bf55-7c2d4be2cc4c.png',
+  typeIcon: 'static',
+  logoDynamic: '/static/media/botgif.758c0cd9.gif',
+  icon_bot: 'https://ic-storage.vnpt.vn/smartbot-v2/chatbot_images/6272024/4553ed36-d306-4db6-bf99-353e229b292d.png',
+  icon_expand: '',
+  icon_close: '',
+  logo_button: 'https://ic-storage.vnpt.vn/smartbot-v2/chatbot_images/6272024/ed866147-6aa7-4df7-b36b-2ef0e7de78a3.png',
+  colorIcon: {
+  colorType: 'solid',
+  colorVoteIcon: '#FCB017',
+  colorExpand: '#FFFFFF',
+  colorClose: '#FFFFFF',
+  colorFrom: '#53C088',
+  colorTo: '#54B6C9',
+  colorSend: '#4a90e2',
+  colorMic: '#4a90e2',
+  },
+  greeting: '',
   senderName: create_UUID(), 
+  expireSession: true, 
+  botMetadata: localStorage.getItem('bot_metadata'), 
+  isSaveHistory: true, 
+  timeOpenUrl: 2000, 
+  autoOpen: false,
+  timeAutoOpen: 3000,
   isTyping: true,
-  timeTyping: 1000,
+  timeTyping: 3000,
+  isSuggestions: true,
   isVoting: true,
   styles: {
   head: {
-  bgColor: '#53c088',
+  bgColor: '#4a90e2',
   text: {
   line: 1,
   line1:{ 
   color: '#fff', 
   fontSize: '20px',
-  fontWeight: 400
+  fontWeight:400
   },
   line2: {
   color: '#fff',
-  fontSize: '16px',
-  fontWeight: 400
+  fontSize:'16px',
+  fontWeight:400
   }
   }
   },
   border: { 
   },
   floatButton: {
-  bgColor: '#fff',
-  icon: 'https://storage-ic.icenter.ai/smartbot-v2/chatbot_images/12282023/dc64a85b-9c28-4f73-ad3f-81025ab81833.png',
-  width: '62',
-  height: '62', 
+  bgColor: '#ffffff',
+  icon: 'https://ic-storage.vnpt.vn/smartbot-v2/chatbot_images/6272024/ed866147-6aa7-4df7-b36b-2ef0e7de78a3.png',
+  width: 62,
+  height: 62, 
   img: { 
   width: '51.6%' 
   } 
   },
   chat: {
-   bg: '#F3F6F6',
-   button: {
-  bg: '#53C088',
+  bg: '#F3F6F6',
+  button: {
+  bg: '#4a90e2',
   color: '#fff'
-   },
+  },
   answer: { 
-  bg: '#EEEEEE',
-   color: '#545454',
+  bg: '#EEE',
+  color: '#545454',
   fontSize: '12px',
   },
   question: {
-  bg: '#53C088', 
+  bg: '#4a90e2', 
   color: '#fff',
   fontSize: '12px',
   },
-  botIcon:'https://storage-ic.icenter.ai/smartbot-v2/chatbot_images/12282023/0439a22e-c009-482d-96d0-fdc7156bacb6.png'
+  botIcon:'https://ic-storage.vnpt.vn/smartbot-v2/chatbot_images/6272024/cd950892-d590-486b-b98a-01707d8a48e7.png'
   }
   }
      },
