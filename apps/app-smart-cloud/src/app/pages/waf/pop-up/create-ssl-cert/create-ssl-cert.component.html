@@ -1,0 +1,162 @@
+<nz-modal
+[(nzVisible)]="isVisibleCreateSSLCert"
+[nzTitle]="modalTitle"
+[nzContent]="modalContent"
+[nzFooter]="null"
+(nzOnCancel)="handleCancelCreateSSLCert()"
+>
+<ng-template #modalTitle>
+  <h4>
+    <b>Thêm SSL Cert</b>
+  </h4>
+</ng-template>
+<ng-template #modalContent>
+  <form nz-form nzLayout="vertical" [formGroup]="validateForm">
+    <nz-form-item>
+      <div class="text-label">
+        <span
+          >Certificate Upload Method (<span class="text-red">*</span
+          >)</span
+        >
+        <img
+          nz-popover
+          nzPopoverPlacement="bottom"
+          style="margin-left: 5px"
+          src="assets/imgs/pajamas_question.svg"
+          alt=""
+        />
+      </div>
+      <nz-form-control
+        nzDisableAutoTips
+        [nzErrorTip]="nameErrorTpl"
+        style="margin-top: 10px; margin-bottom: 10px;"
+      >
+        <input
+          class="input-custom"
+          appTrim
+          nz-input
+          placeholder="Import from the certificate file"
+          formControlName="name"
+          [maxlength]="50"
+        />
+        <ng-template #nameErrorTpl let-control>
+          <ng-container *ngIf="control.hasError('required')">{{
+            'validation.snapshot.info.required' | i18n
+          }}</ng-container>
+          <ng-container *ngIf="control.hasError('pattern')">{{
+            'validation.snapshot.name.pattern' | i18n
+          }}</ng-container>
+        </ng-template>
+      </nz-form-control>
+      <span class="text-desc">Tải lên chứng chỉ (bao gồm nội dung chứng chỉ, private key, nội dung CA...) do cơ quan cấp chứng chỉ cấp và tự động phân tích</span>
+    </nz-form-item>
+    <nz-form-item>
+      <div class="text-label d-block" style="width: 100%">
+        <span
+          >Certificate Name (<span class="text-red">*</span
+          >)</span
+        >
+        <img
+          nz-popover
+          nzPopoverPlacement="bottom"
+          style="margin-left: 5px"
+          src="assets/imgs/pajamas_question.svg"
+          alt=""
+        />
+      </div>
+      <nz-form-control
+        nzDisableAutoTips
+        style="margin-top: 10px; margin-bottom: 10px;"
+      >
+        <input
+          class="input-custom"
+          appTrim
+          nz-input
+          placeholder="Nhập tên chứng chỉ"
+          formControlName="name"
+          [maxlength]="50"
+        />
+        <ng-template #nameErrorTpl let-control>
+          <ng-container *ngIf="control.hasError('required')">{{
+            'validation.snapshot.info.required' | i18n
+          }}</ng-container>
+          <ng-container *ngIf="control.hasError('pattern')">{{
+            'validation.snapshot.name.pattern' | i18n
+          }}</ng-container>
+        </ng-template>
+      </nz-form-control>
+    </nz-form-item> 
+    <nz-form-item>
+      <div class="text-label">
+        <div style="margin-bottom: 10px;">
+          <span
+          >Certificate File Upload (<span class="text-red">*</span
+          >)</span
+        >
+        <nz-upload
+            [nzFileList]="fileList"
+            (nzChange)="handleChange($event)"
+          >
+            <button nz-button>
+              <span nz-icon nzType="upload"></span>
+              Tải lên
+            </button>
+          </nz-upload>
+        </div>
+        <span class="text-desc">Có thể tải lên tối đa 10 tệp, mỗi tệp không vượt quá 44kb. Định dạng tệp có thể tải lên: .pem, .key, .crt, .cer, .der, .pfx, .jks.</span>
+      </div>
+    </nz-form-item>  
+    <nz-form-item>
+      <div class="text-label">
+        <span
+          >Remarks (<span class="text-red">*</span
+          >)</span
+        >
+      </div>
+      <nz-form-control
+        nzDisableAutoTips
+        [nzErrorTip]="nameErrorTpl"
+        style="margin-top: 10px; margin-bottom: 10px;"
+      >
+        <input
+          class="input-custom"
+          appTrim
+          nz-input
+          placeholder="Import from the certificate file"
+          formControlName="name"
+          [maxlength]="50"
+        />
+        <ng-template #nameErrorTpl let-control>
+          <ng-container *ngIf="control.hasError('required')">{{
+            'validation.snapshot.info.required' | i18n
+          }}</ng-container>
+          <ng-container *ngIf="control.hasError('pattern')">{{
+            'validation.snapshot.name.pattern' | i18n
+          }}</ng-container>
+        </ng-template>
+      </nz-form-control>
+    </nz-form-item> 
+    <div class="d-flex justify-content-end">
+      <button nz-button (click)="handleCancelCreateSSLCert()">
+        <img
+          style="padding-right: 10px; margin-top: -4px"
+          src="assets/imgs/cancel.svg"
+          alt=""
+        />{{ 'app.button.cancel' | i18n }}
+      </button>
+      <button
+        nz-button
+        nzType="primary"
+        (click)="submitForm()"
+      >
+        <img
+          style="padding-right: 10px; margin-top: -4px"
+          src="assets/imgs/confirm.svg"
+          alt=""
+        />
+        {{ 'app.button.confirm' | i18n }}
+      </button>
+    </div>
+  </form>
+</ng-template>
+</nz-modal>

@@ -1,3 +1,4 @@
+
 @import '../../../../assets/size.less';
 
 .text-custom-price {
@@ -18,9 +19,10 @@
   letter-spacing: 0.10000000149011612px;
   margin-bottom:0px;
 }
+
 .text-custom-time {
   font-family: Inter;
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 400;
   line-height: 20px;
   letter-spacing: 0.10000000149011612px;
@@ -32,24 +34,21 @@
   //margin: 30px 5% 0px;
 }
 .button-cancel {
-  border-color:#0066B0 ;
+  border-color: #0066b0;
   width: 44%;
   margin-right: 5%;
   margin-left: 3%;
   margin-top: 30px;
 }
 
-::ng-deep .bonus-services .ant-alert-warning-custom {
+::ng-deep .ant-alert-warning-custom {
   .ant-alert-warning {
     border-radius: 4px;
     background-color: #fff;
     border: none;
+    margin-bottom: -20px;
+    margin-left: -22px;
   }
-}
-::ng-deep #alertTemplate .ant-alert-warning-custom-alertTemplate {
-  border-radius: 8px;
-    background-color: #FFF6E5;
-    border: 1px solid #ffe58f;
 }
 
 .newClassFlavor {
@@ -93,8 +92,9 @@
 }
 
 .flavor-footer-active {
+  color: #2b2d3b;
   font-size: 16px;
-  font-weight: 400;
+  font-weight: 600;
   line-height: 24px;
   letter-spacing: 0.10000000149011612px;
   text-align: center;
@@ -145,7 +145,6 @@
 }
 
 .centered {
-  // display: flex;
   align-items: center;
   justify-content: flex-end;
 }
@@ -166,18 +165,69 @@
   font-weight: 400;
   line-height: 140%; /* 19.6px */
 }
-.text-label{
-  // margin-bottom:10px;
+
+.text-transform-divide {
+  border-bottom: 1px solid;
+  transform: translateY(-11px);
+  position: relative;
 }
-.input-network{
-  margin-top:40px;
+
+.text-transform-divide-absolute{
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, 15px);
 }
-::ng-deep .netword-card.ng-star-inserted{
-  margin-bottom:30px
+
+.text-transform-divide-example{
+  border-bottom: 1px solid;
+  position: relative;
 }
-::ng-deep .preconfigured-package .ngucarousel-items{
-  justify-content: center;
+
+.text-label-custom{
+  color: #333333;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 30px;
+  text-align: left;
 }
+.info-project{
+  border: 1px solid var(--Neutral-5, #C4C6D4);
+  border-radius:4px;
+  margin-left:0px !important;
+  margin-right:0px !important;
+  margin-top:10px;
+}
+.row-gray-bg{
+  background: var(--Neutral-6, #E2E2E9);
+}
+.content-items-center{
+  display: flex;
+  align-items: center;
+  padding:10px 0px;
+}
+.font-bold{
+  font-weight: 700;
+  color:#2B2D3B;
+}
+.text-description{
+  display: grid !important;
+  margin-top: 20px;
+ 
+}
+#description{
+  border: 1px solid var(--Neutral-5, #C4C6D4);
+  padding:10px 12px;
+}
+::ng-deep .netword-card  .ant-form-item-control{
+  padding-left:0px !important;
+  padding-right:0px !important;
+}
+::ng-deep .netword-card .ant-form-item-label{
+  padding-left:0px !important;
+  padding-right:0px !important;
+}
+// 
 .bonus-services{
   border:1px dashed;
   padding:20px;
@@ -188,11 +238,9 @@
 ::ng-deep .bonus-services .ant-alert-with-description {
   align-items: flex-start;
   padding: 20px 0px !important;
+  margin-left: 0;
 }
-::ng-deep #alertTemplate .ant-alert-with-description{
-    padding: 20px 20px !important;
-}
-::ng-deep .bonus-services .ant-alert {
+::ng-deep .ant-alert {
   padding:0px;
 }
 .title-bonus-services{
@@ -215,12 +263,15 @@
 ::ng-deep  .ant-select-selector{
   border-radius:@textbox-radius-lg !important;
 }
-.border-bottom{
-  border-bottom: 1px solid #DCDCDC;
+::ng-deep .preconfigured-package .ngucarousel-items{
+  justify-content: center;
+}
+:focus-visible{
+  outline: none !important;
 }
 
 .card-money{
-  max-height: 300px;
+  max-height: 340px;
   overflow-y: auto;
   padding-right:10px;
   scrollbar-width: thin;
@@ -229,30 +280,19 @@
 .red-color{
   color:red;
 }
-.required{
-  margin-bottom:0;
-}
-
-.right-form {
+::ng-deep #alertTemplate .ant-alert-warning-custom-alertTemplate {
   border-radius: 8px;
-  .right-title {
-      margin-bottom: 20px;
-  }
-
-  .right-form-content-month {
-      margin-bottom: 10px;
-      padding-top: 10px;
-  }
-
-  .right-form-content-total {
-      margin-bottom: 20px;
-      background-color: #cce9ff;
-      padding: 16px 0 16px 0;
-      border-radius: 8px;
-  }
+    background-color: #FFF6E5;
+    border: 1px solid #ffe58f;
 }
-.custom-subtitle {
-  font-weight: 600;
-  font-size: 16px;
-  line-height: 24px;
+::ng-deep #alertTemplate .ant-alert-with-description{
+  padding: 20px 20px !important;
+}
+
+::ng-deep .alert .ant-alert-warning{
+  border-radius: 4px;
+}
+
+::ng-deep .alert .ant-alert-with-description{
+  padding: 8px;
 }

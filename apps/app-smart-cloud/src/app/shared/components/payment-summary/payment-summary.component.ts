@@ -330,6 +330,18 @@ export class PaymentSummaryComponent implements OnInit {
             serviceItem.name = `Backup VM - ${specificationObj.serviceName}`;
             serviceItem.type = this.i18n.fanyi('app.restore');
             break;
+          case 'waf_create':
+            serviceItem.name = `WAF - ${specificationObj.serviceName}`;
+            serviceItem.type = this.i18n.fanyi('app.label.create');
+            break;
+          case 'waf_resize':
+            serviceItem.name = `WAF - ${specificationObj.serviceName}`;
+            serviceItem.type = this.i18n.fanyi('app.button.resize');
+            break;
+          case 'waf_extend':
+            serviceItem.name = `WAF - ${specificationObj.serviceName}`;
+            serviceItem.type = this.i18n.fanyi('app.button.extend');
+            break;
           default:
             serviceItem.name = '';
             break;
@@ -611,8 +623,8 @@ export class PaymentSummaryComponent implements OnInit {
     }
   }
 
-  navigateToTerm(event: Event){
-    event.preventDefault()
+  navigateToTerm(event: Event) {
+    event.preventDefault();
     const url = environment.vnpt_cloud_baseUrl + '/terms-and-conditions';
     window.open(url, '_blank');
   }
