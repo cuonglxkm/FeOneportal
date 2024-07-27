@@ -87,7 +87,7 @@ export class CreateBackupVolumeVpcComponent implements OnInit{
   validateDuplicateName(control) {
     const value = control.value;
     // Check if the input name is already in the list
-    if (this.listName && this.listName.includes(value)) {
+    if (this.listName && this.listName.includes(value.toLowerCase())) {
       return { duplicateName: true }; // Duplicate name found
     } else {
       return null;
@@ -197,9 +197,9 @@ export class CreateBackupVolumeVpcComponent implements OnInit{
       this.isLoading = false
       data?.records.forEach(item => {
         if (this.listName.length > 0) {
-          this.listName.push(item.name);
+          this.listName.push(item.name.toLowerCase());
         } else {
-          this.listName = [item.name];
+          this.listName = [item.name.toLowerCase()];
         }
       })
     }, error =>  {
