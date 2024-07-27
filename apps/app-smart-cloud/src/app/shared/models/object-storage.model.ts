@@ -22,7 +22,7 @@ export class ObjectStorage {
   suspendReason: string;
 }
 export class ObjectStorageCreate {
-  quota: number;
+  quota: number = 0;
   customerId: number;
   userEmail: any;
   actorEmail: any;

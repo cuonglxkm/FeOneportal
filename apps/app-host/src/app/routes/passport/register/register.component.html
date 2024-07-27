@@ -16,22 +16,28 @@
       [nzCustomTemplate]="langRegister === 'en-US' ? customSelectLanguageEng : customSelectLanguageVi"
     >
       <nz-option nzCustomContent nzValue="en-US" nzLabel="ENG">
-        <img src="assets/imgs/ang-ic.png" alt="" />
+        <div class="d-flex align-items-center gap-2">
+          <one-portal-svg-icon [icon]="'icon_eng'" alt="" />
         ENG
+        </div>
       </nz-option>
       <nz-option nzCustomContent nzValue="vi-VI" nzLabel="VI">
+        <div class="d-flex align-items-center gap-2">
         <img src="assets/imgs/vietnam-ic.png" alt="" />
         VI
+      </div>
       </nz-option>
       <ng-template #iconSelect>
         <img src="assets/imgs/vietnam-tron.png" alt="" />
       </ng-template>
       <ng-template #iconSelect1>
-        <img src="assets/imgs/ang-ic.png" alt="" />
+        <one-portal-svg-icon [icon]="'icon_eng'" alt="" />
       </ng-template>
     </nz-select>
     <ng-template #customSelectLanguageEng>
-      <img style="margin-right: 5px;" src="assets/imgs/ang-ic.png" alt="" />
+      <div style="transform: translateY(4px); margin-right: 5px;">
+      <one-portal-svg-icon [icon]="'icon_eng'" alt="" />
+      </div>
       ENG
     </ng-template>
     <ng-template #customSelectLanguageVi>
@@ -184,7 +190,7 @@
               nz-input
               [maxlength]="20"
               formControlName="firstName"
-              placeholder="{{ 'app.input.name' | i18n }}"
+              placeholder="{{ 'app.input.firstname' | i18n }}"
             />
           </nz-input-group>
           <ng-template #nameErrorTip let-i>

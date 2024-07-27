@@ -37,7 +37,7 @@
               <span class="text-value-detail customSpan">{{ backupVolume?.name }}</span>
             </nz-row>
           </nz-col>
-          <nz-col nzSpan="12" *ngIf="typeVpc == 0">
+          <nz-col nzSpan="12" *ngIf="typeVpc != 1">
             <nz-row style="padding: 12px 0 12px 0">
               <span class="text-label" style="width: 35%">{{ 'app.backup.volume.backup.package' | i18n }}</span>
               <span class="text-value-detail">{{ backupPackageDetail?.packageName }}</span>
@@ -52,7 +52,7 @@
               <span class="text-value-detail customSpan">{{ backupVolume?.volumeName }}</span>
             </nz-row>
           </nz-col>
-          <nz-col nzSpan="12" *ngIf="typeVpc == 0">
+          <nz-col nzSpan="12" *ngIf="typeVpc != 1">
             <nz-row style="padding: 12px 0 12px 0">
               <span class="text-label" style="width: 35%">{{ 'app.backup.package.storage' | i18n }}</span>
               <span class="text-value-detail">{{ backupPackageDetail?.sizeInGB }} GB</span>
@@ -96,7 +96,7 @@
             <nz-row style="padding: 12px 0 12px 0">
               <span class="text-label" style="width: 35%">{{ 'app.backup.package.storage.remaining' |i18n }}</span>
               <span class="text-value-detail"
-                    *ngIf="typeVpc == 0">{{ backupPackageDetail?.sizeInGB - backupPackageDetail?.usedSize }} GB</span>
+                    *ngIf="typeVpc != 1">{{ backupPackageDetail?.sizeInGB - backupPackageDetail?.usedSize }} GB</span>
               <span class="text-value-detail"
                     *ngIf="typeVpc == 1">{{ projectDetail?.cloudProject?.quotaBackupVolumeInGb - projectDetail?.cloudProjectResourceUsed?.backup }}
                 GB</span>

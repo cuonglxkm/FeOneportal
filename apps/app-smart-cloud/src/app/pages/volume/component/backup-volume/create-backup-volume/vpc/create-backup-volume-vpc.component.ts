@@ -87,7 +87,7 @@ export class CreateBackupVolumeVpcComponent implements OnInit{
   validateDuplicateName(control) {
     const value = control.value;
     // Check if the input name is already in the list
-    if (this.listName && this.listName.includes(value)) {
+    if (this.listName && this.listName.includes(value.toLowerCase())) {
       return { duplicateName: true }; // Duplicate name found
     } else {
       return null;
@@ -125,14 +125,14 @@ export class CreateBackupVolumeVpcComponent implements OnInit{
     this.isLoading = true
     let formCreateBackupVolume = new FormCreateBackupVolume()
     formCreateBackupVolume.volumeId = this.validateForm.controls.volumeId.value
-    formCreateBackupVolume.description = this.validateForm.controls.description.value
+    formCreateBackupVolume.description = this.validateForm.controls.description.value.trimStart().trimEnd()
     formCreateBackupVolume.customerId = this.tokenService.get()?.userId
     formCreateBackupVolume.userEmail = this.tokenService.get()?.email
     formCreateBackupVolume.actorEmail = this.tokenService.get()?.email
     formCreateBackupVolume.projectId = this.project
     formCreateBackupVolume.vpcId = this.project
     formCreateBackupVolume.regionId = this.region
-    formCreateBackupVolume.serviceName = this.validateForm.controls.backupName.value
+    formCreateBackupVolume.serviceName = this.validateForm.controls.backupName.value.trimStart().trimEnd()
     formCreateBackupVolume.serviceType = 8
     formCreateBackupVolume.actionType = 0
     formCreateBackupVolume.serviceInstanceId = 0
@@ -197,9 +197,9 @@ export class CreateBackupVolumeVpcComponent implements OnInit{
       this.isLoading = false
       data?.records.forEach(item => {
         if (this.listName.length > 0) {
-          this.listName.push(item.name);
+          this.listName.push(item.name.toLowerCase());
         } else {
-          this.listName = [item.name];
+          this.listName = [item.name.toLowerCase()];
         }
       })
     }, error =>  {

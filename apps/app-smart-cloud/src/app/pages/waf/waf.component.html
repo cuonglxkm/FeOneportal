@@ -1,0 +1,32 @@
+<page-header [breadcrumb]="breadcrumb">
+  <ng-template #breadcrumb>
+    <nz-breadcrumb [nzSeparator]="iconTemplate">
+      <nz-breadcrumb-item [routerLink]="'/'">{{ 'app.breadcrumb.home' | i18n }}</nz-breadcrumb-item>
+      <nz-breadcrumb-item>
+        {{ 'app.breadcrumb.infrastructure.service' | i18n }}
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item>
+        Web Application Firewall
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item>
+        <a routerLink="/app-smart-cloud/waf">WAF</a>
+      </nz-breadcrumb-item>
+    </nz-breadcrumb>
+    <ng-template #iconTemplate>
+      <one-portal-svg-icon [icon]="'icon_breadcrumb'"></one-portal-svg-icon>
+    </ng-template>
+  </ng-template>
+  
+</page-header>
+<nz-content>
+  <nz-tabset>
+    <nz-tab nzTitle="Domain">
+      <app-waf-domain-list></app-waf-domain-list>
+    </nz-tab>
+    <nz-tab nzTitle="Gói dịch vụ">
+      <app-waf-list></app-waf-list>
+    </nz-tab>
+  </nz-tabset>
+</nz-content>
+
+
