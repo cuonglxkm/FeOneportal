@@ -121,7 +121,7 @@ export class BucketDetailComponent extends BaseService implements OnInit {
   isLoadingDeleteObject: boolean = false;
   isLoadingDeleteVersion: boolean = false;
   isLoadingRestoreVersion: boolean = false;
-
+  isClickCopy: boolean = false;
   constructor(
     private service: ObjectObjectStorageService,
     private objectSevice: ObjectStorageService,
@@ -242,6 +242,7 @@ export class BucketDetailComponent extends BaseService implements OnInit {
     this.isVisibleDetail = false;
     this.isVisibleDelete = false;
     this.isVisibleVersioning = false;
+    this.isClickCopy = false;
   }
 
   handleCancelShareFile() {
@@ -576,7 +577,7 @@ export class BucketDetailComponent extends BaseService implements OnInit {
 
   // Updated method to handle folder clicks and find the parent bucket
   toFolder(event: any, parent: any) {
-    console.log(event);
+    this.isClickCopy = true
     this.activeRow = event;
 
     if (parent) {
@@ -642,17 +643,45 @@ export class BucketDetailComponent extends BaseService implements OnInit {
 
   copyFolder() {
     this.isLoadingCopy = true;
+  
     let destinationKey = '';
     let destinationBucket = '';
-    if (this.folderChange.includes('/')) {
-      const separatorIndex = this.folderChange.indexOf('/');
-      destinationBucket = this.folderChange.substring(0, separatorIndex);
-      destinationKey =
-        this.folderChange.substring(separatorIndex + 1) + this.dataAction.key;
+    
+      if (this.folderChange.includes('/')) {
+    const separatorIndex = this.folderChange.indexOf('/');
+    destinationBucket = this.folderChange.substring(0, separatorIndex);
+    // Check if destination bucket is the same as the source bucket
+    if (destinationBucket === this.dataAction.bucketName) {
+      console.log(this.dataAction.key);
+      let keyPath = this.dataAction.key.split('/')[1];
+      destinationKey = this.folderChange.substring(separatorIndex + 1) + keyPath;
     } else {
-      destinationBucket = this.folderChange;
+      console.log(this.dataAction.key);
+      let keyPath = this.dataAction.key.split('/')[1];
+      destinationKey = this.folderChange.substring(separatorIndex + 1) + keyPath;
+    }
+  } else {
+    destinationBucket = this.folderChange;
+    if (destinationBucket === this.dataAction.bucketName) {
+      destinationKey = '';
+    } else {
       destinationKey = this.dataAction.key;
     }
+  }
+
+    const sourcePath = `${this.dataAction.bucketName}/${this.dataAction.key}`;
+    const destinationPath = `${destinationBucket}/${destinationKey}`;
+  
+    
+    if (sourcePath === destinationPath) {
+      this.isLoadingCopy = false;
+      this.notification.error(
+        this.i18n.fanyi('app.status.fail'),
+         'Không thể copy object đến chính thư mục của nó'
+      );
+      return;
+    }
+  
     const data = {
       sourceKey: this.dataAction.key,
       sourceBucket: this.dataAction.bucketName,
@@ -660,12 +689,13 @@ export class BucketDetailComponent extends BaseService implements OnInit {
       destinationBucket: destinationBucket,
       regionId: this.region
     };
-
+  
     this.service
       .copyProject(data)
       .pipe(
         finalize(() => {
           this.isLoadingCopy = false;
+          this.isClickCopy = false
           this.loadData();
         })
       )
@@ -685,6 +715,7 @@ export class BucketDetailComponent extends BaseService implements OnInit {
         }
       );
   }
+
 
   copyUrl() {
     this.clipboard.copy(this.dataAction.url);
@@ -786,6 +817,7 @@ export class BucketDetailComponent extends BaseService implements OnInit {
       .pipe(
         finalize(() => {
           this.isVisibleDeleteVersion = false
+          this.isLoadingDeleteVersion = false
         })
       )
       .subscribe(
