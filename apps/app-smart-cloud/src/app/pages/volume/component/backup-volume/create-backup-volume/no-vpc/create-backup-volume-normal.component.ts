@@ -159,7 +159,7 @@ export class CreateBackupVolumeNormalComponent implements OnInit {
     this.isLoading = true
     let formCreateBackupVolume = new FormCreateBackupVolume()
     formCreateBackupVolume.volumeId = this.validateForm.controls.volumeId.value
-    formCreateBackupVolume.description = this.validateForm.controls.description.value
+    formCreateBackupVolume.description = this.validateForm.controls.description.value.trimStart().trimEnd()
     formCreateBackupVolume.backupPackageId = this.validateForm.controls.backupPacketId.value
     formCreateBackupVolume.customerId = this.tokenService.get()?.userId
     formCreateBackupVolume.userEmail = this.tokenService.get()?.email
@@ -167,7 +167,7 @@ export class CreateBackupVolumeNormalComponent implements OnInit {
     formCreateBackupVolume.projectId = this.project
     formCreateBackupVolume.vpcId = this.project
     formCreateBackupVolume.regionId = this.region
-    formCreateBackupVolume.serviceName = this.validateForm.controls.backupName.value
+    formCreateBackupVolume.serviceName = this.validateForm.controls.backupName.value.trimStart().trimEnd()
     formCreateBackupVolume.serviceType = 8
     formCreateBackupVolume.actionType = 0
     formCreateBackupVolume.serviceInstanceId = 0

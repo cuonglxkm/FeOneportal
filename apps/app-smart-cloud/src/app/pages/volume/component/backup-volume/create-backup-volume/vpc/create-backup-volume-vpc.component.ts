@@ -125,14 +125,14 @@ export class CreateBackupVolumeVpcComponent implements OnInit{
     this.isLoading = true
     let formCreateBackupVolume = new FormCreateBackupVolume()
     formCreateBackupVolume.volumeId = this.validateForm.controls.volumeId.value
-    formCreateBackupVolume.description = this.validateForm.controls.description.value
+    formCreateBackupVolume.description = this.validateForm.controls.description.value.trimStart().trimEnd()
     formCreateBackupVolume.customerId = this.tokenService.get()?.userId
     formCreateBackupVolume.userEmail = this.tokenService.get()?.email
     formCreateBackupVolume.actorEmail = this.tokenService.get()?.email
     formCreateBackupVolume.projectId = this.project
     formCreateBackupVolume.vpcId = this.project
     formCreateBackupVolume.regionId = this.region
-    formCreateBackupVolume.serviceName = this.validateForm.controls.backupName.value
+    formCreateBackupVolume.serviceName = this.validateForm.controls.backupName.value.trimStart().trimEnd()
     formCreateBackupVolume.serviceType = 8
     formCreateBackupVolume.actionType = 0
     formCreateBackupVolume.serviceInstanceId = 0
