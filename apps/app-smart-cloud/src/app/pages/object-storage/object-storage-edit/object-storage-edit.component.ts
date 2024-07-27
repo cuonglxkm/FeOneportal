@@ -41,7 +41,7 @@ import { RegionID } from 'src/app/shared/enums/common.enum';
 export class ObjectStorageEditComponent implements OnInit {
   id: any;
   today: Date = new Date();
-  addQuota: number = 1;
+  addQuota: number;
   objectStorageResize: ObjectStorageResize = new ObjectStorageResize();
   valueStringConfiguration: string;
   minStorage: number;
@@ -204,6 +204,7 @@ export class ObjectStorageEditComponent implements OnInit {
         this.minStorage = Number.parseInt(arr[0]);
         this.stepStorage = Number.parseInt(arr[1]);
         this.maxStorage = Number.parseInt(arr[2]);
+        this.addQuota = this.stepStorage;
       });
   }
 

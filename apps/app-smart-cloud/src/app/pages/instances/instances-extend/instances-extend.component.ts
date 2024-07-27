@@ -89,8 +89,6 @@ export class InstancesExtendComponent implements OnInit {
         this.instancesModel = data;
         this.regionId = this.instancesModel.regionId;
         this.loading = false;
-        let expiredDate = new Date(this.instancesModel.expiredDate);
-        expiredDate.setDate(expiredDate.getDate() + this.numberMonth * 30);
         this.getListIpPublic();
         this.getTotalAmount();
         this.service
@@ -143,9 +141,18 @@ export class InstancesExtendComponent implements OnInit {
       });
   }
 
+  invalid: boolean = false;
   onChangeTime(value) {
-    this.numberMonth = value;
-    this.getTotalAmount();
+    if (value.length == 0) {
+      this.invalid = true;
+      this.totalAmount = 0;
+      this.totalVAT = 0;
+      this.totalincludesVAT = 0;
+    } else {
+      this.invalid = false;
+      this.numberMonth = value;
+      this.getTotalAmount();
+    }
   }
 
   onRegionChanged(region: RegionModel) {
