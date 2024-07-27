@@ -22,7 +22,7 @@ export class ObjectStorage {
   suspendType: string
 }
 export class ObjectStorageCreate {
-  quota: number = 1;
+  quota: number = 0;
   customerId: number;
   userEmail: any;
   actorEmail: any;

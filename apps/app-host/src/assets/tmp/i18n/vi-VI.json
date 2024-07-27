@@ -590,6 +590,7 @@
   "app.object.storage.create": "Tạo mới Object Storage",
   "app.button.object.storage.create": "Tạo mới Object Storage",
   "app.object.storage.info": "Thông tin Object Storage",
+  "app.object.storage.tooltip": "Dung lượng Object Storage",
   "app.object.storage.resize": "Điều chỉnh Object Storage",
   "app.object.storage.extend": "Gia hạn Object Storage",
   "app.object.storage.intro": "Lưu trữ không giới hạn, an toàn, nhanh chóng và ổn định",
