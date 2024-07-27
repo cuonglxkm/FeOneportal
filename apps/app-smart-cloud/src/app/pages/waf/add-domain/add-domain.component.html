@@ -1,0 +1,148 @@
+<page-header [breadcrumb]="breadcrumb" title="Thêm domain">
+    <ng-template #breadcrumb>
+      <nz-breadcrumb [nzSeparator]="iconTemplate">
+        <nz-breadcrumb-item
+          ><a [routerLink]="['/']">{{
+            'app.breadcrumb.home' | i18n
+          }}</a></nz-breadcrumb-item
+        >
+        <nz-breadcrumb-item> {{ 'app.breadcrumb.infrastructure.service' | i18n }} </nz-breadcrumb-item>
+        <nz-breadcrumb-item><a>Web Application Firewall</a> </nz-breadcrumb-item>
+        <nz-breadcrumb-item>WAF</nz-breadcrumb-item>
+        <nz-breadcrumb-item>Thêm domain</nz-breadcrumb-item>
+      </nz-breadcrumb>
+      <ng-template #iconTemplate
+        ><one-portal-svg-icon [icon]="'icon_breadcrumb'"></one-portal-svg-icon
+      ></ng-template>
+    </ng-template>
+  </page-header>
+<form nz-form [formGroup]="form" [nzLayout]="'vertical'">
+    <nz-card class="text-label" nzTitle="" style="border-radius: 8px;">
+        <div
+          class="d-flex"
+          style="justify-content: space-between; align-items: center"
+        >
+          <div style="align-items: center" class="d-flex">
+            <span class="text-card-header">Thông tin domain</span>
+          </div>
+        </div>
+        <nz-row nzGutter="16">
+            <!-- WAF Field -->
+            <div nz-col [nzSpan]="12" class="gutter-row">
+                <nz-form-item>
+                  <nz-form-control [nzErrorTip]="wafErrorTpl">
+                    <nz-form-label nzFor="nameWAF">
+                      Tên WAF (<span style="color: rgba(252, 16, 16, 1)">*</span>)
+                    </nz-form-label>
+                    <input nz-input type="text" appTrim placeholder="www.example.com" formControlName="nameWAF" class="input-custom" [maxlength]="50" minlength="1" />
+                    <ng-template #wafErrorTpl let-control>
+                      <!-- <ng-container *ngIf="control.hasError('duplicateDomain')">Domain không được trùng nhau</ng-container>
+                      <ng-container *ngIf="control.hasError('pattern')">Domain không đúng định dạng</ng-container> -->
+                      <ng-container *ngIf="control.hasError('required')">Tên WAF không được để trống</ng-container>
+                    </ng-template>
+                  </nz-form-control>
+                </nz-form-item>
+              </div>
+              <!-- Serice package Field -->
+            <div nz-col [nzSpan]="12" class="gutter-row">
+                <nz-form-item>
+                  <nz-form-control [nzErrorTip]="packageErrorTpl">
+                    <nz-form-label nzFor="package">
+                    <span>{{ 'app.text.package' | i18n }} (<span style="color: red;">*</span>)</span>
+                    </nz-form-label>
+                    <nz-select [ngModel]="1" [nzDisabled]="true"  class="input-select-custom" formControlName="package">
+                      <nz-option nzLabel="SMC01 (1/2)" [nzValue]="1"></nz-option>
+                    </nz-select>
+                    <!-- <input nz-input type="text" appTrim placeholder="www.example.com" formControlName="domain" class="input-custom" [maxlength]="50" minlength="1" /> -->
+                    <ng-template #packageErrorTpl let-control>
+                      <!-- <ng-container *ngIf="control.hasError('duplicateDomain')">Domain không được trùng nhau</ng-container> -->
+                      <ng-container *ngIf="control.hasError('required')">Gói dịch vụ không được để trống</ng-container>
+                    </ng-template>
+                  </nz-form-control>
+                </nz-form-item>
+              </div>
+              <!-- Domain Field -->
+            <div nz-col [nzSpan]="12" class="gutter-row">
+                <nz-form-item>
+                  <nz-form-control [nzErrorTip]="domainErrorTpl">
+                    <nz-form-label nzFor="domain">
+                      Domain (<span style="color: rgba(252, 16, 16, 1)">*</span>)
+                    </nz-form-label>
+                    <input nz-input type="text" appTrim placeholder="www.example.com" formControlName="domain" class="input-custom" [maxlength]="50" minlength="1" />
+                    <ng-template #domainErrorTpl let-control>
+                      <!-- <ng-container *ngIf="control.hasError('duplicateDomain')">Domain không được trùng nhau</ng-container> -->
+                      <ng-container *ngIf="control.hasError('pattern')">Domain không đúng định dạng</ng-container>
+                      <ng-container *ngIf="control.hasError('required')">Domain không được để trống</ng-container>
+                    </ng-template>
+                  </nz-form-control>
+                </nz-form-item>
+              </div>
+              <!-- IP Public Field -->
+              <div nz-col [nzSpan]="12" class="gutter-row">
+                <nz-form-item>
+                  <nz-form-control [nzErrorTip]="ipErrorTpl">
+                    <nz-form-label nzFor="ipPublic">
+                      IP Public (<span style="color: rgba(252, 16, 16, 1)">*</span>)
+                    </nz-form-label>
+                    <input nz-input type="text" appTrim placeholder="Nhập IP Public" formControlName="ipPublic" class="input-custom" [maxlength]="50" minlength="1" />
+                    <ng-template #ipErrorTpl let-control>
+                      <ng-container *ngIf="control.hasError('required')">IP Public không được để trống</ng-container>
+                      <ng-container *ngIf="control.hasError('invalidIP')">Địa chỉ IP không hợp lệ</ng-container>
+                    </ng-template>
+                  </nz-form-control>
+                </nz-form-item>
+              </div>
+              <div nz-col [nzSpan]="12" class="gutter-row">
+                <nz-form-item>
+                  <nz-form-control>
+                    <nz-form-label nzFor="host">Host </nz-form-label>
+                    <input nz-input type="text" appTrim placeholder="Nhập host" formControlName="host" class="input-custom" [maxlength]="50" minlength="1" />                    
+                  </nz-form-control>
+                </nz-form-item>
+              </div>
+      
+              <div nz-col [nzSpan]="12" class="gutter-row">
+                <nz-form-item>
+                  <nz-form-control>
+                    <nz-form-label nzFor="port">Port </nz-form-label>
+                    <input nz-input type="text" appTrim placeholder="Nhập port" formControlName="port" class="input-custom" [maxlength]="50" minlength="1" />
+                  </nz-form-control>
+                </nz-form-item>
+              </div>
+    
+              <div nz-col [nzSpan]="12" class="gutter-row">
+                <nz-form-item>
+                  <nz-form-control>
+                    <nz-form-label nzFor="sslCert">Chọn SSL Cert (Chọn Cert hoặc <a (click)="openModalSSlCert()">Tạo mới</a>)</nz-form-label>
+                    <nz-select class="input-select-custom" nzPlaceHolder="Chọn SSL Cert" formControlName="sslCert">
+                      <nz-option nzLabel="SSL Cert 1" [nzValue]="1"></nz-option>
+                    </nz-select>
+                  </nz-form-control>
+                </nz-form-item>
+              </div>
+        </nz-row>
+    </nz-card>
+    <div class="d-flex justify-content-end">
+      <button nz-button routerLink="/">
+        <img
+          style="padding-right: 10px; margin-top: -4px"
+          src="assets/imgs/cancel.svg"
+          alt=""
+        />{{ 'app.button.cancel' | i18n }}
+      </button>
+      <button
+        nz-button
+        nzType="primary"
+        [disabled]="form.invalid"
+      >
+        <img
+          style="padding-right: 10px; margin-top: -4px"
+          src="assets/imgs/confirm.svg"
+          alt=""
+        />
+        {{ 'app.button.confirm' | i18n }}
+      </button>
+    </div>
+</form>
+
+<one-portal-create-ssl-cert (onCancelVisible)="handleCancelCreateSSLCert()" [isVisibleCreateSSLCert]="isVisibleCreateSSLCert"></one-portal-create-ssl-cert>
