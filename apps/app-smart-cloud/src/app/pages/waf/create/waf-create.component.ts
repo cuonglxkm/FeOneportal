@@ -1,28 +1,28 @@
 import { ChangeDetectorRef, Component, Inject, OnInit } from '@angular/core';
-import { AbstractControl, FormArray, FormBuilder, FormControl, FormGroup, ValidationErrors, Validators } from '@angular/forms';
-import { NguCarouselConfig } from '@ngu/carousel';
-import { ImageTypesModel, OfferItem } from '../../instances/instances.model';
-import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
-import { InstancesService } from '../../instances/instances.service';
-import { getCurrentRegionAndProject } from '@shared';
-import { Router } from '@angular/router';
-import { finalize } from 'rxjs/operators';
-import { duplicateDomainValidator, ipValidatorMany, RegionModel, slider } from '../../../../../../../libs/common-utils/src';
-import { IpPublicService } from '../../../shared/services/ip-public.service';
-import { OfferDetail, SupportService } from '../../../shared/models/catalog.model';
-import { da } from 'date-fns/locale';
-import { NzNotificationService } from 'ng-zorro-antd/notification';
-import { debounceTime, Subject } from 'rxjs';
-import { I18NService } from '@core';
-import { ALAIN_I18N_TOKEN } from '@delon/theme';
-import { CatalogService } from 'src/app/shared/services/catalog.service';
-import { Interface } from 'readline';
-import { VpcService } from 'src/app/shared/services/vpc.service';
-import { OrderService } from 'src/app/shared/services/order.service';
-import { LoadingService } from '@delon/abc/loading';
-import { RegionID } from 'src/app/shared/enums/common.enum';
-import { DOMAIN_REGEX } from 'src/app/shared/constants/constants';
+import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { DomSanitizer } from '@angular/platform-browser';
+import { Router } from '@angular/router';
+import { I18NService } from '@core';
+import { LoadingService } from '@delon/abc/loading';
+import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
+import { NguCarouselConfig } from '@ngu/carousel';
+import { getCurrentRegionAndProject } from '@shared';
+import { NzNotificationService } from 'ng-zorro-antd/notification';
+import { Subject } from 'rxjs';
+import { DOMAIN_REGEX } from 'src/app/shared/constants/constants';
+import { RegionID } from 'src/app/shared/enums/common.enum';
+import { CatalogService } from 'src/app/shared/services/catalog.service';
+import { OrderService } from 'src/app/shared/services/order.service';
+import { VpcService } from 'src/app/shared/services/vpc.service';
+import { duplicateDomainValidator, ipValidatorMany, slider } from '../../../../../../../libs/common-utils/src';
+import { IpPublicService } from '../../../shared/services/ip-public.service';
+import { DataPayment, ItemPayment, OfferItem, Order, OrderItem } from '../../instances/instances.model';
+import { InstancesService } from '../../instances/instances.service';
+import { ObjectStorageCreate } from 'src/app/shared/models/object-storage.model';
+import { WAFCreate } from '../../../shared/models/waf-init';
+import { ObjectStorageService } from 'src/app/shared/services/object-storage.service';
+import { OrderItemObject } from 'src/app/shared/models/price';
 
 
 
@@ -72,6 +72,8 @@ export class WAFCreateComponent implements OnInit {
   maxBlock: number = 0;
 
   selectedDescription: string = '';
+  selectedNameFlavor: string = '';
+  selectedOfferId: number = 0;
   listOfDomain: any = [];
 
   isRequired: boolean = true;
@@ -84,21 +86,32 @@ export class WAFCreateComponent implements OnInit {
   }
   isVisiblePopupError: boolean = false;
   errorList: string[] = [];
-
-  policy: string
+  timeSelected: any
   closePopupError() {
     this.isVisiblePopupError = false;
   }
   productByRegion: any
 
+  policy = [
+    { label: 'Default', value: '0' },
+  ];
+
+  policySelected: string = '0';
+  numberDomain: number = 0;
+  get policySelectedLabel(): string {
+    const selectedPolicy = this.policy.find(p => p.value === this.policySelected);
+    return selectedPolicy ? selectedPolicy.label : '';
+  }
+
   form: FormGroup = this.fb.group({
     nameWAF: ['', [Validators.required]],
-    bonusServices: this.fb.array([this.createBonusService()])
+    bonusServices: this.fb.array([this.createBonusService()]),
+    time: [1]
   });
   private inputChangeSubject = new Subject<{ value: number, name: string }>();
 
   private searchSubject = new Subject<string>();
-
+  orderObject: OrderItemObject = new OrderItemObject();
   constructor(@Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
     private instancesService: InstancesService,
     private cdr: ChangeDetectorRef,
@@ -111,12 +124,14 @@ export class WAFCreateComponent implements OnInit {
     private orderService: OrderService,
     private loadingSrv: LoadingService,
     private fb: FormBuilder,
-    private sanitizer: DomSanitizer
+    private service: ObjectStorageService
 
   ) {
   
   }
-  
+
+  WAFCreate: WAFCreate = new WAFCreate();
+  totalincludesVAT: number = 0;
   url = window.location.pathname;
   hasRoleSI: boolean
   ngOnInit() {
@@ -131,12 +146,8 @@ export class WAFCreateComponent implements OnInit {
     } else {
       this.regionId = RegionID.ADVANCE;
     }
-    this.initFlavors();;
-    // this.onChangeTime();
-    this.getStepBlock('BLOCKSTORAGE')
+    this.initFlavors();
     this.iconToggle = "icon_circle_minus"
-    // this.numOfMonth = this.form.controls['numOfMonth'].value;
-
   }
 
   get bonusServices(): FormArray {
@@ -154,7 +165,23 @@ export class WAFCreateComponent implements OnInit {
     });
   }
 
-
+  initWAF() {
+    this.WAFCreate.customerId = this.tokenService.get()?.userId;
+    this.WAFCreate.userEmail = this.tokenService.get()?.email;
+    this.WAFCreate.actorEmail = this.tokenService.get()?.email;
+    this.WAFCreate.projectId = null;
+    this.WAFCreate.regionId = 0;
+    this.WAFCreate.serviceType = 0;
+    this.WAFCreate.actionType = 0;
+    this.WAFCreate.serviceInstanceId = 0;
+    this.WAFCreate.createDate = this.today
+    this.WAFCreate.expireDate = this.expiredDate
+    this.WAFCreate.offerId = this.selectedOfferId;
+    this.WAFCreate.wafDomains = this.form.get('bonusServices')?.value
+    this.WAFCreate.serviceName = this.form.get('nameWAF')?.value
+    this.WAFCreate.isSendMail = true
+    this.WAFCreate.typeName = "SharedKernel.IntegrationEvents.Orders.Specifications.Waf.WafCreateSpecification,SharedKernel.IntegrationEvents, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null"
+  }
 
 
   addBonusService() {
@@ -170,14 +197,6 @@ export class WAFCreateComponent implements OnInit {
   }
 
 
-
-
-  handleSubmit(){
-    const nameWAFValue = this.form.get('nameWAF')?.value;
-    const domainValues = this.bonusServices.controls.map(group => group.get('ipPublic')?.value);
-    console.log('Domains:', domainValues);
-  }
-
   getDomainValues(): string {
     return this.bonusServices.controls
       .map(control => control.get('domain')?.value)
@@ -186,38 +205,32 @@ export class WAFCreateComponent implements OnInit {
   }
 
   onChangeTime(numberMonth: number) {
-
-    this.numOfMonth = numberMonth;
-    console.log("numOfMonth123", this.numOfMonth)
-    // const dateNow = new Date();
-    // dateNow.setDate(dateNow.getDate() + Number(this.form.controls['numOfMonth'].value * 30));
-    // console.log("this.numOfMonth hh",this.numOfMonth)
-    // this.expiredDate = dateNow;
-    this.calculate(null);
+    this.timeSelected = numberMonth;
+    this.form.controls.time.setValue(this.timeSelected);
+    this.getTotalAmount();
   }
 
-  calculate(number: any) {
-    if (this.vpcType === '0') {
-      this.activeVpc = false;
-      this.activeNoneVpc = true;
-    } else {
-      this.activeVpc = true;
-      this.activeNoneVpc = false;
 
-    }
-    this.searchSubject.next('');
-
+  getTotalAmount() {
+    this.initWAF();
+    let itemPayment: ItemPayment = new ItemPayment();
+    itemPayment.orderItemQuantity = 1;
+    itemPayment.specificationString = JSON.stringify(this.WAFCreate);
+    itemPayment.specificationType = 'waf_create';
+    itemPayment.serviceDuration = this.form.controls.time.value;
+    itemPayment.sortItem = 0;
+    let dataPayment: DataPayment = new DataPayment();
+    dataPayment.orderItems = [itemPayment];
+    this.service.getTotalAmount(dataPayment).subscribe((result) => {
+      console.log('thanh tien', result);
+      this.totalAmount = Number.parseFloat(result.data.totalAmount.amount);
+      this.totalincludesVAT = Number.parseFloat(
+        result.data.totalPayment.amount
+      );
+      this.orderObject = result.data;
+      this.cdr.detectChanges();
+    });
   }
-  getStepBlock(name: string) {
-    this.vpc.getStepBlock(name).subscribe((res: any) => {
-      const valuestring: any = res.valueString;
-      const parts = valuestring.split("#")
-      this.minBlock = parseInt(parts[0]);
-      this.stepBlock = parseInt(parts[1]);
-      this.maxBlock = parseInt(parts[2]);
-    })
-  }
-  messageNotification: string;
 
   onInputChange(value: number, name: string): void {
     console.log("object value", value)
@@ -227,9 +240,18 @@ export class WAFCreateComponent implements OnInit {
 
 
   selectPackge = '';
-  vpcType = '0';
-  activeNoneVpc = true;
-  activeVpc = false;
+
+  getNumberOfDomains(characteristicValues: any[]): number {
+    const domainCharacteristic = characteristicValues.find(ch => ch.charName === 'Domain');
+    if (domainCharacteristic && domainCharacteristic.charOptionValues) {
+      return parseInt(domainCharacteristic.charOptionValues[0], 10);
+    }
+    return 0;
+  }
+
+  isShowAddButton(): boolean {
+    return this.bonusServices.length < this.numberDomain;
+  }
 
   onInputFlavors(event: any, name: any) {
     this.selectPackge = name;
@@ -237,15 +259,21 @@ export class WAFCreateComponent implements OnInit {
       (flavor) => flavor.id === event
     );
     this.selectedElementFlavor = 'flavor_' + event;
+    this.selectedNameFlavor = this.offerFlavor.offerName;
+    this.selectedOfferId = this.offerFlavor.id;
+    console.log(this.selectedNameFlavor);
+    
     console.log("selectedElementFlavor", this.selectedElementFlavor);
-
+    this.numberDomain = this.offerFlavor?.numberDomain || 0; 
+    console.log(this.numberDomain);
+    
     if (this.offerFlavor?.description) {
       this.selectedDescription = this.offerFlavor.description.replace(/<\/?b>/g, '');
     } else {
       this.selectedDescription = '';
     }
   
-    this.calculate(null);
+    this.getTotalAmount();
   }
 
 
@@ -261,9 +289,7 @@ export class WAFCreateComponent implements OnInit {
                 (e: OfferItem) => e.status.toUpperCase() == 'ACTIVE'
               );
 
-              console.log("listOfferFlavors", this.listOfferFlavors);
-              
-
+            
               this.listOfferFlavors.forEach((e: OfferItem) => {
                 e.description = '';
                 e.characteristicValues.forEach((ch) => {
@@ -283,11 +309,51 @@ export class WAFCreateComponent implements OnInit {
                     e.description += `<br/><b>${ch.charOptionValues} GB</b> Lưu lượng sử dụng`
                    }
                 });
+                e.numberDomain = this.getNumberOfDomains(e.characteristicValues)
               });
               this.cdr.detectChanges();
             });
         }
       );
+  }
+
+  orderItem: OrderItem[] = [];
+  order: Order = new Order();
+  handleSubmit() {
+    this.orderItem = [];
+    this.initWAF();
+    let specification = JSON.stringify(this.WAFCreate);
+    let orderItemOS = new OrderItem();
+    orderItemOS.orderItemQuantity = 1;
+    orderItemOS.specification = specification;
+    orderItemOS.specificationType = 'waf_create';
+    orderItemOS.price = this.totalAmount;
+    orderItemOS.serviceDuration = this.form.controls.time.value;
+    this.orderItem.push(orderItemOS);
+
+    this.order.customerId = this.tokenService.get()?.userId;
+    this.order.createdByUserId = this.tokenService.get()?.userId;
+    this.order.note = 'tạo waf';
+    this.order.orderItems = this.orderItem;
+    this.orderService.validaterOrder(this.order).subscribe({
+      next: (data) => {
+        if (data.success) {
+          var returnPath: string = window.location.pathname;
+          this.router.navigate(['/app-smart-cloud/order/cart'], {
+            state: { data: this.order, path: returnPath },
+          });
+        } else {
+          this.isVisiblePopupError = true;
+          this.errorList = data.data;
+        }
+      },
+      error: (e) => {
+        this.notification.error(
+          this.i18n.fanyi('app.status.fail'),
+          e.error.detail
+        );
+      },
+    });
   }
 
   handleCancelCreateSSLCert(){

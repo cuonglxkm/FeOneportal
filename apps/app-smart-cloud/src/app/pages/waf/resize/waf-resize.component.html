@@ -1,0 +1,300 @@
+<page-header [breadcrumb]="breadcrumb" [action]="action" title="Điều chỉnh WAF">
+  <ng-template #breadcrumb>
+    <nz-breadcrumb [nzSeparator]="iconTemplate">
+      <nz-breadcrumb-item
+        ><a [routerLink]="['/']">{{
+          'app.breadcrumb.home' | i18n
+        }}</a></nz-breadcrumb-item
+      >
+      <nz-breadcrumb-item> {{ 'app.breadcrumb.infrastructure.service' | i18n }} </nz-breadcrumb-item>
+      <nz-breadcrumb-item><a>Web Application Firewall</a> </nz-breadcrumb-item>
+      <nz-breadcrumb-item>WAF</nz-breadcrumb-item>
+      <nz-breadcrumb-item>Điều chỉnh WAF</nz-breadcrumb-item>
+    </nz-breadcrumb>
+    <ng-template #iconTemplate
+      ><one-portal-svg-icon [icon]="'icon_breadcrumb'"></one-portal-svg-icon
+    ></ng-template>
+  </ng-template>
+  <ng-template #action>
+    <div class="alain-custom-action text-right">
+      <share-users-combobox></share-users-combobox>
+    </div>
+  </ng-template>
+</page-header>
+<!---------------FORM-------------->
+<form nz-form [formGroup]="form" [nzLayout]="'vertical'">
+  <nz-row nzGutter="24">
+    <nz-col nzSpan="16">
+      <div style="margin-bottom: 20px">
+        <nz-card>
+          <span class="text-card-header">Thông tin WAF</span>
+          <div nz-row [nzGutter]="24" class="info-project">
+            <div nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="12">
+              <div>
+                <div nz-row [nzGutter]="24" class="row-white-bg content-items-center">
+                  <div nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="12">
+                    <span class="label-fontsize">Tên WAF:</span>
+                  </div>
+                  <div nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="12">
+                    <span class="label-fontsize font-bold ">-</span>
+                  </div>
+                </div>
+                <div nz-row [nzGutter]="24" class="row-gray-bg content-items-center">
+                  <div nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="12">
+                    <span class="label-fontsize">Domain:</span>
+                  </div>
+                  <div nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="12">
+                    <span class="label-fontsize font-bold" *ngIf="data?.resourceStatus=='ENABLE'">Đang hoạt động</span>
+                    <span class="label-fontsize font-bold" *ngIf="data?.resourceStatus=='SUSPENDED'">Tạm ngưng</span>
+                  </div>
+                </div>
+                <div nz-row [nzGutter]="24" class="row-white-bg content-items-center">
+                  <div nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="12">
+                    <span class="label-fontsize">Policy:</span>
+                  </div>
+                  <div nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="12">
+                    <span class="label-fontsize font-bold ">{{data?.type == 'VPC' ? (data?.loadbalancerOfferName==null ? '-': data?.loadbalancerOfferName) : '-'}}</span>
+                  </div>
+                </div>
+                <div nz-row [nzGutter]="24" class="row-gray-bg content-items-center">
+                  <div nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="12">
+                    <span class="label-fontsize">Ngày khởi tạo:</span>
+                  </div>
+                  <div nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="12">
+
+                    <span class="label-fontsize font-bold">{{data?.type == 'VPC' ? ( data?.createDate | date :
+                      'HH:mm:ss dd/MM/yyyy') : '-' }}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="12">
+              <div class="" style="margin-left:20px">
+                <div nz-row [nzGutter]="24" class="row-white-bg content-items-center">
+                  <div nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="12">
+                    <span class="label-fontsize">Gói dịch vụ:</span>
+                  </div>
+                  <div nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="12">
+                    <span class="label-fontsize font-bold">{{ data?.displayName }}</span>
+                  </div>
+                </div>
+                <div nz-row [nzGutter]="24" class="row-gray-bg content-items-center">
+                  <div nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="12">
+                    <span class="label-fontsize">IP Public:</span>
+                  </div>
+                  <div nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="12">
+                    <span class="label-fontsize font-bold">{{data?.type == 'VPC' ? (data?.publicNetworkAddress==""?'-': data?.publicNetworkAddress)
+                      :'-'}}</span>
+                  </div>
+                </div>
+                <div nz-row [nzGutter]="24" class="row-white-bg content-items-center">
+                  <div nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="12">
+                    <span class="label-fontsize">Trạng thái dịch vụ:</span>
+                  </div>
+                  <div nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="12">
+                    <span class="label-fontsize font-bold">{{data?.type == 'VPC' ? (data?.vpnSiteToSiteOfferName==null ? '-':data?.vpnSiteToSiteOfferName )
+                      :'-'}}</span>
+                  </div>
+                </div>
+                <div nz-row [nzGutter]="24" class="row-gray-bg content-items-center">
+                  <div nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="12">
+                    <span class="label-fontsize">Ngày hết hạn:</span>
+                  </div>
+                  <div nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="12">
+                    <span class="label-fontsize font-bold">{{data?.type == 'VPC' ? ( data?.expireDate | date :
+                      'HH:mm:ss dd/MM/yyyy ') : '-'}}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>         
+        </nz-card>
+
+      </div>
+
+
+      <!-- Thông tin cấu hình -->
+      <nz-card>
+        <span class="text-card-header">Thông tin điều chỉnh</span>
+        <div class="mt-3 alert">
+          <nz-alert nzType="warning" nzShowIcon
+                    [nzDescription]="'Khi thực hiện điều chỉnh gói dịch vụ, chi phí mới sẽ được tính từ ngày điều chỉnh cho tới ngày hết hạn'"
+                ></nz-alert>
+        </div>
+        <div class="text-label mb-3 mt-3">{{ 'project.note38' | i18n }}:</div>
+        <div class="text-label" style="margin-bottom: 20px">{{ 'project.note39' | i18n }}</div>
+
+        <div>
+          <ngu-carousel
+          #myCarouselFlavor
+          [inputs]="carouselTileConfig"
+          [dataSource]="listOfferFlavors"
+          class="preconfigured-package"
+        >
+          <ngu-tile
+            *nguCarouselDef="let item; index as i; let ani = animate"
+            [@slider]="ani"
+          >
+            <div
+              style="cursor: pointer"
+              (click)="onInputFlavors(item.id, item.offerName)"
+              [id]="'flavor_' + item.id"
+            >
+              <nz-row class="border-bottom">
+                <nz-col
+                  style="padding-bottom: 5px"
+                  class="newClassFlavor text-center"
+                  [class.initialClassFlavor]="
+                    selectedElementFlavor === 'flavor_' + item.id
+                  "
+                >
+                  <div style="position: relative">
+                    <div>
+                      <p
+                        class="nameFlavor pt-3 mb-0"
+                        [class.initialNameFlavor]="
+                          selectedElementFlavor === 'flavor_' + item.id
+                        "
+                      >
+                        {{ item.offerName }}
+                      </p>
+                      <div style="margin-top: -10px">
+                        <img
+                          style="width: 80%"
+                          [src]="
+                            selectedElementFlavor === 'flavor_' + item.id
+                              ? 'assets/imgs/line2.svg'
+                              : 'assets/imgs/line.svg'
+                          "
+                          alt=""
+                        />
+                      </div>
+                      <span class="priceFlavor">{{
+                        item.price.fixedPrice.amount
+                          | number : '1.0-0' : 'en-US'
+                      }}</span>
+                      <span> {{ 'app.payment-detail.month' | i18n }}</span>
+                    </div>
+                  </div>
+                </nz-col>
+              </nz-row>
+                <div
+                  style="width: 100%; padding-top: 5px"
+                  [class.flavor-footer-active]="
+                    selectedElementFlavor === 'flavor_' + item.id
+                  "
+                  [class.flavor-footer]="
+                    selectedElementFlavor != 'flavor_' + item.id
+                  "
+                >
+                  <div class="mt-3">
+                    <p [innerHTML]="item.description"></p>
+                  </div>
+                </div>
+            </div>
+          </ngu-tile>
+
+          <ul class="myPoint" NguCarouselPoint>
+            <li
+              *ngFor="let i of myCarouselFlavor?.pointNumbers"
+              [class.active]="i === myCarouselFlavor?.activePoint"
+              (click)="myCarouselFlavor?.moveTo(i)"
+            ></li>
+          </ul>
+        </ngu-carousel>
+         <div class="mt-3" style="padding:16px 16px">
+          <p class="label-fontsize">Ngày điều chỉnh: {{dateNow|date : 'dd/MM/yyyy'}}</p>
+         </div>
+        </div>
+      </nz-card>
+
+      <!---------------CARD-CONG-THUC-------------->
+      <nz-card>
+        <one-portal-guide-formula></one-portal-guide-formula>
+      </nz-card>
+    </nz-col>
+
+
+
+    <!---------------CARD-THÀNH TIỀN-------------->
+    <nz-col nzSpan="8">
+      <nz-affix [nzOffsetTop]="72">
+      <nz-card style="border-radius: 8px;" [nzLoading]="loadingCalculate" class="card-border">
+        <div style="margin-bottom: 20px">
+          <span class="text-card-header">{{'app.estimated.cost' | i18n}}</span>
+        </div>
+        <div class="card-money">
+        <div class="text-value">Gói dịch vụ</div>
+        <div style="margin-top: 10px" class="text-label">zxczxc</div>
+       </div>
+        <!-- <nz-row style="margin-bottom: 10px" nzGutter="16">
+          <nz-col nzSpan="16">
+            <span class="text-value">{{'app.service.cost' | i18n}} {{ this.form.controls['numOfMonth'].value || 0 }}
+              {{'app.month' | i18n}}</span>
+          </nz-col>
+          <nz-col class="text-right" nzSpan="8">
+            <span class="text-value" style="color: #0066b3" nzAlign="right">
+              {{ totalAmount || 0 }}
+              VND
+            </span>
+          </nz-col>
+        </nz-row> -->
+        <nz-divider></nz-divider>
+        <div>
+          <nz-row style="margin-bottom: 10px" nzGutter="16">
+            <nz-col nzSpan="16">
+              <span class="text-value"> Chi phí điều chỉnh</span>
+            </nz-col>
+            <nz-col class="text-right" nzSpan="8">
+            <span class="text-value" style="color: #0066b3" nzAlign="right">
+              {{ totalAmount | formatPrice}}
+              VND
+            </span>
+            </nz-col>
+          </nz-row>
+          <nz-row style="margin-bottom: 10px" nzGutter="16">
+            <nz-col nzSpan="16">
+              <span class="text-value"> Chi phí VAT (10%)</span>
+            </nz-col>
+            <nz-col class="text-right" nzSpan="8">
+            <span class="text-value" style="color: #0066b3" nzAlign="right">
+              {{ totalVAT | formatPrice}}
+              VND
+            </span>
+            </nz-col>
+          </nz-row>
+          <nz-row style="
+            margin-bottom: 20px;
+            background-color: #cce9ff;
+            padding: 16px 0 16px 0;
+            border-radius: 8px;
+          " nzGutter="16">
+            <nz-col nzSpan="16">
+              <span class="text-label">{{'app.total.payment' | i18n}}</span><br />
+              <span class="text-note-italicized">({{'app.payment-detail.vat' | i18n}})</span>
+            </nz-col>
+            <nz-col class="text-right" nzSpan="8">
+              <span class="text-value" style="color: #ea3829" nzAlign="right">{{ totalPayment | formatPrice  }} VND</span>
+            </nz-col>
+          </nz-row>
+        </div>
+        <nz-row>
+          <nz-col style="width: 100%">
+            <button style="width: 100%" nz-button nzSize="large" nzType="primary">
+              <span nz-icon nzType="wallet" nzTheme="outline"></span>
+              <span>Điều chỉnh</span>
+            </button>
+          </nz-col>
+        </nz-row>
+      </nz-card>
+    </nz-affix>
+    </nz-col>
+  </nz-row>
+
+
+</form>
+<one-portal-popup-list-error
+  [isVisible]="isVisiblePopupError"
+  [errorList]="errorList"
+  (onCancel)="closePopupError()"
+></one-portal-popup-list-error>
