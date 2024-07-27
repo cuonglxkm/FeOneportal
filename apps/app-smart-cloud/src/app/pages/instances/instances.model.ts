@@ -502,6 +502,7 @@ export class OfferItem {
   characteristicValues: CharacteristicValue[];
   description: string;
   ipNumber: string;
+  numberDomain?:number
 }
 
 export class Price {

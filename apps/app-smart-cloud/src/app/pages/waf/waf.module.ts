@@ -16,16 +16,29 @@ import { ListSslCertComponent } from './ssl-cert/list-ssl-cert/list-ssl-cert.com
 import { DeleteDomainComponent } from './pop-up/delete-domain/delete-domain.component';
 import { EditDomainComponent } from './pop-up/edit-domain/edit-domain.component';
 import { HttpSettingComponent } from './pop-up/http-setting/http-setting.component';
+import { WAFResizeComponent } from './resize/waf-resize.component';
+import { WafComponent } from './waf.component';
+import { WafListComponent } from './waf-list/waf-list.component';
+import { DeleteWafComponent } from './waf-list/delete-volume/delete-waf.component';
+import { WafDomainListComponent } from './domain-list/domain-list.component';
 
 @NgModule({
   declarations: [
-    WAFCreateComponent,
-    CreateSSLCertPopupComponent,
-    AddDomainComponent,
-    ListSslCertComponent,
-    DeleteDomainComponent,
-    EditDomainComponent,
-    HttpSettingComponent,
+   WAFCreateComponent,
+   CreateSSLCertPopupComponent,
+   AddDomainComponent,
+   ListSslCertComponent,
+   DeleteDomainComponent,
+   EditDomainComponent,
+   HttpSettingComponent,
+   WAFCreateComponent,
+   CreateSSLCertPopupComponent,
+   WAFResizeComponent,
+   WafComponent,
+   WafListComponent,
+   WafDomainListComponent,
+   DeleteWafComponent,
+   CreateSSLCertPopupComponent
   ],
   imports: [
     CommonModule,

@@ -41,7 +41,7 @@ import { RegionID } from 'src/app/shared/enums/common.enum';
 export class ObjectStorageEditComponent implements OnInit {
   id: any;
   today: Date = new Date();
-  addQuota: number = 1;
+  addQuota: number;
   objectStorageResize: ObjectStorageResize = new ObjectStorageResize();
   valueStringConfiguration: string;
   minStorage: number;
@@ -71,9 +71,9 @@ export class ObjectStorageEditComponent implements OnInit {
     this.id = this.activatedRoute.snapshot.paramMap.get('id');
     let regionAndProject = getCurrentRegionAndProject();
     this.region = regionAndProject.regionId;
-    this.getObjectStorage();
-    this.getTotalAmount();
     this.getConfigurations();
+    this.getObjectStorage();
+    this.onChangeTotalAmount()
   }
 
   onRegionChange(region: RegionModel) {
@@ -128,12 +128,22 @@ export class ObjectStorageEditComponent implements OnInit {
   changeTotalAmount(value: number) {
     this.dataSubject.next(value);
   }
-  getTotalAmount() {
+
+  onChangeTotalAmount() {
     this.dataSubject
-      .pipe(
-        debounceTime(500) // Đợi 500ms sau khi người dùng dừng nhập trước khi xử lý sự kiện
-      )
-      .subscribe((res) => {
+    .pipe(
+      debounceTime(500)
+    )
+    .subscribe((res) => {
+      if ((res % this.stepStorage) > 0) {
+        this.notification.warning('', this.i18n.fanyi('app.notify.amount.capacity', { number: this.stepStorage }));
+        this.addQuota = res - (res % this.stepStorage);
+      }
+        this.getTotalAmount()
+      })
+  }
+
+  getTotalAmount() {
         this.initObjectStorageResize();
         let itemPayment: ItemPayment = new ItemPayment();
         itemPayment.orderItemQuantity = 1;
@@ -153,7 +163,6 @@ export class ObjectStorageEditComponent implements OnInit {
           this.orderObject = result.data;
           this.cdr.detectChanges();
         });
-      });
   }
 
   order: Order = new Order();
