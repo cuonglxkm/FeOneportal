@@ -738,7 +738,7 @@
   "app.bucket.detail.copy.authorize.des1": "Tất cả mọi người đều có thể truy cập thông tin của file.Lưu ý, Bucket public nhưng nếu object private thì cũng không truy cập được từ bên ngoài",
   "app.bucket.detail.version.list": "Danh sách phiên bản của object: {{objectName}}",
   "app.bucket.detail.version.version": "Phiên bản",
-  "app.bucket.detail.version.versionId": "Id phiển bản",
+  "app.bucket.detail.version.versionId": "ID Phiên bản",
   "app.bucket.detail.version.delete": "Xác nhận xóa phiên bản Object?",
   "app.bucket.detail.version.restore": "Xác nhận khôi phục phiên bản Object?",
   "app.bucket.detail.version.delete.alert": "Bạn đang thực hiện xóa phiên bản Object",
