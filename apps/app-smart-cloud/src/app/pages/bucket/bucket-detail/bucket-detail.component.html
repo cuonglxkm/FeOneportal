@@ -218,7 +218,7 @@
           [nzChecked]="setOfCheckedId.has(item)"
           (nzCheckedChange)="onItemChecked(item, $event)"
         ></td>
-        <td *ngIf="item.objectType != 'folder'">{{ item.keyName }}</td>
+        <td nzBreakWord="true" *ngIf="item.objectType != 'folder'">{{ item.keyName }}</td>
         <td
           *ngIf="item.objectType == 'folder'"
           style="color: #0074cc; cursor: pointer"
@@ -228,7 +228,7 @@
           {{ item.key }}
         </td>
         <td>{{ (item.size / 1024).toFixed(2) }} KB</td>
-        <td style="text-transform: capitalize;">{{ item.objectType }}</td>
+        <td nzBreakWord="true" style="text-transform: capitalize;">{{ item.objectType }}</td>
         <td>{{ item.lastModified | date : 'dd/MM/yyyy HH:mm:ss' }}</td>
         <td>{{ item.isPublic == true ? 'Public' : 'Private' }}</td>
         <td>
@@ -453,8 +453,8 @@
         </thead>
         <tbody>
           <tr *ngFor="let item of lstFileUpdate; i as index">
-            <td>{{ item.name }}</td>
-            <td style="width: 400px">{{ item.type }}</td>
+            <td nzBreakWord="true">{{ item.name }}</td>
+            <td nzBreakWord="true" style="width: 400px">{{ item.type }}</td>
             <td style="width: 400px">
               <div>{{ (item.size / 1024).toFixed(2) }} KB</div>
               <div>
