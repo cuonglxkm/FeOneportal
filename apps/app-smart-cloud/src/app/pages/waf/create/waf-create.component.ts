@@ -49,13 +49,11 @@ export class WAFCreateComponent implements OnInit {
     loop: true,
     animation: 'lazy'
   };
-  iconToggle: string;
 
   listOfferFlavors: OfferItem[] = [];
   offerFlavor: OfferItem;
   selectedElementFlavor: any;
   regionId: any;
-  loadingCalculate = false;
   today = new Date();
   expiredDate = new Date();
 
@@ -64,12 +62,6 @@ export class WAFCreateComponent implements OnInit {
   totalAmount = 0;
   totalPayment = 0;
   totalVAT = 0;
-
-  prices: any;
-
-  minBlock: number = 0;
-  stepBlock: number = 0;
-  maxBlock: number = 0;
 
   selectedDescription: string = '';
   selectedNameFlavor: string = '';
@@ -80,6 +72,9 @@ export class WAFCreateComponent implements OnInit {
 
   isLoading = false;
   isVisibleCreateSSLCert = false;
+  WAFCreate: WAFCreate = new WAFCreate();
+  totalincludesVAT: number = 0;
+  url = window.location.pathname;
  
   openModalSSlCert(){
     this.isVisibleCreateSSLCert = true
@@ -103,11 +98,11 @@ export class WAFCreateComponent implements OnInit {
     return selectedPolicy ? selectedPolicy.label : '';
   }
 
-  form: FormGroup = this.fb.group({
-    nameWAF: ['', [Validators.required]],
-    bonusServices: this.fb.array([this.createBonusService()]),
-    time: [1]
-  });
+    form: FormGroup = this.fb.group({
+      nameWAF: ['', [Validators.required]],
+      bonusServices: this.fb.array([this.createBonusService()]),
+      time: [1]
+    });
   private inputChangeSubject = new Subject<{ value: number, name: string }>();
 
   private searchSubject = new Subject<string>();
@@ -130,10 +125,6 @@ export class WAFCreateComponent implements OnInit {
   
   }
 
-  WAFCreate: WAFCreate = new WAFCreate();
-  totalincludesVAT: number = 0;
-  url = window.location.pathname;
-  hasRoleSI: boolean
   ngOnInit() {
     let regionAndProject = getCurrentRegionAndProject();
     this.regionId = regionAndProject.regionId;
@@ -147,7 +138,6 @@ export class WAFCreateComponent implements OnInit {
       this.regionId = RegionID.ADVANCE;
     }
     this.initFlavors();
-    this.iconToggle = "icon_circle_minus"
   }
 
   get bonusServices(): FormArray {
@@ -163,6 +153,10 @@ export class WAFCreateComponent implements OnInit {
       port: [''],
       sslCert: ['']
     });
+  }
+
+  areAllDomainsValid(): boolean {
+    return this.bonusServices.controls.every(control => control.get('domain')?.valid);
   }
 
   initWAF() {
