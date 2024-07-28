@@ -82,6 +82,12 @@ export class ObjectStorageCreateComponent implements OnInit {
     let regionAndProject = getCurrentRegionAndProject();
     this.region = regionAndProject.regionId;
     this.dataSubject.next(1);
+    this.timeChangeSubject.pipe(
+      debounceTime(300)
+    ).subscribe(value => {
+      this.handleTimeChange(value);
+    });
+    this.updateExpiredDate(this.validateForm.controls.time.value);
     this.onChangeCapacity();
     this.getConfigurations();
     this.getTotalAmount();
@@ -95,16 +101,42 @@ export class ObjectStorageCreateComponent implements OnInit {
     quota: [0, Validators.required],
   });
 
-  dataSubjectTime: Subject<any> = new Subject<any>();
-  changeTime(value: number) {
-    this.dataSubjectTime.next(value);
+  timeChangeSubject: Subject<number> = new Subject<number>();
+  isUpdating: boolean = false;
+  onChangeTime(value: number) {
+    this.timeChangeSubject.next(value);
   }
 
-  onChangeTime(value) {
+  handleTimeChange(value: number) {
     this.timeSelected = value;
-    this.validateForm.controls.time.setValue(this.timeSelected);
-    console.log(this.timeSelected);
+    if (this.validateForm.controls.time.value !== this.timeSelected) {
+      this.isUpdating = true;
+      this.validateForm.controls.time.setValue(this.timeSelected);
+      this.isUpdating = false;
+    }
+    this.updateExpiredDate(this.timeSelected);
     this.getTotalAmount();
+  }
+
+  updateExpiredDate(time: number) {
+    this.expiredDate = addDays(this.today, time * 30);
+  }
+
+  onKeyDown(event: KeyboardEvent) {
+    // Lấy giá trị của phím được nhấn
+    const key = event.key;
+    // Kiểm tra xem phím nhấn có phải là một số hoặc phím di chuyển không
+    if (
+      (isNaN(Number(key)) &&
+        key !== 'Backspace' &&
+        key !== 'Delete' &&
+        key !== 'ArrowLeft' &&
+        key !== 'ArrowRight') ||
+      key === '.'
+    ) {
+      // Nếu không phải số hoặc đã nhập dấu chấm và đã có dấu chấm trong giá trị hiện tại
+      event.preventDefault(); // Hủy sự kiện để ngăn người dùng nhập ký tự đó
+    }
   }
 
   initObjectStorage() {
