@@ -23,6 +23,7 @@ import { DeleteWafComponent } from './waf-list/delete-volume/delete-waf.componen
 import { WafDomainListComponent } from './domain-list/domain-list.component';
 import { WAFExtendComponent } from './extend/waf-extend.component';
 import { CreateSslCertWAFComponent } from './ssl-cert/create/create-ssl-cert.component';
+import { WafDetailComponent } from './waf-detail/waf-detail.component';
 
 @NgModule({
   declarations: [
@@ -33,8 +34,6 @@ import { CreateSslCertWAFComponent } from './ssl-cert/create/create-ssl-cert.com
    DeleteDomainComponent,
    EditDomainComponent,
    HttpSettingComponent,
-   WAFCreateComponent,
-   CreateSSLCertPopupComponent,
    WAFResizeComponent,
    WafComponent,
    WafListComponent,
@@ -42,7 +41,8 @@ import { CreateSslCertWAFComponent } from './ssl-cert/create/create-ssl-cert.com
    DeleteWafComponent,
    CreateSSLCertPopupComponent,
    WAFExtendComponent,
-   CreateSslCertWAFComponent
+   CreateSslCertWAFComponent,
+   WafDetailComponent
   ],
   imports: [
     CommonModule,

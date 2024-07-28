@@ -3522,6 +3522,8 @@
   "app.snapshot.schedule.des.1" : "Tên lịch Snapshot có thể có tối đa 64 ký tự. Ký tự hợp lệ: A-Z, a-z, 0-9",
   "app.snapshot.schedule.volume.select.label" : "Chọn tên Volume",
 
+  "waf.detail.title": "Chi tiết WAF",
+  "waf.detail.info": "Thông tin WAF",
   "waf.placeholder.filter.name": "Tìm kiếm theo WAF và gói dịch vụ",
   "waf.domain.placeholder.filter.name": "Tìm kiếm theo domain",
   "app.waf.status.running":"Đang hoạt động",
