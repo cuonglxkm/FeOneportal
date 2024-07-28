@@ -900,7 +900,10 @@
                 (click)="readyEdit()"
                 [disabled]="totalAmount == 0"
               >
-                <span nz-icon nzType="wallet" nzTheme="outline"></span>
+                <img
+                  src="assets/imgs/wallet.svg"
+                  style="margin-right: 5px; padding-bottom: 5px"
+                />
                 <span [style.color]="totalAmount == 0 ? 'gray' : 'white'">{{
                   'app.button.resize' | i18n
                 }}</span>
