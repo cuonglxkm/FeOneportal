@@ -129,7 +129,7 @@
                       <nz-select nzSize="large"
                                  formControlName="volumeId"
                                  [nzShowSearch]="false"
-                                 nzAllowClear
+                                 [nzAllowClear]="false"
                                  [(ngModel)]="volumeSelected"
                                  (ngModelChange)="volumeSelectedChange($event)">
                         <nz-option *ngFor="let data of listVolumes"
