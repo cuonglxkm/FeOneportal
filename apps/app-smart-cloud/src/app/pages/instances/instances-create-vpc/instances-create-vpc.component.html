@@ -1210,7 +1210,10 @@
                 (click)="showModalCreate()"
                 [disabled]="form.invalid || isExistName || !isValid"
               >
-                <span nz-icon nzType="wallet" nzTheme="outline"></span>
+                <img
+                  src="assets/imgs/wallet.svg"
+                  style="margin-right: 5px; padding-bottom: 5px"
+                />
                 <span
                   [style.color]="
                     form.invalid || isExistName || !isValid ? 'gray' : 'white'

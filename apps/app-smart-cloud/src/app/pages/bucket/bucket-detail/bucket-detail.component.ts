@@ -650,15 +650,25 @@ export class BucketDetailComponent extends BaseService implements OnInit {
       if (this.folderChange.includes('/')) {
     const separatorIndex = this.folderChange.indexOf('/');
     destinationBucket = this.folderChange.substring(0, separatorIndex);
-    // Check if destination bucket is the same as the source bucket
     if (destinationBucket === this.dataAction.bucketName) {
       console.log(this.dataAction.key);
-      let keyPath = this.dataAction.key.split('/')[1];
-      destinationKey = this.folderChange.substring(separatorIndex + 1) + keyPath;
+      if(this.dataAction.key.includes('/')){
+        let keyPath = this.dataAction.key.split('/')[1];
+        destinationKey = this.folderChange.substring(separatorIndex + 1) + keyPath;
+      }else{
+        destinationKey = this.folderChange.substring(separatorIndex + 1) + this.dataAction.key;
+        console.log(destinationKey);
+      }
     } else {
       console.log(this.dataAction.key);
-      let keyPath = this.dataAction.key.split('/')[1];
-      destinationKey = this.folderChange.substring(separatorIndex + 1) + keyPath;
+      if(this.dataAction.key.includes('/')){
+        let keyPath = this.dataAction.key.split('/')[1];
+        destinationKey = this.folderChange.substring(separatorIndex + 1) + keyPath;
+      }else{
+        destinationKey = this.folderChange.substring(separatorIndex + 1) + this.dataAction.key;
+        console.log(destinationKey);
+      }
+      
     }
   } else {
     destinationBucket = this.folderChange;
@@ -1137,19 +1147,24 @@ export class BucketDetailComponent extends BaseService implements OnInit {
           key: this.currentKey + item.name,
           expiryTime: addDays(this.date, 1),
           urlOrigin: this.hostNameUrl,
-          regionId: this.region
+          regionId: this.region,
+          ACL: this.radioValue
         };
         this.service.getSignedUrl(data).subscribe(
           (responseData) => {
             const presignedUrl = responseData.url;
             const xhr = new XMLHttpRequest();
             xhr.open('PUT', presignedUrl, true);
+            xhr.setRequestHeader('x-amz-acl', this.radioValue);
             xhr.upload.onprogress = (event) => {
               if (event.lengthComputable) {
                 item.percentage = Math.round(
                   (event.loaded / event.total) * 100
                 );
               }
+
+              console.log(item.percentage);
+              
             };
             xhr.onload = () => {
               item.isUpload = true;
