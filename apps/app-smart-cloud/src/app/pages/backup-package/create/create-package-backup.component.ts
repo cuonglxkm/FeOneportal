@@ -214,7 +214,7 @@ export class CreatePackageBackupComponent implements OnInit {
           orderItemQuantity: 1,
           specification: JSON.stringify(this.formCreateBackupPackage),
           specificationType: 'backuppackage_create',
-          price: this.orderItem?.totalPayment?.amount,
+          price: this.orderItem?.totalAmount?.amount,
           serviceDuration: this.validateForm.get('time').value
         }
       ]
