@@ -1,4 +1,4 @@
-import { AbstractControl, FormArray, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
+import { AbstractControl, FormArray, FormGroup, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 
 export class AppValidator {
   // @ts-ignore
@@ -433,23 +433,19 @@ export function ipAddressExistsValidator(ipAddresses: string[]): ValidatorFn {
 
 }
 
-export function duplicateDomainValidator(control: AbstractControl): ValidationErrors | null {
-  if (!control.parent || !(control.parent instanceof FormArray)) {
+export const duplicateDomainValidator: ValidatorFn = (control: AbstractControl): ValidationErrors | null => {
+  const domain = control.value;
+  const parent = control.parent as FormGroup;
+
+  if (!domain || !parent) {
     return null;
   }
 
-  const parent = control.parent as FormArray;
-  const currentDomain = control.value;
-  const domains = parent.controls
-    .map(ctrl => ctrl.get('domain')?.value)
-    .filter(value => value);
+  const siblings = (parent.parent as FormArray).controls;
+  const duplicate = siblings.some((sibling) => sibling !== parent && sibling.get('domain')?.value === domain);
 
-  if (domains.indexOf(currentDomain) !== domains.lastIndexOf(currentDomain)) {
-    return { duplicateDomain: true };
-  }
-
-  return null;
-}
+  return duplicate ? { duplicateDomain: true } : null;
+};
 
 export function ipValidatorMany(control: AbstractControl): ValidationErrors | null {
   if (!control.value) {
