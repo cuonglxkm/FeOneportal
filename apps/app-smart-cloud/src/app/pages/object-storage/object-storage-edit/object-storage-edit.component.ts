@@ -31,6 +31,7 @@ import { OrderService } from 'src/app/shared/services/order.service';
 import { getCurrentRegionAndProject } from '@shared';
 import { RegionModel } from '../../../../../../../libs/common-utils/src';
 import { RegionID } from 'src/app/shared/enums/common.enum';
+import { FormGroup, FormControl, Validators } from '@angular/forms';
 
 @Component({
   selector: 'one-portal-object-storage-extend',
@@ -54,6 +55,13 @@ export class ObjectStorageEditComponent implements OnInit {
   closePopupError() {
     this.isVisiblePopupError = false;
   }
+
+  form = new FormGroup({
+    storage: new FormControl('', {
+      validators: [Validators.required],
+    }),
+  });
+
   constructor(
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
     @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
@@ -66,6 +74,23 @@ export class ObjectStorageEditComponent implements OnInit {
     private orderService: OrderService,
     private configurationsService: ConfigurationsService
   ) {}
+
+  onKeyDown(event: KeyboardEvent) {
+    // Lấy giá trị của phím được nhấn
+    const key = event.key;
+    // Kiểm tra xem phím nhấn có phải là một số hoặc phím di chuyển không
+    if (
+      (isNaN(Number(key)) &&
+        key !== 'Backspace' &&
+        key !== 'Delete' &&
+        key !== 'ArrowLeft' &&
+        key !== 'ArrowRight') ||
+      key === '.'
+    ) {
+      // Nếu không phải số hoặc đã nhập dấu chấm và đã có dấu chấm trong giá trị hiện tại
+      event.preventDefault(); // Hủy sự kiện để ngăn người dùng nhập ký tự đó
+    }
+  }
 
   ngOnInit(): void {
     this.id = this.activatedRoute.snapshot.paramMap.get('id');
