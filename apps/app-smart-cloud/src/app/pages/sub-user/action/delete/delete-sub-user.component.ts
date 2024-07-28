@@ -56,6 +56,7 @@ export class DeleteSubUserComponent implements AfterViewInit {
   handleCancel() {
     this.isVisible = false;
     this.value = ''
+    this.isInput = false;
     this.onCancel.emit();
   }
 

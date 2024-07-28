@@ -5,6 +5,9 @@ import { AddDomainComponent } from "./add-domain/add-domain.component";
 import { ListSslCertComponent } from "./ssl-cert/list-ssl-cert/list-ssl-cert.component";
 import { WAFResizeComponent } from "./resize/waf-resize.component";
 import { WafComponent } from "./waf.component";
+import { WAFExtendComponent } from "./extend/waf-extend.component";
+import { CreateSslCertWAFComponent } from "./ssl-cert/create/create-ssl-cert.component";
+import { WafDetailComponent } from "./waf-detail/waf-detail.component";
 
 const routes: Routes = [
   {
@@ -27,6 +30,18 @@ const routes: Routes = [
     path: 'resize/:id',
     component: WAFResizeComponent,
   },
+  {
+    path: 'extend/:id',
+    component: WAFExtendComponent,
+  },
+  {
+    path: 'ssl-cert/create',
+    component: CreateSslCertWAFComponent,
+  },
+  {
+    path: 'detail/:id',
+    component: WafDetailComponent,
+  }
 ];
 
 @NgModule({

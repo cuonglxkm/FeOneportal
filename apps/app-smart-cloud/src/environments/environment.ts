@@ -20,7 +20,7 @@ export const environment = {
   unitOfMeasureVpn: 'vpns2s',
   domain: '.onsmartcloud.com',
   cms_baseUrl: 'https://cms.onsmartcloud.com',
-  vnpt_cloud_baseUrl: 'https://vnptcloud.onsmartcloud.com',
+  cloud_baseUrl: 'https://vnptcloud.onsmartcloud.com',
   // modules: [DelonMockModule.forRoot({ data: MOCKDATA })]
 } as Environment;
 

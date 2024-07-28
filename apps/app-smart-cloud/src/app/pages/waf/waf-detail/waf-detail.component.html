@@ -1,0 +1,119 @@
+<page-header [breadcrumb]="breadcrumb" title="{{ 'waf.detail.title' | i18n }}">
+  <ng-template #breadcrumb>
+    <nz-breadcrumb [nzSeparator]="iconTemplate"><nz-breadcrumb-item [routerLink]="'/'">{{ 'app.breadcrumb.home' | i18n }}</nz-breadcrumb-item>
+      <nz-breadcrumb-item>
+        {{ 'app.breadcrumb.infrastructure.service' | i18n }}
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item>
+        <a routerLink="/app-smart-cloud/waf">Web Application Firewall</a>
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item>
+        <a routerLink="/app-smart-cloud/waf">WAF</a>
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item>{{ 'waf.detail.title' | i18n }}</nz-breadcrumb-item>
+    </nz-breadcrumb>
+    <ng-template #iconTemplate><one-portal-svg-icon [icon]="'icon_breadcrumb'"></one-portal-svg-icon></ng-template>
+  </ng-template>
+  <div style="display: flex">
+    <div style="margin-right: 8px;">
+      <button class="button-cancel"
+              nzType="primary"
+              nz-button>
+        <img src="assets/imgs/calendar-tick2.svg" alt="" style="cursor: pointer;margin-bottom: 3px;" />
+        <span style="margin-left: 10px; margin-top: 3px;">{{ 'app.button.extend' | i18n }}</span>
+      </button>
+    </div>
+    <div nz-col nzSpan="4">
+      <button class="button-fee"
+              nz-button
+              nzType="primary" >
+        <img src="assets/imgs/edit-1.svg" alt=""
+              style="cursor: pointer; width: 20px; height: 20px; margin-bottom: 3px;" />
+        <span style="margin-left: 5px; margin-top: 3px;">{{ 'app.button.resize' | i18n }}</span>
+      </button>
+    </div>
+  </div>
+</page-header>
+<nz-card class="text-label" nzTitle="" style="border-radius: 8px;">
+  <div style="margin-bottom: 20px">
+    <span class="text-card-header">{{ 'waf.detail.info' | i18n }}</span>
+
+    <div nz-row [nzGutter]="24" class="info-project" >
+      <div nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="12">
+        <div>
+          <div nz-row [nzGutter]="24" class="row-white-bg content-items-center">
+            <div nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="12">
+              <span class="label-fontsize">{{'waf.table.title.name' | i18n}}:</span>
+            </div>
+            <div nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="12">
+              <span class="label-fontsize font-bold ">{{ data.name }}</span>
+            </div>
+          </div>
+          <div nz-row [nzGutter]="24" class="row-gray-bg content-items-center">
+            <div nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="12">
+              <span class="label-fontsize">{{'waf.domain.table.title.domain' | i18n}}:</span>
+            </div>
+            <div nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="12">
+              <span class="label-fontsize font-bold" >{{ "data.domain" }}</span>
+            </div>
+          </div>
+          <div nz-row [nzGutter]="24" class="row-white-bg content-items-center">
+            <div nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="12">
+              <span class="label-fontsize">{{'waf.table.title.startdate' | i18n}}:</span>
+            </div>
+            <div nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="12">
+              <span class="label-fontsize font-bold ">{{data.begin | date : "HH:mm:ss dd/MM/yyyy" }}</span>
+            </div>
+          </div>
+          <div nz-row [nzGutter]="24" class="row-gray-bg content-items-center">
+            <div nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="12">
+              <span class="label-fontsize">{{'waf.table.title.status' | i18n}}:</span>
+            </div>
+            <div nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="12">
+              <ng-container  *ngIf="data.status | ServiceStatusPipe as statusModel">
+                <span class="label-fontsize font-bold" [ngStyle]="{color: statusModel.color}">{{ statusModel.status }}</span>
+              </ng-container>
+              
+            </div>
+          </div>
+        </div>
+      </div>
+      <div nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="12">
+        <div class="" style="margin-left:20px">
+          <div nz-row [nzGutter]="24" class="row-white-bg content-items-center" >
+            <div nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="12">
+              <span class="label-fontsize">{{'waf.table.title.package' | i18n}}:</span>
+            </div>
+            <div nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="12">
+              <span class="label-fontsize font-bold">{{ data.package }}</span>
+            </div>
+          </div>
+          <div nz-row [nzGutter]="24" class="row-gray-bg content-items-center">
+            <div nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="12">
+              <span class="label-fontsize">{{'waf.domain.table.title.ip' | i18n}}:</span>
+            </div>
+            <div nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="12">
+              <span class="label-fontsize font-bold">{{'1.1.1.1'}}</span>
+            </div>
+          </div>
+          <div nz-row [nzGutter]="24" class="row-white-bg content-items-center">
+            <div nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="12">
+              <span class="label-fontsize">{{'waf.table.title.enddate' | i18n}}:</span>
+            </div>
+            <div nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="12">
+              <span class="label-fontsize font-bold">{{data.end | date : "HH:mm:ss dd/MM/yyyy" }}</span>
+            </div>
+          </div>
+          <div nz-row [nzGutter]="24" class="row-gray-bg content-items-center">
+            <div nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="12">
+              <span class="label-fontsize" style="display: inline-block"></span>
+            </div>
+            <div nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="12">
+              <span class="label-fontsize font-bold"></span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</nz-card>

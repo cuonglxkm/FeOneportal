@@ -1,5 +1,10 @@
 import { ChangeDetectorRef, Component, Inject, OnInit, ViewChild } from '@angular/core';
-import { ProjectModel, RegionModel } from '../../../../../../../../../libs/common-utils/src';
+import {
+  AppValidator,
+  ProjectModel,
+  RegionModel,
+  storageValidator
+} from '../../../../../../../../../libs/common-utils/src';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BackupVolumeService } from '../../../../../shared/services/backup-volume.service';
 import { ProjectService } from '../../../../../shared/services/project.service';
@@ -179,7 +184,7 @@ export class RestoreBackupVolumeComponent implements OnInit {
 
       this.validateForm.get('formNew').get('storage').setValue(this.backupVolume?.size);
       this.validateForm.get('formNew').get('volumeName').setValidators([Validators.required, Validators.pattern(/^[a-zA-Z0-9_]*$/), this.duplicateNameValidator.bind(this)]);
-      this.validateForm.get('formNew').get('storage').setValidators([Validators.required, Validators.pattern(/^[0-9]*$/)]);
+      this.validateForm.get('formNew').get('storage').setValidators([Validators.required, Validators.pattern(/^[0-9]*$/), storageValidator(this.backupVolume?.size)]);
       // this.validateForm.get
     }
     this.cdr.detectChanges();

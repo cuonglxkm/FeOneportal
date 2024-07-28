@@ -21,6 +21,9 @@ import { WafComponent } from './waf.component';
 import { WafListComponent } from './waf-list/waf-list.component';
 import { DeleteWafComponent } from './waf-list/delete-volume/delete-waf.component';
 import { WafDomainListComponent } from './domain-list/domain-list.component';
+import { WAFExtendComponent } from './extend/waf-extend.component';
+import { CreateSslCertWAFComponent } from './ssl-cert/create/create-ssl-cert.component';
+import { WafDetailComponent } from './waf-detail/waf-detail.component';
 
 @NgModule({
   declarations: [
@@ -31,14 +34,15 @@ import { WafDomainListComponent } from './domain-list/domain-list.component';
    DeleteDomainComponent,
    EditDomainComponent,
    HttpSettingComponent,
-   WAFCreateComponent,
-   CreateSSLCertPopupComponent,
    WAFResizeComponent,
    WafComponent,
    WafListComponent,
    WafDomainListComponent,
    DeleteWafComponent,
-   CreateSSLCertPopupComponent
+   CreateSSLCertPopupComponent,
+   WAFExtendComponent,
+   CreateSslCertWAFComponent,
+   WafDetailComponent
   ],
   imports: [
     CommonModule,

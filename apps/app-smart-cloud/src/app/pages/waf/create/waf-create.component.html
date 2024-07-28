@@ -72,7 +72,7 @@
               [@slider]="ani"
             >
               <div
-                style="cursor: pointer"
+                style="cursor: pointer; height: 100%"
                 (click)="onInputFlavors(item.id, item.offerName)"
                 [id]="'flavor_' + item.id"
               >
@@ -115,7 +115,7 @@
                   </nz-col>
                 </nz-row>
                   <div
-                    style="width: 100%; padding-top: 5px"
+                    style="width: 100%; padding-top: 5px; height: 255px;"
                     [class.flavor-footer-active]="
                       selectedElementFlavor === 'flavor_' + item.id
                     "
@@ -213,7 +213,7 @@
                       </nz-select>
                     </nz-form-control>
                   </nz-form-item>
-                </div>formControlName
+                </div>
               </div>
             </div>
             <div>
@@ -369,7 +369,7 @@
           <nz-row>
             <nz-col style="width: 100%" class="text-right">
               <button
-                [disabled]="form.get('nameWAF').invalid || selectedOfferId == 0 || bonusServices.at(0).get('domain')?.invalid || bonusServices.at(0).get('ipPublic')?.invalid"
+                [disabled]="form.get('nameWAF').invalid || selectedOfferId == 0 || !areAllDomainsValid() || bonusServices.at(0).get('ipPublic')?.invalid"
                 style="width: 100%"
                 nz-button
                 nzSize="large"

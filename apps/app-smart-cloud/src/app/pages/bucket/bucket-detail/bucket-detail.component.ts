@@ -1147,19 +1147,24 @@ export class BucketDetailComponent extends BaseService implements OnInit {
           key: this.currentKey + item.name,
           expiryTime: addDays(this.date, 1),
           urlOrigin: this.hostNameUrl,
-          regionId: this.region
+          regionId: this.region,
+          ACL: this.radioValue
         };
         this.service.getSignedUrl(data).subscribe(
           (responseData) => {
             const presignedUrl = responseData.url;
             const xhr = new XMLHttpRequest();
             xhr.open('PUT', presignedUrl, true);
+            xhr.setRequestHeader('x-amz-acl', this.radioValue);
             xhr.upload.onprogress = (event) => {
               if (event.lengthComputable) {
                 item.percentage = Math.round(
                   (event.loaded / event.total) * 100
                 );
               }
+
+              console.log(item.percentage);
+              
             };
             xhr.onload = () => {
               item.isUpload = true;
