@@ -31,4 +31,5 @@ export class WAFCreate {
   oneSME_SubscriptionId: string
   isSendMail: boolean
   typeName: string
+  policyId: any
   }

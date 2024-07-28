@@ -105,7 +105,7 @@ export class WAFCreateComponent implements OnInit {
 
   form: FormGroup = this.fb.group({
     nameWAF: ['', [Validators.required]],
-    bonusServices: this.fb.array([this.createBonusService(), this.policySelected]),
+    bonusServices: this.fb.array([this.createBonusService()]),
     time: [1]
   });
   private inputChangeSubject = new Subject<{ value: number, name: string }>();
@@ -177,6 +177,7 @@ export class WAFCreateComponent implements OnInit {
     this.WAFCreate.createDate = this.today
     this.WAFCreate.expireDate = this.expiredDate
     this.WAFCreate.offerId = this.selectedOfferId;
+    this.WAFCreate.policyId = this.policySelected;
     this.WAFCreate.wafDomains = this.form.get('bonusServices')?.value
     this.WAFCreate.serviceName = this.form.get('nameWAF')?.value
     this.WAFCreate.isSendMail = true
@@ -185,7 +186,7 @@ export class WAFCreateComponent implements OnInit {
 
 
   addBonusService() {
-    this.bonusServices.push([this.createBonusService(), this.policySelected]);
+    this.bonusServices.push(this.createBonusService());
   }
 
   removeBonusService(index: number) {
