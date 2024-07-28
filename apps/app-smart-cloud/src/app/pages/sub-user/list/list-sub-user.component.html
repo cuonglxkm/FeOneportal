@@ -7,18 +7,23 @@
   <ng-template #breadcrumb>
     <nz-breadcrumb [nzSeparator]="iconTemplate">
       <nz-breadcrumb-item [routerLink]="'/'">{{
-        'app.breadcrumb.home' | i18n
-      }}</nz-breadcrumb-item>
+          'app.breadcrumb.home' | i18n
+        }}
+      </nz-breadcrumb-item>
       <nz-breadcrumb-item>{{
-        'app.breadcrumb.infrastructure.service' | i18n
-      }}</nz-breadcrumb-item>
+          'app.breadcrumb.infrastructure.service' | i18n
+        }}
+      </nz-breadcrumb-item>
       <nz-breadcrumb-item>Object Storage</nz-breadcrumb-item>
       <nz-breadcrumb-item
         [routerLink]="'/app-smart-cloud/object-storage/sub-user'"
-        >SubUser</nz-breadcrumb-item
+      >Sub User
+      </nz-breadcrumb-item
       >
     </nz-breadcrumb>
-    <ng-template #iconTemplate><one-portal-svg-icon [icon]="'icon_breadcrumb'"></one-portal-svg-icon></ng-template>
+    <ng-template #iconTemplate>
+      <one-portal-svg-icon [icon]="'icon_breadcrumb'"></one-portal-svg-icon>
+    </ng-template>
   </ng-template>
   <ng-template #action>
     <div class="alain-custom-action text-right">
@@ -31,129 +36,114 @@
 </page-header>
 <nz-content *ngIf="hasOS">
   <nz-card style="border-radius: 8px">
-        <div class="d-flex justify-content-between">
-          <nz-input-group
-            [nzPrefix]="prefixIconSearch"
-            nzSize="large"
-            style="width: 300px"
-          >
-            <input
-              name="name"
-              nz-input
-              [placeholder]="'app.placeholder.search' | i18n"
-              [(ngModel)]="value"
-              #searchBox (keyup.enter)="search(searchBox.value)" (ngModelChange)="searchDelay.next(false)"
-            />
-          </nz-input-group>
-          <ng-template #prefixIconSearch>
-            <img
-              src="assets/imgs/search.svg"
-              alt=""
-              style="cursor: pointer"
-            />
-          </ng-template>
-          <button
-            style="margin-left: 10px"
-            nz-button
-            nzType="primary"
-            nzSize="large"
-            (click)="navigateToCreateSubUser()"
-          >
-            <img
-              style="padding-right: 10px; margin-top: -4px"
-              src="assets/imgs/add-circle.svg"
-              alt=""
-            />
-            <span class="button-text-primary">{{
-              'app.sub.user.create.button' | i18n
-            }}</span>
-          </button>
-        </div>
-    <nz-table
-      #fixTable
-      style="margin-top: 24px"
-      nzShowPagination
-      [nzData]="listSubuser"
-      [nzPageSize]="response?.pageSize"
-      (nzPageSizeChange)="onPageSizeChange($event)"
-      [nzPageIndex]="response?.currentPage"
-      (nzPageIndexChange)="onPageIndexChange($event)"
-      [nzTotal]="response?.totalCount"
-      [nzFrontPagination]="false"
-      [nzLoading]="isLoading"
-    >
+    <div class="d-flex justify-content-between">
+      <nz-input-group [nzPrefix]="prefixIconSearch"
+                      nzSize="large"
+                      style="width: 300px">
+        <input name="name"
+               nz-input
+               [placeholder]="'app.placeholder.search' | i18n"
+               [(ngModel)]="value"
+               #searchBox (keyup.enter)="search(searchBox.value)" (ngModelChange)="searchDelay.next(false)" />
+      </nz-input-group>
+      <ng-template #prefixIconSearch>
+        <img src="assets/imgs/search.svg"
+             alt=""
+             style="cursor: pointer" />
+      </ng-template>
+      <button style="margin-left: 10px"
+              nz-button
+              nzType="primary"
+              nzSize="large"
+              (click)="navigateToCreateSubUser()">
+        <img style="padding-right: 10px; margin-top: -4px"
+             src="assets/imgs/add-circle.svg"
+             alt="" />
+        <span class="button-text-primary">{{ 'app.sub.user.create.button' | i18n }}</span>
+      </button>
+    </div>
+    <nz-table #fixTable
+              style="margin-top: 24px"
+              nzShowSizeChanger
+              [nzData]="listSubuser"
+              [nzPageSize]="response?.pageSize"
+              (nzPageSizeChange)="onPageSizeChange($event)"
+              [nzPageIndex]="response?.currentPage"
+              (nzPageIndexChange)="onPageIndexChange($event)"
+              [nzTotal]="response?.totalCount"
+              [nzFrontPagination]="false"
+              [nzLoading]="isLoading">
       <thead>
-        <tr>
-          <th>STT</th>
-          <th>{{ 'app.sub.user.name' | i18n }}</th>
-          <th>Access Key</th>
-          <th>{{ 'app.access.rights' | i18n }}</th>
-          <th>{{ 'app.text.operation' | i18n }}</th>
-        </tr>
+      <tr>
+        <th>STT</th>
+        <th>{{ 'app.sub.user.name' | i18n }}</th>
+        <th>Access Key</th>
+        <th>{{ 'app.access.rights' | i18n }}</th>
+        <th>{{ 'app.text.operation' | i18n }}</th>
+      </tr>
       </thead>
       <tbody (click)="handleCloseExpand($event)">
-        <ng-container *ngFor="let data of fixTable.data; index as i">
-          <tr>
-            <td>{{ i + 1 }}</td>
-            <td>{{ data.subUserId }}</td>
-            <td>
-              <nz-row nzJustify="space-between">
-                <nz-col>
-                  <div>{{ data.accessKey }}</div>
-                </nz-col>
-                <nz-col>
-                  <div class="d-flex gap-2 align-items-center">
-                    <div *ngIf="data.keys.length > 0" class="accesskey-number" (click)="handleExpandAccessKey(i, $event)">
-                      <span>+{{ data.keys.length }}</span>
-                      <span style="font-size: 12px;" nz-icon nzType="down" nzTheme="outline"></span>
-                      <ng-container *ngIf="isExpand === i">
+      <ng-container *ngFor="let data of fixTable.data; index as i">
+        <tr>
+          <td>{{ (response?.currentPage - 1) * response?.pageSize + i + 1 }}</td>
+          <td>{{ data.subUserId }}</td>
+          <td>
+            <nz-row nzJustify="space-between">
+              <nz-col>
+                <div>{{ data.accessKey }}</div>
+              </nz-col>
+              <nz-col>
+                <div class="d-flex gap-2 align-items-center">
+                  <div *ngIf="data.keys.length > 0" class="accesskey-number" (click)="handleExpandAccessKey(i, $event)">
+                    <span>+{{ data.keys.length }}</span>
+                    <span style="font-size: 12px;" nz-icon nzType="down" nzTheme="outline"></span>
+                    <ng-container *ngIf="isExpand === i">
                       <div class="accesskey-expand">
                         <div class="accesskey-flex" *ngFor="let expandedKey of data.keys">
-                        <div>{{expandedKey.accessKey}}</div>
-                        <img src="assets/imgs/icon_copy1.svg" alt="" style="cursor: pointer"
-                             nz-tooltip="Copy" (click)="copyText(expandedKey.accessKey)" />
+                          <div>{{ expandedKey.accessKey }}</div>
+                          <img src="assets/imgs/icon_copy1.svg" alt="" style="cursor: pointer"
+                               nz-tooltip="Copy" (click)="copyText(expandedKey.accessKey)" />
                         </div>
                       </div>
                     </ng-container>
-                    </div>
-                    <img
-                      src="assets/imgs/icon_copy1.svg"
-                      alt=""
-                      style="cursor: pointer"
-                      nz-tooltip="Copy"
-                      (click)="copyText(key.accessKey)"
-                    />
                   </div>
-                </nz-col>
-              </nz-row>
-            </td>
-            <td>
-              <div *ngIf="data.permissions.includes('full-control')">
-                {{ 'app.all.access.permission' | i18n }}
-              </div>
-              <div *ngIf="!data.permissions.includes('full-control')">
-                {{ 'app.no.access.permission' | i18n }}
-              </div>
-            </td>
-            <td>
-              <one-portal-edit-sub-user
-                [region]="region"
-                [project]="project"
-                [idSubUser]="data.subUserId"
-                [permission]="data.permissions"
-                [uid]="data.userId"
-                (onOk)="handleOkEdit()"
-              />
-              <one-portal-delete-sub-user
-                [region]="region"
-                [project]="project"
-                [idSubUser]="data.subUserId"
-                [uid]="data.userId"
-                (onOk)="handleOkDelete()"
-              />
-            </td>
-          </tr>
-        </ng-container>
+                  <img src="assets/imgs/icon_copy1.svg"
+                       alt=""
+                       style="cursor: pointer"
+                       nz-tooltip="Copy"
+                       (click)="copyText(data.accessKey)"
+                  />
+                </div>
+              </nz-col>
+            </nz-row>
+          </td>
+          <td>
+            <div *ngIf="data.permissions.includes('full-control')">
+              {{ 'app.all.access.permission' | i18n }}
+            </div>
+            <div *ngIf="!data.permissions.includes('full-control')">
+              {{ 'app.no.access.permission' | i18n }}
+            </div>
+          </td>
+          <td>
+            <one-portal-edit-sub-user
+              [region]="region"
+              [project]="project"
+              [idSubUser]="data.subUserId"
+              [permission]="data.permissions"
+              [uid]="data.userId"
+              (onOk)="handleOkEdit()"
+            />
+            <one-portal-delete-sub-user
+              [region]="region"
+              [project]="project"
+              [idSubUser]="data.subUserId"
+              [uid]="data.userId"
+              (onOk)="handleOkDelete()"
+            />
+          </td>
+        </tr>
+      </ng-container>
       </tbody>
     </nz-table>
   </nz-card>
