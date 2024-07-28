@@ -3051,6 +3051,7 @@
   "app.backup.volume.notification.restore.fail": "Backup volume restore request failed. {{error}}",
 
   "app.backup.volume.validator.backup.package.required": "Please enter the name of the Backup",
+  "app.backup.volume.validator.storage.required": "The capacity of the backup must be greater than or equal to the current backup capacity.",
   "app.backup.volume.request.create": "Backup Volume creation request has been sent.",
   "app.backup.volume.notification.create.request.send": "Backup Volume creation request has been sent.",
   "app.backup.volume.current": "Restore to the current Volume",

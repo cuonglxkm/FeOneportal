@@ -2960,6 +2960,7 @@
   "app.backup.volume.validator.name.duplicate": "Tên backup volume đã tồn tại, vui lòng nhập tên khác",
   "app.backup.volume.validator.name.pattern": "Tên backup volume, Không bao gồm ký tự đặc biệt, dấu cách, dấu tiếng Việt (trừ _).",
   "app.backup.volume.validator.backup.package.required": "Vui lòng nhập tên Backup",
+  "app.backup.volume.validator.storage.required": "Dung lượng của Backup phải lớn hơn hoặc bằng dung lương Backup hiện tại",
   "app.backup.volume.request.create": "Yêu cầu tạo Backup Volume đã được gửi đi.",
   "app.backup.volume.notification.create.request.send": "Yêu cầu tạo Backup Volume đã được gửi đi.",
   "app.backup.volume.alert.delete": "Bạn đang thực hiện xóa Backup Volume",
