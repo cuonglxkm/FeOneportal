@@ -87,7 +87,7 @@ export class ObjectStorageExtendComponent implements OnInit {
         },
         error: (e) => {
           this.notification.error(
-            e.error.detail,
+            e.error.message,
             this.i18n.fanyi('app.notification.object.storage.fail')
           );
         },
@@ -110,6 +110,11 @@ export class ObjectStorageExtendComponent implements OnInit {
 
   onRegionChange(region: RegionModel) {
     this.region = region.regionId;
+    if(this.region === RegionID.ADVANCE){
+      this.router.navigate(['/app-smart-cloud/object-storage-advance/bucket']);
+    }else{
+      this.router.navigate(['/app-smart-cloud/object-storage/bucket']);
+    }
   }
 
   onRegionChanged(region: RegionModel) {

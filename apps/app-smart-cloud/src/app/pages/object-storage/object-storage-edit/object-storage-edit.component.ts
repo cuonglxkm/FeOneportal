@@ -78,6 +78,11 @@ export class ObjectStorageEditComponent implements OnInit {
 
   onRegionChange(region: RegionModel) {
     this.region = region.regionId;
+    if(this.region === RegionID.ADVANCE){
+      this.router.navigate(['/app-smart-cloud/object-storage-advance/bucket']);
+    }else{
+      this.router.navigate(['/app-smart-cloud/object-storage/bucket']);
+    }
   }
 
   onRegionChanged(region: RegionModel) {
@@ -95,11 +100,12 @@ export class ObjectStorageEditComponent implements OnInit {
           this.objectStorage = data;
           this.objectStorageResize.newQuota =
             this.addQuota + this.objectStorage.quota;
+          this.dataSubject.next(0);
           this.cdr.detectChanges();
         },
         error: (e) => {
           this.notification.error(
-            e.error.detail,
+            e.error.message,
             this.i18n.fanyi('app.notification.object.storage.fail')
           );
         },
