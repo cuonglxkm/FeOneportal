@@ -30,7 +30,7 @@
             <ng-container *ngIf="control.hasError('required')">{{ 'validation.info.required' | i18n }}</ng-container>
             <ng-container *ngIf="control.hasError('pattern')">{{ 'app.backup.volume.validator.name.pattern' | i18n }}</ng-container>
             <ng-container *ngIf="control.hasError('maxLength')">{{ 'volume.notification.input.name.maxLength' | i18n }}</ng-container>
-            <ng-container *ngIf="control.hasError('duplicateName')">{{ 'validation.exist.name' | i18n: {name: 'File System'} }}</ng-container>
+            <ng-container *ngIf="control.hasError('duplicateName')">{{ 'validation.exist.name' | i18n: {name: 'Backup Volume'} }}</ng-container>
           </ng-template>
         </nz-form-control>
       </nz-form-item>

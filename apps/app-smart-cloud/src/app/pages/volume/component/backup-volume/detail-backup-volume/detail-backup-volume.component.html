@@ -77,7 +77,7 @@
           <nz-col nzSpan="12">
             <nz-row style="padding: 12px 0 12px 0">
               <span class="text-label" style="width: 35%">{{ 'app.backup.package.storage.used'|i18n }}</span>
-              <span class="text-value-detail" *ngIf="typeVpc == 0">{{ backupPackageDetail?.usedSize }} GB </span>
+              <span class="text-value-detail" *ngIf="typeVpc != 1">{{ backupPackageDetail?.usedSize }} GB </span>
               <span class="text-value-detail" *ngIf="typeVpc == 1">{{ projectDetail?.cloudProjectResourceUsed?.backup }}
                 GB</span>
             </nz-row>

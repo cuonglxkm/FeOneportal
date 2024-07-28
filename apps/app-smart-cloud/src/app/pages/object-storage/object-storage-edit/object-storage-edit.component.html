@@ -30,7 +30,7 @@
   </ng-template>
 </page-header>
 
-<form nz-form [nzLayout]="'vertical'">
+<form nz-form [formGroup]="form" [nzLayout]="'vertical'">
   <nz-row nzGutter="24">
     <nz-col nzSpan="16">
       <nz-card style="border-radius: 8px" [nzBordered]="false">
@@ -73,20 +73,6 @@
           </nz-form-control>
         </nz-form-item>
         <one-portal-time-used-resize [expireDate]="objectStorage.expiredDate " [createDate]="objectStorage.createdDate" [nameService]="'Object Storage'"/>
-        <!-- <nz-row style="margin-bottom: 20px">
-          <nz-col nzSpan="12">
-            <div class="text-label">
-              {{ 'app.service.start.date' | i18n }}:
-              {{ objectStorage.createdDate | date : 'dd/MM/yyyy HH:mm:ss' }}
-            </div>
-          </nz-col>
-          <nz-col nzSpan="12">
-            <div style="margin-left: 20px" class="text-label">
-              {{ 'app.service.expiration-date' | i18n }}:
-              {{ objectStorage.expiredDate | date : 'dd/MM/yyyy HH:mm:ss' }}
-            </div>
-          </nz-col>
-        </nz-row> -->
       </nz-card>
       <nz-card style="border-radius: 8px">
         <div style="margin-bottom: 20px">
@@ -105,21 +91,34 @@
         </ng-template>
         <nz-form-item>
           <nz-form-label nzFor="name"
-            >{{ 'app.increase.capacity' | i18n }} - GB (<span class="text-red"
+            >{{ 'app.increase.capacity' | i18n }} (<span class="text-red"
               >*</span
-            >)</nz-form-label
-          >
-          <nz-form-control>
+            >) - GB
+            <img
+              style="margin-left: 5px"
+              nz-popover
+              [nzPopoverContent]="'volume.tooltip.resize.storage' | i18n"
+              nzPopoverPlacement="bottom"
+              src="assets/imgs/pajamas_question.svg"
+              alt=""
+            />
+          </nz-form-label>
+          <nz-form-control [nzErrorTip]="storageErrorTpl">
             <nz-input-number
+              formControlName="storage"
+              nzAutoFocus
               style="width: 100%; margin-left: 0px"
+              (keydown)="onKeyDown($event)"
               [nzMin]="minStorage" 
               [nzStep]="stepStorage"
               [nzMax]="maxStorage"
               [(ngModel)]="addQuota"
               (ngModelChange)="changeTotalAmount($event)"
-              [ngModelOptions]="{ standalone: true }"
               nzSize="large"
             ></nz-input-number>
+            <ng-template #storageErrorTpl let-control>
+              <ng-container *ngIf="control.hasError('required')">{{'volume.input.required.storage'|i18n}}</ng-container>
+            </ng-template>
           </nz-form-control>
         </nz-form-item>
         <div style="margin-top: 20px" class="text-label">

@@ -435,10 +435,12 @@ export class CreateLbNovpcComponent implements OnInit {
     if (!this.validateForm.controls['ipAddress'].invalid) {
       const getSubnet = this.listSubnets?.find(option => option.cloudId === this.validateForm.get('subnet').value);
       const result = this.isIpInSubnet(value, getSubnet.subnetAddressRequired);
-      this.vlanService.checkIpAvailable(value, getSubnet.subnetAddressRequired, getSubnet.cloudId, this.region)
+      this.vlanService.checkIpAvailable(value, getSubnet.subnetAddressRequired, getSubnet.networkCloudId, this.region)
         .pipe(finalize(() => {
           this.validateForm.controls['ipAddress'].enable();
-          this.validateForm.controls['ipAddress'].setErrors({ failServer: true });
+          if (this.invalidIpAddress == true) {
+            this.validateForm.controls['ipAddress'].setErrors({ failServer: true });
+          }
         }))
         .subscribe(data => {
           this.invalidIpAddress = false;

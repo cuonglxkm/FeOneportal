@@ -48,6 +48,7 @@ export class EditSubUserComponent {
   handleCancel() {
     this.isVisible = false
     this.isLoading = false
+    this.validateForm.reset()
     this.onCancel.emit()
   }
 
