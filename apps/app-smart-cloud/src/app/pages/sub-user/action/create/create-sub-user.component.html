@@ -8,16 +8,17 @@
       <nz-breadcrumb-item>Object Storage</nz-breadcrumb-item>
       <nz-breadcrumb-item><a (click)="navigateToSubUser()">SubUser</a></nz-breadcrumb-item>
       <nz-breadcrumb-item
-      (click)="navigateToCreateSubUser()">{{ 'app.sub.user.create' | i18n }}
+        (click)="navigateToCreateSubUser()">{{ 'app.sub.user.create' | i18n }}
       </nz-breadcrumb-item>
     </nz-breadcrumb>
     <ng-template #separatorTemplate
-      ><img src="assets/imgs/arrow-square-right.svg" alt="" />
+    ><img src="assets/imgs/arrow-square-right.svg" alt="" />
     </ng-template>
   </ng-template>
   <ng-template #action>
     <div class="alain-custom-action text-right">
-      <region-select-dropdown (regionChange)="onRegionChanged($event)" (valueChanged)="regionChanged($event)"></region-select-dropdown>
+      <region-select-dropdown (regionChange)="onRegionChanged($event)"
+                              (valueChanged)="regionChanged($event)"></region-select-dropdown>
     </div>
   </ng-template>
 </page-header>
@@ -33,16 +34,12 @@
                 <div>
                   <span>{{ 'app.sub.user.name' | i18n }}</span>
                   (<span style="color: rgba(252, 16, 16, 1)">*</span>)
-                  <img
-                  nz-popover
-                  [nzPopoverContent]="
-                    'app.sub.user.into.permission' | i18n
-                  "
-                  nzPopoverPlacement="bottom"
-                  style="margin-left: 5px"
-                  src="assets/imgs/pajamas_question.svg"
-                  alt=""
-                />
+                  <img nz-popover
+                       [nzPopoverContent]="'app.sub.user.name.required' | i18n"
+                       nzPopoverPlacement="bottom"
+                       style="margin-left: 5px"
+                       src="assets/imgs/pajamas_question.svg"
+                       alt="" />
                 </div>
               </div>
             </nz-form-label>
@@ -55,9 +52,12 @@
                      [placeholder]="'app.input.name' | i18n"
                      formControlName="name" />
               <ng-template #nameSubUserErrorTpl let-control>
-                <ng-container *ngIf="control.hasError('required')">{{ 'validation.sub.user.name.required' | i18n }}</ng-container>
+                <ng-container *ngIf="control.hasError('required')">{{ 'validation.sub.user.name.required' | i18n }}
+                </ng-container>
                 <ng-container *ngIf="control.hasError('pattern')">{{ 'validation.sub.user.name' | i18n }}</ng-container>
-                <ng-container *ngIf="control.hasError('duplicateName')">{{ 'validation.sub.user.name.duplicate' | i18n }}</ng-container>
+                <ng-container
+                  *ngIf="control.hasError('duplicateName')">{{ 'validation.sub.user.name.duplicate' | i18n }}
+                </ng-container>
               </ng-template>
             </nz-form-control>
           </nz-form-item>
@@ -68,15 +68,15 @@
                   <span>{{ 'app.access.rights' | i18n }}</span>
                   (<span style="color: rgba(252, 16, 16, 1)">*</span>)
                   <img
-                  nz-popover
-                  [nzPopoverContent]="
+                    nz-popover
+                    [nzPopoverContent]="
                     perrmission
                   "
-                  nzPopoverPlacement="bottom"
-                  style="margin-left: 5px"
-                  src="assets/imgs/pajamas_question.svg"
-                  alt=""
-                />
+                    nzPopoverPlacement="bottom"
+                    style="margin-left: 5px"
+                    src="assets/imgs/pajamas_question.svg"
+                    alt=""
+                  />
                 </div>
                 <ng-template #perrmission>
                   <span>{{ 'app.sub.user.into.permission' | i18n }}
@@ -92,7 +92,8 @@
                            [nzLabel]="'app.no.access.permission' | i18n"></nz-option>
               </nz-select>
               <ng-template #accessErrorTpl let-control>
-                <ng-container *ngIf="control.hasError('required')">{{ 'validation.info.required' | i18n }}</ng-container>
+                <ng-container *ngIf="control.hasError('required')">{{ 'validation.info.required' | i18n }}
+                </ng-container>
               </ng-template>
             </nz-form-control>
           </nz-form-item>
@@ -105,7 +106,7 @@
           </div>
           <div style="margin-top: 10px" class="text-value">{{ 'app.sub.user.name' | i18n }}</div>
           <div style="margin-top: 10px" class="text-label">
-            <span class="text-label" >{{validateForm.controls.name.value}}</span>
+            <span class="text-label">{{ validateForm.controls.name.value }}</span>
           </div>
           <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
           <div style="margin-top: 10px" class="text-value">{{ 'app.access.rights' | i18n }}</div>

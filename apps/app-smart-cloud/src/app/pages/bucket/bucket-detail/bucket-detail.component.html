@@ -697,8 +697,9 @@
 
 <!--Sao chép-->
 <nz-modal
+*ngIf="dataAction != undefined"
   [(nzVisible)]="isVisibleCopy"
-  [nzTitle]="'app.copy' | i18n"
+  [nzTitle]="'Sao chép Object : ' + dataAction.key"
   (nzOnCancel)="handleCancel()"
   [nzStyle]="modalStyle"
 >
@@ -763,6 +764,28 @@
           </div>
         </div>
       </div>
+      <div class="mt-2">Đường dẫn</div>
+      <div
+    style="
+      border: 1px solid #e2e2e9;
+      margin-bottom: 10px;
+      height: 40px; 
+      display: flex;
+      align-items: center;
+    "
+  >
+    <img
+      style="padding-right: 10px; padding-left: 10px; cursor: pointer"
+      src="assets/imgs/box.svg"
+    />
+    <ng-container *ngFor="let item of listOfFolderCopy; let i = index">
+      <div
+        style="font-weight: bold; padding-right: 10px; cursor: pointer;"
+      >
+      <span *ngIf="i > 0"> > </span> {{ item.name }}
+      </div>
+    </ng-container>
+  </div>
     </div>
   </ng-container>
   <div *nzModalFooter>
@@ -777,6 +800,7 @@
       nz-button
       nzType="primary"
       (click)="copyFolder()"
+      [disabled]="isClickCopy === false"
       [nzLoading]="isLoadingCopy"
     >
       <img
@@ -803,7 +827,7 @@
       nzFormat="yyyy-MM-dd HH:mm:ss"
       [nzDisabledDate]="disabledDate"
       [nzDisabledTime]="disabledDateTime"
-      [ngModel]="dateShare"
+      [ngModel]="nextDay"
       (ngModelChange)="getLinkShare($event)"
       [nzShowTime]="{ nzDefaultOpenValue: timeDefaultValue }"
       style="width: 100%; border-radius: 4px"
@@ -998,7 +1022,7 @@
             </td>
             <td>{{ item.lastModified | date : 'dd/MM/yyyy HH:mm:ss' }}</td>
             <td>{{ (item.size / 1024).toFixed(2) }} KB</td>
-            <td>{{ item.versionId }}</td>
+            <td>{{ item.versionId === "null" ? '' : item.versionId }}</td>
             <td>
               <div>
                 <img
@@ -1014,7 +1038,7 @@
                   src="assets/imgs/refresh.svg"
                   style="padding-right: 10px; height: 25px; cursor: pointer;"
                   nz-tooltip
-                  nzTooltipTitle="'app.restore' | i18n"
+                  [nzTooltipTitle]="'app.restore' | i18n"
                   nzTooltipPlacement="bottom"
                   (click)="doActionVersion('2', item)"
                 />
@@ -1064,13 +1088,13 @@
       nz-button
       nzType="primary"
       (click)="deleteFolderVersion()"
-      [nzLoading]="isVisibleDeleteVersion"
+      [nzLoading]="isLoadingDeleteVersion"
     >
       <img
         style="padding-right: 10px; margin-top: -4px"
         src="assets/imgs/confirm.svg"
         alt=""
-        *ngIf="isVisibleDeleteVersion === false"
+        *ngIf="isLoadingDeleteVersion === false"
       />{{ 'app.button.confirm' | i18n }}
     </button>
   </div>

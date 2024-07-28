@@ -43,6 +43,7 @@ export class BucketDetailComponent extends BaseService implements OnInit {
   listOfDataVersioning: ObjectObjectStorageModel[];
   dataAction: ObjectObjectStorageModel;
   listOfFolder: any = [];
+  listOfFolderCopy: any = [];
   currentKey = '';
   date: Date = new Date();
   orderMetadata = 0;
@@ -102,6 +103,7 @@ export class BucketDetailComponent extends BaseService implements OnInit {
   today = new Date();
   timeDefaultValue = setHours(new Date(), 0);
   dateShare=  new Date();
+  nextDay: Date = this.getNextDay();
   versionId: string;
   private: any;
   percent = 0;
@@ -119,7 +121,7 @@ export class BucketDetailComponent extends BaseService implements OnInit {
   isLoadingDeleteObject: boolean = false;
   isLoadingDeleteVersion: boolean = false;
   isLoadingRestoreVersion: boolean = false;
-
+  isClickCopy: boolean = false;
   constructor(
     private service: ObjectObjectStorageService,
     private objectSevice: ObjectStorageService,
@@ -152,28 +154,42 @@ export class BucketDetailComponent extends BaseService implements OnInit {
     return result;
   }
 
-  disabledDate = (current: Date): boolean =>
-    differenceInCalendarDays(current, this.today) < 0;
-  disabledDateTime: DisabledTimeFn = () => {
-    const selectedDate = new Date(this.dateShare);
-    const currentHour = this.today.getHours();
-    const currentMinute = this.today.getMinutes();
-    const currentSecond = this.today.getSeconds();
-    console.log(selectedDate);
-    
-    return {
-      nzDisabledHours: () => this.range(0, currentHour),
-      nzDisabledMinutes: () =>
-        selectedDate.getHours() === currentHour
-          ? this.range(0, currentMinute)
-          : [],
-      nzDisabledSeconds: () =>
-        selectedDate.getHours() === currentHour &&
-        selectedDate.getMinutes() === currentMinute
-          ? this.range(0, currentSecond)
-          : [],
-    };
+  disabledDate = (current: Date): boolean => {
+    return differenceInCalendarDays(current, this.nextDay) < 0;
   };
+
+
+  // Disable previous times only for the current day
+  disabledDateTime: DisabledTimeFn = () => {
+    const selectedDate = this.nextDay;
+    const currentDate = new Date();
+    const currentHour = currentDate.getHours();
+    const currentMinute = currentDate.getMinutes();
+    const currentSecond = currentDate.getSeconds();
+
+    if (differenceInCalendarDays(selectedDate, currentDate) === 0) {
+      return {
+        nzDisabledHours: () => this.range(0, currentHour),
+        nzDisabledMinutes: () =>
+          selectedDate.getHours() === currentHour
+            ? this.range(0, currentMinute)
+            : [],
+        nzDisabledSeconds: () =>
+          selectedDate.getHours() === currentHour &&
+          selectedDate.getMinutes() === currentMinute
+            ? this.range(0, currentSecond)
+            : [],
+      };
+    } else {
+      // If selected date is not today, no time restrictions
+      return {
+        nzDisabledHours: () => [],
+        nzDisabledMinutes: () => [],
+        nzDisabledSeconds: () => []
+      };
+    }
+  };
+
 
   search(search: string) {  
     this.value = search.trim();
@@ -226,6 +242,7 @@ export class BucketDetailComponent extends BaseService implements OnInit {
     this.isVisibleDetail = false;
     this.isVisibleDelete = false;
     this.isVisibleVersioning = false;
+    this.isClickCopy = false;
   }
 
   handleCancelShareFile() {
@@ -254,7 +271,11 @@ export class BucketDetailComponent extends BaseService implements OnInit {
       });
   }
 
-
+  getNextDay(): Date {
+    let nextDay = new Date(this.dateShare);
+    nextDay.setDate(this.dateShare.getDate() + 1);
+    return nextDay;
+  }
 
   toFolder1(item: any, isBucket) {
     if (isBucket) {
@@ -524,6 +545,7 @@ export class BucketDetailComponent extends BaseService implements OnInit {
       this.isVisibleDelete = true;
     } else if (action == 6) {
       this.isVisibleShare = true;
+      this.getLinkShare(this.nextDay)
     } else if (action == 7) {
       this.isVisibleVersioning = true;
       this.loadDataVersion();
@@ -542,14 +564,41 @@ export class BucketDetailComponent extends BaseService implements OnInit {
   }
 
   activeRow: any;
-  toFolder(event: any) {
-    console.log(event);
-    this.activeRow = event;
-    if (event.folderKey != undefined) {
-      this.folderChange = event.folderKey;
-    } else {
-      this.folderChange = event.bucketName;
+
+  // Helper method to find parent bucket of a given folder
+  findParentBucket(folderKey: string): any {
+    for (let bucket of this.treeFolder) {
+      if (bucket.bucketTreeData.some((folder: any) => folder.folderKey === folderKey)) {
+        return bucket;
+      }
     }
+    return null;
+  }
+
+  // Updated method to handle folder clicks and find the parent bucket
+  toFolder(event: any, parent: any) {
+    this.isClickCopy = true
+    this.activeRow = event;
+
+    if (parent) {
+      this.listOfFolderCopy = [
+        { name: parent.bucketName, key: parent.bucketName },
+        { name: event.folderName, key: event.folderKey }
+      ];
+    } else {
+      // Find the parent bucket of the clicked folder
+      const parentBucket = this.findParentBucket(event.folderKey);
+      if (parentBucket) {
+        this.listOfFolderCopy = [
+          { name: parentBucket.bucketName, key: parentBucket.bucketName },
+          { name: event.folderName, key: event.folderKey }
+        ];
+      } else {
+        this.listOfFolderCopy = [{ name: event.bucketName, key: event.bucketName }];
+      }
+    }
+
+    this.folderChange = event.folderKey || event.bucketName;
   }
 
   isActive(item: any): boolean {
@@ -594,17 +643,45 @@ export class BucketDetailComponent extends BaseService implements OnInit {
 
   copyFolder() {
     this.isLoadingCopy = true;
+  
     let destinationKey = '';
     let destinationBucket = '';
-    if (this.folderChange.includes('/')) {
-      const separatorIndex = this.folderChange.indexOf('/');
-      destinationBucket = this.folderChange.substring(0, separatorIndex);
-      destinationKey =
-        this.folderChange.substring(separatorIndex + 1) + this.dataAction.key;
+    
+      if (this.folderChange.includes('/')) {
+    const separatorIndex = this.folderChange.indexOf('/');
+    destinationBucket = this.folderChange.substring(0, separatorIndex);
+    // Check if destination bucket is the same as the source bucket
+    if (destinationBucket === this.dataAction.bucketName) {
+      console.log(this.dataAction.key);
+      let keyPath = this.dataAction.key.split('/')[1];
+      destinationKey = this.folderChange.substring(separatorIndex + 1) + keyPath;
     } else {
-      destinationBucket = this.folderChange;
+      console.log(this.dataAction.key);
+      let keyPath = this.dataAction.key.split('/')[1];
+      destinationKey = this.folderChange.substring(separatorIndex + 1) + keyPath;
+    }
+  } else {
+    destinationBucket = this.folderChange;
+    if (destinationBucket === this.dataAction.bucketName) {
+      destinationKey = '';
+    } else {
       destinationKey = this.dataAction.key;
     }
+  }
+
+    const sourcePath = `${this.dataAction.bucketName}/${this.dataAction.key}`;
+    const destinationPath = `${destinationBucket}/${destinationKey}`;
+  
+    
+    if (sourcePath === destinationPath) {
+      this.isLoadingCopy = false;
+      this.notification.error(
+        this.i18n.fanyi('app.status.fail'),
+         'Không thể copy object đến chính thư mục của nó'
+      );
+      return;
+    }
+  
     const data = {
       sourceKey: this.dataAction.key,
       sourceBucket: this.dataAction.bucketName,
@@ -612,12 +689,13 @@ export class BucketDetailComponent extends BaseService implements OnInit {
       destinationBucket: destinationBucket,
       regionId: this.region
     };
-
+  
     this.service
       .copyProject(data)
       .pipe(
         finalize(() => {
           this.isLoadingCopy = false;
+          this.isClickCopy = false
           this.loadData();
         })
       )
@@ -637,6 +715,7 @@ export class BucketDetailComponent extends BaseService implements OnInit {
         }
       );
   }
+
 
   copyUrl() {
     this.clipboard.copy(this.dataAction.url);
@@ -686,6 +765,7 @@ export class BucketDetailComponent extends BaseService implements OnInit {
       this.i18n.fanyi('app.bucket.detail.sharelink.success')
     );
     this.isVisibleShare = false;
+    this.linkShare = ''
   }
 
   getLinkShare(event) {
@@ -737,6 +817,7 @@ export class BucketDetailComponent extends BaseService implements OnInit {
       .pipe(
         finalize(() => {
           this.isVisibleDeleteVersion = false
+          this.isLoadingDeleteVersion = false
         })
       )
       .subscribe(

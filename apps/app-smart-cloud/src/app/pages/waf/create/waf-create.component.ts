@@ -1,26 +1,28 @@
 import { ChangeDetectorRef, Component, Inject, OnInit } from '@angular/core';
-import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { NguCarouselConfig } from '@ngu/carousel';
-import { ImageTypesModel, OfferItem } from '../../instances/instances.model';
-import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
-import { InstancesService } from '../../instances/instances.service';
-import { getCurrentRegionAndProject } from '@shared';
+import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { DomSanitizer } from '@angular/platform-browser';
 import { Router } from '@angular/router';
-import { finalize } from 'rxjs/operators';
-import { RegionModel, slider } from '../../../../../../../libs/common-utils/src';
-import { IpPublicService } from '../../../shared/services/ip-public.service';
-import { OfferDetail, SupportService } from '../../../shared/models/catalog.model';
-import { da } from 'date-fns/locale';
-import { NzNotificationService } from 'ng-zorro-antd/notification';
-import { debounceTime, Subject } from 'rxjs';
 import { I18NService } from '@core';
-import { ALAIN_I18N_TOKEN } from '@delon/theme';
-import { CatalogService } from 'src/app/shared/services/catalog.service';
-import { Interface } from 'readline';
-import { VpcService } from 'src/app/shared/services/vpc.service';
-import { OrderService } from 'src/app/shared/services/order.service';
 import { LoadingService } from '@delon/abc/loading';
+import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
+import { NguCarouselConfig } from '@ngu/carousel';
+import { getCurrentRegionAndProject } from '@shared';
+import { NzNotificationService } from 'ng-zorro-antd/notification';
+import { Subject } from 'rxjs';
+import { DOMAIN_REGEX } from 'src/app/shared/constants/constants';
 import { RegionID } from 'src/app/shared/enums/common.enum';
+import { CatalogService } from 'src/app/shared/services/catalog.service';
+import { OrderService } from 'src/app/shared/services/order.service';
+import { VpcService } from 'src/app/shared/services/vpc.service';
+import { duplicateDomainValidator, ipValidatorMany, slider } from '../../../../../../../libs/common-utils/src';
+import { IpPublicService } from '../../../shared/services/ip-public.service';
+import { DataPayment, ItemPayment, OfferItem, Order, OrderItem } from '../../instances/instances.model';
+import { InstancesService } from '../../instances/instances.service';
+import { ObjectStorageCreate } from 'src/app/shared/models/object-storage.model';
+import { WAFCreate } from '../../../shared/models/waf-init';
+import { ObjectStorageService } from 'src/app/shared/services/object-storage.service';
+import { OrderItemObject } from 'src/app/shared/models/price';
 
 
 
@@ -33,9 +35,12 @@ import { RegionID } from 'src/app/shared/enums/common.enum';
 })
 
 
+
+
+
 export class WAFCreateComponent implements OnInit {
   public carouselTileConfig: NguCarouselConfig = {
-    grid: { xs: 1, sm: 1, md: 2, lg: 3, all: 0 },
+    grid: { xs: 1, sm: 2, md: 3, lg: 4, all: 0 },
     speed: 250,
     point: {
       visible: true
@@ -47,11 +52,8 @@ export class WAFCreateComponent implements OnInit {
   iconToggle: string;
 
   listOfferFlavors: OfferItem[] = [];
-  listLoadbalancer: OfferDetail[] = [];
-  listSiteToSite: OfferDetail[] = [];
   offerFlavor: OfferItem;
   selectedElementFlavor: any;
-
   regionId: any;
   loadingCalculate = false;
   today = new Date();
@@ -62,11 +64,6 @@ export class WAFCreateComponent implements OnInit {
   totalAmount = 0;
   totalPayment = 0;
   totalVAT = 0;
-  defaultDomain = { domain: '', ip: '', host: '', port: '', ssl: ''  };
-
-
-  gpuQuotasGobal: { GpuOfferId: number, GpuCount: number, GpuType: string, GpuPrice: number, GpuPriceUnit: number }[] = [];
-
 
   prices: any;
 
@@ -74,29 +71,47 @@ export class WAFCreateComponent implements OnInit {
   stepBlock: number = 0;
   maxBlock: number = 0;
 
-  loadBalancerName: string;
-  sitetositeName: string;
-  listTypeCatelogOffer: any;
+  selectedDescription: string = '';
+  selectedNameFlavor: string = '';
+  selectedOfferId: number = 0;
   listOfDomain: any = [];
 
   isRequired: boolean = true;
 
   isLoading = false;
+  isVisibleCreateSSLCert = false;
+ 
+  openModalSSlCert(){
+    this.isVisibleCreateSSLCert = true
+  }
   isVisiblePopupError: boolean = false;
   errorList: string[] = [];
+  timeSelected: any
   closePopupError() {
     this.isVisiblePopupError = false;
   }
   productByRegion: any
 
-  isShowAlertGpu: boolean;
+  policy = [
+    { label: 'Default', value: '0' },
+  ];
+
+  policySelected: string = '0';
+  numberDomain: number = 0;
+  get policySelectedLabel(): string {
+    const selectedPolicy = this.policy.find(p => p.value === this.policySelected);
+    return selectedPolicy ? selectedPolicy.label : '';
+  }
+
   form: FormGroup = this.fb.group({
-    bonusServices: this.fb.array([this.createBonusService()])
+    nameWAF: ['', [Validators.required]],
+    bonusServices: this.fb.array([this.createBonusService(), this.policySelected]),
+    time: [1]
   });
   private inputChangeSubject = new Subject<{ value: number, name: string }>();
 
   private searchSubject = new Subject<string>();
-
+  orderObject: OrderItemObject = new OrderItemObject();
   constructor(@Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
     private instancesService: InstancesService,
     private cdr: ChangeDetectorRef,
@@ -108,12 +123,15 @@ export class WAFCreateComponent implements OnInit {
     private vpc: VpcService,
     private orderService: OrderService,
     private loadingSrv: LoadingService,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private service: ObjectStorageService
 
   ) {
   
   }
-  
+
+  WAFCreate: WAFCreate = new WAFCreate();
+  totalincludesVAT: number = 0;
   url = window.location.pathname;
   hasRoleSI: boolean
   ngOnInit() {
@@ -128,39 +146,46 @@ export class WAFCreateComponent implements OnInit {
     } else {
       this.regionId = RegionID.ADVANCE;
     }
-    this.initFlavors();;
-    // this.onChangeTime();
-    this.getStepBlock('BLOCKSTORAGE')
+    this.initFlavors();
     this.iconToggle = "icon_circle_minus"
-    this.numOfMonth = this.form.controls['numOfMonth'].value;
-
   }
-  offervCpu: number;
 
-
-   get bonusServices(): FormArray {
+  get bonusServices(): FormArray {
     return this.form.get('bonusServices') as FormArray;
   }
 
   createBonusService(): FormGroup {
     return this.fb.group({
-      domain: ['', [Validators.required]],
-      ipPublic: ['', [Validators.required]],
-      host: ['', [Validators.required]],
-      port: ['', [Validators.required]],
-      sslCert: ['', [Validators.required]]
+      nameWAF: ['', [Validators.required]],
+      domain: ['', [Validators.required,Validators.pattern(DOMAIN_REGEX) ,duplicateDomainValidator]],
+      ipPublic: ['', [Validators.required, ipValidatorMany]],
+      host: [''],
+      port: [''],
+      sslCert: ['']
     });
   }
 
+  initWAF() {
+    this.WAFCreate.customerId = this.tokenService.get()?.userId;
+    this.WAFCreate.userEmail = this.tokenService.get()?.email;
+    this.WAFCreate.actorEmail = this.tokenService.get()?.email;
+    this.WAFCreate.projectId = null;
+    this.WAFCreate.regionId = 0;
+    this.WAFCreate.serviceType = 0;
+    this.WAFCreate.actionType = 0;
+    this.WAFCreate.serviceInstanceId = 0;
+    this.WAFCreate.createDate = this.today
+    this.WAFCreate.expireDate = this.expiredDate
+    this.WAFCreate.offerId = this.selectedOfferId;
+    this.WAFCreate.wafDomains = this.form.get('bonusServices')?.value
+    this.WAFCreate.serviceName = this.form.get('nameWAF')?.value
+    this.WAFCreate.isSendMail = true
+    this.WAFCreate.typeName = "SharedKernel.IntegrationEvents.Orders.Specifications.Waf.WafCreateSpecification,SharedKernel.IntegrationEvents, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null"
+  }
+
+
   addBonusService() {
-    const bonusService = this.fb.group({
-      domain: ['', [Validators.required]],
-      ipPublic: ['', [Validators.required]],
-      host: ['', [Validators.required]],
-      port: ['', [Validators.required]],
-      sslCert: ['', [Validators.required]]
-    });
-    this.bonusServices.push(bonusService);
+    this.bonusServices.push([this.createBonusService(), this.policySelected]);
   }
 
   removeBonusService(index: number) {
@@ -171,44 +196,41 @@ export class WAFCreateComponent implements OnInit {
     }
   }
 
-  handleSubmit(){
-    const domainValues = this.bonusServices.controls.map(group => group.get('domain')?.value)
-    console.log(domainValues);
+
+  getDomainValues(): string {
+    return this.bonusServices.controls
+      .map(control => control.get('domain')?.value)
+      .filter(value => value)
+      .join(', ');
   }
 
   onChangeTime(numberMonth: number) {
-
-    this.numOfMonth = numberMonth;
-    console.log("numOfMonth123", this.numOfMonth)
-    // const dateNow = new Date();
-    // dateNow.setDate(dateNow.getDate() + Number(this.form.controls['numOfMonth'].value * 30));
-    // console.log("this.numOfMonth hh",this.numOfMonth)
-    // this.expiredDate = dateNow;
-    this.calculate(null);
+    this.timeSelected = numberMonth;
+    this.form.controls.time.setValue(this.timeSelected);
+    this.getTotalAmount();
   }
 
-  calculate(number: any) {
-    if (this.vpcType === '0') {
-      this.activeVpc = false;
-      this.activeNoneVpc = true;
-    } else {
-      this.activeVpc = true;
-      this.activeNoneVpc = false;
 
-    }
-    this.searchSubject.next('');
-
+  getTotalAmount() {
+    this.initWAF();
+    let itemPayment: ItemPayment = new ItemPayment();
+    itemPayment.orderItemQuantity = 1;
+    itemPayment.specificationString = JSON.stringify(this.WAFCreate);
+    itemPayment.specificationType = 'waf_create';
+    itemPayment.serviceDuration = this.form.controls.time.value;
+    itemPayment.sortItem = 0;
+    let dataPayment: DataPayment = new DataPayment();
+    dataPayment.orderItems = [itemPayment];
+    this.service.getTotalAmount(dataPayment).subscribe((result) => {
+      console.log('thanh tien', result);
+      this.totalAmount = Number.parseFloat(result.data.totalAmount.amount);
+      this.totalincludesVAT = Number.parseFloat(
+        result.data.totalPayment.amount
+      );
+      this.orderObject = result.data;
+      this.cdr.detectChanges();
+    });
   }
-  getStepBlock(name: string) {
-    this.vpc.getStepBlock(name).subscribe((res: any) => {
-      const valuestring: any = res.valueString;
-      const parts = valuestring.split("#")
-      this.minBlock = parseInt(parts[0]);
-      this.stepBlock = parseInt(parts[1]);
-      this.maxBlock = parseInt(parts[2]);
-    })
-  }
-  messageNotification: string;
 
   onInputChange(value: number, name: string): void {
     console.log("object value", value)
@@ -218,9 +240,18 @@ export class WAFCreateComponent implements OnInit {
 
 
   selectPackge = '';
-  vpcType = '0';
-  activeNoneVpc = true;
-  activeVpc = false;
+
+  getNumberOfDomains(characteristicValues: any[]): number {
+    const domainCharacteristic = characteristicValues.find(ch => ch.charName === 'Domain');
+    if (domainCharacteristic && domainCharacteristic.charOptionValues) {
+      return parseInt(domainCharacteristic.charOptionValues[0], 10);
+    }
+    return 0;
+  }
+
+  isShowAddButton(): boolean {
+    return this.bonusServices.length < this.numberDomain;
+  }
 
   onInputFlavors(event: any, name: any) {
     this.selectPackge = name;
@@ -228,46 +259,105 @@ export class WAFCreateComponent implements OnInit {
       (flavor) => flavor.id === event
     );
     this.selectedElementFlavor = 'flavor_' + event;
-    console.log("objeselectedElementFlavorct", this.selectedElementFlavor)
-    this.calculate(null);
+    this.selectedNameFlavor = this.offerFlavor.offerName;
+    this.selectedOfferId = this.offerFlavor.id;
+    console.log(this.selectedNameFlavor);
+    
+    console.log("selectedElementFlavor", this.selectedElementFlavor);
+    this.numberDomain = this.offerFlavor?.numberDomain || 0; 
+    console.log(this.numberDomain);
+    
+    if (this.offerFlavor?.description) {
+      this.selectedDescription = this.offerFlavor.description.replace(/<\/?b>/g, '');
+    } else {
+      this.selectedDescription = '';
+    }
+  
+    this.getTotalAmount();
   }
 
 
 
   initFlavors(): void {
-    this.instancesService.getDetailProductByUniqueName('vpc-oneportal')
+    this.instancesService.getDetailProductByUniqueName('waf')
       .subscribe(
         data => {
           this.instancesService
-            .getListOffersByProductId(data[0].id, this.regionId)
+            .getListOffersByProductIdNoRegion(data[0].id)
             .subscribe((data: any) => {
               this.listOfferFlavors = data.filter(
                 (e: OfferItem) => e.status.toUpperCase() == 'ACTIVE'
               );
 
+            
               this.listOfferFlavors.forEach((e: OfferItem) => {
-                e.description = '0 vCPU / 0 GB RAM / HHH GB SSS / 0 IP';
+                e.description = '';
                 e.characteristicValues.forEach((ch) => {
-                  if (ch.charName.toUpperCase() == 'CPU') {
-                    e.description = e.description.replace(/0 vCPU/g, ch.charOptionValues[0] + ' vCPU');
-                  } else if (ch.charName.toUpperCase() == 'RAM') {
-                    e.description = e.description.replace(/0 GB RAM/g, ch.charOptionValues[0] + ' GB RAM');
-                  } else if (ch.charName == 'Storage') {
-                    e.description = e.description.replace(/HHH/g, ch.charOptionValues[0]);
-                  } else if (ch.charName == 'VolumeType') {
-                    e.description = e.description.replace(/SSS/g, ch.charOptionValues[0]);
-                  } else if (ch.charName.toUpperCase() == 'IP') {
-                    e.description = e.description.replace(/0 IP/g, ch.charOptionValues[0] + ' IP');
-
-                    e.ipNumber = ch.charOptionValues[0];
-                    console.log(" e.ipNumber", e.ipNumber)
+                  if (ch.charName == 'Domain') {
+                    e.description += `<b>${ch.charOptionValues}</b> Domain`;
                   }
                 });
+
+                e.characteristicValues.forEach((ch) => {
+                   if(ch.charName == 'DDOS' && ch.charOptionValues[0] == 'true'){
+                    e.description += `<br/><b>Có</b> chống tấn công DDOS`
+                  }else if(ch.charName == 'WAF' && ch.charOptionValues[0] == 'true'){
+                    e.description += `<br/><b>Có</b> tường lửa (WAF) chặn tấn công Top 10 OWASP`
+                   }else if(ch.charName == 'IP/GeoBlock' && ch.charOptionValues[0] == 'true'){
+                    e.description += `<br/><b>Có</b> giới hạn truy cập theo IP, dải IP...`
+                   }else if(ch.charName == 'UsageTraffic'){
+                    e.description += `<br/><b>${ch.charOptionValues} GB</b> Lưu lượng sử dụng`
+                   }
+                });
+                e.numberDomain = this.getNumberOfDomains(e.characteristicValues)
               });
               this.cdr.detectChanges();
             });
         }
       );
+  }
+
+  orderItem: OrderItem[] = [];
+  order: Order = new Order();
+  handleSubmit() {
+    this.orderItem = [];
+    this.initWAF();
+    let specification = JSON.stringify(this.WAFCreate);
+    let orderItemOS = new OrderItem();
+    orderItemOS.orderItemQuantity = 1;
+    orderItemOS.specification = specification;
+    orderItemOS.specificationType = 'waf_create';
+    orderItemOS.price = this.totalAmount;
+    orderItemOS.serviceDuration = this.form.controls.time.value;
+    this.orderItem.push(orderItemOS);
+
+    this.order.customerId = this.tokenService.get()?.userId;
+    this.order.createdByUserId = this.tokenService.get()?.userId;
+    this.order.note = 'tạo waf';
+    this.order.orderItems = this.orderItem;
+    this.orderService.validaterOrder(this.order).subscribe({
+      next: (data) => {
+        if (data.success) {
+          var returnPath: string = window.location.pathname;
+          this.router.navigate(['/app-smart-cloud/order/cart'], {
+            state: { data: this.order, path: returnPath },
+          });
+        } else {
+          this.isVisiblePopupError = true;
+          this.errorList = data.data;
+        }
+      },
+      error: (e) => {
+        this.notification.error(
+          this.i18n.fanyi('app.status.fail'),
+          e.error.detail
+        );
+      },
+    });
+  }
+
+  handleCancelCreateSSLCert(){
+    this.isVisibleCreateSSLCert = false
   }
 
 }

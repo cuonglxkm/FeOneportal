@@ -1130,6 +1130,7 @@ export class InstancesCreateComponent implements OnInit {
         this.getTotalAmount();
       }
       this.checkValidConfig();
+      this.cdr.detectChanges();
     });
   }
   //#endregion
@@ -1248,6 +1249,7 @@ export class InstancesCreateComponent implements OnInit {
           this.getTotalAmount();
         }
         this.checkValidConfig();
+        this.cdr.detectChanges();
       });
   }
 
@@ -1584,7 +1586,7 @@ export class InstancesCreateComponent implements OnInit {
   //#endregion
 
   onRegionChange(region: RegionModel) {
-    if(this.projectCombobox){
+    if (this.projectCombobox) {
       this.projectCombobox.loadProjects(true, region.regionId);
     }
     this.router.navigate(['/app-smart-cloud/instances']);

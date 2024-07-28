@@ -19,7 +19,7 @@ import { Subject, debounceTime } from 'rxjs';
 import { ObjectStorageService } from 'src/app/shared/services/object-storage.service';
 import { ConfigurationsService } from 'src/app/shared/services/configurations.service';
 import { OrderItemObject } from 'src/app/shared/models/price';
-import { FormControl, FormGroup, NonNullableFormBuilder } from '@angular/forms';
+import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
 import { OrderService } from 'src/app/shared/services/order.service';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { I18NService } from '@core';
@@ -67,6 +67,11 @@ export class ObjectStorageCreateComponent implements OnInit {
 
   onRegionChange(region: RegionModel) {
     this.region = region.regionId;
+    if(this.region === RegionID.ADVANCE){
+      this.router.navigate(['/app-smart-cloud/object-storage-advance/bucket']);
+    }else{
+      this.router.navigate(['/app-smart-cloud/object-storage/bucket']);
+    }
   }
 
   onRegionChanged(region: RegionModel) {
@@ -84,8 +89,10 @@ export class ObjectStorageCreateComponent implements OnInit {
 
   validateForm: FormGroup<{
     time: FormControl<number>;
+    quota: FormControl<number>;
   }> = this.fb.group({
-    time: [1],
+    time: [1, Validators.required],
+    quota: [0, Validators.required],
   });
 
   dataSubjectTime: Subject<any> = new Subject<any>();
@@ -125,13 +132,15 @@ export class ObjectStorageCreateComponent implements OnInit {
     this.dataSubject.next(value);
   }
   onChangeCapacity() {
-    this.dataSubject
-      .pipe(
-        debounceTime(500) // Đợi 500ms sau khi người dùng dừng nhập trước khi xử lý sự kiện
-      )
-      .subscribe((res) => {
-        this.getTotalAmount();
-      });
+    this.dataSubject.pipe(debounceTime(500))
+    .subscribe((res) => {
+      if ((res % this.stepStorage) > 0) {
+        this.notification.warning('', this.i18n.fanyi('app.notify.amount.capacity', { number: this.stepStorage }));
+        this.objectStorageCreate.quota = res - (res % this.stepStorage);
+      }
+      console.log('total amount');
+      this.getTotalAmount();
+    });
   }
 
   orderObject: OrderItemObject = new OrderItemObject();
@@ -208,11 +217,9 @@ export class ObjectStorageCreateComponent implements OnInit {
       });
   }
 
-  navigateToBucketList(){
-    if(this.region === RegionID.ADVANCE){
-      this.router.navigate(['/app-smart-cloud/object-storage-advance/bucket']);
-    }else{
-      this.router.navigate(['/app-smart-cloud/object-storage/bucket']);
-    }
+  getBucketListUrl(): string {
+    return this.region === RegionID.ADVANCE 
+      ? '/app-smart-cloud/object-storage-advance/bucket' 
+      : '/app-smart-cloud/object-storage/bucket';
   }
 }

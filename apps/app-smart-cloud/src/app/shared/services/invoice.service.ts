@@ -25,6 +25,4 @@ export class InvoiceService extends BaseService {
     return this.http.put(this.baseUrl + this.ENDPOINT.users + '/invoice',
         Object.assign(formUpdate), {headers: this.getHeaders().headers})
   }
-
-
 }

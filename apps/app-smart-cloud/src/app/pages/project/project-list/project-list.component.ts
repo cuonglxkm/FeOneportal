@@ -12,6 +12,8 @@ import { IpPublicService } from '../../../shared/services/ip-public.service';
 import { I18NService } from '@core';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { RegionID } from 'src/app/shared/enums/common.enum';
+import { debounceTime, Subject } from 'rxjs';
+import { TimeCommon } from 'src/app/shared/utils/common';
 
 @Component({
   selector: 'one-portal-project-list',
@@ -34,8 +36,8 @@ export class ProjectListComponent implements OnInit {
   selectedStatus = '';
   statusData = [
     { name: this.i18n.fanyi('app.status.all'), value: '' },
-    { name: this.i18n.fanyi('status.enable'), value: 'ENABLE' },
-    { name: this.i18n.fanyi('status.disable'), value: 'DISABLE' },
+    { name: this.i18n.fanyi('status.active'), value: 'ENABLE' },
+    // { name: this.i18n.fanyi('status.disable'), value: 'DISABLE' },
     { name: this.i18n.fanyi('status.suspended'), value: 'SUSPENDED' }];
 
   modalStyle = {
@@ -52,6 +54,10 @@ export class ProjectListComponent implements OnInit {
     description: new FormControl('')
   });
   loadingDelete = false;
+  searchDelay = new Subject<boolean>();
+
+  results: VpcModel[] = [];
+  allData: VpcModel[] = [];
 
   constructor(private router: Router,
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
@@ -118,6 +124,10 @@ export class ProjectListComponent implements OnInit {
       }
     });
 
+    // this.searchDelay.pipe(debounceTime(TimeCommon.timeOutSearch)).subscribe(() => {     
+    //   this.getData(false);
+    // });
+
   }
 
   onRegionChange(region: RegionModel) {
@@ -139,13 +149,30 @@ export class ProjectListComponent implements OnInit {
     this.vpcService.getData(this.searchKey, this.selectedStatus, this.tokenService.get()?.userId, this.regionId, this.size, this.index)
       .pipe(finalize(() => this.loading = false))
       .subscribe(baseResponse => {
-        this.listOfData = baseResponse.records;
+        this.allData = baseResponse.records;
+        this.listOfData =  this.allData;
+
         console.log(" this.listOfData", this.listOfData)
+        this.filterData()
         this.total = baseResponse.totalCount;
         if (isCheckBegin) {
           this.isBegin = this.listOfData === null || this.listOfData.length < 1 ? true : false;
         }
       });
+
+
+    // this.vpcService.getData(this.searchKey, this.selectedStatus, this.tokenService.get()?.userId, this.regionId, this.size, this.index)
+    // .pipe(debounceTime(500))
+    // .subscribe(baseResponse => {
+    //   this.loading = false
+    //   this.listOfData = baseResponse.records;
+    //   console.log(" this.listOfData", this.listOfData)
+    //   // this.filterData()
+    //   this.total = baseResponse.totalCount;
+    //   if (isCheckBegin) {
+    //     this.isBegin = this.listOfData === null || this.listOfData.length < 1 ? true : false;
+    //   }
+    // });
   }
 
   onPageSizeChange(event: any) {
@@ -218,10 +245,36 @@ export class ProjectListComponent implements OnInit {
   }
 
   search(inputSearch: any) {
+    console.log("event", inputSearch)
     if (inputSearch !== null) {
       this.searchKey = inputSearch;
+      console.log("searchKey", this.searchKey)
+      this.filterData()
     }
-    this.getData(false);
+    if (inputSearch == null) {
+      this.getData(false);
+    }
+  
+  }
+
+  // search(inputSearch: string) {
+  //   console.log("event", inputSearch)
+  //   this.searchKey = inputSearch.toLowerCase().trim();
+  //   console.log("searchKey",this.searchKey)
+  //   this.getData(false);
+  // }
+
+  
+  filterData() {
+    if (this.searchKey) {
+      this.listOfData = this.allData.filter(item =>
+
+        item.displayName.toLowerCase().includes(this.searchKey.toLowerCase()
+        )
+      );
+    } else {
+      this.listOfData = this.allData;
+    }
   }
 
   createProject() {
@@ -264,11 +317,11 @@ export class ProjectListComponent implements OnInit {
       }))
       .subscribe(
         data => {
-          this.notification.success('Thành công', 'Cập nhật dự án thành công');
+          this.notification.success('Thành công', 'Cập nhật VPC thành công');
           this.router.navigate(['/app-smart-cloud/project']);
         },
         error => {
-          this.notification.error('Thất bại', 'Cập nhật dự án thất bại');
+          this.notification.error('Thất bại', 'Cập nhật VPC thất bại');
         }
       );
   }

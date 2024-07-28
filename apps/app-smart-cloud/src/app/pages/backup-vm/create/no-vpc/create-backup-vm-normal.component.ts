@@ -276,7 +276,7 @@ export class CreateBackupVmNormalComponent implements OnInit{
       createBackupVmSpecification.backupInstanceOfferId = 0; // dùng để tính giá về sau
       createBackupVmSpecification.volumeToBackupIds = this.validateForm.controls.volumeToBackupIds.value;
       createBackupVmSpecification.securityGroupToBackupIds = this.securityGroupSelected
-      createBackupVmSpecification.description = this.validateForm.controls.description.value;
+      createBackupVmSpecification.description = this.validateForm.controls.description.value.trimStart().trimEnd();
       createBackupVmSpecification.backupPackageId = this.validateForm.controls.backupPacketId.value;
       createBackupVmSpecification.customerId = this.tokenService.get()?.userId;
       createBackupVmSpecification.actorEmail = this.tokenService.get()?.email;
@@ -284,7 +284,7 @@ export class CreateBackupVmNormalComponent implements OnInit{
       createBackupVmSpecification.vpcId = this.project;
       createBackupVmSpecification.projectId = this.project
       createBackupVmSpecification.regionId = this.region;
-      createBackupVmSpecification.serviceName = this.validateForm.controls.backupName.value;
+      createBackupVmSpecification.serviceName = this.validateForm.controls.backupName.value.trimStart().trimEnd();
       createBackupVmSpecification.serviceType = 9; // 9 là backup_vm
       createBackupVmSpecification.actionType = 0; // 0 là create
       createBackupVmSpecification.serviceInstanceId = 0;
