@@ -214,6 +214,7 @@
   "app.ip.floating": "IP floating",
   "app.choose.ip.floating": "Choose IP floating",
   "app.capacity": "Capacity",
+  "app.capacity1": "Capacity used",
   "app.capacity.resize": "Resize capacity",
   "app.increase.capacity": "Increase capacity",
   "app.increase.ram": "Increase RAM",

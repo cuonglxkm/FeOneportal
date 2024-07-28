@@ -411,23 +411,24 @@ export class CreateLbVpcComponent implements OnInit {
 
   private onInputReal(searchValue: any) {
     this.validateForm.controls['ipAddress'].disable();
-    if (!this.validateForm.controls['ipAddress'].invalid && !this.validateForm.controls['subnet'].invalid) {
+    if (!this.validateForm.controls['ipAddress'].invalid) {
       const getSubnet = this.listSubnets?.find(option => option.cloudId === this.validateForm.get('subnet').value);
       const result = this.isIpInSubnet(searchValue, getSubnet.subnetAddressRequired);
-      this.vlanService.checkIpAvailable(searchValue, getSubnet.subnetAddressRequired, getSubnet.cloudId, this.region)
+      this.vlanService.checkIpAvailable(searchValue, getSubnet.subnetAddressRequired, getSubnet.networkCloudId, this.region)
         .pipe(finalize(() => {
           this.validateForm.controls['ipAddress'].enable();
-          this.validateForm.controls['ipAddress'].setErrors({ failServer: true });
+          if (this.invalidIpAddress == true) {
+            this.validateForm.controls['ipAddress'].setErrors({ failServer: true });
+          }
         }))
-        .subscribe(
-        data => {
-          this.invalidIpAddress = false;
-        },
-        error => {
-          this.messageFail = error.error;
-          // this.notification.error(this.i18n.fanyi('app.status.fail'),error.error)
-          this.invalidIpAddress = true;
-        })
+        .subscribe(data => {
+            this.invalidIpAddress = false;
+          },
+          error => {
+            this.messageFail = error.error;
+            // this.notification.error(this.i18n.fanyi('app.status.fail'),error.error)
+            this.invalidIpAddress = true;
+          })
     }
   }
 

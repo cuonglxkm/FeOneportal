@@ -112,6 +112,7 @@
   "app.ip.floating": "IP Floating",
   "app.choose.ip.floating": "Chọn IP Floating",
   "app.capacity": "Dung lượng",
+  "app.capacity1": "Dung lượng đã dùng",
   "app.capacity.resize": "Điều chỉnh dung lượng",
   "app.increase.capacity": "Dung lượng tăng thêm",
   "app.increase.ram": "RAM tăng thêm",

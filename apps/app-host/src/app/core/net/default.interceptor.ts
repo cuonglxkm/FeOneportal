@@ -207,8 +207,14 @@ export class DefaultInterceptor implements HttpInterceptor {
   // #endregion
 
   private toLogin(): void {
+    let id_token = this.tokenService.get()!['id_token'];
     // this.notification.error(`Hết phiên đăng nhập`, ``);
-    this.goTo(this.tokenSrv.login_url!);
+    window.location.href =
+      environment['sso'].issuer +
+      `/connect/logout?oi_au_id=${id_token}&post_logout_redirect_uri=${decodeURIComponent(
+        environment['sso'].logout_callback
+      )}`;
+    // this.goTo(this.tokenSrv.login_url!);
     sessionStorage.clear();
     this.cookieService.deleteAll( "/",environment.sso.domain,true,"None");
     this.tokenService.clear();
