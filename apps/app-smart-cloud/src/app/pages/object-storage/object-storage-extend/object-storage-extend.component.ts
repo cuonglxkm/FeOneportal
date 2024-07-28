@@ -87,7 +87,7 @@ export class ObjectStorageExtendComponent implements OnInit {
         },
         error: (e) => {
           this.notification.error(
-            e.error.detail,
+            e.error.message,
             this.i18n.fanyi('app.notification.object.storage.fail')
           );
         },
