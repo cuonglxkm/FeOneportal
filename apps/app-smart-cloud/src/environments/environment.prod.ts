@@ -13,5 +13,5 @@ export const environment = {
   unitOfMeasureVpn: 'vpns2s',
   domain: '.cloud.vnpt.vn',
   cms_baseUrl: 'https://cms.cloud.vnpt.vn',
-  vnpt_cloud_baseUrl: 'https://cloud.vnpt.vn',
+  cloud_baseUrl: 'https://cloud.vnpt.vn',
 } as Environment;
