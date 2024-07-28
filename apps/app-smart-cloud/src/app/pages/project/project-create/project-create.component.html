@@ -1237,10 +1237,10 @@
             <nz-col style="width: 100%">
               <button style="width: 100%" nz-button nzSize="large" nzType="primary" (click)="createIpPublic()"
                 [ngStyle]="{'margin-top.px': vpcType === '0' ? 15 : 0}" [disabled]="(vpcType == '1'  && (form.invalid || ((selectIndexTab == 0 && (selectedElementFlavor == null) )|| (selectIndexTab == 1 && (vCPU ==0 || ram ==0 || (hhd ==0 && ssd ==0))))))
-                     || (vpcType == '0' && this.form.controls['name'].value == '')">
+                     || (vpcType == '0' && this.form.controls['name'].value == '' || form.invalid)">
                 <span nz-icon nzType="wallet" nzTheme="outline"></span>
                 <span [style.color]="(vpcType == '1' && (form.invalid || ((selectIndexTab == 0 && (selectedElementFlavor == null) )|| (selectIndexTab == 1 && (vCPU ==0 || ram ==0 || (hhd ==0 && ssd ==0))))))
-                     || (vpcType == '0' && this.form.controls['name'].value == '') ? 'gray' : 'white'">{{
+                     || (vpcType == '0' && this.form.controls['name'].value == '' || form.invalid) ? 'gray' : 'white'">{{
                   'app.button.create' | i18n }}</span>
               </button>
             </nz-col>

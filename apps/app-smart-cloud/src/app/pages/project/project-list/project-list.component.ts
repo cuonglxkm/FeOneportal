@@ -36,8 +36,8 @@ export class ProjectListComponent implements OnInit {
   selectedStatus = '';
   statusData = [
     { name: this.i18n.fanyi('app.status.all'), value: '' },
-    { name: this.i18n.fanyi('status.enable'), value: 'ENABLE' },
-    { name: this.i18n.fanyi('status.disable'), value: 'DISABLE' },
+    { name: this.i18n.fanyi('status.active'), value: 'ENABLE' },
+    // { name: this.i18n.fanyi('status.disable'), value: 'DISABLE' },
     { name: this.i18n.fanyi('status.suspended'), value: 'SUSPENDED' }];
 
   modalStyle = {
@@ -317,11 +317,11 @@ export class ProjectListComponent implements OnInit {
       }))
       .subscribe(
         data => {
-          this.notification.success('Thành công', 'Cập nhật dự án thành công');
+          this.notification.success('Thành công', 'Cập nhật VPC thành công');
           this.router.navigate(['/app-smart-cloud/project']);
         },
         error => {
-          this.notification.error('Thất bại', 'Cập nhật dự án thất bại');
+          this.notification.error('Thất bại', 'Cập nhật VPC thất bại');
         }
       );
   }

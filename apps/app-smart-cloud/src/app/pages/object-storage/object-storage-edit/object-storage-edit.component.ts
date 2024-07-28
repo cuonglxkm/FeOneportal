@@ -41,7 +41,7 @@ import { RegionID } from 'src/app/shared/enums/common.enum';
 export class ObjectStorageEditComponent implements OnInit {
   id: any;
   today: Date = new Date();
-  addQuota: number;
+  addQuota: number = 0;
   objectStorageResize: ObjectStorageResize = new ObjectStorageResize();
   valueStringConfiguration: string;
   minStorage: number;
@@ -95,7 +95,6 @@ export class ObjectStorageEditComponent implements OnInit {
           this.objectStorage = data;
           this.objectStorageResize.newQuota =
             this.addQuota + this.objectStorage.quota;
-          this.dataSubject.next(1);
           this.cdr.detectChanges();
         },
         error: (e) => {

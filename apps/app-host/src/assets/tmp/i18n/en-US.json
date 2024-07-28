@@ -158,7 +158,7 @@
   "validation.name.pattern": "Excluding Vietnamese accents, spaces, and special characters (except _)",
   "validation.exist.name": "This {{name}} name has already been used, please choose another name",
   "validation.choose.required": "Please choose {{name}}",
-  "validation.project.required.name":"Does not include special characters, spaces, Vietnamese, maximum 20 characters, may contain _ (special characters: @, #, $, %, &, *, +, -, arrow, star , emoticons, punctuation, brackets, circles, squares, rectangles...)",
+  "validation.project.required.name":"Does not include special characters, spaces, Vietnamese, maximum 50 characters, may contain _ (special characters: @, #, $, %, &, *, +, -, arrow, star , emoticons, punctuation, brackets, circles, squares, rectangles...)",
   "form.account.information": "Account Information",
   "form.account.update.information":"Update account information",
   "form.account.update.invoice":"Update invoicing information",
@@ -2823,6 +2823,7 @@
   "project.note4": "Custom VPC",
   "project.note5": "Default VPC",
   "project.status.enable": "Active",
+  
   "project.status.delete": "Scheduled automatic deletion",
   "project.default": "Default VPC",
   "project.note6": "Customers can create either a regular project or a VPC project - providing a comprehensive package of compute, storage, and network infrastructure that allows customers to set up virtualized data centers on VNPT Cloud.",
@@ -2879,7 +2880,8 @@
   "app.project.price": "Total Amount",
 
   "status.enable": "Enable",
-  "status.disable": "Disable",
+  "status.active":"Active",
+  "status.disable": "Discontinuity",
   "status.deleted": "Deleted",
   "status.suspended":"Pause",
   "custom.config.package": "Custom configuration package",
@@ -3585,5 +3587,29 @@
   "app.snapshot.schedule.info": "Snapshot Schedule Information",
   "app.snapshot.schedule.enter.name1": "Enter Snapshot Schedule name",
   "app.snapshot.schedule.des.1": "The Snapshot Schedule name can have up to 64 characters. Valid characters: A-Z, a-z, 0-9",
-  "app.snapshot.schedule.volume.select.label": "Select Volume name"
+  "app.snapshot.schedule.volume.select.label": "Select Volume name",
+
+  "waf.placeholder.filter.name": "Search by WAF and package",
+  "waf.domain.placeholder.filter.name": "Search by domain",
+  "app.waf.status.running":"Running",
+  "app.waf.status.suspend":"Stop",
+  "waf.button.create":"Create WAF",
+  "waf.alert.delete": "Are you sure you want to delete WAF?",
+  "waf.action.delete": "Delete",
+  "waf.modal.subtitle.delete": "To delete a waf {{name}}, Please enter the waf name to confirm",
+  "waf.notification.input.name": "Please enter the correct waf name.",
+
+  "waf.domain.button.create":"Add domain",
+  "waf.table.title.name": "WAF name",
+  "waf.table.title.package": "WAF package",
+  "waf.table.title.startdate": "Creation Date",
+  "waf.table.title.enddate": "Expiration Date",
+  "waf.table.title.status": "Status",
+  "waf.table.title.action": "Action",
+  "waf.domain.table.title.domain":"Domain",
+  "waf.domain.table.title.ip":"IP Public",
+  "waf.domain.table.title.cname":"CNAME",
+  "waf.domain.table.title.https":"HTTPS",
+  "waf.domain.table.title.status":"Status domain",
+  "waf.domain.table.title.action":"Action"
 }
