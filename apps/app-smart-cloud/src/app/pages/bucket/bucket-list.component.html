@@ -52,11 +52,7 @@
       [nzXXl]="12"
     >
       <button nz-button nzType="primary" (click)="extendObjectStorage()">
-        <img
-          style="padding-right: 10px; margin-top: -4px"
-          src="assets/imgs/add-circle.svg"
-          alt=""
-        />
+        <img src="assets/imgs/calendar-tick2.svg" alt="" style="cursor: pointer;margin-bottom: 3px;" />
         {{ 'app.button.extend' | i18n }}
       </button>
       <button nz-button nzType="primary" nz-dropdown [nzDropdownMenu]="opMenu">
@@ -83,7 +79,7 @@
     style="margin-bottom: 10px"
     class="text-label"
   >
-    {{ 'app.capacity' | i18n }}:
+    {{ 'app.capacity1' | i18n }}:
     <span class="text-value"
       >{{ usage?.usage }} GB / {{ usage?.total }} GB ({{
         totalUsage | number : '1.0-2'
@@ -102,32 +98,32 @@
       objectStorage.expiredDate | date : 'dd/MM/yyyy'
     }}</span>
   </div>
-  <ng-container *ngIf="objectStorage">
-    <div
-      *ngIf="
-      objectStorage?.status !== 'TAMNGUNG'"
-      style="margin-bottom: 10px"
-      class="text-label"
-    >
-      {{ 'app.payment.status' | i18n }}:
-      <span class="text-value">
-        {{ objectStorage.statusDisplay }}
-      </span>
-    </div>
-    <div
-      *ngIf="
-      objectStorage?.status === 'TAMNGUNG'"
-      style="margin-bottom: 10px"
-      class="text-label"
-    >
-      {{ 'app.payment.status' | i18n }}:
-      <span class="text-value">
-        {{ 'app.suspend' | i18n }} ({{
-          objectStorage?.suspendReason | SuspendStatusPipe
-        }})
-      </span>
-    </div>
-  </ng-container>
+<!--  <ng-container *ngIf="objectStorage">-->
+<!--    <div-->
+<!--      *ngIf="-->
+<!--      objectStorage?.status !== 'TAMNGUNG'"-->
+<!--      style="margin-bottom: 10px"-->
+<!--      class="text-label"-->
+<!--    >-->
+<!--      {{ 'app.payment.status' | i18n }}:-->
+<!--      <span class="text-value">-->
+<!--        {{ objectStorage.statusDisplay }}-->
+<!--      </span>-->
+<!--    </div>-->
+<!--    <div-->
+<!--      *ngIf="-->
+<!--      objectStorage?.status === 'TAMNGUNG'"-->
+<!--      style="margin-bottom: 10px"-->
+<!--      class="text-label"-->
+<!--    >-->
+<!--      {{ 'app.payment.status' | i18n }}:-->
+<!--      <span class="text-value">-->
+<!--        {{ 'app.suspend' | i18n }} ({{-->
+<!--          objectStorage?.suspendReason | SuspendStatusPipe-->
+<!--        }})-->
+<!--      </span>-->
+<!--    </div>-->
+<!--  </ng-container>-->
 </nz-card>
 <nz-card *ngIf="hasOS && objectStorage?.status !== 'TAMNGUNG'" style="border-radius: 4px" [nzBordered]="false">
   <div nz-row [nzGutter]="24">

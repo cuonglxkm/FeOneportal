@@ -214,6 +214,7 @@
   "app.ip.floating": "IP floating",
   "app.choose.ip.floating": "Choose IP floating",
   "app.capacity": "Capacity",
+  "app.capacity1": "Capacity used",
   "app.capacity.resize": "Resize capacity",
   "app.increase.capacity": "Increase capacity",
   "app.increase.ram": "Increase RAM",
@@ -2823,7 +2824,7 @@
   "project.note4": "Custom VPC",
   "project.note5": "Default VPC",
   "project.status.enable": "Active",
-  
+
   "project.status.delete": "Scheduled automatic deletion",
   "project.default": "Default VPC",
   "project.note6": "Customers can create either a regular project or a VPC project - providing a comprehensive package of compute, storage, and network infrastructure that allows customers to set up virtualized data centers on VNPT Cloud.",
