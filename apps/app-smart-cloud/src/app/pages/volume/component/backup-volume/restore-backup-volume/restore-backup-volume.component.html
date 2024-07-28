@@ -129,7 +129,7 @@
                       <nz-select nzSize="large"
                                  formControlName="volumeId"
                                  [nzShowSearch]="false"
-                                 nzAllowClear
+                                 [nzAllowClear]="false"
                                  [(ngModel)]="volumeSelected"
                                  (ngModelChange)="volumeSelectedChange($event)">
                         <nz-option *ngFor="let data of listVolumes"
@@ -210,13 +210,12 @@
                                        id="storage"
                                        style="width: 100%; margin-left: 0;"
                                        (ngModelChange)="changeValueStorage($event)"
-                                       [nzMin]="backupVolume?.size"
+                                       [nzMin]="minStorage"
                                        [nzStep]="stepStorage"
                                        [nzMax]="maxStorage"></nz-input-number>
                       <ng-template #storageErrorTpl let-control>
-                        <ng-container
-                          *ngIf="control.hasError('required') || control.hasError('pattern')">{{ 'volume.input.storage.required'|i18n }}
-                        </ng-container>
+                        <ng-container *ngIf="control.hasError('required') || control.hasError('pattern')">{{ 'volume.input.storage.required'|i18n }}</ng-container>
+                        <ng-container *ngIf="control.hasError('outOfStorageSnapshot')">{{ 'app.backup.volume.validator.storage.required'|i18n }}</ng-container>
                       </ng-template>
                     </nz-form-control>
                   </nz-form-item>
