@@ -80,7 +80,48 @@
           </nz-form-control>
         </nz-form-item> 
       </nz-card>
-      <one-portal-service-usage-period [nameService]="'object-storage'" (valueChanged)="onChangeTime($event)"/>
+      <!-- <one-portal-service-usage-period [timeControl]="validateForm.controls.time" [nameService]="'object-storage'" (valueChanged)="onChangeTime($event)"/> -->
+      <nz-card style="height: 130px">
+          <nz-form-item style="margin-bottom: 5px">
+            <nz-form-label
+              >{{ 'app.service.used' | i18n }} (<span class="text-red">*</span>) -
+              {{ 'app.Months' | i18n
+              }}<img
+                style="margin-left: 10px"
+                [nz-tooltip]="'app.tooltip.usage.time' | i18n : { name: 'Obeject Storage' }"
+                src="assets/imgs/pajamas_question.svg"
+                alt=""
+            /></nz-form-label>
+            <nz-form-control nzErrorTip="Thời gian sử dụng không được để trống">
+              <nz-row>
+                <nz-col nzSpan="12">
+                  <nz-input-number
+                    style="width: 100%; margin-left: -1px"
+                    [nzMin]="1"
+                    [nzMax]="100"
+                    [nzStep]="1"
+                    formControlName="time"
+                    (keydown)="onKeyDown($event)"
+                    (ngModelChange)="onChangeTime($event)"
+                    nzSize="large"
+                  ></nz-input-number>
+                </nz-col>
+                <nz-col style="margin-top: -3px" nzSpan="12">
+                  <div style="margin-left: 20px">
+                    <span class="text-label">
+                      {{ 'app.service.creation-date' | i18n }}:
+                      {{ today | date : 'dd/MM/yyyy' }} </span
+                    ><br />
+                    <span class="text-label" style="color: #eb1414">
+                      {{ 'app.service.expiration-date' | i18n }}:
+                      {{ expiredDate | date : 'dd/MM/yyyy' }}
+                    </span>
+                  </div>
+                </nz-col>
+              </nz-row>
+            </nz-form-control>
+          </nz-form-item>
+      </nz-card>
     </nz-col>
     <nz-col nzSpan="8">
       <nz-affix>
