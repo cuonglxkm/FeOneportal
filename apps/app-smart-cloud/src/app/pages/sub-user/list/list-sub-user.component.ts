@@ -180,6 +180,7 @@ export class ListSubUserComponent implements OnInit {
   }
 
   handleOkDelete() {
+    this.pageIndex = 1
     this.getListSubUsers(false);
   }
 

@@ -117,6 +117,12 @@
             <td nzBreakWord>
 <!--              <div [ngSwitch]="data.status">-->
                 <div *ngIf="data.status.includes('AVAILABLE')">
+                  <one-portal-update-backup-vm [region]="region"
+                                               [project]="project"
+                                               [idBackupVm]="data.id"
+                                               [backupName]="data.name"
+                                               [backupVmInfo]="data"
+                                               (onOk)="handleOkUpdate()" />
                   <img src="assets/imgs/rotate-right.svg" alt=""
                        style="cursor: pointer; margin-left: 5px;"
                        (click)="navigateToRestore(data.id)"
@@ -127,12 +133,6 @@
                                                [idBackup]="data.id"
                                                [backupName]="data.name"
                                                (onOk)="handleOkDelete()" />
-                  <one-portal-update-backup-vm [region]="region"
-                                               [project]="project"
-                                               [idBackupVm]="data.id"
-                                               [backupName]="data.name"
-                                               [backupVmInfo]="data"
-                                               (onOk)="handleOkUpdate()" />
                 </div>
                 <div *ngIf="data.status.includes('SUSPENDED')">
                   <one-portal-delete-backup-vm [region]="region"
