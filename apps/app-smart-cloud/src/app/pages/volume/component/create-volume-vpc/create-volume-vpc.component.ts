@@ -562,6 +562,17 @@ export class CreateVolumeVpcComponent implements OnInit {
     this.volumeCreate.actorEmail = this.tokenService.get()?.email;
   }
 
+  onKeyDown(event: KeyboardEvent) {
+    console.log('event', event)
+    if (event.key === 'Enter' &&
+      (this.isLoadingAction
+        || this.validateForm.invalid
+        || this.validateForm.controls.storage.value == 0
+        || this.validateForm.controls.storage.value % this.stepStorage > 0)) {
+      event.preventDefault(); // Prevent default action if conditions are met
+    }
+  }
+
   isVisiblePopupError: boolean = false;
   errorList: string[] = [];
   doCreateVolumeVPC() {
