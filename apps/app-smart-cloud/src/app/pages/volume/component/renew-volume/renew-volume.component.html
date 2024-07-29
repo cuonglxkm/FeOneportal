@@ -240,7 +240,7 @@
                   <button style="width: 100%" nz-button nzSize="large" nzType="primary"
                           (click)="navigateToPaymentSummary()"
                           [nzLoading]="isLoadingAction"
-                          [disabled]="validateForm.invalid">
+                          [disabled]="validateForm.invalid || validateForm.controls.time.value == '0'">
                     <img src="assets/imgs/wallet.svg" style="margin-right: 5px; padding-bottom: 5px;" />
                     <span [style.color]="validateForm.invalid ? 'gray' : 'white'">{{ 'app.extend'|i18n }}</span>
                   </button>

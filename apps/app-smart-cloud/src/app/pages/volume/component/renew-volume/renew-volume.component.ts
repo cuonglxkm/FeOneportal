@@ -37,9 +37,9 @@ export class RenewVolumeComponent implements OnInit {
   volumeStatus: Map<String, string>;
 
   validateForm: FormGroup<{
-    time: FormControl<number>
+    time: FormControl<string>
   }> = this.fb.group({
-    time: [1, [Validators.required, Validators.pattern(/^[0-9]*$/)]]
+    time: ['', [Validators.required, Validators.pattern(/^[0-9]*$/)]]
   });
 
   isLoading: boolean = false;
@@ -185,7 +185,10 @@ export class RenewVolumeComponent implements OnInit {
     itemPayment.specificationString = JSON.stringify(this.extendsDto);
     itemPayment.specificationType = 'volume_extend';
     itemPayment.sortItem = 0;
-    itemPayment.serviceDuration = this.validateForm.get('time').value;
+    if (this.validateForm.controls.time.value == undefined || this.validateForm.controls.time.value == '' || this.validateForm.controls.time.value == null) {
+      this.validateForm.controls.time.setValue('0');
+    }
+    itemPayment.serviceDuration = Number.parseInt(this.validateForm.get('time').value, 10);
     let dataPayment: DataPayment = new DataPayment();
     dataPayment.orderItems = [itemPayment];
     dataPayment.projectId = this.project;
@@ -219,13 +222,16 @@ export class RenewVolumeComponent implements OnInit {
       request.customerId = this.extendsDto.customerId;
       request.createdByUserId = this.extendsDto.customerId;
       request.note = this.i18n.fanyi('volume.note.extend');
+      if (this.validateForm.controls.time.value == undefined || this.validateForm.controls.time.value == '' || this.validateForm.controls.time.value == null) {
+        this.validateForm.controls.time.setValue('0');
+      }
       request.orderItems = [
         {
           orderItemQuantity: 1,
           specification: JSON.stringify(this.extendsDto),
           specificationType: 'volume_extend',
           price: this.orderItem?.totalAmount.amount,
-          serviceDuration: this.validateForm.controls.time.value
+          serviceDuration: Number.parseInt(this.validateForm.controls.time.value,10)
         }
       ];
       this.orderService.validaterOrder(request).subscribe(data => {
@@ -269,32 +275,6 @@ export class RenewVolumeComponent implements OnInit {
 
   isLoadingAction: boolean = false;
 
-  doRenew() {
-    this.isLoadingAction = true;
-    if (this.validateForm.valid) {
-      this.getTotalAmount();
-      let request = new EditSizeVolumeModel();
-      request.customerId = this.extendsDto.customerId;
-      request.createdByUserId = this.extendsDto.customerId;
-      request.note = this.i18n.fanyi('volume.note.extend');
-      request.orderItems = [
-        {
-          orderItemQuantity: 1,
-          specification: JSON.stringify(this.extendsDto),
-          specificationType: 'volume_extend',
-          price: 0,
-          serviceDuration: this.validateForm.controls.time.value
-        }
-      ];
-      console.log('request', request);
-      this.orderService.validaterOrder(request).subscribe(data => {
-        if (data.success) {
-
-        }
-      });
-    }
-  }
-
   goBack() {
     if (this.region === RegionID.ADVANCE) {
       this.router.navigate(['/app-smart-cloud/volume-advance/detail/' + this.idVolume]);
@@ -304,8 +284,8 @@ export class RenewVolumeComponent implements OnInit {
   }
 
   onChangeTime(value) {
-    this.timeSelected = value;
-    this.validateForm.controls.time.setValue(this.timeSelected);
+    console.log('time', value)
+    this.validateForm.controls.time.setValue(value);
     this.getTotalAmount();
   }
 
@@ -323,6 +303,7 @@ export class RenewVolumeComponent implements OnInit {
       this.region = RegionID.ADVANCE;
     }
     this.getVolumeById(this.idVolume);
+    this.validateForm.controls.time.setValue('1')
     this.hasRoleSI = localStorage.getItem('role').includes('SI');
   }
 
