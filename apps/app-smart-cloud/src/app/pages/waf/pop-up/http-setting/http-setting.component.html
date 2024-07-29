@@ -1,8 +1,9 @@
-<nz-modal [(nzVisible)]="isVisibleHttpSetting" [nzTitle]="modalTitle" [nzContent]="modalContent" [nzFooter]="null"
+<li nz-menu-item (click)="openModal()">{{'HTTPS Settings'}}</li>
+<nz-modal [(nzVisible)]="isVisible" [nzTitle]="modalTitle" [nzContent]="modalContent" [nzFooter]="null"
 (nzOnCancel)="handleCancelHttpSetting()">
 <ng-template #modalTitle>
     <h4>
-        <b>HTTPS Settings {{domainName}}</b>
+        <b>HTTPS Settings {{domainData?.name}}</b>
     </h4>
 </ng-template>
 <ng-template #modalContent>
