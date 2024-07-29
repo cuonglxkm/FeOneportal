@@ -30,6 +30,7 @@
                          [(ngModel)]="numberMonth"
                          (keydown)="onKeyDown($event)"
                          (ngModelChange)="changeTime($event)"
+                         (input)="onInput($event)"
                          nzSize="large"/>
         <ng-template #timeErrorTpl let-control>
           <ng-container *ngIf="control.hasError('required')">{{
