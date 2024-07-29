@@ -37,9 +37,9 @@ export class ExtendBackupPackageComponent implements OnInit {
   packageBackupModel: PackageBackupModel;
 
   validateForm: FormGroup<{
-    time: FormControl<number>
+    time: FormControl<string>
   }> = this.fb.group({
-    time: [1, [Validators.required]]
+    time: ['', [Validators.required]]
   });
 
   estimateExpiredDate: Date;
@@ -128,13 +128,16 @@ export class ExtendBackupPackageComponent implements OnInit {
     request.note = this.i18n.fanyi('app.backup.package.breadcrumb.extend');
     request.totalPayment = this.orderItem?.totalPayment?.amount
     request.totalVAT = this.orderItem?.totalVAT?.amount
+    if(this.validateForm.controls.time.value == undefined || this.validateForm.controls.time.value == '' || this.validateForm.controls.time.value == null) {
+      this.validateForm.controls.time.setValue('0');
+    }
     request.orderItems = [
       {
         orderItemQuantity: 1,
         specification: JSON.stringify(this.formExtendBackupPackage),
         specificationType: 'backuppacket_extend',
         price: this.orderItem?.totalPayment?.amount,
-        serviceDuration: this.validateForm.controls.time.value
+        serviceDuration: Number.parseInt(this.validateForm.controls.time.value, 10)
       }
     ];
     this.orderService.validaterOrder(request).subscribe(data => {
@@ -197,12 +200,15 @@ export class ExtendBackupPackageComponent implements OnInit {
     this.isLoadingAction = true;
     this.backupPackageInit();
     let orderItemTotalAmount = new OrderItemTotalAmount();
+    if(this.validateForm.controls.time.value == undefined || this.validateForm.controls.time.value == '' || this.validateForm.controls.time.value == null) {
+      this.validateForm.controls.time.setValue('0');
+    }
     orderItemTotalAmount.orderItems = [
       {
         orderItemQuantity: 1,
         specificationString: JSON.stringify(this.formExtendBackupPackage),
         specificationType: 'backuppacket_extend',
-        serviceDuration: this.validateForm.controls.time.value
+        serviceDuration: Number.parseInt(this.validateForm.controls.time.value, 10)
       }
     ]
     orderItemTotalAmount.customerId = this.tokenService.get()?.userId
@@ -256,6 +262,7 @@ export class ExtendBackupPackageComponent implements OnInit {
     this.hasRoleSI = localStorage.getItem('role').includes('SI');
     if (this.idBackupPackage) {
       this.getDetailPackageBackup(this.idBackupPackage);
+      this.validateForm.controls.time.setValue('1')
     }
   }
 }
