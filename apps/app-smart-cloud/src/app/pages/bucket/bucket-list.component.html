@@ -188,6 +188,9 @@
     [nzFrontPagination]="false"
     [nzData]="listBucket"
     (nzPageSizeChange)="search()"
+    [nzPageIndex]="pageNumber"
+    [nzPageSize]="pageSize"
+    [nzTotal]="total"
     [nzLoading]="loading"
   >
     <thead>
@@ -269,6 +272,7 @@
       name="name"
       nz-input
       [(ngModel)]="codeVerify"
+      (ngModelChange)="checkDisableDelete($event)"
     />
   </ng-container>
   <div *nzModalFooter>
@@ -279,7 +283,7 @@
         alt=""
       />{{ 'app.button.cancel' | i18n }}
     </button>
-    <button [nzLoading]="isLoadingDeleteBucket" nz-button nzType="primary" (click)="handleOkDeleteBucket()">
+    <button [nzLoading]="isLoadingDeleteBucket" [disabled]="disableDelete" nz-button nzType="primary" (click)="handleOkDeleteBucket()">
       <img
         *ngIf="isLoadingDeleteBucket === false"
         style="padding-right: 10px; margin-top: -4px"
