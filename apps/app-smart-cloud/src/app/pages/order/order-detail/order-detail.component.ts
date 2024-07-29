@@ -342,6 +342,12 @@ export class OrderDetailComponent {
       this.specType = 'k8s_extend'
     }else if(serviceName === 'K8s' && this.data.orderItems[0].serviceType.includes('Điều chỉnh')){
       this.specType = 'k8s_resize'
+    }else if(serviceName === 'WAF' && this.data.orderItems[0].serviceType === 'Tạo mới'){
+      this.specType = 'waf_create'
+    }else if(serviceName === 'WAF' && this.data.orderItems[0].serviceType === 'Gia hạn'){
+      this.specType = 'waf_extend'
+    }else if(serviceName === 'WAF' && this.data.orderItems[0].serviceType.includes('Điều chỉnh')){
+      this.specType = 'waf_resize'
     }else if(serviceName === 'Kafka' && this.data.orderItems[0].serviceType === 'Tạo mới'){
       this.specType = 'kafka_create'
     }else if(serviceName === 'Kafka' && this.data.orderItems[0].serviceType === 'Gia hạn'){

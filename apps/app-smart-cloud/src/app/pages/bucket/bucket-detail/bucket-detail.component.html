@@ -171,11 +171,12 @@
       align-items: center;
     "
   >
+  <div style="font-weight: bold; padding-right: 10px; cursor: pointer; margin-left: 10px;" (click)="toFolder1('', true)">
     <img
-      style="padding-right: 10px; padding-left: 10px; cursor: pointer"
-      src="assets/imgs/box.svg"
-      (click)="toFolder1('', true)"
+      src="assets/imgs/box.svg"    
     />
+    {{bucket ? bucket.bucketName : ''}} 
+  </div>
     <ng-container *ngFor="let item of listOfFolder">
       <div
         style="font-weight: bold; padding-right: 10px; cursor: pointer;"
@@ -193,7 +194,9 @@
     [nzFrontPagination]="false"
     [nzPageSize]="pageSize"
     (nzPageSizeChange)="onPageSizeChange($event)"
-    (nzPageIndexChange)="onPageIndexChange($event)"
+    (nzPageIndexChange)="onPageIndexChange($event)" 
+    nzShowSizeChanger
+    [nzPageSizeOptions]="[pageSizeFixed, 10, 20, 30, 40, 50]"
     [nzPageIndex]="pageIndex"
     [nzLoading]="loading"
   >

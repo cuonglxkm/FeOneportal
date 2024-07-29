@@ -453,7 +453,7 @@ export function ipValidatorMany(control: AbstractControl): ValidationErrors | nu
   }
 
   const ipPattern = /^(?:\d{1,3}\.){3}\d{1,3}$/;
-  const ips = control.value.split(';');
+  const ips = control.value.split(',');
 
   for (const ip of ips) {
     if (!ipPattern.test(ip.trim())) {
