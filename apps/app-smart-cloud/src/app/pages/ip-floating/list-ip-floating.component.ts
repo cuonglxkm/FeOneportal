@@ -123,7 +123,7 @@ export class ListIpFloatingComponent implements OnInit {
   }
 
   handleOkDeleteIpFloating() {
-    this.getData(false)
+    this.getData(true)
   }
 
   ngOnInit() {

@@ -57,7 +57,6 @@ export class WafDomainListComponent implements OnInit, OnDestroy {
   private searchSubscription: Subscription;
   private enterPressed: boolean = false;
   expandSet = new Set<number>();
-  
 
   constructor(@Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
               private router: Router,
@@ -159,7 +158,18 @@ export class WafDomainListComponent implements OnInit, OnDestroy {
         package: "CSM",
         wafName: "waf_01",
         status: "Succes",
-      }]
+      },
+      {
+        id: 2,
+        domain: "cuongpv.it.1",
+        ip: "1.1.1.1",
+        cname: "cuongpv.it.cdn",
+        https: "enable",
+        package: "CSM",
+        wafName: "waf_01",
+        status: "Succes",
+      }
+    ]
     }
     this.isLoading=false;
   }
@@ -170,7 +180,7 @@ export class WafDomainListComponent implements OnInit, OnDestroy {
   
   
   navigateToAddDomain() {
-    this.router.navigate(['/app-smart-cloud/waf/create-domain']);
+    this.router.navigate(['/app-smart-cloud/waf/add-domain']);
   }
 
   //delete
@@ -187,7 +197,6 @@ export class WafDomainListComponent implements OnInit, OnDestroy {
   navigateToCreateScheduleSnapshot(idWaf: number) {
     this.router.navigate(['/app-smart-cloud/schedule/snapshot/create', { wafId: idWaf }], { queryParams: { snapshotTypeCreate: 0 } });
   }
-
 
   ngOnInit() {
     this.selectedValue = this.options[0].value;

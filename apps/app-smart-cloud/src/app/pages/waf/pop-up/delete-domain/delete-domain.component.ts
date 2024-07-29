@@ -1,6 +1,7 @@
-import { ChangeDetectionStrategy, Component, Input, Output, EventEmitter } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, Output, EventEmitter, ChangeDetectorRef } from '@angular/core';
 import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
 import { NAME_SNAPSHOT_REGEX } from 'src/app/shared/constants/constants';
+import { WafDomainDTO } from '../../domain-list/domain-list.component';
 
 @Component({
   selector: 'one-portal-delete-domain',
@@ -9,14 +10,13 @@ import { NAME_SNAPSHOT_REGEX } from 'src/app/shared/constants/constants';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DeleteDomainComponent {
-  @Input() isVisibleDeleteDomain: boolean;
-  @Input() domainName: string = ""
-  @Output() onOk = new EventEmitter();
-  @Output() onCancel = new EventEmitter();
-  @Output() onCancelVisible = new EventEmitter();
+  @Input() domainData: WafDomainDTO
 
   isVisible: boolean = false;
   isLoading: boolean = false;
+  inputConfirm: string = ''
+  checkInputEmpty: boolean = false;
+  checkInputConfirm: boolean = false;
 
   validateForm: FormGroup<{
     name: FormControl<string>; 
@@ -24,9 +24,33 @@ export class DeleteDomainComponent {
     name: ['', [Validators.required, Validators.pattern(NAME_SNAPSHOT_REGEX)]],
   });
 
-  constructor(private fb: NonNullableFormBuilder){}
+  constructor(private fb: NonNullableFormBuilder, private cdr: ChangeDetectorRef){}
+
+  openModal(){
+    this.isVisible = true
+  }
+
+  onInputChange(value: string){
+    this.inputConfirm = value
+  }
 
   handleCancelDeleteDomain(){
-    this.onCancelVisible.emit(false)
+    this.inputConfirm = '';
+    this.checkInputConfirm = false;
+    this.checkInputEmpty = false;
+    this.isVisible = false
+  }
+
+  handleOkDelete(){
+    if (this.inputConfirm == this.domainData.domain) {
+      console.log('successfully')
+    } else if (this.inputConfirm == '') {
+      this.checkInputEmpty = true;
+      this.checkInputConfirm = false;
+    } else {
+      this.checkInputEmpty = false;
+      this.checkInputConfirm = true;
+    }
+    this.cdr.detectChanges();
   }
 }

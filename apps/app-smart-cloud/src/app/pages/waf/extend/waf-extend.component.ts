@@ -29,6 +29,8 @@ import { OrderService } from 'src/app/shared/services/order.service';
 import { getCurrentRegionAndProject } from '@shared';
 import { RegionModel } from '../../../../../../../libs/common-utils/src';
 import { RegionID } from 'src/app/shared/enums/common.enum';
+import { WafService } from 'src/app/shared/services/waf.service';
+import { WAFExtend } from '../waf.model';
 
 @Component({
   selector: 'one-portal-waf-extend',
@@ -51,7 +53,7 @@ export class WAFExtendComponent implements OnInit {
   constructor(
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
     @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
-    private service: ObjectStorageService,
+    private service: WafService,
     private router: Router,
     private activatedRoute: ActivatedRoute,
     private cdr: ChangeDetectorRef,
@@ -85,17 +87,17 @@ export class WAFExtendComponent implements OnInit {
   }
 
 
-  objectStorageExtend: ObjectStorageExtend = new ObjectStorageExtend();
+  WAFExtend: WAFExtend = new WAFExtend();
   initobjectStorageExtend() {
-    this.objectStorageExtend.newExpireDate = this.newExpiredDate;
-    this.objectStorageExtend.customerId = this.tokenService.get()?.userId;
-    this.objectStorageExtend.userEmail = this.tokenService.get()?.email;
-    this.objectStorageExtend.actorEmail = this.tokenService.get()?.email;
-    this.objectStorageExtend.typeName =
+    this.WAFExtend.newExpireDate = this.newExpiredDate;
+    this.WAFExtend.customerId = this.tokenService.get()?.userId;
+    this.WAFExtend.userEmail = this.tokenService.get()?.email;
+    this.WAFExtend.actorEmail = this.tokenService.get()?.email;
+    this.WAFExtend.typeName =
       'SharedKernel.IntegrationEvents.Orders.Specifications.UserObjectStorageExtendSpecification,SharedKernel.IntegrationEvents, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null';
-    this.objectStorageExtend.serviceType = 13;
-    this.objectStorageExtend.actionType = 3;
-    this.objectStorageExtend.serviceInstanceId = this.id;
+    this.WAFExtend.serviceType = 13;
+    this.WAFExtend.actionType = 3;
+    this.WAFExtend.serviceInstanceId = this.id;
   }
 
   totalAmount: number = 0;

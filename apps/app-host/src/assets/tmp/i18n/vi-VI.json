@@ -118,7 +118,7 @@
   "app.increase.ram": "RAM tăng thêm",
   "app.increase.cpu": "CPU tăng thêm",
   "app.used.capacity": "Dung lượng đã dùng",
-  "app.storage.usage": "Dung lượng sử dụng",
+  "app.storage.usage": "Dung lượng đã sử dụng",
   "app.upload.capacity": "Dung lượng tải lên",
   "app.upload.download": "Dung lượng tải về",
   "app.number.object": "Số lượng Object",
@@ -185,6 +185,7 @@
   "app.ip.public.list": "Danh sách IP Public",
   "app.ip.public.status": "Trạng thái IP Public",
   "app.ip.public.create.label": "Tạo mới IP Public",
+  "app.ip.floating.new.init": "Giao thức hỗ trợ kết nối an toàn, tạo điều kiện để các thiết bị giao tiếp với nhau qua mạng internet. Cho phép truy cập internet nhanh hơn.",
   "app.ip.public.init.title": "IP Public <br/> Hỗ trợ các thiết bị kết nối internet",
   "app.ip.public.init.subTitle": "Giao thức hỗ trợ kết nối an toàn, tạo điều kiện để các thiết bị giao tiếp với nhau qua mạng internet. Cho phép truy cập internet nhanh hơn",
   "app.ip.public.remove.confirm": "Quý khách có chắc chắn muốn gỡ IP Public khỏi máy ảo không?",
@@ -613,7 +614,7 @@
   "app.button.bucket.create": "Tạo mới Bucket",
   "app.button.bucket.create.success": "Tạo mới Bucket thành công",
   "app.button.bucket.create.fail": "Tạo mới Bucket thất bại",
-  "app.bucket.create.exist": "Tên Bucket đã tồn tại",
+  "app.bucket.create.exist": "Tên Bucket đã được sử dụng. Vui lòng nhập tên khác!",
   "app.config.bucket": "Cấu hình Bucket",
   "app.config.access.bucket": "Cấu hình quyền truy cập cho Bucket",
   "app.config.access.bucket.private": "Giới hạn truy cập chỉ cho phép người dùng có AccessKey và SecretKey.",
@@ -791,7 +792,7 @@
   "app.s3.key.recreate.alert": "Bạn đang thực hiện tạo lại SecretKey.",
   "app.s3.key.recreate.des": "Quý khách chắc chắn muốn thực hiện tại lại SecretKey?",
 
-  "validation.bucket.name": "Tên Bucket chỉ được phép dùng các ký tự chữ thường a-z các ký tự số 0 -9 dấu gạch ngang (-) và dấu chấm (.), tối thiểu 3 ký tự và tối đa 63 ký tự",
+  "validation.bucket.name": "Vui lòng nhập ký tự thường a-z, các ký tự số 0-9, dấu gạch ngang và dấu chấm",
   "validation.bucket.name.invalid": "Tên Bucket không hợp lệ",
   "validation.sub.user.name": "Tên người dùng nên sử dụng các ký tự chữ cái thường, chữ hoa, chữ số và dấu gạch ngang",
   "validation.sub.user.name.required": "Tên Sub User không được để trống",
@@ -2814,6 +2815,7 @@
   "app.trigger": "Kích hoạt",
   "app.detail": "Chi tiết",
   "app.detail1": "Xem chi tiết",
+  "app.WAF": "WAF",
   "app.network.range": "Dải mạng",
   "app.vlan.create.port": "Tạo mới Port",
 
@@ -3035,6 +3037,7 @@
   "app.backup.package.not.found": "Gói backup không tồn tại",
   "app.backup.package.intro.vpc1": "“VPC tùy biến” không hỗ trợ gói backup. Quý khách hãy truy cập",
   "app.backup.package.intro.vpc2": "mua dung lượng backup để quá trình backup không bị gián đoán",
+  "app.record.not.found": "Bản ghi không tồn tại",
 
 
   "app.tooltip.backup.package.name": "Tên gói backup của khách hàng. Không bao gồm ký tự đặc biệt, dấu cách, dấu tiếng Việt. Tối đa 50 ký tự.",

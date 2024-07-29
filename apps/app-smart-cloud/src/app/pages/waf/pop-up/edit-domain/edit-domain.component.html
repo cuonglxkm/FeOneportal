@@ -1,8 +1,9 @@
-<nz-modal [(nzVisible)]="isVisibleEditDomain" [nzTitle]="modalTitle" [nzContent]="modalContent" [nzFooter]="null"
+<li nz-menu-item (click)="openModal()">{{'Chỉnh sửa'}}</li>
+<nz-modal [(nzVisible)]="isVisible" [nzTitle]="modalTitle" [nzContent]="modalContent" [nzFooter]="null"
     (nzOnCancel)="handleCancelEditDomain()">
     <ng-template #modalTitle>
         <h4>
-            <b>Chỉnh sửa {{domainName}}</b>
+            <b>Chỉnh sửa {{domainData?.domain}}</b>
         </h4>
     </ng-template>
 
