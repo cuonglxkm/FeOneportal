@@ -244,6 +244,18 @@ export class CreateFileSystemNormalComponent implements OnInit {
     });
   }
 
+  onKeyDown(event: KeyboardEvent) {
+    console.log('event', event)
+    if (event.key === 'Enter' &&
+      (this.isLoadingAction
+        || this.validateForm.invalid
+        || this.validateForm.controls.storage.value == 0
+        || this.validateForm.controls.time.value == 0
+        || this.validateForm.controls.storage.value % this.stepStorage > 0)) {
+      event.preventDefault(); // Prevent default action if conditions are met
+    }
+  }
+
   fileSystemInit() {
     this.formCreate.projectCloudId = null;
     this.formCreate.shareProtocol = this.validateForm.controls.protocol.value;
