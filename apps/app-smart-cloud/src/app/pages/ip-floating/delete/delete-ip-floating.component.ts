@@ -28,6 +28,7 @@ export class DeleteIpFloatingComponent{
   }> = this.fb.group({
     ip: ['', [Validators.required]]
   });
+  disableSubmit = true;
 
   constructor(@Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
               private notification: NzNotificationService,
@@ -44,6 +45,7 @@ export class DeleteIpFloatingComponent{
   handleCancel(){
     this.isVisible = false
     this.isLoading =  false
+    this.validateForm.controls['ip'].setValue('');
   }
 
   handleOk() {
@@ -66,4 +68,12 @@ export class DeleteIpFloatingComponent{
     }
   }
 
+  changeInput() {
+    if (this.validateForm.controls['ip'].value == this.ip) {
+      this.disableSubmit = false
+    } else {
+      this.disableSubmit = true
+    }
+
+  }
 }

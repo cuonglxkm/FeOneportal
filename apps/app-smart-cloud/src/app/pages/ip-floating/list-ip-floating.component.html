@@ -2,6 +2,7 @@
   <ng-template #breadcrumb>
     <nz-breadcrumb [nzSeparator]="separatorTemplate">
       <nz-breadcrumb-item><a [routerLink]="['/']">{{ 'app.breadcrumb.home' | i18n }}</a></nz-breadcrumb-item>
+      <nz-breadcrumb-item>{{ 'app.breadcrumb.infrastructure.service' | i18n }}</nz-breadcrumb-item>
       <nz-breadcrumb-item>Networks</nz-breadcrumb-item>
       <nz-breadcrumb-item><a [routerLink]="['/app-smart-cloud/networks/ip-floating/list']">IP Floating</a></nz-breadcrumb-item>
     </nz-breadcrumb>
@@ -57,8 +58,9 @@
         <th>{{'ip.floating.alert.ip.floating.address' | i18n}}</th>
         <th>Mapped Fixed IP Address</th>
         <th>Network</th>
-        <th>{{'app.create-user.type' | i18n}}</th>
+        <th>Type</th>
         <th>{{'app.text.status' | i18n}}</th>
+        <th>{{ 'app.task.status' | i18n }}</th>
         <th>{{'app.action-history.operation' | i18n}}</th>
       </tr>
       </thead>
@@ -85,6 +87,7 @@
             <span [ngStyle]="{color: statusModel.color}">{{ statusModel.status }}</span>
           </td>
         </ng-container>
+        <td>{{data.resourceStatus}}</td>
         <td>
           <div>
             <one-portal-attach-ip-floating *ngIf="data.status != 'DANGSUDUNG' && data.status != 'LOI' && data.resourceStatus != 'ERROR'" [region]="region"
