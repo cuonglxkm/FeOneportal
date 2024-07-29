@@ -347,6 +347,7 @@
   "validation.ip.address.cidr.pattern": " IP Address / CIDR không đúng định dạng. Vui lòng nhập địa chỉ IP có định dạng x.x.x.x hoặc CIDR có định dạng x.x.0.0/16 hoặc x.x.0.0/24.",
   "validation.ip.address.cidr.duplicate": " Địa chỉ IP Address / CIDR đã tồn tại.",
   "validation.Mac.address": "Vui lòng nhập đúng định dạng MAC",
+  "validation.months.for.extend": "Số tháng cần gia hạn thêm không được để trống",
 
   "app.instance": "máy ảo",
   "app.volume": "Volume",

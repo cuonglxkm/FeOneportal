@@ -1,6 +1,6 @@
 <nz-card style="border-radius: 8px;">
   <span class="text-card-header">{{ 'app.extension.info' | i18n }}</span>
-  <form nz-form nzLayout="vertical">
+  <form nz-form [formGroup]="form" nzLayout="vertical">
     <nz-row nzJustify="space-between" style="margin-top: 15px;">
       <nz-col>
         <nz-form-label>
@@ -20,8 +20,9 @@
           (<span style="color: rgba(252, 16, 16, 1); ">*</span>)
         </div>
       </nz-form-label>
-      <nz-form-control nzDisableAutoTips [nzErrorTip]="dateErrorTpl">
+      <nz-form-control nzDisableAutoTips [nzErrorTip]="timeErrorTpl">
         <nz-input-number style="width:100%; margin-left: 0;"
+                         formControlName="time"
                          nzAutoFocus
                          [nzMin]="1"
                          [nzMax]="100"
@@ -29,10 +30,11 @@
                          [(ngModel)]="numberMonth"
                          (keydown)="onKeyDown($event)"
                          (ngModelChange)="changeTime($event)"
-                         [ngModelOptions]="{ standalone: true }"
                          nzSize="large"/>
-        <ng-template #dateErrorTpl let-control>
-          <ng-container *ngIf="control.hasError('required') || control.hasError('max') || control.hasError('min') || control.hasError('pattern')">{{ 'app.more.0.less.100' | i18n }}</ng-container>
+        <ng-template #timeErrorTpl let-control>
+          <ng-container *ngIf="control.hasError('required')">{{
+            'validation.months.for.extend' | i18n
+          }}</ng-container>
         </ng-template>
       </nz-form-control>
     </nz-form-item>

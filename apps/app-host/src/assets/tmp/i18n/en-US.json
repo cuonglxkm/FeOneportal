@@ -456,6 +456,7 @@
   "validation.ip.address.cidr.pattern": "IP Address / CIDR is not in the correct format. Please enter an IP address in the format x.x.x.x or a CIDR in the format x.x.0.0/16 or x.x.0.0/24.",
   "validation.ip.address.cidr.duplicate": "IP Address / CIDR đã tồn tại",
   "validation.Mac.address": "Please enter a valid MAC format",
+  "validation.months.for.extend": "The number of months to be renewed cannot be empty",
 
   "app.instance": "instance",
   "app.volume": "Volume",

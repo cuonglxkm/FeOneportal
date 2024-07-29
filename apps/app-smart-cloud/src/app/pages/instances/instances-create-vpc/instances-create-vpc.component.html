@@ -34,7 +34,8 @@
         (valueChanged)="onRegionChange($event)"
         (regionChange)="onRegionChanged($event)"
       ></region-select-dropdown>
-      <project-select-dropdown #projectCombobox
+      <project-select-dropdown
+        #projectCombobox
         [regionId]="region"
         (userChanged)="onProjectChange($event)"
       ></project-select-dropdown>
@@ -171,18 +172,22 @@
                   bgGray: !data.id === selectedImageTypeId
                 }"
               >
-                <nz-row>
+                <nz-row style="margin-top: 16px">
                   <nz-col class="text-center" style="width: 100%">
-                    <img
-                      *ngIf="data.name == 'Linux'"
-                      src="assets/imgs/ubuntu.png"
-                      alt=""
-                    />
-                    <img
-                      *ngIf="data.name == 'Windows'"
-                      src="assets/imgs/window.png"
-                      alt=""
-                    />
+                    <div *ngIf="data.name == 'Linux'">
+                      <img
+                        style="width: 60px; height: 60px"
+                        src="assets/imgs/linux-logo.svg"
+                        alt=""
+                      /><span class="text-os-name">Linux</span>
+                    </div>
+                    <div *ngIf="data.name == 'Windows'">
+                      <img
+                        style="width: 60px; height: 60px"
+                        src="assets/imgs/window-logo.svg"
+                        alt=""
+                      /><span class="text-os-name"> Window</span>
+                    </div>
                   </nz-col>
                 </nz-row>
                 <nz-row>
@@ -197,7 +202,7 @@
                         "
                         [nzPlaceHolder]="'app.button.choose.version' | i18n"
                         [ngModelOptions]="{ standalone: true }"
-                        style="text-align: center; width: 155px"
+                        style="text-align: center; width: 75%"
                         nzSize="large"
                       >
                         <nz-option
