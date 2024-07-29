@@ -1,0 +1,32 @@
+<li nz-menu-item (click)="openModal()">{{'Disable all Policies'}}</li>
+<nz-modal [(nzVisible)]="isVisible" [nzTitle]="modalTitle" [nzContent]="modalContent" [nzFooter]="null"
+    (nzOnCancel)="handleCancelDisablePolicyModal()">
+    <ng-template #modalTitle>
+        <h4>
+            <b>{{'Disable Policies'}}</b>
+        </h4>
+    </ng-template>
+    <ng-template #modalContent>
+        <div style="margin-bottom: 1.5rem;">{{'Bạn có chắc chắc muốn Disable tất cả Policies'}}</div>
+        <div class="d-flex justify-content-end">
+            <button nz-button (click)="handleCancelDisablePolicyModal()">
+              <img
+                style="padding-right: 10px; margin-top: -4px"
+                src="assets/imgs/cancel.svg"
+                alt=""
+              />{{ 'app.button.cancel' | i18n }}
+            </button>
+            <button
+              nz-button
+              nzType="primary"
+            >
+              <img
+                style="padding-right: 10px; margin-top: -4px"
+                src="assets/imgs/confirm.svg"
+                alt=""
+              />
+              {{ 'app.button.confirm' | i18n }}
+            </button>
+          </div>
+    </ng-template>
+</nz-modal>
