@@ -58,20 +58,26 @@ export class InstancesEditInfoComponent implements OnInit {
   listSelectedImage = [];
   selectedImageTypeId: number;
   listOfImageByImageType: Map<number, Image[]> = new Map();
-  imageTypeId = [];
+  imageTypeIds = [];
   securityGroupStr = '';
   @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
   public carouselTileConfig: NguCarouselConfig = {
-    grid: { xs: 1, sm: 1, md: 4, lg: 5, all: 0 },
+    grid: { xs: 1, sm: 1, md: 2, lg: 4, all: 0 },
     speed: 250,
     point: {
       visible: true,
     },
     touch: true,
     loop: true,
-    // interval: { timing: 1500 },
     animation: 'lazy',
   };
+  numberOfPointsCarousel: number;
+  calculateNumberOfPointsCarousel() {
+    const gridSize = this.carouselTileConfig.grid.lg || 1; // Lấy số lượng phần tử hiển thị trên 1 trang
+    this.numberOfPointsCarousel = Math.ceil(
+      this.listImageTypes.length / gridSize
+    );
+  }
 
   nameHdh: string = '';
   onInputHDH(event: any, index: number, imageTypeId: number) {
@@ -154,7 +160,7 @@ export class InstancesEditInfoComponent implements OnInit {
             }
             this.region = this.instancesModel.regionId;
             this.getListIpPublic();
-            this.getAllOfferImage(this.imageTypeId);
+            this.getAllOfferImage(this.imageTypeIds);
             this.dataService
               .getImageById(this.instancesModel.imageId)
               .pipe(finalize(() => this.loadingSrv.close()))
@@ -196,15 +202,16 @@ export class InstancesEditInfoComponent implements OnInit {
   getAllImageType() {
     this.dataService.getAllImageType().subscribe((data: any) => {
       this.listImageTypes = data;
+      this.calculateNumberOfPointsCarousel();
       this.listImageTypes.forEach((e) => {
-        this.imageTypeId.push(e.id);
+        this.imageTypeIds.push(e.id);
       });
       console.log('list image types', this.listImageTypes);
     });
   }
 
-  getAllOfferImage(imageTypeId: any[]) {
-    imageTypeId.forEach((id) => {
+  getAllOfferImage(imageTypeIds: any[]) {
+    imageTypeIds.forEach((id) => {
       let listImage: Image[] = [];
       this.listOfImageByImageType.set(id, listImage);
     });

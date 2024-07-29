@@ -70,7 +70,7 @@ export class S3KeyComponent implements OnInit {
       this.region = RegionID.ADVANCE;
     }
     this.hasObjectStorage();
-    this.searchDelay.pipe(debounceTime(TimeCommon.timeOutSearch)).subscribe(() => {     
+    this.searchDelay.pipe(debounceTime(TimeCommon.timeOutSearch)).subscribe(() => {
       this.getData();
     });
   }
@@ -83,7 +83,7 @@ export class S3KeyComponent implements OnInit {
     this.region = region.regionId;
   }
 
-  search(search: string) {  
+  search(search: string) {
     this.value = search.trim();
     this.getData()
   }
@@ -174,7 +174,20 @@ export class S3KeyComponent implements OnInit {
           this.isLoadingDelete = false
           this.isVisibleDelete = false
           this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('app.notification.delete.s3.key.success'));
-          this.getData()
+          this.isLoading = true
+          this.service.getDataS3Key(this.value.trim(), this.size, this.index, this.region)
+            .pipe(finalize(() => {
+              if (this.listOfS3Key.length <= 0) {
+                this.index = 1;
+                this.getData();
+              }
+            }))
+            .subscribe((data) => {
+            this.isLoading = false
+            this.total = data.totalCount;
+            this.response = data
+            this.listOfS3Key = data.records;
+          });
         },
         error: (e) => {
           this.isLoadingDelete = false
@@ -232,7 +245,7 @@ export class S3KeyComponent implements OnInit {
   generateS3Key() {
     this.isLoadingReCreateS3key = true;
     console.log(this.formGenerateS3Key);
-    
+
     this.service.generateS3Key(this.formGenerateS3Key, this.region).subscribe({
       next: (data) => {
         this.isLoadingReCreateS3key = false;

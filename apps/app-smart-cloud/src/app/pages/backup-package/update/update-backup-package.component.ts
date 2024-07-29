@@ -109,8 +109,8 @@ export class UpdateBackupPackageComponent implements AfterViewInit{
     this.isLoading = true
     let formUpdate = new FormUpdate()
     formUpdate.packageId = this.idBackupPackage;
-    formUpdate.packageName = this.validateForm.controls.namePackage.value;
-    formUpdate.description = this.validateForm.controls.description.value;
+    formUpdate.packageName = this.validateForm.controls.namePackage.value.trimStart().trimEnd();
+    formUpdate.description = this.validateForm.controls.description.value.trimStart().trimEnd();
     formUpdate.customerId = this.tokenService.get()?.userId;
     formUpdate.regionId = this.region
 

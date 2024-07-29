@@ -164,7 +164,7 @@ export class ListBackupVolumeComponent implements OnInit, OnDestroy{
   }
 
   handleOkDelete() {
-    setTimeout(() => {this.getListBackupVolumes(true)}, 2000)
+    this.getListBackupVolumes(true)
   }
 
   handleOkUpdate() {
@@ -209,6 +209,7 @@ export class ListBackupVolumeComponent implements OnInit, OnDestroy{
           case "EXTENDING":
           case "EXTENDED":
           case "DELETING":
+            this.getListBackupVolumes(true)
           case "DELETED":
           case "RESTORING":
           case "RESTORED":

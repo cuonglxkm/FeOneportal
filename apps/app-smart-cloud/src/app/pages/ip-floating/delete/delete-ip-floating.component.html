@@ -16,7 +16,7 @@
     <span class="text-modal-title">{{'ip.floating.label.attach' | i18n}}</span>
   </ng-template>
   <ng-template #modalContent>
-    <form [formGroup]="validateForm"  nz-form nzLayout="vertical" (ngSubmit)="handleOk()">
+    <form [formGroup]="validateForm"  nz-form nzLayout="vertical">
       <nz-alert nzType="warning"
                 nzDescription="{{('ip.floating.alert.remove.ip.address' | i18n) + ip}}"
                 nzShowIcon
@@ -32,15 +32,24 @@
           <input nz-input
                  class="input-custom"
                  formControlName="ip"
-                 placeholder="{{'ip.floating.label.press' | i18n}}" />
+                 (ngModelChange)="changeInput()"
+                 [ngModelOptions]="{ standalone: true }"
+                 placeholder="{{ip}}" />
         </nz-form-control>
       </nz-form-item>
       <nz-form-item nzAlign="bottom" nzJustify="center">
         <nz-space nzSize="middle">
-          <button *nzSpaceItem nz-button nzType="default" (click)="handleCancel()" class="button-back">{{'app.button.cancel' | i18n}}</button>
-          <nz-form-control *nzSpaceItem>
-            <button nz-button nzType="primary" [nzLoading]="isLoading" class="button-new">{{'app.button.confirm' | i18n}}</button>
-          </nz-form-control>
+<!--          <button *nzSpaceItem nz-button nzType="default" (click)="handleCancel()" class="button-back">{{'app.button.cancel' | i18n}}</button>-->
+<!--          <nz-form-control *nzSpaceItem>-->
+<!--            <button nz-button nzType="primary" [nzLoading]="isLoading" class="button-new" (click)="handleOk()" [disabled]="disableSubmit">{{'app.button.confirm' | i18n}}</button>-->
+<!--          </nz-form-control>-->
+
+          <button nz-button (click)="handleCancel()">
+            <img style="padding-right: 10px; margin-top: -4px" src="assets/imgs/cancel.svg" alt="" />{{'app.button.cancel' | i18n}}
+          </button>
+          <button nz-button nzType="primary" (click)="handleOk()" [disabled]="disableSubmit">
+            <img style="padding-right: 10px; margin-top: -4px" src="assets/imgs/confirm.svg" alt="" />{{'app.button.confirm' | i18n}}
+          </button>
         </nz-space>
       </nz-form-item>
     </form>

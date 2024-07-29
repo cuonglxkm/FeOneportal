@@ -98,8 +98,8 @@ export class CreateSecurityGroupComponent implements AfterViewInit{
     if(this.validateForm.valid) {
       let formCreateSG = new FormCreateSG()
       formCreateSG.userId = this.tokenService.get()?.userId
-      formCreateSG.name = this.validateForm.controls.name.value
-      formCreateSG.description = this.validateForm.controls.description.value
+      formCreateSG.name = this.validateForm.controls.name.value.trimStart().trimEnd()
+      formCreateSG.description = this.validateForm.controls.description.value.trimStart().trimEnd()
       formCreateSG.regionId = this.region
       formCreateSG.projectId = this.project
 
