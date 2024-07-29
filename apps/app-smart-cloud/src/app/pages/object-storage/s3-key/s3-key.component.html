@@ -11,6 +11,8 @@
           'app.breadcrumb.home' | i18n
         }}</a></nz-breadcrumb-item
       >
+      <nz-breadcrumb-item>{{'app.breadcrumb.infrastructure.service' | i18n }}</nz-breadcrumb-item>
+      <nz-breadcrumb-item>Object Storage</nz-breadcrumb-item>
       <nz-breadcrumb-item
         ><a (click)="navigateToS3Key()"
           >S3 Key</a
@@ -93,7 +95,7 @@
     </thead>
     <tbody>
       <tr *ngFor="let item of rowSelectionTable.data; index as i">
-        <td>{{ i + 1 }}</td>
+        <td>{{ index + 1 }}</td>
         <td>
           {{ item.accessKey }}
           <img

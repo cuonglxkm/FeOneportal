@@ -182,7 +182,7 @@ export class ExtendIpFloatingComponent implements OnInit{
         oneSME_SubscriptionId: null,
         actionType: 0,
         serviceName: null,
-        typeName: 'SharedKernel.IntegrationEvents.Orders.Specifications.IPCreateSpecification,SharedKernel.IntegrationEvents, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null',
+        typeName: 'SharedKernel.IntegrationEvents.Orders.Specifications.IPExtendSpecification,SharedKernel.IntegrationEvents, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null',
         userEmail: null,
         actorEmail: null
       };
@@ -192,7 +192,7 @@ export class ExtendIpFloatingComponent implements OnInit{
           {
             orderItemQuantity: 1,
             specificationString: JSON.stringify(requestBody),
-            specificationType: 'ip_create',
+            specificationType: 'ip_extend',
             serviceDuration: num
           }
         ]
