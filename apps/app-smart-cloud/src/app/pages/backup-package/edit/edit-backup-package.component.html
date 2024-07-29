@@ -15,7 +15,7 @@
           [routerLink]="'/app-smart-cloud/backup/packages/detail/' + idBackupPackage">{{ 'app.backup.package.breadcrumb.detail'|i18n }}</a>
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>
-        <a routerLink="/app-smart-cloud/backup/packages">{{ 'app.backup.package.breadcrumb.resize'|i18n }}</a>
+        <a routerLink="/app-smart-cloud/backup/packages/extend/{{idBackupPackage}}" >{{ 'app.backup.package.breadcrumb.resize'|i18n }}</a>
       </nz-breadcrumb-item>
     </nz-breadcrumb>
     <ng-template #iconTemplate>
