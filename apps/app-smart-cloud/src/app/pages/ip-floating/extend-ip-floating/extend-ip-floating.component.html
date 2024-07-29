@@ -3,6 +3,8 @@
   <ng-template #breadcrumb>
     <nz-breadcrumb [nzSeparator]="separatorTemplate">
       <nz-breadcrumb-item><a [routerLink]="['/']">{{ 'app.breadcrumb.home' | i18n }}</a></nz-breadcrumb-item>
+      <nz-breadcrumb-item>{{ 'app.breadcrumb.infrastructure.service' | i18n }}</nz-breadcrumb-item>
+      <nz-breadcrumb-item>Networks</nz-breadcrumb-item>
       <nz-breadcrumb-item><a [routerLink]="['/app-smart-cloud/networks/ip-floating/list']">IP Floating</a></nz-breadcrumb-item>
       <nz-breadcrumb-item>{{'app.extend' | i18n}} IP Floating</nz-breadcrumb-item>
     </nz-breadcrumb>
@@ -30,7 +32,7 @@
         </div>
       </nz-card>
       <form nz-form nzLayout="vertical">
-        <one-portal-service-time-extend *ngIf="ipInfo != undefined && this.total?.data != undefined" [createDate]="dateString"
+        <one-portal-service-time-extend *ngIf="ipInfo != undefined && this.total?.data != undefined" [createDate]="ipInfo?.createDate"
                                         [expiredDate]="ipInfo?.expiredDate"
                                         [newExpiredDate]="this.total.data.orderItemPrices[0].expiredDate"
                                         (valueChanged)="onChangeTime($event)"/>
