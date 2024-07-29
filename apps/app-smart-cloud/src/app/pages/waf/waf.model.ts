@@ -22,3 +22,11 @@ export class WAFResize {
   userEmail: string;
   actorEmail: string;
 }
+export class WafDTO{
+  id: number;
+  name:string;
+  package:string;
+  begin:Date;
+  end:Date;
+  status:string;
+}

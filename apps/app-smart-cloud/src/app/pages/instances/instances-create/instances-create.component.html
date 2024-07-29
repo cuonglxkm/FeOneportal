@@ -43,7 +43,7 @@
   </ng-template>
 </page-header>
 <div nz-row [nzGutter]="24">
-  <div nz-col [nzSpan]="16" style="display: flex">
+  <div nz-col [nzSpan]="16">
     <form nz-form [formGroup]="form" [nzLayout]="'vertical'">
       <nz-card style="border-radius: 8px" [nzBordered]="false">
         <div style="margin-bottom: 20px">
@@ -171,18 +171,22 @@
                   bgGray: !data.id === selectedImageTypeId
                 }"
               >
-                <nz-row>
+                <nz-row style="margin-top: 16px">
                   <nz-col class="text-center" style="width: 100%">
-                    <img
-                      *ngIf="data.name == 'Linux'"
-                      src="assets/imgs/ubuntu.png"
-                      alt=""
-                    />
-                    <img
-                      *ngIf="data.name == 'Windows'"
-                      src="assets/imgs/window.png"
-                      alt=""
-                    />
+                    <div *ngIf="data.name == 'Linux'">
+                      <img
+                        style="width: 60px; height: 60px"
+                        src="assets/imgs/linux-logo.svg"
+                        alt=""
+                      /><span class="text-os-name">Linux</span>
+                    </div>
+                    <div *ngIf="data.name == 'Windows'">
+                      <img
+                        style="width: 60px; height: 60px"
+                        src="assets/imgs/window-logo.svg"
+                        alt=""
+                      /><span class="text-os-name"> Window</span>
+                    </div>
                   </nz-col>
                 </nz-row>
                 <nz-row>
@@ -197,7 +201,7 @@
                         "
                         [nzPlaceHolder]="'app.button.choose.version' | i18n"
                         [ngModelOptions]="{ standalone: true }"
-                        style="text-align: center; width: 155px"
+                        style="text-align: center; width: 75%"
                         nzSize="large"
                       >
                         <nz-option
@@ -212,7 +216,11 @@
               </div>
             </ngu-tile>
 
-            <ul class="myPoint" NguCarouselPoint>
+            <ul
+              *ngIf="numberOfPointsCarousel > 1"
+              class="myPoint"
+              NguCarouselPoint
+            >
               <li
                 *ngFor="let i of myCarouselImage.pointNumbers"
                 [class.active]="i === myCarouselImage.activePoint"
@@ -1643,7 +1651,7 @@
       ></one-portal-service-usage-period>
     </form>
   </div>
-  <div nz-col [nzSpan]="8" style="display: flex">
+  <div nz-col [nzSpan]="8">
     <div style="width: 100%">
       <nz-affix [nzOffsetTop]="72">
         <nz-card class="card-border" style="border-radius: 8px; width: 100%">

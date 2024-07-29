@@ -122,6 +122,8 @@ export class BucketDetailComponent extends BaseService implements OnInit {
   isLoadingDeleteVersion: boolean = false;
   isLoadingRestoreVersion: boolean = false;
   isClickCopy: boolean = false;
+
+  countSuccessUpload: number = 0;
   constructor(
     private service: ObjectObjectStorageService,
     private objectSevice: ObjectStorageService,
@@ -243,6 +245,7 @@ export class BucketDetailComponent extends BaseService implements OnInit {
     this.isVisibleDelete = false;
     this.isVisibleVersioning = false;
     this.isClickCopy = false;
+    this.listOfFolderCopy = []
   }
 
   handleCancelShareFile() {
@@ -378,6 +381,7 @@ export class BucketDetailComponent extends BaseService implements OnInit {
                   );
                   if (index >= 0) {
                     this.lstFileUpdate.splice(index, 1);
+                    this.countSuccessUpload -= 1
                   }
                   this.notification.success(
                     this.i18n.fanyi('app.status.success'),
@@ -397,6 +401,7 @@ export class BucketDetailComponent extends BaseService implements OnInit {
       let index = this.lstFileUpdate.findIndex((file) => file.uid === item.uid);
       if (index >= 0) {
         this.lstFileUpdate.splice(index, 1);
+        this.countSuccessUpload -= 1
       }
       this.notification.success(
         this.i18n.fanyi('app.status.success'),
@@ -510,6 +515,11 @@ export class BucketDetailComponent extends BaseService implements OnInit {
             this.i18n.fanyi('app.status.success'),
             this.i18n.fanyi('app.bucket.detail.deleteObject.success')
           );
+
+          
+          if (this.listOfData.length >= 1 && this.index > 1) {
+            this.index = this.index - 1     
+          }
           this.loadData();
         },
         (error) => {
@@ -657,7 +667,6 @@ export class BucketDetailComponent extends BaseService implements OnInit {
         destinationKey = this.folderChange.substring(separatorIndex + 1) + keyPath;
       }else{
         destinationKey = this.folderChange.substring(separatorIndex + 1) + this.dataAction.key;
-        console.log(destinationKey);
       }
     } else {
       console.log(this.dataAction.key);
@@ -666,7 +675,6 @@ export class BucketDetailComponent extends BaseService implements OnInit {
         destinationKey = this.folderChange.substring(separatorIndex + 1) + keyPath;
       }else{
         destinationKey = this.folderChange.substring(separatorIndex + 1) + this.dataAction.key;
-        console.log(destinationKey);
       }
       
     }
@@ -706,6 +714,7 @@ export class BucketDetailComponent extends BaseService implements OnInit {
         finalize(() => {
           this.isLoadingCopy = false;
           this.isClickCopy = false
+          this.listOfFolderCopy = []
           this.loadData();
         })
       )
@@ -1033,6 +1042,7 @@ export class BucketDetailComponent extends BaseService implements OnInit {
                 this.i18n.fanyi('app.status.success'),
                 this.i18n.fanyi('app.bucket.detail.uploadFile.success')
               );
+              this.countSuccessUpload += 1 
               this.loadData();
               resolve();
             } else {
@@ -1162,8 +1172,6 @@ export class BucketDetailComponent extends BaseService implements OnInit {
                   (event.loaded / event.total) * 100
                 );
               }
-
-              console.log(item.percentage);
               
             };
             xhr.onload = () => {
@@ -1173,6 +1181,7 @@ export class BucketDetailComponent extends BaseService implements OnInit {
                 this.i18n.fanyi('app.bucket.detail.uploadFile.success')
               );
               this.loadData();
+              this.countSuccessUpload += 1 
               resolve();
             };
             xhr.onerror = () => {
@@ -1201,6 +1210,7 @@ export class BucketDetailComponent extends BaseService implements OnInit {
   handleCancelUploadFile() {
     this.lstFileUpdate = [];
     this.listOfMetadata = [];
+    this.countSuccessUpload = 0
     this.radioValue = 'public-read';
     this.isVisibleUploadFile = false;
     this.emptyFileUpload = true;
@@ -1287,8 +1297,12 @@ export class BucketDetailComponent extends BaseService implements OnInit {
           this.i18n.fanyi('app.status.success'),
           this.i18n.fanyi('app.bucket.detail.deleteObject.success')
         );
+        this.checked = false
         this.setOfCheckedId.clear();
         this.countObjectSelected = 0;
+        if (this.listOfData.length >= 1 && this.index > 1) {
+          this.index = this.index - 1     
+        }
         this.loadData();
       },
       (error) => {

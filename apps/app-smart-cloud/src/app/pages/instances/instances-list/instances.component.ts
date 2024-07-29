@@ -36,6 +36,7 @@ import { VlanService } from 'src/app/shared/services/vlan.service';
 import { I18NService } from '@core';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
+import { CatalogService } from 'src/app/shared/services/catalog.service';
 
 class SearchParam {
   status: string = '';
@@ -78,6 +79,7 @@ export class InstancesComponent implements OnInit {
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
     @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
     private dataService: InstancesService,
+    private catalogService: CatalogService,
     private cdr: ChangeDetectorRef,
     private router: Router,
     private notification: NzNotificationService,
@@ -90,6 +92,7 @@ export class InstancesComponent implements OnInit {
     this.region = regionAndProject.regionId;
     this.projectId = regionAndProject.projectId;
     this.userId = this.tokenService.get()?.userId;
+    this.getActiveServiceByRegion();
     this.notificationService.connection.on('UpdateInstance', (data) => {
       if (data) {
         let instanceId = data.serviceId;
@@ -150,6 +153,35 @@ export class InstancesComponent implements OnInit {
     this.checkExistName();
     this.onCheckIPAddress();
     this.onChangeSearchParam();
+  }
+
+  //Lấy các dịch vụ hỗ trợ theo region
+  isVolumeSnapshotHdd: boolean = false;
+  isVolumeSnapshotSsd: boolean = false;
+  isBackupVm: boolean = false;
+  getActiveServiceByRegion() {
+    this.catalogService
+      .getActiveServiceByRegion(
+        [
+          'volume-snapshot-hdd',
+          'volume-snapshot-ssd',
+          'backup-vm'
+        ],
+        this.region
+      )
+      .subscribe((data) => {
+        console.log('support service', data);
+        this.isVolumeSnapshotHdd = data.filter(
+          (e) => e.productName == 'volume-snapshot-hdd'
+        )[0].isActive;
+        this.isVolumeSnapshotSsd = data.filter(
+          (e) => e.productName == 'volume-snapshot-ssd'
+        )[0].isActive;
+        this.isBackupVm = data.filter(
+          (e) => e.productName == 'backup-vm'
+        )[0].isActive;
+        this.cdr.detectChanges();
+      });
   }
 
   onRegionChanged(region: RegionModel) {

@@ -45,9 +45,9 @@ export class StartupService {
   menuData: any;
 
   private token =
-    'Bearer 6cb31a40836230e87730e36a150860fd22482b0458dedb8e5e42fb332048b475335bbe1debd1b3d1bea5604ff8d2049ebb78765c0fd62fd7058285bb1051d2cf333f3e10a0f722c7dfe4125246f9761312afd6b8b6370c5ea346f24c4dcb6047472b568e21dc9ce75ed458150cd91a72e72adc088d69fe96430fb8cf981cc51d';
+    'Bearer ' + environment.cms_token;
   private apiUrl =
-    environment.sso.cms_baseUrl + '/api/menu-lists?populate=*, icon_level1, menu_level2.icon_level2, menu_level2.menu_level3.icon_level3&sort=priorityID:asc';
+    environment.cms_baseUrl + '/api/menu-lists?populate=*, icon_level1, menu_level2.icon_level2, menu_level2.menu_level3.icon_level3&sort=priorityID:asc';
 
   private getHeaders() {
     return {

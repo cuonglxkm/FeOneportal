@@ -23,6 +23,6 @@ export class LayoutPassportComponent implements OnInit {
 
   navigateToCloud(event: Event){
     event.preventDefault()
-    window.location.href = environment.sso.cloud_baseUrl;
+    window.location.href = environment.cloud_baseUrl;
   }
 }

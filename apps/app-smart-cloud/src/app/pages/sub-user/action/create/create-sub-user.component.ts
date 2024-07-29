@@ -57,7 +57,7 @@ export class CreateSubUserComponent implements OnInit{
   duplicateNameValidator(control) {
     const value = control.value;
     // Check if the input name is already in the list
-    if (this.nameList && this.nameList.includes(value.toLowerCase())) {
+    if (this.nameList && this.nameList.includes(value)) {
       return { duplicateName: true }; // Duplicate name found
     } else {
       return null; // Name is unique
@@ -91,7 +91,7 @@ export class CreateSubUserComponent implements OnInit{
   getListSubUser() {
     this.subUserService.getListSubUser(null, 99999, 1, this.region).subscribe(data => {
       data?.records?.forEach(item => {
-        this.nameList?.push(item?.subUserId.toLowerCase());
+        this.nameList?.push(item?.subUserId);
       });
     })
   }

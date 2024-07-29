@@ -249,7 +249,7 @@ export class CreateFileSystemNormalComponent implements OnInit {
     this.formCreate.shareProtocol = this.validateForm.controls.protocol.value;
     this.formCreate.size = this.validateForm.controls.storage.value;
     this.formCreate.name = this.validateForm.controls.name.value.trimStart().trimEnd();
-    this.formCreate.description = this.validateForm.controls.description.value;
+    this.formCreate.description = this.validateForm.controls.description.value.trimStart().trimEnd();
     this.formCreate.displayName = this.validateForm.controls.name.value;
     this.formCreate.displayDescription = this.validateForm.controls.description.value;
     console.log('share type', this.validateForm.controls.type.value);
