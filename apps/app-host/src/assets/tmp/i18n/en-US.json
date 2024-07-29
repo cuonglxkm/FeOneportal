@@ -583,6 +583,7 @@
   "validation.password.confirm.required": "Please enter the confirm password field",
 
   "app.notify.get.list.port": "Failed to retrieve the list of ports",
+  "app.notify.get.list.ip.public": "Failed to retrieve the list of IPs Public",
   "app.notify.get.list.instance": "Failed to retrieve the list of instances",
   "app.notify.get.list.allow.address.pair": "Failed to retrieve the list of Allow Address Pair",
   "app.notify.create.allow.address.pair.success": "Successfully created Allow Address Pair",
@@ -3590,7 +3591,9 @@
   "app.snapshot.schedule.enter.name1": "Enter Snapshot Schedule name",
   "app.snapshot.schedule.des.1": "The Snapshot Schedule name can have up to 64 characters. Valid characters: A-Z, a-z, 0-9",
   "app.snapshot.schedule.volume.select.label": "Select Volume name",
-
+  
+  "waf.detail.title": "WAF Detail",
+  "waf.detail.info": "WAF Info",
   "waf.placeholder.filter.name": "Search by WAF and package",
   "waf.domain.placeholder.filter.name": "Search by domain",
   "app.waf.status.running":"Running",
