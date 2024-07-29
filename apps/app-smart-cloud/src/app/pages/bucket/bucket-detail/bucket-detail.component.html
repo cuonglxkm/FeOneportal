@@ -439,6 +439,8 @@
         <label nz-radio nzValue="public-read" class="text-label">Public</label>
         <label nz-radio nzValue="private" class="text-label">Private</label>
       </nz-radio-group>
+      <nz-divider class="mb-3" />
+      <span class="mt-2 d-block text-label float-right mb-4" *ngIf="lstFileUpdate.length > 0">{{countSuccessUpload}} của {{lstFileUpdate.length}}</span>
       <nz-table
         [nzData]="lstFileUpdate"
         style="margin-top: 10px" nzHideOnSinglePage nzShowPagination="false"
