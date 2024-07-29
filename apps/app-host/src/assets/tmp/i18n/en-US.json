@@ -456,6 +456,7 @@
   "validation.ip.address.cidr.pattern": "IP Address / CIDR is not in the correct format. Please enter an IP address in the format x.x.x.x or a CIDR in the format x.x.0.0/16 or x.x.0.0/24.",
   "validation.ip.address.cidr.duplicate": "IP Address / CIDR đã tồn tại",
   "validation.Mac.address": "Please enter a valid MAC format",
+  "validation.months.for.extend": "The number of months to be renewed cannot be empty",
 
   "app.instance": "instance",
   "app.volume": "Volume",
@@ -2622,6 +2623,7 @@
   "ip.floating.nofitacation.detach.success": "IP floating removed successfully",
   "ip.floating.nofitacation.detach.fail": "Failed to remove IP floating",
   "ip.floating.label.attach": "Attach IP floating",
+  "ip.floating.label.delete": "Delete IP floating",
   "ip.floating.alert.remove.ip.address": "You are currently deleting the IP floating + IP floating Address.",
   "ip.floating.alert.remove": "To proceed with deleting the IP floating, please enter the IP address for confirmation.",
   "ip.floating.label.press": "Enter IP",
@@ -3591,7 +3593,7 @@
   "app.snapshot.schedule.enter.name1": "Enter Snapshot Schedule name",
   "app.snapshot.schedule.des.1": "The Snapshot Schedule name can have up to 64 characters. Valid characters: A-Z, a-z, 0-9",
   "app.snapshot.schedule.volume.select.label": "Select Volume name",
-  
+
   "waf.detail.title": "WAF Detail",
   "waf.detail.info": "WAF Info",
   "waf.placeholder.filter.name": "Search by WAF and package",

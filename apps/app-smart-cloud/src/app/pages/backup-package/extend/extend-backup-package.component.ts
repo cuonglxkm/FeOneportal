@@ -6,7 +6,7 @@ import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
 import {
   BackupPackageRequestModel,
-  FormExtendBackupPackageModel,
+  FormExtendBackupPackageModel, OrderItemTotalAmount,
   PackageBackupModel
 } from '../../../shared/models/package-backup.model';
 import { OrderItem } from '../../../shared/models/price';
@@ -37,16 +37,14 @@ export class ExtendBackupPackageComponent implements OnInit {
   packageBackupModel: PackageBackupModel;
 
   validateForm: FormGroup<{
-    time: FormControl<number>
+    time: FormControl<string>
   }> = this.fb.group({
-    time: [1, [Validators.required]]
+    time: ['', [Validators.required]]
   });
 
   estimateExpiredDate: Date;
 
   isLoadingAction: boolean = false;
-
-  dataSubjectTime: Subject<any> = new Subject<any>();
 
   timeSelected: any;
 
@@ -85,18 +83,25 @@ export class ExtendBackupPackageComponent implements OnInit {
   }
 
   changeTime(value) {
-    this.validateForm.controls['time'].setValue(value);
-    this.dataSubjectTime.next(value);
+    console.log('time', value)
+    this.validateForm.controls.time.setValue(value);
+    this.getTotalAmount();
   }
 
-  onChangeTime(value) {
-    // this.dataSubjectTime.pipe(debounceTime(500))
-    //   .subscribe((res) => {
-    this.timeSelected = value;
-    this.validateForm.controls.time.setValue(this.timeSelected);
-    this.getTotalAmount();
-    // });
-  }
+  // onChangeTime() {
+  //   this.dataSubjectTime.subscribe(res => {
+  //     console.log(res)
+  //     if(res == 0) {
+  //       this.timeSelected = 1
+  //     } else {
+  //       this.timeSelected = res;
+  //     }
+  //     this.validateForm.controls.time.setValue(this.timeSelected);
+  //     this.getTotalAmount();
+  //   })
+  //
+  //
+  // }
 
   getDetailPackageBackup(id) {
     this.isLoading = true;
@@ -123,13 +128,16 @@ export class ExtendBackupPackageComponent implements OnInit {
     request.note = this.i18n.fanyi('app.backup.package.breadcrumb.extend');
     request.totalPayment = this.orderItem?.totalPayment?.amount
     request.totalVAT = this.orderItem?.totalVAT?.amount
+    if(this.validateForm.controls.time.value == undefined || this.validateForm.controls.time.value == '' || this.validateForm.controls.time.value == null) {
+      this.validateForm.controls.time.setValue('0');
+    }
     request.orderItems = [
       {
         orderItemQuantity: 1,
         specification: JSON.stringify(this.formExtendBackupPackage),
         specificationType: 'backuppacket_extend',
         price: this.orderItem?.totalPayment?.amount,
-        serviceDuration: this.validateForm.controls.time.value
+        serviceDuration: Number.parseInt(this.validateForm.controls.time.value, 10)
       }
     ];
     this.orderService.validaterOrder(request).subscribe(data => {
@@ -174,31 +182,38 @@ export class ExtendBackupPackageComponent implements OnInit {
     this.formExtendBackupPackage.customerId = this.packageBackupModel?.customerId;
     this.formExtendBackupPackage.projectId = this.project;
     this.formExtendBackupPackage.vpcId = this.project.toString();
-    this.formExtendBackupPackage.typeName = 'SharedKernel.IntegrationEvents.Orders.Specifications.BackupPacketExtendSpecificationSharedKernel.IntegrationEvents Version=1.0.0.0 Culture=neutral PublicKeyToken=null';
+    this.formExtendBackupPackage.typeName = 'SharedKernel.IntegrationEvents.Orders.Specifications.GenericExtendSpecificaton,SharedKernel.IntegrationEvents, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null';
     this.formExtendBackupPackage.serviceType = 14;
     this.formExtendBackupPackage.actionType = 3;
     this.formExtendBackupPackage.serviceInstanceId = this.packageBackupModel?.id;
-    this.formExtendBackupPackage.newExpireDate = this.estimateExpiredDate;
+    // this.formExtendBackupPackage.newExpireDate = this.estimateExpiredDate;
     this.formExtendBackupPackage.userEmail = this.tokenService.get()?.email;
     this.formExtendBackupPackage.actorEmail = this.tokenService.get()?.email;
+
+
   }
 
-  orderItem: OrderItem = new OrderItem();
+  orderItem: OrderItem;
   unitPrice = 0;
 
   getTotalAmount() {
     this.isLoadingAction = true;
     this.backupPackageInit();
-    let itemPayment: ItemPayment = new ItemPayment();
-    itemPayment.orderItemQuantity = 1;
-    itemPayment.specificationString = JSON.stringify(this.formExtendBackupPackage);
-    itemPayment.specificationType = 'backuppacket_extend';
-    itemPayment.sortItem = 0;
-    itemPayment.serviceDuration = this.validateForm.controls.time.value;
-    let dataPayment: DataPayment = new DataPayment();
-    dataPayment.orderItems = [itemPayment];
-    dataPayment.projectId = this.project;
-    this.instanceService.getTotalAmount(dataPayment).subscribe((result) => {
+    let orderItemTotalAmount = new OrderItemTotalAmount();
+    if(this.validateForm.controls.time.value == undefined || this.validateForm.controls.time.value == '' || this.validateForm.controls.time.value == null) {
+      this.validateForm.controls.time.setValue('0');
+    }
+    orderItemTotalAmount.orderItems = [
+      {
+        orderItemQuantity: 1,
+        specificationString: JSON.stringify(this.formExtendBackupPackage),
+        specificationType: 'backuppacket_extend',
+        serviceDuration: Number.parseInt(this.validateForm.controls.time.value, 10)
+      }
+    ]
+    orderItemTotalAmount.customerId = this.tokenService.get()?.userId
+    orderItemTotalAmount.projectId = this.project
+    this.packageBackupService.getTotalAmount(orderItemTotalAmount).subscribe((result) => {
       this.isLoadingAction = false;
       console.log('thanh tien backup package', result.data);
       this.orderItem = result.data;
@@ -243,13 +258,11 @@ export class ExtendBackupPackageComponent implements OnInit {
     let regionAndProject = getCurrentRegionAndProject();
     this.region = regionAndProject.regionId;
     this.project = regionAndProject.projectId;
-    // this.customerId = this.tokenService.get()?.userId
-    // this.onChangeTime();
+
     this.hasRoleSI = localStorage.getItem('role').includes('SI');
     if (this.idBackupPackage) {
       this.getDetailPackageBackup(this.idBackupPackage);
-
-      // this.getTotalAmount()
+      this.validateForm.controls.time.setValue('1')
     }
   }
 }

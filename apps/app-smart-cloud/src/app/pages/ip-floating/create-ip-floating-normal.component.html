@@ -2,6 +2,8 @@
   <ng-template #breadcrumb>
     <nz-breadcrumb [nzSeparator]="separatorTemplate">
       <nz-breadcrumb-item><a [routerLink]="['/']">{{ 'app.breadcrumb.home' | i18n }}</a></nz-breadcrumb-item>
+      <nz-breadcrumb-item>{{ 'app.breadcrumb.infrastructure.service' | i18n }}</nz-breadcrumb-item>
+      <nz-breadcrumb-item>Networks</nz-breadcrumb-item>
       <nz-breadcrumb-item><a [routerLink]="['/app-smart-cloud/networks/ip-floating/list']">IP Floating</a></nz-breadcrumb-item>
       <nz-breadcrumb-item>{{'app.create' | i18n}} IP Floating</nz-breadcrumb-item>
     </nz-breadcrumb>

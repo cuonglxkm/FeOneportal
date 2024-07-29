@@ -110,9 +110,15 @@ export class InstancesCreateComponent implements OnInit {
     },
     touch: true,
     loop: true,
-    // interval: { timing: 1500 },
     animation: 'lazy',
   };
+  numberOfPointsCarousel: number;
+  calculateNumberOfPointsCarousel() {
+    const gridSize = this.carouselTileConfig.grid.lg || 1; // Lấy số lượng phần tử hiển thị trên 1 trang
+    this.numberOfPointsCarousel = Math.ceil(
+      this.listImageTypes.length / gridSize
+    );
+  }
 
   form = new FormGroup({
     name: new FormControl('', {
@@ -448,21 +454,22 @@ export class InstancesCreateComponent implements OnInit {
   listSelectedImage = [];
   selectedImageTypeId: number;
   listOfImageByImageType: Map<number, Image[]> = new Map();
-  imageTypeId = [];
+  imageTypeIds = [];
 
   getAllImageType() {
     this.dataService.getAllImageType().subscribe((data: any) => {
       this.listImageTypes = data;
+      this.calculateNumberOfPointsCarousel();
       this.listImageTypes.forEach((e) => {
-        this.imageTypeId.push(e.id);
+        this.imageTypeIds.push(e.id);
       });
-      this.getAllOfferImage(this.imageTypeId);
+      this.getAllOfferImage(this.imageTypeIds);
       console.log('list image types', this.listImageTypes);
     });
   }
 
-  getAllOfferImage(imageTypeId: any[]) {
-    imageTypeId.forEach((id) => {
+  getAllOfferImage(imageTypeIds: any[]) {
+    imageTypeIds.forEach((id) => {
       let listImage: Image[] = [];
       this.listOfImageByImageType.set(id, listImage);
     });
@@ -800,7 +807,7 @@ export class InstancesCreateComponent implements OnInit {
             e.statusText,
             this.i18n.fanyi('app.notify.get.list.ip.public')
           );
-        }
+        },
       });
   }
 

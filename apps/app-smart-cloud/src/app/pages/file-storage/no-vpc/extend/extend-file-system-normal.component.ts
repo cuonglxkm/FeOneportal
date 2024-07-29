@@ -11,7 +11,7 @@ import {
   ResizeFileSystemRequestModel
 } from '../../../../shared/models/file-system.model';
 import { OrderItem } from '../../../../shared/models/price';
-import { debounceTime, Subject } from 'rxjs';
+import { Subject } from 'rxjs';
 import { getCurrentRegionAndProject } from '@shared';
 import { ProjectModel, RegionModel } from '../../../../../../../../libs/common-utils/src';
 import { DataPayment, ItemPayment } from '../../../instances/instances.model';
@@ -20,7 +20,9 @@ import { ConfigurationsService } from '../../../../shared/services/configuration
 import { OrderService } from '../../../../shared/services/order.service';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from '@core';
-import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
+import {
+  ProjectSelectDropdownComponent
+} from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
 
 
 @Component({
@@ -37,7 +39,7 @@ export class ExtendFileSystemNormalComponent implements OnInit {
   storage: number;
   isLoading: boolean = true;
 
-  isLoadingAction: boolean = false
+  isLoadingAction: boolean = false;
   fileSystem: FileSystemDetail;
 
   isInitSnapshot: boolean = false;
@@ -50,10 +52,10 @@ export class ExtendFileSystemNormalComponent implements OnInit {
 
   validateForm: FormGroup<{
     snapshot: FormControl<boolean>
-    time: FormControl<number>
+    time: FormControl<string>
   }> = this.fb.group({
     snapshot: [false],
-    time: [1, [Validators.required, Validators.pattern(/^[0-9]*$/)]]
+    time: ['1', [Validators.required, Validators.pattern(/^[0-9]*$/)]]
   });
 
   estimateExpireDate: Date = null;
@@ -65,15 +67,17 @@ export class ExtendFileSystemNormalComponent implements OnInit {
   valueStringConfiguration: string = '';
   maxStorage: number = 0;
 
-  timeSelected: any
+  timeSelected: any;
 
   isVisiblePopupError: boolean = false;
   errorList: string[] = [];
+
   closePopupError() {
     this.isVisiblePopupError = false;
   }
 
   @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
+
   constructor(private fb: NonNullableFormBuilder,
               private router: Router,
               private activatedRoute: ActivatedRoute,
@@ -109,12 +113,9 @@ export class ExtendFileSystemNormalComponent implements OnInit {
   }
 
   onChangeTime(value) {
-      // this.dataSubjectTime.pipe(debounceTime(500))
-      //   .subscribe((res) => {
-    this.timeSelected = value
-    this.validateForm.controls.time.setValue(this.timeSelected)
-          this.getTotalAmount();
-        // })
+    console.log('time', value)
+    this.validateForm.controls.time.setValue(value);
+    this.getTotalAmount();
   }
 
   getFileSystemById(id) {
@@ -142,35 +143,38 @@ export class ExtendFileSystemNormalComponent implements OnInit {
   }
 
   fileSystemInit() {
-    this.extendFileSystem.regionId = this.region
-    this.extendFileSystem.serviceName = this.fileSystem?.name
-    this.extendFileSystem.customerId = this.tokenService.get()?.userId
-    this.extendFileSystem.projectId = this.project
-    this.extendFileSystem.vpcId = this.project
-    this.extendFileSystem.typeName = "SharedKernel.IntegrationEvents.Orders.Specifications.FileSystemExtendSpecification,SharedKernel.IntegrationEvents, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null"
-    this.extendFileSystem.serviceType = 18
-    this.extendFileSystem.actionType = 3
-    this.extendFileSystem.serviceInstanceId = this.idFileSystem
-    this.extendFileSystem.newExpireDate = this.estimateExpireDate
-    this.extendFileSystem.userEmail = this.tokenService.get()?.email
-    this.extendFileSystem.actorEmail = this.tokenService.get()?.email
+    this.extendFileSystem.regionId = this.region;
+    this.extendFileSystem.serviceName = this.fileSystem?.name;
+    this.extendFileSystem.customerId = this.tokenService.get()?.userId;
+    this.extendFileSystem.projectId = this.project;
+    this.extendFileSystem.vpcId = this.project;
+    this.extendFileSystem.typeName = 'SharedKernel.IntegrationEvents.Orders.Specifications.FileSystemExtendSpecification,SharedKernel.IntegrationEvents, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null';
+    this.extendFileSystem.serviceType = 18;
+    this.extendFileSystem.actionType = 3;
+    this.extendFileSystem.serviceInstanceId = this.idFileSystem;
+    this.extendFileSystem.newExpireDate = this.estimateExpireDate;
+    this.extendFileSystem.userEmail = this.tokenService.get()?.email;
+    this.extendFileSystem.actorEmail = this.tokenService.get()?.email;
   }
 
   getTotalAmount() {
-    this.isLoadingAction = true
-    this.fileSystemInit()
+    this.isLoadingAction = true;
+    this.fileSystemInit();
     let itemPayment: ItemPayment = new ItemPayment();
     itemPayment.orderItemQuantity = 1;
     itemPayment.specificationString = JSON.stringify(this.extendFileSystem);
     itemPayment.specificationType = 'filestorage_extend';
     itemPayment.sortItem = 0;
-    itemPayment.serviceDuration = this.validateForm.controls.time.value;
+    if (this.validateForm.controls.time.value == undefined || this.validateForm.controls.time.value == '' || this.validateForm.controls.time.value == null) {
+      this.validateForm.controls.time.setValue('0');
+    }
+    itemPayment.serviceDuration = Number.parseInt(this.validateForm.controls.time.value, 10);
     let dataPayment: DataPayment = new DataPayment();
     dataPayment.orderItems = [itemPayment];
     dataPayment.projectId = this.project;
 
     this.instanceService.getTotalAmount(dataPayment).subscribe((result) => {
-      this.isLoadingAction = false
+      this.isLoadingAction = false;
       console.log('thanh tien extend', result.data);
       this.orderItem = result.data;
       this.unitPrice = this.orderItem?.orderItemPrices[0]?.unitPrice.amount;
@@ -178,41 +182,46 @@ export class ExtendFileSystemNormalComponent implements OnInit {
   }
 
   navigateToPaymentSummary() {
-    this.isLoadingAction = true
+    this.isLoadingAction = true;
     this.fileSystemInit();
-    this.getTotalAmount()
+    this.getTotalAmount();
     let request = new ResizeFileSystemRequestModel();
     request.customerId = this.extendFileSystem.customerId;
     request.createdByUserId = this.extendFileSystem.customerId;
     request.note = 'Gia hạn File System';
-    request.totalPayment = this.orderItem?.totalPayment?.amount
-    request.totalVAT = this.orderItem?.totalVAT?.amount
+    request.totalPayment = this.orderItem?.totalPayment?.amount;
+    request.totalVAT = this.orderItem?.totalVAT?.amount;
+    if (this.validateForm.controls.time.value == undefined || this.validateForm.controls.time.value == '' || this.validateForm.controls.time.value == null) {
+      this.validateForm.controls.time.setValue('0');
+    }
     request.orderItems = [
       {
         orderItemQuantity: 1,
         specification: JSON.stringify(this.extendFileSystem),
         specificationType: 'filestorage_extend',
         price: this.orderItem?.totalAmount.amount,
-        serviceDuration: this.validateForm.controls.time.value
+        serviceDuration: Number.parseInt(this.validateForm.controls.time.value, 10)
       }
     ];
     console.log('request', request);
     this.orderService.validaterOrder(request).subscribe(data => {
-      this.isLoadingAction = false
-      if(data.success) {
-        if(this.hasRoleSI) {
+      this.isLoadingAction = false;
+      if (data.success) {
+        if (this.hasRoleSI) {
           this.fileSystemService.resize(request).subscribe(item => {
             if (data != null) {
               if (data.code == 200) {
                 this.isLoading = false;
                 this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('app.file.system.notification.require.extend.success'));
-                setTimeout(() => {this.router.navigate(['/app-smart-cloud/file-storage/file-system/list']);}, 1500)
+                setTimeout(() => {
+                  this.router.navigate(['/app-smart-cloud/file-storage/file-system/list']);
+                }, 1500);
               }
             } else {
               this.isLoading = false;
               this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.file.system.notification.require.extend.fail'));
             }
-          })
+          });
         } else {
           var returnPath: string = '/app-smart-cloud/file-storage/file-system/' + this.idFileSystem + '/extend';
           console.log('request', request);
@@ -225,30 +234,32 @@ export class ExtendFileSystemNormalComponent implements OnInit {
       }
 
     }, error => {
-      this.notification.error(this.i18n.fanyi('app.status.fail'), error.error.detail)
-    })
+      this.notification.error(this.i18n.fanyi('app.status.fail'), error.error.detail);
+    });
   }
 
   getConfigurations() {
     this.configurationsService.getConfigurations('BLOCKSTORAGE').subscribe(data => {
       this.valueStringConfiguration = data.valueString;
-      const arr = this.valueStringConfiguration.split('#')
-      this.minStorage = Number.parseInt(arr[0])
-      this.stepStorage = Number.parseInt(arr[1])
-      this.maxStorage = Number.parseInt(arr[2])
-    })
+      const arr = this.valueStringConfiguration.split('#');
+      this.minStorage = Number.parseInt(arr[0]);
+      this.stepStorage = Number.parseInt(arr[1]);
+      this.maxStorage = Number.parseInt(arr[2]);
+    });
   }
 
-  hasRoleSI: boolean
+  hasRoleSI: boolean;
+
   ngOnInit() {
     let regionAndProject = getCurrentRegionAndProject();
     this.region = regionAndProject.regionId;
     this.project = regionAndProject.projectId;
 
-    this.hasRoleSI = localStorage.getItem('role').includes('SI')
+    this.hasRoleSI = localStorage.getItem('role').includes('SI');
 
     this.idFileSystem = Number.parseInt(this.activatedRoute.snapshot.paramMap.get('idFileSystem'));
     this.getFileSystemById(this.idFileSystem);
+    this.validateForm.controls.time.setValue('1')
     // this.onChangeTime()
     this.getConfigurations();
   }

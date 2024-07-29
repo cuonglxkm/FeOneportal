@@ -268,7 +268,8 @@
               !data.taskState.toUpperCase().includes('ING') &&
               data.taskState.toUpperCase() != 'REBOOT_STARTED' &&
               data.taskState.toUpperCase() != 'ERROR' &&
-              data.taskState.toUpperCase() != 'DELETED'
+              data.taskState.toUpperCase() != 'DELETED' &&
+              isBackupVm
             "
             src="assets/imgs/create-backup.svg"
             alt=""
@@ -296,13 +297,13 @@
               !data.taskState.toUpperCase().includes('ING') &&
               data.taskState.toUpperCase() != 'REBOOT_STARTED' &&
               data.taskState.toUpperCase() != 'ERROR' &&
-              data.taskState.toUpperCase() != 'DELETED'
+              data.taskState.toUpperCase() != 'DELETED' &&
+              isBackupVm
             "
             src="assets/imgs/calendar-tick.svg"
             alt=""
             (click)="createBackupSchedule(data.id)"
             style="cursor: pointer; margin-right: 16px"
-            (click)="createBackupSchedule(data.id)"
             [nz-tooltip]="'app.create.backup.schedule' | i18n"
           />
           <img
@@ -326,7 +327,8 @@
                   !data.taskState.toUpperCase().includes('ING') &&
                   data.taskState.toUpperCase() != 'REBOOT_STARTED' &&
                   data.taskState.toUpperCase() != 'ERROR' &&
-                  data.taskState.toUpperCase() != 'DELETED'
+                  data.taskState.toUpperCase() != 'DELETED' &&
+                  (isVolumeSnapshotHdd || isVolumeSnapshotSsd)
                 "
                 nz-menu-item
                 (click)="createSnapshot(data.id)"
@@ -339,7 +341,8 @@
                   !data.taskState.toUpperCase().includes('ING') &&
                   data.taskState.toUpperCase() != 'REBOOT_STARTED' &&
                   data.taskState.toUpperCase() != 'ERROR' &&
-                  data.taskState.toUpperCase() != 'DELETED'
+                  data.taskState.toUpperCase() != 'DELETED' &&
+                  (isVolumeSnapshotHdd || isVolumeSnapshotSsd)
                 "
                 nz-menu-item
                 (click)="navigateToCreateScheduleSnapshot(data.id)"

@@ -62,13 +62,6 @@ import { ProjectSelectDropdownComponent } from 'src/app/shared/components/projec
   animations: [slider],
 })
 export class InstancesCreateVpcComponent implements OnInit {
-  images = [
-    'assets/logo.svg',
-    'assets/logo.svg',
-    'assets/logo.svg',
-    'assets/logo.svg',
-  ];
-
   public carouselTileConfig: NguCarouselConfig = {
     grid: { xs: 1, sm: 1, md: 2, lg: 4, all: 0 },
     speed: 250,
@@ -77,11 +70,15 @@ export class InstancesCreateVpcComponent implements OnInit {
     },
     touch: true,
     loop: true,
-    // interval: { timing: 1500 },
     animation: 'lazy',
   };
-
-  tempData: any[];
+  numberOfPointsCarousel: number;
+  calculateNumberOfPointsCarousel() {
+    const gridSize = this.carouselTileConfig.grid.lg || 1; // Lấy số lượng phần tử hiển thị trên 1 trang
+    this.numberOfPointsCarousel = Math.ceil(
+      this.listImageTypes.length / gridSize
+    );
+  }
 
   form = new FormGroup({
     name: new FormControl('', {
@@ -353,21 +350,22 @@ export class InstancesCreateVpcComponent implements OnInit {
   listSelectedImage = [];
   selectedImageTypeId: number;
   listOfImageByImageType: Map<number, Image[]> = new Map();
-  imageTypeId = [];
+  imageTypeIds = [];
 
   getAllImageType() {
     this.dataService.getAllImageType().subscribe((data: any) => {
       this.listImageTypes = data;
+      this.calculateNumberOfPointsCarousel();
       this.listImageTypes.forEach((e) => {
-        this.imageTypeId.push(e.id);
+        this.imageTypeIds.push(e.id);
       });
-      this.getAllOfferImage(this.imageTypeId);
+      this.getAllOfferImage(this.imageTypeIds);
       console.log('list image types', this.listImageTypes);
     });
   }
 
-  getAllOfferImage(imageTypeId: any[]) {
-    imageTypeId.forEach((id) => {
+  getAllOfferImage(imageTypeIds: any[]) {
+    imageTypeIds.forEach((id) => {
       let listImage: Image[] = [];
       this.listOfImageByImageType.set(id, listImage);
     });
@@ -890,7 +888,7 @@ export class InstancesCreateVpcComponent implements OnInit {
   //#endregion
 
   onRegionChange(region: RegionModel) {
-    if(this.projectCombobox){
+    if (this.projectCombobox) {
       this.projectCombobox.loadProjects(true, region.regionId);
     }
     this.router.navigate(['/app-smart-cloud/instances']);
@@ -931,7 +929,7 @@ export class InstancesCreateVpcComponent implements OnInit {
 
   instanceInit() {
     this.instanceCreate.description = null;
-    this.instanceCreate.imageId = this.isSnapshot ? 0 : this.hdh;;
+    this.instanceCreate.imageId = this.isSnapshot ? 0 : this.hdh;
     this.instanceCreate.iops = 0;
     this.instanceCreate.vmType = this.activeBlockHDD ? 'hdd' : 'ssd';
     this.instanceCreate.keypairName = this.selectedSSHKeyName;
