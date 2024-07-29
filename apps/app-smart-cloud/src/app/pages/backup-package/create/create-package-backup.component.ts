@@ -59,7 +59,7 @@ export class CreatePackageBackupComponent implements OnInit {
   stepStorage: number = 0;
 
   dataSubjectStorage: Subject<any> = new Subject<any>();
-  formCreateBackupPackage: FormCreateBackupPackage = new FormCreateBackupPackage()
+  formCreateBackupPackage: FormCreateBackupPackage = new FormCreateBackupPackage();
   orderItem: OrderItem = new OrderItem()
   unitPrice = 0
 
@@ -139,7 +139,11 @@ export class CreatePackageBackupComponent implements OnInit {
   //change time
   timeSelectedChange(value) {
     this.timeSelected = value;
-    this.validateForm.controls.time.setValue(this.timeSelected)
+    if(value == 0) {
+      this.validateForm.controls.time.setValue(1)
+    } else {
+      this.validateForm.controls.time.setValue(this.timeSelected)
+    }
     console.log(this.timeSelected);
     this.getTotalAmount();
   }
@@ -161,9 +165,15 @@ export class CreatePackageBackupComponent implements OnInit {
 
   //init du lieu spec tao goi backup
   packageBackupInit() {
-    this.formCreateBackupPackage.packageName = this.validateForm.get('namePackage').value
-    this.formCreateBackupPackage.sizeInGB = this.validateForm.get('storage').value
-    this.formCreateBackupPackage.description = this.validateForm.get('description').value
+    if(this.validateForm.get('namePackage').value) {
+      this.formCreateBackupPackage.packageName = this.validateForm.get('namePackage').value.trimStart().trimEnd()
+    }
+    if(this.validateForm.get('storage').value) {
+      this.formCreateBackupPackage.sizeInGB = this.validateForm.get('storage').value
+    }
+    if(this.validateForm.get('description').value) {
+      this.formCreateBackupPackage.description = this.validateForm.get('description').value.trimStart().trimEnd()
+    }
     this.formCreateBackupPackage.vpcId = this.project.toString()
     this.formCreateBackupPackage.oneSMEAddonId = null
     this.formCreateBackupPackage.serviceType = 14

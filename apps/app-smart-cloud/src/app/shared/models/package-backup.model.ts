@@ -152,3 +152,16 @@ export class ServiceInPackage {
   volumeBackups: any
   backupSchedules: BackupSchedule[]
 }
+
+export class OrderItemTotalAmount {
+  orderItems: [
+    {
+      orderItemQuantity: number,
+      specificationString: string,
+      specificationType: string,
+      serviceDuration: number
+    }
+  ]
+  projectId: number
+  customerId: number
+}

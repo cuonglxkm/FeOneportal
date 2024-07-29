@@ -360,7 +360,7 @@ export class CreateVolumeComponent implements OnInit {
     }
     console.log('volumeType', this.volumeCreate.volumeType);
     this.volumeCreate.volumeSize = this.validateForm.get('storage').value;
-    this.volumeCreate.description = this.validateForm.get('description').value;
+    this.volumeCreate.description = this.validateForm.get('description').value.trimStart().trimEnd();
     this.volumeCreate.iops = this.iops;
     if (this.validateForm.controls.isSnapshot.value == true) {
       this.volumeCreate.createFromSnapshotId =
@@ -409,7 +409,7 @@ export class CreateVolumeComponent implements OnInit {
     this.volumeCreate.oneSME_SubscriptionId = null;
     this.volumeCreate.actionType = 0;
     this.volumeCreate.regionId = this.region;
-    this.volumeCreate.serviceName = this.validateForm.get('name').value;
+    this.volumeCreate.serviceName = this.validateForm.get('name').value.trimStart().trimEnd();
     this.volumeCreate.typeName =
       'SharedKernel.IntegrationEvents.Orders.Specifications.VolumeCreateSpecification,SharedKernel.IntegrationEvents,Version=1.0.0.0,Culture=neutral,PublicKeyToken=null';
     this.volumeCreate.userEmail = this.tokenService.get()?.email;
@@ -495,7 +495,7 @@ export class CreateVolumeComponent implements OnInit {
             }else{
               var returnPath: string = '/app-smart-cloud/volume/create';
             }
-          
+
           console.log('request', request);
           console.log('service name', this.volumeCreate.serviceName);
           this.router.navigate(['/app-smart-cloud/order/cart'], {
