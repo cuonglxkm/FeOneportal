@@ -1396,38 +1396,38 @@ export class InstancesCreateComponent implements OnInit {
       });
   }
 
-  onChangeTime(numberMonth: number) {
-    this.numberMonth = numberMonth;
-    if (this.hdh != null || this.selectedSnapshot != null) {
-      this.getTotalAmount();
-    }
-
+  onChangeTime(value) {
+    this.numberMonth = value;
     this.totalAmountVolume = 0;
     this.totalVATVolume = 0;
     this.totalPaymentVolume = 0;
-    this.listOfDataBlockStorage.forEach((bs) => {
-      this.totalAmountVolume += bs.price * this.numberMonth;
-      this.totalVATVolume += bs.VAT * this.numberMonth;
-      this.totalPaymentVolume += bs.priceAndVAT * this.numberMonth;
-    });
-
     this.totalAmountIPv4 = 0;
     this.totalVATIPv4 = 0;
     this.totalPaymentIPv4 = 0;
-    this.listOfDataIPv4.forEach((item) => {
-      this.totalAmountIPv4 += item.price * this.numberMonth;
-      this.totalVATIPv4 += item.VAT * this.numberMonth;
-      this.totalPaymentIPv4 += item.priceAndVAT * this.numberMonth;
-    });
-
     this.totalAmountIPv6 = 0;
     this.totalVATIPv6 = 0;
     this.totalPaymentIPv6 = 0;
-    this.listOfDataIPv6.forEach((item) => {
-      this.totalAmountIPv6 += item.price * this.numberMonth;
-      this.totalVATIPv6 += item.VAT * this.numberMonth;
-      this.totalPaymentIPv6 += item.priceAndVAT * this.numberMonth;
-    });
+    if (value.length == 0) {
+      this.isValid = false;
+      this.totalAmount = 0;
+      this.totalVAT = 0;
+      this.totalincludesVAT = 0;
+    } else {
+      this.isValid = true;
+      if (this.hdh != null || this.selectedSnapshot != null) {
+        this.getTotalAmount();
+      }
+
+      this.listOfDataBlockStorage.forEach((bs) => {
+        this.totalAmountVolume += bs.price * this.numberMonth;
+        this.totalVATVolume += bs.VAT * this.numberMonth;
+        this.totalPaymentVolume += bs.priceAndVAT * this.numberMonth;
+      });
+
+      this.changeTotalAmountIPv4(this.listOfDataIPv4[0].amount);
+
+      this.changeTotalAmountIPv6(this.listOfDataIPv6[0].amount);
+    }
     this.cdr.detectChanges();
   }
   //#endregion
@@ -2301,58 +2301,65 @@ export class InstancesCreateComponent implements OnInit {
         debounceTime(700) // Đợi 700ms sau khi người dùng dừng nhập trước khi xử lý sự kiện
       )
       .subscribe((res) => {
-        this.loadingSrv.open({ type: 'spin', text: 'Loading...' });
-        this.totalAmountIPv4 = 0;
-        this.totalVATIPv4 = 0;
-        this.totalPaymentIPv4 = 0;
-        this.listOfDataIPv4.forEach((e: Network) => {
-          if (e.ip != '') {
-            this.ipInit(e, false);
-            this.catalogService
-              .getCatalogOffer(null, this.region, null, 'ip')
-              .subscribe((data) => {
-                let offer = data.find(
-                  (offer) => offer.status.toUpperCase() == 'ACTIVE'
-                );
-                this.ipCreate.offerId = offer.id;
-                let itemPayment: ItemPayment = new ItemPayment();
-                itemPayment.orderItemQuantity = e.amount;
-                itemPayment.specificationString = JSON.stringify(this.ipCreate);
-                itemPayment.specificationType = 'ip_create';
-                itemPayment.serviceDuration = this.numberMonth;
-                itemPayment.sortItem = 0;
-                let dataPayment: DataPayment = new DataPayment();
-                dataPayment.orderItems = [itemPayment];
-                dataPayment.projectId = this.projectId;
-                this.dataService
-                  .getPrices(dataPayment)
-                  .pipe(finalize(() => this.loadingSrv.close()))
-                  .subscribe((result) => {
-                    console.log('thanh tien ipv4', result);
-                    e.price =
-                      Number.parseFloat(result.data.totalAmount.amount) /
-                      this.numberMonth;
-                    this.totalAmountIPv4 += Number.parseFloat(
-                      result.data.totalAmount.amount
-                    );
-                    e.VAT =
-                      Number.parseFloat(result.data.totalVAT.amount) /
-                      this.numberMonth;
-                    this.totalVATIPv4 += Number.parseFloat(
-                      result.data.totalVAT.amount
-                    );
-                    e.priceAndVAT =
-                      Number.parseFloat(result.data.totalPayment.amount) /
-                      this.numberMonth;
-                    this.totalPaymentIPv4 += Number.parseFloat(
-                      result.data.totalPayment.amount
-                    );
-                    this.isLoading = false;
-                    this.cdr.detectChanges();
-                  });
-              });
-          }
-        });
+        if (this.numberMonth > 0) {
+          this.loadingSrv.open({ type: 'spin', text: 'Loading...' });
+          this.totalAmountIPv4 = 0;
+          this.totalVATIPv4 = 0;
+          this.totalPaymentIPv4 = 0;
+          this.listOfDataIPv4.forEach((e: Network) => {
+            if (e.ip != '') {
+              this.ipInit(e, false);
+              this.catalogService
+                .getCatalogOffer(null, this.region, null, 'ip')
+                .subscribe((data) => {
+                  let offer = data.find(
+                    (offer) => offer.status.toUpperCase() == 'ACTIVE'
+                  );
+                  this.ipCreate.offerId = offer.id;
+                  let itemPayment: ItemPayment = new ItemPayment();
+                  itemPayment.orderItemQuantity = e.amount;
+                  itemPayment.specificationString = JSON.stringify(
+                    this.ipCreate
+                  );
+                  itemPayment.specificationType = 'ip_create';
+                  itemPayment.serviceDuration = this.numberMonth;
+                  itemPayment.sortItem = 0;
+                  let dataPayment: DataPayment = new DataPayment();
+                  dataPayment.orderItems = [itemPayment];
+                  dataPayment.projectId = this.projectId;
+                  this.dataService
+                    .getPrices(dataPayment)
+                    .pipe(finalize(() => this.loadingSrv.close()))
+                    .subscribe((result) => {
+                      console.log('thanh tien ipv4', result);
+                      e.price =
+                        Number.parseFloat(result.data.totalAmount.amount) /
+                        this.numberMonth;
+                      this.totalAmountIPv4 += Number.parseFloat(
+                        result.data.totalAmount.amount
+                      );
+                      e.VAT =
+                        Number.parseFloat(result.data.totalVAT.amount) /
+                        this.numberMonth;
+                      this.totalVATIPv4 += Number.parseFloat(
+                        result.data.totalVAT.amount
+                      );
+                      e.priceAndVAT =
+                        Number.parseFloat(result.data.totalPayment.amount) /
+                        this.numberMonth;
+                      this.totalPaymentIPv4 += Number.parseFloat(
+                        result.data.totalPayment.amount
+                      );
+                      this.isLoading = false;
+                      this.cdr.detectChanges();
+                    });
+                });
+            }
+          });
+        } else {
+          this.isLoading = false;
+          this.cdr.detectChanges();
+        }
       });
   }
 
