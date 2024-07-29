@@ -12,7 +12,7 @@
           'app.breadcrumb.infrastructure.service' | i18n
         }}
       </nz-breadcrumb-item>
-      <nz-breadcrumb-item><a [routerLink]="['/app-smart-cloud/ssl-cert']">WAF</a></nz-breadcrumb-item>
+      <nz-breadcrumb-item><a [routerLink]="['/app-smart-cloud/waf']">WAF</a></nz-breadcrumb-item>
       <nz-breadcrumb-item>Tạo mới SSL Cert</nz-breadcrumb-item>
       <ng-template #iconTemplate><one-portal-svg-icon [icon]="'icon_breadcrumb'"></one-portal-svg-icon></ng-template>
     </nz-breadcrumb>
@@ -23,14 +23,6 @@
   <ng-template #action>
     <div class="alain-custom-action text-right">
       <share-users-combobox></share-users-combobox>
-      <region-select-dropdown
-        (valueChanged)="onRegionChange($event)"
-        (regionChange)="onRegionChanged($event)"
-      ></region-select-dropdown>
-      <project-select-dropdown #projectCombobox
-        [regionId]="region"
-        (valueChanged)="onProjectChange($event)"
-      ></project-select-dropdown>
     </div>
   </ng-template>
 </page-header>
@@ -88,7 +80,7 @@
         </div>
         <nz-form-control
           nzDisableAutoTips
-          style="margin-top: 10px; margin-bottom: 10px;"
+          style="margin-top: 10px"
         >
           <input
             class="input-custom"
@@ -108,43 +100,29 @@
           </ng-template>
         </nz-form-control>
       </nz-form-item> 
-      <nz-form-item>
-        <div class="text-label">
-          <div style="margin-bottom: 10px;">
-            <span
-            >Certificate File Upload (<span class="text-red">*</span
-            >)</span
-          >
-          <nz-upload
-              [nzFileList]="fileList"
-              (nzChange)="handleChange($event)"
-            >
-              <button nz-button>
-                <span nz-icon nzType="upload"></span>
-                Tải lên
-              </button>
-            </nz-upload>
-          </div>
-          <span class="text-desc">Có thể tải lên tối đa 10 tệp, mỗi tệp không vượt quá 44kb. Định dạng tệp có thể tải lên: .pem, .key, .crt, .cer, .der, .pfx, .jks.</span>
-        </div>
-      </nz-form-item>  
-      <nz-form-item>
-        <div class="text-label">
+      <nz-form-item *ngIf="uploadMethod == '2'">
+        <div class="text-label d-block" style="width: 100%">
           <span
-            >Remarks (<span class="text-red">*</span
+            >Key file password (<span class="text-red">*</span
             >)</span
           >
+          <img
+            nz-popover
+            nzPopoverPlacement="bottom"
+            style="margin-left: 5px"
+            src="assets/imgs/pajamas_question.svg"
+            alt=""
+          />
         </div>
         <nz-form-control
           nzDisableAutoTips
-          [nzErrorTip]="nameErrorTpl"
-          style="margin-top: 10px; margin-bottom: 10px;"
+          style="margin-top: 10px"
         >
           <input
             class="input-custom"
             appTrim
             nz-input
-            placeholder="Import from the certificate file"
+            placeholder="Vui lòng nhập mật khẩu tập tin"
             formControlName="name"
             [maxlength]="50"
           />
@@ -152,8 +130,120 @@
             <ng-container *ngIf="control.hasError('required')">{{
               'validation.snapshot.info.required' | i18n
             }}</ng-container>
-            <ng-container *ngIf="control.hasError('pattern')">{{
-              'validation.snapshot.name.pattern' | i18n
+          </ng-template>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item *ngIf="uploadMethod == '1' || uploadMethod == '2'">
+        <div class="text-label">
+          <div style="margin-bottom: 10px;">
+            <span
+            >Certificate File Upload (<span class="text-red">*</span
+            >)</span
+          >
+          <nz-upload
+              style="margin-left: 5px"
+              [nzFileList]="fileList"
+              (nzChange)="handleChange($event)"
+            >
+              <button nz-button>
+                <span nz-icon nzType="upload"></span> 
+                Tải lên
+              </button>
+            </nz-upload>
+          </div>
+          <span class="text-desc">Có thể tải lên tối đa 10 tệp, mỗi tệp không vượt quá 44kb. Định dạng tệp có thể tải lên: .pem, .key, .crt, .cer, .der, .pfx, .jks.</span>
+        </div>
+      </nz-form-item>  
+      <nz-form-item *ngIf="uploadMethod == '3'">
+        <div class="text-label d-block" style="width: 100%">
+          <span
+            >Certificate Content (<span class="text-red">*</span
+            >)</span
+          >
+        </div>
+        <nz-form-control
+          nzDisableAutoTips
+          style="margin-top: 10px"
+        >
+        <textarea
+        [placeholder]="'Nhập nội dung chứng chỉ (chỉ hỗ trợ mã pem)'"
+        rows="4"
+        nz-input
+      ></textarea>
+          <ng-template #nameErrorTpl let-control>
+            <ng-container *ngIf="control.hasError('required')">{{
+              'validation.snapshot.info.required' | i18n
+            }}</ng-container>
+          </ng-template>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item *ngIf="uploadMethod == '3'">
+        <div class="text-label d-block" style="width: 100%">
+          <span
+            >Private Key (<span class="text-red">*</span
+            >)</span
+          >
+        </div>
+        <nz-form-control
+          nzDisableAutoTips
+          style="margin-top: 10px;"
+        >
+        <textarea
+        [placeholder]="'Nhập private key (Chỉ hỗ trợ mã pem)'"
+        rows="4"
+        nz-input
+      ></textarea>
+          <ng-template #nameErrorTpl let-control>
+            <ng-container *ngIf="control.hasError('required')">{{
+              'validation.snapshot.info.required' | i18n
+            }}</ng-container>
+          </ng-template>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item *ngIf="uploadMethod == '3'">
+        <div class="text-label d-block" style="width: 100%">
+          <span
+            >CA Content</span
+          >
+        </div>
+        <nz-form-control
+          nzDisableAutoTips
+          style="margin-top: 10px"
+        >
+        <textarea
+        [placeholder]="'Nhập CA Content (Chỉ hỗ trợ mã pem). Lưu ý: Nếu không có CA, có thể có nguy cơ máy khách không được tin cậy'"
+        rows="4"
+        nz-input
+      ></textarea>
+          <ng-template #nameErrorTpl let-control>
+            <ng-container *ngIf="control.hasError('required')">{{
+              'validation.snapshot.info.required' | i18n
+            }}</ng-container>
+          </ng-template>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <div class="text-label">
+          <span
+            >Remarks</span
+          >
+        </div>
+        <nz-form-control
+          nzDisableAutoTips
+          [nzErrorTip]="nameErrorTpl"
+          style="margin-top: 10px"
+        >
+          <input
+            class="input-custom"
+            appTrim
+            nz-input
+            placeholder="abc"
+            formControlName="name"
+            [maxlength]="50"
+          />
+          <ng-template #nameErrorTpl let-control>
+            <ng-container *ngIf="control.hasError('required')">{{
+              'validation.snapshot.info.required' | i18n
             }}</ng-container>
           </ng-template>
         </nz-form-control>

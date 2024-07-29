@@ -16,7 +16,7 @@ import { NzUploadChangeParam, NzUploadFile } from 'ng-zorro-antd/upload';
 
 
 @Component({
-  selector: 'one-portal-create-ssl-cert',
+  selector: 'one-portal-create-ssl-cert-waf',
   templateUrl: './create-ssl-cert.component.html',
   styleUrls: ['./create-ssl-cert.component.less'],
 })

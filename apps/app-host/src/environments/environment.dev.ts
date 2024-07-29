@@ -12,6 +12,9 @@ export const environment = {
     refreshTokenType: 'auth-refresh'
   },
   baseUrl: 'https://idg-api-gw-dev.onsmartcloud.com',
+  cms_baseUrl: 'https://cms.onsmartcloud.com',
+  cms_token: '6cb31a40836230e87730e36a150860fd22482b0458dedb8e5e42fb332048b475335bbe1debd1b3d1bea5604ff8d2049ebb78765c0fd62fd7058285bb1051d2cf333f3e10a0f722c7dfe4125246f9761312afd6b8b6370c5ea346f24c4dcb6047472b568e21dc9ce75ed458150cd91a72e72adc088d69fe96430fb8cf981cc51d',
+  cloud_baseUrl: 'https://vnptcloud.onsmartcloud.com/',
   sso: {
     issuer: 'https://identity-dev.onsmartcloud.com',
     clientId: 'frontend-client',
@@ -19,9 +22,6 @@ export const environment = {
     logout_callback: 'https://oneportal-dev.onsmartcloud.com',
     scope: 'openid email roles offline_access',
     domain: '.onsmartcloud.com',
-    cms_baseUrl: 'https://cms.onsmartcloud.com',
-    vnpt_cloud_baseUrl: 'https://vnptcloud.onsmartcloud.com',
-    cloud_baseUrl: 'https://vnptcloud.onsmartcloud.com/'
   },
   recaptcha: {
     siteKey: '6LfueB8cAAAAAD74PxsPKL7-GVr0T7dUoxuBL4iR',
