@@ -128,7 +128,7 @@
               </nz-form-item>
               <nz-form-item *ngIf="enableInternal">
                 <nz-form-label>
-                  <span>Subnet</span>
+                  <span>Subnet (<span style="color: red;">*</span>)</span>
                   <img nz-popover
                        [nzPopoverContent]="'app.tooltip.subnet' | i18n"
                        nzPopoverPlacement="bottom" style="margin-left: 5px;"
@@ -262,7 +262,7 @@
         <nz-affix [nzOffsetTop]="72">
           <nz-card style="border-radius: 8px;border: 1px solid #B2DEFF">
             <div style="margin-bottom: 20px">
-              <span class="text-card-header">{{ 'app.config.parameters' | i18n }}</span>
+              <span class="text-card-header">{{ 'app.estimated.cost' | i18n }}</span>
             </div>
             <div style="margin-top: 10px" class="text-value">{{ 'app.load.balancer.name' | i18n }}</div>
             <div style="margin-top: 10px" class="text-label">
@@ -344,11 +344,11 @@
                         [disabled]="(enableInternetFacing == true && validateForm.invalid) ||
                       (enableInternal == true && (validateForm.controls['name'].invalid || validateForm.controls['subnet'].invalid) ) ||
                       (invalidIpAddress == true && validateForm.controls['ipAddress'].value != '') ||
-                      loadingCaCulate">
+                      loadingCaCulate || validateForm.controls['time'].invalid">
                   <img src="assets/imgs/wallet.svg" style="margin-right: 5px; padding-bottom: 5px;" />
                   <span [style.color]="(enableInternetFacing == true && validateForm.invalid) ||
                       (enableInternal == true && (validateForm.controls['name'].invalid || validateForm.controls['subnet'].invalid) ) ||
-                      (invalidIpAddress == true && validateForm.controls['ipAddress'].value != '')? 'gray' : 'white'">{{ 'app.button.create' | i18n }}</span>
+                      (invalidIpAddress == true && validateForm.controls['ipAddress'].value != '') || validateForm.controls['time'].invalid? 'gray' : 'white'">{{ 'app.button.create' | i18n }}</span>
                 </button>
               </nz-col>
             </nz-row>
