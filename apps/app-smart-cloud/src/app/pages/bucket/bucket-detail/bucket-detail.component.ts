@@ -51,6 +51,7 @@ export class BucketDetailComponent extends BaseService implements OnInit {
   listOfMetadata: any = [];
   bucket: any;
   size = 5;
+  pageSizeFixed = 5
   index: number = 1;
   total: number = 0;
   loading = false;
@@ -102,7 +103,7 @@ export class BucketDetailComponent extends BaseService implements OnInit {
   linkShare = '';
   today = new Date();
   timeDefaultValue = setHours(new Date(), 0);
-  dateShare=  new Date();
+  dateShare = new Date();
   nextDay: Date = this.getNextDay();
   versionId: string;
   private: any;
@@ -110,7 +111,7 @@ export class BucketDetailComponent extends BaseService implements OnInit {
   keyName: string;
   isLoadingGetLink: boolean = false;
   isVisibleDeleteObject: boolean = false;
-  usage: string
+  usage: string;
   activePrivate = true;
   filterQuery: string = '';
   listFile = [];
@@ -145,7 +146,10 @@ export class BucketDetailComponent extends BaseService implements OnInit {
   formCreateFolder: FormGroup<{
     folderName: FormControl<string>;
   }> = this.fb.group({
-    folderName: ['', [Validators.required, Validators.pattern(FOLDER_NAME_REGEX)]],
+    folderName: [
+      '',
+      [Validators.required, Validators.pattern(FOLDER_NAME_REGEX)],
+    ],
   });
 
   range(start: number, end: number): number[] {
@@ -159,7 +163,6 @@ export class BucketDetailComponent extends BaseService implements OnInit {
   disabledDate = (current: Date): boolean => {
     return differenceInCalendarDays(current, this.nextDay) < 0;
   };
-
 
   // Disable previous times only for the current day
   disabledDateTime: DisabledTimeFn = () => {
@@ -187,13 +190,12 @@ export class BucketDetailComponent extends BaseService implements OnInit {
       return {
         nzDisabledHours: () => [],
         nzDisabledMinutes: () => [],
-        nzDisabledSeconds: () => []
+        nzDisabledSeconds: () => [],
       };
     }
   };
 
-
-  search(search: string) {  
+  search(search: string) {
     this.value = search.trim();
     this.loadData();
   }
@@ -201,12 +203,14 @@ export class BucketDetailComponent extends BaseService implements OnInit {
   ngOnInit(): void {
     let regionAndProject = getCurrentRegionAndProject();
     this.region = regionAndProject.regionId;
-    this.getUsageOfBucket()
+    this.getUsageOfBucket();
     this.loadBucket();
     this.loadData();
-    this.searchDelay.pipe(debounceTime(TimeCommon.timeOutSearch)).subscribe(() => {     
-      this.loadData();
-    });
+    this.searchDelay
+      .pipe(debounceTime(TimeCommon.timeOutSearch))
+      .subscribe(() => {
+        this.loadData();
+      });
   }
 
   onRegionChange(region: RegionModel) {
@@ -219,7 +223,7 @@ export class BucketDetailComponent extends BaseService implements OnInit {
 
   onPageSizeChange(event: any) {
     this.size = event;
-    this.checked = false
+    this.checked = false;
     this.setOfCheckedId.clear();
     this.countObjectSelected = 0;
     this.loadData();
@@ -227,7 +231,7 @@ export class BucketDetailComponent extends BaseService implements OnInit {
 
   onPageIndexChange(event: any) {
     this.index = event;
-    this.checked = false
+    this.checked = false;
     this.setOfCheckedId.clear();
     this.countObjectSelected = 0;
     this.loadData();
@@ -237,7 +241,6 @@ export class BucketDetailComponent extends BaseService implements OnInit {
     this.isVisibleFilter = true;
   }
 
-
   handleCancel() {
     this.isVisibleFilter = false;
     this.isVisibleCopy = false;
@@ -245,7 +248,7 @@ export class BucketDetailComponent extends BaseService implements OnInit {
     this.isVisibleDelete = false;
     this.isVisibleVersioning = false;
     this.isClickCopy = false;
-    this.listOfFolderCopy = []
+    this.listOfFolderCopy = [];
   }
 
   handleCancelShareFile() {
@@ -257,12 +260,15 @@ export class BucketDetailComponent extends BaseService implements OnInit {
   getUsageOfBucket() {
     this.loadingSrv.open({ type: 'spin', text: 'Loading...' });
     this.objectSevice
-      .getUsageOfBucket(this.activatedRoute.snapshot.paramMap.get('name'), this.region)
+      .getUsageOfBucket(
+        this.activatedRoute.snapshot.paramMap.get('name'),
+        this.region
+      )
       .pipe(finalize(() => this.loadingSrv.close()))
       .subscribe({
         next: (data) => {
           console.log(data);
-          
+
           this.usage = data;
         },
         error: (e) => {
@@ -297,33 +303,33 @@ export class BucketDetailComponent extends BaseService implements OnInit {
     }
   }
 
-  handleCancelCreateFolder(){
-    this.isVisibleCreateFolder = false
-    this.formCreateFolder.reset()
+  handleCancelCreateFolder() {
+    this.isVisibleCreateFolder = false;
+    this.formCreateFolder.reset();
   }
 
   createFolder() {
-    this.isLoadingCreateFolder = true
+    this.isLoadingCreateFolder = true;
     let data = {
       bucketName: this.activatedRoute.snapshot.paramMap.get('name'),
       folderName: this.currentKey + this.nameFolder,
-      regionId: this.region
+      regionId: this.region,
     };
     this.service
-    .createFolder(data)
-    .pipe(
-      finalize(() => {
-        this.isLoadingCreateFolder = false
-      })
-    )
-    .subscribe(
-      () => {
+      .createFolder(data)
+      .pipe(
+        finalize(() => {
+          this.isLoadingCreateFolder = false;
+        })
+      )
+      .subscribe(
+        () => {
           this.isVisibleCreateFolder = false;
           this.notification.success(
             this.i18n.fanyi('app.status.success'),
             this.i18n.fanyi('app.bucket.detail.createFolder.name.success')
           );
-          this.formCreateFolder.reset() 
+          this.formCreateFolder.reset();
           this.loadData();
         },
         (error) => {
@@ -359,7 +365,7 @@ export class BucketDetailComponent extends BaseService implements OnInit {
         bucketName: this.activatedRoute.snapshot.paramMap.get('name'),
         key: this.currentKey + item.name,
         uploadId: item.uploadId,
-        regionId: this.region
+        regionId: this.region,
       };
       const modal: NzModalRef = this.modalService.create({
         nzTitle: this.i18n.fanyi('app.bucket.detail.deleteFile'),
@@ -381,7 +387,7 @@ export class BucketDetailComponent extends BaseService implements OnInit {
                   );
                   if (index >= 0) {
                     this.lstFileUpdate.splice(index, 1);
-                    this.countSuccessUpload -= 1
+                    this.countSuccessUpload -= 1;
                   }
                   this.notification.success(
                     this.i18n.fanyi('app.status.success'),
@@ -401,7 +407,7 @@ export class BucketDetailComponent extends BaseService implements OnInit {
       let index = this.lstFileUpdate.findIndex((file) => file.uid === item.uid);
       if (index >= 0) {
         this.lstFileUpdate.splice(index, 1);
-        this.countSuccessUpload -= 1
+        this.countSuccessUpload -= 1;
       }
       this.notification.success(
         this.i18n.fanyi('app.status.success'),
@@ -471,10 +477,13 @@ export class BucketDetailComponent extends BaseService implements OnInit {
 
   private loadBucket() {
     this.bucketservice
-      .getBucketDetail(this.activatedRoute.snapshot.paramMap.get('name'), this.region)
+      .getBucketDetail(
+        this.activatedRoute.snapshot.paramMap.get('name'),
+        this.region
+      )
       .subscribe((data) => {
         this.bucket = data;
-        this.cdr.detectChanges()
+        this.cdr.detectChanges();
       });
   }
 
@@ -495,17 +504,17 @@ export class BucketDetailComponent extends BaseService implements OnInit {
   }
 
   deleteFolder() {
-    this.isLoadingDeleteObject = true
+    this.isLoadingDeleteObject = true;
     let data = {
       bucketName: this.dataAction.bucketName,
       selectedItems: [this.dataAction],
-      regionId: this.region
+      regionId: this.region,
     };
     this.service
       .deleteObject(data)
       .pipe(
         finalize(() => {
-          this.isLoadingDeleteObject = false
+          this.isLoadingDeleteObject = false;
         })
       )
       .subscribe(
@@ -516,9 +525,8 @@ export class BucketDetailComponent extends BaseService implements OnInit {
             this.i18n.fanyi('app.bucket.detail.deleteObject.success')
           );
 
-          
           if (this.listOfData.length >= 1 && this.index > 1) {
-            this.index = this.index - 1     
+            this.index = this.index - 1;
           }
           this.loadData();
         },
@@ -555,7 +563,7 @@ export class BucketDetailComponent extends BaseService implements OnInit {
       this.isVisibleDelete = true;
     } else if (action == 6) {
       this.isVisibleShare = true;
-      this.getLinkShare(this.nextDay)
+      this.getLinkShare(this.nextDay);
     } else if (action == 7) {
       this.isVisibleVersioning = true;
       this.loadDataVersion();
@@ -578,7 +586,11 @@ export class BucketDetailComponent extends BaseService implements OnInit {
   // Helper method to find parent bucket of a given folder
   findParentBucket(folderKey: string): any {
     for (let bucket of this.treeFolder) {
-      if (bucket.bucketTreeData.some((folder: any) => folder.folderKey === folderKey)) {
+      if (
+        bucket.bucketTreeData.some(
+          (folder: any) => folder.folderKey === folderKey
+        )
+      ) {
         return bucket;
       }
     }
@@ -587,13 +599,13 @@ export class BucketDetailComponent extends BaseService implements OnInit {
 
   // Updated method to handle folder clicks and find the parent bucket
   toFolder(event: any, parent: any) {
-    this.isClickCopy = true
+    this.isClickCopy = true;
     this.activeRow = event;
 
     if (parent) {
       this.listOfFolderCopy = [
         { name: parent.bucketName, key: parent.bucketName },
-        { name: event.folderName, key: event.folderKey }
+        { name: event.folderName, key: event.folderKey },
       ];
     } else {
       // Find the parent bucket of the clicked folder
@@ -601,10 +613,12 @@ export class BucketDetailComponent extends BaseService implements OnInit {
       if (parentBucket) {
         this.listOfFolderCopy = [
           { name: parentBucket.bucketName, key: parentBucket.bucketName },
-          { name: event.folderName, key: event.folderKey }
+          { name: event.folderName, key: event.folderKey },
         ];
       } else {
-        this.listOfFolderCopy = [{ name: event.bucketName, key: event.bucketName }];
+        this.listOfFolderCopy = [
+          { name: event.bucketName, key: event.bucketName },
+        ];
       }
     }
 
@@ -617,7 +631,12 @@ export class BucketDetailComponent extends BaseService implements OnInit {
 
   downloadFile(versionId: any) {
     this.service
-      .downloadFile(this.dataAction.bucketName, this.dataAction.key, versionId, this.region)
+      .downloadFile(
+        this.dataAction.bucketName,
+        this.dataAction.key,
+        versionId,
+        this.region
+      )
       .subscribe(
         (data) => {
           console.log(data);
@@ -653,68 +672,72 @@ export class BucketDetailComponent extends BaseService implements OnInit {
 
   copyFolder() {
     this.isLoadingCopy = true;
-  
+
     let destinationKey = '';
     let destinationBucket = '';
-    
-      if (this.folderChange.includes('/')) {
-    const separatorIndex = this.folderChange.indexOf('/');
-    destinationBucket = this.folderChange.substring(0, separatorIndex);
-    if (destinationBucket === this.dataAction.bucketName) {
-      console.log(this.dataAction.key);
-      if(this.dataAction.key.includes('/')){
-        let keyPath = this.dataAction.key.split('/')[1];
-        destinationKey = this.folderChange.substring(separatorIndex + 1) + keyPath;
-      }else{
-        destinationKey = this.folderChange.substring(separatorIndex + 1) + this.dataAction.key;
+
+    if (this.folderChange.includes('/')) {
+      const separatorIndex = this.folderChange.indexOf('/');
+      destinationBucket = this.folderChange.substring(0, separatorIndex);
+      if (destinationBucket === this.dataAction.bucketName) {
+        console.log(this.dataAction.key);
+        if (this.dataAction.key.includes('/')) {
+          let keyPath = this.dataAction.key.split('/')[1];
+          destinationKey =
+            this.folderChange.substring(separatorIndex + 1) + keyPath;
+        } else {
+          destinationKey =
+            this.folderChange.substring(separatorIndex + 1) +
+            this.dataAction.key;
+        }
+      } else {
+        console.log(this.dataAction.key);
+        if (this.dataAction.key.includes('/')) {
+          let keyPath = this.dataAction.key.split('/')[1];
+          destinationKey =
+            this.folderChange.substring(separatorIndex + 1) + keyPath;
+        } else {
+          destinationKey =
+            this.folderChange.substring(separatorIndex + 1) +
+            this.dataAction.key;
+        }
       }
     } else {
-      console.log(this.dataAction.key);
-      if(this.dataAction.key.includes('/')){
-        let keyPath = this.dataAction.key.split('/')[1];
-        destinationKey = this.folderChange.substring(separatorIndex + 1) + keyPath;
-      }else{
-        destinationKey = this.folderChange.substring(separatorIndex + 1) + this.dataAction.key;
+      destinationBucket = this.folderChange;
+      if (destinationBucket === this.dataAction.bucketName) {
+        destinationKey = '';
+      } else {
+        destinationKey = this.dataAction.key;
       }
-      
     }
-  } else {
-    destinationBucket = this.folderChange;
-    if (destinationBucket === this.dataAction.bucketName) {
-      destinationKey = '';
-    } else {
-      destinationKey = this.dataAction.key;
-    }
-  }
 
     const sourcePath = `${this.dataAction.bucketName}/${this.dataAction.key}`;
     const destinationPath = `${destinationBucket}/${destinationKey}`;
-  
-    
+
     if (sourcePath === destinationPath) {
       this.isLoadingCopy = false;
       this.notification.error(
         this.i18n.fanyi('app.status.fail'),
-         'Không thể copy object đến chính thư mục của nó'
+        'Không thể copy object đến chính thư mục của nó'
       );
       return;
     }
-  
+
     const data = {
       sourceKey: this.dataAction.key,
       sourceBucket: this.dataAction.bucketName,
       destinationKey: destinationKey,
       destinationBucket: destinationBucket,
-      regionId: this.region
+      regionId: this.region,
     };
-  
+
     this.service
       .copyProject(data)
       .pipe(
         finalize(() => {
           this.isLoadingCopy = false;
-          this.isClickCopy = false
-          this.listOfFolderCopy = []
+          this.isClickCopy = false;
+          this.listOfFolderCopy = [];
           this.loadData();
         })
       )
@@ -735,13 +758,12 @@ export class BucketDetailComponent extends BaseService implements OnInit {
       );
   }
 
-
   copyUrl() {
     this.clipboard.copy(this.dataAction.url);
   }
 
   editPermission() {
-    this.isLoadingAuthorize = true
+    this.isLoadingAuthorize = true;
     if (
       (this.dataAction.isPublic == true && this.activePrivate == true) ||
       (this.dataAction.isPublic == false && this.activePrivate == false)
@@ -755,7 +777,7 @@ export class BucketDetailComponent extends BaseService implements OnInit {
         )
         .pipe(
           finalize(() => {
-            this.isLoadingAuthorize = false
+            this.isLoadingAuthorize = false;
           })
         )
         .subscribe(
@@ -784,7 +806,7 @@ export class BucketDetailComponent extends BaseService implements OnInit {
       this.i18n.fanyi('app.bucket.detail.sharelink.success')
     );
     this.isVisibleShare = false;
-    this.linkShare = ''
+    this.linkShare = '';
   }
 
   getLinkShare(event) {
@@ -794,7 +816,7 @@ export class BucketDetailComponent extends BaseService implements OnInit {
       key: this.dataAction.key,
       validTo: event,
       isDownload: true,
-      regionId: this.region
+      regionId: this.region,
     };
     this.service.getLinkShare(data).subscribe((data) => {
       this.isLoadingGetLink = false;
@@ -807,7 +829,7 @@ export class BucketDetailComponent extends BaseService implements OnInit {
     let data = {
       bucketName: this.dataAction.bucketName,
       key: this.dataAction.key,
-      regionId: this.region
+      regionId: this.region,
     };
     this.service
       .loadDataVersion(data)
@@ -822,21 +844,21 @@ export class BucketDetailComponent extends BaseService implements OnInit {
   }
 
   deleteFolderVersion() {
-    this.isLoadingDeleteVersion = true
+    this.isLoadingDeleteVersion = true;
     let data = {
       bucketName: this.dataAction.bucketName,
       objectType: this.dataAction.objectType,
       key: this.dataAction.key,
       versionId: this.versionId,
       deleteAllVersions: false,
-      regionId: this.region
+      regionId: this.region,
     };
     this.service
       .deleteObjectSimple(data)
       .pipe(
         finalize(() => {
-          this.isVisibleDeleteVersion = false
-          this.isLoadingDeleteVersion = false
+          this.isVisibleDeleteVersion = false;
+          this.isLoadingDeleteVersion = false;
         })
       )
       .subscribe(
@@ -859,18 +881,18 @@ export class BucketDetailComponent extends BaseService implements OnInit {
   }
 
   restoreObjectVersion() {
-    this.isLoadingRestoreVersion = true
+    this.isLoadingRestoreVersion = true;
     let data = {
       bucketName: this.dataAction.bucketName,
       key: this.dataAction.key,
       versionId: this.versionId,
-      regionId: this.region
+      regionId: this.region,
     };
     this.service
       .restoreObject(data)
       .pipe(
         finalize(() => {
-          this.isLoadingRestoreVersion = false
+          this.isLoadingRestoreVersion = false;
         })
       )
       .subscribe(
@@ -957,7 +979,7 @@ export class BucketDetailComponent extends BaseService implements OnInit {
     }
     var chunkCounter = 0;
     const chunkSize = 10000000; // 10MB
-
+    let startTime;
     if (item.size > 10000000) {
       return new Promise<void>((resolve, reject) => {
         item.isUpload = true;
@@ -976,7 +998,7 @@ export class BucketDetailComponent extends BaseService implements OnInit {
           key: this.currentKey + item.name,
           metadata: this.listOfMetadata,
           acl: this.radioValue,
-          regionId: this.region
+          regionId: this.region,
         };
 
         this.service.createMultiPartUpload(params).subscribe(
@@ -1007,7 +1029,7 @@ export class BucketDetailComponent extends BaseService implements OnInit {
             uploadId: upload_id,
             partETags: uploadPartsArray,
             modal: uploadPartsArray,
-            regionId: this.region
+            regionId: this.region,
           };
 
           const xhr = new XMLHttpRequest();
@@ -1042,7 +1064,7 @@ export class BucketDetailComponent extends BaseService implements OnInit {
                 this.i18n.fanyi('app.status.success'),
                 this.i18n.fanyi('app.bucket.detail.uploadFile.success')
               );
-              this.countSuccessUpload += 1 
+              this.countSuccessUpload += 1;
               this.loadData();
               resolve();
             } else {
@@ -1074,7 +1096,7 @@ export class BucketDetailComponent extends BaseService implements OnInit {
             uploadId: upload_id,
             expiryTime: addDays(new Date(), 1),
             urlOrigin: this.hostNameUrl,
-            regionId: this.region
+            regionId: this.region,
           };
 
           this.service.getSignedUrl(data).subscribe(
@@ -1151,14 +1173,14 @@ export class BucketDetailComponent extends BaseService implements OnInit {
       return new Promise<void>((resolve, reject) => {
         item.isUpload = true;
         console.log(item);
-        
+
         let data = {
           bucketName: this.activatedRoute.snapshot.paramMap.get('name'),
           key: this.currentKey + item.name,
           expiryTime: addDays(this.date, 1),
           urlOrigin: this.hostNameUrl,
           regionId: this.region,
-          ACL: this.radioValue
+          ACL: this.radioValue,
         };
         this.service.getSignedUrl(data).subscribe(
           (responseData) => {
@@ -1166,13 +1188,19 @@ export class BucketDetailComponent extends BaseService implements OnInit {
             const xhr = new XMLHttpRequest();
             xhr.open('PUT', presignedUrl, true);
             xhr.setRequestHeader('x-amz-acl', this.radioValue);
+            startTime = new Date();
             xhr.upload.onprogress = (event) => {
               if (event.lengthComputable) {
+                const currentTime = new Date();
+                const timeDiff =
+                  (currentTime.getTime() - startTime.getTime()) / 1000; // Time in seconds
+                const speed = event.loaded / timeDiff / 1024;
                 item.percentage = Math.round(
                   (event.loaded / event.total) * 100
                 );
+                item.speed = speed.toFixed(2); // Display speed
+                console.log(`Upload speed: ${speed.toFixed(2)} KB/s`);
               }
-              
             };
             xhr.onload = () => {
               item.isUpload = true;
@@ -1181,11 +1209,11 @@ export class BucketDetailComponent extends BaseService implements OnInit {
                 this.i18n.fanyi('app.bucket.detail.uploadFile.success')
               );
               this.loadData();
-              this.countSuccessUpload += 1 
+              this.countSuccessUpload += 1;
               resolve();
             };
             xhr.onerror = () => {
-              item.isUpload = false
+              item.isUpload = false;
               this.notification.error(
                 this.i18n.fanyi('app.status.fail'),
                 this.i18n.fanyi('app.bucket.detail.uploadFile.fail')
@@ -1195,7 +1223,7 @@ export class BucketDetailComponent extends BaseService implements OnInit {
             xhr.send(item.originFileObj);
           },
           (error) => {
-            item.isUpload = false
+            item.isUpload = false;
             this.notification.error(
               this.i18n.fanyi('app.status.fail'),
               this.i18n.fanyi('app.bucket.detail.uploadFile.fail')
@@ -1210,7 +1238,7 @@ export class BucketDetailComponent extends BaseService implements OnInit {
   handleCancelUploadFile() {
     this.lstFileUpdate = [];
     this.listOfMetadata = [];
-    this.countSuccessUpload = 0
+    this.countSuccessUpload = 0;
     this.radioValue = 'public-read';
     this.isVisibleUploadFile = false;
     this.emptyFileUpload = true;
@@ -1232,22 +1260,24 @@ export class BucketDetailComponent extends BaseService implements OnInit {
         return;
       } else {
         downloadObservables.push(
-          this.service.downloadFile(this.bucket.bucketName, item.key, '', this.region).pipe(
-            map((fileData: any) => {
-              const fileName = item.key;
-              const fileContent = fileData.body;
+          this.service
+            .downloadFile(this.bucket.bucketName, item.key, '', this.region)
+            .pipe(
+              map((fileData: any) => {
+                const fileName = item.key;
+                const fileContent = fileData.body;
 
-              console.log(fileData.body);
+                console.log(fileData.body);
 
-              if (fileData.body !== undefined) {
-                zipFile.file(fileName, fileContent);
-              }
-            }),
-            catchError((error) => {
-              console.error(`Error downloading file: ${error}`);
-              return of(null);
-            })
-          )
+                if (fileData.body !== undefined) {
+                  zipFile.file(fileName, fileContent);
+                }
+              }),
+              catchError((error) => {
+                console.error(`Error downloading file: ${error}`);
+                return of(null);
+              })
+            )
         );
       }
     });
@@ -1297,11 +1327,11 @@ export class BucketDetailComponent extends BaseService implements OnInit {
           this.i18n.fanyi('app.status.success'),
           this.i18n.fanyi('app.bucket.detail.deleteObject.success')
         );
-        this.checked = false
+        this.checked = false;
         this.setOfCheckedId.clear();
         this.countObjectSelected = 0;
         if (this.listOfData.length >= 1 && this.index > 1) {
-          this.index = this.index - 1     
+          this.index = this.index - 1;
         }
         this.loadData();
       },
@@ -1315,10 +1345,10 @@ export class BucketDetailComponent extends BaseService implements OnInit {
     );
   }
 
-  navigateToBucketList(){
-    if(this.region === RegionID.ADVANCE){
+  navigateToBucketList() {
+    if (this.region === RegionID.ADVANCE) {
       this.router.navigate(['/app-smart-cloud/object-storage-advance/bucket']);
-    }else{
+    } else {
       this.router.navigate(['/app-smart-cloud/object-storage/bucket']);
     }
   }

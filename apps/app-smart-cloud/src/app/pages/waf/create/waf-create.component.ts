@@ -146,11 +146,10 @@ export class WAFCreateComponent implements OnInit {
 
   createBonusService(): FormGroup {
     return this.fb.group({
-      nameWAF: ['', [Validators.required]],
       domain: ['', [Validators.required,Validators.pattern(DOMAIN_REGEX) ,duplicateDomainValidator]],
       ipPublic: ['', [Validators.required, ipValidatorMany]],
       host: [''],
-      port: [''],
+      port: [0],
       sslCert: ['']
     });
   }

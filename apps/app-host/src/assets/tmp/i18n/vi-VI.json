@@ -118,7 +118,7 @@
   "app.increase.ram": "RAM tăng thêm",
   "app.increase.cpu": "CPU tăng thêm",
   "app.used.capacity": "Dung lượng đã dùng",
-  "app.storage.usage": "Dung lượng sử dụng",
+  "app.storage.usage": "Dung lượng đã sử dụng",
   "app.upload.capacity": "Dung lượng tải lên",
   "app.upload.download": "Dung lượng tải về",
   "app.number.object": "Số lượng Object",
@@ -2812,6 +2812,7 @@
   "app.trigger": "Kích hoạt",
   "app.detail": "Chi tiết",
   "app.detail1": "Xem chi tiết",
+  "app.WAF": "WAF",
   "app.network.range": "Dải mạng",
   "app.vlan.create.port": "Tạo mới Port",
 

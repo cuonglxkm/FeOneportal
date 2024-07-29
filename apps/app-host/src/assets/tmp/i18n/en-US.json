@@ -111,6 +111,7 @@
   "app.monitor.remaining-time": "Remaining time of activity",
   "app.monitor.total-transactions-per-second": "Total transactions per second",
   "app.monitor.activity-forecast": "Activity forecast",
+  "app.WAF": "WAF",
   "app.monitor.efficiency": "Efficiency",
   "app.monitor.ratio": "Ratio",
   "app.monitor.proportion-per-category": "Proportion Per Category",

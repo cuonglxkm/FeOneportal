@@ -6,7 +6,20 @@ export class WafsDTO {
   status: string;
 }
 
-export class WAFExtend {}
+export class WAFExtend {
+  regionId: number
+  serviceName: string
+  customerId: number
+  projectId: string
+  vpcId: string
+  typeName: string
+  serviceType: number
+  actionType: number
+  serviceInstanceId: number
+  newExpireDate: string
+  userEmail: string
+  actorEmail: string
+}
 
 export class WAFResize {
   newOfferId: number;
