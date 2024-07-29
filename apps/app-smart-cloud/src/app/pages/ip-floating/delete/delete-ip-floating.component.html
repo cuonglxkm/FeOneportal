@@ -13,7 +13,7 @@
           [nzFooter]="null"
           (nzOnCancel)="handleCancel()">
   <ng-template #modalTitle>
-    <span class="text-modal-title">{{'ip.floating.label.attach' | i18n}}</span>
+    <span class="text-modal-title">{{'app.delete' | i18n}} IP Floating</span>
   </ng-template>
   <ng-template #modalContent>
     <form [formGroup]="validateForm"  nz-form nzLayout="vertical">
@@ -47,7 +47,7 @@
           <button nz-button (click)="handleCancel()">
             <img style="padding-right: 10px; margin-top: -4px" src="assets/imgs/cancel.svg" alt="" />{{'app.button.cancel' | i18n}}
           </button>
-          <button nz-button nzType="primary" (click)="handleOk()" [disabled]="disableSubmit">
+          <button nz-button nzType="primary" (click)="handleOk()" [disabled]="disableSubmit" [nzLoading]="loading">
             <img style="padding-right: 10px; margin-top: -4px" src="assets/imgs/confirm.svg" alt="" />{{'app.button.confirm' | i18n}}
           </button>
         </nz-space>

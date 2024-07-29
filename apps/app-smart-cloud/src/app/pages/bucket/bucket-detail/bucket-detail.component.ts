@@ -329,7 +329,7 @@ export class BucketDetailComponent extends BaseService implements OnInit {
             this.i18n.fanyi('app.status.success'),
             this.i18n.fanyi('app.bucket.detail.createFolder.name.success')
           );
-          this.formCreateFolder.reset();
+          this.formCreateFolder.reset()
           this.loadData();
         },
         (error) => {
@@ -483,8 +483,16 @@ export class BucketDetailComponent extends BaseService implements OnInit {
       )
       .subscribe((data) => {
         this.bucket = data;
-        this.cdr.detectChanges();
-      });
+        this.cdr.detectChanges()
+        if (data == undefined || data == null) {
+          this.notification.error(this.i18n.fanyi("app.status.fail"),this.i18n.fanyi("app.record.not.found"))
+          this.router.navigate(['/app-smart-cloud/object-storage/bucket']);
+        }
+      },
+        error => {
+        this.notification.error(this.i18n.fanyi("app.status.fail"),error.error.message)
+          this.router.navigate(['/app-smart-cloud/object-storage/bucket']);
+        });
   }
 
   addMoreMetadata() {
@@ -713,6 +721,7 @@ export class BucketDetailComponent extends BaseService implements OnInit {
 
     const sourcePath = `${this.dataAction.bucketName}/${this.dataAction.key}`;
     const destinationPath = `${destinationBucket}/${destinationKey}`;
+
 
     if (sourcePath === destinationPath) {
       this.isLoadingCopy = false;
@@ -1201,6 +1210,7 @@ export class BucketDetailComponent extends BaseService implements OnInit {
                 item.speed = speed.toFixed(2); // Display speed
                 console.log(`Upload speed: ${speed.toFixed(2)} KB/s`);
               }
+
             };
             xhr.onload = () => {
               item.isUpload = true;
