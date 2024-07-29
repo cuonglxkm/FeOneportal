@@ -1,5 +1,7 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
 import { NonNullableFormBuilder } from '@angular/forms';
+import { WafDomainDTO } from '../../domain-list/domain-list.component';
+
 
 @Component({
   selector: 'one-portal-http-setting',
@@ -8,19 +10,22 @@ import { NonNullableFormBuilder } from '@angular/forms';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class HttpSettingComponent {
-  @Input() domainName: string = '';
-  @Input() isVisibleHttpSetting: boolean;
-  @Output() onCancelVisible = new EventEmitter();
+  @Input() domainData: WafDomainDTO ;
 
   isLoading: boolean = false;
   isVisibleCreateSsl: boolean = false
+  isVisible: boolean = false
 
   constructor(
     private fb: NonNullableFormBuilder
   ){}
 
+  openModal(){
+    this.isVisible = true
+  }
+
   handleCancelHttpSetting(){
-    this.onCancelVisible.emit(false)
+    this.isVisible = false
   }
 
   openModalSSlCert(){

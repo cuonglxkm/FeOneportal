@@ -24,25 +24,27 @@ import { WafDomainListComponent } from './domain-list/domain-list.component';
 import { WAFExtendComponent } from './extend/waf-extend.component';
 import { CreateSslCertWAFComponent } from './ssl-cert/create/create-ssl-cert.component';
 import { WafDetailComponent } from './waf-detail/waf-detail.component';
+import { DisablePolicyComponent } from './pop-up/disable-policy/disable-policy.component';
 
 @NgModule({
   declarations: [
-   WAFCreateComponent,
-   CreateSSLCertPopupComponent,
-   AddDomainComponent,
-   ListSslCertComponent,
-   DeleteDomainComponent,
-   EditDomainComponent,
-   HttpSettingComponent,
-   WAFResizeComponent,
-   WafComponent,
-   WafListComponent,
-   WafDomainListComponent,
-   DeleteWafComponent,
-   CreateSSLCertPopupComponent,
-   WAFExtendComponent,
-   CreateSslCertWAFComponent,
-   WafDetailComponent
+    WAFCreateComponent,
+    CreateSSLCertPopupComponent,
+    AddDomainComponent,
+    ListSslCertComponent,
+    DeleteDomainComponent,
+    EditDomainComponent,
+    HttpSettingComponent,
+    WAFResizeComponent,
+    WafComponent,
+    WafListComponent,
+    WafDomainListComponent,
+    DeleteWafComponent,
+    CreateSSLCertPopupComponent,
+    WAFExtendComponent,
+    CreateSslCertWAFComponent,
+    WafDetailComponent,
+    DisablePolicyComponent,
   ],
   imports: [
     CommonModule,

@@ -39,7 +39,7 @@
         <button nz-button
                 nzType="primary"
                 nzSize="large"
-                (click)="navigateToCreateWaf()">
+                (click)="navigateToAddDomain()">
           <img style="padding-right: 10px; margin-top: -4px"
                src="assets/imgs/add-circle.svg"
                alt="" />
@@ -103,11 +103,10 @@
                   src="assets/imgs/more1.svg" alt="" style="cursor: pointer;" />
                 <nz-dropdown-menu #opMenu="nzDropdownMenu">
                   <ul nz-menu>
-                    <li nz-menu-item (click)="navigateToCreateScheduleBackup(data.id)">{{ 'Chỉnh sửa' }}</li>
-                    <li nz-menu-item (click)="navigateToSnapshot(data.id)">{{ 'HTTPS Setting' }}</li>
-                    <li nz-menu-item (click)="navigateToSnapshot(data.id)">{{ 'Chỉnh sửa Policies' }}</li>
-                    <li nz-menu-item (click)="navigateToSnapshot(data.id)">{{ 'Disable all Policies' }}</li>
-                    <li nz-menu-item (click)="navigateToCreateScheduleSnapshot(data.id)">{{ 'Xóa domain' }}</li>
+                    <one-portal-edit-domain [domainData]="data"></one-portal-edit-domain>
+                    <one-portal-http-setting [domainData]="data"></one-portal-http-setting>
+                    <one-portal-disable-policy [domainData]="data"></one-portal-disable-policy>
+                    <one-portal-delete-domain [domainData]="data"></one-portal-delete-domain>
                   </ul>
                 </nz-dropdown-menu>
               </div>
@@ -144,4 +143,5 @@
     </nz-table>
   </nz-card>
 </nz-content>
+                  
 
