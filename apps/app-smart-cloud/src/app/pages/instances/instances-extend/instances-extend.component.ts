@@ -143,7 +143,7 @@ export class InstancesExtendComponent implements OnInit {
 
   invalid: boolean = false;
   onChangeTime(value) {
-    if (value.length == 0) {
+    if (value == undefined) {
       this.invalid = true;
       this.totalAmount = 0;
       this.totalVAT = 0;

@@ -247,11 +247,11 @@ export class BucketListComponent implements OnInit {
   extendObjectStorage() {
     if (this.region === RegionID.ADVANCE) {
       this.router.navigate([
-        `/app-smart-cloud/object-storage-advance/extend/${this.objectStorage.id}`,
+        `/app-smart-cloud/object-storage-advance/extend`,
       ]);
     } else {
       this.router.navigate([
-        `/app-smart-cloud/object-storage/extend/${this.objectStorage.id}`,
+        `/app-smart-cloud/object-storage/extend`,
       ]);
     }
   }
@@ -259,11 +259,11 @@ export class BucketListComponent implements OnInit {
   resizeObjectStorage() {
     if (this.region === RegionID.ADVANCE) {
       this.router.navigate([
-        `/app-smart-cloud/object-storage-advance/edit/${this.objectStorage.id}`,
+        `/app-smart-cloud/object-storage-advance/edit`,
       ]);
     } else {
       this.router.navigate([
-        `/app-smart-cloud/object-storage/edit/${this.objectStorage.id}`,
+        `/app-smart-cloud/object-storage/edit`,
       ]);
     }
   }
