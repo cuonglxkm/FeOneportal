@@ -71,19 +71,15 @@
       </button>
   </div>
   <!-- Bảng-->
-  <nz-table
-    #rowSelectionTable
-    style="margin-top: 24px"
-    nzShowPagination
-    [nzData]="listOfS3Key"
-    [nzPageSize]="response?.pageSize"
-    (nzPageSizeChange)="onPageSizeChange($event)"
-    [nzPageIndex]="response?.currentPage"
-    (nzPageIndexChange)="onPageIndexChange($event)"
-    [nzTotal]="response?.totalCount"
-    [nzFrontPagination]="false"
-    [nzLoading]="isLoading"
-  >
+<!--  <nz-table-->
+<!--    #rowSelectionTable style="margin-top: 24px" nzShowPagination nzShowSizeChanger-->
+<!--    [nzData]="listOfS3Key" [nzPageSize]="size"-->
+<!--    (nzPageSizeChange)="onPageSizeChange($event)" (nzPageIndexChange)="onPageIndexChange($event)"-->
+<!--    [nzTotal]="total" [nzLoading]="isLoading"-->
+<!--  >-->
+    <nz-table #rowSelectionTable nzShowPagination nzShowSizeChanger [nzData]="listOfS3Key" style="margin-top: 24px"
+              [nzTotal]="total" [nzPageSize]="size" (nzPageSizeChange)="onPageSizeChange($event)" [nzFrontPagination]="false"
+              (nzPageIndexChange)="onPageIndexChange($event)" [nzLoading]="isLoading">
     <thead>
       <tr>
         <th>STT</th>
@@ -95,7 +91,7 @@
     </thead>
     <tbody>
       <tr *ngFor="let item of rowSelectionTable.data; index as i">
-        <td>{{ index + 1 }}</td>
+        <td>{{ (index-1)*10 + i + 1}}</td>
         <td>
           {{ item.accessKey }}
           <img
@@ -116,7 +112,11 @@
             (click)="copyText(item.secretKey)"
           />
         </td>
-        <td>{{ item.subUser }}</td>
+        <td [nz-tooltip]="item.subUser" style="overflow: hidden;
+        font-weight: normal;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        width: 50px;">{{ item.subUser }}</td>
         <td>
           <div>
             <!---Gỡ------>

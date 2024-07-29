@@ -20,6 +20,7 @@ import { I18NService } from '@core';
 export class CreateIpFloatingComponent implements OnInit{
   @Input() region: number
   @Input() project: number
+  @Input() plusImage: boolean
   @Input() projectType: number
   @Output() onOk = new EventEmitter()
   @Output() onCancel = new EventEmitter()
@@ -33,6 +34,7 @@ export class CreateIpFloatingComponent implements OnInit{
   }> = this.fb.group({
     networkId: [0, [Validators.required]]
   });
+
 
   constructor(private router: Router,
               @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,

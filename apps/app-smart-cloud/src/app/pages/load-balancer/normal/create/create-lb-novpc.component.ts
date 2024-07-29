@@ -1,6 +1,13 @@
 import { Component, ElementRef, Inject, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
-import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
+import {
+  AbstractControl,
+  FormControl,
+  FormGroup,
+  NonNullableFormBuilder,
+  ValidationErrors,
+  Validators
+} from '@angular/forms';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { getCurrentRegionAndProject } from '@shared';
 import { VlanService } from '../../../../shared/services/vlan.service';
@@ -59,7 +66,7 @@ export class CreateLbNovpcComponent implements OnInit {
     ipFloating: [-1, [Validators.required,Validators.pattern(/^[0-9]+$/)]],
     offer: [1, Validators.required],
     description: ['', Validators.maxLength(255)],
-    time: [1, Validators.required]
+    time: [1,{validators: [Validators.required, this.validNumOfMonth.bind(this)]}]
   });
 
   product: Product = new Product();
@@ -504,6 +511,16 @@ export class CreateLbNovpcComponent implements OnInit {
           this.mapSubnetArray2?.push({ value: model.subnetCloudId, label: model.name + '(' + model.subnetAddressRequired + ')' });
         }
       });
+  }
+
+  validNumOfMonth(control: AbstractControl): ValidationErrors | null { //valid keypair
+    var regex = new RegExp("/^(100|[1-9][0-9]?|[1-9])$/")
+    if (control && control.value != null && control.value != undefined && control.value.length > 0) {
+      if (regex.test(control.value) == false) {
+        return {validKeypairName: true};
+      }
+    }
+    return null;
   }
 }
 

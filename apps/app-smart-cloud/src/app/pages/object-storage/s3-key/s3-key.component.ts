@@ -144,9 +144,9 @@ export class S3KeyComponent implements OnInit {
     this.isLoading = true
     this.service.getDataS3Key(this.value.trim(), this.size, this.index, this.region).subscribe((data) => {
       this.isLoading = false
-      this.total = data.totalCount;
-      this.response = data
-      this.listOfS3Key = data.records;
+      this.total = data?.totalCount;
+      this.response = data;
+      this.listOfS3Key = data?.records;
     });
   }
 
