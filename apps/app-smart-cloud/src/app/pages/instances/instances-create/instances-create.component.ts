@@ -1407,7 +1407,7 @@ export class InstancesCreateComponent implements OnInit {
     this.totalAmountIPv6 = 0;
     this.totalVATIPv6 = 0;
     this.totalPaymentIPv6 = 0;
-    if (value.length == 0) {
+    if (value == undefined) {
       this.isValid = false;
       this.totalAmount = 0;
       this.totalVAT = 0;
