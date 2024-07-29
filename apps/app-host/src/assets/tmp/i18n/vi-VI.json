@@ -480,6 +480,7 @@
   "validation.password.confirm.required": "Vui lòng nhập trường xác nhận mật khẩu",
 
   "app.notify.get.list.port": "Lấy danh sách Port không thành công",
+  "app.notify.get.list.ip.public": "Lấy danh sách IP Public không thành công",
   "app.notify.get.list.instance": "Lấy danh sách máy ảo không thành công",
   "app.notify.get.list.allow.address.pair": "Lấy danh sách Allow Address Pair không thành công",
   "app.notify.create.allow.address.pair.success": "Tạo Allow Address Pair thành công",

@@ -785,13 +785,22 @@ export class InstancesCreateComponent implements OnInit {
         1,
         true
       )
-      .subscribe((data: any) => {
-        const currentDateTime = new Date().toISOString();
-        this.listIPPublic = data.records.filter(
-          (e) =>
-            e.status == 0 && new Date(e.expiredDate) > new Date(currentDateTime)
-        );
-        console.log('list IP public', this.listIPPublic);
+      .subscribe({
+        next: (data: any) => {
+          const currentDateTime = new Date().toISOString();
+          this.listIPPublic = data.records.filter(
+            (e) =>
+              e.status == 0 &&
+              new Date(e.expiredDate) > new Date(currentDateTime)
+          );
+          console.log('list IP public', this.listIPPublic);
+        },
+        error: (e) => {
+          this.notification.error(
+            e.statusText,
+            this.i18n.fanyi('app.notify.get.list.ip.public')
+          );
+        }
       });
   }
 

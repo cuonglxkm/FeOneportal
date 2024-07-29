@@ -583,6 +583,7 @@
   "validation.password.confirm.required": "Please enter the confirm password field",
 
   "app.notify.get.list.port": "Failed to retrieve the list of ports",
+  "app.notify.get.list.ip.public": "Failed to retrieve the list of IPs Public",
   "app.notify.get.list.instance": "Failed to retrieve the list of instances",
   "app.notify.get.list.allow.address.pair": "Failed to retrieve the list of Allow Address Pair",
   "app.notify.create.allow.address.pair.success": "Successfully created Allow Address Pair",
