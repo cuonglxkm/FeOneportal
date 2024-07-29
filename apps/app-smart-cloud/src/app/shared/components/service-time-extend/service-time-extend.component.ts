@@ -1,7 +1,6 @@
 import { ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { debounceTime, Subject } from 'rxjs';
-import { addDays } from 'date-fns';
-import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 
 @Component({
   selector: 'one-portal-service-time-extend',
@@ -11,21 +10,22 @@ import { FormGroup, FormControl, Validators } from '@angular/forms';
 export class ServiceTimeExtendComponent implements OnInit {
   @Input() createDate: any;
   @Input() expiredDate: any;
-  @Input() newExpiredDate: any
+  @Input() newExpiredDate: any;
   @Output() valueChanged = new EventEmitter();
 
   dataSubjectTime: Subject<any> = new Subject<any>();
   numberMonth: number = 1;
+
   // newExpiredDate: any;
 
   constructor(private cdr: ChangeDetectorRef) {
-    this.onChangeTime();
+    // this.onChangeTime();
   }
 
   form = new FormGroup({
     time: new FormControl('', {
-      validators: [Validators.required],
-    }),
+      validators: [Validators.required]
+    })
   });
 
   onKeyDown(event: KeyboardEvent) {
@@ -47,14 +47,16 @@ export class ServiceTimeExtendComponent implements OnInit {
       (!allowedKeys.includes(key) && isNaN(Number(key))) ||
       (key === '0' && currentValue.length === 0)
     ) {
-      event.preventDefault(); // Hủy sự kiện để ngăn người dùng nhập ký tự đó
+      event.preventDefault();
+      // Hủy sự kiện để ngăn người dùng nhập ký tự đó
     }
 
     const target = event.target as HTMLInputElement;
     const value = parseInt(target.value + event.key);
-    if (value < 1  && event.key !== 'Backspace' && event.key !== 'Delete') {
+    if (value < 1 && event.key !== 'Backspace' && event.key !== 'Delete') {
       event.preventDefault();
     }
+
 
     // Kiểm tra nếu nhập vượt quá 100
     const newValue = currentValue + key;
@@ -72,37 +74,27 @@ export class ServiceTimeExtendComponent implements OnInit {
   }
 
   changeTime(value) {
-    if (value < 1) {
+    console.log('value', value);
+    if (value == '') {
+      this.numberMonth = undefined;
+    } else if (value < 1) {
       this.numberMonth = 1;
     } else {
       this.numberMonth = value;
     }
+    console.log('month', this.numberMonth);
     this.dataSubjectTime.next(this.numberMonth);
   }
 
   onChangeTime() {
-    this.dataSubjectTime.subscribe((res) => {
+    this.dataSubjectTime.pipe(debounceTime(500)).subscribe((res) => {
       console.log(res);
       this.valueChanged.emit(res);
       this.cdr.detectChanges();
     });
   }
 
-  checkMinValue() {
-    if (this.numberMonth < 1) {
-      this.numberMonth = 1;
-    }
-  }
-
   ngOnInit(): void {
-    // console.log(this.expiredDate);
-    // console.log(this.createDate);
-    //
-    // let expiredDate = new Date(this.expiredDate);
-    // expiredDate.setDate(expiredDate.getDate() + this.numberMonth * 30);
-    //
-    // this.newExpiredDate = expiredDate.toISOString().substring(0, 19);
-    // console.log('new', this.newExpiredDate)
     this.onChangeTime();
   }
 
