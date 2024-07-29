@@ -6,7 +6,7 @@ import { NzNotificationService } from 'ng-zorro-antd/notification';
 import {
   BackupPackageRequestModel,
   BackupPackageResponseModel,
-  FormUpdate,
+  FormUpdate, OrderItemTotalAmount,
   PackageBackupModel,
   ServiceInPackage
 } from '../models/package-backup.model';
@@ -120,6 +120,19 @@ export class PackageBackupService extends BaseService {
   getServiceInPackage(id: number) {
     console.log('url', this.baseUrl + this.ENDPOINT.provisions + '/backups/packages/' +id +'/services')
     return this.http.get<ServiceInPackage>(this.baseUrl + this.ENDPOINT.provisions + `/backups/packages/${id}/services`, {headers: this.getHeaders().headers})
+      .pipe(catchError((error: HttpErrorResponse) => {
+        if (error.status === 401) {
+          console.error('login');
+        } else if (error.status === 404) {
+          // Handle 404 Not Found error
+          console.error('Resource not found');
+        }
+        return throwError(error);
+      }))
+  }
+
+  getTotalAmount(orderItem: OrderItemTotalAmount) {
+    return this.http.post<any>(this.baseUrl + this.ENDPOINT.orders + '/totalamount', Object.assign(orderItem),{headers: this.getHeaders().headers})
       .pipe(catchError((error: HttpErrorResponse) => {
         if (error.status === 401) {
           console.error('login');
