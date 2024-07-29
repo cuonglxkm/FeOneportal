@@ -247,7 +247,7 @@
               <nz-row>
                 <nz-col style="width: 100%">
                   <button style="width: 100%" nz-button nzSize="large" nzType="primary"
-                          [disabled]="!validateForm.valid || storage == 0"
+                          [disabled]="!validateForm.valid || storage == 0 || validateForm.controls.time.value == '0'"
                           (click)="navigateToPaymentSummary()"
                           [nzLoading]="isLoadingAction">
                     <img src="assets/imgs/wallet.svg" style="margin-right: 5px; padding-bottom: 5px;" />
