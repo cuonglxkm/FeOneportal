@@ -68,119 +68,35 @@
             <thead>
             <tr>
               <th nzLeft>Certificate Name</th>
-              <th nzBreakWord>Authorized Domain(s)</th>
-              <th nzBreakWord>Certificate Status</th>
-              <th nzBreakWord>Certificate Type</th>
-              <th nzBreakWord>Expiration Date</th>
-              <th nzBreakWord>Associated Domain(s)</th>
-              <th nzBreakWord>{{ 'volume.table.title.action' | i18n }}</th>
+              <th >Authorized Domain(s)</th>
+              <th >Certificate Status</th>
+              <th >Certificate Type</th>
+              <th >Expiration Date</th>
+              <th >Associated Domain(s)</th>
+              <th >{{ 'volume.table.title.action' | i18n }}</th>
             </tr>
             </thead>
             <tbody>
             <tr *ngFor="let data of fixedTable.data">
               <td nzLeft><a (click)="navigateToDetail(data.id)">{{ data.name }}</a></td>
-              <td nzBreakWord>
-                <span *ngIf="data.volumeType == 'hdd'">HDD</span>
-                <span *ngIf="data.volumeType == 'ssd'">SSD</span>
+              <td nzAlign="center" nzBreakWord>
+                {{data.authorizedDomains.join(", ")}}
               </td>
-              <td nzBreakWord nzAlign="right">{{ data.sizeInGB }}</td>
-              <td nzBreakWord nzAlign="right" *ngIf="typeVPC != 1 ">
-                <div *ngIf="data.iops == null">300</div>
-                <div *ngIf="data.iops != null">{{ data.iops }}</div>
-              </td>
-              <td nzBreakWord nzAlign="right" *ngIf="typeVPC == 1 ">
-                <div *ngIf="data.iops == null">300</div>
-                <div *ngIf="data.iops != null">{{ data.iops }}</div>
-              </td>
-              <ng-container *ngIf="data.status | ServiceStatusPipe as statusModel">
-                <td *ngIf="data.status != 'SUSPENDED'"
-                    nzBreakWord
-                    nzAlign="left"
-                    [ngStyle]="{color: statusModel.color}">{{ statusModel.status }}
-                </td>
-                <td *ngIf="data.status == 'SUSPENDED'"
-                    nzBreakWord nzAlign="left"
-                    [ngStyle]="{color: statusModel.color}">
-                  <span nz-popover
-                        style="cursor: pointer;">
-                    <img src="assets/imgs/warning-message.svg" alt="" style="cursor: pointer; margin-bottom: 4px;"
-                         nzTooltipTitle="{{ getSuspendedReason(data.suspendReason) }}"
-                         nzTooltipPlacement="bottom"
-                         nz-tooltip>
-                    {{ statusModel.status }}</span>
-                </td>
-              </ng-container>
-              <td nzBreakWord nzAlign="left">{{ data.serviceStatus }}</td>
-              <td nzBreakWord nzAlign="left">
-                <div *ngIf="data.attachedInstances == null || data.attachedInstances.length <= 0">-</div>
-                <div *ngIf="data.attachedInstances.length > 0">
-                  <div *ngFor="let index of data.attachedInstances; let last = last">{{ index.instanceName }}<br
-                    *ngIf="!last"></div>
+              <td nzAlign="center" nzBreakWord>{{data.status}}</td>
+              <td nzAlign="center" nzBreakWord>{{data.type}}</td>
+              <td nzAlign="center" nzBreakWord>{{data.expiration | date: 'HH:mm:ss dd/MM/YYYY'}}</td>
+              <td nzAlign="center" nzBreakWord>{{data.associatedDomain.join(", ")}}</td>
+              <td nzAlign="center" nzBreakWord>
+                <div>
+                  <img nz-popover src="assets/imgs/add.svg" alt="" nzPopoverPlacement="bottom" style="cursor: pointer; margin-right: 5px; margin-top: 2px;"
+                  [nzPopoverContent]="'Associated Domains'">
+                  <img nz-popover src="assets/imgs/edit-2.svg" alt="" nzPopoverPlacement="bottom" style="cursor: pointer; margin-right: 5px; margin-top: 2px;"
+                  [nzPopoverContent]="'app.text.edit' | i18n">
+                  <img nz-popover src="assets/imgs/delete.svg" alt="" nzPopoverPlacement="bottom" style="cursor: pointer; margin-right: 5px; margin-top: 2px;"
+                  [nzPopoverContent]="'app.text.delete' | i18n">
                 </div>
               </td>
-              <td nzBreakWord>
-                <!-----Các trạng thái liệt kê bên dưới không có thao tác---------->
-                <div
-                  *ngIf="!(['CREATING', 'ERROR', 'ATTACHING', 'DELETING','ERROR_DELETING','RESIZING'].includes(data.serviceStatus))
-                  && !['DELETING', 'CREATING', 'ERROR_DELETING','RESIZING', 'SUSPENDED'].includes(data.status)">
-                  <!-----Gắn---------->
-                  <one-portal-attach-volume [region]="region"
-                                            [project]="project"
-                                            [volumeId]="data.id"
-                                            [multiple]="data.isMultiAttach"
-                                            [instanceInVolume]="data.attachedInstances"
-                                            (onOk)="handleOkAttachVm()" />
-                  <!----Gỡ---------->
-                  <one-portal-detach-volume [region]="region"
-                                            [project]="project"
-                                            [volumeId]="data.id"
-                                            [isMultiple]="data.isMultiAttach"
-                                            [instanceInVolume]="data.attachedInstances"
-                                            (onOk)="handleOkDetachVm()" />
-                  <!----Tạo backup---------->
-                  <img style="padding-right: 10px; margin-left: 10px; cursor: pointer;"
-                       src="assets/imgs/calendar-tick.svg" alt=""
-                       nz-popover
-                       [nzPopoverContent]="'volume.tooltip.content.create.backup' | i18n"
-                       nzPopoverPlacement="bottom"
-                       (click)="navigateToCreateBackup(data.id)" />
-                  <!-----Xóa volume---------->
-                  <one-portal-delete-volume [region]="region"
-                                            [project]="project"
-                                            [volumeId]="data.id"
-                                            [volumeName]="data.name"
-                                            (onOk)="handleOkDelete()" />
-                  <!-----MENU THAO TÁC--------->
-                  <img nz-dropdown
-                       [nzDropdownMenu]="opMenu"
-                       src="assets/imgs/more1.svg" alt="" style="cursor: pointer; margin-left: 5px;" />
-                  <nz-dropdown-menu #opMenu="nzDropdownMenu">
-                    <ul nz-menu>
-                      <!----TẠO LỊCH BACKUP---------->
-                      <li nz-menu-item
-                          (click)="navigateToCreateScheduleBackup(data.id)">{{ 'volume.menu.create.schedule.backup' | i18n }}
-                      </li>
-                      <!-----TẠO SNAPSHOT---------->
-                      <li nz-menu-item (click)="navigateToSnapshot(data.id)">{{ 'app.snapshot.create' | i18n }}</li>
-                      <!-----TẠO LỊCH SNAPSHOT--------->
-                      <li nz-menu-item
-                          (click)="navigateToCreateScheduleSnapshot(data.id)">{{ 'volume.menu.create.schedule.snapshot' | i18n }}
-                      </li>
-                      <!-----CHỈNH SỬA--------->
-                      <one-portal-update-volume [region]="region" [project]="project" [volume]="data"
-                                                (onOk)="handleOkUpdate()" />
-                    </ul>
-                  </nz-dropdown-menu>
-                </div>
-                <!-----Trạng thái = ERROR || SUSPENDED thì chỉ cho phép xóa---------->
-                <div *ngIf="data.serviceStatus == 'ERROR' || data.status == 'SUSPENDED'">
-                  <one-portal-delete-volume [region]="region"
-                                            [project]="project"
-                                            [volumeId]="data.id"
-                                            [volumeName]="data.name"
-                                            (onOk)="handleOkDelete()" />
-                </div>
-              </td>
+              
             </tr>
             </tbody>
           </nz-table>
