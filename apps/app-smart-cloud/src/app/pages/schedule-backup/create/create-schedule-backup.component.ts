@@ -686,8 +686,13 @@ export class CreateScheduleBackupComponent implements OnInit {
   }
 
   getVolumeById(id) {
+    this.isLoading = true
     this.volumeService.getVolumeById(id, this.project).subscribe(data => {
+      this.isLoading = false
       this.volumeName = data.name
+    }, error => {
+      this.isLoading = false
+      this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.failData'))
     })
   }
 
@@ -695,29 +700,41 @@ export class CreateScheduleBackupComponent implements OnInit {
     let regionAndProject = getCurrentRegionAndProject();
     this.region = regionAndProject.regionId;
     this.project = regionAndProject.projectId;
-
     this.modeSelected = 1;
     debugger
-    if(this.activatedRoute.snapshot.paramMap.get('type')?.includes('VOLUME')) {
-      this.selectedOption = 'volume'
-    } else {
-      this.selectedOption = 'instance'
-    }
-    if (this.activatedRoute.snapshot.paramMap.get('instanceId') != undefined || this.activatedRoute.snapshot.paramMap.get('instanceId') != null) {
-      this.instanceId = Number.parseInt(this.activatedRoute.snapshot.paramMap.get('instanceId'));
-      this.validateForm.get('formInstance').get('instanceId').setValue(this.instanceId)
-      this.getInstanceById();
-    } else {
-      this.getListInstances();
-    }
-    if (this.activatedRoute.snapshot.paramMap.get('idVolume') != undefined || this.activatedRoute.snapshot.paramMap.get('idVolume') != null) {
-      this.volumeId = Number.parseInt(this.activatedRoute.snapshot.paramMap.get('idVolume'));
-      this.validateForm.get('formVolume').get('volumeId').setValue(this.volumeId)
-      this.getVolumeById(this.volumeId);
+    this.activatedRoute.queryParams.subscribe(params => {
+      const type = params['type'];
 
-    } else {
-      this.getListVolume();
-    }
+      if(type != undefined && type == 'VOLUME') {
+        this.selectedOption = 'volume'
+      } else if(type != undefined && type == 'INSTANCE') {
+        this.selectedOption = 'instance'
+      } else {
+        this.selectedOption = 'instance'
+      }
+
+      const instanceId = params['instanceId']
+      if(instanceId != undefined || instanceId != null) {
+        this.instanceId = Number.parseInt(instanceId);
+        this.instanceSelected = this.instanceId
+        this.validateForm.get('formInstance').get('instanceId').setValue(this.instanceId)
+        this.getInstanceById();
+      }else {
+        this.getListInstances();
+      }
+
+      const volumeId = params['idVolume']
+      console.log('volumeId', volumeId)
+      if(volumeId != undefined || volumeId != null) {
+        this.volumeId = Number.parseInt(volumeId);
+        this.volumeSelected = this.volumeId
+        this.validateForm.get('formVolume').get('volumeId').setValue(this.volumeId)
+        this.getVolumeById(this.volumeId);
+      } else {
+        this.getListVolume();
+      }
+    });
+
     this.setInitialValues();
     this.getBackupPackage();
     this.getListScheduleBackup();

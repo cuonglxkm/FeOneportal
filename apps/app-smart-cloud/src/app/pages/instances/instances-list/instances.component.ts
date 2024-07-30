@@ -859,9 +859,15 @@ export class InstancesComponent implements OnInit {
   }
 
   createBackupSchedule(id: number) {
+    if(this.typeVpc == 1) {
+      this.router.navigate([
+        '/app-smart-cloud/schedule/backup/create/vpc',
+        { type:'INSTANCE', instanceId: id },
+      ]);
+    }
     this.router.navigate([
       '/app-smart-cloud/schedule/backup/create',
-      { instanceId: id },
+      { type:'INSTANCE', instanceId: id },
     ]);
   }
 

@@ -535,15 +535,15 @@
                     </nz-form-label>
                     <nz-form-control nzDisableAutoTips [nzErrorTip]="instanceErrorTpl">
                       <nz-select *ngIf="volumeId != undefined"
-                                 formControlName="instanceId"
+                                 formControlName="volumeId"
                                  [nzSize]="'large'"
-                                 nzPlaceHolder="{{'volume.modal.attach.title' | i18n}}"
+                                 nzPlaceHolder="{{'schedule.backup.volume.select' | i18n}}"
                                  [nzShowSearch]="false"
                                  [nzLoading]="isLoadingInstance"
                                  [(ngModel)]="instanceSelected"
                                  [nzDisabled]="true"
                                  (ngModelChange)="selectInstanceChange($event)">
-                        <nz-option [nzValue]="instanceId" [nzLabel]="instanceName"></nz-option>
+                        <nz-option [nzValue]="volumeId" [nzLabel]="volumeName"></nz-option>
                       </nz-select>
                       <nz-select *ngIf="volumeId == undefined" formControlName="volumeId"
                                  nzSize="large"
