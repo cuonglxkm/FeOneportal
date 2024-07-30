@@ -302,8 +302,12 @@
               <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
               <nz-row>
                 <nz-col style="width: 100%">
-                  <button style="width: 100%" nz-button nzSize="large" nzType="primary" (click)="showModalConfirm()"
-                          [disabled]="validateForm.invalid || (validateForm.controls.storage.value === 0)">
+                  <button style="width: 100%" nz-button nzSize="large" nzType="primary"
+                          (click)="showModalConfirm()"
+                          (keydown)="onKeyDown($event)"
+                          [disabled]="validateForm.invalid
+                          || (validateForm.controls.storage.value === 0)
+                          || this.validateForm.controls.storage.value % this.stepStorage > 0">
                     <img src="assets/imgs/wallet.svg" style="margin-right: 5px; padding-bottom: 5px;" />
                     <span [style.color]="validateForm.invalid ? 'gray' : 'white'">{{ 'app.button.create' | i18n }}</span>
                   </button>

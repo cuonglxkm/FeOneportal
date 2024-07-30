@@ -329,7 +329,7 @@ export class BucketDetailComponent extends BaseService implements OnInit {
             this.i18n.fanyi('app.status.success'),
             this.i18n.fanyi('app.bucket.detail.createFolder.name.success')
           );
-          this.formCreateFolder.reset();
+          this.formCreateFolder.reset()
           this.loadData();
         },
         (error) => {
@@ -483,8 +483,16 @@ export class BucketDetailComponent extends BaseService implements OnInit {
       )
       .subscribe((data) => {
         this.bucket = data;
-        this.cdr.detectChanges();
-      });
+        this.cdr.detectChanges()
+        if (data == undefined || data == null) {
+          this.notification.error(this.i18n.fanyi("app.status.fail"),this.i18n.fanyi("app.record.not.found"))
+          this.router.navigate(['/app-smart-cloud/object-storage/bucket']);
+        }
+      },
+        error => {
+        this.notification.error(this.i18n.fanyi("app.status.fail"),error.error.message)
+          this.router.navigate(['/app-smart-cloud/object-storage/bucket']);
+        });
   }
 
   addMoreMetadata() {

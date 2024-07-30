@@ -279,6 +279,7 @@
   "app.ip.public.list": "List of Public IP",
   "app.ip.public.status": "Public IP Status",
   "app.ip.public.create.label": "Create New Public IP",
+  "app.ip.floating.new.init": "The protocol supports secure connections, enabling devices to communicate with each other over the internet. Allows faster internet access.",
   "app.ip.public.init.title": "IP Public <br/> Support for Internet-connected Devices",
   "app.ip.public.init.subTitle": "Supports secure connection protocols, enabling devices to communicate with each other over the internet. Allows faster internet access.",
   "app.ip.public.remove.confirm": "Are you sure you want to remove the Public IP from the virtual machine?",
@@ -716,7 +717,7 @@
   "app.button.bucket.create": "Create new Bucket",
   "app.button.bucket.create.success": "Create Bucket successfully",
   "app.button.bucket.create.fail": "Create Bucket failed",
-  "app.bucket.create.exist": "Bucket name is already existed",
+  "app.bucket.create.exist": "The name Bucket is already in use. Please enter another name!",
   "app.config.bucket": "Configure Bucket",
   "app.config.access.bucket": "Configure Access Permissions for Bucket",
   "app.config.access.bucket.private": "Limit access to only users with AccessKey and SecretKey.",
@@ -756,6 +757,8 @@
   "app.static.web.hosting.intro": "Configure the Bucket to function as a WebServer for static websites",
   "app.static.web.hosting.intro.next": "The bucket only contains static website data: HTML, CSS, JS, images...",
   "app.file.static.web.hosting": "The file containing the content for the homepage of the website can be accessed at the following Endpoint link",
+  "app.file.static.web.hosting.tooltip": "Endpoint URL of the bucket on the system when using the Web Hosting feature.Users use this link to access the website.",
+  "app.label.static.web.hosting.error1": "The web address is not in the correct format",
   "app.file.static.web.hosting.error": "The file containing the error display content of the website",
   "app.file.static.web.space.error": "File name can't contain space",
   "app.file.static.web.space.require": "File name can't be blank",
@@ -893,7 +896,7 @@
   "app.s3.key.recreate.alert": "You are regenerating the SecretKey.",
   "app.s3.key.recreate.des": "Are you sure you want to re-create SecretKey?",
 
-  "validation.bucket.name": "The Bucket name can only use lowercase letters a-z, numbers 0-9, hyphens (-), and periods (.), with a minimum of 3 characters and a maximum of 63 characters",
+  "validation.bucket.name": "Please enter lowercase characters a-z, numeric characters 0-9, hyphens and dots",
   "validation.bucket.name.invalid": "The Bucket name is invalid",
   "validation.sub.user.name": "Username should use lowercase letters, uppercase letters, numbers, and hyphens",
   "validation.sub.user.name.required": "The Subuser name cannot be empty",
@@ -2828,6 +2831,7 @@
   "project.note4": "Custom VPC",
   "project.note5": "Default VPC",
   "project.status.enable": "Active",
+  
 
   "project.status.delete": "Scheduled automatic deletion",
   "project.default": "Default VPC",
@@ -3119,6 +3123,7 @@
   "app.backup.package.not.found": "Backup package not found.",
   "app.backup.package.intro.vpc1": "\"Custom VPC\" does not support backup packages. Please visit",
   "app.backup.package.intro.vpc2": "to purchase backup storage to ensure the backup process is not interrupted.",
+  "app.record.not.found":"Record not found",
 
   "app.tooltip.backup.package.name": "The name of the customer's backup package. It should not contain special characters, spaces, or Vietnamese characters. Maximum 50 characters.",
   "app.tooltip.backup.package.storage": "The default minimum capacity is 1, with no maximum capacity limit.",

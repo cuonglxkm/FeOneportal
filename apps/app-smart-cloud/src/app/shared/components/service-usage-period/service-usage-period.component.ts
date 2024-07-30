@@ -49,13 +49,28 @@ export class ServiceUsagePeriodComponent implements OnInit {
       (!allowedKeys.includes(key) && isNaN(Number(key))) ||
       (key === '0' && currentValue.length === 0)
     ) {
-      event.preventDefault(); // Hủy sự kiện để ngăn người dùng nhập ký tự đó
+      event.preventDefault();
+      // Hủy sự kiện để ngăn người dùng nhập ký tự đó
+    }
+
+    const target = event.target as HTMLInputElement;
+    const value = parseInt(target.value + event.key);
+    if (value < 1 && event.key !== 'Backspace' && event.key !== 'Delete') {
+      event.preventDefault();
     }
 
     // Kiểm tra nếu nhập vượt quá 100
     const newValue = currentValue + key;
     if (Number(newValue) > 100) {
       event.preventDefault(); // Hủy sự kiện để ngăn người dùng nhập ký tự đó
+    }
+  }
+
+  onInput(event: any) {
+    if (event.target.value === '0') {
+      this.numberMonth = 1;
+      event.target.value = 1;
+      this.dataSubjectTime.next(this.numberMonth);
     }
   }
 
@@ -74,9 +89,19 @@ export class ServiceUsagePeriodComponent implements OnInit {
   numberMonth: number = 1;
   expiredDate: Date = addDays(this.today, 30);
   dataSubjectTime: Subject<any> = new Subject<any>();
-  changeTime(value: number) {
-    this.dataSubjectTime.next(value);
+  changeTime(value) {
+    console.log('value', value);
+    if (value == '') {
+      this.numberMonth = undefined;
+    } else if (value < 1) {
+      this.numberMonth = 1;
+    } else {
+      this.numberMonth = value;
+    }
+    console.log('month', this.numberMonth);
+    this.dataSubjectTime.next(this.numberMonth);
   }
+
   onChangeTime() {
     this.dataSubjectTime
       .pipe(

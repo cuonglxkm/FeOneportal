@@ -15,7 +15,7 @@ import { getCurrentRegionAndProject } from '@shared';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { ClipboardService } from 'ngx-clipboard';
-import { FILE_NO_SPACE_REGEX } from 'src/app/shared/constants/constants';
+import { DOMAIN_REGEX, FILE_NO_SPACE_REGEX, WEB_REGEX } from 'src/app/shared/constants/constants';
 import { RegionID } from 'src/app/shared/enums/common.enum';
 import {
   BucketDetail,
@@ -85,27 +85,34 @@ export class StaticWebHostingComponent implements OnInit {
   }> = this.fb.group({
     errorDocument: ['', Validators.pattern(FILE_NO_SPACE_REGEX)],
     indexDocumentSuffix: ['', Validators.pattern(FILE_NO_SPACE_REGEX)],
-    redirectAllRequestsTo: ['', Validators.pattern(FILE_NO_SPACE_REGEX)],
+    redirectAllRequestsTo: ['', Validators.pattern(WEB_REGEX)],
   });
 
   copyText(endPoint: string) {
     this.clipboardService.copyFromContent(endPoint);
-    this.message.success('Copied to clipboard');
+    this.message.success('Copy Endpoint thành công');
+  }
+
+  toggleStaticWebConfig(event){
+    this.formUpdate.reset();
   }
 
   handleChangeRedirect(event){
     if (event === false) {
      this.formUpdate.controls.errorDocument.setValidators([Validators.required, Validators.pattern(FILE_NO_SPACE_REGEX)])
      this.formUpdate.controls.indexDocumentSuffix.setValidators([Validators.required, Validators.pattern(FILE_NO_SPACE_REGEX)])
-     this.formUpdate.controls.redirectAllRequestsTo.setValidators([Validators.pattern(FILE_NO_SPACE_REGEX)])
+     this.formUpdate.controls.redirectAllRequestsTo.setValidators([Validators.pattern(WEB_REGEX)])
+     this.formUpdate.controls.redirectAllRequestsTo.reset()
      this.formUpdate.get('indexDocumentSuffix')?.enable();
      this.formUpdate.get('errorDocument')?.enable();
      this.formUpdate.get('redirectAllRequestsTo')?.disable();
      this.formUpdate.updateValueAndValidity()
     } else {
-      this.formUpdate.controls.errorDocument.setValidators([Validators.pattern(FILE_NO_SPACE_REGEX)])
+     this.formUpdate.controls.errorDocument.setValidators([Validators.pattern(FILE_NO_SPACE_REGEX)])
+     this.formUpdate.controls.errorDocument.reset()
      this.formUpdate.controls.indexDocumentSuffix.setValidators([Validators.pattern(FILE_NO_SPACE_REGEX)])
-     this.formUpdate.controls.redirectAllRequestsTo.setValidators([Validators.required, Validators.pattern(FILE_NO_SPACE_REGEX)])
+     this.formUpdate.controls.indexDocumentSuffix.reset()
+     this.formUpdate.controls.redirectAllRequestsTo.setValidators([Validators.required, Validators.pattern(WEB_REGEX)])
      this.formUpdate.get('indexDocumentSuffix')?.disable();
      this.formUpdate.get('errorDocument')?.disable();
      this.formUpdate.get('redirectAllRequestsTo')?.enable();

@@ -133,6 +133,7 @@ export class ObjectStorageEditComponent implements OnInit {
             e.error.message,
             this.i18n.fanyi('app.notification.object.storage.fail')
           );
+          this.navigateToBucketList();
         },
       });
   }

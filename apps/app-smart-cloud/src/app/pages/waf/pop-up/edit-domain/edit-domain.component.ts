@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
 import { ipValidatorMany } from '../../../../../../../../libs/common-utils/src';
+import { WafDomainDTO } from '../../domain-list/domain-list.component';
 
 @Component({
   selector: 'one-portal-edit-domain',
@@ -9,11 +10,7 @@ import { ipValidatorMany } from '../../../../../../../../libs/common-utils/src';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class EditDomainComponent {
-  @Input() isVisibleEditDomain: boolean;
-  @Input() domainName: string = ""
-  @Output() onOk = new EventEmitter();
-  @Output() onCancel = new EventEmitter();
-  @Output() onCancelVisible = new EventEmitter();
+  @Input() domainData: WafDomainDTO 
 
   isVisible: boolean = false;
   isLoading: boolean = false;
@@ -30,7 +27,11 @@ export class EditDomainComponent {
 
   constructor(private fb: NonNullableFormBuilder){}
 
+  openModal(){
+    this.isVisible = true
+  }
+
   handleCancelEditDomain(){
-    this.onCancelVisible.emit(false)
+    this.isVisible = false
   }
 }
