@@ -143,7 +143,10 @@ export class ListBackupVolumeComponent implements OnInit, OnDestroy{
     this.backupVolumeService.getListBackupVolume(this.region, this.project, valueSearch, this.value, this.pageSize, this.pageIndex).subscribe(data => {
       this.isLoading = false
       this.response = data;
-
+      if((this.response.records == null || this.response.records.length < 1) && this.pageIndex != 1) {
+        this.pageIndex = 1
+        this.getListBackupVolumes(false);
+      }
       if (isBegin) {
         this.isBegin = this.response.records.length < 1 || this.response.records === null ? true : false;
       }
