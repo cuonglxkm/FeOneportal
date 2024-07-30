@@ -40,7 +40,7 @@
   </ng-template>
 </page-header>
 <div nz-row [nzGutter]="24">
-  <div nz-col [nzSpan]="16" style="display: flex">
+  <div nz-col [nzSpan]="16">
     <form
       style="width: 100%"
       nz-form
@@ -1234,7 +1234,7 @@
       ></one-portal-service-usage-period>
     </form>
   </div>
-  <div nz-col [nzSpan]="8" style="display: flex">
+  <div nz-col [nzSpan]="8">
     <div style="width: 100%">
       <nz-affix [nzOffsetTop]="72">
         <nz-card
@@ -1355,7 +1355,10 @@
                   totalincludesVAT == 0
                 "
               >
-                <span nz-icon nzType="wallet" nzTheme="outline"></span>
+                <img
+                  src="assets/imgs/wallet.svg"
+                  style="margin-right: 5px; padding-bottom: 5px"
+                />
                 <span
                   [style.color]="
                     !isValid ||
@@ -1414,7 +1417,10 @@
                 [nzLoading]="isLoadingCurrent"
                 (click)="submitFormCurrent()"
               >
-                <span nz-icon nzType="wallet" nzTheme="outline"></span>
+                <img
+                  src="assets/imgs/wallet.svg"
+                  style="margin-right: 5px; padding-bottom: 5px"
+                />
                 <span>{{ 'app.restore' | i18n }}</span>
               </button>
             </nz-col>

@@ -31,6 +31,7 @@ import { OrderService } from 'src/app/shared/services/order.service';
 import { getCurrentRegionAndProject } from '@shared';
 import { RegionModel } from '../../../../../../../libs/common-utils/src';
 import { RegionID } from 'src/app/shared/enums/common.enum';
+import { FormGroup, FormControl, Validators } from '@angular/forms';
 
 @Component({
   selector: 'one-portal-object-storage-extend',
@@ -41,7 +42,7 @@ import { RegionID } from 'src/app/shared/enums/common.enum';
 export class ObjectStorageEditComponent implements OnInit {
   id: any;
   today: Date = new Date();
-  addQuota: number;
+  addQuota: number = 0;
   objectStorageResize: ObjectStorageResize = new ObjectStorageResize();
   valueStringConfiguration: string;
   minStorage: number;
@@ -54,6 +55,13 @@ export class ObjectStorageEditComponent implements OnInit {
   closePopupError() {
     this.isVisiblePopupError = false;
   }
+
+  form = new FormGroup({
+    storage: new FormControl('', {
+      validators: [Validators.required],
+    }),
+  });
+
   constructor(
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
     @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
@@ -67,6 +75,23 @@ export class ObjectStorageEditComponent implements OnInit {
     private configurationsService: ConfigurationsService
   ) {}
 
+  onKeyDown(event: KeyboardEvent) {
+    // Lấy giá trị của phím được nhấn
+    const key = event.key;
+    // Kiểm tra xem phím nhấn có phải là một số hoặc phím di chuyển không
+    if (
+      (isNaN(Number(key)) &&
+        key !== 'Backspace' &&
+        key !== 'Delete' &&
+        key !== 'ArrowLeft' &&
+        key !== 'ArrowRight') ||
+      key === '.'
+    ) {
+      // Nếu không phải số hoặc đã nhập dấu chấm và đã có dấu chấm trong giá trị hiện tại
+      event.preventDefault(); // Hủy sự kiện để ngăn người dùng nhập ký tự đó
+    }
+  }
+
   ngOnInit(): void {
     this.id = this.activatedRoute.snapshot.paramMap.get('id');
     let regionAndProject = getCurrentRegionAndProject();
@@ -78,6 +103,11 @@ export class ObjectStorageEditComponent implements OnInit {
 
   onRegionChange(region: RegionModel) {
     this.region = region.regionId;
+    if(this.region === RegionID.ADVANCE){
+      this.router.navigate(['/app-smart-cloud/object-storage-advance/bucket']);
+    }else{
+      this.router.navigate(['/app-smart-cloud/object-storage/bucket']);
+    }
   }
 
   onRegionChanged(region: RegionModel) {
@@ -95,14 +125,15 @@ export class ObjectStorageEditComponent implements OnInit {
           this.objectStorage = data;
           this.objectStorageResize.newQuota =
             this.addQuota + this.objectStorage.quota;
-          this.dataSubject.next(1);
+          this.dataSubject.next(0);
           this.cdr.detectChanges();
         },
         error: (e) => {
           this.notification.error(
-            e.error.detail,
+            e.error.message,
             this.i18n.fanyi('app.notification.object.storage.fail')
           );
+          this.navigateToBucketList();
         },
       });
   }

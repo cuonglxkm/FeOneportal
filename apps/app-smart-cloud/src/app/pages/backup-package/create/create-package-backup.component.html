@@ -96,6 +96,7 @@
               </ng-template>
             </nz-form-control>
           </nz-form-item>
+
         </nz-card>
         <one-portal-service-usage-period [nameService]="'backup-package'" (valueChanged)="timeSelectedChange($event)"/>
       </nz-col>
@@ -159,9 +160,12 @@
               <nz-col style="width: 100%">
                 <button style="width: 100%" nz-button nzSize="large" nzType="primary"
                         (click)="navigateToPaymentSummary()"
-                        [disabled]="validateForm.invalid || validateForm.controls.storage.value == 0" [nzLoading]="isLoadingAction">
+                        (keydown)="onKeyDown($event)"
+                        [disabled]="validateForm.invalid || validateForm.controls.storage.value == 0 || validateForm.controls.time.value == 0 || this.validateForm.controls.storage.value % this.stepStorage > 0"
+                        [nzLoading]="isLoadingAction">
                   <img src="assets/imgs/wallet.svg" style="margin-right: 5px; padding-bottom: 5px;" />
-                  <span [style.color]="validateForm.invalid ? 'gray' : 'white'">{{'app.button.create'|i18n}}</span>
+                  <span [style.color]="validateForm.invalid || validateForm.controls.storage.value == 0 || validateForm.controls.time.value == 0 || this.validateForm.controls.storage.value % this.stepStorage > 0
+                  ? 'gray' : 'white'">{{'app.button.create'|i18n}}</span>
                 </button>
               </nz-col>
             </nz-row>

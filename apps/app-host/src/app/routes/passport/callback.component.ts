@@ -125,7 +125,7 @@ export class CallbackComponent implements OnInit {
       .subscribe({
         next: (response) => {
           const url = window.location;  
-          if (url.hostname === 'oneportal-dev.onsmartcloud.com' || url.hostname === 'vnptcloud.onsmartcloud.com' || url.hostname === 'oneportal.onsmartcloud.com') {
+          if (url.hostname === 'oneportal-dev.onsmartcloud.com' || url.hostname === 'vnptcloud.onsmartcloud.com' || url.hostname === 'oneportal.onsmartcloud.com' || url.hostname === 'cloud.vnpt.vn' || url.hostname === 'console.cloud.vnpt.vn') {
             const expiryDate = new Date();
             expiryDate.setSeconds(expiryDate.getSeconds() + response.exp);            
              this.cookieService.set('TOKEN_USER', response.token || '', expiryDate, '/', environment.sso.domain, false);

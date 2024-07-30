@@ -512,7 +512,7 @@ export class CreateVolumeVpcComponent implements OnInit {
     }
     console.log('volumeType', this.volumeCreate.volumeType);
     this.volumeCreate.volumeSize = this.validateForm.get('storage').value;
-    this.volumeCreate.description = this.validateForm.get('description').value;
+    this.volumeCreate.description = this.validateForm.get('description').value.trimStart().trimEnd();
     this.volumeCreate.iops = this.iops;
     if (this.validateForm.controls.isSnapshot.value == true) {
       this.volumeCreate.createFromSnapshotId =
@@ -555,11 +555,22 @@ export class CreateVolumeVpcComponent implements OnInit {
     this.volumeCreate.oneSME_SubscriptionId = null;
     this.volumeCreate.actionType = 0;
     this.volumeCreate.regionId = this.region;
-    this.volumeCreate.serviceName = this.validateForm.get('name').value;
+    this.volumeCreate.serviceName = this.validateForm.get('name').value.trimStart().trimEnd();
     this.volumeCreate.typeName =
       'SharedKernel.IntegrationEvents.Orders.Specifications.VolumeCreateSpecification,SharedKernel.IntegrationEvents,Version=1.0.0.0,Culture=neutral,PublicKeyToken=null';
     this.volumeCreate.userEmail = this.tokenService.get()?.email;
     this.volumeCreate.actorEmail = this.tokenService.get()?.email;
+  }
+
+  onKeyDown(event: KeyboardEvent) {
+    console.log('event', event)
+    if (event.key === 'Enter' &&
+      (this.isLoadingAction
+        || this.validateForm.invalid
+        || this.validateForm.controls.storage.value == 0
+        || this.validateForm.controls.storage.value % this.stepStorage > 0)) {
+      event.preventDefault(); // Prevent default action if conditions are met
+    }
   }
 
   isVisiblePopupError: boolean = false;

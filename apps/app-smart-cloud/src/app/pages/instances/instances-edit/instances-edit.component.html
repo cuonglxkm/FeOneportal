@@ -68,7 +68,7 @@
 </page-header>
 
 <div nz-row [nzGutter]="24">
-  <div nz-col [nzSpan]="16" style="display: flex">
+  <div nz-col [nzSpan]="16">
     <nz-row>
       <nz-card
         style="border-radius: 8px; width: 100%"
@@ -781,7 +781,7 @@
       <one-portal-guide-formula></one-portal-guide-formula>
     </nz-row>
   </div>
-  <div nz-col [nzSpan]="8" style="display: flex">
+  <div nz-col [nzSpan]="8">
     <div style="width: 100%" *ngIf="instancesModel">
       <nz-affix [nzOffsetTop]="72">
         <nz-card class="card-border" style="border-radius: 8px">
@@ -900,7 +900,10 @@
                 (click)="readyEdit()"
                 [disabled]="totalAmount == 0"
               >
-                <span nz-icon nzType="wallet" nzTheme="outline"></span>
+                <img
+                  src="assets/imgs/wallet.svg"
+                  style="margin-right: 5px; padding-bottom: 5px"
+                />
                 <span [style.color]="totalAmount == 0 ? 'gray' : 'white'">{{
                   'app.button.resize' | i18n
                 }}</span>

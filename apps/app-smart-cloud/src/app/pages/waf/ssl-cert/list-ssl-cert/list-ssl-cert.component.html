@@ -1,0 +1,216 @@
+<page-header [breadcrumb]="breadcrumb" title="Danh sách SSL Cert" [action]="action">
+    <ng-template #breadcrumb>
+        <nz-breadcrumb [nzSeparator]="iconTemplate">
+            <nz-breadcrumb-item><a [routerLink]="['/']">{{
+                    'app.breadcrumb.home' | i18n
+                    }}</a></nz-breadcrumb-item>
+            <nz-breadcrumb-item> {{ 'app.breadcrumb.infrastructure.service' | i18n }} </nz-breadcrumb-item>
+            <nz-breadcrumb-item>WAF</nz-breadcrumb-item>
+            <nz-breadcrumb-item>SSL Cert</nz-breadcrumb-item>
+        </nz-breadcrumb>
+        <ng-template #iconTemplate><one-portal-svg-icon [icon]="'icon_breadcrumb'"></one-portal-svg-icon></ng-template>
+    </ng-template>
+    <ng-template #action>
+        <div class="alain-custom-action text-right">
+            <share-users-combobox></share-users-combobox>
+            <region-select-dropdown (regionChange)="onRegionChanged($event)"
+                (valueChanged)="regionChanged($event)"></region-select-dropdown>
+            <project-select-dropdown #projectCombobox (valueChanged)="projectChanged($event)"
+                (userChanged)="projectChanged($event)" [regionId]="region" [isFirstVisit]="isFirstVisit"
+                [disabledProject]="isLoading"></project-select-dropdown>
+        </div>
+    </ng-template>
+</page-header>
+<nz-content>
+    <nz-card>
+      <ng-container [ngSwitch]="isBegin">
+        <ng-container *ngSwitchCase="false">
+          <nz-row nzJustify="space-between">
+            <nz-col nzSpan="16">
+              
+              <nz-input-group style="width: 300px;"
+                              [nzPrefix]="prefixIconSearch"
+                              nzSize="large">
+                <input name="name"
+                       nz-input
+                       placeholder="Tìm kiếm theo Certificate Name"
+                       [(ngModel)]="value"
+                       (input)="changeInputChange($event)"
+                       (keydown.enter)="onEnter($event)" />
+              </nz-input-group>
+              <ng-template #prefixIconSearch>
+                <img src="assets/imgs/search.svg" alt="" />
+              </ng-template>
+            </nz-col>
+            <nz-col nzSpan="8" style="flex:none;">
+              <button nz-button
+                      nzType="primary"
+                      nzSize="large"
+                      (click)="navigateToCreateVolume()">
+                <img style="padding-right: 10px; margin-top: -4px"
+                     src="assets/imgs/add-circle.svg"
+                     alt="" />
+                <span class="button-text-primary">Tạo mới SSL Cert</span>
+              </button>
+            </nz-col>
+          </nz-row>
+          <nz-table #fixedTable
+                    style="margin-top: 20px;"
+                    nzShowSizeChanger
+                    [nzData]="response?.records || []"
+                    [nzPageSize]="response?.pageSize"
+                    (nzPageSizeChange)="onPageSizeChange($event)"
+                    [nzPageIndex]="response?.currentPage"
+                    (nzPageIndexChange)="onPageIndexChange($event)"
+                    [nzTotal]="response?.totalCount"
+                    [nzFrontPagination]="false"
+                    [nzLoading]="false">
+            <thead>
+            <tr>
+              <th nzLeft>Certificate Name</th>
+              <th nzBreakWord>Authorized Domain(s)</th>
+              <th nzBreakWord>Certificate Status</th>
+              <th nzBreakWord>Certificate Type</th>
+              <th nzBreakWord>Expiration Date</th>
+              <th nzBreakWord>Associated Domain(s)</th>
+              <th nzBreakWord>{{ 'volume.table.title.action' | i18n }}</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let data of fixedTable.data">
+              <td nzLeft><a (click)="navigateToDetail(data.id)">{{ data.name }}</a></td>
+              <td nzBreakWord>
+                <span *ngIf="data.volumeType == 'hdd'">HDD</span>
+                <span *ngIf="data.volumeType == 'ssd'">SSD</span>
+              </td>
+              <td nzBreakWord nzAlign="right">{{ data.sizeInGB }}</td>
+              <td nzBreakWord nzAlign="right" *ngIf="typeVPC != 1 ">
+                <div *ngIf="data.iops == null">300</div>
+                <div *ngIf="data.iops != null">{{ data.iops }}</div>
+              </td>
+              <td nzBreakWord nzAlign="right" *ngIf="typeVPC == 1 ">
+                <div *ngIf="data.iops == null">300</div>
+                <div *ngIf="data.iops != null">{{ data.iops }}</div>
+              </td>
+              <ng-container *ngIf="data.status | ServiceStatusPipe as statusModel">
+                <td *ngIf="data.status != 'SUSPENDED'"
+                    nzBreakWord
+                    nzAlign="left"
+                    [ngStyle]="{color: statusModel.color}">{{ statusModel.status }}
+                </td>
+                <td *ngIf="data.status == 'SUSPENDED'"
+                    nzBreakWord nzAlign="left"
+                    [ngStyle]="{color: statusModel.color}">
+                  <span nz-popover
+                        style="cursor: pointer;">
+                    <img src="assets/imgs/warning-message.svg" alt="" style="cursor: pointer; margin-bottom: 4px;"
+                         nzTooltipTitle="{{ getSuspendedReason(data.suspendReason) }}"
+                         nzTooltipPlacement="bottom"
+                         nz-tooltip>
+                    {{ statusModel.status }}</span>
+                </td>
+              </ng-container>
+              <td nzBreakWord nzAlign="left">{{ data.serviceStatus }}</td>
+              <td nzBreakWord nzAlign="left">
+                <div *ngIf="data.attachedInstances == null || data.attachedInstances.length <= 0">-</div>
+                <div *ngIf="data.attachedInstances.length > 0">
+                  <div *ngFor="let index of data.attachedInstances; let last = last">{{ index.instanceName }}<br
+                    *ngIf="!last"></div>
+                </div>
+              </td>
+              <td nzBreakWord>
+                <!-----Các trạng thái liệt kê bên dưới không có thao tác---------->
+                <div
+                  *ngIf="!(['CREATING', 'ERROR', 'ATTACHING', 'DELETING','ERROR_DELETING','RESIZING'].includes(data.serviceStatus))
+                  && !['DELETING', 'CREATING', 'ERROR_DELETING','RESIZING', 'SUSPENDED'].includes(data.status)">
+                  <!-----Gắn---------->
+                  <one-portal-attach-volume [region]="region"
+                                            [project]="project"
+                                            [volumeId]="data.id"
+                                            [multiple]="data.isMultiAttach"
+                                            [instanceInVolume]="data.attachedInstances"
+                                            (onOk)="handleOkAttachVm()" />
+                  <!----Gỡ---------->
+                  <one-portal-detach-volume [region]="region"
+                                            [project]="project"
+                                            [volumeId]="data.id"
+                                            [isMultiple]="data.isMultiAttach"
+                                            [instanceInVolume]="data.attachedInstances"
+                                            (onOk)="handleOkDetachVm()" />
+                  <!----Tạo backup---------->
+                  <img style="padding-right: 10px; margin-left: 10px; cursor: pointer;"
+                       src="assets/imgs/calendar-tick.svg" alt=""
+                       nz-popover
+                       [nzPopoverContent]="'volume.tooltip.content.create.backup' | i18n"
+                       nzPopoverPlacement="bottom"
+                       (click)="navigateToCreateBackup(data.id)" />
+                  <!-----Xóa volume---------->
+                  <one-portal-delete-volume [region]="region"
+                                            [project]="project"
+                                            [volumeId]="data.id"
+                                            [volumeName]="data.name"
+                                            (onOk)="handleOkDelete()" />
+                  <!-----MENU THAO TÁC--------->
+                  <img nz-dropdown
+                       [nzDropdownMenu]="opMenu"
+                       src="assets/imgs/more1.svg" alt="" style="cursor: pointer; margin-left: 5px;" />
+                  <nz-dropdown-menu #opMenu="nzDropdownMenu">
+                    <ul nz-menu>
+                      <!----TẠO LỊCH BACKUP---------->
+                      <li nz-menu-item
+                          (click)="navigateToCreateScheduleBackup(data.id)">{{ 'volume.menu.create.schedule.backup' | i18n }}
+                      </li>
+                      <!-----TẠO SNAPSHOT---------->
+                      <li nz-menu-item (click)="navigateToSnapshot(data.id)">{{ 'app.snapshot.create' | i18n }}</li>
+                      <!-----TẠO LỊCH SNAPSHOT--------->
+                      <li nz-menu-item
+                          (click)="navigateToCreateScheduleSnapshot(data.id)">{{ 'volume.menu.create.schedule.snapshot' | i18n }}
+                      </li>
+                      <!-----CHỈNH SỬA--------->
+                      <one-portal-update-volume [region]="region" [project]="project" [volume]="data"
+                                                (onOk)="handleOkUpdate()" />
+                    </ul>
+                  </nz-dropdown-menu>
+                </div>
+                <!-----Trạng thái = ERROR || SUSPENDED thì chỉ cho phép xóa---------->
+                <div *ngIf="data.serviceStatus == 'ERROR' || data.status == 'SUSPENDED'">
+                  <one-portal-delete-volume [region]="region"
+                                            [project]="project"
+                                            [volumeId]="data.id"
+                                            [volumeName]="data.name"
+                                            (onOk)="handleOkDelete()" />
+                </div>
+              </td>
+            </tr>
+            </tbody>
+          </nz-table>
+        </ng-container>
+        <!---------------TRANG GIỚI THIỆU-------------->
+        <ng-container *ngSwitchDefault>
+          <result>
+            <nz-row>
+              <nz-col class="text-center" style="width: 100%">
+                <img src="/assets/imgs/volume.png" alt="" />
+              </nz-col>
+            </nz-row>
+            <nz-row style="margin-top: 20px">
+              <nz-col class="text-center" style="width: 100%">
+                <span class="text-intro-title" style="color: #0066b3">{{ 'volume.intro.title' | i18n }}
+                  <br>{{ 'volume.intro.title2' | i18n }}</span>
+              </nz-col>
+            </nz-row>
+            <nz-row style="margin-top: 20px">
+              <nz-col class="text-center" style="width: 100%">
+                <span class="text-intro-desc">{{ 'volume.intro.subtitle' | i18n }}</span>
+              </nz-col>
+            </nz-row>
+            <button style="margin-top: 20px" nz-button [nzType]="'primary'" (click)="navigateToCreateVolume()"
+                    nzSize="large">
+              <img style="padding-right: 10px; margin-top: -4px" src="assets/imgs/cloud-plus-bold.svg" alt="" />
+              {{ 'volume.button.create' | i18n }}
+            </button>
+          </result>
+        </ng-container>
+      </ng-container>
+    </nz-card>
+  </nz-content>

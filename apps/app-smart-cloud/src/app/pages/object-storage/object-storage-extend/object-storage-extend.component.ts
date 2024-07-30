@@ -71,7 +71,6 @@ export class ObjectStorageExtendComponent implements OnInit {
     this.region = regionAndProject.regionId;
     this.getObjectStorage();
     this.getTotalAmount();
-    this.onChangeTime();
     this.cdr.detectChanges();
   }
 
@@ -84,46 +83,39 @@ export class ObjectStorageExtendComponent implements OnInit {
       .subscribe({
         next: (data) => {
           this.objectStorage = data;
-          let expiredDate = new Date(this.objectStorage.expiredDate);
-          expiredDate.setDate(expiredDate.getDate() + this.numberMonth * 30);
-          this.newExpiredDate = expiredDate.toISOString().substring(0, 19);
           this.cdr.detectChanges();
         },
         error: (e) => {
           this.notification.error(
-            e.error.detail,
+            e.error.message,
             this.i18n.fanyi('app.notification.object.storage.fail')
           );
+          this.navigateToBucketList();
         },
       });
   }
 
-  dataSubjectTime: Subject<any> = new Subject<any>();
-  changeTime(value: number) {
-    this.dataSubjectTime.next(value);
-  }
-  onChangeTime() {
-    this.dataSubjectTime
-      .pipe(
-        debounceTime(500) // Đợi 500ms sau khi người dùng dừng nhập trước khi xử lý sự kiện
-      )
-      .subscribe((res) => {
-        this.numberMonth = res;
-        if (res == 0) {
-          this.totalAmount = 0;
-          this.totalincludesVAT = 0;
-          this.newExpiredDate = '';
-        } else {
-          let expiredDate = new Date(this.objectStorage.expiredDate);
-          expiredDate.setDate(expiredDate.getDate() + this.numberMonth * 30);
-          this.newExpiredDate = expiredDate.toISOString().substring(0, 19);
-          this.getTotalAmount();
-        }
-      });
+  invalid: boolean = false;
+  onChangeTime(value) {
+    if (value == undefined) {
+      this.invalid = true;
+      this.totalAmount = 0;
+      this.totalincludesVAT = 0;
+      this.orderObject = null;
+    } else {
+      this.invalid = false;
+      this.numberMonth = value;
+      this.getTotalAmount();
+    }
   }
 
   onRegionChange(region: RegionModel) {
     this.region = region.regionId;
+    if(this.region === RegionID.ADVANCE){
+      this.router.navigate(['/app-smart-cloud/object-storage-advance/bucket']);
+    }else{
+      this.router.navigate(['/app-smart-cloud/object-storage/bucket']);
+    }
   }
 
   onRegionChanged(region: RegionModel) {
@@ -158,6 +150,7 @@ export class ObjectStorageExtendComponent implements OnInit {
     dataPayment.orderItems = [itemPayment];
     this.service.getTotalAmount(dataPayment).subscribe((result) => {
       console.log('thanh tien', result);
+      this.newExpiredDate = result.data.orderItemPrices[0].expiredDate;
       this.totalAmount = Number.parseFloat(result.data.totalAmount.amount);
       this.totalincludesVAT = Number.parseFloat(
         result.data.totalPayment.amount

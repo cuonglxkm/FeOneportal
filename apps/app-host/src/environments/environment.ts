@@ -17,6 +17,9 @@ export const environment = {
   },
   baseUrl: 'https://api-dev.onsmartcloud.com',
   //baseUrl: 'http://localhost:3000',
+  cms_baseUrl: 'https://cms.onsmartcloud.com',
+  cms_token: '6cb31a40836230e87730e36a150860fd22482b0458dedb8e5e42fb332048b475335bbe1debd1b3d1bea5604ff8d2049ebb78765c0fd62fd7058285bb1051d2cf333f3e10a0f722c7dfe4125246f9761312afd6b8b6370c5ea346f24c4dcb6047472b568e21dc9ce75ed458150cd91a72e72adc088d69fe96430fb8cf981cc51d',
+  cloud_baseUrl: 'https://vnptcloud.onsmartcloud.com/',
   sso: {
     issuer: 'https://identity-dev.onsmartcloud.com',
     //issuer: 'https://localhost:1000',
@@ -24,10 +27,7 @@ export const environment = {
     callback: 'http://localhost:4200/passport/callback/oneportal',
     logout_callback: 'http://localhost:4200',
     scope: 'openid email roles offline_access',
-    domain: '.onsmartcloud.com',
-    cms_baseUrl: 'https://cms.onsmartcloud.com',
-    vnpt_cloud_baseUrl: 'https://vnptcloud.onsmartcloud.com',
-    cloud_baseUrl: 'https://vnptcloud.onsmartcloud.com/'
+    domain: '.onsmartcloud.com'
   },
   recaptcha: {
     siteKey: '6LfueB8cAAAAAD74PxsPKL7-GVr0T7dUoxuBL4iR',

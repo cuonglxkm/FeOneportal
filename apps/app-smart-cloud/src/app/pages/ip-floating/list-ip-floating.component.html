@@ -2,6 +2,7 @@
   <ng-template #breadcrumb>
     <nz-breadcrumb [nzSeparator]="separatorTemplate">
       <nz-breadcrumb-item><a [routerLink]="['/']">{{ 'app.breadcrumb.home' | i18n }}</a></nz-breadcrumb-item>
+      <nz-breadcrumb-item>{{ 'app.breadcrumb.infrastructure.service' | i18n }}</nz-breadcrumb-item>
       <nz-breadcrumb-item>Networks</nz-breadcrumb-item>
       <nz-breadcrumb-item><a [routerLink]="['/app-smart-cloud/networks/ip-floating/list']">IP Floating</a></nz-breadcrumb-item>
     </nz-breadcrumb>
@@ -21,93 +22,142 @@
 </page-header>
 <nz-content>
   <nz-card>
-<!--    <span class="text-card-header">{{'ip.floating.label.list.address' | i18n}} IP Floating</span>-->
-    <nz-row nzJustify="space-between">
-      <nz-col nzSpan="16">
-        <nz-input-group [nzPrefix]="prefixIconSearch"
-                        nzSize="large"
-                        style="width: 300px;">
-          <input name="name"
-                 nz-input
-                 placeholder="{{'app.button.search' | i18n}}"
-                 [(ngModel)]="value"
-                 (ngModelChange)="searchDelay.next(false)"
-                 (keydown.enter)="onInputChange($event.target['value'])"/>
-        </nz-input-group>
-        <ng-template #prefixIconSearch>
-          <img src="assets/imgs/search.svg" alt="" style="cursor: pointer"/>
-        </ng-template>
-      </nz-col>
-      <nz-col nzSpan="8" style="flex:none;" *ngIf="projectType != 1">
-        <one-portal-create-ip-floating [region]="region" [project]="project" [projectType]="projectType" (onOk)="handleOkCreateIpFloating()" />
-      </nz-col>
-    </nz-row>
-    <nz-table #fixedTable
-              style="margin-top: 20px;"
-              [nzData]="response?.records"
-              [nzPageSize]="response?.pageSize"
-              (nzPageSizeChange)="onPageSizeChange($event)"
-              [nzPageIndex]="response?.currentPage"
-              (nzPageIndexChange)="onPageIndexChange($event)"
-              [nzTotal]="response?.totalCount"
-              [nzFrontPagination]="false"
-              [nzLoading]="isLoading">
-      <thead>
-      <tr>
-        <th>{{'ip.floating.alert.ip.floating.address' | i18n}}</th>
-        <th>Mapped Fixed IP Address</th>
-        <th>Network</th>
-        <th>{{'app.create-user.type' | i18n}}</th>
-        <th>{{'app.text.status' | i18n}}</th>
-        <th>{{'app.action-history.operation' | i18n}}</th>
-      </tr>
-      </thead>
-      <tbody>
-      <tr *ngFor="let data of fixedTable.data">
-<!--        <td>{{data.ipAddress}}</td>-->
-        <td>
-          <span *ngIf="data.ipAddress != null || data.ipAddress != ''">{{data.ipAddress}}</span>
-          <span *ngIf="data.ipAddress == null || data.ipAddress == ''">{{data.iPv6Address}}</span>
-        </td>
-        <td>{{data.fixedIpAddress}}</td>
-        <td>{{data.network}}</td>
-        <td>{{data.typeIP}}</td>
-        <ng-container *ngIf="data.serviceStatus | ServiceStatusPipe as statusModel">
-          <td *ngIf="!!data.suspendReason">
+    <ng-container [ngSwitch]="isBegin">
+      <ng-container *ngSwitchCase=false>
+        <!--    <span class="text-card-header">{{'ip.floating.label.list.address' | i18n}} IP Floating</span>-->
+        <nz-row nzJustify="space-between">
+          <nz-col nzSpan="16">
+            <nz-input-group [nzPrefix]="prefixIconSearch"
+                            nzSize="large"
+                            style="width: 300px;">
+              <input name="name"
+                     nz-input
+                     placeholder="{{'app.button.search' | i18n}}"
+                     [(ngModel)]="value"
+                     (ngModelChange)="searchDelay.next(false)"
+                     (keydown.enter)="onInputChange($event.target['value'])"/>
+            </nz-input-group>
+            <ng-template #prefixIconSearch>
+              <img src="assets/imgs/search.svg" alt="" style="cursor: pointer"/>
+            </ng-template>
+          </nz-col>
+          <nz-col nzSpan="8" style="flex:none;" *ngIf="projectType != 1">
+            <one-portal-create-ip-floating [region]="region" [project]="project" [projectType]="projectType" (onOk)="handleOkCreateIpFloating()" [plusImage]="true"/>
+          </nz-col>
+        </nz-row>
+        <nz-table #fixedTable
+                  style="margin-top: 20px;"
+                  nzShowPagination nzShowSizeChanger
+                  [nzData]="response?.records"
+                  [nzPageSize]="response?.pageSize"
+                  (nzPageSizeChange)="onPageSizeChange($event)"
+                  [nzPageIndex]="response?.currentPage"
+                  (nzPageIndexChange)="onPageIndexChange($event)"
+                  [nzTotal]="response?.totalCount"
+                  [nzFrontPagination]="false"
+                  [nzLoading]="isLoading">
+          <thead>
+          <tr>
+            <th>{{'ip.floating.alert.ip.floating.address' | i18n}}</th>
+            <th>Mapped Fixed IP Address</th>
+            <th>Network</th>
+            <th>Type</th>
+            <th>{{'app.text.status' | i18n}}</th>
+            <th>{{ 'app.task.status' | i18n }}</th>
+            <th>{{'app.action-history.operation' | i18n}}</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr *ngFor="let data of fixedTable.data">
+            <!--        <td>{{data.ipAddress}}</td>-->
+            <td>
+              <span *ngIf="data.ipAddress != null || data.ipAddress != ''">{{data.ipAddress}}</span>
+              <span *ngIf="data.ipAddress == null || data.ipAddress == ''">{{data.iPv6Address}}</span>
+            </td>
+            <td>{{data.fixedIpAddress}}</td>
+            <td>{{data.network}}</td>
+            <td>{{data.typeIP}}</td>
+            <ng-container *ngIf="data.serviceStatus | ServiceStatusPipe as statusModel">
+              <td *ngIf="!!data.suspendReason">
               <span [ngStyle]="{color: statusModel.color}">
                 <img src="assets/imgs/warning-message.svg" alt="" style="cursor: pointer; margin-bottom: 4px;"
                      nzTooltipTitle="{{ data.suspendReason | SuspendStatusPipe }}"
                      nzTooltipPlacement="bottom"
                      nz-tooltip>
                 {{ statusModel.status }}</span>
-          </td>
-          <td *ngIf="data.suspendReason == null || data.suspendReason === ''">
-            <span [ngStyle]="{color: statusModel.color}">{{ statusModel.status }}</span>
-          </td>
-        </ng-container>
-        <td>
-          <div>
-            <one-portal-attach-ip-floating *ngIf="data.status != 'DANGSUDUNG' && data.status != 'LOI' && data.resourceStatus != 'ERROR'" [region]="region"
-                                           [project]="project"
-                                           [idIpFloating]="data.id"
-                                           (onOk)="handleOkAttachIpFloating()"/>
+              </td>
+              <td *ngIf="data.suspendReason == null || data.suspendReason === ''">
+                <span [ngStyle]="{color: statusModel.color}">{{ statusModel.status }}</span>
+              </td>
+            </ng-container>
+            <td>{{data.resourceStatus}}</td>
+            <td>
+              <div>
+                <one-portal-attach-ip-floating *ngIf="data.status != 'DANGSUDUNG' && data.status != 'LOI' && data.resourceStatus != 'ERROR'" [region]="region"
+                                               [project]="project"
+                                               [idIpFloating]="data.id"
+                                               (onOk)="handleOkAttachIpFloating()"/>
 
-            <one-portal-detach-ip-floating *ngIf="data.status == 'DANGSUDUNG' && data.status != 'LOI' && data.resourceStatus != 'ERROR'" [region]="region"
-                                           [project]="project"
-                                           [idIpFloating]="data.id"
-                                           (onOk)="handleOkDetachIpFloating()" />
-            <img *ngIf="projectType != 1 && data.status != 'LOI' && data.resourceStatus != 'ERROR'" style="padding-right: 10px;" src="assets/imgs/calendar-tick.svg"
-                 nz-tooltip nzTooltipTitle="{{'app.extend' | i18n}} IP Floating" nzTooltipPlacement="bottom"
-                 [routerLink]="['/app-smart-cloud/networks/ip-floating-normal/' + data.id + '/extend']"/>
-            <one-portal-delete-ip-floating *ngIf="data.typeIP == WanFloating || projectType != 1" [region]="region"
-                 [project]="project"
-                 [idIpFloating]="data.id"
-                 [ip]="data.ipAddress"
-                 (onOk)="handleOkDeleteIpFloating()" />
-          </div>
-        </td>
-      </tr>
-      </tbody>
-    </nz-table>
+                <one-portal-detach-ip-floating *ngIf="data.status == 'DANGSUDUNG' && data.status != 'LOI' && data.resourceStatus != 'ERROR'" [region]="region"
+                                               [project]="project"
+                                               [idIpFloating]="data.id"
+                                               (onOk)="handleOkDetachIpFloating()" />
+                <img *ngIf="projectType != 1 && data.status != 'LOI' && data.resourceStatus != 'ERROR'" style="padding-right: 10px;" src="assets/imgs/calendar-tick.svg"
+                     nz-tooltip nzTooltipTitle="{{'app.extend' | i18n}} IP Floating" nzTooltipPlacement="bottom"
+                     [routerLink]="['/app-smart-cloud/networks/ip-floating-normal/' + data.id + '/extend']"/>
+                <one-portal-delete-ip-floating *ngIf="data.typeIP == WanFloating || projectType != 1" [region]="region"
+                                               [project]="project"
+                                               [idIpFloating]="data.id"
+                                               [ip]="data.ipAddress"
+                                               (onOk)="handleOkDeleteIpFloating()" />
+              </div>
+            </td>
+          </tr>
+          </tbody>
+        </nz-table>
+      </ng-container>
+      <ng-container *ngSwitchDefault>
+        <result>
+          <nz-row>
+            <nz-col class="text-center" style="width: 100%">
+              <img src="assets/imgs/ip-floating-init.svg" alt="" />
+            </nz-col>
+          </nz-row>
+          <nz-row style="margin-top: 20px">
+            <nz-col class="text-center" style="width: 100%">
+              <span class="text-intro-title" style="color: #0066b3">
+                IP Floating
+              </span>
+<!--          <span-->
+<!--            class="text-intro-title"-->
+<!--            style="color: #0066b3"-->
+<!--            [innerHTML]="'app.ip.public.init.title' | i18n"-->
+<!--          >-->
+<!--          </span-->
+          </nz-col>
+          </nz-row>
+          <nz-row style="margin-top: 20px;margin-bottom: 20px">
+            <nz-col class="text-center" style="width: 100%">
+          <span
+            class="text-intro-desc"
+            [innerHTML]="'app.ip.floating.new.init' | i18n"
+          ></span
+          ></nz-col>
+          </nz-row>
+<!--          <button-->
+<!--            *ngIf="projectType != 1"-->
+<!--            style="margin-top: 20px"-->
+<!--            nz-button-->
+<!--            [nzType]="'primary'"-->
+<!--            (click)="handleOkCreateIpFloating()"-->
+<!--            nzSize="large"-->
+<!--          >-->
+<!--            {{ 'app.label.create' | i18n }} IP Floating-->
+<!--          </button>-->
+          <one-portal-create-ip-floating [region]="region" [project]="project" [projectType]="projectType" (onOk)="handleOkCreateIpFloating()" [plusImage]="false"/>
+        </result>
+      </ng-container>
+    </ng-container>
+
   </nz-card>
 </nz-content>

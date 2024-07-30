@@ -220,6 +220,17 @@ export class CreateFileSystemComponent implements OnInit {
 
   }
 
+  onKeyDown(event: KeyboardEvent) {
+    console.log('event', event)
+    if (event.key === 'Enter' &&
+      (this.isLoading
+        || this.validateForm.invalid
+        || this.validateForm.controls.storage.value == 0
+        || this.validateForm.controls.storage.value % this.stepStorage > 0)) {
+      event.preventDefault(); // Prevent default action if conditions are met
+    }
+  }
+
   getListFileSystem() {
     this.isLoading = true;
     let formSearch = new FormSearchFileSystem();
@@ -243,7 +254,7 @@ export class CreateFileSystemComponent implements OnInit {
     this.formCreate.shareProtocol = this.validateForm.controls.protocol.value;
     this.formCreate.size = this.storage;
     this.formCreate.name = this.validateForm.controls.name.value.trimStart().trimEnd();
-    this.formCreate.description = this.validateForm.controls.description.value;
+    this.formCreate.description = this.validateForm.controls.description.value.trimStart().trimEnd();
     this.formCreate.displayName = this.validateForm.controls.name.value;
     this.formCreate.displayDescription = this.validateForm.controls.description.value;
     console.log('share type', this.validateForm.controls.type.value);

@@ -737,7 +737,7 @@
       </form>
     </nz-row>
   </div>
-  <div nz-col [nzSpan]="8" style="display: flex">
+  <div nz-col [nzSpan]="8">
     <div style="width: 100%" *ngIf="instancesModel">
       <nz-affix [nzOffsetTop]="72">
         <nz-card class="card-border" style="border-radius: 8px; width: 100%">
@@ -785,7 +785,10 @@
                 (click)="update()"
                 [disabled]="!isChange"
               >
-                <span nz-icon nzType="wallet" nzTheme="outline"></span>
+                <img
+                  src="assets/imgs/wallet.svg"
+                  style="margin-right: 5px; padding-bottom: 5px"
+                />
                 <span>{{ 'app.button.resize' | i18n }}</span>
               </button>
             </nz-col>

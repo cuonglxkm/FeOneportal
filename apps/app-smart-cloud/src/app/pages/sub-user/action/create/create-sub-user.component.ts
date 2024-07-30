@@ -36,7 +36,11 @@ export class CreateSubUserComponent implements OnInit{
     name: FormControl<string>
     access: FormControl<string>
   }> = this.fb.group({
-    name: ['', [Validators.required, Validators.pattern(/^[a-zA-Z0-9\-]+$/), this.duplicateNameValidator.bind(this)]],
+    name: ['', [Validators.required,
+      Validators.pattern(/^[a-zA-Z0-9\-]+$/),
+      this.duplicateNameValidator.bind(this),
+      Validators.maxLength(50),
+      Validators.minLength(3)]],
     access: ['full', [Validators.required]]
   })
 

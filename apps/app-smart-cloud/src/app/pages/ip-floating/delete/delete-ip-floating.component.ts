@@ -6,6 +6,7 @@ import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@ang
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from '@core';
 import { IpPublicService } from 'src/app/shared/services/ip-public.service';
+import { finalize } from 'rxjs';
 
 @Component({
   selector: 'one-portal-delete-ip-floating',
@@ -28,6 +29,8 @@ export class DeleteIpFloatingComponent{
   }> = this.fb.group({
     ip: ['', [Validators.required]]
   });
+  disableSubmit = true;
+  loading: boolean;
 
   constructor(@Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
               private notification: NzNotificationService,
@@ -44,13 +47,20 @@ export class DeleteIpFloatingComponent{
   handleCancel(){
     this.isVisible = false
     this.isLoading =  false
+    this.validateForm.controls['ip'].setValue('');
   }
 
   handleOk() {
     this.isLoading = true
+    this.loading = true;
+    this.disableSubmit = true;
     if(this.validateForm.valid) {
       if(this.ip.includes(this.validateForm.controls.ip.value)){
-        this.ipPublicService.remove(this.idIpFloating).subscribe(data => {
+        this.ipPublicService.remove(this.idIpFloating)
+          .pipe(finalize(() => {
+            this.handleCancel()
+          }))
+          .subscribe(data => {
           if(data) {
             this.isVisible = false
             this.isLoading =  false
@@ -66,4 +76,12 @@ export class DeleteIpFloatingComponent{
     }
   }
 
+  changeInput() {
+    if (this.validateForm.controls['ip'].value == this.ip) {
+      this.disableSubmit = false
+    } else {
+      this.disableSubmit = true
+    }
+
+  }
 }

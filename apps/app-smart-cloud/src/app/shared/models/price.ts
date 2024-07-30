@@ -46,7 +46,7 @@ export class OrderItem {
   currentVAT: number
   totalVAT: TotalVAT
   totalPayment: TotalPayment
-
+  orderItems?: OrderItem[]
 }
 
 export class OrderItemObject {

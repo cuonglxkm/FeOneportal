@@ -1,5 +1,5 @@
 <nz-card style="height: 130px">
-  <form nz-form [nzLayout]="'vertical'">
+  <form nz-form [formGroup]="form" [nzLayout]="'vertical'">
     <nz-form-item style="margin-bottom: 5px">
       <nz-form-label
         >{{ 'app.service.used' | i18n }} (<span class="text-red">*</span>) -
@@ -10,10 +10,11 @@
           src="assets/imgs/pajamas_question.svg"
           alt=""
       /></nz-form-label>
-      <nz-form-control nzErrorTip="Thời gian sử dụng không được để trống">
+      <nz-form-control [nzErrorTip]="timeErrorTpl">
         <nz-row>
           <nz-col nzSpan="12">
             <nz-input-number
+              formControlName="time"
               style="width: 100%; margin-left: -1px"
               [nzMin]="1"
               [nzMax]="100"
@@ -21,7 +22,7 @@
               [(ngModel)]="numberMonth"
               (keydown)="onKeyDown($event)"
               (ngModelChange)="changeTime($event)"
-              [ngModelOptions]="{ standalone: true }"
+              (input)="onInput($event)"
               nzSize="large"
             ></nz-input-number>
           </nz-col>
@@ -38,6 +39,11 @@
             </div>
           </nz-col>
         </nz-row>
+        <ng-template #timeErrorTpl let-control>
+          <ng-container *ngIf="control.hasError('required')">{{
+            'validation.kafka.duration-required' | i18n
+          }}</ng-container>
+        </ng-template>
       </nz-form-control>
     </nz-form-item>
   </form>

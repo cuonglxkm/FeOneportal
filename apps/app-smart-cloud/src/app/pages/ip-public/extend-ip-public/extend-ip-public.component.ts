@@ -109,7 +109,7 @@ export class ExtendIpPublicComponent implements OnInit{
       typeName: 'SharedKernel.IntegrationEvents.Orders.Specifications.IpExtendSpecification,SharedKernel.IntegrationEvents, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null',
       serviceType: 4,
       actionType: 3,
-      serviceInstanceId: this.ipInfo.id,
+      serviceInstanceId: this.activatedRoute.snapshot.paramMap.get('id'),
       newExpireDate: this.dateStringExpired,
       userEmail: null,
       actorEmail: null
@@ -162,7 +162,7 @@ export class ExtendIpPublicComponent implements OnInit{
         vpcId: null,
         oneSMEAddonId: null,
         serviceType: 4,
-        serviceInstanceId: 0,
+        serviceInstanceId: this.activatedRoute.snapshot.paramMap.get('id'),
         createDate: '0001-01-01T00:00:00',
         expireDate: '0001-01-01T00:00:00',
         saleDept: null,
@@ -182,7 +182,6 @@ export class ExtendIpPublicComponent implements OnInit{
         oneSME_SubscriptionId: null,
         actionType: 0,
         serviceName: null,
-        typeName: 'SharedKernel.IntegrationEvents.Orders.Specifications.IPCreateSpecification,SharedKernel.IntegrationEvents, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null',
         userEmail: null,
         actorEmail: null
       };
@@ -192,7 +191,7 @@ export class ExtendIpPublicComponent implements OnInit{
           {
             orderItemQuantity: 1,
             specificationString: JSON.stringify(requestBody),
-            specificationType: 'ip_create',
+            specificationType: 'ip_extend',
             serviceDuration: num
           }
         ]

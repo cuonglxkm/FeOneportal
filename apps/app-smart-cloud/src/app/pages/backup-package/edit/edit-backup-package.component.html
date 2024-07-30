@@ -15,7 +15,7 @@
           [routerLink]="'/app-smart-cloud/backup/packages/detail/' + idBackupPackage">{{ 'app.backup.package.breadcrumb.detail'|i18n }}</a>
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>
-        <a routerLink="/app-smart-cloud/backup/packages">{{ 'app.backup.package.breadcrumb.resize'|i18n }}</a>
+        <a routerLink="/app-smart-cloud/backup/packages/extend/{{idBackupPackage}}" >{{ 'app.backup.package.breadcrumb.resize'|i18n }}</a>
       </nz-breadcrumb-item>
     </nz-breadcrumb>
     <ng-template #iconTemplate>
@@ -87,26 +87,30 @@
                   </nz-row>
                 </nz-col>
               </nz-row>
-              <nz-row>
+              <nz-row style="background-color: #e2e2e9">
                 <nz-col nzSpan="12">
                   <nz-row style="padding: 12px 0 12px 0">
-                    <span class="text-label customSpan"
-                          style="width: 35%">{{ 'app.service.used'|i18n }}</span>
-                    <span class="text-value-detail customSpan">{{ getFormattedDateDifference(packageBackupModel?.expirationDate, packageBackupModel?.creationDate) }}</span>
+                      <span class="text-label customSpan"
+                            style="width: 35%">{{ 'app.service.used'|i18n }}</span>
+                    <span
+                      class="text-value-detail customSpan">{{ getFormattedDateDifference(packageBackupModel?.expirationDate, packageBackupModel?.creationDate) }}</span>
+                  </nz-row>
+                </nz-col>
+                <nz-col nzSpan="12">
+                  <nz-row style="padding: 12px 0 12px 0">
+                    <span class="text-label" style="width: 45%">{{ 'app.backup.package.description'|i18n }}</span>
+                    <span class="text-value-detail"
+                          *ngIf="packageBackupModel?.description.length > 15"
+                          nz-popover
+                          [nzPopoverPlacement]="'bottom'"
+                          [nzPopoverContent]="packageBackupModel?.description">
+                      {{ packageBackupModel?.description.substring(0,15).concat('...') }}</span>
+                    <span class="text-value-detail" *ngIf="packageBackupModel?.description.length < 15">{{ packageBackupModel?.description }}</span>
                   </nz-row>
                 </nz-col>
               </nz-row>
             </div>
-            <div style="margin-top: 15px;">
-              <nz-descriptions>
-                <nz-descriptions-item [nzTitle]="titleDescription">
-                  <span class="text-label">{{ packageBackupModel?.description }}</span>
-                </nz-descriptions-item>
-              </nz-descriptions>
-            </div>
-            <ng-template #titleDescription>
-              <span class="text-label">{{ 'app.backup.package.description'|i18n }}:</span>
-            </ng-template>
+
           </nz-card>
           <nz-card style="border-radius: 8px;" *ngIf="packageBackupModel">
             <span class="text-card-header">{{ 'app.adjust.info'|i18n }}</span>

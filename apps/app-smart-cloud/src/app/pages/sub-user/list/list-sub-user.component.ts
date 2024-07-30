@@ -1,27 +1,21 @@
 import { ChangeDetectorRef, Component, Inject, OnInit, Renderer2 } from '@angular/core';
 import { Router } from '@angular/router';
 import { SubUserService } from '../../../shared/services/sub-user.service';
-import { SubUser, SubUserKeys } from '../../../shared/models/sub-user.model';
-import {
-  BaseResponse,
-  ProjectModel,
-  RegionModel,
-} from '../../../../../../../libs/common-utils/src';
-import { getCurrentRegionAndProject } from '@shared';
+import { SubUser } from '../../../shared/models/sub-user.model';
+import { BaseResponse, ProjectModel, RegionModel } from '../../../../../../../libs/common-utils/src';
 import { ClipboardService } from 'ngx-clipboard';
 import { ObjectStorageService } from 'src/app/shared/services/object-storage.service';
 import { LoadingService } from '@delon/abc/loading';
-import { debounceTime, finalize, Subject } from 'rxjs';
+import { finalize, Subject } from 'rxjs';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { I18NService } from '@core';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
-import { TimeCommon } from 'src/app/shared/utils/common';
 import { RegionID } from 'src/app/shared/enums/common.enum';
 
 @Component({
   selector: 'one-portal-list-sub-user',
   templateUrl: './list-sub-user.component.html',
-  styleUrls: ['./list-sub-user.component.less'],
+  styleUrls: ['./list-sub-user.component.less']
 })
 export class ListSubUserComponent implements OnInit {
   region = JSON.parse(localStorage.getItem('regionId'));
@@ -38,11 +32,12 @@ export class ListSubUserComponent implements OnInit {
 
   isCheckBegin: boolean = false;
 
-  listSubuser: any
+  listSubuser: any;
   url = window.location.pathname;
   isExpand: number | null = null;
 
   searchDelay = new Subject<boolean>();
+
   constructor(
     private router: Router,
     private subUserService: SubUserService,
@@ -62,18 +57,20 @@ export class ListSubUserComponent implements OnInit {
 
   ngOnInit() {
     if (!this.url.includes('advance')) {
-      if(Number(localStorage.getItem('regionId')) === RegionID.ADVANCE) {
-        this.region = RegionID.NORMAL
-      }else{
+      if (Number(localStorage.getItem('regionId')) === RegionID.ADVANCE) {
+        this.region = RegionID.NORMAL;
+      } else {
         this.region = Number(localStorage.getItem('regionId'));
       }
     } else {
       this.region = RegionID.ADVANCE;
-    };
+    }
+    ;
     this.hasObjectStorage();
   }
 
   hasOS: boolean = undefined;
+
   hasObjectStorage() {
     this.loadingSrv.open({ type: 'spin', text: 'Loading...' });
     this.objectSevice
@@ -94,7 +91,7 @@ export class ListSubUserComponent implements OnInit {
             this.i18n.fanyi('app.status.fail'),
             this.i18n.fanyi('app.bucket.getObject.fail')
           );
-        },
+        }
       });
   }
 
@@ -106,7 +103,8 @@ export class ListSubUserComponent implements OnInit {
   rowCount: number = 0;
 
   // Hàm tính số hàng
-  calculateRowCount() {}
+  calculateRowCount() {
+  }
 
   regionChanged(region: RegionModel) {
     this.region = region.regionId;
@@ -134,12 +132,12 @@ export class ListSubUserComponent implements OnInit {
   }
 
   navigateToCreateSubUser() {
-    if(this.region === RegionID.ADVANCE){
+    if (this.region === RegionID.ADVANCE) {
       this.router.navigate(['/app-smart-cloud/object-storage-advance/sub-user/create']);
-    }else{
+    } else {
       this.router.navigate(['/app-smart-cloud/object-storage/sub-user/create']);
     }
-    
+
   }
 
   getListSubUsers(isBegin) {
@@ -151,17 +149,17 @@ export class ListSubUserComponent implements OnInit {
           this.response = data;
           this.isLoading = false;
 
-          const transformedData = data.records.map(record => {  
+          const transformedData = data.records.map(record => {
             const [firstKey, ...remainingKeys] = record.keys;
             return {
               ...record,
-              ...firstKey,  
-              keys: remainingKeys  
+              ...firstKey,
+              keys: remainingKeys
             };
           });
-        
-          this.listSubuser = transformedData
-          
+
+          this.listSubuser = transformedData;
+
 
           if (isBegin) {
             this.isCheckBegin =
@@ -182,6 +180,10 @@ export class ListSubUserComponent implements OnInit {
   }
 
   handleOkDelete() {
+    if (this.response.records.length == 1 && this.pageIndex > 1) {
+      this.pageIndex = this.pageIndex - 1
+    }
+
     this.getListSubUsers(false);
   }
 
@@ -189,16 +191,16 @@ export class ListSubUserComponent implements OnInit {
     this.clipboardService.copyFromContent(data);
   }
 
-  handleExpandAccessKey(index: number, event: MouseEvent){ 
+  handleExpandAccessKey(index: number, event: MouseEvent) {
     event.stopPropagation();
     this.isExpand = this.isExpand === index ? null : index;
   }
 
-  handleCloseExpand(event: MouseEvent){
+  handleCloseExpand(event: MouseEvent) {
     this.isExpand = null;
   }
 
-  search(search: string) {  
+  search(search: string) {
     this.value = search.trim();
     this.getListSubUsers(false);
   }

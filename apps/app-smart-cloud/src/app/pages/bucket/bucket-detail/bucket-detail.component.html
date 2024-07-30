@@ -120,7 +120,7 @@
         src="assets/imgs/delete.svg"
         alt=""
         style="cursor: pointer; margin-right: 16px"
-        nz-tooltip="{{ 'app.deleteMany' | i18n }}"
+        nz-tooltip="{{ 'app.delete' | i18n }}"
         (click)="showModalDeleteObject()"
       />
       <button
@@ -171,11 +171,12 @@
       align-items: center;
     "
   >
+  <div style="font-weight: bold; padding-right: 10px; cursor: pointer; margin-left: 10px;" (click)="toFolder1('', true)">
     <img
-      style="padding-right: 10px; padding-left: 10px; cursor: pointer"
-      src="assets/imgs/box.svg"
-      (click)="toFolder1('', true)"
+      src="assets/imgs/box.svg"    
     />
+    {{bucket ? bucket.bucketName : ''}} 
+  </div>
     <ng-container *ngFor="let item of listOfFolder">
       <div
         style="font-weight: bold; padding-right: 10px; cursor: pointer;"
@@ -193,7 +194,9 @@
     [nzFrontPagination]="false"
     [nzPageSize]="pageSize"
     (nzPageSizeChange)="onPageSizeChange($event)"
-    (nzPageIndexChange)="onPageIndexChange($event)"
+    (nzPageIndexChange)="onPageIndexChange($event)" 
+    nzShowSizeChanger
+    [nzPageSizeOptions]="[pageSizeFixed, 10, 20, 30, 40, 50]"
     [nzPageIndex]="pageIndex"
     [nzLoading]="loading"
   >
@@ -218,7 +221,7 @@
           [nzChecked]="setOfCheckedId.has(item)"
           (nzCheckedChange)="onItemChecked(item, $event)"
         ></td>
-        <td *ngIf="item.objectType != 'folder'">{{ item.keyName }}</td>
+        <td nzBreakWord="true" *ngIf="item.objectType != 'folder'">{{ item.keyName }}</td>
         <td
           *ngIf="item.objectType == 'folder'"
           style="color: #0074cc; cursor: pointer"
@@ -228,7 +231,7 @@
           {{ item.key }}
         </td>
         <td>{{ (item.size / 1024).toFixed(2) }} KB</td>
-        <td style="text-transform: capitalize;">{{ item.objectType }}</td>
+        <td nzBreakWord="true" style="text-transform: capitalize;">{{ item.objectType }}</td>
         <td>{{ item.lastModified | date : 'dd/MM/yyyy HH:mm:ss' }}</td>
         <td>{{ item.isPublic == true ? 'Public' : 'Private' }}</td>
         <td>
@@ -439,6 +442,8 @@
         <label nz-radio nzValue="public-read" class="text-label">Public</label>
         <label nz-radio nzValue="private" class="text-label">Private</label>
       </nz-radio-group>
+      <nz-divider class="mb-3" />
+      <span class="mt-2 d-block text-label float-right mb-4" *ngIf="lstFileUpdate.length > 0">{{countSuccessUpload}} của {{lstFileUpdate.length}}</span>
       <nz-table
         [nzData]="lstFileUpdate"
         style="margin-top: 10px" nzHideOnSinglePage nzShowPagination="false"
@@ -453,8 +458,8 @@
         </thead>
         <tbody>
           <tr *ngFor="let item of lstFileUpdate; i as index">
-            <td>{{ item.name }}</td>
-            <td style="width: 400px">{{ item.type }}</td>
+            <td nzBreakWord="true">{{ item.name }}</td>
+            <td nzBreakWord="true" style="width: 400px">{{ item.type }}</td>
             <td style="width: 400px">
               <div>{{ (item.size / 1024).toFixed(2) }} KB</div>
               <div>
@@ -800,6 +805,7 @@
       nz-button
       nzType="primary"
       (click)="copyFolder()"
+      [disabled]="isClickCopy === false"
       [nzLoading]="isLoadingCopy"
     >
       <img
@@ -1021,7 +1027,7 @@
             </td>
             <td>{{ item.lastModified | date : 'dd/MM/yyyy HH:mm:ss' }}</td>
             <td>{{ (item.size / 1024).toFixed(2) }} KB</td>
-            <td>{{ item.versionId }}</td>
+            <td>{{ item.versionId === "null" ? '' : item.versionId }}</td>
             <td>
               <div>
                 <img
@@ -1087,13 +1093,13 @@
       nz-button
       nzType="primary"
       (click)="deleteFolderVersion()"
-      [nzLoading]="isVisibleDeleteVersion"
+      [nzLoading]="isLoadingDeleteVersion"
     >
       <img
         style="padding-right: 10px; margin-top: -4px"
         src="assets/imgs/confirm.svg"
         alt=""
-        *ngIf="isVisibleDeleteVersion === false"
+        *ngIf="isLoadingDeleteVersion === false"
       />{{ 'app.button.confirm' | i18n }}
     </button>
   </div>

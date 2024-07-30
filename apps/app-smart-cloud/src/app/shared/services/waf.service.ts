@@ -5,7 +5,7 @@ import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http'
 import { BaseService } from './base.service';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { BaseResponse } from '../../../../../../libs/common-utils/src';
-import { WafsDTO } from 'src/app/pages/waf/waf.model';
+import { WafDTO } from 'src/app/pages/waf/waf.model';
 
 @Injectable({
   providedIn: 'root'
@@ -24,7 +24,7 @@ export class WafService extends BaseService {
     if(pageSize != undefined || pageSize != null) param = param.append('pageSize', pageSize)
     if(currentPage != undefined || currentPage != null) param = param.append('currentPage', currentPage)
 
-    return this.http.get<BaseResponse<WafsDTO[]>>(this.baseUrl + this.ENDPOINT.provisions + '/volumes', {
+    return this.http.get<BaseResponse<WafDTO[]>>(this.baseUrl + this.ENDPOINT.provisions + '/volumes', {
       params: param,
       headers: this.getHeaders().headers
     }).pipe(
@@ -39,6 +39,21 @@ export class WafService extends BaseService {
       }))
   }
 
+
+  getDetail(id: number): Observable<WafDTO> {
+    // Tạo một đối tượng WafDTO giả để trả về
+    const wafDetail: WafDTO = {
+      id: id,
+      name: 'Example Name',
+      package: 'Example Package',
+      begin: new Date('2024-01-01'),
+      end: new Date('2024-12-31'),
+      status: 'ACTIVE'
+    };
+
+    // Trả về một Observable chứa đối tượng WafDTO giả
+    return of(wafDetail);
+  }
 
 
 }
