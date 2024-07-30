@@ -239,6 +239,7 @@ export class CreateLbVpcComponent implements OnInit {
       this.catalogService.getDetailOffer(this.productId).subscribe(
         data2 => {
         this.offerDetail = data2;
+        this.maxAction = data2?.characteristicValues?.find(item => item.charName = 'MaxConnection')?.charOptionValues[0];
         this.flavorId = this.offerDetail?.characteristicValues[1].charOptionValues[0];
       },
         error => {
@@ -379,6 +380,7 @@ export class CreateLbVpcComponent implements OnInit {
   disabledFloating= true;
   isVisiblePopupError: boolean = false;
   errorList: string[] = [];
+  maxAction: string;
   closePopupError() {
     this.isVisiblePopupError = false;
   }

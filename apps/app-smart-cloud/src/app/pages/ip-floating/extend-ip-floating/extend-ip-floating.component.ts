@@ -162,7 +162,7 @@ export class ExtendIpFloatingComponent implements OnInit{
         vpcId: null,
         oneSMEAddonId: null,
         serviceType: 4,
-        serviceInstanceId: 0,
+        serviceInstanceId: this.ipInfo.id,
         createDate: '0001-01-01T00:00:00',
         expireDate: '0001-01-01T00:00:00',
         saleDept: null,
