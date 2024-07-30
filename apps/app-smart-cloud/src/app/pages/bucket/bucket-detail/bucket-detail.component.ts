@@ -729,6 +729,7 @@ export class BucketDetailComponent extends BaseService implements OnInit {
     const sourcePath = `${this.dataAction.bucketName}/${this.dataAction.key}`;
     const destinationPath = `${destinationBucket}/${destinationKey}`;
 
+
     if (sourcePath === destinationPath) {
       this.isLoadingCopy = false;
       this.notification.error(
@@ -1216,6 +1217,7 @@ export class BucketDetailComponent extends BaseService implements OnInit {
                 item.speed = speed.toFixed(2); // Display speed
                 console.log(`Upload speed: ${speed.toFixed(2)} KB/s`);
               }
+
             };
             xhr.onload = () => {
               item.isUpload = true;

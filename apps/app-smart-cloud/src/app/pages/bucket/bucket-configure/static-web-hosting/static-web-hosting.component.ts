@@ -51,18 +51,7 @@ export class StaticWebHostingComponent implements OnInit {
   }
   ngOnInit(): void {
     let regionAndProject = getCurrentRegionAndProject();
-    this.region = regionAndProject.regionId;  
-    this.formUpdate = this.fb.group({
-      errorDocument: ['', [Validators.pattern(FILE_NO_SPACE_REGEX)]],
-      indexDocumentSuffix: ['', [Validators.pattern(FILE_NO_SPACE_REGEX)]],
-      redirectAllRequestsTo: ['', [Validators.required, Validators.pattern(WEB_REGEX)]],
-    });
-    if (this.bucketDetail.checkRedirectAllRequests) {
-      this.handleChangeRedirect(true);
-    } else {
-      this.handleChangeRedirect(false);
-    }
-    
+    this.region = regionAndProject.regionId;   
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -94,7 +83,7 @@ export class StaticWebHostingComponent implements OnInit {
     redirectAllRequestsTo: FormControl<string>;
   }> = this.fb.group({
     errorDocument: ['', [Validators.pattern(FILE_NO_SPACE_REGEX)]],
-    indexDocumentSuffix: ['', [Validators.pattern(FILE_NO_SPACE_REGEX)]],
+    indexDocumentSuffix: ['', [Validators.required, Validators.pattern(FILE_NO_SPACE_REGEX)]],
     redirectAllRequestsTo: ['', [Validators.required,Validators.pattern(WEB_REGEX)]],
   });
 
@@ -103,25 +92,18 @@ export class StaticWebHostingComponent implements OnInit {
     this.message.success('Copy Endpoint thành công');
   }
 
-  toggleStaticWebConfig(event){
-    this.formUpdate.reset();
-  }
-
   isSubmitButtonEnabled = false
   handleChangeRedirect(event){
     if (event === false) {
      this.formUpdate.controls.errorDocument.setValidators([Validators.pattern(FILE_NO_SPACE_REGEX)])
-     this.formUpdate.controls.indexDocumentSuffix.setValidators([Validators.pattern(FILE_NO_SPACE_REGEX)])
+     this.formUpdate.controls.indexDocumentSuffix.setValidators([Validators.required, Validators.pattern(FILE_NO_SPACE_REGEX)])
      this.formUpdate.controls.redirectAllRequestsTo.setValidators([Validators.pattern(WEB_REGEX)])
-     this.formUpdate.controls.redirectAllRequestsTo.reset()
      this.formUpdate.get('indexDocumentSuffix')?.enable();
      this.formUpdate.get('errorDocument')?.enable();
      this.formUpdate.get('redirectAllRequestsTo')?.disable();
     } else {
      this.formUpdate.controls.errorDocument.setValidators([Validators.pattern(FILE_NO_SPACE_REGEX)])
-     this.formUpdate.controls.errorDocument.reset()
      this.formUpdate.controls.indexDocumentSuffix.setValidators([Validators.pattern(FILE_NO_SPACE_REGEX)])
-     this.formUpdate.controls.indexDocumentSuffix.reset()
      this.formUpdate.controls.redirectAllRequestsTo.setValidators([Validators.required, Validators.pattern(WEB_REGEX)])
      this.formUpdate.get('indexDocumentSuffix')?.disable();
      this.formUpdate.get('errorDocument')?.disable();
