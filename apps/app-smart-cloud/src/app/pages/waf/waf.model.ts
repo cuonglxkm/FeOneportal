@@ -43,3 +43,32 @@ export class WafDTO{
   end:Date;
   status:string;
 }
+
+export class WafDetailDTO{
+  id: number
+  name: string
+  policyId: number
+  offerId: number
+  status: string
+  customerId: number
+  createdDate: Date
+  expiredDate: Date
+  serviceStatus: string
+  suspendType: string
+  suspendReason: string
+  wafDomains: [
+    {
+      id: number
+      domain: string
+      ipPublic: string
+      host: string
+      port: string
+      sslCertId: string
+      policyId: number
+      status: string
+      wafPackageId: number
+      customerId: number
+      cdnId: string
+    }
+  ]
+}

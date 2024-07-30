@@ -3,7 +3,7 @@ import {ActivatedRoute, Router} from "@angular/router";
 import { I18NService } from '@core';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
-import { WafDTO } from '../waf.model';
+import { WafDetailDTO, WafDTO } from '../waf.model';
 import { WafService } from 'src/app/shared/services/waf.service';
 
 @Component({
@@ -12,7 +12,7 @@ import { WafService } from 'src/app/shared/services/waf.service';
   styleUrls: ['./waf-detail.component.less'],
 })
 export class WafDetailComponent implements OnInit{
-  data: WafDTO;
+  data: WafDetailDTO;
   constructor(private service: WafService,
               private router: Router,
               @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,

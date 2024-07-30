@@ -5,7 +5,7 @@ import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http'
 import { BaseService } from './base.service';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { BaseResponse } from '../../../../../../libs/common-utils/src';
-import { WafDTO } from 'src/app/pages/waf/waf.model';
+import { WafDetailDTO, WafDTO } from 'src/app/pages/waf/waf.model';
 
 @Injectable({
   providedIn: 'root'
@@ -40,19 +40,9 @@ export class WafService extends BaseService {
   }
 
 
-  getDetail(id: number): Observable<WafDTO> {
-    // Tạo một đối tượng WafDTO giả để trả về
-    const wafDetail: WafDTO = {
-      id: id,
-      name: 'Example Name',
-      package: 'Example Package',
-      begin: new Date('2024-01-01'),
-      end: new Date('2024-12-31'),
-      status: 'ACTIVE'
-    };
-
-    // Trả về một Observable chứa đối tượng WafDTO giả
-    return of(wafDetail);
+  getDetail(id: number): Observable<WafDetailDTO> {
+    return this.http.get<WafDetailDTO>(this.baseUrl + this.ENDPOINT.provisions +
+      `/waf/package/${id}`, {headers: this.getHeaders().headers})
   }
 
 
