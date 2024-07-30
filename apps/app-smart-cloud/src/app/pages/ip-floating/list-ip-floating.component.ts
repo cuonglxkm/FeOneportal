@@ -60,6 +60,7 @@ export class ListIpFloatingComponent implements OnInit {
     this.project = project.id;
     this.projectType = project.type;
     console.log(this.projectType);
+    this.value = '';
     this.getData(true);
   }
 

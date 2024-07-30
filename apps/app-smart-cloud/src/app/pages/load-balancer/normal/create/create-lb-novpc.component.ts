@@ -97,6 +97,7 @@ export class CreateLbNovpcComponent implements OnInit {
   offerId: number;
   isVisiblePopupError: boolean = false;
   errorList: string[] = [];
+  maxAction: string = '';
   closePopupError() {
     this.isVisiblePopupError = false;
   }
@@ -279,6 +280,7 @@ export class CreateLbNovpcComponent implements OnInit {
     this.selectedValueOffer.nativeElement.innerText = selectedOption.offerName;
     this.catalogService.getDetailOffer(Number.parseInt(value)).subscribe(data => {
       this.offerDetail = data;
+      this.maxAction = data?.characteristicValues?.find(item => item.charName = 'MaxConnection')?.charOptionValues[0];
       console.log('value', this.offerDetail);
       this.flavorId = this.offerDetail?.characteristicValues[1].charOptionValues[0];
       this.getTotalAmount();
