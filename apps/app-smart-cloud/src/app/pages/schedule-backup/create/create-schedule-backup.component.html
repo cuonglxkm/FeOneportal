@@ -97,6 +97,7 @@
                                  [nzShowSearch]="false"
                                  [nzLoading]="isLoadingInstance"
                                  [(ngModel)]="instanceSelected"
+                                 [nzDisabled]="true"
                                  (ngModelChange)="selectInstanceChange($event)">
                         <nz-option [nzValue]="instanceId" [nzLabel]="instanceName"></nz-option>
                       </nz-select>
@@ -569,8 +570,19 @@
                              src="assets/imgs/pajamas_question.svg" alt="" />
                       </div>
                     </nz-form-label>
-                    <nz-form-control nzDisableAutoTips [nzErrorTip]="volumeErrorTpl">
-                      <nz-select formControlName="volumeId"
+                    <nz-form-control nzDisableAutoTips [nzErrorTip]="instanceErrorTpl">
+                      <nz-select *ngIf="volumeId != undefined"
+                                 formControlName="instanceId"
+                                 [nzSize]="'large'"
+                                 nzPlaceHolder="{{'volume.modal.attach.title' | i18n}}"
+                                 [nzShowSearch]="false"
+                                 [nzLoading]="isLoadingInstance"
+                                 [(ngModel)]="instanceSelected"
+                                 [nzDisabled]="true"
+                                 (ngModelChange)="selectInstanceChange($event)">
+                        <nz-option [nzValue]="instanceId" [nzLabel]="instanceName"></nz-option>
+                      </nz-select>
+                      <nz-select *ngIf="volumeId == undefined" formControlName="volumeId"
                                  nzSize="large"
                                  nzPlaceHolder="{{'schedule.backup.volume.select' | i18n}}"
                                  [nzShowSearch]="false"
@@ -581,7 +593,7 @@
                                    [nzLabel]="i.name"
                                    [nzValue]="i.id"></nz-option>
                       </nz-select>
-                      <ng-template #volumeErrorTpl let-control>
+                      <ng-template #instanceErrorTpl let-control>
                         <ng-container *ngIf="control.hasError('required')">{{ 'validation.info.required' | i18n }}
                         </ng-container>
                       </ng-template>

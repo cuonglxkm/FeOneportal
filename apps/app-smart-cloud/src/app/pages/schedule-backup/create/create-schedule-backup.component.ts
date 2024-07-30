@@ -36,7 +36,7 @@ export class CreateScheduleBackupComponent implements OnInit {
   isLoading: boolean = false;
   isLoadingAction: boolean = false;
 
-  selectedOption: string = 'instance';
+  selectedOption: string;
 
   validateForm = new FormGroup({
     formInstance: new FormGroup({
@@ -685,6 +685,11 @@ export class CreateScheduleBackupComponent implements OnInit {
     }
   }
 
+  getVolumeById(id) {
+    this.volumeService.getVolumeById(id, this.project).subscribe(data => {
+      this.volumeName = data.name
+    })
+  }
 
   ngOnInit(): void {
     let regionAndProject = getCurrentRegionAndProject();
@@ -692,14 +697,30 @@ export class CreateScheduleBackupComponent implements OnInit {
     this.project = regionAndProject.projectId;
 
     this.modeSelected = 1;
+    debugger
+    if(this.activatedRoute.snapshot.paramMap.get('type')?.includes('VOLUME')) {
+      this.selectedOption = 'volume'
+    } else {
+      this.selectedOption = 'instance'
+    }
+    if (this.activatedRoute.snapshot.paramMap.get('instanceId') != undefined || this.activatedRoute.snapshot.paramMap.get('instanceId') != null) {
+      this.instanceId = Number.parseInt(this.activatedRoute.snapshot.paramMap.get('instanceId'));
+      this.validateForm.get('formInstance').get('instanceId').setValue(this.instanceId)
+      this.getInstanceById();
+    } else {
+      this.getListInstances();
+    }
+    if (this.activatedRoute.snapshot.paramMap.get('idVolume') != undefined || this.activatedRoute.snapshot.paramMap.get('idVolume') != null) {
+      this.volumeId = Number.parseInt(this.activatedRoute.snapshot.paramMap.get('idVolume'));
+      this.validateForm.get('formVolume').get('volumeId').setValue(this.volumeId)
+      this.getVolumeById(this.volumeId);
 
+    } else {
+      this.getListVolume();
+    }
     this.setInitialValues();
-
-    this.getListInstances();
-    this.getInstanceById();
     this.getBackupPackage();
     this.getListScheduleBackup();
-    this.getListVolume();
   }
 
 

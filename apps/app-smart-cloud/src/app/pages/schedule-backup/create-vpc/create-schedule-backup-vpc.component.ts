@@ -126,7 +126,7 @@ export class CreateScheduleBackupVpcComponent implements OnInit {
 
   isLoadingAction: boolean = false;
 
-  selectedOption: string = 'instance';
+  selectedOption: string;
 
   id: number;
 
@@ -582,7 +582,57 @@ export class CreateScheduleBackupVpcComponent implements OnInit {
         this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('schedule.backup.volume.notify.create.fail') + '. ' + error.error.detail);
       });
     }
+  }
 
+  getVolumeById(id) {
+    this.volumeService.getVolumeById(id, this.project).subscribe(data => {
+      this.volumeName = data.name
+    })
+  }
+
+  inputMaxBackup(event) {
+    if (this.selectedOption == 'instance') {
+      if (event.target.value === '0') {
+        event.target.value = 1;
+        this.validateForm.get('formInstance').get('maxBackup').setValue(1);
+      }
+    }
+    if (this.selectedOption == 'volume') {
+      if (event.target.value === '0') {
+        event.target.value = 1;
+        this.validateForm.get('formVolume').get('maxBackup').setValue(1);
+      }
+    }
+  }
+
+  inputMonthMode(event) {
+    if (this.selectedOption == 'instance') {
+      if (event.target.value === '0') {
+        event.target.value = 1;
+        this.validateForm.get('formInstance').get('months').setValue(1);
+      }
+    }
+    if (this.selectedOption == 'volume') {
+      if (event.target.value === '0') {
+        event.target.value = 1;
+        this.validateForm.get('formVolume').get('months').setValue(1);
+      }
+    }
+  }
+
+  inputDayInMonthMode(event) {
+    if (this.selectedOption == 'instance') {
+      if (event.target.value === '0') {
+        event.target.value = 1;
+        this.validateForm.get('formInstance').get('date').setValue(1);
+      }
+    }
+    if (this.selectedOption == 'volume') {
+      if (event.target.value === '0') {
+        event.target.value = 1;
+        this.validateForm.get('formVolume').get('date').setValue(1);
+      }
+    }
   }
 
   ngOnInit() {
@@ -600,10 +650,31 @@ export class CreateScheduleBackupVpcComponent implements OnInit {
       this.isLoading = false;
     });
 
+    if(this.activatedRoute.snapshot.paramMap.get('type')?.includes('VOLUME')) {
+      this.selectedOption = 'volume'
+    } else {
+      this.selectedOption = 'instance'
+    }
+    if (this.activatedRoute.snapshot.paramMap.get('instanceId') != undefined || this.activatedRoute.snapshot.paramMap.get('instanceId') != null) {
+      this.instanceId = Number.parseInt(this.activatedRoute.snapshot.paramMap.get('instanceId'));
+      this.validateForm.get('formInstance').get('instanceId').setValue(this.instanceId)
+      this.getInstanceById();
+    } else {
+      this.getListInstances();
+    }
+    if (this.activatedRoute.snapshot.paramMap.get('idVolume') != undefined || this.activatedRoute.snapshot.paramMap.get('idVolume') != null) {
+      this.volumeId = Number.parseInt(this.activatedRoute.snapshot.paramMap.get('idVolume'));
+      this.validateForm.get('formVolume').get('volumeId').setValue(this.volumeId)
+      this.getVolumeById(this.volumeId);
+
+    } else {
+      this.getListVolume();
+    }
+
     this.setInitialValues();
-    this.getListInstances();
-    this.getInstanceById();
+    // this.getListInstances();
+    // this.getInstanceById();
     this.getListScheduleBackup();
-    this.getListVolume();
+    // this.getListVolume();
   }
 }
