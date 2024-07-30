@@ -133,6 +133,10 @@ export class ListVlanComponent implements OnInit, OnDestroy {
       .subscribe(data => {
       this.response = data
       this.isLoading = false
+        if((this.response.records == null || this.response.records.length < 1) && this.pageNumber != 1) {
+          this.pageNumber = 1
+          this.getListVlanNetwork(false);
+        }
       if (isCheckBegin) {
         this.isBegin = this.response?.records === null || this.response?.records.length < 1 ? true : false;
       }

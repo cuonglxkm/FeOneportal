@@ -146,8 +146,12 @@ export class ListSubUserComponent implements OnInit {
       .getListSubUser(this.value.trim(), this.pageSize, this.pageIndex, this.region)
       .subscribe(
         (data) => {
-          this.response = data;
           this.isLoading = false;
+          this.response = data;
+          if((this.response.records == null || this.response.records.length < 1) && this.pageIndex != 1) {
+            this.pageIndex = 1
+            this.getListSubUsers(false);
+          }
 
           const transformedData = data.records.map(record => {
             const [firstKey, ...remainingKeys] = record.keys;
@@ -157,15 +161,10 @@ export class ListSubUserComponent implements OnInit {
               keys: remainingKeys
             };
           });
-
           this.listSubuser = transformedData;
-
-
           if (isBegin) {
             this.isCheckBegin =
-              this.response.records.length < 1 || this.response.records === null
-                ? true
-                : false;
+              this.response.records.length < 1 || this.response.records === null ? true : false;
           }
         },
         (error) => {
@@ -174,7 +173,6 @@ export class ListSubUserComponent implements OnInit {
         }
       );
   }
-
   handleOkEdit() {
     this.getListSubUsers(false);
   }

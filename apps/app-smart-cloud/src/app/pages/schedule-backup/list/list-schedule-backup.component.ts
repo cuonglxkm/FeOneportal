@@ -32,7 +32,8 @@ export class ListScheduleBackupComponent implements OnInit, OnDestroy {
     { label: this.i18n.fanyi('app.status.all'), value: 'all' },
     { label: this.i18n.fanyi('service.status.active'), value: 'ACTIVE' },
     { label: this.i18n.fanyi('app.status.not.done'), value: 'DISABLED' },
-    { label: this.i18n.fanyi('app.status.suspend'), value: 'PAUSED' }
+    { label: this.i18n.fanyi('service.status.paused'), value: 'PAUSED' },
+    { label: this.i18n.fanyi('app.suspend'), value: 'SUSPENDED' }
   ];
 
   listBackupSchedule: BackupSchedule[] = [];
@@ -181,6 +182,11 @@ export class ListScheduleBackupComponent implements OnInit, OnDestroy {
       this.response = data;
       this.listBackupSchedule = data.records;
       this.isLoading = false;
+
+      if((this.response.records == null || this.response.records.length < 1) && this.pageIndex != 1) {
+        this.pageIndex = 1
+        this.getListScheduleBackup(false);
+      }
       if (isBegin) {
         this.isBegin = this.response.records.length < 1 || this.response.records === null ? true : false;
       }

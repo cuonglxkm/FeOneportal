@@ -167,7 +167,10 @@ export class VolumeComponent implements OnInit, OnDestroy {
         if (data) {
           this.isLoading = false;
           this.response = data;
-
+          if((this.response.records == null || this.response.records.length < 1) && this.pageIndex != 1) {
+            this.pageIndex = 1
+            this.getListVolume(false);
+          }
           this.response.records.forEach(item => {
             if (item.attachedInstances.length > 0 || item.attachedInstances != null) {
               item.attachedInstances.forEach(item2 => {
@@ -276,7 +279,7 @@ export class VolumeComponent implements OnInit, OnDestroy {
 
   //create schedule backup
   navigateToCreateScheduleBackup(id) {
-    if (this.typeVPC == 1) { 
+    if (this.typeVPC == 1) {
       if (this.region === RegionID.ADVANCE) {
       this.router.navigate(['/app-smart-cloud/schedule/backup-advance/create/vpc'], {
         queryParams: { type: 'VOLUME', idVolume: id }
