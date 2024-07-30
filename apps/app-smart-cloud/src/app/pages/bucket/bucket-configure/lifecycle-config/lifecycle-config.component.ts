@@ -6,7 +6,12 @@ import {
   Input,
   OnInit,
 } from '@angular/core';
-import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
+import {
+  FormControl,
+  FormGroup,
+  NonNullableFormBuilder,
+  Validators,
+} from '@angular/forms';
 import { I18NService } from '@core';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { getCurrentRegionAndProject } from '@shared';
@@ -59,35 +64,36 @@ export class LifecycleConfigComponent implements OnInit {
     let regionAndProject = getCurrentRegionAndProject();
     this.region = regionAndProject.regionId;
     this.searchLifeCycle();
-    this.searchDelay.pipe(debounceTime(TimeCommon.timeOutSearch)).subscribe(() => {     
-      this.searchLifeCycle();
-    });
+    this.searchDelay
+      .pipe(debounceTime(TimeCommon.timeOutSearch))
+      .subscribe(() => {
+        this.searchLifeCycle();
+      });
   }
 
   formUpdate: FormGroup<{
     prefix: FormControl<string>;
-    isSetExpiration_Day: FormControl<boolean>
-    isSetAbortIncompleteMultipartUpload_Day: FormControl<boolean>
-    isSetNoncurrentVersionExpiration_Day: FormControl<boolean>
+    isSetExpiration_Day: FormControl<boolean>;
+    isSetAbortIncompleteMultipartUpload_Day: FormControl<boolean>;
+    isSetNoncurrentVersionExpiration_Day: FormControl<boolean>;
   }> = this.fb.group({
     prefix: [''],
     isSetExpiration_Day: [false],
-    isSetAbortIncompleteMultipartUpload_Day : [false],
-    isSetNoncurrentVersionExpiration_Day : [false]
+    isSetAbortIncompleteMultipartUpload_Day: [false],
+    isSetNoncurrentVersionExpiration_Day: [false],
   });
 
   formCreate: FormGroup<{
     prefix: FormControl<string>;
-    isSetExpiration_Day: FormControl<boolean>
-    isSetAbortIncompleteMultipartUpload_Day: FormControl<boolean>
-    isSetNoncurrentVersionExpiration_Day: FormControl<boolean>
+    isSetExpiration_Day: FormControl<boolean>;
+    isSetAbortIncompleteMultipartUpload_Day: FormControl<boolean>;
+    isSetNoncurrentVersionExpiration_Day: FormControl<boolean>;
   }> = this.fb.group({
     prefix: [''],
     isSetExpiration_Day: [false],
-    isSetAbortIncompleteMultipartUpload_Day : [false],
-    isSetNoncurrentVersionExpiration_Day : [false]
+    isSetAbortIncompleteMultipartUpload_Day: [false],
+    isSetNoncurrentVersionExpiration_Day: [false],
   });
-
 
   searchLifeCycle() {
     this.loading = true;
@@ -122,7 +128,7 @@ export class LifecycleConfigComponent implements OnInit {
       });
   }
 
-  search(search: string) {  
+  search(search: string) {
     this.value = search.trim();
     this.searchLifeCycle();
   }
@@ -133,54 +139,61 @@ export class LifecycleConfigComponent implements OnInit {
     this.isVisibleCreate = true;
   }
 
-  resetForm(){
-    this.formCreate.reset()
-    this.lifecycleCreate.lifecycleRuleExpiration_Day = 1
-    this.lifecycleCreate.lifecycleRuleNoncurrentVersionExpiration_Day = 1
-    this.lifecycleCreate.lifecycleRuleAbortIncompleteMultipartUpload_Day = 1
-    this.lifecycleCreate.enabled = false
-    this.lifecycleCreate.isSetExpiration_Day = false
-    this.lifecycleCreate.isSetNoncurrentVersionExpiration_Day = false
-    this.lifecycleCreate.isSetAbortIncompleteMultipartUpload_Day = false
-    this.listTag = []
+  resetForm() {
+    this.formCreate.reset();
+    this.lifecycleCreate.lifecycleRuleExpiration_Day = 1;
+    this.lifecycleCreate.lifecycleRuleNoncurrentVersionExpiration_Day = 1;
+    this.lifecycleCreate.lifecycleRuleAbortIncompleteMultipartUpload_Day = 1;
+    this.lifecycleCreate.enabled = false;
+    this.lifecycleCreate.isSetExpiration_Day = false;
+    this.lifecycleCreate.isSetNoncurrentVersionExpiration_Day = false;
+    this.lifecycleCreate.isSetAbortIncompleteMultipartUpload_Day = false;
+    this.lifecycleCreate.lifecycleTagPredicate = [];
+    this.listTag = [];
   }
 
   handleCancelCreate() {
     this.isVisibleCreate = false;
-    this.resetForm()
+    this.resetForm();
   }
 
   handleOkCreate() {
-    this.isLoadingCreate = true
+    this.isLoadingCreate = true;
     this.lifecycleCreate.bucketName = this.bucketName;
     this.listTag.forEach((e) => {
       let lifecycleTagPredicate: LifecycleTagPredicate =
         new LifecycleTagPredicate();
-      lifecycleTagPredicate.metaKey = e.key;
+      if (e.key != '') {
+        lifecycleTagPredicate.metaKey = e.key;
+      }
       lifecycleTagPredicate.metaValue = e.value;
       this.lifecycleCreate.lifecycleTagPredicate.push(lifecycleTagPredicate);
     });
-    this.bucketService.createBucketLifecycle(this.lifecycleCreate, this.region).subscribe({
-      next: (data) => {
-        this.isVisibleCreate = false;
-        this.isLoadingCreate = false;
-        this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('app.lifeCycle.create.success'));
-        this.resetForm()
-        this.searchLifeCycle();
-        this.cdr.detectChanges()
-      },
-      error: (e) => {
-        this.isLoadingCreate = false;
-        this.notification.error(
-          this.i18n.fanyi('app.status.fail'),
-          this.i18n.fanyi('app.lifeCycle.create.fail')
-        );
-        this.cdr.detectChanges()
-      },
-    });
+    this.bucketService
+      .createBucketLifecycle(this.lifecycleCreate, this.region)
+      .subscribe({
+        next: (data) => {
+          this.isVisibleCreate = false;
+          this.isLoadingCreate = false;
+          this.notification.success(
+            this.i18n.fanyi('app.status.success'),
+            this.i18n.fanyi('app.lifeCycle.create.success')
+          );
+          this.resetForm();
+          this.searchLifeCycle();
+          this.cdr.detectChanges();
+        },
+        error: (e) => {
+          this.isLoadingCreate = false;
+          this.notification.error(
+            this.i18n.fanyi('app.status.fail'),
+            this.i18n.fanyi('app.lifeCycle.create.fail')
+          );
+          this.cdr.detectChanges();
+        },
+      });
   }
 
-  
   addTag() {
     let tag = new Tag();
     tag.id = this.idTag++;
@@ -203,24 +216,29 @@ export class LifecycleConfigComponent implements OnInit {
   }
 
   handleOkDelete() {
-    this.isLoadingDelete = true
-    this.bucketService.deleteBucketLifecycle(this.lifecycleDelete, this.region).subscribe({
-      next: (data) => {
-        this.isVisibleDelete = false;
-        this.isLoadingDelete = false;
-        this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('app.lifeCycle.delete.success'));
-        this.searchLifeCycle();
-        this.cdr.detectChanges()
-      },
-      error: (error) => {
-        this.isLoadingDelete = false;
-        this.notification.error(
-          this.i18n.fanyi('app.status.fail'),
-          this.i18n.fanyi('app.lifeCycle.delete.fail')
-        );
-        this.cdr.detectChanges()
-      },
-    });
+    this.isLoadingDelete = true;
+    this.bucketService
+      .deleteBucketLifecycle(this.lifecycleDelete, this.region)
+      .subscribe({
+        next: (data) => {
+          this.isVisibleDelete = false;
+          this.isLoadingDelete = false;
+          this.notification.success(
+            this.i18n.fanyi('app.status.success'),
+            this.i18n.fanyi('app.lifeCycle.delete.success')
+          );
+          this.searchLifeCycle();
+          this.cdr.detectChanges();
+        },
+        error: (error) => {
+          this.isLoadingDelete = false;
+          this.notification.error(
+            this.i18n.fanyi('app.status.fail'),
+            this.i18n.fanyi('app.lifeCycle.delete.fail')
+          );
+          this.cdr.detectChanges();
+        },
+      });
   }
 
   isVisibleUpdate = false;
@@ -229,9 +247,15 @@ export class LifecycleConfigComponent implements OnInit {
     this.isVisibleUpdate = true;
     this.listTag = [];
     this.lifecycleUpdate = data;
-    this.formUpdate.controls.isSetExpiration_Day.setValue(this.lifecycleUpdate.isSetExpiration_Day)
-    this.formUpdate.controls.isSetAbortIncompleteMultipartUpload_Day.setValue(this.lifecycleUpdate.isSetAbortIncompleteMultipartUpload_Day)
-    this.formUpdate.controls.isSetNoncurrentVersionExpiration_Day.setValue(this.lifecycleUpdate.isSetNoncurrentVersionExpiration_Day)
+    this.formUpdate.controls.isSetExpiration_Day.setValue(
+      this.lifecycleUpdate.isSetExpiration_Day
+    );
+    this.formUpdate.controls.isSetAbortIncompleteMultipartUpload_Day.setValue(
+      this.lifecycleUpdate.isSetAbortIncompleteMultipartUpload_Day
+    );
+    this.formUpdate.controls.isSetNoncurrentVersionExpiration_Day.setValue(
+      this.lifecycleUpdate.isSetNoncurrentVersionExpiration_Day
+    );
     let idTag = 0;
     this.lifecycleUpdate.lifecycleTagPredicate.forEach((e) => {
       let newtag: Tag = new Tag();
@@ -244,11 +268,11 @@ export class LifecycleConfigComponent implements OnInit {
 
   handleCancelUpdate() {
     this.isVisibleUpdate = false;
-    this.listTag = []
+    this.listTag = [];
   }
 
   handleOkUpdate() {
-    this.isLoadingUpdate = true
+    this.isLoadingUpdate = true;
     this.lifecycleUpdate.bucketName = this.bucketName;
     this.lifecycleUpdate.lifecycleTagPredicate = [];
     this.listTag.forEach((e) => {
@@ -258,23 +282,28 @@ export class LifecycleConfigComponent implements OnInit {
       lifecycleTagPredicate.metaValue = e.value;
       this.lifecycleUpdate.lifecycleTagPredicate.push(lifecycleTagPredicate);
     });
-    this.bucketService.updateBucketLifecycle(this.lifecycleUpdate, this.region).subscribe({
-      next: (data) => {
-        this.isVisibleUpdate = false;
-        this.isLoadingUpdate = false;
-        this.searchLifeCycle();
-        this.listTag = []
-        this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('app.lifeCycle.edit.success'));
-        this.cdr.detectChanges()
-      },
-      error: (e) => {
-        this.isLoadingUpdate = false;
-        this.notification.error(
-          this.i18n.fanyi('app.status.fail'),
-          this.i18n.fanyi('app.lifeCycle.edit.fail')
-        );
-        this.cdr.detectChanges()
-      },
-    });
+    this.bucketService
+      .updateBucketLifecycle(this.lifecycleUpdate, this.region)
+      .subscribe({
+        next: (data) => {
+          this.isVisibleUpdate = false;
+          this.isLoadingUpdate = false;
+          this.searchLifeCycle();
+          this.listTag = [];
+          this.notification.success(
+            this.i18n.fanyi('app.status.success'),
+            this.i18n.fanyi('app.lifeCycle.edit.success')
+          );
+          this.cdr.detectChanges();
+        },
+        error: (e) => {
+          this.isLoadingUpdate = false;
+          this.notification.error(
+            this.i18n.fanyi('app.status.fail'),
+            this.i18n.fanyi('app.lifeCycle.edit.fail')
+          );
+          this.cdr.detectChanges();
+        },
+      });
   }
 }
