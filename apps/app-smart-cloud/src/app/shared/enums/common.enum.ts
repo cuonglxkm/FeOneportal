@@ -22,6 +22,7 @@ export enum ServiceType {
     Kafka = 21,
     SNAPSHOT_PACKET = 22,
     SHARE_SNAPSHOT = 24,
+    WAF = 27,
     OTHER = 100
 }
 
