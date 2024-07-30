@@ -91,26 +91,28 @@
     </thead>
     <tbody>
       <tr *ngFor="let item of rowSelectionTable.data; index as i">
-        <td>{{ (index-1)*10 + i + 1}}</td>
+        <td>{{ (index-1)*size + i + 1}}</td>
         <td>
-          {{ item.accessKey }}
-          <img
-            src="assets/imgs/icon_copy1.svg"
-            alt=""
-            style="cursor: pointer"
-            nz-tooltip="Copy"
-            (click)="copyText(item.accessKey)"
-          />
+          <nz-row nzJustify="space-between">
+            <nz-col>
+              <div>{{ item.accessKey }}</div>
+            </nz-col>
+            <nz-col>
+              <img src="assets/imgs/icon_copy1.svg" alt="" style="cursor: pointer" nz-tooltip="Copy"
+                (click)="copyText(item.accessKey)" />
+            </nz-col>
+          </nz-row>
         </td>
         <td>
-          {{ item.secretKey }}
-          <img
-            src="assets/imgs/icon_copy1.svg"
-            alt=""
-            style="cursor: pointer"
-            nz-tooltip="Copy"
-            (click)="copyText(item.secretKey)"
-          />
+          <nz-row nzJustify="space-between">
+            <nz-col>
+              <div>{{ item.secretKey }}</div>
+            </nz-col>
+            <nz-col>
+              <img src="assets/imgs/icon_copy1.svg" alt="" style="cursor: pointer" nz-tooltip="Copy"
+                (click)="copyText(item.secretKey)" />
+            </nz-col>
+          </nz-row>
         </td>
         <td [nz-tooltip]="item.subUser" style="overflow: hidden;
         font-weight: normal;
