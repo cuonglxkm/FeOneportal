@@ -6,6 +6,7 @@ import { BaseService } from './base.service';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { BaseResponse } from '../../../../../../libs/common-utils/src';
 import { WafDetailDTO, WafDTO } from 'src/app/pages/waf/waf.model';
+import { OfferItem } from 'src/app/pages/instances/instances.model';
 
 @Injectable({
   providedIn: 'root'
@@ -43,6 +44,12 @@ export class WafService extends BaseService {
   getDetail(id: number): Observable<WafDetailDTO> {
     return this.http.get<WafDetailDTO>(this.baseUrl + this.ENDPOINT.provisions +
       `/waf/package/${id}`, {headers: this.getHeaders().headers})
+  }
+
+  getOffersById(id: number): Observable<OfferItem> {
+    return this.http.get<OfferItem>(
+      `${this.baseUrl}/catalogs/offers/${id}`
+    );
   }
 
 
