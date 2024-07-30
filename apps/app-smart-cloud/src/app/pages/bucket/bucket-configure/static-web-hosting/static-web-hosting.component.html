@@ -7,8 +7,9 @@
 </div>
 <nz-radio-group
   style="width: 100%; margin-top: 10px"
-  [(ngModel)]="bucketDetail.isWebsite"
-  [ngModelOptions]="{ standalone: true }"
+  [(ngModel)]="bucketDetail.isWebsite" 
+  [ngModelOptions]="{ standalone: true }" 
+  (ngModelChange)="toggleStaticWebConfig($event)"
 >
   <nz-row>
     <nz-col nzSpan="12">
@@ -29,17 +30,21 @@
       {{ 'app.file.static.web.hosting' | i18n }}
     </div>
     <div class="text-label" style="margin-top: 16px">{{ 'app.example' | i18n }}: index.html</div>
+    <div *ngIf="bucketDetail.isWebsite" class="text-label" style="margin-top: 16px; color: #eb1414">
+      {{ 'app.note.static.web.hosting' | i18n }}
+    </div>
   </nz-col>
   <nz-col nzSpan="12">
     <div class="text-label" style="margin-top: 16px">
       {{ 'app.file.static.web.hosting.error' | i18n }}
     </div>
     <div class="text-label" style="margin-top: 16px">{{ 'app.example' | i18n }}: error.html</div>
+    <div *ngIf="bucketDetail.isWebsite" class="text-label" style="margin-top: 16px; color: #eb1414">
+      {{ 'app.note.static.web.hosting' | i18n }}
+    </div>
   </nz-col>
 </nz-row>
-<div *ngIf="bucketDetail.isWebsite" class="text-label" style="margin-top: 16px; color: #eb1414">
-  {{ 'app.note.static.web.hosting' | i18n }}
-</div>
+
 <nz-row *ngIf="bucketDetail.isWebsite" nzGutter="24"
   ><nz-col nzSpan="12">
     <nz-form-item>
@@ -49,7 +54,6 @@
       class="input-custom"
       nz-input
       [(ngModel)]="bucketDetail.indexDocumentSuffix" 
-      [disabled]="true"
       [ngModelOptions]="{ standalone: true }"
       placeholder="index.html"
       formControlName="indexDocumentSuffix"
@@ -64,16 +68,16 @@
     </ng-template>
     </nz-form-control>
     </nz-form-item>
+    <label
+    class="text-label"
+    nz-checkbox
+    [(ngModel)]="bucketDetail.checkRedirectAllRequests"
+    [ngModelOptions]="{ standalone: true }" 
+    (ngModelChange)="handleChangeRedirect($event)"
+    >{{ 'app.label.static.web.hosting' | i18n }}</label
+    >
     <nz-form-item>
       <nz-form-control [nzErrorTip]="redirectAllRequestsToErrorTpl">
-    <label
-      class="text-label"
-      nz-checkbox
-      [(ngModel)]="bucketDetail.checkRedirectAllRequests"
-      [ngModelOptions]="{ standalone: true }" 
-      (ngModelChange)="handleChangeRedirect($event)"
-      >{{ 'app.label.static.web.hosting' | i18n }}</label
-    >
     <input
       style="margin-top: 16px"
       class="input-custom"
@@ -85,7 +89,7 @@
     />
     <ng-template #redirectAllRequestsToErrorTpl let-control>
       <ng-container *ngIf="control.hasError('pattern')">{{
-        'app.file.static.web.space.error' | i18n
+        'app.label.static.web.hosting.error1' | i18n
       }}</ng-container>
       <ng-container *ngIf="control.hasError('required')">{{
         'app.file.static.web.space.require' | i18n
@@ -97,10 +101,15 @@
       Endpoint
       <img
       style="padding-right: 10px; margin-top: -4px"
+      nz-popover [nzPopoverContent]="popoverContent"
+                 nzPopoverPlacement="bottom"
       src="assets/imgs/pajamas_question.svg"
       alt=""
     />
     </div>
+    <ng-template #popoverContent>
+      <span [innerHTML]="'app.file.static.web.hosting.tooltip' | i18n"></span>
+    </ng-template>
     <nz-input-group
       style="margin-right: 8px; width: 100%; border-radius: 8px"
       [nzSuffix]="suffixIcon"
