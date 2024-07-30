@@ -22,7 +22,8 @@
   <ng-template #action>
     <div class="alain-custom-action text-right">
       <share-users-combobox></share-users-combobox>
-      <region-select-dropdown (regionChange)="onRegionChanged($event)" (valueChanged)="regionChanged($event)"></region-select-dropdown>
+      <region-select-dropdown (regionChange)="onRegionChanged($event)"
+                              (valueChanged)="regionChanged($event)"></region-select-dropdown>
       <project-select-dropdown #projectCombobox (valueChanged)="projectChanged($event)"
                                (userChanged)="userChanged($event)"
                                [regionId]="region"></project-select-dropdown>
@@ -44,35 +45,50 @@
                      [ngModelOptions]="{ standalone: true }">Backup VM</label>
               <label nz-radio nzValue="VOLUME" class="text-label" [nzDisabled]="true">Backup Volume</label>
             </div>
-            <nz-row nzGutter="24" style="margin-top: 20px;">
+            <nz-row nzGutter="24" style="margin-top: 20px; margin-bottom: 0;">
               <nz-col nzSpan="12">
+                <!---Tên lịch backup----!-->
                 <nz-form-item>
                   <nz-form-label nzFor="name">
                     <div class="label">
                       <span>{{ 'schedule.backup.label.name' | i18n }} (<span style="color: #EA3829;">*</span>)</span>
+                      <img nz-popover
+                           [nzPopoverContent]="'schedule.backup.tooltip.name' | i18n"
+                           nzPopoverPlacement="bottom"
+                           style="margin-left: 5px;margin-top: 2px;"
+                           src="assets/imgs/pajamas_question.svg" alt="" />
                     </div>
                   </nz-form-label>
                   <nz-form-control nzDisableAutoTips [nzErrorTip]="nameErrorTpl">
-                    <input nz-input class="input-custom" formControlName="name" [maxLength]="50" />
+                    <input nz-input
+                           class="input-custom"
+                           formControlName="name"
+                           [maxLength]="50"
+                           [placeholder]="'schedule.backup.placeholder.input.name'|i18n" />
                     <ng-template #nameErrorTpl let-control>
                       <ng-container *ngIf="control.hasError('required')">{{ 'validation.info.required' | i18n }}
                       </ng-container>
                       <ng-container *ngIf="control.hasError('pattern')">{{ 'schedule.backup.validate1' | i18n }}
+                        . {{ 'schedule.backup.validate2'|i18n }}
                       </ng-container>
                       <ng-container
-                        *ngIf="control.hasError('invalidCharacters')">{{ 'schedule.backup.validate2' | i18n }}
-                      </ng-container>
-                      <ng-container *ngIf="control.hasError('duplicateName')">{{ 'schedule.backup.validate3' | i18n }}
+                        *ngIf="control.hasError('duplicateName')">{{ 'schedule.backup.validate3' | i18n }}
                       </ng-container>
                     </ng-template>
                   </nz-form-control>
                 </nz-form-item>
               </nz-col>
               <nz-col nzSpan="12">
+                <!----chọn vm--!-->
                 <nz-form-item>
                   <nz-form-label nzFor="instanceId">
                     <div class="label">
-                      <span>{{ 'wan.label.instance.select' | i18n }} (<span style="color: #EA3829;">*</span>)</span>
+                      <span>{{ 'volume.modal.attach.title' | i18n }} (<span style="color: #EA3829;">*</span>)</span>
+                      <img style="margin-left: 5px;"
+                           nz-popover
+                           [nzPopoverContent]="'schedule.backup.vm.select.vm.tooltip' | i18n"
+                           nzPopoverPlacement="bottom"
+                           src="assets/imgs/pajamas_question.svg" alt="" />
                     </div>
                   </nz-form-label>
                   <nz-form-control>
@@ -85,12 +101,19 @@
                 </nz-form-item>
               </nz-col>
             </nz-row>
-            <nz-row nzGutter="24">
+            <nz-row nzGutter="24" style="margin-bottom: 0;">
               <nz-col nzSpan="12">
+                <!---Số bản lưu trữ backup----!-->
                 <nz-form-item>
                   <nz-form-label nzFor="maxBackup">
                     <div class="label">
                       <span>{{ 'schedule.backup.number.save' | i18n }} (<span style="color: #EA3829;">*</span>)</span>
+                      <img nz-popover
+                           [nzPopoverContent]="'schedule.backup.vm.max.backup.tooltip' | i18n"
+                           nzPopoverPlacement="bottom"
+                           style="margin-left: 5px;margin-top: 2px;"
+                           [nzPopoverOverlayStyle]="{ width: '360px' }"
+                           src="assets/imgs/pajamas_question.svg" alt="" />
                     </div>
                   </nz-form-label>
                   <nz-form-control>
@@ -103,11 +126,16 @@
                 </nz-form-item>
               </nz-col>
               <nz-col nzSpan="12">
+                <!---Chế độ backup----!-->
                 <nz-form-item>
                   <nz-form-label nzFor="backupMode">
                     <div class="label">
                       <span>{{ 'schedule.backup.mode' | i18n }} (<span style="color: #EA3829;">*</span>)</span>
-
+                      <img style="margin-left: 5px;"
+                           nz-popover
+                           [nzPopoverContent]="'schedule.backup.vm.mode.backup.tooltip' | i18n"
+                           nzPopoverPlacement="bottom"
+                           src="assets/imgs/pajamas_question.svg" alt="" />
                     </div>
                   </nz-form-label>
                   <nz-form-control nzDisableAutoTips [nzErrorTip]="backupModeErrorTpl">
@@ -128,50 +156,96 @@
                 </nz-form-item>
               </nz-col>
             </nz-row>
-            <nz-row nzGutter="24" *ngIf="validateForm.controls.backupMode.value === 1">
-              <nz-col nzSpan="12">
-                <nz-form-item>
-                  <nz-form-label>
-                    <div class="label">
+            <div *ngIf="validateForm.controls.backupMode.value === 1">
+              <nz-row nzGutter="24" style="margin-bottom: 0;">
+                <nz-col nzSpan="12">
+                  <nz-form-item>
+                    <nz-form-label>
+                      <div class="label">
                       <span>{{ 'app.backup.volume.backup.package' | i18n }} (<span
                         style="color: #EA3829;">*</span>)</span>
-                    </div>
-                  </nz-form-label>
-                  <nz-form-control nzDisableAutoTips>
-                    <input nz-input
-                           class="input-custom"
-                           style="width: 100%;"
-                           value="{{backupSchedule?.backupPackageName}}"
-                           [disabled]="true" />
-                  </nz-form-control>
-                </nz-form-item>
-              </nz-col>
+                        <img style="margin-left: 5px;"
+                             nz-popover
+                             [nzPopoverContent]="'schedule.backup.vm.backup.package.tooltip' | i18n"
+                             nzPopoverPlacement="bottom"
+                             src="assets/imgs/pajamas_question.svg" alt="" />
+                      </div>
+                    </nz-form-label>
+                    <nz-form-control nzDisableAutoTips>
+                      <input nz-input
+                             class="input-custom"
+                             style="width: 100%;"
+                             value="{{backupSchedule?.backupPackageName}}"
+                             [disabled]="true" />
+                    </nz-form-control>
+                  </nz-form-item>
+                </nz-col>
+                <nz-col nzSpan="12">
+                  <nz-form-item>
+                    <nz-form-label nzFor="times">
+                      <div class="label">
+                        <span>{{ 'app.cluster.action-time' | i18n }} (<span style="color: #EA3829;">*</span>)</span>
+                        <img style="margin-left: 5px;"
+                             nz-popover
+                             [nzPopoverContent]="'schedule.backup.vm.backup.volume.mode.daily.tooltip' | i18n"
+                             nzPopoverPlacement="bottom"
+                             src="assets/imgs/pajamas_question.svg" alt="" />
+                      </div>
+                    </nz-form-label>
+                    <nz-form-control nzDisableAutoTips [nzErrorTip]="timeErrorTpl">
+                      <nz-time-picker formControlName=times
+                                      class="input-custom" nzFormat="HH:mm"
+                                      nzPlaceHolder="{{'schedule.backup.time.select' | i18n}}"
+                                      style="width: 100%"></nz-time-picker>
+                      <ng-template #timeErrorTpl let-control>
+                        <ng-container *ngIf="control.hasError('required')">{{ 'validation.info.required' | i18n }}
+                        </ng-container>
+                      </ng-template>
+                    </nz-form-control>
+                  </nz-form-item>
+                </nz-col>
+              </nz-row>
+              <nz-row nzGutter="24" style="margin-bottom: 0;">
+                <nz-col nzSpan="12">
+                  <nz-row nzGutter="24">
+                    <nz-col nzSpan="12">
+                      <span class="text-label">{{ 'app.tooltip.backup.package.storage'|i18n }}</span>
+                    </nz-col>
+                    <nz-col nzSpan="12" style="text-align: end;">
+                      <span class="text-label">{{ backupPackageDetail?.sizeInGB }} GB</span>
+                    </nz-col>
+                  </nz-row>
+                  <nz-row nzGutter="24">
+                    <nz-col nzSpan="12">
+                      <span class="text-label">{{ 'app.backup.package.storage.used'|i18n }}</span>
+                    </nz-col>
+                    <nz-col nzSpan="12" style="text-align: end;">
+                      <span class="text-label">{{ backupPackageDetail?.usedSize }} GB</span>
+                    </nz-col>
+                  </nz-row>
+                  <nz-row nzGutter="24">
+                    <nz-col nzSpan="12">
+                      <span class="text-label">{{ 'app.backup.package.storage.remaining'|i18n }}</span>
+                    </nz-col>
+                    <nz-col nzSpan="12" style="text-align: end;">
+                        <span class="text-label">{{ backupPackageDetail?.sizeInGB - backupPackageDetail?.usedSize }}
+                          GB</span>
+                    </nz-col>
+                  </nz-row>
+                </nz-col>
+              </nz-row>
+            </div>
+            <nz-row nzGutter="24" *ngIf="validateForm.controls.backupMode.value === 2" style="margin-bottom: 0;">
               <nz-col nzSpan="12">
                 <nz-form-item>
                   <nz-form-label nzFor="times">
                     <div class="label">
                       <span>{{ 'app.cluster.action-time' | i18n }} (<span style="color: #EA3829;">*</span>)</span>
-                    </div>
-                  </nz-form-label>
-                  <nz-form-control nzDisableAutoTips [nzErrorTip]="timeErrorTpl">
-                    <nz-time-picker formControlName=times
-                                    class="input-custom" nzFormat="HH:mm"
-                                    nzPlaceHolder="{{'schedule.backup.time.select' | i18n}}"
-                                    style="width: 100%"></nz-time-picker>
-                    <ng-template #timeErrorTpl let-control>
-                      <ng-container *ngIf="control.hasError('required')">{{ 'validation.info.required' | i18n }}
-                      </ng-container>
-                    </ng-template>
-                  </nz-form-control>
-                </nz-form-item>
-              </nz-col>
-            </nz-row>
-            <nz-row nzGutter="24" *ngIf="validateForm.controls.backupMode.value === 2">
-              <nz-col nzSpan="12">
-                <nz-form-item>
-                  <nz-form-label nzFor="times">
-                    <div class="label">
-                      <span>{{ 'app.cluster.action-time' | i18n }} (<span style="color: #EA3829;">*</span>)</span>
+                      <img style="margin-left: 5px;"
+                           nz-popover
+                           [nzPopoverContent]="'schedule.backup.vm.backup.volume.mode.daily.tooltip' | i18n"
+                           nzPopoverPlacement="bottom"
+                           src="assets/imgs/pajamas_question.svg" alt="" />
                     </div>
                   </nz-form-label>
                   <nz-form-control nzDisableAutoTips [nzErrorTip]="timeErrorTpl">
@@ -191,11 +265,17 @@
                   <nz-form-label nzFor="daysOfWeekMultiple">
                     <div class="label">
                       <span>{{ 'schedule.backup.day.select' | i18n }} (<span style="color: #EA3829;">*</span>)</span>
+                      <img style="margin-left: 5px;"
+                           nz-popover
+                           [nzPopoverContent]="'schedule.backup.vm.backup.volume.mode.day.tooltip' | i18n"
+                           nzPopoverPlacement="bottom"
+                           src="assets/imgs/pajamas_question.svg" alt="" />
                     </div>
                   </nz-form-label>
                   <nz-form-control nzDisableAutoTips [nzErrorTip]="daysOfWeekErrorTpl">
                     <nz-select formControlName="daysOfWeekMultiple"
                                nzMode="multiple"
+                               nzSize="large"
                                nzPlaceHolder="{{'schedule.backup.day.select' | i18n}}"
                                [nzShowSearch]="false">
                       <nz-option *ngFor="let i of daysOfWeek"
@@ -210,12 +290,17 @@
                 </nz-form-item>
               </nz-col>
             </nz-row>
-            <nz-row nzGutter="24" *ngIf="validateForm.controls.backupMode.value === 3">
+            <nz-row nzGutter="24" *ngIf="validateForm.controls.backupMode.value === 3" style="margin-bottom: 0;">
               <nz-col nzSpan="8">
                 <nz-form-item>
                   <nz-form-label nzFor="times">
                     <div class="label">
                       <span>{{ 'app.cluster.action-time' | i18n }} (<span style="color: #EA3829;">*</span>)</span>
+                      <img style="margin-left: 5px;"
+                           nz-popover
+                           [nzPopoverContent]="'schedule.backup.vm.backup.volume.mode.daily.tooltip' | i18n"
+                           nzPopoverPlacement="bottom"
+                           src="assets/imgs/pajamas_question.svg" alt="" />
                     </div>
                   </nz-form-label>
                   <nz-form-control nzDisableAutoTips [nzErrorTip]="timeErrorTpl">
@@ -235,6 +320,11 @@
                   <nz-form-label nzFor="numberOfWeek">
                     <div class="label">
                       <span>{{ 'app.number.of.week.executed' | i18n }} (<span style="color: #EA3829;">*</span>)</span>
+                      <img style="margin-left: 5px;"
+                           nz-popover
+                           [nzPopoverContent]="'schedule.backup.vm.backup.volume.mode.week.tooltip' | i18n"
+                           nzPopoverPlacement="bottom"
+                           src="assets/imgs/pajamas_question.svg" alt="" />
                     </div>
                   </nz-form-label>
                   <nz-form-control nzDisableAutoTips>
@@ -257,6 +347,11 @@
                   <nz-form-label nzFor="daysOfWeek">
                     <div class="label">
                       <span>{{ 'schedule.backup.day.select' | i18n }} (<span style="color: #EA3829;">*</span>)</span>
+                      <img style="margin-left: 5px;"
+                           nz-popover
+                           [nzPopoverContent]="'schedule.backup.vm.backup.volume.mode.day.tooltip' | i18n"
+                           nzPopoverPlacement="bottom"
+                           src="assets/imgs/pajamas_question.svg" alt="" />
                     </div>
                   </nz-form-label>
                   <nz-form-control nzDisableAutoTips [nzErrorTip]="daysOfWeekErrorTpl">
@@ -276,12 +371,17 @@
                 </nz-form-item>
               </nz-col>
             </nz-row>
-            <nz-row nzGutter="24" *ngIf="validateForm.controls.backupMode.value === 4">
+            <nz-row nzGutter="24" *ngIf="validateForm.controls.backupMode.value === 4" style="margin-bottom: 0;">
               <nz-col nzSpan="8">
                 <nz-form-item>
                   <nz-form-label nzFor="times">
                     <div class="label">
                       <span>{{ 'app.cluster.action-time' | i18n }} (<span style="color: #EA3829;">*</span>)</span>
+                      <img style="margin-left: 5px;"
+                           nz-popover
+                           [nzPopoverContent]="'schedule.backup.vm.backup.volume.mode.daily.tooltip' | i18n"
+                           nzPopoverPlacement="bottom"
+                           src="assets/imgs/pajamas_question.svg" alt="" />
                     </div>
                   </nz-form-label>
                   <nz-form-control nzDisableAutoTips [nzErrorTip]="timeErrorTpl">
@@ -301,6 +401,11 @@
                   <nz-form-label nzFor="months">
                     <div class="label">
                       <span>{{ 'app.number.of.month.executed' | i18n }} (<span style="color: #EA3829;">*</span>)</span>
+                      <img style="margin-left: 5px;"
+                           nz-popover
+                           [nzPopoverContent]="'schedule.backup.vm.backup.volume.mode.month.tooltip' | i18n"
+                           nzPopoverPlacement="bottom"
+                           src="assets/imgs/pajamas_question.svg" alt="" />
                     </div>
                   </nz-form-label>
                   <nz-form-control nzDisableAutoTips [nzErrorTip]="monthsErrorTpl">
@@ -309,7 +414,7 @@
                                      formControlName="months"
                                      nzMin="1"
                                      nzMax="24"
-                                     nzStep="1" />
+                                     nzStep="1" (input)="inputMonthMode($event)"/>
                     <ng-template #monthsErrorTpl let-control>
                       <ng-container *ngIf="control.hasError('required')">{{ 'schedule.backup.0.to.24' | i18n }}
                       </ng-container>
@@ -324,6 +429,11 @@
                   <nz-form-label nzFor="date">
                     <div class="label">
                       <span>{{ 'app.execution.date' | i18n }} (<span style="color: #EA3829;">*</span>)</span>
+                      <img style="margin-left: 5px;"
+                           nz-popover
+                           [nzPopoverContent]="'schedule.backup.vm.backup.volume.mode.date.tooltip' | i18n"
+                           nzPopoverPlacement="bottom"
+                           src="assets/imgs/pajamas_question.svg" alt="" />
                     </div>
                   </nz-form-label>
                   <nz-form-control nzDisableAutoTips [nzErrorTip]="dateErrorTpl">
@@ -332,7 +442,7 @@
                                      formControlName="date"
                                      nzMin="1"
                                      nzMax="31"
-                                     nzStep="1" />
+                                     nzStep="1" (input)="inputDayInMonthMode($event)"/>
                     <ng-template #dateErrorTpl let-control>
                       <ng-container *ngIf="control.hasError('required')">{{ 'schedule.backup.0.to.31' | i18n }}
                       </ng-container>
@@ -350,7 +460,7 @@
             <nz-form-item *ngIf="!(validateForm.controls.backupMode.value === 1)">
               <nz-form-label>
                 <div class="label">
-                      <span>{{ 'app.backup.volume.backup.package' | i18n }} (<span style="color: #EA3829;">*</span>)</span>
+                  <span>{{ 'app.backup.volume.backup.package' | i18n }} (<span style="color: #EA3829;">*</span>)</span>
                 </div>
               </nz-form-label>
               <nz-form-control nzDisableAutoTips>
@@ -361,6 +471,35 @@
                        [disabled]="true" />
               </nz-form-control>
             </nz-form-item>
+            <nz-row nzGutter="24" style="margin-bottom: 0;" *ngIf="!(validateForm.controls.backupMode.value === 1)">
+              <nz-col nzSpan="12">
+                <nz-row nzGutter="24">
+                  <nz-col nzSpan="12">
+                    <span class="text-label">{{ 'app.tooltip.backup.package.storage'|i18n }}</span>
+                  </nz-col>
+                  <nz-col nzSpan="12" style="text-align: end;">
+                    <span class="text-label">{{ backupPackageDetail?.sizeInGB }} GB</span>
+                  </nz-col>
+                </nz-row>
+                <nz-row nzGutter="24">
+                  <nz-col nzSpan="12">
+                    <span class="text-label">{{ 'app.backup.package.storage.used'|i18n }}</span>
+                  </nz-col>
+                  <nz-col nzSpan="12" style="text-align: end;">
+                    <span class="text-label">{{ backupPackageDetail?.usedSize }} GB</span>
+                  </nz-col>
+                </nz-row>
+                <nz-row nzGutter="24">
+                  <nz-col nzSpan="12">
+                    <span class="text-label">{{ 'app.backup.package.storage.remaining'|i18n }}</span>
+                  </nz-col>
+                  <nz-col nzSpan="12" style="text-align: end;">
+                        <span class="text-label">{{ backupPackageDetail?.sizeInGB - backupPackageDetail?.usedSize }}
+                          GB</span>
+                  </nz-col>
+                </nz-row>
+              </nz-col>
+            </nz-row>
             <nz-form-item>
               <nz-form-label nzFor="description">
                 <div class="label">
@@ -387,78 +526,81 @@
         </nz-col>
         <nz-col nzSpan="8">
           <nz-affix [nzOffsetTop]="72">
+
             <nz-card class="card-border">
               <div style="margin-bottom: 20px">
                 <span class="text-card-header">{{ 'app.config.parameters'|i18n }}</span>
               </div>
-              <div class="text-value">{{ 'schedule.backup.label.name'|i18n }}</div>
-              <div style="margin-top: 10px"
-                   class="text-label">{{ validateForm.controls.name.value }}
-              </div>
-              <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
-              <div class="text-value">{{ 'app.instances' | i18n }}</div>
-              <div style="margin-top: 10px" class="text-label">{{ backupSchedule?.serviceName }}</div>
-              <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
-              <div class="text-value">{{ 'schedule.backup.number.save' | i18n }}</div>
-              <div style="margin-top: 10px"
-                   class="text-label">{{ backupSchedule?.maxBackup }}
-              </div>
-              <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
-              <div class="text-value">{{ 'schedule.backup.mode' | i18n }}</div>
-              <div style="margin-top: 10px" class="text-label"
-                   [ngSwitch]="validateForm.controls.backupMode.value">
-                <span *ngSwitchCase="1">{{ 'schedule.backup.label.each.day'|i18n }}</span>
-                <span *ngSwitchCase="2">{{ 'schedule.backup.label.each.number.day'|i18n }}</span>
-                <span *ngSwitchCase="3">{{ 'schedule.backup.label.each.week'|i18n }}</span>
-                <span *ngSwitchCase="4">{{ 'schedule.backup.label.each.month'|i18n }}</span>
-              </div>
-              <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
-              <div class="text-value">{{ 'app.backup.volume.backup.package' | i18n }}</div>
-              <div style="margin-top: 10px" class="text-label">{{ backupSchedule?.backupPackageName }}</div>
-              <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
-              <div class="text-value">{{ 'app.cluster.action-time' | i18n }}</div>
-              <div style="margin-top: 10px"
-                   class="text-label">{{ validateForm.controls.times.value | date: 'HH:mm' }}
-              </div>
-              <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
-              <div *ngIf="validateForm.controls.backupMode.value === 2">
-                <div class="text-value">{{ 'app.choose.day.of.week' | i18n }}</div>
-                <div style="margin-top: 10px" class="text-label" *ngFor="let data of daysOfWeek">
+              <div class="card-money">
+                <div class="text-value">{{ 'schedule.backup.label.name'|i18n }}</div>
+                <div style="margin-top: 10px"
+                     class="text-label">{{ validateForm.controls.name.value }}
+                </div>
+                <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
+                <div class="text-value">{{ 'app.instances' | i18n }}</div>
+                <div style="margin-top: 10px" class="text-label">{{ backupSchedule?.serviceName }}</div>
+                <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
+                <div class="text-value">{{ 'schedule.backup.number.save' | i18n }}</div>
+                <div style="margin-top: 10px"
+                     class="text-label">{{ backupSchedule?.maxBackup }}
+                </div>
+                <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
+                <div class="text-value">{{ 'schedule.backup.mode' | i18n }}</div>
+                <div style="margin-top: 10px" class="text-label"
+                     [ngSwitch]="validateForm.controls.backupMode.value">
+                  <span *ngSwitchCase="1">{{ 'schedule.backup.label.each.day'|i18n }}</span>
+                  <span *ngSwitchCase="2">{{ 'schedule.backup.label.each.number.day'|i18n }}</span>
+                  <span *ngSwitchCase="3">{{ 'schedule.backup.label.each.week'|i18n }}</span>
+                  <span *ngSwitchCase="4">{{ 'schedule.backup.label.each.month'|i18n }}</span>
+                </div>
+                <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
+                <div class="text-value">{{ 'app.backup.volume.backup.package' | i18n }}</div>
+                <div style="margin-top: 10px" class="text-label">{{ backupSchedule?.backupPackageName }}</div>
+                <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
+                <div class="text-value">{{ 'app.cluster.action-time' | i18n }}</div>
+                <div style="margin-top: 10px"
+                     class="text-label">{{ validateForm.controls.times.value | date: 'HH:mm' }}
+                </div>
+                <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
+                <div *ngIf="validateForm.controls.backupMode.value === 2">
+                  <div class="text-value">{{ 'app.choose.day.of.week' | i18n }}</div>
+                  <div style="margin-top: 10px" class="text-label" *ngFor="let data of daysOfWeek">
                     <span *ngFor="let i of validateForm.controls.daysOfWeekMultiple.value;">
                       <span *ngIf="data.value === i">{{ data.label }}</span>
                     </span>
+                  </div>
                 </div>
-              </div>
-              <div *ngIf="validateForm.controls.backupMode.value == 3">
-                <div class="text-value">{{ 'app.number.of.week.executed' | i18n }}</div>
-                <div style="margin-top: 10px"
-                     class="text-label">{{ validateForm.controls.numberOfWeek.value }} {{ 'app.Week' |i18n }}
-                </div>
-                <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
-                <div class="text-value">{{ 'schedule.backup.day.select' | i18n }}</div>
-                <div style="margin-top: 10px" class="text-label" *ngFor="let data of daysOfWeek">
+                <div *ngIf="validateForm.controls.backupMode.value == 3">
+                  <div class="text-value">{{ 'app.number.of.week.executed' | i18n }}</div>
+                  <div style="margin-top: 10px"
+                       class="text-label">{{ validateForm.controls.numberOfWeek.value }} {{ 'app.Week' |i18n }}
+                  </div>
+                  <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
+                  <div class="text-value">{{ 'schedule.backup.day.select' | i18n }}</div>
+                  <div style="margin-top: 10px" class="text-label" *ngFor="let data of daysOfWeek">
                     <span
                       *ngIf="data.value === validateForm.controls.daysOfWeek.value">{{ data.label }}</span>
+                  </div>
+                  <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
                 </div>
                 <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
-              </div>
-              <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
-              <div *ngIf="validateForm.controls.backupMode.value == 4">
-                <div class="text-value">{{ 'app.number.of.week.executed' | i18n }}</div>
-                <div style="margin-top: 10px"
-                     class="text-label">{{ validateForm.controls.numberOfWeek.value }} {{ 'app.Week' |i18n }}
+                <div *ngIf="validateForm.controls.backupMode.value == 4">
+                  <div class="text-value">{{ 'app.number.of.week.executed' | i18n }}</div>
+                  <div style="margin-top: 10px"
+                       class="text-label">{{ validateForm.controls.numberOfWeek.value }} {{ 'app.Week' |i18n }}
+                  </div>
+                  <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
+                  <div class="text-value">{{ 'app.number.of.month.executed' | i18n }}</div>
+                  <div style="margin-top: 10px"
+                       class="text-label">{{ validateForm.controls.months.value }}  {{ 'app.Month'|i18n }}
+                  </div>
+                  <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
+                  <div class="text-value">{{ 'app.execution.date' | i18n }}</div>
+                  <div style="margin-top: 10px"
+                       class="text-label">{{ validateForm.controls.date.value }}
+                  </div>
+                  <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
                 </div>
-                <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
-                <div class="text-value">{{ 'app.number.of.month.executed' | i18n }}</div>
-                <div style="margin-top: 10px"
-                     class="text-label">{{ validateForm.controls.months.value }}  {{ 'app.Month'|i18n }}
-                </div>
-                <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
-                <div class="text-value">{{ 'app.execution.date' | i18n }}</div>
-                <div style="margin-top: 10px"
-                     class="text-label">{{ validateForm.controls.date.value }}
-                </div>
-                <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
               </div>
               <nz-row>
                 <nz-col style="width: 100%">

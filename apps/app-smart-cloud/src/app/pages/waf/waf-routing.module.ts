@@ -8,6 +8,7 @@ import { WafComponent } from "./waf.component";
 import { WAFExtendComponent } from "./extend/waf-extend.component";
 import { CreateSslCertWAFComponent } from "./ssl-cert/create/create-ssl-cert.component";
 import { WafDetailComponent } from "./waf-detail/waf-detail.component";
+import { SslCertDetailComponent } from "./ssl-cert-detail/ssl-cert-detail.component";
 
 const routes: Routes = [
   {
@@ -41,6 +42,10 @@ const routes: Routes = [
   {
     path: 'detail/:id',
     component: WafDetailComponent,
+  },
+  {
+    path: 'ssl-cert/:id',
+    component: SslCertDetailComponent
   }
 ];
 

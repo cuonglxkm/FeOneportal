@@ -62,22 +62,22 @@ export class EditSubUserComponent {
     formUpdate.actorEmail = ''
     formUpdate.regionId = this.region
     if(this.validateForm.controls.access.value.includes('none')) {
-      this.validateForm.controls.access.setValue('')
+      formUpdate.access = ''
     } else {
-      this.validateForm.controls.access.setValue('full')
+      formUpdate.access = 'full'
     }
-    formUpdate.access = this.validateForm.controls.access.value
+
     this.subUserService.updateSubUser(formUpdate).subscribe(data => {
-      if(data) {
+      // if(data) {
         this.isLoading = false
         this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('app.edit.subuser.success'))
-        this.validateForm.controls.access.setValue('none')
+        // this.validateForm.controls.access.setValue('none')
         this.onOk.emit()
-      } else {
-        this.isLoading = false
-        this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.edit.subuser.fail'))
-        this.onOk.emit()
-      }
+      // } else {
+      //   this.isLoading = false
+      //   this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.edit.subuser.fail'))
+      //   this.onOk.emit()
+      // }
     }, error => {
       this.isLoading = false
       this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.edit.subuser.fail'))

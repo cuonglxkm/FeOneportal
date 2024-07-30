@@ -76,9 +76,9 @@ export class ProjectCreateComponent implements OnInit {
 
   vCPU = 0;
   ram = 0;
-  hhd = 0;
+  // hhd;
 
-  ssd = 0;
+  // ssd = 0;
   nwNormal = 0;
   routerNormal = 0;
   sgNormal = 0;
@@ -424,6 +424,26 @@ export class ProjectCreateComponent implements OnInit {
     this.checkRequired()
   }
 
+  _hhd: number = this.maxBlock;
+
+  get hhd(): number {
+      return this._hhd;
+  }
+
+  set hhd(value: number) {
+      this._hhd = Math.min(Math.max(value, this.minBlock), this.maxBlock);
+  }
+
+  _ssd: number = this.maxBlock;
+
+  get ssd(): number {
+      return this._ssd;
+  }
+
+  set ssd(value: number) {
+      this._ssd = Math.min(Math.max(value, this.minBlock), this.maxBlock);
+  }
+
   checkNumberInput(value: number, name: string): void {
     const messageStepNotification = `Số lượng phải chia hết cho  ${this.stepBlock} `;
     const numericValue = Number(value);
@@ -432,8 +452,10 @@ export class ProjectCreateComponent implements OnInit {
       return;
     }
     let adjustedValue = Math.floor(numericValue / this.stepBlock) * this.stepBlock;
+    console.log("adjustedValue", adjustedValue)
     if (adjustedValue > this.maxBlock) {
       adjustedValue = Math.floor(this.maxBlock / this.stepBlock) * this.stepBlock;
+      console.log("adjustedValue 34",adjustedValue)
     } else if (adjustedValue < this.minBlock) {
       adjustedValue = this.minBlock;
     }

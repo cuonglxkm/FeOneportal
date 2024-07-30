@@ -61,8 +61,8 @@ export class ProjectUpdateComponent implements OnInit {
 
   vCPU = 0;
   ram = 0;
-  hhd = 0;
-  ssd = 0;
+  // hhd = 0;
+  // ssd = 0;
 
   ipConnectInternet = '';
   ipNetworkAddress: string = '';
@@ -954,6 +954,26 @@ export class ProjectUpdateComponent implements OnInit {
 
   onInputChange(value: number, name: string): void {
     this.inputChangeSubject.next({ value, name });
+  }
+
+  _hhd: number = this.maxBlock;
+
+  get hhd(): number {
+      return this._hhd;
+  }
+
+  set hhd(value: number) {
+      this._hhd = Math.min(Math.max(value, this.minBlock), this.maxBlock);
+  }
+
+  _ssd: number = this.maxBlock;
+
+  get ssd(): number {
+      return this._ssd;
+  }
+
+  set ssd(value: number) {
+      this._ssd = Math.min(Math.max(value, this.minBlock), this.maxBlock);
   }
   checkNumberInput(value: number, name: string): void {
     const messageStepNotification = `Số lượng phải chia hết cho  ${this.stepBlock} `;
