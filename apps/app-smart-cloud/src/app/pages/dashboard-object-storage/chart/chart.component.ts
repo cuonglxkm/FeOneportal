@@ -25,6 +25,8 @@ export class DataChart {
 })
 export class ChartComponent implements AfterViewInit, OnInit {
   @Input() summary: Summary[];
+  @Input() timeSelected: any;
+
   newDate: Date = new Date();
   @ViewChild('chartStorageUse') chartStorageUse!: ElementRef;
   @ViewChild('storageUse') storageUse!: ElementRef;
@@ -45,10 +47,20 @@ export class ChartComponent implements AfterViewInit, OnInit {
   lineChartStorageUpload: Line;
   lineChartStorageDownload: Line;
 
+  bytesConvert(bytes, label) {
+    if (bytes == 0) return '0 byte';
+    var s = ['bytes', 'KB', 'MB', 'GB', 'TB', 'PB'];
+    var e = Math.floor(Math.log(bytes) / Math.log(1024));
+    var value = (bytes / Math.pow(1024, Math.floor(e))).toFixed(2);
+    e = e < 0 ? -e : e;
+    if (label) value += ' ' + s[e];
+    return value;
+  }
+
   createChartStorageUse() {
-    const data = this.summary[0]?.datas?.map(item => ({
+    const data = this.summary[0]?.datas?.map((item) => ({
       year: this.transform(item.timeSpan),
-      value: item.value
+      value: this.bytesConvert(item.value, true),
     }));
 
     console.log('data', data);
@@ -59,7 +71,7 @@ export class ChartComponent implements AfterViewInit, OnInit {
       this.lineChartStorageUse = new Line(this.chartStorageUse.nativeElement, {
         data,
         xField: 'year',
-        yField: 'value'
+        yField: 'value',
       });
 
       this.lineChartStorageUse.render();
@@ -74,12 +86,15 @@ export class ChartComponent implements AfterViewInit, OnInit {
     if (this.lineChartNumberObject) {
       this.lineChartNumberObject.changeData(data);
     } else {
-      this.lineChartNumberObject = new Line(this.chartNumberObject.nativeElement, {
-        data,
-        xField: 'year',
-        yField: 'value',
-        color: 'green'
-      });
+      this.lineChartNumberObject = new Line(
+        this.chartNumberObject.nativeElement,
+        {
+          data,
+          xField: 'year',
+          yField: 'value',
+          color: 'green',
+        }
+      );
 
       this.lineChartNumberObject.render();
     }
@@ -88,18 +103,21 @@ export class ChartComponent implements AfterViewInit, OnInit {
   createStorageUpload() {
     const data = this.summary[2]?.datas?.map((item) => ({
       year: this.transform(item.timeSpan),
-      value: item.value,
+      value: this.bytesConvert(item.value, true),
     }));
 
     if (this.lineChartStorageUpload) {
       this.lineChartStorageUpload.changeData(data);
     } else {
-      this.lineChartStorageUpload = new Line(this.chartStorageUpload.nativeElement, {
-        data,
-        xField: 'year',
-        yField: 'value',
-        color: 'brown'
-      });
+      this.lineChartStorageUpload = new Line(
+        this.chartStorageUpload.nativeElement,
+        {
+          data,
+          xField: 'year',
+          yField: 'value',
+          color: 'brown',
+        }
+      );
 
       this.lineChartStorageUpload.render();
     }
@@ -108,18 +126,21 @@ export class ChartComponent implements AfterViewInit, OnInit {
   createStorageDownload() {
     const data = this.summary[3]?.datas?.map((item) => ({
       year: this.transform(item.timeSpan),
-      value: item.value,
+      value: this.bytesConvert(item.value, true),
     }));
 
     if (this.lineChartStorageDownload) {
       this.lineChartStorageDownload.changeData(data);
     } else {
-      this.lineChartStorageDownload = new Line(this.chartStorageDownload.nativeElement, {
-        data,
-        xField: 'year',
-        yField: 'value',
-        color: 'orange'
-      });
+      this.lineChartStorageDownload = new Line(
+        this.chartStorageDownload.nativeElement,
+        {
+          data,
+          xField: 'year',
+          yField: 'value',
+          color: 'orange',
+        }
+      );
 
       this.lineChartStorageDownload.render();
     }
@@ -287,12 +308,20 @@ export class ChartComponent implements AfterViewInit, OnInit {
       case 'number-object':
         if (extension.includes('png')) {
           html2canvas(this.numberObject.nativeElement).then((canvas) => {
-            this.download(canvas.toDataURL('image/png'), '/png', 'number-object');
+            this.download(
+              canvas.toDataURL('image/png'),
+              '/png',
+              'number-object'
+            );
           });
         }
         if (extension.includes('jpg')) {
           html2canvas(this.numberObject.nativeElement).then((canvas) => {
-            this.download(canvas.toDataURL('image/png'), '/jpg', 'number-object');
+            this.download(
+              canvas.toDataURL('image/png'),
+              '/jpg',
+              'number-object'
+            );
           });
         }
         if (extension.includes('pdf')) {
@@ -305,12 +334,20 @@ export class ChartComponent implements AfterViewInit, OnInit {
       case 'storage-upload':
         if (extension.includes('png')) {
           html2canvas(this.storageUpload.nativeElement).then((canvas) => {
-            this.download(canvas.toDataURL('image/png'), '/png', 'storage-upload');
+            this.download(
+              canvas.toDataURL('image/png'),
+              '/png',
+              'storage-upload'
+            );
           });
         }
         if (extension.includes('jpg')) {
           html2canvas(this.storageUpload.nativeElement).then((canvas) => {
-            this.download(canvas.toDataURL('image/png'), '/jpg', 'storage-upload');
+            this.download(
+              canvas.toDataURL('image/png'),
+              '/jpg',
+              'storage-upload'
+            );
           });
         }
         if (extension.includes('pdf')) {
@@ -323,12 +360,20 @@ export class ChartComponent implements AfterViewInit, OnInit {
       case 'storage-download':
         if (extension.includes('png')) {
           html2canvas(this.storageDownload.nativeElement).then((canvas) => {
-            this.download(canvas.toDataURL('image/png'), '/png', 'storage-download');
+            this.download(
+              canvas.toDataURL('image/png'),
+              '/png',
+              'storage-download'
+            );
           });
         }
         if (extension.includes('jpg')) {
           html2canvas(this.storageDownload.nativeElement).then((canvas) => {
-            this.download(canvas.toDataURL('image/png'), '/jpg', 'storage-download');
+            this.download(
+              canvas.toDataURL('image/png'),
+              '/jpg',
+              'storage-download'
+            );
           });
         }
         if (extension.includes('pdf')) {
@@ -352,18 +397,17 @@ export class ChartComponent implements AfterViewInit, OnInit {
   }
 
   downloadPDF(type): void {
-    
     switch (type) {
       case 'storage-use':
         html2canvas(this.storageUse.nativeElement).then((canvas) => {
           const dataUrl = canvas.toDataURL('image/jpeg');
           // Create a new jsPDF instance
-    
+
           const pdf = new jsPDF('p', 'mm', 'a4');
           const aspectRatio = canvas.width / canvas.height;
           let imgWidth = pdf.internal.pageSize.getWidth();
           let imgHeight = imgWidth / aspectRatio;
-    
+
           // If the height exceeds the page height, adjust the height and width accordingly
           if (imgHeight > pdf.internal.pageSize.getHeight()) {
             imgHeight = pdf.internal.pageSize.getHeight();
@@ -377,12 +421,12 @@ export class ChartComponent implements AfterViewInit, OnInit {
         html2canvas(this.numberObject.nativeElement).then((canvas) => {
           const dataUrl = canvas.toDataURL('image/jpeg');
           // Create a new jsPDF instance
-    
+
           const pdf = new jsPDF('p', 'mm', 'a4');
           const aspectRatio = canvas.width / canvas.height;
           let imgWidth = pdf.internal.pageSize.getWidth();
           let imgHeight = imgWidth / aspectRatio;
-    
+
           // If the height exceeds the page height, adjust the height and width accordingly
           if (imgHeight > pdf.internal.pageSize.getHeight()) {
             imgHeight = pdf.internal.pageSize.getHeight();
@@ -396,12 +440,12 @@ export class ChartComponent implements AfterViewInit, OnInit {
         html2canvas(this.storageUpload.nativeElement).then((canvas) => {
           const dataUrl = canvas.toDataURL('image/jpeg');
           // Create a new jsPDF instance
-    
+
           const pdf = new jsPDF('p', 'mm', 'a4');
           const aspectRatio = canvas.width / canvas.height;
           let imgWidth = pdf.internal.pageSize.getWidth();
           let imgHeight = imgWidth / aspectRatio;
-    
+
           // If the height exceeds the page height, adjust the height and width accordingly
           if (imgHeight > pdf.internal.pageSize.getHeight()) {
             imgHeight = pdf.internal.pageSize.getHeight();
@@ -415,12 +459,12 @@ export class ChartComponent implements AfterViewInit, OnInit {
         html2canvas(this.storageDownload.nativeElement).then((canvas) => {
           const dataUrl = canvas.toDataURL('image/jpeg');
           // Create a new jsPDF instance
-    
+
           const pdf = new jsPDF('p', 'mm', 'a4');
           const aspectRatio = canvas.width / canvas.height;
           let imgWidth = pdf.internal.pageSize.getWidth();
           let imgHeight = imgWidth / aspectRatio;
-    
+
           // If the height exceeds the page height, adjust the height and width accordingly
           if (imgHeight > pdf.internal.pageSize.getHeight()) {
             imgHeight = pdf.internal.pageSize.getHeight();
@@ -491,8 +535,34 @@ export class ChartComponent implements AfterViewInit, OnInit {
     const hours = String(date.getHours()).padStart(2, '0');
     const minutes = String(date.getMinutes()).padStart(2, '0');
     const seconds = String(date.getSeconds()).padStart(2, '0');
+    let returnLabel = ''
+    switch(this.timeSelected){
+      case 5:
+        returnLabel = `${hours}:${minutes}`
+        break;
+      case 15:
+        returnLabel = `${hours}:${minutes}`
+        break;
+      case 60:
+        returnLabel = `${hours}:${minutes}`
+        break;
+      case 1440:
+        returnLabel = `${hours}:00`
+        break;
+      case 10080:
+        returnLabel = `${day}/${month}/${year}`
+        break;
+      case 43200:
+        returnLabel = `${day}/${month}/${year}`
+        break;
+      case 129600:
+        returnLabel = `${day}/${month}/${year}`
+        break;
+      default: 
+        returnLabel = `${hours}:${minutes}`
+    }
 
-    return `${hours}:${minutes}`;
+    return returnLabel;
   }
 
   ngAfterViewInit(): void {

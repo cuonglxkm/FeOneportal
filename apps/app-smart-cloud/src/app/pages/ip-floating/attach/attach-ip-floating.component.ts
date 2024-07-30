@@ -20,6 +20,7 @@ export class AttachIpFloatingComponent implements OnInit {
   @Input() region: number
   @Input() project: number
   @Input() idIpFloating: number
+  @Input() display: string
   @Output() onOk = new EventEmitter()
   @Output() onCancel = new EventEmitter()
 

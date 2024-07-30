@@ -228,7 +228,7 @@
           (click)="toFolder2(item.key + '/')"
         >
           <img style="padding-right: 5px" src="assets/imgs/folder.svg" alt="" />
-          {{ item.key }}
+          {{ item.key.split('/').pop() }}
         </td>
         <td>{{ (item.size / 1024).toFixed(2) }} KB</td>
         <td nzBreakWord="true" style="text-transform: capitalize;">{{ item.objectType }}</td>
@@ -336,24 +336,28 @@
           align-items: center;
         "
       >
+      <div style="font-weight: bold; padding-right: 5px; margin-left: 10px">
         <img
-          style="padding-right: 10px; padding-left: 10px"
-          src="assets/imgs/box.svg"
-          alt=""
+          src="assets/imgs/box.svg"    
         />
+        {{bucket ? bucket.bucketName : ''}} 
+      </div>
         <ng-container *ngFor="let item of listOfFolder">
-          <div style="font-weight: bold">>{{ item.name }}</div>
+          <div>> {{ item.name }}</div>
         </ng-container>
       </div>
       <nz-form-item>
         <nz-form-control [nzErrorTip]="folderNameErrorTpl">
-      <div>{{ 'app.bucket.detail.createFolder.name' | i18n }} (<span class="red-star">*</span>)
+      <div class="text-label">{{ 'app.bucket.detail.createFolder.name' | i18n }} (<span class="red-star">*</span>)
         <img
         style="padding-right: 10px; margin-top: -4px"
-        [nz-tooltip]="'app.bucket.detail.createFolder.name.tooltip' | i18n"
+        [nz-tooltip]="foldertooltip"
         src="assets/imgs/pajamas_question.svg"
         alt=""
       />
+      <ng-template #foldertooltip>
+        <div [innerHTML]="'app.bucket.detail.createFolder.name.tooltip' | i18n"></div>
+      </ng-template>
       </div>
       <input
         nzSize="large"
@@ -361,6 +365,7 @@
         [placeholder]="'app.input.name' | i18n"
         style="width: 100%"
         [(ngModel)]="nameFolder"
+        maxlength="64"
         [ngModelOptions]="{ standalone: true }"
         formControlName="folderName"
       />
@@ -584,7 +589,11 @@
       [disabled]="lstFileUpdate.length === 0"
     >
       <div class="d-flex align-items-center">
-        <one-portal-svg-icon class="icon-svg justify-center-icon" [icon]="'icon_download'"></one-portal-svg-icon>
+        <img
+        style="padding-right: 5px"
+        src="assets/imgs/document-upload.png"
+        alt=""
+      />
       <span>{{ 'app.bucket.detail.uploadFile.all' | i18n }}</span>
       </div>
     </button>

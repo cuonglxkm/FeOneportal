@@ -71,20 +71,46 @@ export class ListSslCertComponent {
   }
 
   getListCertificate(isBegin){
-    this.isLoading = true;
-    this.customerId = this.tokenService.get()?.userId
-    this.SslCertService.getSslCert({currentPage: this.pageIndex, pageSize: this.pageSize, customerId: this.customerId, region: this.region, vpcId: this.project}).pipe((debounceTime(500))).subscribe(data =>{
-      if(data){
-        this.isLoading = false;
-        this.response = data
-        console.log('data', data)
-        console.log('isLoading', this.isLoading)
-      }
-    }, error => {
-      this.isLoading = false;
-      this.response = null;
-      console.log(error);
-      this.notification.error(error.statusText, this.i18n.fanyi('app.failData'))
-    })
+    // this.isLoading = true;
+    // this.customerId = this.tokenService.get()?.userId
+    // this.SslCertService.getSslCert({currentPage: this.pageIndex, pageSize: this.pageSize, customerId: this.customerId, region: this.region, vpcId: this.project}).pipe((debounceTime(500))).subscribe(data =>{
+    //   if(data){
+    //     this.isLoading = false;
+    //     this.response = data
+    //     console.log('data', data)
+    //     console.log('isLoading', this.isLoading)
+    //   }
+    // }, error => {
+    //   this.isLoading = false;
+    //   this.response = null;
+    //   console.log(error);
+    //   this.notification.error(error.statusText, this.i18n.fanyi('app.failData'))
+    // })
+    this.response = {
+      currentPage: 1,
+      pageSize: 10,
+      totalCount: 100,
+      previousPage: 0,
+      records: [
+        {
+          id: 1,
+          name: 'ssl.certificate.1',
+          authorizedDomains:['smartcloud.vn', '*smartcloud.vn'],
+          status: 'Normal',
+          type: 'RSA Certificate',
+          expiration: new Date(),
+          associatedDomain: ['smartcloud.vn']
+        },
+        {
+          id: 2,
+          name: 'ssl.certificate.2',
+          authorizedDomains:['smartcloud.vn', '*smartcloud.vn'],
+          status: 'Normal',
+          type: 'RSA Certificate',
+          expiration: new Date(),
+          associatedDomain: ['smartcloud.vn']
+        }
+      ]
+    }
   }
 }

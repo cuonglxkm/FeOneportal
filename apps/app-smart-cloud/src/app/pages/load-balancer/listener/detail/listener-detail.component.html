@@ -192,9 +192,8 @@
           </button>
         </nz-row>
         <nz-table *ngIf="currentPageData?.length > 0" #fixedTable
-                  nzShowPagination
-                  [nzData]="currentPageData || []"
-                  [nzFrontPagination]="false"
+                  nzShowPagination nzShowSizeChanger
+                  [nzData]="currentPageData"
                   [nzLoading]="isLoading"
                   [nzTotal]="listL7?.length"
                   [nzPageSize]="pageSize"

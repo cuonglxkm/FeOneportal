@@ -40,7 +40,7 @@
                     <span class="label-fontsize">Tên WAF:</span>
                   </div>
                   <div nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="12">
-                    <span class="label-fontsize font-bold ">-</span>
+                    <span class="label-fontsize font-bold ">{{WAFDetail?.name}}</span>
                   </div>
                 </div>
                 <div nz-row [nzGutter]="24" class="row-gray-bg content-items-center">
@@ -48,7 +48,7 @@
                     <span class="label-fontsize">Domain:</span>
                   </div>
                   <div nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="12">
-                    <span class="label-fontsize font-bold">-</span>
+                    <span class="label-fontsize font-bold">{{WAFDetail?.wafDomains.length > 0 ? WAFDetail?.wafDomains[0].domain : '-'}}</span>
                   </div>
                 </div>
                 <div nz-row [nzGutter]="24" class="row-white-bg content-items-center">
@@ -56,7 +56,9 @@
                     <span class="label-fontsize">Trạng thái dịch vụ:</span>
                   </div>
                   <div nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="12">
-                    <span class="label-fontsize font-bold">-</span>
+                    <ng-container *ngIf="WAFDetail?.status | ServiceStatusPipe as statusModel">
+                    <span class="label-fontsize font-bold" [ngStyle]="{color: statusModel.color}">{{statusModel.status}}</span>
+                  </ng-container>
                   </div>
                 </div>
               </div>
@@ -68,7 +70,7 @@
                     <span class="label-fontsize">Gói dịch vụ:</span>
                   </div>
                   <div nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="12">
-                    <span class="label-fontsize font-bold">-</span>
+                    <span class="label-fontsize font-bold">{{offerItem?.offerName}}</span>
                   </div>
                 </div>
                 <div nz-row [nzGutter]="24" class="row-gray-bg content-items-center">
@@ -76,7 +78,7 @@
                     <span class="label-fontsize">IP Public:</span>
                   </div>
                   <div nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="12">
-                    <span class="label-fontsize font-bold">-</span>
+                    <span class="label-fontsize font-bold">{{WAFDetail?.wafDomains.length > 0 ? WAFDetail?.wafDomains[0].ipPublic : '-'}}</span>
                   </div>
                 </div>
                 
@@ -87,8 +89,8 @@
 
       </div>
       <one-portal-service-time-extend
-        [createDate]="objectStorage?.createdDate"
-        [expiredDate]="objectStorage?.expiredDate"
+        [createDate]="WAFDetail?.createdDate"
+        [expiredDate]="WAFDetail?.expiredDate"
         (valueChanged)="onChangeTime($event)"
         [newExpiredDate]="newExpiredDate"
       />
@@ -103,11 +105,11 @@
           </div>
           <div style="margin-bottom: 10px">
             <span class="text-value"> Tên WAF </span><br />
-            <span class="text-label">xzczxc</span>
+            <span class="text-label">{{WAFDetail?.name}}</span>
           </div>
           <div style="margin-bottom: 10px">
-            <span class="text-value">Gói dịch vụ @gói</span><br />
-            <span class="text-label">xzczxc</span>
+            <span class="text-value">Gói dịch vụ {{offerItem?.offerName}}</span><br />
+            <span class="text-label" [innerHTML]="offerItem?.description"></span>
           </div>
           <div style="margin-bottom: 10px">
             <span class="text-value">Tên miền</span><br />
@@ -192,7 +194,7 @@
                 nzSize="large"
                 nzType="primary"
                 [disabled]="invalid"
-                
+                (click)="extend()"
               >
                 <img
                   src="assets/imgs/wallet.svg"

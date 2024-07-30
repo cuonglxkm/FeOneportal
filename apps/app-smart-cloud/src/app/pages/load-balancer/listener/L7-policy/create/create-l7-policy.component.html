@@ -106,7 +106,7 @@
                    src="assets/imgs/pajamas_question.svg" alt="" />
             </nz-form-label>
             <nz-form-control nzDisableAutoTips [nzErrorTip]="urlErrorTpl">
-              <input nz-input class="input-custom" formControlName="url" [placeholder]="'app.input.url' | i18n" />
+              <input nz-input class="input-custom" formControlName="url" [maxlength]="255" [placeholder]="'app.input.url' | i18n" />
               <ng-template #urlErrorTpl let-control>
                 <ng-container *ngIf="control.hasError('required')">{{ 'validation.info.required' | i18n }}</ng-container>
                 <ng-container *ngIf="control.hasError('invalidUrl')">{{ 'validation.url.name.pattern' | i18n }}</ng-container>

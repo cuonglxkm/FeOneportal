@@ -58,7 +58,7 @@
       </nz-col>
     </nz-row>
     <div *ngIf="summary != undefined || summary != null">
-      <one-portal-chart [summary]="summary" />
+      <one-portal-chart [summary]="summary" [timeSelected]="timeSelected"/>
     </div>
 
     <!--    <one-portal-chart-summary />-->

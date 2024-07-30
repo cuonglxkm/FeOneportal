@@ -150,6 +150,10 @@ export class ListBackupVmComponent implements OnInit, OnDestroy {
     this.backupVmService.search(this.formSearch).subscribe(data => {
       this.isLoading = false
       this.collection = data
+      if((this.collection.records == null || this.collection.records.length < 1) && this.pageIndex != 1) {
+        this.pageIndex = 1
+        this.getListBackupVM(false);
+      }
       if (isBegin) {
         this.isBegin = this.collection?.records.length < 1 || this.collection?.records === null ? true : false;
       }

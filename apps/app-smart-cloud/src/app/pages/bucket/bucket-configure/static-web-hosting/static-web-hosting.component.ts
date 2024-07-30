@@ -7,7 +7,7 @@ import {
   OnInit,
   SimpleChanges,
 } from '@angular/core';
-import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
+import { FormControl, FormGroup, NonNullableFormBuilder, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { I18NService } from '@core';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
@@ -15,7 +15,7 @@ import { getCurrentRegionAndProject } from '@shared';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { ClipboardService } from 'ngx-clipboard';
-import { FILE_NO_SPACE_REGEX } from 'src/app/shared/constants/constants';
+import { DOMAIN_REGEX, FILE_NO_SPACE_REGEX, WEB_REGEX } from 'src/app/shared/constants/constants';
 import { RegionID } from 'src/app/shared/enums/common.enum';
 import {
   BucketDetail,
@@ -29,6 +29,7 @@ import { BucketService } from 'src/app/shared/services/bucket.service';
   styleUrls: ['./static-web-hosting.component.less'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
+
 export class StaticWebHostingComponent implements OnInit {
   @Input() bucketName: string;
   @Input() bucketDetail: BucketDetail = new BucketDetail();
@@ -50,9 +51,7 @@ export class StaticWebHostingComponent implements OnInit {
   }
   ngOnInit(): void {
     let regionAndProject = getCurrentRegionAndProject();
-    this.region = regionAndProject.regionId;  
-    console.log(this.bucketDetail);
-    
+    this.region = regionAndProject.regionId;   
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -83,35 +82,38 @@ export class StaticWebHostingComponent implements OnInit {
     indexDocumentSuffix: FormControl<string>;
     redirectAllRequestsTo: FormControl<string>;
   }> = this.fb.group({
-    errorDocument: ['', Validators.pattern(FILE_NO_SPACE_REGEX)],
-    indexDocumentSuffix: ['', Validators.pattern(FILE_NO_SPACE_REGEX)],
-    redirectAllRequestsTo: ['', Validators.pattern(FILE_NO_SPACE_REGEX)],
+    errorDocument: ['', [Validators.pattern(FILE_NO_SPACE_REGEX)]],
+    indexDocumentSuffix: ['', [Validators.required, Validators.pattern(FILE_NO_SPACE_REGEX)]],
+    redirectAllRequestsTo: ['', [Validators.required,Validators.pattern(WEB_REGEX)]],
   });
 
   copyText(endPoint: string) {
     this.clipboardService.copyFromContent(endPoint);
-    this.message.success('Copied to clipboard');
+    this.message.success('Copy Endpoint thành công');
   }
 
+  isSubmitButtonEnabled = false
   handleChangeRedirect(event){
     if (event === false) {
-     this.formUpdate.controls.errorDocument.setValidators([Validators.required, Validators.pattern(FILE_NO_SPACE_REGEX)])
+     this.formUpdate.controls.errorDocument.setValidators([Validators.pattern(FILE_NO_SPACE_REGEX)])
      this.formUpdate.controls.indexDocumentSuffix.setValidators([Validators.required, Validators.pattern(FILE_NO_SPACE_REGEX)])
-     this.formUpdate.controls.redirectAllRequestsTo.setValidators([Validators.pattern(FILE_NO_SPACE_REGEX)])
+     this.formUpdate.controls.redirectAllRequestsTo.setValidators([Validators.pattern(WEB_REGEX)])
      this.formUpdate.get('indexDocumentSuffix')?.enable();
      this.formUpdate.get('errorDocument')?.enable();
      this.formUpdate.get('redirectAllRequestsTo')?.disable();
-     this.formUpdate.updateValueAndValidity()
     } else {
-      this.formUpdate.controls.errorDocument.setValidators([Validators.pattern(FILE_NO_SPACE_REGEX)])
+     this.formUpdate.controls.errorDocument.setValidators([Validators.pattern(FILE_NO_SPACE_REGEX)])
      this.formUpdate.controls.indexDocumentSuffix.setValidators([Validators.pattern(FILE_NO_SPACE_REGEX)])
-     this.formUpdate.controls.redirectAllRequestsTo.setValidators([Validators.required, Validators.pattern(FILE_NO_SPACE_REGEX)])
+     this.formUpdate.controls.redirectAllRequestsTo.setValidators([Validators.required, Validators.pattern(WEB_REGEX)])
      this.formUpdate.get('indexDocumentSuffix')?.disable();
      this.formUpdate.get('errorDocument')?.disable();
      this.formUpdate.get('redirectAllRequestsTo')?.enable();
-     this.formUpdate.updateValueAndValidity()
     }
+    this.formUpdate.updateValueAndValidity()
+
   }
+
+
 
   update() {
     this.isLoading = true
