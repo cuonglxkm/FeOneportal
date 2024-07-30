@@ -32,7 +32,8 @@ export class ListScheduleBackupComponent implements OnInit, OnDestroy {
     { label: this.i18n.fanyi('app.status.all'), value: 'all' },
     { label: this.i18n.fanyi('service.status.active'), value: 'ACTIVE' },
     { label: this.i18n.fanyi('app.status.not.done'), value: 'DISABLED' },
-    { label: this.i18n.fanyi('service.status.paused'), value: 'PAUSED' }
+    { label: this.i18n.fanyi('service.status.paused'), value: 'PAUSED' },
+    { label: this.i18n.fanyi('app.suspend'), value: 'SUSPENDED' }
   ];
 
   listBackupSchedule: BackupSchedule[] = [];
