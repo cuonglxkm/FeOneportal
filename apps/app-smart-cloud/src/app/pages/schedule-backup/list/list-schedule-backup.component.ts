@@ -182,6 +182,11 @@ export class ListScheduleBackupComponent implements OnInit, OnDestroy {
       this.response = data;
       this.listBackupSchedule = data.records;
       this.isLoading = false;
+
+      if((this.response.records == null || this.response.records.length < 1) && this.pageIndex != 1) {
+        this.pageIndex = 1
+        this.getListScheduleBackup(false);
+      }
       if (isBegin) {
         this.isBegin = this.response.records.length < 1 || this.response.records === null ? true : false;
       }

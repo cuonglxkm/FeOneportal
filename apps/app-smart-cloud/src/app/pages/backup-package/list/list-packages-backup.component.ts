@@ -162,7 +162,10 @@ export class ListPackagesBackupComponent implements OnInit, OnDestroy {
     this.packageBackupService.search(this.value, this.selectedValue, this.project, this.region, this.pageSize, this.pageIndex).subscribe(data => {
       this.isLoading = false;
       this.response = data;
-
+      if((this.response.records == null || this.response.records.length < 1) && this.pageIndex != 1) {
+        this.pageIndex = 1
+        this.getListPackageBackups(false);
+      }
       if (isBegin) {
         this.isCheckBegin = this.response.records.length < 1 || this.response.records === null ? true : false;
       }
