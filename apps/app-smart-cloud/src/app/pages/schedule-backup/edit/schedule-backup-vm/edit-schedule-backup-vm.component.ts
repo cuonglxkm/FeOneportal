@@ -11,6 +11,8 @@ import { I18NService } from '@core';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { getCurrentRegionAndProject } from '@shared';
 import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
+import { PackageBackupModel } from '../../../../shared/models/package-backup.model';
+import { PackageBackupService } from '../../../../shared/services/package-backup.service';
 
 @Component({
   selector: 'one-portal-extend-schedule-backup-vm',
@@ -84,6 +86,7 @@ export class EditScheduleBackupVmComponent implements OnInit {
               private scheduleService: ScheduleService,
               @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
               private notification: NzNotificationService,
+              private backupPackageService: PackageBackupService,
               @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
               public datepipe: DatePipe) {
 
@@ -120,6 +123,14 @@ export class EditScheduleBackupVmComponent implements OnInit {
     }
   }
 
+  backupPackageDetail = new PackageBackupModel();
+
+  getBackupPackageDetail(id) {
+    this.backupPackageService.detail(id, this.project).subscribe(data => {
+      this.backupPackageDetail = data;
+    });
+  }
+
   modeChange(value) {
     this.validateForm.controls.daysOfWeek.clearValidators();
     this.validateForm.controls.daysOfWeek.markAsPristine();
@@ -148,6 +159,7 @@ export class EditScheduleBackupVmComponent implements OnInit {
       this.validateForm.controls.daysOfWeekMultiple.clearValidators();
       this.validateForm.controls.daysOfWeekMultiple.markAsPristine();
       this.validateForm.controls.daysOfWeekMultiple.reset();
+      this.validateForm.controls.daysOfWeekMultiple.setValidators([Validators.required])
 
     } else if (value === 3) {
       this.modeType = 3;
@@ -236,6 +248,7 @@ export class EditScheduleBackupVmComponent implements OnInit {
     this.scheduleService.detail(customerId, id).subscribe(data => {
       this.backupSchedule = data;
       this.isLoading = false;
+      this.getBackupPackageDetail(this.backupSchedule?.backupPackageId);
       this.validateForm.controls.backupMode.setValue(this.backupSchedule?.mode);
       this.validateForm.controls.times.setValue(this.backupSchedule?.runtime);
       console.log('times', this.validateForm.controls.times.value)
@@ -277,6 +290,21 @@ export class EditScheduleBackupVmComponent implements OnInit {
 
       });
     });
+  }
+
+  inputMonthMode(event) {
+    if (event.target.value === '0') {
+      event.target.value = 1;
+      this.validateForm.controls.months.setValue(1);
+    }
+  }
+
+  inputDayInMonthMode(event) {
+    if (event.target.value === '0') {
+      event.target.value = 1;
+      this.validateForm.controls.date.setValue(1);
+
+    }
   }
 
   ngOnInit(): void {
