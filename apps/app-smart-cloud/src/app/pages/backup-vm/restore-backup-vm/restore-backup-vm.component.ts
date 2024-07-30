@@ -259,7 +259,7 @@ export class RestoreBackupVmComponent implements OnInit {
         this.isVmGpu = data.filter(
           (e) => e.productName == 'vm-gpu'
         )[0].isActive;
-        this.cdr.detectChanges()
+        this.cdr.detectChanges();
       });
   }
 
@@ -291,7 +291,7 @@ export class RestoreBackupVmComponent implements OnInit {
 
   regionChanged(region: RegionModel) {
     this.region = region.regionId;
-    if(this.projectCombobox){
+    if (this.projectCombobox) {
       this.projectCombobox.loadProjects(true, region.regionId);
     }
     this.router.navigate(['/app-smart-cloud/backup-vm']);
@@ -474,7 +474,7 @@ export class RestoreBackupVmComponent implements OnInit {
             e.status == 0 && new Date(e.expiredDate) > new Date(currentDateTime)
         );
         console.log('list IP public', this.listIPPublic);
-        this.cdr.detectChanges()
+        this.cdr.detectChanges();
       });
   }
 
@@ -779,7 +779,7 @@ export class RestoreBackupVmComponent implements OnInit {
         this.getUnitPrice(0, 1, 0, 0, null);
         this.getTotalAmount();
         this.checkValidConfig();
-        this.cdr.detectChanges()
+        this.cdr.detectChanges();
       });
   }
 
@@ -872,7 +872,7 @@ export class RestoreBackupVmComponent implements OnInit {
           this.listGPUType
         );
         console.log('list gpu config recommend', this.listGpuConfigRecommend);
-        this.cdr.detectChanges()
+        this.cdr.detectChanges();
       });
   }
 
@@ -1151,9 +1151,6 @@ export class RestoreBackupVmComponent implements OnInit {
     this.dataBSSubject.pipe(debounceTime(500)).subscribe((res) => {
       id = res.id;
       value = res.value;
-      this.totalAmountVolume = 0;
-      this.totalVATVolume = 0;
-      this.totalPaymentVolume = 0;
       let index = this.listOfDataBlockStorage.findIndex((obj) => obj.id == id);
       let changeBlockStorage: BlockStorage = this.listOfDataBlockStorage[index];
       if (changeBlockStorage.capacity % this.stepCapacity > 0) {
@@ -1174,11 +1171,6 @@ export class RestoreBackupVmComponent implements OnInit {
         changeBlockStorage.priceAndVAT =
           changeBlockStorage.price + changeBlockStorage.VAT;
         this.listOfDataBlockStorage[index] = changeBlockStorage;
-        this.listOfDataBlockStorage.forEach((e: BlockStorage) => {
-          this.totalAmountVolume += e.price * this.numberMonth;
-          this.totalVATVolume += e.VAT * this.numberMonth;
-          this.totalPaymentVolume += e.priceAndVAT * this.numberMonth;
-        });
       } else if (changeBlockStorage.type.toUpperCase() == 'SSD') {
         changeBlockStorage.price =
           changeBlockStorage.capacity * this.unitPriceVolumeSSD;
@@ -1186,11 +1178,6 @@ export class RestoreBackupVmComponent implements OnInit {
         changeBlockStorage.priceAndVAT =
           changeBlockStorage.price + changeBlockStorage.VAT;
         this.listOfDataBlockStorage[index] = changeBlockStorage;
-        this.listOfDataBlockStorage.forEach((e: BlockStorage) => {
-          this.totalAmountVolume += e.price * this.numberMonth;
-          this.totalVATVolume += e.VAT * this.numberMonth;
-          this.totalPaymentVolume += e.priceAndVAT * this.numberMonth;
-        });
       }
       this.getTotalAmount();
       this.loadingSrv.close();
@@ -1246,18 +1233,17 @@ export class RestoreBackupVmComponent implements OnInit {
       });
   }
 
-  onChangeTime(numberMonth: number) {
-    this.numberMonth = numberMonth;
-    this.getTotalAmount();
-
-    this.totalAmountVolume = 0;
-    this.totalVATVolume = 0;
-    this.totalPaymentVolume = 0;
-    // this.listOfDataBlockStorage.forEach((bs) => {
-    //   this.totalAmountVolume += bs.price * this.numberMonth;
-    //   this.totalVATVolume += bs.VAT * this.numberMonth;
-    //   this.totalPaymentVolume += bs.priceAndVAT * this.numberMonth;
-    // });
+  onChangeTime(value) {
+    if (value == undefined) {
+      this.isValid = false;
+      this.totalAmount = 0;
+      this.totalVAT = 0;
+      this.totalincludesVAT = 0;
+    } else {
+      this.isValid = true;
+      this.numberMonth = value;
+      this.getTotalAmount();
+    }
     this.cdr.detectChanges();
   }
   //#endregion
@@ -1388,7 +1374,6 @@ export class RestoreBackupVmComponent implements OnInit {
   configGPU: ConfigGPU = new ConfigGPU();
   restoreInstanceBackup: RestoreInstanceBackup = new RestoreInstanceBackup();
   instanceInit() {
-    debugger
     this.restoreInstanceBackup.instanceBackupId = this.backupVmModel?.id;
     let selectedVolumeExternal: VolumeExternalBackup[] = [];
     this.listOfDataBlockStorage.forEach((e) => {
@@ -1471,9 +1456,6 @@ export class RestoreBackupVmComponent implements OnInit {
   totalAmount: number = 0;
   totalVAT: number = 0;
   totalincludesVAT: number = 0;
-  totalAmountVolume: number = 0;
-  totalVATVolume: number = 0;
-  totalPaymentVolume: number = 0;
   getTotalAmount() {
     this.isLoading = true;
     this.cdr.detectChanges();

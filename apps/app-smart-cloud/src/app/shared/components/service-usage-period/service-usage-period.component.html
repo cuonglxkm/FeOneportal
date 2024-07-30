@@ -22,6 +22,7 @@
               [(ngModel)]="numberMonth"
               (keydown)="onKeyDown($event)"
               (ngModelChange)="changeTime($event)"
+              (input)="onInput($event)"
               nzSize="large"
             ></nz-input-number>
           </nz-col>

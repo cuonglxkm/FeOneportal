@@ -90,13 +90,14 @@ export class ObjectStorageExtendComponent implements OnInit {
             e.error.message,
             this.i18n.fanyi('app.notification.object.storage.fail')
           );
+          this.navigateToBucketList();
         },
       });
   }
 
   invalid: boolean = false;
   onChangeTime(value) {
-    if (value.length == 0) {
+    if (value == undefined) {
       this.invalid = true;
       this.totalAmount = 0;
       this.totalincludesVAT = 0;

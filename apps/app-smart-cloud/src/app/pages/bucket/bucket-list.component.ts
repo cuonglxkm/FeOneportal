@@ -21,7 +21,7 @@ import { ObjectStorage } from 'src/app/shared/models/object-storage.model';
 import { BucketService } from 'src/app/shared/services/bucket.service';
 import { ObjectStorageService } from 'src/app/shared/services/object-storage.service';
 import { TimeCommon } from 'src/app/shared/utils/common';
-import { RegionModel } from '../../../../../../libs/common-utils/src';
+import {  NotificationService, RegionModel } from '../../../../../../libs/common-utils/src';
 import { RegionSelectDropdownComponent } from 'src/app/shared/components/region-select-dropdown/region-select-dropdown.component';
 import { RegionID } from 'src/app/shared/enums/common.enum';
 import { size } from 'lodash';
@@ -57,7 +57,8 @@ export class BucketListComponent implements OnInit {
     private router: Router,
     private clipboardService: ClipboardService,
     private message: NzMessageService,
-    private loadingSrv: LoadingService
+    private loadingSrv: LoadingService,
+    private notificationService: NotificationService,
   ) {}
   hasOS: boolean = undefined;
   region: number;
@@ -73,6 +74,18 @@ export class BucketListComponent implements OnInit {
       this.region = RegionID.ADVANCE;
     }
     this.hasObjectStorageInfo();
+    //connect hub
+    this.notificationService.connection.on('UpdateOSBucket', (data) => {
+      if (data) {
+        let actionType = data.actionType;
+          switch (actionType) {
+            case 'DELETING':
+              this.reloadTable();
+            case 'DELETED':
+              this.reloadTable();
+          }
+        }
+    });
     this.searchDelay
       .pipe(debounceTime(TimeCommon.timeOutSearch))
       .subscribe(() => {
@@ -211,7 +224,9 @@ export class BucketListComponent implements OnInit {
         },
       });
   }
-
+  reloadTable() {
+    this.search();
+  }
   searchBucket(search: string) {
     this.value = search.trim();
     this.search();
@@ -247,11 +262,11 @@ export class BucketListComponent implements OnInit {
   extendObjectStorage() {
     if (this.region === RegionID.ADVANCE) {
       this.router.navigate([
-        `/app-smart-cloud/object-storage-advance/extend/${this.objectStorage.id}`,
+        `/app-smart-cloud/object-storage-advance/extend`,
       ]);
     } else {
       this.router.navigate([
-        `/app-smart-cloud/object-storage/extend/${this.objectStorage.id}`,
+        `/app-smart-cloud/object-storage/extend`,
       ]);
     }
   }
@@ -259,11 +274,11 @@ export class BucketListComponent implements OnInit {
   resizeObjectStorage() {
     if (this.region === RegionID.ADVANCE) {
       this.router.navigate([
-        `/app-smart-cloud/object-storage-advance/edit/${this.objectStorage.id}`,
+        `/app-smart-cloud/object-storage-advance/edit`,
       ]);
     } else {
       this.router.navigate([
-        `/app-smart-cloud/object-storage/edit/${this.objectStorage.id}`,
+        `/app-smart-cloud/object-storage/edit`,
       ]);
     }
   }

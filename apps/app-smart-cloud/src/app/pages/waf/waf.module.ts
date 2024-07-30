@@ -25,6 +25,7 @@ import { WAFExtendComponent } from './extend/waf-extend.component';
 import { CreateSslCertWAFComponent } from './ssl-cert/create/create-ssl-cert.component';
 import { WafDetailComponent } from './waf-detail/waf-detail.component';
 import { DisablePolicyComponent } from './pop-up/disable-policy/disable-policy.component';
+import { SslCertDetailComponent } from './ssl-cert-detail/ssl-cert-detail.component';
 
 @NgModule({
   declarations: [
@@ -45,6 +46,7 @@ import { DisablePolicyComponent } from './pop-up/disable-policy/disable-policy.c
     CreateSslCertWAFComponent,
     WafDetailComponent,
     DisablePolicyComponent,
+    SslCertDetailComponent,
   ],
   imports: [
     CommonModule,

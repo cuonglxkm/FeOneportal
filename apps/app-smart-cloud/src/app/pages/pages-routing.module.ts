@@ -1228,7 +1228,7 @@ const routes: Routes = [
 
   },
   {
-    path: 'object-storage/extend/:id',
+    path: 'object-storage/extend',
     component: ObjectStorageExtendComponent,
     canActivate: [PermissionGuard],
     data: {
@@ -1246,7 +1246,7 @@ const routes: Routes = [
 
   },
   {
-    path: 'object-storage/edit/:id',
+    path: 'object-storage/edit',
     component: ObjectStorageEditComponent,
     canActivate: [PermissionGuard],
     data: {

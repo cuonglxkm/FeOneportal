@@ -195,8 +195,14 @@ export class BucketDetailComponent extends BaseService implements OnInit {
     }
   };
 
+  refreshParams() {
+    this.pageSize = 5;
+    this.index = 1;
+  }
+
   search(search: string) {
     this.value = search.trim();
+    this.refreshParams()
     this.loadData();
   }
 
@@ -209,6 +215,7 @@ export class BucketDetailComponent extends BaseService implements OnInit {
     this.searchDelay
       .pipe(debounceTime(TimeCommon.timeOutSearch))
       .subscribe(() => {
+        this.refreshParams()
         this.loadData();
       });
   }

@@ -30,7 +30,7 @@ import { getCurrentRegionAndProject } from '@shared';
 import { RegionModel } from '../../../../../../../libs/common-utils/src';
 import { RegionID } from 'src/app/shared/enums/common.enum';
 import { WafService } from 'src/app/shared/services/waf.service';
-import { WAFExtend } from '../waf.model';
+import { WafDetailDTO, WAFExtend } from '../waf.model';
 
 @Component({
   selector: 'one-portal-waf-extend',
@@ -65,6 +65,7 @@ export class WAFExtendComponent implements OnInit {
 
   ngOnInit(): void {
     this.id = this.activatedRoute.snapshot.paramMap.get('id');
+    this.getWAFById(this.id);
     // this.getTotalAmount();
     this.cdr.detectChanges();
   }
@@ -88,6 +89,20 @@ export class WAFExtendComponent implements OnInit {
 
 
   WAFExtend: WAFExtend = new WAFExtend();
+  WAFDetail: WafDetailDTO = new WafDetailDTO();
+
+  getWAFById(id) {
+    this.service
+      .getDetail(id)
+      .subscribe(
+        (data) => {
+          this.WAFDetail = data;
+        },
+        (error) => {
+          this.WAFDetail = null;
+        }
+      );
+  }
   initobjectStorageExtend() {
     this.WAFExtend.newExpireDate = this.newExpiredDate;
     this.WAFExtend.customerId = this.tokenService.get()?.userId;
