@@ -567,7 +567,7 @@
               <one-portal-svg-icon *ngIf="trashLoadBalancer" [icon]="'icon_trash'" class="icon-trash"
                 (click)="deleteLoadBalancer()"></one-portal-svg-icon>
             </div>
-            <p class="label-fontsize label-color" *ngIf="loadBalancerOld && loadbalancerOfferNameOld"> Số lượng Load Balancer hiện tại: {{loadBalancerOld}} GB - Gói: {{loadbalancerOfferNameOld}}</p>
+            <p class="label-fontsize label-color" *ngIf="loadBalancerOld && loadbalancerOfferNameOld"> Số lượng Load Balancer hiện tại: {{loadBalancerOld}} - Gói: {{loadbalancerOfferNameOld}}</p>
             <div *ngIf="!activeLoadBalancer">
               <button class="h-btn" nz-button nzType="default" (click)="initLoadBalancer()">
                 <img style="padding-right: 10px; margin-top: -4px" src="assets/imgs/add.svg" alt="" />{{ "app.bonus" |
