@@ -926,7 +926,7 @@
   "app.alert.create.load.balancer.vpc": "- Khi tạo xong Load Balancer, gói dịch vụ của Load Balancer sẽ không thể thay đổi tại đây.<br> - Muốn thay đổi gói dịch vụ của Load Balancer vui lòng vào quản lý VPC để điều chỉnh.",
   "app.title.delete.l7.policy": "Xóa L7 Policy {{name}}",
   "app.note.delete.l7.policy": "Để thực hiện xóa L7 Policy {{name}}, vui lòng nhập tên L7 Policy để xác nhận",
-  "app.alert.delete.l7.policy": "Bạn đang thực hiện xóa L7 Policy",
+  "app.alert.delete.l7.policy": "Để thực hiện xóa L7 Policy {{name}}, vui lòng nhập tên L7 Policy để xác nhận",
   "app.note.l7.policy.empty": "Quý khách chưa có L7 Policy nào!",
   "app.can.create": "Quý khách có thể khởi tạo",
   "app.alert.delete.l7.rule": "Bạn đang thực hiện xóa L7 Rule",
