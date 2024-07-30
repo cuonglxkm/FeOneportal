@@ -126,7 +126,7 @@ export class CreateScheduleBackupVpcComponent implements OnInit {
 
   isLoadingAction: boolean = false;
 
-  selectedOption: string = 'instance';
+  selectedOption: string;
 
   id: number;
 
@@ -225,7 +225,6 @@ export class CreateScheduleBackupVpcComponent implements OnInit {
   }
 
   selectInstanceChange(value) {
-    console.log('value instance select', value);
     if (value != undefined) {
       this.instanceSelected = value;
       const find = this.listInstanceNotUse?.find(x => x.id === this.instanceSelected);
@@ -237,7 +236,6 @@ export class CreateScheduleBackupVpcComponent implements OnInit {
   sizeOfVolume: number = 0;
 
   selectVolumeChange(value) {
-    console.log('value volume selected', value);
     if (value != undefined) {
       this.volumeSelected = value;
       const find = this.listVolumeNotUseUnique?.find(x => x.id === this.volumeSelected);
@@ -247,7 +245,6 @@ export class CreateScheduleBackupVpcComponent implements OnInit {
   }
 
   onSelectedVolume(value) {
-    console.log('value', value);
     this.sizeOfVlAttach = 0;
     this.volumeAttachSelected = [];
     if (value.length >= 1) {
@@ -307,7 +304,6 @@ export class CreateScheduleBackupVpcComponent implements OnInit {
           this.listInstanceNotUse?.push(item1);
         });
         this.backupScheduleService.search(formSearchBackupSchedule).subscribe(data3 => {
-          console.log('lịch', data3?.records);
           data3.records?.forEach(item3 => {
             this.listInstanceNotUse = this.listInstanceNotUse.filter(ins => ins.id != item3.serviceId && ins.taskState === 'ACTIVE');
 
@@ -348,20 +344,14 @@ export class CreateScheduleBackupVpcComponent implements OnInit {
     formSearchBackupSchedule.scheduleStatus = '';
     this.backupVolumeService.getListBackupVolume(this.region, this.project, null, null, 9999, 1).subscribe(data => {
       this.backupVolumeList = data?.records;
-      console.log('backup volume', this.backupVolumeList);
       this.volumeService.getVolumes(this.tokenService.get()?.userId, this.project, this.region, 9999, 1, null, null).subscribe(data2 => {
-        console.log('list volume', data2.records);
         this.listVolume = data2.records;
         this.listVolume?.forEach(item => {
           this.listVolumeNotUseUnique?.push(item);
         });
         this.backupScheduleService.search(formSearchBackupSchedule).subscribe(data3 => {
-          console.log('lịch', data3?.records);
           data3.records?.forEach(item3 => {
             this.listVolumeNotUseUnique = this.listVolumeNotUseUnique.filter((volume) => volume.id != item3.serviceId && ['AVAILABLE', 'IN-USE'].includes(volume.serviceStatus));
-
-            console.log('list volume', this.listVolumeNotUseUnique);
-
             this.volumeSelected = this.listVolumeNotUseUnique[0]?.id;
           });
         });
@@ -582,7 +572,62 @@ export class CreateScheduleBackupVpcComponent implements OnInit {
         this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('schedule.backup.volume.notify.create.fail') + '. ' + error.error.detail);
       });
     }
+  }
 
+  getVolumeById(id) {
+    this.isLoading = true
+    this.volumeService.getVolumeById(id, this.project).subscribe(data => {
+      this.isLoading = false
+      this.volumeName = data.name
+    }, error => {
+      this.isLoading = false
+      this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.failData'))
+    })
+  }
+
+  inputMaxBackup(event) {
+    if (this.selectedOption == 'instance') {
+      if (event.target.value === '0') {
+        event.target.value = 1;
+        this.validateForm.get('formInstance').get('maxBackup').setValue(1);
+      }
+    }
+    if (this.selectedOption == 'volume') {
+      if (event.target.value === '0') {
+        event.target.value = 1;
+        this.validateForm.get('formVolume').get('maxBackup').setValue(1);
+      }
+    }
+  }
+
+  inputMonthMode(event) {
+    if (this.selectedOption == 'instance') {
+      if (event.target.value === '0') {
+        event.target.value = 1;
+        this.validateForm.get('formInstance').get('months').setValue(1);
+      }
+    }
+    if (this.selectedOption == 'volume') {
+      if (event.target.value === '0') {
+        event.target.value = 1;
+        this.validateForm.get('formVolume').get('months').setValue(1);
+      }
+    }
+  }
+
+  inputDayInMonthMode(event) {
+    if (this.selectedOption == 'instance') {
+      if (event.target.value === '0') {
+        event.target.value = 1;
+        this.validateForm.get('formInstance').get('date').setValue(1);
+      }
+    }
+    if (this.selectedOption == 'volume') {
+      if (event.target.value === '0') {
+        event.target.value = 1;
+        this.validateForm.get('formVolume').get('date').setValue(1);
+      }
+    }
   }
 
   ngOnInit() {
@@ -591,7 +636,7 @@ export class CreateScheduleBackupVpcComponent implements OnInit {
     this.project = regionAndProject.projectId;
 
     this.modeSelected = 1;
-
+    debugger
     this.projectService.getByProjectId(this.project).subscribe(data => {
       this.isLoading = false;
       this.sizeInCloudProject = data;
@@ -599,11 +644,43 @@ export class CreateScheduleBackupVpcComponent implements OnInit {
       this.notification.error(error.statusText, this.i18n.fanyi('app.failData'));
       this.isLoading = false;
     });
+    this.activatedRoute.queryParams.subscribe(params => {
+      const type = params['type'];
+      console.log(type); // Outputs: VOLUME
+      if(type != undefined && type == 'VOLUME') {
+        this.selectedOption = 'volume'
+      } else if(type != undefined && type == 'INSTANCE') {
+        this.selectedOption = 'instance'
+      } else {
+        this.selectedOption = 'instance'
+      }
 
+      const instanceId = params['instanceId']
+      if(instanceId != undefined || instanceId != null) {
+        this.instanceId = Number.parseInt(instanceId);
+        this.instanceSelected = this.instanceId
+        this.validateForm.get('formInstance').get('instanceId').setValue(this.instanceId)
+        this.getInstanceById();
+      }else {
+        this.getListInstances();
+      }
+
+      const volumeId = params['idVolume']
+
+      if(volumeId != undefined || volumeId != null) {
+        this.volumeId = Number.parseInt(volumeId);
+        console.log('volumeId', this.volumeId)
+        this.volumeSelected = this.volumeId
+        this.validateForm.get('formVolume').get('volumeId').setValue(this.volumeId)
+        this.getVolumeById(this.volumeId);
+      } else {
+        this.getListVolume();
+      }
+    });
     this.setInitialValues();
-    this.getListInstances();
-    this.getInstanceById();
+    // this.getListInstances();
+    // this.getInstanceById();
     this.getListScheduleBackup();
-    this.getListVolume();
+    // this.getListVolume();
   }
 }
