@@ -469,25 +469,25 @@ export class ProjectCreateComponent implements OnInit {
       this._ssd = Math.min(Math.max(value, this.minBlock), this.maxBlock);
   }
 
-  _hhd: number = this.maxBlock;
+  // _hhd: number = this.maxBlock;
 
-  get hhd(): number {
-      return this._hhd;
-  }
+  // get hhd(): number {
+  //     return this._hhd;
+  // }
 
-  set hhd(value: number) {
-      this._hhd = Math.min(Math.max(value, this.minBlock), this.maxBlock);
-  }
+  // set hhd(value: number) {
+  //     this._hhd = Math.min(Math.max(value, this.minBlock), this.maxBlock);
+  // }
 
-  _ssd: number = this.maxBlock;
+  // _ssd: number = this.maxBlock;
 
-  get ssd(): number {
-      return this._ssd;
-  }
+  // get ssd(): number {
+  //     return this._ssd;
+  // }
 
-  set ssd(value: number) {
-      this._ssd = Math.min(Math.max(value, this.minBlock), this.maxBlock);
-  }
+  // set ssd(value: number) {
+  //     this._ssd = Math.min(Math.max(value, this.minBlock), this.maxBlock);
+  // }
 
   checkNumberInput(value: number, name: string): void {
     console.log("value 55",value)
@@ -559,7 +559,7 @@ export class ProjectCreateComponent implements OnInit {
       case "ippublic":
         this.numberIpPublic = number;
         break;
-      case "ip_floating":
+      case "ipfloating":
         this.numberIpFloating = number;
         break;
       case "ipv6":

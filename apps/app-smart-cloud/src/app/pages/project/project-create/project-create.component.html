@@ -415,9 +415,9 @@
                       <nz-form-label class="custom-label">{{ "app.order-detail.quantity" | i18n }} IP
                         Floating</nz-form-label>
                       <nz-form-control>
-                        <nz-input-number style="width: 100%; margin-left: -1px" [nzMin]="0" [nzStep]="1" [nzMax]="20"
+                        <nz-input-number style="width: 100%; margin-left: -1px" [nzMin]="0" [nzStep]="1" 
                           (keydown)="checkPossiblePress($event)" [(ngModel)]="numberIpFloating"
-                          (ngModelChange)="onInputMax($event,20,'ip_floating')" [ngModelOptions]="{ standalone: true }"
+                          (ngModelChange)="onInputMax($event,20,'ipfloating')" [ngModelOptions]="{ standalone: true }"
                           nzSize="large"></nz-input-number>
                       </nz-form-control>
                     </nz-form-item>
