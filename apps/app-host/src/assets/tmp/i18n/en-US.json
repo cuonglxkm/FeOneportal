@@ -2829,6 +2829,7 @@
   "project.note4": "Custom VPC",
   "project.note5": "Default VPC",
   "project.status.enable": "Active",
+  
 
   "project.status.delete": "Scheduled automatic deletion",
   "project.default": "Default VPC",
