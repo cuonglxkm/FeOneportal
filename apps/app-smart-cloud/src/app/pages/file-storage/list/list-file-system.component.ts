@@ -198,7 +198,10 @@ export class ListFileSystemComponent implements OnInit, OnDestroy {
           this.isLoading = false;
           console.log('data file system', data);
           this.response = data;
-
+          if((this.response.records == null || this.response.records.length < 1) && this.pageIndex != 1) {
+            this.pageIndex = 1
+            this.getListFileSystem(false);
+          }
           if (isBegin) {
             this.isCheckBegin =
               this.response.records.length < 1 || this.response.records === null ? true : false;
