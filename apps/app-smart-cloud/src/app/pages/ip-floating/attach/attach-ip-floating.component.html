@@ -8,7 +8,7 @@
           [nzFooter]="null"
           (nzOnCancel)="handleCancel()">
   <ng-template #modalTitle>
-    <span class="text-modal-title">{{'ip.floating.label.delete' | i18n}}</span>
+    <span class="text-modal-title">{{'ip.floating.label.attach' | i18n}}</span>
   </ng-template>
   <ng-template #modalContent>
     <form nz-form nzLayout="vertical" [formGroup]="validateForm">
@@ -20,7 +20,7 @@
       <nz-form-item>
         <nz-form-label>
           <div>
-            <span>{{'ip.floating.label.range' | i18n}} </span>
+            <span>{{'ip.floating.label.range' | i18n}} {{ display}}</span>
           </div>
         </nz-form-label>
       </nz-form-item>
