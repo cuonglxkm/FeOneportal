@@ -15,16 +15,15 @@
     <input
       name="name"
       nz-input
-      [placeholder]="'app.placeholder.search' | i18n"
+      [placeholder]="'app.button.search' | i18n"
       [(ngModel)]="value"
-      #searchBox (keyup.enter)="search(searchBox.value)" (ngModelChange)="searchDelay.next(false)"
+      #searchBox
+      (keyup.enter)="search(searchBox.value)"
+      (ngModelChange)="searchDelay.next(false)"
     />
   </nz-input-group>
   <ng-template #prefixIconSearch>
-    <img
-      src="assets/imgs/search.svg"
-      alt=""
-    />
+    <img src="assets/imgs/search.svg" alt="" />
   </ng-template>
   <button nz-button nzType="primary" (click)="modalCreate()">
     <img
@@ -39,8 +38,9 @@
   style="margin-top: 10px"
   #rowSelectionTable
   nzShowSizeChanger
-  [nzFrontPagination]="false" 
+  [nzFrontPagination]="false"
   [nzData]="listBucketPolicy"
+  [nzTotal]="total"
   (nzPageIndexChange)="searchBucketPolicy()"
   (nzPageSizeChange)="searchBucketPolicy()"
   nzTableLayout="fixed"
@@ -62,13 +62,22 @@
           {{ item.user }}
         </td>
         <td>{{ item.permission }}</td>
-        <td title="{{ item.action }}" style="overflow: hidden;
-        font-weight: normal;
-        white-space: nowrap;
-        text-overflow: ellipsis;
-        width: 300px;" >{{ item.action }}</td>
+        <td
+          title="{{ item.action }}"
+          style="
+            overflow: hidden;
+            font-weight: normal;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            width: 300px;
+          "
+        >
+          {{ item.action }}
+        </td>
         <td>
-          <a (click)="modalJson(item.sid)">{{ 'app.view.json.detail' | i18n }}</a>
+          <a (click)="modalJson(item.sid)">{{
+            'app.view.json.detail' | i18n
+          }}</a>
         </td>
         <td nzRight>
           <img
@@ -97,283 +106,338 @@
   [nzTitle]="'app.create.bucket.policy' | i18n"
   (nzOnCancel)="handleCancelCreate()"
 >
-<form nz-form [formGroup]="formCreate">
-  <ng-container *nzModalContent>
-    <nz-radio-group
-      style="width: 100%; margin-bottom: 16px"
-      [(ngModel)]="isUserOther"
-      [ngModelOptions]="{standalone: true}"
-      (ngModelChange)="changeUser()"
-    >
-      <div style="display: flex">
-        <div style="flex: 1">
-          <label class="text-value" nz-radio [nzValue]="false">Subuser</label>
+  <form nz-form [formGroup]="form">
+    <ng-container *nzModalContent>
+      <nz-radio-group
+        style="width: 100%; margin-bottom: 16px"
+        [(ngModel)]="isUserOther"
+        [ngModelOptions]="{ standalone: true }"
+        (ngModelChange)="changeUser()"
+      >
+        <div style="display: flex">
+          <div style="flex: 1">
+            <label class="text-value" nz-radio [nzValue]="false">Subuser</label>
+          </div>
+          <div style="flex: 1">
+            <label class="text-value" nz-radio [nzValue]="true">{{
+              'app.user.vnpt.cloud' | i18n
+            }}</label>
+          </div>
         </div>
-        <div style="flex: 1">
-          <label class="text-value" nz-radio [nzValue]="true">{{
-            'app.user.vnpt.cloud' | i18n
-          }}</label>
-        </div>
+      </nz-radio-group>
+      <div class="text-label">
+        {{ 'app.user' | i18n }} (<span class="text-red">*</span>)
       </div>
-    </nz-radio-group>
-    <div class="text-label">
-      {{ 'app.user' | i18n }} (<span class="text-red">*</span>)
-    </div>
-    <nz-select
-      style="width: 100%; margin-top: 5px; margin-bottom: 16px"
-      [nzPlaceHolder]="'-- ' + ('app.choose.user' | i18n) + ' --'"
-      [nzShowSearch]="true"
-      [nzLoading]="loadingSubuser"
-      formControlName="emailUser"
-      [(ngModel)]="emailUser"
-      nzSize="large"
-    >
-      <nz-option
-        *ngFor="let p of listSubuser"
-        [nzValue]="p.subUserId"
-        [nzLabel]="p.subUserId"
-      />
-    </nz-select>
-    <div *ngIf="isUserOther"style="margin-bottom: 16px" class="text-label">
-      {{ 'app.alert.bucket.policy.create' | i18n }}
-    </div>
-    <div class="text-label">
-      {{ 'app.permission' | i18n }} (<span class="text-red">*</span>)
-    </div>
-    <nz-select
-      style="width: 100%; margin-top: 5px; margin-bottom: 16px"
-      [nzPlaceHolder]="'-- ' + ('app.choose.permission' | i18n) + ' --'"
-      [nzShowSearch]="true"
-      [(ngModel)]="permission"
-      formControlName="permission"
-      nzSize="large"
-    >
-      <nz-option
-        *ngFor="let p of listPermission"
-        [nzValue]="p.name"
-        [nzLabel]="p.name"
-      />
-    </nz-select>
-   
-    <div class="text-label">
-      {{ 'app.choose.operation.permission' | i18n }} (<span class="text-red"
-        >*</span
-      >)
-    </div>
-    <div class="list-permission-select">
-    <nz-select
-      style="width: 100%; margin-top: 5px; margin-bottom: 16px"
-      nzMode="multiple"
-      [nzPlaceHolder]="
-        '-- ' + ('app.choose.operation.permission' | i18n) + ' --'
-      "
-      [(ngModel)]="listActionPermission"
-      [nzShowSearch]="true"
-      nzSize="large"
-      formControlName="listActionPermission"
-      [nzMaxTagCount]="1"
-      [nzMaxTagPlaceholder]="tagPlaceHolder"
-    >
-      <nz-option-group nzLabel="SUGGESTED COMBO">
+      <nz-select
+        *ngIf="!isUserOther"
+        style="width: 100%; margin-top: 5px; margin-bottom: 16px"
+        [nzPlaceHolder]="'-- ' + ('app.choose.user' | i18n) + ' --'"
+        [nzShowSearch]="true"
+        [nzLoading]="loadingSubuser"
+        formControlName="emailUser"
+        nzSize="large"
+      >
         <nz-option
-          nzValue="CreateBucketCombo"
-          nzLabel="Create bucket (CreateBucket, DeleteBucket)"
-        ></nz-option>
+          *ngFor="let p of listSubuser"
+          [nzValue]="p.subUserId"
+          [nzLabel]="p.subUserId"
+        />
+      </nz-select>
+      <nz-form-item *ngIf="isUserOther" style="margin-top: 5px">
+        <nz-form-control [nzErrorTip]="emailUserError">
+          <input
+            nz-input
+            formControlName="emailUser"
+            placeholder="Email"
+            nzSize="large"
+          />
+          <ng-template #emailUserError let-control>
+            <ng-container *ngIf="control.hasError('required')">{{
+              'validation.email.required' | i18n
+            }}</ng-container>
+            <ng-container *ngIf="control.hasError('validEmail')">{{
+              'validation.email.wrong-format' | i18n
+            }}</ng-container>
+          </ng-template>
+        </nz-form-control>
+      </nz-form-item>
+      <div
+        *ngIf="isUserOther"
+        style="margin-top: -5px; margin-bottom: 16px"
+        class="text-label"
+      >
+        {{ 'app.alert.bucket.policy.create' | i18n }}
+      </div>
+      <div class="text-label">
+        {{ 'app.permission' | i18n }} (<span class="text-red">*</span>)
+      </div>
+      <nz-select
+        style="width: 100%; margin-top: 5px; margin-bottom: 16px"
+        [nzPlaceHolder]="'-- ' + ('app.choose.permission' | i18n) + ' --'"
+        [nzShowSearch]="true"
+        [(ngModel)]="permission"
+        formControlName="permission"
+        nzSize="large"
+      >
         <nz-option
-          nzValue="readDownloadFile"
-          nzLabel="Read / Download file (GetObject, ListBucket)"
-        ></nz-option>
-        <nz-option
-          nzValue="uploadFile"
-          nzLabel="Upload file (PutObjectAcl, PutObject,...)"
-        ></nz-option>
-        <nz-option
-          nzValue="cofigBucket"
-          nzLabel="Config bucket (GetBucketAcl, GetBucketCORS,...)"
-        ></nz-option>
-      </nz-option-group>
-      <nz-option-group nzLabel="CUSTOM ACTION">
-        <nz-option nzValue="selectAll" nzLabel="SELECT ALL"></nz-option>
-      </nz-option-group>
-      <nz-option-group nzLabel="GROUP BUCKET">
-        <nz-option nzValue="CreateBucket" nzLabel="CreateBucket"></nz-option>
-        <nz-option
-          nzValue="DeleteBucketPolicy"
-          nzLabel="DeleteBucketPolicy"
-        ></nz-option>
-        <nz-option nzValue="DeleteBucket" nzLabel="DeleteBucket"></nz-option>
-        <nz-option
-          nzValue="DeleteBucketWebsite"
-          nzLabel="DeleteBucketWebsite"
-        ></nz-option>
-        <nz-option nzValue="GetBucketAcl" nzLabel="GetBucketAcl"></nz-option>
-        <nz-option nzValue="GetBucketCORS" nzLabel="GetBucketCORS"></nz-option>
-        <nz-option
-          nzValue="GetBucketLocation"
-          nzLabel="GetBucketLocation"
-        ></nz-option>
-        <nz-option
-          nzValue="GetBucketLogging"
-          nzLabel="GetBucketLogging"
-        ></nz-option>
-        <nz-option
-          nzValue="GetBucketNotification"
-          nzLabel="GetBucketNotification"
-        ></nz-option>
-        <nz-option
-          nzValue="GetBucketPolicy"
-          nzLabel="GetBucketPolicy"
-        ></nz-option>
-        <nz-option
-          nzValue="GetBucketRequestPayment"
-          nzLabel="GetBucketRequestPayment"
-        ></nz-option>
-        <nz-option
-          nzValue="GetBucketTagging"
-          nzLabel="GetBucketTagging"
-        ></nz-option>
-        <nz-option
-          nzValue="GetBucketVersioning"
-          nzLabel="GetBucketVersioning"
-        ></nz-option>
-        <nz-option
-          nzValue="ListAllMyBuckets"
-          nzLabel="ListAllMyBuckets"
-        ></nz-option>
-        <nz-option
-          nzValue="ListBucketMultiPartUploads"
-          nzLabel="ListBucketMultiPartUploads"
-        ></nz-option>
-        <nz-option nzValue="ListBucket" nzLabel="ListBucket"></nz-option>
-        <nz-option
-          nzValue="ListBucketVersions"
-          nzLabel="ListBucketVersions"
-        ></nz-option>
-        <nz-option nzValue="PutBucketAcl" nzLabel="PutBucketAcl"></nz-option>
-        <nz-option nzValue="PutBucketCORS" nzLabel="PutBucketCORS"></nz-option>
-        <nz-option
-          nzValue="PutBucketLogging"
-          nzLabel="PutBucketLogging"
-        ></nz-option>
-        <nz-option
-          nzValue="PutBucketNotification"
-          nzLabel="PutBucketNotification"
-        ></nz-option>
-        <nz-option
-          nzValue="PutBucketPolicy"
-          nzLabel="PutBucketPolicy"
-        ></nz-option>
-        <nz-option
-          nzValue="PutBucketRequestPayment"
-          nzLabel="PutBucketRequestPayment"
-        ></nz-option>
-        <nz-option
-          nzValue="PutBucketTagging"
-          nzLabel="PutBucketTagging"
-        ></nz-option>
-        <nz-option
-          nzValue="PutBucketVersioning"
-          nzLabel="PutBucketVersioning"
-        ></nz-option>
-        <nz-option
-          nzValue="PutBucketWebsite"
-          nzLabel="PutBucketWebsite"
-        ></nz-option>
-      </nz-option-group>
-      <nz-option-group nzLabel="GROUP OBJECT">
-        <nz-option nzValue="DeleteObject" nzLabel="DeleteObject"></nz-option>
-        <nz-option
-          nzValue="DeleteObjectVersion"
-          nzLabel="DeleteObjectVersion"
-        ></nz-option>
-        <nz-option nzValue="GetObjectAcl" nzLabel="GetObjectAcl"></nz-option>
-        <nz-option nzValue="GetObject" nzLabel="GetObject"></nz-option>
-        <nz-option
-          nzValue="GetObjectTorrent"
-          nzLabel="GetObjectTorrent"
-        ></nz-option>
-        <nz-option
-          nzValue="GetObjectVersionAcl"
-          nzLabel="GetObjectVersionAcl"
-        ></nz-option>
-        <nz-option
-          nzValue="GetObjectVersion"
-          nzLabel="GetObjectVersion"
-        ></nz-option>
-        <nz-option
-          nzValue="GetObjectVersionTorrent"
-          nzLabel="GetObjectVersionTorrent"
-        ></nz-option>
-        <nz-option nzValue="PutObjectAcl" nzLabel="PutObjectAcl"></nz-option>
-        <nz-option nzValue="PutObject" nzLabel="PutObject"></nz-option>
-        <nz-option
-          nzValue="PutObjectVersionAcl"
-          nzLabel="PutObjectVersionAcl"
-        ></nz-option>
-        <nz-option nzValue="RestoreObject" nzLabel="RestoreObject"></nz-option>
-      </nz-option-group>
-      <nz-option-group nzLabel="GROUP CONFIG">
-        <nz-option
-          nzValue="GetLifecycleConfiguration"
-          nzLabel="GetLifecycleConfiguration"
-        ></nz-option>
-        <nz-option
-          nzValue="GetReplicationConfiguration"
-          nzLabel="GetReplicationConfiguration"
-        ></nz-option>
-        <nz-option
-          nzValue="PutAccelerateConfiguration"
-          nzLabel="PutAccelerateConfiguration"
-        ></nz-option>
-        <nz-option
-          nzValue="PutLifecycleConfiguration"
-          nzLabel="PutLifecycleConfiguration"
-        ></nz-option>
-        <nz-option
-          nzValue="PutReplicationConfiguration"
-          nzLabel="PutReplicationConfiguration"
-        ></nz-option>
-        <nz-option
-          nzValue="DeleteReplicationConfiguration"
-          nzLabel="DeleteReplicationConfiguration"
-        ></nz-option>
-        <nz-option
-          nzValue="GetAccelerateConfiguration"
-          nzLabel="GetAccelerateConfiguration"
-        ></nz-option>
-      </nz-option-group>
-      <nz-option-group nzLabel="OTHER GROUP">
-        <nz-option
-          nzValue="AbortMultipartUpload"
-          nzLabel="AbortMultipartUpload"
-        ></nz-option>
-        <nz-option
-          nzValue="ListMultipartUploadParts"
-          nzLabel="ListMultipartUploadParts"
+          *ngFor="let p of listPermission"
+          [nzValue]="p.name"
+          [nzLabel]="p.name"
+        />
+      </nz-select>
+
+      <div class="text-label">
+        {{ 'app.choose.operation.permission' | i18n }} (<span class="text-red"
+          >*</span
+        >)
+      </div>
+      <div class="list-permission-select">
+        <nz-select
+          style="width: 100%; margin-top: 5px; margin-bottom: 16px"
+          nzMode="multiple"
+          [nzPlaceHolder]="
+            '-- ' + ('app.choose.operation.permission' | i18n) + ' --'
+          "
+          [(ngModel)]="listActionPermission"
+          [nzShowSearch]="true"
+          nzSize="large"
+          formControlName="listActionPermission"
         >
-        </nz-option>
-      </nz-option-group>
-    </nz-select>
-  </div>
-    <ng-template #tagPlaceHolder let-selectedList>and {{ selectedList.length }} more selected</ng-template>
-  </ng-container>
-  <div *nzModalFooter>
-    <button nz-button (click)="handleCancelCreate()">
-      <img
-        style="padding-right: 10px; margin-top: -4px"
-        src="assets/imgs/cancel.svg"
-        alt=""
-      />{{ 'app.button.cancel' | i18n }}
-    </button>
-    <button [disabled]="formCreate.invalid" nz-button nzType="primary" (click)="handleOkCreate()" [nzLoading]="isLoadingCreate">
-      <img
-        *ngIf="isLoadingCreate === false"
-        style="padding-right: 10px; margin-top: -4px"
-        src="assets/imgs/confirm.svg"
-        alt=""
-      />{{ 'app.button.confirm' | i18n }}
-    </button>
-  </div>
+          <nz-option-group nzLabel="SUGGESTED COMBO">
+            <nz-option
+              nzValue="CreateBucketCombo"
+              nzLabel="Create bucket (CreateBucket, DeleteBucket)"
+            ></nz-option>
+            <nz-option
+              nzValue="readDownloadFile"
+              nzLabel="Read / Download file (GetObject, ListBucket)"
+            ></nz-option>
+            <nz-option
+              nzValue="uploadFile"
+              nzLabel="Upload file (PutObjectAcl, PutObject,...)"
+            ></nz-option>
+            <nz-option
+              nzValue="cofigBucket"
+              nzLabel="Config bucket (GetBucketAcl, GetBucketCORS,...)"
+            ></nz-option>
+          </nz-option-group>
+          <nz-option-group nzLabel="CUSTOM ACTION">
+            <nz-option nzValue="selectAll" nzLabel="SELECT ALL"></nz-option>
+          </nz-option-group>
+          <nz-option-group nzLabel="GROUP BUCKET">
+            <nz-option
+              nzValue="CreateBucket"
+              nzLabel="CreateBucket"
+            ></nz-option>
+            <nz-option
+              nzValue="DeleteBucketPolicy"
+              nzLabel="DeleteBucketPolicy"
+            ></nz-option>
+            <nz-option
+              nzValue="DeleteBucket"
+              nzLabel="DeleteBucket"
+            ></nz-option>
+            <nz-option
+              nzValue="DeleteBucketWebsite"
+              nzLabel="DeleteBucketWebsite"
+            ></nz-option>
+            <nz-option
+              nzValue="GetBucketAcl"
+              nzLabel="GetBucketAcl"
+            ></nz-option>
+            <nz-option
+              nzValue="GetBucketCORS"
+              nzLabel="GetBucketCORS"
+            ></nz-option>
+            <nz-option
+              nzValue="GetBucketLocation"
+              nzLabel="GetBucketLocation"
+            ></nz-option>
+            <nz-option
+              nzValue="GetBucketLogging"
+              nzLabel="GetBucketLogging"
+            ></nz-option>
+            <nz-option
+              nzValue="GetBucketNotification"
+              nzLabel="GetBucketNotification"
+            ></nz-option>
+            <nz-option
+              nzValue="GetBucketPolicy"
+              nzLabel="GetBucketPolicy"
+            ></nz-option>
+            <nz-option
+              nzValue="GetBucketRequestPayment"
+              nzLabel="GetBucketRequestPayment"
+            ></nz-option>
+            <nz-option
+              nzValue="GetBucketTagging"
+              nzLabel="GetBucketTagging"
+            ></nz-option>
+            <nz-option
+              nzValue="GetBucketVersioning"
+              nzLabel="GetBucketVersioning"
+            ></nz-option>
+            <nz-option
+              nzValue="ListAllMyBuckets"
+              nzLabel="ListAllMyBuckets"
+            ></nz-option>
+            <nz-option
+              nzValue="ListBucketMultiPartUploads"
+              nzLabel="ListBucketMultiPartUploads"
+            ></nz-option>
+            <nz-option nzValue="ListBucket" nzLabel="ListBucket"></nz-option>
+            <nz-option
+              nzValue="ListBucketVersions"
+              nzLabel="ListBucketVersions"
+            ></nz-option>
+            <nz-option
+              nzValue="PutBucketAcl"
+              nzLabel="PutBucketAcl"
+            ></nz-option>
+            <nz-option
+              nzValue="PutBucketCORS"
+              nzLabel="PutBucketCORS"
+            ></nz-option>
+            <nz-option
+              nzValue="PutBucketLogging"
+              nzLabel="PutBucketLogging"
+            ></nz-option>
+            <nz-option
+              nzValue="PutBucketNotification"
+              nzLabel="PutBucketNotification"
+            ></nz-option>
+            <nz-option
+              nzValue="PutBucketPolicy"
+              nzLabel="PutBucketPolicy"
+            ></nz-option>
+            <nz-option
+              nzValue="PutBucketRequestPayment"
+              nzLabel="PutBucketRequestPayment"
+            ></nz-option>
+            <nz-option
+              nzValue="PutBucketTagging"
+              nzLabel="PutBucketTagging"
+            ></nz-option>
+            <nz-option
+              nzValue="PutBucketVersioning"
+              nzLabel="PutBucketVersioning"
+            ></nz-option>
+            <nz-option
+              nzValue="PutBucketWebsite"
+              nzLabel="PutBucketWebsite"
+            ></nz-option>
+          </nz-option-group>
+          <nz-option-group nzLabel="GROUP OBJECT">
+            <nz-option
+              nzValue="DeleteObject"
+              nzLabel="DeleteObject"
+            ></nz-option>
+            <nz-option
+              nzValue="DeleteObjectVersion"
+              nzLabel="DeleteObjectVersion"
+            ></nz-option>
+            <nz-option
+              nzValue="GetObjectAcl"
+              nzLabel="GetObjectAcl"
+            ></nz-option>
+            <nz-option nzValue="GetObject" nzLabel="GetObject"></nz-option>
+            <nz-option
+              nzValue="GetObjectTorrent"
+              nzLabel="GetObjectTorrent"
+            ></nz-option>
+            <nz-option
+              nzValue="GetObjectVersionAcl"
+              nzLabel="GetObjectVersionAcl"
+            ></nz-option>
+            <nz-option
+              nzValue="GetObjectVersion"
+              nzLabel="GetObjectVersion"
+            ></nz-option>
+            <nz-option
+              nzValue="GetObjectVersionTorrent"
+              nzLabel="GetObjectVersionTorrent"
+            ></nz-option>
+            <nz-option
+              nzValue="PutObjectAcl"
+              nzLabel="PutObjectAcl"
+            ></nz-option>
+            <nz-option nzValue="PutObject" nzLabel="PutObject"></nz-option>
+            <nz-option
+              nzValue="PutObjectVersionAcl"
+              nzLabel="PutObjectVersionAcl"
+            ></nz-option>
+            <nz-option
+              nzValue="RestoreObject"
+              nzLabel="RestoreObject"
+            ></nz-option>
+          </nz-option-group>
+          <nz-option-group nzLabel="GROUP CONFIG">
+            <nz-option
+              nzValue="GetLifecycleConfiguration"
+              nzLabel="GetLifecycleConfiguration"
+            ></nz-option>
+            <nz-option
+              nzValue="GetReplicationConfiguration"
+              nzLabel="GetReplicationConfiguration"
+            ></nz-option>
+            <nz-option
+              nzValue="PutAccelerateConfiguration"
+              nzLabel="PutAccelerateConfiguration"
+            ></nz-option>
+            <nz-option
+              nzValue="PutLifecycleConfiguration"
+              nzLabel="PutLifecycleConfiguration"
+            ></nz-option>
+            <nz-option
+              nzValue="PutReplicationConfiguration"
+              nzLabel="PutReplicationConfiguration"
+            ></nz-option>
+            <nz-option
+              nzValue="DeleteReplicationConfiguration"
+              nzLabel="DeleteReplicationConfiguration"
+            ></nz-option>
+            <nz-option
+              nzValue="GetAccelerateConfiguration"
+              nzLabel="GetAccelerateConfiguration"
+            ></nz-option>
+          </nz-option-group>
+          <nz-option-group nzLabel="OTHER GROUP">
+            <nz-option
+              nzValue="AbortMultipartUpload"
+              nzLabel="AbortMultipartUpload"
+            ></nz-option>
+            <nz-option
+              nzValue="ListMultipartUploadParts"
+              nzLabel="ListMultipartUploadParts"
+            >
+            </nz-option>
+          </nz-option-group>
+        </nz-select>
+      </div>
+    </ng-container>
+    <div *nzModalFooter>
+      <button nz-button (click)="handleCancelCreate()">
+        <img
+          style="padding-right: 10px; margin-top: -4px"
+          src="assets/imgs/cancel.svg"
+          alt=""
+        />{{ 'app.button.cancel' | i18n }}
+      </button>
+      <button
+        nz-button
+        nzType="primary"
+        (click)="handleOkCreate()"
+        [nzLoading]="isLoadingCreate"
+        [disabled]="form.invalid"
+      >
+        <img
+          *ngIf="isLoadingCreate === false"
+          style="padding-right: 10px; margin-top: -4px"
+          src="assets/imgs/confirm.svg"
+          alt=""
+        />{{ 'app.button.confirm' | i18n }}
+      </button>
+    </div>
   </form>
 </nz-modal>
 
@@ -383,279 +447,335 @@
   [nzTitle]="('app.text.edit' | i18n) + ' Bucket Policy'"
   (nzOnCancel)="handleCancelUpdate()"
 >
-<form nz-form [formGroup]="formEdit">
-  <ng-container *nzModalContent>
-    <nz-radio-group
-      style="width: 100%; margin-bottom: 16px"
-      [(ngModel)]="isUserOther"
-      formControlName="isUserOther"
-    >
-      <div style="display: flex">
-        <div style="flex: 1">
-          <label class="text-value" nz-radio [nzValue]="false">Subuser</label>
+  <form nz-form [formGroup]="form">
+    <ng-container *nzModalContent>
+      <nz-radio-group
+        style="width: 100%; margin-bottom: 16px"
+        [(ngModel)]="isUserOther"
+        (ngModelChange)="changeUser()"
+        [ngModelOptions]="{ standalone: true }"
+      >
+        <div style="display: flex">
+          <div style="flex: 1">
+            <label class="text-value" nz-radio [nzValue]="false">Subuser</label>
+          </div>
+          <div style="flex: 1">
+            <label class="text-value" nz-radio [nzValue]="true">{{
+              'app.user.vnpt.cloud' | i18n
+            }}</label>
+          </div>
         </div>
-        <div style="flex: 1">
-          <label class="text-value" nz-radio [nzValue]="true">{{
-            'app.user.vnpt.cloud' | i18n
-          }}</label>
-        </div>
+      </nz-radio-group>
+      <div class="text-label">
+        {{ 'app.user' | i18n }} (<span class="text-red">*</span>)
       </div>
-    </nz-radio-group>
-    <div class="text-label">
-      {{ 'app.user' | i18n }} (<span class="text-red">*</span>)
-    </div>
-    <nz-select
-      style="width: 100%; margin-top: 5px; margin-bottom: 16px"
-      [nzPlaceHolder]="'-- ' + ('app.choose.user' | i18n) + ' --'"
-      [nzShowSearch]="true"
-      nzSize="large"
-      formControlName="emailUser"
-    >
-      <nz-option
-        *ngFor="let p of listSubuser"
-        [nzValue]="p.subUserId"
-        [nzLabel]="p.subUserId"
-      />
-    </nz-select>
-    <div *ngIf="isUserOther" style="margin-bottom: 16px" class="text-label">
-      {{ 'app.alert.bucket.policy.create' | i18n }}
-    </div>
-    <div class="text-label">
-      {{ 'app.permission' | i18n }} (<span class="text-red">*</span>)
-    </div>
-    <nz-select
-      style="width: 100%; margin-top: 5px; margin-bottom: 16px"
-      [nzPlaceHolder]="'-- ' + ('app.choose.permission' | i18n) + ' --'"
-      [nzShowSearch]="true"
-      nzSize="large"
-      formControlName="permission"
-    >
-      <nz-option
-        *ngFor="let p of listPermission"
-        [nzValue]="p.name"
-        [nzLabel]="p.name"
-      />
-    </nz-select>
-    <div class="text-label">
-      {{ 'app.choose.operation.permission' | i18n }} (<span class="text-red"
-        >*</span
-      >)
-    </div>
-    <div class="list-permission-select">
-    <nz-select
-      style="width: 100%; margin-top: 5px; margin-bottom: 16px"
-      nzMode="multiple"
-      [nzPlaceHolder]="
-        '-- ' + ('app.choose.operation.permission' | i18n) + ' --'
-      "
-      [(ngModel)]="bucketPolicyUpdate.action"
-      [nzShowSearch]="true"
-      nzSize="large"
-      formControlName="listActionPermission"
-      [nzMaxTagCount]="1"
-      [nzMaxTagPlaceholder]="tagPlaceHolder"
-    >
-      <nz-option-group nzLabel="SUGGESTED COMBO" style="height: auto;">
+      <nz-select
+        *ngIf="!isUserOther"
+        style="width: 100%; margin-top: 5px; margin-bottom: 16px"
+        [nzPlaceHolder]="'-- ' + ('app.choose.user' | i18n) + ' --'"
+        [nzShowSearch]="true"
+        nzSize="large"
+        formControlName="emailUser"
+      >
         <nz-option
-          nzValue="CreateBucketCombo"
-          nzLabel="Create bucket (CreateBucket, DeleteBucket)"
-        ></nz-option>
+          *ngFor="let p of listSubuser"
+          [nzValue]="p.subUserId"
+          [nzLabel]="p.subUserId"
+        />
+      </nz-select>
+      <nz-form-item *ngIf="isUserOther" style="margin-top: 5px">
+        <nz-form-control [nzErrorTip]="emailUserError">
+          <input
+            nz-input
+            formControlName="emailUser"
+            placeholder="Email"
+            nzSize="large"
+          />
+          <ng-template #emailUserError let-control>
+            <ng-container *ngIf="control.hasError('required')">{{
+              'validation.email.required' | i18n
+            }}</ng-container>
+            <ng-container *ngIf="control.hasError('validEmail')">{{
+              'validation.email.wrong-format' | i18n
+            }}</ng-container>
+          </ng-template>
+        </nz-form-control>
+      </nz-form-item>
+      <div
+        *ngIf="isUserOther"
+        style="margin-top: -5px; margin-bottom: 16px"
+        class="text-label"
+      >
+        {{ 'app.alert.bucket.policy.create' | i18n }}
+      </div>
+      <div class="text-label">
+        {{ 'app.permission' | i18n }} (<span class="text-red">*</span>)
+      </div>
+      <nz-select
+        style="width: 100%; margin-top: 5px; margin-bottom: 16px"
+        [nzPlaceHolder]="'-- ' + ('app.choose.permission' | i18n) + ' --'"
+        [nzShowSearch]="true"
+        nzSize="large"
+        formControlName="permission"
+      >
         <nz-option
-          nzValue="readDownloadFile"
-          nzLabel="Read / Download file (GetObject, ListBucket)"
-        ></nz-option>
-        <nz-option
-          nzValue="uploadFile"
-          nzLabel="Upload file (PutObjectAcl, PutObject,...)"
-        ></nz-option>
-        <nz-option
-          nzValue="cofigBucket"
-          nzLabel="Config bucket (GetBucketAcl, GetBucketCORS,...)"
-        ></nz-option>
-      </nz-option-group>
-      <nz-option-group nzLabel="CUSTOM ACTION">
-        <nz-option nzValue="selectAll" nzLabel="SELECT ALL"></nz-option>
-      </nz-option-group>
-      <nz-option-group nzLabel="GROUP BUCKET">
-        <nz-option nzValue="CreateBucket" nzLabel="CreateBucket"></nz-option>
-        <nz-option
-          nzValue="DeleteBucketPolicy"
-          nzLabel="DeleteBucketPolicy"
-        ></nz-option>
-        <nz-option nzValue="DeleteBucket" nzLabel="DeleteBucket"></nz-option>
-        <nz-option
-          nzValue="DeleteBucketWebsite"
-          nzLabel="DeleteBucketWebsite"
-        ></nz-option>
-        <nz-option nzValue="GetBucketAcl" nzLabel="GetBucketAcl"></nz-option>
-        <nz-option nzValue="GetBucketCORS" nzLabel="GetBucketCORS"></nz-option>
-        <nz-option
-          nzValue="GetBucketLocation"
-          nzLabel="GetBucketLocation"
-        ></nz-option>
-        <nz-option
-          nzValue="GetBucketLogging"
-          nzLabel="GetBucketLogging"
-        ></nz-option>
-        <nz-option
-          nzValue="GetBucketNotification"
-          nzLabel="GetBucketNotification"
-        ></nz-option>
-        <nz-option
-          nzValue="GetBucketPolicy"
-          nzLabel="GetBucketPolicy"
-        ></nz-option>
-        <nz-option
-          nzValue="GetBucketRequestPayment"
-          nzLabel="GetBucketRequestPayment"
-        ></nz-option>
-        <nz-option
-          nzValue="GetBucketTagging"
-          nzLabel="GetBucketTagging"
-        ></nz-option>
-        <nz-option
-          nzValue="GetBucketVersioning"
-          nzLabel="GetBucketVersioning"
-        ></nz-option>
-        <nz-option
-          nzValue="ListAllMyBuckets"
-          nzLabel="ListAllMyBuckets"
-        ></nz-option>
-        <nz-option
-          nzValue="ListBucketMultiPartUploads"
-          nzLabel="ListBucketMultiPartUploads"
-        ></nz-option>
-        <nz-option nzValue="ListBucket" nzLabel="ListBucket"></nz-option>
-        <nz-option
-          nzValue="ListBucketVersions"
-          nzLabel="ListBucketVersions"
-        ></nz-option>
-        <nz-option nzValue="PutBucketAcl" nzLabel="PutBucketAcl"></nz-option>
-        <nz-option nzValue="PutBucketCORS" nzLabel="PutBucketCORS"></nz-option>
-        <nz-option
-          nzValue="PutBucketLogging"
-          nzLabel="PutBucketLogging"
-        ></nz-option>
-        <nz-option
-          nzValue="PutBucketNotification"
-          nzLabel="PutBucketNotification"
-        ></nz-option>
-        <nz-option
-          nzValue="PutBucketPolicy"
-          nzLabel="PutBucketPolicy"
-        ></nz-option>
-        <nz-option
-          nzValue="PutBucketRequestPayment"
-          nzLabel="PutBucketRequestPayment"
-        ></nz-option>
-        <nz-option
-          nzValue="PutBucketTagging"
-          nzLabel="PutBucketTagging"
-        ></nz-option>
-        <nz-option
-          nzValue="PutBucketVersioning"
-          nzLabel="PutBucketVersioning"
-        ></nz-option>
-        <nz-option
-          nzValue="PutBucketWebsite"
-          nzLabel="PutBucketWebsite"
-        ></nz-option>
-      </nz-option-group>
-      <nz-option-group nzLabel="GROUP OBJECT">
-        <nz-option nzValue="DeleteObject" nzLabel="DeleteObject"></nz-option>
-        <nz-option
-          nzValue="DeleteObjectVersion"
-          nzLabel="DeleteObjectVersion"
-        ></nz-option>
-        <nz-option nzValue="GetObjectAcl" nzLabel="GetObjectAcl"></nz-option>
-        <nz-option nzValue="GetObject" nzLabel="GetObject"></nz-option>
-        <nz-option
-          nzValue="GetObjectTorrent"
-          nzLabel="GetObjectTorrent"
-        ></nz-option>
-        <nz-option
-          nzValue="GetObjectVersionAcl"
-          nzLabel="GetObjectVersionAcl"
-        ></nz-option>
-        <nz-option
-          nzValue="GetObjectVersion"
-          nzLabel="GetObjectVersion"
-        ></nz-option>
-        <nz-option
-          nzValue="GetObjectVersionTorrent"
-          nzLabel="GetObjectVersionTorrent"
-        ></nz-option>
-        <nz-option nzValue="PutObjectAcl" nzLabel="PutObjectAcl"></nz-option>
-        <nz-option nzValue="PutObject" nzLabel="PutObject"></nz-option>
-        <nz-option
-          nzValue="PutObjectVersionAcl"
-          nzLabel="PutObjectVersionAcl"
-        ></nz-option>
-        <nz-option nzValue="RestoreObject" nzLabel="RestoreObject"></nz-option>
-      </nz-option-group>
-      <nz-option-group nzLabel="GROUP CONFIG">
-        <nz-option
-          nzValue="GetLifecycleConfiguration"
-          nzLabel="GetLifecycleConfiguration"
-        ></nz-option>
-        <nz-option
-          nzValue="GetReplicationConfiguration"
-          nzLabel="GetReplicationConfiguration"
-        ></nz-option>
-        <nz-option
-          nzValue="PutAccelerateConfiguration"
-          nzLabel="PutAccelerateConfiguration"
-        ></nz-option>
-        <nz-option
-          nzValue="PutLifecycleConfiguration"
-          nzLabel="PutLifecycleConfiguration"
-        ></nz-option>
-        <nz-option
-          nzValue="PutReplicationConfiguration"
-          nzLabel="PutReplicationConfiguration"
-        ></nz-option>
-        <nz-option
-          nzValue="DeleteReplicationConfiguration"
-          nzLabel="DeleteReplicationConfiguration"
-        ></nz-option>
-        <nz-option
-          nzValue="GetAccelerateConfiguration"
-          nzLabel="GetAccelerateConfiguration"
-        ></nz-option>
-      </nz-option-group>
-      <nz-option-group nzLabel="OTHER GROUP">
-        <nz-option
-          nzValue="AbortMultipartUpload"
-          nzLabel="AbortMultipartUpload"
-        ></nz-option>
-        <nz-option
-          nzValue="ListMultipartUploadParts"
-          nzLabel="ListMultipartUploadParts"
+          *ngFor="let p of listPermission"
+          [nzValue]="p.name"
+          [nzLabel]="p.name"
+        />
+      </nz-select>
+      <div class="text-label">
+        {{ 'app.choose.operation.permission' | i18n }} (<span class="text-red"
+          >*</span
+        >)
+      </div>
+      <div class="list-permission-select">
+        <nz-select
+          style="width: 100%; margin-top: 5px; margin-bottom: 16px"
+          nzMode="multiple"
+          [nzPlaceHolder]="
+            '-- ' + ('app.choose.operation.permission' | i18n) + ' --'
+          "
+          [nzShowSearch]="true"
+          nzSize="large"
+          formControlName="listActionPermission"
         >
-        </nz-option>
-      </nz-option-group>
-    </nz-select>
+          <nz-option-group nzLabel="SUGGESTED COMBO" style="height: auto">
+            <nz-option
+              nzValue="CreateBucketCombo"
+              nzLabel="Create bucket (CreateBucket, DeleteBucket)"
+            ></nz-option>
+            <nz-option
+              nzValue="readDownloadFile"
+              nzLabel="Read / Download file (GetObject, ListBucket)"
+            ></nz-option>
+            <nz-option
+              nzValue="uploadFile"
+              nzLabel="Upload file (PutObjectAcl, PutObject,...)"
+            ></nz-option>
+            <nz-option
+              nzValue="cofigBucket"
+              nzLabel="Config bucket (GetBucketAcl, GetBucketCORS,...)"
+            ></nz-option>
+          </nz-option-group>
+          <nz-option-group nzLabel="CUSTOM ACTION">
+            <nz-option nzValue="selectAll" nzLabel="SELECT ALL"></nz-option>
+          </nz-option-group>
+          <nz-option-group nzLabel="GROUP BUCKET">
+            <nz-option
+              nzValue="CreateBucket"
+              nzLabel="CreateBucket"
+            ></nz-option>
+            <nz-option
+              nzValue="DeleteBucketPolicy"
+              nzLabel="DeleteBucketPolicy"
+            ></nz-option>
+            <nz-option
+              nzValue="DeleteBucket"
+              nzLabel="DeleteBucket"
+            ></nz-option>
+            <nz-option
+              nzValue="DeleteBucketWebsite"
+              nzLabel="DeleteBucketWebsite"
+            ></nz-option>
+            <nz-option
+              nzValue="GetBucketAcl"
+              nzLabel="GetBucketAcl"
+            ></nz-option>
+            <nz-option
+              nzValue="GetBucketCORS"
+              nzLabel="GetBucketCORS"
+            ></nz-option>
+            <nz-option
+              nzValue="GetBucketLocation"
+              nzLabel="GetBucketLocation"
+            ></nz-option>
+            <nz-option
+              nzValue="GetBucketLogging"
+              nzLabel="GetBucketLogging"
+            ></nz-option>
+            <nz-option
+              nzValue="GetBucketNotification"
+              nzLabel="GetBucketNotification"
+            ></nz-option>
+            <nz-option
+              nzValue="GetBucketPolicy"
+              nzLabel="GetBucketPolicy"
+            ></nz-option>
+            <nz-option
+              nzValue="GetBucketRequestPayment"
+              nzLabel="GetBucketRequestPayment"
+            ></nz-option>
+            <nz-option
+              nzValue="GetBucketTagging"
+              nzLabel="GetBucketTagging"
+            ></nz-option>
+            <nz-option
+              nzValue="GetBucketVersioning"
+              nzLabel="GetBucketVersioning"
+            ></nz-option>
+            <nz-option
+              nzValue="ListAllMyBuckets"
+              nzLabel="ListAllMyBuckets"
+            ></nz-option>
+            <nz-option
+              nzValue="ListBucketMultiPartUploads"
+              nzLabel="ListBucketMultiPartUploads"
+            ></nz-option>
+            <nz-option nzValue="ListBucket" nzLabel="ListBucket"></nz-option>
+            <nz-option
+              nzValue="ListBucketVersions"
+              nzLabel="ListBucketVersions"
+            ></nz-option>
+            <nz-option
+              nzValue="PutBucketAcl"
+              nzLabel="PutBucketAcl"
+            ></nz-option>
+            <nz-option
+              nzValue="PutBucketCORS"
+              nzLabel="PutBucketCORS"
+            ></nz-option>
+            <nz-option
+              nzValue="PutBucketLogging"
+              nzLabel="PutBucketLogging"
+            ></nz-option>
+            <nz-option
+              nzValue="PutBucketNotification"
+              nzLabel="PutBucketNotification"
+            ></nz-option>
+            <nz-option
+              nzValue="PutBucketPolicy"
+              nzLabel="PutBucketPolicy"
+            ></nz-option>
+            <nz-option
+              nzValue="PutBucketRequestPayment"
+              nzLabel="PutBucketRequestPayment"
+            ></nz-option>
+            <nz-option
+              nzValue="PutBucketTagging"
+              nzLabel="PutBucketTagging"
+            ></nz-option>
+            <nz-option
+              nzValue="PutBucketVersioning"
+              nzLabel="PutBucketVersioning"
+            ></nz-option>
+            <nz-option
+              nzValue="PutBucketWebsite"
+              nzLabel="PutBucketWebsite"
+            ></nz-option>
+          </nz-option-group>
+          <nz-option-group nzLabel="GROUP OBJECT">
+            <nz-option
+              nzValue="DeleteObject"
+              nzLabel="DeleteObject"
+            ></nz-option>
+            <nz-option
+              nzValue="DeleteObjectVersion"
+              nzLabel="DeleteObjectVersion"
+            ></nz-option>
+            <nz-option
+              nzValue="GetObjectAcl"
+              nzLabel="GetObjectAcl"
+            ></nz-option>
+            <nz-option nzValue="GetObject" nzLabel="GetObject"></nz-option>
+            <nz-option
+              nzValue="GetObjectTorrent"
+              nzLabel="GetObjectTorrent"
+            ></nz-option>
+            <nz-option
+              nzValue="GetObjectVersionAcl"
+              nzLabel="GetObjectVersionAcl"
+            ></nz-option>
+            <nz-option
+              nzValue="GetObjectVersion"
+              nzLabel="GetObjectVersion"
+            ></nz-option>
+            <nz-option
+              nzValue="GetObjectVersionTorrent"
+              nzLabel="GetObjectVersionTorrent"
+            ></nz-option>
+            <nz-option
+              nzValue="PutObjectAcl"
+              nzLabel="PutObjectAcl"
+            ></nz-option>
+            <nz-option nzValue="PutObject" nzLabel="PutObject"></nz-option>
+            <nz-option
+              nzValue="PutObjectVersionAcl"
+              nzLabel="PutObjectVersionAcl"
+            ></nz-option>
+            <nz-option
+              nzValue="RestoreObject"
+              nzLabel="RestoreObject"
+            ></nz-option>
+          </nz-option-group>
+          <nz-option-group nzLabel="GROUP CONFIG">
+            <nz-option
+              nzValue="GetLifecycleConfiguration"
+              nzLabel="GetLifecycleConfiguration"
+            ></nz-option>
+            <nz-option
+              nzValue="GetReplicationConfiguration"
+              nzLabel="GetReplicationConfiguration"
+            ></nz-option>
+            <nz-option
+              nzValue="PutAccelerateConfiguration"
+              nzLabel="PutAccelerateConfiguration"
+            ></nz-option>
+            <nz-option
+              nzValue="PutLifecycleConfiguration"
+              nzLabel="PutLifecycleConfiguration"
+            ></nz-option>
+            <nz-option
+              nzValue="PutReplicationConfiguration"
+              nzLabel="PutReplicationConfiguration"
+            ></nz-option>
+            <nz-option
+              nzValue="DeleteReplicationConfiguration"
+              nzLabel="DeleteReplicationConfiguration"
+            ></nz-option>
+            <nz-option
+              nzValue="GetAccelerateConfiguration"
+              nzLabel="GetAccelerateConfiguration"
+            ></nz-option>
+          </nz-option-group>
+          <nz-option-group nzLabel="OTHER GROUP">
+            <nz-option
+              nzValue="AbortMultipartUpload"
+              nzLabel="AbortMultipartUpload"
+            ></nz-option>
+            <nz-option
+              nzValue="ListMultipartUploadParts"
+              nzLabel="ListMultipartUploadParts"
+            >
+            </nz-option>
+          </nz-option-group>
+        </nz-select>
+      </div>
+    </ng-container>
+    <div *nzModalFooter>
+      <button nz-button (click)="handleCancelUpdate()">
+        <img
+          style="padding-right: 10px; margin-top: -4px"
+          src="assets/imgs/cancel.svg"
+          alt=""
+        />{{ 'app.button.cancel' | i18n }}
+      </button>
+      <button
+        nz-button
+        nzType="primary"
+        (click)="handleOkUpdate()"
+        [nzLoading]="isLoadingUpdate"
+        [disabled]="form.invalid"
+      >
+        <img
+          *ngIf="isLoadingUpdate === false"
+          style="padding-right: 10px; margin-top: -4px"
+          src="assets/imgs/confirm.svg"
+          alt=""
+        />{{ 'app.button.confirm' | i18n }}
+      </button>
     </div>
-    <ng-template #tagPlaceHolder let-selectedList>and {{ selectedList.length }} more selected</ng-template>
-  </ng-container>
-  <div *nzModalFooter>
-    <button nz-button (click)="handleCancelUpdate()">
-      <img
-        style="padding-right: 10px; margin-top: -4px"
-        src="assets/imgs/cancel.svg"
-        alt=""
-      />{{ 'app.button.cancel' | i18n }}
-    </button>
-    <button nz-button nzType="primary" (click)="handleOkUpdate()" [nzLoading]="isLoadingUpdate">
-      <img
-        *ngIf="isLoadingUpdate === false"
-        style="padding-right: 10px; margin-top: -4px"
-        src="assets/imgs/confirm.svg"
-        alt=""
-      />{{ 'app.button.confirm' | i18n }}
-    </button>
-  </div>
-</form>
+  </form>
 </nz-modal>
 
 <!-- Delete -->
@@ -675,7 +795,12 @@
         alt=""
       />{{ 'app.button.cancel' | i18n }}
     </button>
-    <button nz-button nzType="primary" (click)="handleOkDelete()" [nzLoading]="isLoadingDelete">
+    <button
+      nz-button
+      nzType="primary"
+      (click)="handleOkDelete()"
+      [nzLoading]="isLoadingDelete"
+    >
       <img
         *ngIf="isLoadingDelete === false"
         style="padding-right: 10px; margin-top: -4px"

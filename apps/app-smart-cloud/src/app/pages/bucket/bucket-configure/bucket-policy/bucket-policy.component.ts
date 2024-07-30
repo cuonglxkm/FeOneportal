@@ -27,6 +27,7 @@ import {
 import { SubUser } from 'src/app/shared/models/sub-user.model';
 import { BucketService } from 'src/app/shared/services/bucket.service';
 import { TimeCommon } from 'src/app/shared/utils/common';
+import { AppValidator } from '../../../../../../../../libs/common-utils/src';
 
 @Component({
   selector: 'one-portal-bucket-policy',
@@ -66,24 +67,14 @@ export class BucketPolicyComponent implements OnInit {
     let regionAndProject = getCurrentRegionAndProject();
     this.region = regionAndProject.regionId;
     this.searchBucketPolicy();
-    this.searchDelay.pipe(debounceTime(TimeCommon.timeOutSearch)).subscribe(() => {     
-      this.searchBucketPolicy();
-    });
+    this.searchDelay
+      .pipe(debounceTime(TimeCommon.timeOutSearch))
+      .subscribe(() => {
+        this.searchBucketPolicy();
+      });
   }
 
-  formEdit: FormGroup<{
-    isUserOther: FormControl<boolean>;
-    emailUser: FormControl<string>;
-    permission: FormControl<string>;
-    listActionPermission: FormControl<string[]>;
-  }> = this.fb.group({
-    isUserOther: [false, Validators.required],
-    emailUser: ['', Validators.required],
-    permission: ['', Validators.required],
-    listActionPermission: [[] as string[], Validators.required],
-  });
-
-  formCreate: FormGroup<{
+  form: FormGroup<{
     emailUser: FormControl<string>;
     permission: FormControl<string>;
     listActionPermission: FormControl<string[]>;
@@ -92,7 +83,6 @@ export class BucketPolicyComponent implements OnInit {
     permission: ['', Validators.required],
     listActionPermission: [[] as string[], Validators.required],
   });
-  
 
   searchBucketPolicy() {
     this.loading = true;
@@ -127,7 +117,7 @@ export class BucketPolicyComponent implements OnInit {
       });
   }
 
-  search(search: string) {  
+  search(search: string) {
     this.value = search.trim();
     this.searchBucketPolicy();
   }
@@ -138,7 +128,12 @@ export class BucketPolicyComponent implements OnInit {
     this.loadingSubuser = true;
     this.bucketService
       .getListSubuser(9999, 0, this.region)
-      .pipe(finalize(() => (this.loadingSubuser = false)))
+      .pipe(
+        finalize(() => {
+          this.loadingSubuser = false;
+          this.cdr.detectChanges();
+        })
+      )
       .subscribe({
         next: (data) => {
           this.listSubuser = data.records;
@@ -155,13 +150,14 @@ export class BucketPolicyComponent implements OnInit {
 
   isVisibleCreate = false;
   permission: string;
-  emailUser: string;
   isUserOther: boolean = false;
   listActionPermission: string[] = [];
   setActionPermission: Set<string> = new Set<string>();
   listActionPermissionCustom: string[] = [];
   modalCreate() {
+    this.permission = this.listPermission[0].name;
     this.isVisibleCreate = true;
+    this.form.get('emailUser')?.setValidators([Validators.required]);
     this.setActionPermission.clear();
     this.getListSubuser();
   }
@@ -169,13 +165,39 @@ export class BucketPolicyComponent implements OnInit {
   handleCancelCreate() {
     this.isVisibleCreate = false;
     this.isUserOther = false;
-    this.permission = '';
-    this.emailUser = '';
     this.listActionPermission = [];
   }
 
-  changeUser(){
-    this.formCreate.reset()
+  changeUser() {
+    this.form.controls.emailUser.reset();
+    if (this.isUserOther) {
+      this.form
+        .get('emailUser')
+        ?.setValidators([Validators.required, AppValidator.validEmail]);
+      if (this.isVisibleUpdate) {
+        if (this.bucketPolicyUpdate.typeUser == 'SubUser') {
+          this.form.controls.emailUser.reset();
+        } else {
+          this.form.controls.emailUser.setValue(
+            this.bucketPolicyUpdate.subuser
+          );
+        }
+      }
+    } else {
+      this.form.get('emailUser')?.setValidators([Validators.required]);
+      if (this.isVisibleUpdate) {
+        if (this.bucketPolicyUpdate.typeUser == 'SubUser') {
+          this.form.controls.emailUser.setValue(
+            this.bucketPolicyUpdate.subuser
+          );
+        } else {
+          this.form.controls.emailUser.reset();
+        }
+      }
+    }
+
+    // Update the value and validity of the form control
+    this.form.get('emailUser')?.updateValueAndValidity();
   }
 
   handleOkCreate() {
@@ -279,10 +301,16 @@ export class BucketPolicyComponent implements OnInit {
       .createBucketPolicy(
         this.bucketName,
         this.permission,
-        this.emailUser,
+        this.form.controls.emailUser.value,
         this.isUserOther,
         Array.from(this.setActionPermission),
         this.region
+      )
+      .pipe(
+        finalize(() => {
+          this.isLoadingCreate = false;
+          this.cdr.detectChanges();
+        })
       )
       .subscribe({
         next: (data) => {
@@ -291,10 +319,9 @@ export class BucketPolicyComponent implements OnInit {
             this.i18n.fanyi('app.create.bucket.policy.success')
           );
           this.isVisibleCreate = false;
-          this.isLoadingCreate = false;
           this.isUserOther = false;
           this.permission = '';
-          this.emailUser = '';
+          this.form.controls.emailUser.reset();
           this.listActionPermission = [];
           this.searchBucketPolicy();
         },
@@ -304,7 +331,6 @@ export class BucketPolicyComponent implements OnInit {
             this.i18n.fanyi('app.create.bucket.policy.fail')
           );
           this.isVisibleCreate = false;
-          this.isLoadingCreate = false;
         },
       });
   }
@@ -314,26 +340,29 @@ export class BucketPolicyComponent implements OnInit {
   modalUpdate(sid: string) {
     this.isVisibleUpdate = true;
     this.getListSubuser();
-    this.bucketService.getBucketPolicyDetail(sid, this.bucketName, this.region).subscribe({
-      next: (data) => {
-        console.log(data);
+    this.bucketService
+      .getBucketPolicyDetail(sid, this.bucketName, this.region)
+      .subscribe({
+        next: (data) => {
+          console.log(data);
 
-        this.bucketPolicyUpdate = data;
-        this.formEdit.controls.emailUser.setValue(data.subuser);
-        this.formEdit.controls.permission.setValue(data.permission);
-        const actions = data.actions.map((item) => item.split(':')[1]);
-        this.formEdit.controls.listActionPermission.setValue(actions);
-
-        const typeUser = data.typeUser === 'SubUser' ? false : true;
-        this.formEdit.controls.isUserOther.setValue(typeUser);
-      },
-      error: (e) => {
-        this.notification.error(
-          this.i18n.fanyi('app.status.fail'),
-          this.i18n.fanyi('app.detail.bucket.policy.fail')
-        );
-      },
-    });
+          this.bucketPolicyUpdate = data;
+          const typeUser = data.typeUser === 'SubUser' ? false : true;
+          this.isUserOther = typeUser;
+          this.form.controls.emailUser.setValue(
+            this.bucketPolicyUpdate.subuser
+          );
+          this.form.controls.permission.setValue(data.permission);
+          const actions = data.actions.map((item) => item.split(':')[1]);
+          this.form.controls.listActionPermission.setValue(actions);
+        },
+        error: (e) => {
+          this.notification.error(
+            this.i18n.fanyi('app.status.fail'),
+            this.i18n.fanyi('app.detail.bucket.policy.fail')
+          );
+        },
+      });
   }
 
   handleCancelUpdate() {
@@ -342,7 +371,7 @@ export class BucketPolicyComponent implements OnInit {
 
   handleOkUpdate() {
     this.isLoadingUpdate = true;
-    this.formEdit.controls.listActionPermission.value.forEach((e) => {
+    this.form.controls.listActionPermission.value.forEach((e) => {
       if (e == 'selectAll') {
         this.setActionPermission.add('CreateBucket');
         this.setActionPermission.add('DeleteBucketPolicy');
@@ -437,11 +466,17 @@ export class BucketPolicyComponent implements OnInit {
       .updateBucketPolicy(
         this.bucketName,
         this.bucketPolicyUpdate.sid,
-        this.formEdit.controls.permission.value,
-        this.formEdit.controls.emailUser.value,
+        this.form.controls.permission.value,
+        this.form.controls.emailUser.value,
         this.isUserOther,
         Array.from(this.setActionPermission),
         this.region
+      )
+      .pipe(
+        finalize(() => {
+          this.isLoadingUpdate = false;
+          this.cdr.detectChanges();
+        })
       )
       .subscribe({
         next: (data) => {
@@ -450,7 +485,6 @@ export class BucketPolicyComponent implements OnInit {
             this.i18n.fanyi('app.update.bucket.policy.success')
           );
           this.isVisibleUpdate = false;
-          this.isLoadingUpdate = false;
           this.searchBucketPolicy();
         },
         error: (e) => {
@@ -459,7 +493,6 @@ export class BucketPolicyComponent implements OnInit {
             this.i18n.fanyi('app.update.bucket.policy.fail')
           );
           this.isVisibleUpdate = false;
-          this.isLoadingUpdate = false;
         },
       });
   }
@@ -515,19 +548,21 @@ export class BucketPolicyComponent implements OnInit {
   bucketPolicyDetail: bucketPolicyDetail = new bucketPolicyDetail();
   modalJson(sid: string) {
     this.isVisibleJson = true;
-    this.bucketService.getBucketPolicyDetail(sid, this.bucketName, this.region).subscribe({
-      next: (data) => {
-        console.log(data);
+    this.bucketService
+      .getBucketPolicyDetail(sid, this.bucketName, this.region)
+      .subscribe({
+        next: (data) => {
+          console.log(data);
 
-        this.bucketPolicyDetail = data;
-      },
-      error: (e) => {
-        this.notification.error(
-          e.statusText,
-          'Lấy Bucket Policy JSON không thành công'
-        );
-      },
-    });
+          this.bucketPolicyDetail = data;
+        },
+        error: (e) => {
+          this.notification.error(
+            e.statusText,
+            'Lấy Bucket Policy JSON không thành công'
+          );
+        },
+      });
   }
   handleClose() {
     this.isVisibleJson = false;
