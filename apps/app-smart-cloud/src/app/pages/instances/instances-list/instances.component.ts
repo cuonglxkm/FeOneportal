@@ -85,7 +85,6 @@ export class InstancesComponent implements OnInit {
     this.projectId = regionAndProject.projectId;
     this.userId = this.tokenService.get()?.userId;
     this.getActiveServiceByRegion();
-    this.getListScheduleBackup();
     this.notificationService.connection.on('UpdateInstance', (data) => {
       if (data) {
         let instanceId = data.serviceId;
@@ -887,37 +886,13 @@ export class InstancesComponent implements OnInit {
   }
 
   createBackupSchedule(id: number) {
-    this.listScheduleBackup.forEach(item => {
-      if (this.typeVpc == 1) {
-
-        if (item.serviceId == id) {
-          this.notification.warning('', this.i18n.fanyi('schedule.backup.block.create'));
-        } else {
-          this.router.navigate([
-            '/app-smart-cloud/schedule/backup/create/vpc',
-            { type: 'INSTANCE', instanceId: id }
-          ]);
-        }
-      } else {
-        if (item.serviceId == id) {
-          this.notification.warning('', this.i18n.fanyi('schedule.backup.block.create'));
-        } else {
-          this.router.navigate([
-            '/app-smart-cloud/schedule/backup/create',
-            { type: 'INSTANCE', instanceId: id }
-          ]);
-        }
-
-      }
-
-    });
-
+    this.getListScheduleBackup(id);
   }
 
   isLoading = false;
   listScheduleBackup: BackupSchedule[] = [];
 
-  getListScheduleBackup() {
+  getListScheduleBackup(id) {
     this.isLoading = true;
     let formSearch = new FormSearchScheduleBackup();
     formSearch.customerId = this.tokenService.get()?.userId;
@@ -928,9 +903,34 @@ export class InstancesComponent implements OnInit {
     formSearch.serviceType = 1;
     formSearch.pageSize = 99999;
     formSearch.pageIndex = 1;
+    formSearch.serviceId = id
     this.backupScheduleService.search(formSearch).subscribe(data => {
       this.isLoading = false;
       this.listScheduleBackup = data?.records;
+      this.listScheduleBackup.forEach(item => {
+        if (this.typeVpc == 1) {
+
+          if (item.serviceId == id) {
+            this.notification.warning('', this.i18n.fanyi('schedule.backup.block.create'));
+          } else {
+            this.router.navigate([
+              '/app-smart-cloud/schedule/backup/create/vpc',
+              { type: 'INSTANCE', instanceId: id }
+            ]);
+          }
+        } else {
+          if (item.serviceId == id) {
+            this.notification.warning('', this.i18n.fanyi('schedule.backup.block.create'));
+          } else {
+            this.router.navigate([
+              '/app-smart-cloud/schedule/backup/create',
+              { type: 'INSTANCE', instanceId: id }
+            ]);
+          }
+
+        }
+
+      });
     }, error => {
       this.isLoading = false;
       this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.failData'));
