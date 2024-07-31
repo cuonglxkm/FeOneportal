@@ -312,14 +312,13 @@ export class ProjectCreateComponent implements OnInit {
 
 
       if ((this.selectIndexTab == 0 || this.offerFlavor != undefined) || (this.selectIndexTab == 1 || (this.vCPU != 0 && this.ram != 0))) {
-        console.log("lstIp", lstIp)
         if (lstIp != null && lstIp != undefined && lstIp[1] != null) {
-          console.log("lstIp 567", lstIp)
+
           let listString = lstIp[1].split(' ');
-          console.log("listString", listString)
+
           if (listString.length == 3) {
             ipName = listString[2].trim();
-            console.log("ipName", ipName)
+
           }
         }
 
@@ -440,14 +439,10 @@ export class ProjectCreateComponent implements OnInit {
   messageNotification: string;
 
   onInputChange(value: number, name: string): void {
-    console.log("object value", value)
     this.inputChangeSubject.next({ value, name });
     this.checkRequired()
   }
   onInputMax(value: number, max: number, name: string): void {
-    console.log("object value33", value)
-
-    // Gửi giá trị mới đến Subject để xử lý tiếp nếu cần
     this.inputChangeMax.next({ value, max, name });
   }
   gpuMax(index: number, max: number, value: number) {
@@ -494,7 +489,7 @@ export class ProjectCreateComponent implements OnInit {
   // }
 
   checkNumberInput(value: number, name: string): void {
-    console.log("value 55", value)
+
     const messageStepNotification = `Số lượng phải chia hết cho  ${this.stepBlock} `;
     const numericValue = Number(value);
     if (isNaN(numericValue)) {
@@ -502,10 +497,8 @@ export class ProjectCreateComponent implements OnInit {
       return;
     }
     let adjustedValue = Math.floor(numericValue / this.stepBlock) * this.stepBlock;
-    console.log("adjustedValue", adjustedValue)
     if (adjustedValue > this.maxBlock) {
       adjustedValue = Math.floor(this.maxBlock / this.stepBlock) * this.stepBlock;
-      console.log("adjustedValue 34", adjustedValue)
     } else if (adjustedValue < this.minBlock) {
       adjustedValue = this.minBlock;
     }
@@ -537,7 +530,6 @@ export class ProjectCreateComponent implements OnInit {
     }
     if (numericValue !== adjustedValue) {
       this[name] = adjustedValue;
-      console.log("this[name] ", this[name])
     }
 
 
@@ -545,7 +537,6 @@ export class ProjectCreateComponent implements OnInit {
   }
   checkNumberInputNoBlock(value: number, max: number, name: string): void {
     const numericValue = Number(value);
-    console.log("value 666", value)
     const messageStepNotification = `Vượt quá số lượng max  ${max} `;
     if (isNaN(numericValue)) {
       this.notification.warning('', "Giá trị không hợp lệ");
@@ -621,6 +612,7 @@ export class ProjectCreateComponent implements OnInit {
               this.listOfferFlavors = data.filter(
                 (e: OfferItem) => e.status.toUpperCase() == 'ACTIVE'
               );
+              console.log("listOfferFlavors uu", this.listOfferFlavors)
 
               this.listOfferFlavors.forEach((e: OfferItem) => {
                 e.description = '0 vCPU / 0 GB RAM / HHH GB SSS / 0 IP';
@@ -637,7 +629,7 @@ export class ProjectCreateComponent implements OnInit {
                     e.description = e.description.replace(/0 IP/g, ch.charOptionValues[0] + ' IP');
 
                     e.ipNumber = ch.charOptionValues[0];
-                    console.log(" e.ipNumber", e.ipNumber)
+
                   }
                 });
               });
@@ -658,11 +650,6 @@ export class ProjectCreateComponent implements OnInit {
   onChangeTime(numberMonth: number) {
 
     this.numOfMonth = numberMonth;
-    console.log("numOfMonth123", this.numOfMonth)
-    // const dateNow = new Date();
-    // dateNow.setDate(dateNow.getDate() + Number(this.form.controls['numOfMonth'].value * 30));
-    // console.log("this.numOfMonth hh",this.numOfMonth)
-    // this.expiredDate = dateNow;
     this.calculate(null);
   }
 
@@ -689,13 +676,10 @@ export class ProjectCreateComponent implements OnInit {
       const expiredDate = new Date();
       expiredDate.setDate(expiredDate.getDate() + Number(numOfMonth) * 30);
       if ((this.selectIndexTab == 0 || this.offerFlavor != undefined) || (this.selectIndexTab == 1 || (this.vCPU != 0 && this.ram != 0))) {
-        console.log("lstIp", lstIp)
         if (lstIp != null && lstIp != undefined && lstIp[1] != null) {
           let listString = lstIp[1].split(' ');
-          console.log("listString", listString)
           if (listString.length == 3) {
             ipName = listString[2].trim();
-            console.log("ipName", ipName)
           }
         }
         requestBody = {
@@ -1039,7 +1023,6 @@ export class ProjectCreateComponent implements OnInit {
             .getListOffersByProductId(data[0].id, this.regionId)
             .subscribe((data: any) => {
               this.listLoadbalancer = data;
-              console.log("listLoadbalancer ff", this.listLoadbalancer)
               // this.loadBalancerId = this.listLoadbalancer[0].id
             });
         }
@@ -1049,7 +1032,6 @@ export class ProjectCreateComponent implements OnInit {
 
 
   private getPriceEachComponent(data: any) {
-    console.log(data.orderItemPrices);
     // let fileStorage = 0;
     for (let item of data.orderItemPrices[0]?.details) {
       if (item.typeName == 'ippublic') {
@@ -1070,7 +1052,7 @@ export class ProjectCreateComponent implements OnInit {
         this.price.fileStorage = item.totalAmount.amount;
 
         this.price.fileStorageUnit = item.unitPrice.amount;
-        console.log("fileStorageUnit", this.price.fileStorageUnit)
+
 
       } else if (item.typeName == 'filestorage-snapshot') {
         this.price.filestorageSnapshot = item.totalAmount.amount;
@@ -1088,7 +1070,6 @@ export class ProjectCreateComponent implements OnInit {
 
         this.price.vcpu = item.totalAmount.amount;
         this.price.vcpuPerUnit = item.unitPrice.amount;
-        console.log("vcpu", this.price.vcpu)
       } else if (item.typeName == 'ram') {
         this.price.ram = item.totalAmount.amount;
         this.price.ramPerUnit = item.unitPrice.amount;
@@ -1100,14 +1081,11 @@ export class ProjectCreateComponent implements OnInit {
         this.price.hhdPerUnit = item.unitPrice.amount;
       }
       else if (item.typeName == 'NVIDIA-A30') {
-        console.log("huyen")
-        console.log("this.gpuQuotasGobal555", this.gpuQuotasGobal)
+
         for (let gpu of this.gpuQuotasGobal) {
           if (gpu.GpuType == 'NVIDIA-A30') {
             gpu.GpuPrice = item.totalAmount.amount;
-            console.log("gpu.GpuPrice", gpu.GpuPrice)
             gpu.GpuPriceUnit = item.unitPrice.amount;
-            console.log("gpu.GpuPriceUnit", gpu.GpuPriceUnit)
           }
         }
 
@@ -1116,9 +1094,7 @@ export class ProjectCreateComponent implements OnInit {
         for (let gpu of this.gpuQuotasGobal) {
           if (gpu.GpuType == 'NVIDIA-A100') {
             gpu.GpuPrice = item.totalAmount.amount;
-            console.log("gpu.GpuPrice 2", gpu.GpuPrice)
             gpu.GpuPriceUnit = item.unitPrice.amount;
-            console.log("gpu.GpuPriceUnit 2", gpu.GpuPriceUnit)
           }
         }
       }
@@ -1245,7 +1221,6 @@ export class ProjectCreateComponent implements OnInit {
             GpuPrice: null,
             GpuPriceUnit: item.price?.fixedPrice?.amount
           }));
-        console.log("this.gpuQuotasGobal", this.gpuQuotasGobal)
       }
     );
   }
@@ -1264,16 +1239,12 @@ export class ProjectCreateComponent implements OnInit {
     else {
       this.gpuQuotasGobal[index].GpuCount = value;
     }
-    console.log("index", index)
-    console.log("value", value)
-    console.log("gpuQuotasGobal 123", this.gpuQuotasGobal)
     if ((this.selectIndexTab == 0 && this.keySSD == false || (this.selectIndexTab == 0 && !this.offerFlavor)) || (this.selectIndexTab == 1 && this.ssd == 0) && this.gpuQuotasGobal[index].GpuCount != 0) {
       this.isShowAlertGpu = true
-      console.log("isShowAlertGpu iuf", this.isShowAlertGpu)
+
     }
     else {
       this.isShowAlertGpu = false
-      console.log("isShowAlertGpu else", this.isShowAlertGpu)
     }
     this.calculate(null)
 
@@ -1338,7 +1309,6 @@ export class ProjectCreateComponent implements OnInit {
         }
         if (['backup-volume'].includes(item.productName)) {
           this.typeBackup_volume = item.isActive;
-          console.log("typeBackup_volume", this.typeBackup_volume);
         }
         if (['loadbalancer-sdn'].includes(item.productName)) {
           this.typeLoadbalancer_sdn = item.isActive;
