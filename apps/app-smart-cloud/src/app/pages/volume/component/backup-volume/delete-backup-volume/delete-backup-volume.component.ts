@@ -65,13 +65,13 @@ export class DeleteBackupVolumeComponent implements AfterViewInit{
       this.backupService.deleteVolume(this.idBackup).subscribe(data => {
         this.isLoading = false;
         this.isVisible = false;
-        this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('app.backup.vm.notification.success.delete'))
+        this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('app.backup.volume.delete.success'))
         this.onOk.emit(data);
       }, error => {
         console.log('error', error);
         this.isLoading = false;
         this.isVisible = false;
-        this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.backup.vm.notification.fail.delete') + error.error.detail)
+        this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.backup.volume.delete.error'))
       });
     } else {
       this.isInput = true;
