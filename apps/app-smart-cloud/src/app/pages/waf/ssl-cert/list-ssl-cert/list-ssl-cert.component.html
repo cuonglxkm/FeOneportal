@@ -88,12 +88,10 @@
               <td nzAlign="center" nzBreakWord>{{data.associatedDomain.join(", ")}}</td>
               <td nzAlign="center" nzBreakWord>
                 <div>
-                  <img nz-popover src="assets/imgs/add.svg" alt="" nzPopoverPlacement="bottom" style="cursor: pointer; margin-right: 5px; margin-top: 2px;"
-                  [nzPopoverContent]="'Associated Domains'">
+                  <one-portal-associate-ssl-btn [sslCertData]="data"></one-portal-associate-ssl-btn>
                   <img nz-popover src="assets/imgs/edit-2.svg" alt="" nzPopoverPlacement="bottom" style="cursor: pointer; margin-right: 5px; margin-top: 2px;"
                   [nzPopoverContent]="'app.text.edit' | i18n">
-                  <img nz-popover src="assets/imgs/delete.svg" alt="" nzPopoverPlacement="bottom" style="cursor: pointer; margin-right: 5px; margin-top: 2px;"
-                  [nzPopoverContent]="'app.text.delete' | i18n">
+                  <one-portal-delete-ssl-btn [sslCertData]="data"></one-portal-delete-ssl-btn>
                 </div>
               </td>
               

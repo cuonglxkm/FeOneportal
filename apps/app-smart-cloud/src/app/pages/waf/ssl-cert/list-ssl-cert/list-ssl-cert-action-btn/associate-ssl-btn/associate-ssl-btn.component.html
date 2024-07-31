@@ -1,0 +1,4 @@
+<img nz-popover src="assets/imgs/add.svg" alt="" nzPopoverPlacement="bottom"
+    style="cursor: pointer; margin-right: 5px; margin-top: 2px;" [nzPopoverContent]="'Associated domains'"
+    (click)="openModal()">
+<one-portal-associate-ssl-domain [sslCertData]="sslCertData" [isVisible]="isVisible" (onCancelVisible)="handleCancel()"></one-portal-associate-ssl-domain>

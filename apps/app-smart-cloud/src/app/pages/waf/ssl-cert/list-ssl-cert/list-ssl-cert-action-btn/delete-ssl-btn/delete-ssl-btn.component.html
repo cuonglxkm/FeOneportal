@@ -1,0 +1,4 @@
+<img nz-popover src="assets/imgs/delete.svg" alt="" nzPopoverPlacement="bottom"
+    style="cursor: pointer; margin-right: 5px; margin-top: 2px;" [nzPopoverContent]="'app.delete' | i18n"
+    (click)="openModal()">
+<one-portal-delete-ssl-cert [sslCertData]="sslCertData" [isVisible]="isVisible" (onCancelVisible)="handleCancel()"></one-portal-delete-ssl-cert>
