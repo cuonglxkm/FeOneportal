@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit, ViewChild } from '@angular/core';
+import { Component, Inject, Input, OnInit, ViewChild } from '@angular/core';
 import { getCurrentRegionAndProject } from '@shared';
 import { ActivatedRoute, Router } from '@angular/router';
 import {
@@ -66,7 +66,7 @@ export class CreateL7PolicyComponent implements OnInit {
     url: ['']
   });
 
-  status: any = false
+  status: any = true
 
   listPool: Pool[] = []
 
@@ -169,7 +169,7 @@ export class CreateL7PolicyComponent implements OnInit {
 
     this.loadBalancerService.createL7Policy(formCreateL7Policy).subscribe(data => {
       this.isLoading = false
-      this.router.navigate(['/app-smart-cloud/load-balancer/'+this.idLoadBalancer+'/listener/detail/'+this.idListener])
+      this.router.navigate(['/app-smart-cloud/load-balancer/'+this.idLoadBalancer+'/listener/detail/'+this.idListener], { queryParams: { tabIndex: 1 } })
       this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('app.notification.create.l7.policy.success'))
     }, error =>  {
       this.isLoading = false

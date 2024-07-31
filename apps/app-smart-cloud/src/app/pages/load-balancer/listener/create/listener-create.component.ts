@@ -215,10 +215,15 @@ export class ListenerCreateComponent implements OnInit{
       data => {
         this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('app.notification.create.listener.success'));
         this.dataListener = data;
+        if (data.isSuccess === false) {
+          this.notification.error(this.i18n.fanyi('app.status.fail'), data.message);
+          return false;
+        }
+
         return true;
       },
       error => {
-        this.notification.error(' Thất bại', this.i18n.fanyi('app.notification.create.listener.fail'));
+        this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.notification.create.listener.fail'));
         return false;
       }
     );
