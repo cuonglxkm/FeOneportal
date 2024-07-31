@@ -11,10 +11,19 @@ import { CatalogService } from 'src/app/shared/services/catalog.service';
 import { OrderService } from 'src/app/shared/services/order.service';
 import { WafService } from 'src/app/shared/services/waf.service';
 import { slider } from '../../../../../../../libs/common-utils/src';
-import { DataPayment, ItemPayment, OfferItem } from '../../instances/instances.model';
+import {
+  DataPayment,
+  ItemPayment,
+  OfferItem,
+  Order,
+  OrderItem,
+} from '../../instances/instances.model';
 import { InstancesService } from '../../instances/instances.service';
 import { WafDetailDTO, WAFResize } from '../waf.model';
-import { ServiceActionType, ServiceType } from 'src/app/shared/enums/common.enum';
+import {
+  ServiceActionType,
+  ServiceType,
+} from 'src/app/shared/enums/common.enum';
 import { ObjectStorageService } from 'src/app/shared/services/object-storage.service';
 import { OrderItemObject } from 'src/app/shared/models/price';
 
@@ -59,7 +68,7 @@ export class WAFResizeComponent implements OnInit {
   isLoading = false;
   isVisiblePopupError: boolean = false;
   errorList: string[] = [];
-  isSelectFlavor = false
+  isSelectFlavor = false;
   closePopupError() {
     this.isVisiblePopupError = false;
   }
@@ -82,8 +91,8 @@ export class WAFResizeComponent implements OnInit {
     private service: WafService,
     private activatedRoute: ActivatedRoute,
     private notification: NzNotificationService,
-    private orderService: ObjectStorageService,
-    private catalogService: CatalogService
+    private catalogService: ObjectStorageService,
+    private orderService: OrderService
   ) {}
 
   ngOnInit() {
@@ -112,7 +121,7 @@ export class WAFResizeComponent implements OnInit {
   }
 
   onInputFlavors(event: any, name: any) {
-    this.isSelectFlavor = true
+    this.isSelectFlavor = true;
     this.selectPackge = name;
     this.offerFlavor = this.listOfferFlavors.find(
       (flavor) => flavor.id === event
@@ -120,9 +129,6 @@ export class WAFResizeComponent implements OnInit {
     this.selectedElementFlavor = 'flavor_' + event;
     this.selectedNameFlavor = this.offerFlavor.offerName;
     this.selectedOfferId = this.offerFlavor.id;
-    console.log(this.selectedNameFlavor);
-
-    console.log('selectedElementFlavor', this.selectedElementFlavor);
 
     if (this.offerFlavor?.description) {
       this.selectedDescription = this.offerFlavor.description.replace(
@@ -154,11 +160,12 @@ export class WAFResizeComponent implements OnInit {
             );
 
             this.currentOffer = this.listOfferFlavors.find(
-              (e) => e.id === this.WAFDetail.offerId
+              (e) => e.id === this.WAFDetail?.offerId
             );
 
             if (this.currentOffer) {
-              const currentOfferPrice = this.currentOffer.price.fixedPrice.amount;
+              const currentOfferPrice =
+                this.currentOffer.price.fixedPrice.amount;
               this.currentOffer.description = '';
               this.currentOffer.config = '';
               this.currentOffer.characteristicValues.forEach((ch) => {
@@ -194,7 +201,7 @@ export class WAFResizeComponent implements OnInit {
 
               this.listOfferFlavors.forEach((e: OfferItem) => {
                 e.description = '';
-                e.config = ''
+                e.config = '';
                 e.characteristicValues.forEach((ch) => {
                   if (ch.charName == 'Domain') {
                     e.description += `<b>${ch.charOptionValues}</b> Domain`;
@@ -246,6 +253,7 @@ export class WAFResizeComponent implements OnInit {
     this.WAFResize.actionType = ServiceActionType.RESIZE;
     this.WAFResize.serviceInstanceId = this.id;
     this.WAFResize.newOfferId = this.selectedOfferId;
+    this.WAFResize.serviceName = this.WAFDetail?.name;
   }
 
   orderObject: OrderItemObject = new OrderItemObject();
@@ -254,26 +262,60 @@ export class WAFResizeComponent implements OnInit {
     this.initWAFResize();
     let itemPayment: ItemPayment = new ItemPayment();
     itemPayment.orderItemQuantity = 1;
-    itemPayment.specificationString = JSON.stringify(
-      this.WAFResize
-    );
+    itemPayment.specificationString = JSON.stringify(this.WAFResize);
     itemPayment.specificationType = 'waf_resize';
     itemPayment.sortItem = 0;
     let dataPayment: DataPayment = new DataPayment();
     dataPayment.orderItems = [itemPayment];
-    this.orderService.getTotalAmount(dataPayment).subscribe((result) => {
+    this.catalogService.getTotalAmount(dataPayment).subscribe((result) => {
       console.log('thanh tien', result);
       this.totalAmount = Number.parseFloat(result.data.totalAmount.amount);
       this.totalincludesVAT = Number.parseFloat(
         result.data.totalPayment.amount
       );
+      this.totalVAT = result?.data?.totalVAT?.amount;
       this.orderObject = result.data;
       this.cdr.detectChanges();
     });
-}
+  }
 
+  order: Order = new Order();
+  orderItem: OrderItem[] = [];
 
-  onInputChange(value: number, name: string): void {
-    this.inputChangeSubject.next({ value, name });
+  update() {
+    this.orderItem = [];
+    this.initWAFResize();
+    let specification = JSON.stringify(this.WAFResize);
+    let orderItemOS = new OrderItem();
+    orderItemOS.orderItemQuantity = 1;
+    orderItemOS.specification = specification;
+    orderItemOS.specificationType = 'waf_resize';
+    orderItemOS.price = this.totalAmount;
+    orderItemOS.serviceDuration = 1;
+    this.orderItem.push(orderItemOS);
+
+    this.order.customerId = this.tokenService.get()?.userId;
+    this.order.createdByUserId = this.tokenService.get()?.userId;
+    this.order.note = 'Điều chỉnh WAF';
+    this.order.orderItems = this.orderItem;
+    this.orderService.validaterOrder(this.order).subscribe({
+      next: (data) => {
+        if (data.success) {
+          var returnPath: string = window.location.pathname;
+          this.router.navigate(['/app-smart-cloud/order/cart'], {
+            state: { data: this.order, path: returnPath },
+          });
+        } else {
+          this.isVisiblePopupError = true;
+          this.errorList = data.data;
+        }
+      },
+      error: (e) => {
+        this.notification.error(
+          this.i18n.fanyi('app.status.fail'),
+          e.error.detail
+        );
+      },
+    });
   }
 }

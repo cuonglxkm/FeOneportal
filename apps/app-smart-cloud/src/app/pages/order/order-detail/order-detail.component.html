@@ -276,6 +276,11 @@
                   >{{ item?.serviceName }}</a
                 >
                 <a
+                  *ngSwitchCase="'WAF'"
+                  [routerLink]="['/app-smart-cloud/waf']"
+                  >{{ item?.serviceName }}</a
+                >
+                <a
                   *ngSwitchCase="'Backup Packet'"
                   [routerLink]="['/app-smart-cloud/backup/packages']"
                   >{{ item?.serviceName }}</a
