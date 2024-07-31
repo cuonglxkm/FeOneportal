@@ -108,6 +108,11 @@ export class ListSubUserComponent implements OnInit {
 
   regionChanged(region: RegionModel) {
     this.region = region.regionId;
+    if(this.region === RegionID.ADVANCE){
+      this.router.navigate(['/app-smart-cloud/object-storage-advance/sub-user']);
+    }else{
+      this.router.navigate(['/app-smart-cloud/object-storage/sub-user']);
+    }
   }
 
   onRegionChanged(region: RegionModel) {

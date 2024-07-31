@@ -5,16 +5,20 @@
       <nz-breadcrumb-item [routerLink]="['/']">{{ 'app.breadcrumb.home'|i18n }}</nz-breadcrumb-item>
       <nz-breadcrumb-item>{{ 'app.breadcrumb.infrastructure.service'|i18n }}</nz-breadcrumb-item>
       <nz-breadcrumb-item>Backup</nz-breadcrumb-item>
-      <nz-breadcrumb-item><a [routerLink]="'/app-smart-cloud/backup-vm'">{{'app.backup.vm.breadcrumb'|i18n}}</a></nz-breadcrumb-item>
+      <nz-breadcrumb-item><a [routerLink]="'/app-smart-cloud/backup-vm'">{{ 'app.backup.vm.breadcrumb'|i18n }}</a>
+      </nz-breadcrumb-item>
       <nz-breadcrumb-item>{{ 'app.backup.vm.create.button'|i18n }}</nz-breadcrumb-item>
     </nz-breadcrumb>
-    <ng-template #iconTemplate><one-portal-svg-icon [icon]="'icon_breadcrumb'"></one-portal-svg-icon></ng-template>
+    <ng-template #iconTemplate>
+      <one-portal-svg-icon [icon]="'icon_breadcrumb'"></one-portal-svg-icon>
+    </ng-template>
   </ng-template>
 
   <ng-template #action>
     <div class="alain-custom-action text-right">
       <share-users-combobox></share-users-combobox>
-      <region-select-dropdown (regionChange)="onRegionChanged($event)" (valueChanged)="regionChanged($event)"></region-select-dropdown>
+      <region-select-dropdown (regionChange)="onRegionChanged($event)"
+                              (valueChanged)="regionChanged($event)"></region-select-dropdown>
       <project-select-dropdown #projectCombobox (valueChanged)="projectChanged($event)"
                                (userChanged)="userChanged($event)"
                                [regionId]="region"></project-select-dropdown>
@@ -26,13 +30,13 @@
     <nz-row nzGutter="24">
       <nz-col nzSpan="16">
         <nz-card style="border-radius: 8px;">
-          <span class="text-card-header">{{'app.backup.vm.ìnformation'|i18n}}</span>
+          <span class="text-card-header">{{ 'app.backup.vm.ìnformation'|i18n }}</span>
           <form nz-form [formGroup]="validateForm" nzLayout="vertical">
             <nz-row nzGutter="24" style="margin-top: 25px;">
               <nz-col nzSpan="12">
                 <nz-form-item>
                   <nz-form-label>
-                    <span>{{'app.table.backup.vm.name'|i18n}} (<span style="color:#FF0000;">*</span>)</span>
+                    <span>{{ 'app.table.backup.vm.name'|i18n }} (<span style="color:#FF0000;">*</span>)</span>
                     <img nz-popover
                          [nzPopoverContent]="'app.backup.vm.tooltip.name'|i18n"
                          nzPopoverPlacement="bottom" style="margin-left: 5px;"
@@ -45,92 +49,64 @@
                            [placeholder]="'app.backup.vm.create.placeholder'|i18n"
                            [maxlength]="50" />
                     <ng-template #nameBackupError let-control>
-                      <ng-container *ngIf="control.hasError('required')">{{'app.backup.vm.create.name.required'|i18n}}</ng-container>
-                      <ng-container *ngIf="control.hasError('duplicateName')">{{'app.backup.vm.create.name.duplicateName'|i18n}}</ng-container>
-                      <ng-container *ngIf="control.hasError('pattern')">{{'app.backup.vm.create.name.pattern'|i18n}}</ng-container>
+                      <ng-container
+                        *ngIf="control.hasError('required')">{{ 'app.backup.vm.create.name.required'|i18n }}
+                      </ng-container>
+                      <ng-container
+                        *ngIf="control.hasError('duplicateName')">{{ 'app.backup.vm.create.name.duplicateName'|i18n }}
+                      </ng-container>
+                      <ng-container *ngIf="control.hasError('pattern')">{{ 'app.backup.vm.create.name.pattern'|i18n }}
+                      </ng-container>
                     </ng-template>
                   </nz-form-control>
                 </nz-form-item>
-                <div *ngIf="instanceIdParam != undefined || instanceIdParam != null">
-                  <nz-form-item>
-                    <nz-form-label>
-                      <span>{{'app.instances.name'|i18n}} (<span style="color:#FF0000;">*</span>)</span>
-                      <img nz-popover
-                           [nzPopoverContent]="'app.backup.vm.tooltip.vm'|i18n"
-                           nzPopoverPlacement="bottom" style="margin-left: 5px;"
-                           src="assets/imgs/pajamas_question.svg" alt="" />
-                    </nz-form-label>
-                    <nz-form-control nzDisableAutoTips [nzErrorTip]="instanceError">
-                      <input nz-input class="input-custom" [value]="instance?.name" [disabled]="true" />
-                      <ng-template #instanceError let-control>
-                        <ng-container *ngIf="control.hasError('required')">{{'volume.notification.input.select.vm'|i18n}}</ng-container>
-                      </ng-template>
-                    </nz-form-control>
-                  </nz-form-item>
-                  <nz-form-item>
-                    <nz-form-label>
-                      <span>{{'app.instances.OS'|i18n}}</span>
-                    </nz-form-label>
-                    <nz-form-control>
-                      <input nz-input class="input-custom" [value]="instance?.imageName" [disabled]="true" />
-                    </nz-form-control>
-                  </nz-form-item>
-                  <nz-form-item>
-                    <nz-form-label>
-                      <span>{{'app.info.backup.vm.storage.flavor'|i18n}}</span>
-                    </nz-form-label>
-                    <nz-form-control>
-                      <nz-input-group nzAddOnAfter="GB" style="width: 100%;">
-                        <input nz-input class="input-custom" [value]="instance?.storage" [disabled]="true" />
-                      </nz-input-group>
-                    </nz-form-control>
-                  </nz-form-item>
-                </div>
-                <div *ngIf="instanceIdParam == undefined || instanceIdParam == null">
-                  <nz-form-item>
-                    <nz-form-label>
-                      <span>{{'app.instances.name'|i18n}} (<span style="color:#FF0000;">*</span>)</span>
-                      <img nz-popover
-                           [nzPopoverContent]="'app.backup.vm.tooltip.vm'|i18n"
-                           nzPopoverPlacement="bottom" style="margin-left: 5px;"
-                           src="assets/imgs/pajamas_question.svg" alt="" />
-                    </nz-form-label>
-                    <nz-form-control nzDisableAutoTips [nzErrorTip]="instanceError">
-                      <nz-select (ngModelChange)="onSelectedInstance($event)"
-                                 [nzLoading]="isLoadingInstance"
-                                 nzSize="large"
-                                 [nzPlaceHolder]="'volume.modal.attach.title'|i18n"
-                                 [(ngModel)]="instanceSelected"
-                                 formControlName="instanceId">
-                        <nz-option *ngFor="let i of listInstances" [nzValue]="i.id" [nzLabel]="i.name"></nz-option>
-                      </nz-select>
-                      <ng-template #instanceError let-control>
-                        <ng-container *ngIf="control.hasError('required')">{{'volume.notification.input.select.vm'|i18n}}</ng-container>
-                      </ng-template>
-                    </nz-form-control>
-                  </nz-form-item>
-                  <nz-form-item>
-                    <nz-form-label>
-                      <span>{{'app.instances.OS'|i18n}}</span>
-                    </nz-form-label>
-                    <nz-form-control>
-                      <input nz-input class="input-custom" [value]="instance?.imageName" [disabled]="true" />
-                    </nz-form-control>
-                  </nz-form-item>
-                  <nz-form-item>
-                    <nz-form-label>
-                      <span>{{'app.info.backup.vm.storage.flavor'|i18n}}</span>
-                    </nz-form-label>
-                    <nz-form-control>
-                      <nz-input-group nzAddOnAfter="GB" style="width: 100%;">
-                        <input nz-input class="input-custom" [value]="instance?.storage" [disabled]="true" />
-                      </nz-input-group>
-                    </nz-form-control>
-                  </nz-form-item>
-                </div>
+
+
                 <nz-form-item>
                   <nz-form-label>
-                    <span>{{'app.info.backup.vm.description'|i18n}}</span>
+                    <span>{{ 'app.instances.name'|i18n }} (<span style="color:#FF0000;">*</span>)</span>
+                    <img nz-popover
+                         [nzPopoverContent]="'app.backup.vm.tooltip.vm'|i18n"
+                         nzPopoverPlacement="bottom" style="margin-left: 5px;"
+                         src="assets/imgs/pajamas_question.svg" alt="" />
+                  </nz-form-label>
+                  <nz-form-control nzDisableAutoTips [nzErrorTip]="instanceError">
+                    <nz-select (ngModelChange)="onSelectedInstance($event)"
+                               [nzLoading]="isLoadingInstance"
+                               nzSize="large"
+                               [nzPlaceHolder]="'volume.modal.attach.title'|i18n"
+                               [(ngModel)]="instanceSelected"
+                               formControlName="instanceId">
+                      <nz-option *ngFor="let i of listInstances" [nzValue]="i.id" [nzLabel]="i.name"></nz-option>
+                    </nz-select>
+                    <ng-template #instanceError let-control>
+                      <ng-container
+                        *ngIf="control.hasError('required')">{{ 'volume.notification.input.select.vm'|i18n }}
+                      </ng-container>
+                    </ng-template>
+                  </nz-form-control>
+                </nz-form-item>
+                <nz-form-item>
+                  <nz-form-label>
+                    <span>{{ 'app.instances.OS'|i18n }}</span>
+                  </nz-form-label>
+                  <nz-form-control>
+                    <input nz-input class="input-custom" [value]="instance?.imageName" [disabled]="true" />
+                  </nz-form-control>
+                </nz-form-item>
+                <nz-form-item>
+                  <nz-form-label>
+                    <span>{{ 'app.info.backup.vm.storage.flavor'|i18n }}</span>
+                  </nz-form-label>
+                  <nz-form-control>
+                    <nz-input-group nzAddOnAfter="GB" style="width: 100%;">
+                      <input nz-input class="input-custom" [value]="instance?.storage" [disabled]="true" />
+                    </nz-input-group>
+                  </nz-form-control>
+                </nz-form-item>
+                <nz-form-item>
+                  <nz-form-label>
+                    <span>{{ 'app.info.backup.vm.description'|i18n }}</span>
                   </nz-form-label>
                   <nz-form-control>
                     <nz-textarea-count [nzMaxCharacterCount]="255">
@@ -145,7 +121,8 @@
               <nz-col nzSpan="12">
                 <nz-form-item>
                   <nz-form-label>
-                    <span>{{'app.table.backup.vm.backup.package'|i18n}} (<span style="color: #FF0000;">*</span>)</span>
+                    <span>{{ 'app.table.backup.vm.backup.package'|i18n }} (<span
+                      style="color: #FF0000;">*</span>)</span>
                     <img nz-popover
                          [nzPopoverContent]="'app.backup.vm.tooltip.backup.package'|i18n"
                          nzPopoverPlacement="bottom" style="margin-left: 5px;"
@@ -165,7 +142,7 @@
                 </nz-form-item>
                 <nz-row *ngIf="backupPackages.length > 0" nzGutter="18">
                   <nz-col nzSpan="12">
-                    <span class="text-label">{{'app.backup.package.storage'|i18n}} (GB)</span>
+                    <span class="text-label">{{ 'app.backup.package.storage'|i18n }} (GB)</span>
                   </nz-col>
                   <nz-col nzSpan="6" style="text-align: end;">
                     <span class="text-label">{{ backupPackageDetail?.totalSize }} GB</span>
@@ -174,7 +151,7 @@
                 <nz-divider *ngIf="backupPackages.length > 0" style="margin: 10px 0" nzType="horizontal"></nz-divider>
                 <nz-row nzGutter="18" *ngIf="backupPackages.length > 0">
                   <nz-col nzSpan="12">
-                    <span class="text-label">{{'app.backup.package.storage.used'|i18n}} (GB)</span>
+                    <span class="text-label">{{ 'app.backup.package.storage.used'|i18n }} (GB)</span>
                   </nz-col>
                   <nz-col nzSpan="6" style="text-align: end;">
                     <span class="text-label">{{ backupPackageDetail?.usedSize }} GB</span>
@@ -183,10 +160,11 @@
                 <nz-divider *ngIf="backupPackages.length > 0" style="margin: 10px 0" nzType="horizontal"></nz-divider>
                 <nz-row nzGutter="18" *ngIf="backupPackages.length > 0">
                   <nz-col nzSpan="12">
-                    <span class="text-label">{{'app.backup.package.storage.remaining'|i18n}} (GB)</span>
+                    <span class="text-label">{{ 'app.backup.package.storage.remaining'|i18n }} (GB)</span>
                   </nz-col>
                   <nz-col nzSpan="6" style="text-align: end;">
-                    <span class="text-label">{{ backupPackageDetail?.totalSize - backupPackageDetail?.usedSize }} GB</span>
+                    <span class="text-label">{{ backupPackageDetail?.totalSize - backupPackageDetail?.usedSize }}
+                      GB</span>
                   </nz-col>
                 </nz-row>
                 <nz-divider *ngIf="backupPackages.length > 0" style="margin: 10px 0" nzType="horizontal"></nz-divider>
@@ -209,13 +187,13 @@
                                [nzLoading]="isLoading">
                       <nz-option *ngFor="let i of securityGroups"
                                  [nzLabel]="i.name"
-                                 [nzValue]="i.id" [nzDisabled]="i.name.toUpperCase() === 'DEFAULT'"/>
+                                 [nzValue]="i.id" [nzDisabled]="i.name.toUpperCase() === 'DEFAULT'" />
                     </nz-select>
                   </nz-form-control>
                 </nz-form-item>
                 <nz-form-item *ngIf="volumeAttachments.length > 0" style="margin-top: 10px;">
                   <nz-form-label>
-                    <span>{{'app.info.backup.vm.external.volume'|i18n}}</span>
+                    <span>{{ 'app.info.backup.vm.external.volume'|i18n }}</span>
                     <img nz-popover
                          [nzPopoverContent]="'app.backup.vm.tooltip.volume.attach'|i18n"
                          nzPopoverPlacement="bottom" style="margin-left: 5px;"
@@ -234,30 +212,35 @@
                     </nz-select>
                   </nz-form-control>
                 </nz-form-item>
-<!--                <nz-form-item>-->
-<!--                  <nz-form-label>-->
-<!--                    <span style="color: #FF0000">{{ 'app.service.expiration-date'|i18n }} </span>-->
-<!--                    <img nz-popover-->
-<!--                         [nzPopoverContent]="'app.backup.vm.tooltip.expire.date'|i18n"-->
-<!--                         nzPopoverPlacement="bottom" style="margin-left: 5px;"-->
-<!--                         src="assets/imgs/pajamas_question.svg" alt="" />-->
-<!--                    <span style="color: #FF0000; margin-left: 10px;">{{ backupPackageDetail?.expirationDate | date: 'dd/MM/yyyy' }}</span>-->
-<!--                  </nz-form-label>-->
-<!--                </nz-form-item>-->
+                <!--                <nz-form-item>-->
+                <!--                  <nz-form-label>-->
+                <!--                    <span style="color: #FF0000">{{ 'app.service.expiration-date'|i18n }} </span>-->
+                <!--                    <img nz-popover-->
+                <!--                         [nzPopoverContent]="'app.backup.vm.tooltip.expire.date'|i18n"-->
+                <!--                         nzPopoverPlacement="bottom" style="margin-left: 5px;"-->
+                <!--                         src="assets/imgs/pajamas_question.svg" alt="" />-->
+                <!--                    <span style="color: #FF0000; margin-left: 10px;">{{ backupPackageDetail?.expirationDate | date: 'dd/MM/yyyy' }}</span>-->
+                <!--                  </nz-form-label>-->
+                <!--                </nz-form-item>-->
               </nz-col>
             </nz-row>
             <!--          <span>Storage {{instance?.storage}}</span><br>-->
             <!--          <span>Volume attach {{sizeOfVlAttach}}</span><br>-->
             <!--          <span>Total 1 {{instance?.storage + sizeOfVlAttach}}</span><br>-->
             <!--          <span>Total 2 {{backupPackageDetail?.sizeInGB - backupPackageDetail?.usedSize}}</span>-->
-            <div *ngIf="(instance?.storage + sizeOfVlAttach) > (backupPackageDetail?.sizeInGB - backupPackageDetail?.usedSize) && backupPackageDetail">
+            <div
+              *ngIf="(instance?.storage + sizeOfVlAttach) > (backupPackageDetail?.sizeInGB - backupPackageDetail?.usedSize) && backupPackageDetail">
               <nz-alert nzType="warning"
                         [nzMessage]="titleMessage"
                         nzShowIcon></nz-alert>
               <ng-template #titleMessage>
-              <span style="color: #FF0000;">{{'app.backup.package.storage'|i18n}} {{backupPackageDetail?.packageName}} ({{'app.backup.vm.alert.create.remaining.storage'|i18n}} {{backupPackageDetail?.sizeInGB - backupPackageDetail?.usedSize}} GB)
-                {{'app.backup.vm.alert.storage'|i18n}} ({{instance?.storage + sizeOfVlAttach}} GB).
-                <span>{{'app.backup.vm.alert.create'|i18n}} <a [routerLink]="'/app-smart-cloud/backup/packages/resize/'+backupPackageDetail?.id"> <b>{{backupPackageDetail?.packageName}}</b></a> {{'app.backup.vm.alert.create2'|i18n}}</span>
+              <span
+                style="color: #FF0000;">{{ 'app.backup.package.storage'|i18n }} {{ backupPackageDetail?.packageName }}
+                ({{ 'app.backup.vm.alert.create.remaining.storage'|i18n }} {{ backupPackageDetail?.sizeInGB - backupPackageDetail?.usedSize }}
+                GB)
+                {{ 'app.backup.vm.alert.storage'|i18n }} ({{ instance?.storage + sizeOfVlAttach }} GB).
+                <span>{{ 'app.backup.vm.alert.create'|i18n }} <a
+                  [routerLink]="'/app-smart-cloud/backup/packages/resize/'+backupPackageDetail?.id"> <b>{{ backupPackageDetail?.packageName }}</b></a> {{ 'app.backup.vm.alert.create2'|i18n }}</span>
               </span>
               </ng-template>
             </div>
@@ -267,34 +250,45 @@
       <nz-col nzSpan="8">
         <nz-affix [nzOffsetTop]="72">
           <nz-card class="border-card">
-            <span class="text-card-header">{{'app.config.parameters'|i18n}}</span>
-            <div style="margin-top: 10px" class="text-value">{{'app.table.backup.vm.name'|i18n}}</div>
+            <span class="text-card-header">{{ 'app.config.parameters'|i18n }}</span>
+            <div style="margin-top: 10px" class="text-value">{{ 'app.table.backup.vm.name'|i18n }}</div>
             <div style="margin-top: 10px" class="text-label">
               {{ validateForm.controls.backupName.value }}
             </div>
             <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
             <div style="margin-top: 10px" class="text-value">{{ 'app.table.backup.vm.backup.package'|i18n }}</div>
-            <div style="margin-top: 10px" class="text-label">{{ backupPackageDetail?.packageName }} {{ backupPackageDetail?.sizeInGB}}GB</div>
+            <div style="margin-top: 10px"
+                 class="text-label">{{ backupPackageDetail?.packageName }} {{ backupPackageDetail?.sizeInGB }}GB
+            </div>
             <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
             <div style="margin-top: 10px" class="text-value">{{ 'app.instances.name'|i18n }}</div>
             <div style="margin-top: 10px" class="text-label">{{ instance?.name }}</div>
-            <div style="margin-top: 10px" class="text-label">{{ 'app.info.backup.vm.storage.flavor'|i18n }}:  {{ instance?.storage }}GB</div>
+            <div style="margin-top: 10px" class="text-label">{{ 'app.info.backup.vm.storage.flavor'|i18n }}
+              :  {{ instance?.storage }}GB
+            </div>
             <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
-            <div style="margin-top: 10px" class="text-value" *ngIf="volumeAttachSelected.length > 0">{{ 'app.info.backup.vm.external.volume'|i18n }}</div>
-            <div style="margin-top: 10px" class="text-label" *ngFor="let data of volumeAttachSelected">{{data?.name}}  {{data?.sizeInGB}}GB</div>
+            <div style="margin-top: 10px" class="text-value"
+                 *ngIf="volumeAttachSelected.length > 0">{{ 'app.info.backup.vm.external.volume'|i18n }}
+            </div>
+            <div style="margin-top: 10px" class="text-label"
+                 *ngFor="let data of volumeAttachSelected">{{ data?.name }}  {{ data?.sizeInGB }}GB
+            </div>
             <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
             <div style="margin-top: 10px" class="text-value">{{ 'app.info.backup.vm.total.storage'|i18n }}</div>
             <div style="margin-top: 10px" class="text-label">
-                <span>{{ instance?.storage + sizeOfVlAttach }} GB</span>
+              <span>{{ instance?.storage + sizeOfVlAttach }} GB</span>
             </div>
             <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
-            <div style="margin-top: 10px" class="text-value" >{{ 'app.backup.vm.storage.remaining'|i18n }}</div>
-            <div style="margin-top: 10px" class="text-label" *ngIf="backupPackageDetail">{{ backupPackageDetail?.sizeInGB - backupPackageDetail?.usedSize }} GB</div>
+            <div style="margin-top: 10px" class="text-value">{{ 'app.backup.vm.storage.remaining'|i18n }}</div>
+            <div style="margin-top: 10px" class="text-label"
+                 *ngIf="backupPackageDetail">{{ backupPackageDetail?.sizeInGB - backupPackageDetail?.usedSize }} GB
+            </div>
             <div style="margin-top: 10px" class="text-label" *ngIf="!backupPackageDetail">0 GB</div>
             <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
             <nz-row>
               <nz-col style="width: 100%">
-                <button style="width: 100%" nz-button nzSize="large" nzType="primary" (click)="createBackupVmNormal()" [nzLoading]="isLoading"
+                <button style="width: 100%" nz-button nzSize="large" nzType="primary" (click)="createBackupVmNormal()"
+                        [nzLoading]="isLoading"
                         [disabled]="validateForm.invalid || ((instance?.storage + sizeOfVlAttach) > (backupPackageDetail?.sizeInGB - backupPackageDetail?.usedSize))">
                   <img src="assets/imgs/wallet.svg" style="margin-right: 5px; padding-bottom: 5px;" alt="" />
                   <span [style.color]="validateForm.invalid ? 'gray' : 'white'">{{ 'app.button.create' | i18n }}</span>

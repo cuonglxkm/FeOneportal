@@ -759,6 +759,7 @@
   "app.file.static.web.hosting": "The file containing the content for the homepage of the website can be accessed at the following Endpoint link",
   "app.file.static.web.hosting.tooltip": "Endpoint URL of the bucket on the system when using the Web Hosting feature.Users use this link to access the website.",
   "app.label.static.web.hosting.error1": "The web address is not in the correct format",
+  "app.label.static.web.hosting.error2": "The web address can't be blank",
   "app.file.static.web.hosting.error": "The file containing the error display content of the website",
   "app.file.static.web.space.error": "File name can't contain space",
   "app.file.static.web.space.require": "File name can't be blank",
@@ -2833,7 +2834,7 @@
   "project.note4": "Custom VPC",
   "project.note5": "Default VPC",
   "project.status.enable": "Active",
-  
+
 
 
   "project.status.delete": "Scheduled automatic deletion",
@@ -3371,6 +3372,7 @@
   "schedule.backup.vm.backup.volume.mode.date.tooltip": "Backup day of the month",
   "schedule.backup.vm.backup.volume.mode.day.tooltip": "Backup day of the week",
   "schedule.backup.vm.backup.volume.mode.week.tooltip": "Number of weeks per Backup",
+  "schedule.backup.block.create": "The service has been scheduled",
 
 
   "listner.create.duplicate.port.weight": "Members with the same IP cannot have duplicate Port and Weight",
