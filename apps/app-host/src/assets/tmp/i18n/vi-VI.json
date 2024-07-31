@@ -537,7 +537,7 @@
   "app.notify.amount.ram.add": "Vượt quá quota RAM, đã sử dụng {{num1}}/{{num2}} GB, cần cấp thêm {{num3}} GB",
   "app.notify.amount.cpu.add": "Vượt quá quota CPU, đã sử dụng {{num1}}/{{num2}} vCPU, cần cấp thêm {{num3}} vCPU",
   "app.notify.amount.gpu.add": "Không đủ quota chuyển đổi loại GPU, cần cấp thêm {{num}} GPU",
-  "app.notify.create.instances.success": "Khởi tạo máy ảo {{name}} thành công",
+  "app.notify.create.instances.success": "Yêu cầu khởi tạo máy ảo {{name}} thành công",
   "app.notify.create.instances.fail": "Khởi tạo máy ảo {{name}} không thành công",
   "app.notify.extend.instance.success": "Yêu cầu gia hạn máy ảo thành công",
   "app.notify.extend.instance.fail": "Yêu cầu gia hạn máy ảo không thành công",

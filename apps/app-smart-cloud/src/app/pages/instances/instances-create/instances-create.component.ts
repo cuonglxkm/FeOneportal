@@ -794,11 +794,10 @@ export class InstancesCreateComponent implements OnInit {
       )
       .subscribe({
         next: (data: any) => {
-          const currentDateTime = new Date().toISOString();
           this.listIPPublic = data.records.filter(
             (e) =>
-              e.status == 0 &&
-              new Date(e.expiredDate) > new Date(currentDateTime)
+              e.status.toUpperCase() == 'KHOITAO' &&
+              e.resourceStatus.toUpperCase() == 'AVAILABLE'
           );
           console.log('list IP public', this.listIPPublic);
         },
@@ -1424,9 +1423,13 @@ export class InstancesCreateComponent implements OnInit {
         this.totalPaymentVolume += bs.priceAndVAT * this.numberMonth;
       });
 
-      this.changeTotalAmountIPv4(this.listOfDataIPv4[0].amount);
+      if (this.listOfDataIPv4.length != 0) {
+        this.changeTotalAmountIPv4(this.listOfDataIPv4[0].amount);
+      }
 
-      this.changeTotalAmountIPv6(this.listOfDataIPv6[0].amount);
+      if (this.listOfDataIPv6.length != 0) {
+        this.changeTotalAmountIPv6(this.listOfDataIPv6[0].amount);
+      }
     }
     this.cdr.detectChanges();
   }

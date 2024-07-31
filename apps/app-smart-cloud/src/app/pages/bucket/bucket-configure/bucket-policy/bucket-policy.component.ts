@@ -545,6 +545,7 @@ export class BucketPolicyComponent implements OnInit {
   }
 
   isVisibleJson: boolean = false;
+  jsonDataBucketPolicy: string;
   bucketPolicyDetail: bucketPolicyDetail = new bucketPolicyDetail();
   modalJson(sid: string) {
     this.isVisibleJson = true;
@@ -555,6 +556,7 @@ export class BucketPolicyComponent implements OnInit {
           console.log(data);
 
           this.bucketPolicyDetail = data;
+          this.jsonDataBucketPolicy = JSON.stringify(this.bucketPolicyDetail, null, 2);
         },
         error: (e) => {
           this.notification.error(
