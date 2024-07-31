@@ -63,10 +63,11 @@
         </thead>
         <tbody>
           <tr *ngFor="let item of listOfData">
+            
             <td>
-              <a nz-tooltip [nzTooltipTitle]="'app.view.detail' | i18n" nzTooltipPlacement="bottom" [routerLink]="
-              '/app-smart-cloud/project/detail/' + item.id
-            ">{{ item.displayName }}</a>
+              <a *ngIf="item.resourceStatus!='DELETING'" nz-tooltip [nzTooltipTitle]="'app.view.detail' | i18n" nzTooltipPlacement="bottom" [routerLink]="
+              '/app-smart-cloud/project/detail/' + item.id ">{{ item.displayName }}</a>
+              <a *ngIf="item.resourceStatus=='DELETING'" style="cursor: text;" >{{ item.displayName }}</a>
             </td>
             <td *ngIf="item.type != 'VPC'">-</td>
             <td *ngIf="item.type != 'VPC'">-</td>
