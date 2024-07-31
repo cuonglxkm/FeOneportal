@@ -228,11 +228,14 @@ export class CreateScheduleBackupComponent implements OnInit {
       this.validateForm.get('formVolume').clearValidators();
       this.validateForm.get('formVolume').updateValueAndValidity();
       this.validateForm.get('formVolume').reset();
+
+      this.validateForm.get('formInstance').get('name').setValidators([this.duplicateNameValidator.bind(this)])
     }
     if (this.selectedOption === 'volume') {
       this.validateForm.get('formInstance').clearValidators();
       this.validateForm.get('formInstance').updateValueAndValidity();
       this.validateForm.get('formInstance').reset();
+      this.validateForm.get('formVolume').get('name').setValidators([this.duplicateNameValidator.bind(this)])
     }
     this.modeSelected = 1;
     this.cdr.detectChanges();
@@ -241,8 +244,9 @@ export class CreateScheduleBackupComponent implements OnInit {
   selectInstanceChange(value) {
     console.log('value instance select', value);
     this.instanceSelected = value;
-    this.getDataInstanceById(value);
-
+    const find = this.listInstanceNotUse?.find(x => x.id === this.instanceSelected);
+    this.instanceName = find?.name;
+    this.getDataInstanceById(this.instanceSelected);
   }
 
   onSelectedVolume(value) {
@@ -268,9 +272,9 @@ export class CreateScheduleBackupComponent implements OnInit {
     console.log('value volume selected', value);
 
     this.volumeSelected = value;
-    // const find = this.listVolumeNotUseUnique?.find(x => x.id === this.volumeSelected);
-    // this.volumeName = find?.name;
-    // this.sizeOfVolume += find?.sizeInGB;
+    const find = this.listVolumeNotUseUnique?.find(x => x.id === this.volumeSelected);
+    this.volumeName = find?.name;
+    this.sizeOfVolume += find?.sizeInGB;
 
 
   }
@@ -558,7 +562,6 @@ export class CreateScheduleBackupComponent implements OnInit {
       this.backupScheduleService.create(formCreateSchedule).subscribe(data => {
         this.isLoadingAction = false;
         this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('schedule.backup.notify.create.success'));
-        this.nameList = [];
         this.router.navigate(['/app-smart-cloud/schedule/backup/list']);
       }, error => {
         this.isLoadingAction = false;
@@ -590,7 +593,6 @@ export class CreateScheduleBackupComponent implements OnInit {
       this.backupScheduleService.create(formCreateSchedule1).subscribe(data => {
         this.isLoadingAction = false;
         this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('schedule.backup.volume.notify.create.success'));
-        this.nameList = [];
         this.router.navigate(['/app-smart-cloud/schedule/backup/list']);
       }, error => {
         this.isLoadingAction = false;
@@ -606,10 +608,12 @@ export class CreateScheduleBackupComponent implements OnInit {
     formSearch.pageIndex = 1;
     formSearch.customerId = this.tokenService.get()?.userId;
     this.backupScheduleService.search(formSearch).subscribe(data => {
-      this.lstBackupSchedules = data.records;
-      this.lstBackupSchedules?.forEach(item => {
+      console.log('name', data?.records)
+      data?.records?.forEach(item => {
         this.nameList?.push(item.name);
+        console.log(this.nameList)
       });
+
     });
   }
 
@@ -714,6 +718,7 @@ export class CreateScheduleBackupComponent implements OnInit {
         this.getListInstances();
       } else {
         this.getListInstances();
+        this.instanceSelected = this.listInstanceNotUse[0]?.id
       }
 
       const volumeId = params['idVolume'];
@@ -727,6 +732,7 @@ export class CreateScheduleBackupComponent implements OnInit {
         this.getListVolume();
       } else {
         this.getListVolume();
+        this.volumeSelected = this.listVolumeNotUseUnique[0]?.id
       }
     });
 

@@ -15,6 +15,8 @@ import {
 } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
 import { PackageBackupModel } from '../../../../shared/models/package-backup.model';
 import { PackageBackupService } from '../../../../shared/services/package-backup.service';
+import { SizeInCloudProject } from '../../../../shared/models/project.model';
+import { ProjectService } from '../../../../shared/services/project.service';
 
 @Component({
   selector: 'one-portal-extend-schedule-backup-volume',
@@ -82,6 +84,8 @@ export class EditScheduleBackupVolumeComponent implements OnInit {
 
   isLoadingAction: boolean = false;
 
+  typeVpc: number;
+
   constructor(private fb: NonNullableFormBuilder,
               private router: Router,
               private route: ActivatedRoute,
@@ -89,6 +93,7 @@ export class EditScheduleBackupVolumeComponent implements OnInit {
               @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
               private notification: NzNotificationService,
               private backupPackageService: PackageBackupService,
+              private projectService: ProjectService,
               @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
               public datepipe: DatePipe) {
 
@@ -112,7 +117,8 @@ export class EditScheduleBackupVolumeComponent implements OnInit {
   }
 
   projectChanged(project: ProjectModel) {
-    this.project = project.id;
+    this.project = project?.id;
+    this.typeVpc = project?.type;
   }
 
   duplicateNameValidator(control) {
@@ -272,8 +278,12 @@ export class EditScheduleBackupVolumeComponent implements OnInit {
     this.scheduleService.detail(customerId, id).subscribe(data => {
       this.backupSchedule = data;
       this.isLoading = false;
-      this.getBackupPackageDetail(this.backupSchedule?.backupPackageId);
 
+      if(this.typeVpc == 1) {
+        this.getStorageByVpc(this.project)
+      } else {
+        this.getBackupPackageDetail(this.backupSchedule?.backupPackageId);
+      }
       this.validateForm.controls.backupMode.setValue(this.backupSchedule?.mode);
 
       this.validateForm.controls.times.setValue(this.backupSchedule?.runtime);
@@ -330,6 +340,13 @@ export class EditScheduleBackupVolumeComponent implements OnInit {
       this.validateForm.controls.date.setValue(1);
 
     }
+  }
+
+  sizeInGb: SizeInCloudProject;
+  getStorageByVpc(id) {
+    this.projectService.getByProjectId(id).subscribe(data => {
+      this.sizeInGb = data
+    })
   }
 
   ngOnInit(): void {
