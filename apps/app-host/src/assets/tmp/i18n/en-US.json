@@ -2833,7 +2833,7 @@
   "project.note4": "Custom VPC",
   "project.note5": "Default VPC",
   "project.status.enable": "Active",
-  
+
 
 
   "project.status.delete": "Scheduled automatic deletion",
@@ -3371,6 +3371,7 @@
   "schedule.backup.vm.backup.volume.mode.date.tooltip": "Backup day of the month",
   "schedule.backup.vm.backup.volume.mode.day.tooltip": "Backup day of the week",
   "schedule.backup.vm.backup.volume.mode.week.tooltip": "Number of weeks per Backup",
+  "schedule.backup.block.create": "The service has been scheduled",
 
 
   "listner.create.duplicate.port.weight": "Members with the same IP cannot have duplicate Port and Weight",

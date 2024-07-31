@@ -300,9 +300,8 @@ export class VolumeComponent implements OnInit, OnDestroy {
         this.listScheduleBackup.forEach(item => {
           console.log('abc', item.serviceId == id)
           if(item.serviceId == id) {
-            this.notification.warning('', 'Dịch vụ đã được tạo lịch')
+            this.notification.warning('', this.i18n.fanyi('schedule.backup.block.create'))
             this.navigateToVolume();
-            return;
           } else {
             this.router.navigate(['/app-smart-cloud/schedule/backup/create/vpc'], {
               queryParams: { type: 'VOLUME', idVolume: id }
@@ -319,9 +318,8 @@ export class VolumeComponent implements OnInit, OnDestroy {
         this.listScheduleBackup.forEach(item => {
           console.log('abc', item.serviceId == id)
           if(item.serviceId == id) {
-            this.notification.warning('', 'Dịch vụ đã được tạo lịch')
+            this.notification.warning('', this.i18n.fanyi('schedule.backup.block.create'))
             this.navigateToVolume();
-            return;
           } else {
             this.router.navigate(['/app-smart-cloud/schedule/backup/create'], {
               queryParams: { type: 'VOLUME', idVolume: id }
@@ -338,7 +336,7 @@ export class VolumeComponent implements OnInit, OnDestroy {
     let formSearch = new FormSearchScheduleBackup();
     formSearch.customerId = this.tokenService.get()?.userId;
     formSearch.scheduleName = ''
-    formSearch.scheduleStatus = ''
+    formSearch.scheduleStatus = 'ACTIVE'
     formSearch.regionId = this.region
     formSearch.projectId = this.project
     formSearch.serviceType = 2
