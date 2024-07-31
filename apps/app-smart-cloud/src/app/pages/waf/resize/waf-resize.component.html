@@ -36,7 +36,7 @@
                     <span class="label-fontsize">Tên WAF:</span>
                   </div>
                   <div nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="12">
-                    <span class="label-fontsize font-bold ">-</span>
+                    <span class="label-fontsize font-bold ">{{WAFDetail?.name}}</span>
                   </div>
                 </div>
                 <div nz-row [nzGutter]="24" class="row-gray-bg content-items-center">
@@ -44,7 +44,7 @@
                     <span class="label-fontsize">Domain:</span>
                   </div>
                   <div nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="12">
-                    <span class="label-fontsize font-bold">Đang hoạt động</span>
+                    <span class="label-fontsize font-bold">{{WAFDetail?.wafDomains.length > 0 ? WAFDetail?.wafDomains[0].domain : '-'}}</span>
 
                   </div>
                 </div>
@@ -53,7 +53,7 @@
                     <span class="label-fontsize">Policy:</span>
                   </div>
                   <div nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="12">
-                    <span class="label-fontsize font-bold ">{{data?.type == 'VPC' ? (data?.loadbalancerOfferName==null ? '-': data?.loadbalancerOfferName) : '-'}}</span>
+                    <span class="label-fontsize font-bold ">-</span>
                   </div>
                 </div>
                 <div nz-row [nzGutter]="24" class="row-gray-bg content-items-center">
@@ -62,8 +62,7 @@
                   </div>
                   <div nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="12">
 
-                    <span class="label-fontsize font-bold">{{data?.type == 'VPC' ? ( data?.createDate | date :
-                      'HH:mm:ss dd/MM/yyyy') : '-' }}</span>
+                    <span class="label-fontsize font-bold">{{WAFDetail?.createdDate | date: 'dd-MM-yyyy'}}</span>
                   </div>
                 </div>
               </div>
@@ -75,7 +74,7 @@
                     <span class="label-fontsize">Gói dịch vụ:</span>
                   </div>
                   <div nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="12">
-                    <span class="label-fontsize font-bold">{{ data?.displayName }}</span>
+                    <span class="label-fontsize font-bold">{{ currentOffer?.offerName }}</span>
                   </div>
                 </div>
                 <div nz-row [nzGutter]="24" class="row-gray-bg content-items-center">
@@ -83,8 +82,7 @@
                     <span class="label-fontsize">IP Public:</span>
                   </div>
                   <div nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="12">
-                    <span class="label-fontsize font-bold">{{data?.type == 'VPC' ? (data?.publicNetworkAddress==""?'-': data?.publicNetworkAddress)
-                      :'-'}}</span>
+                    <span class="label-fontsize font-bold">{{WAFDetail?.wafDomains.length > 0 ? WAFDetail?.wafDomains[0].ipPublic : '-'}}</span>
                   </div>
                 </div>
                 <div nz-row [nzGutter]="24" class="row-white-bg content-items-center">
@@ -92,8 +90,9 @@
                     <span class="label-fontsize">Trạng thái dịch vụ:</span>
                   </div>
                   <div nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="12">
-                    <span class="label-fontsize font-bold">{{data?.type == 'VPC' ? (data?.vpnSiteToSiteOfferName==null ? '-':data?.vpnSiteToSiteOfferName )
-                      :'-'}}</span>
+                    <ng-container *ngIf="WAFDetail?.status | ServiceStatusPipe as statusModel">
+                      <span class="label-fontsize font-bold" [ngStyle]="{color: statusModel.color}">{{statusModel.status}}</span>
+                    </ng-container>
                   </div>
                 </div>
                 <div nz-row [nzGutter]="24" class="row-gray-bg content-items-center">
@@ -101,8 +100,7 @@
                     <span class="label-fontsize">Ngày hết hạn:</span>
                   </div>
                   <div nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="12">
-                    <span class="label-fontsize font-bold">{{data?.type == 'VPC' ? ( data?.expireDate | date :
-                      'HH:mm:ss dd/MM/yyyy ') : '-'}}</span>
+                    <span class="label-fontsize font-bold">{{WAFDetail?.expiredDate | date: 'dd-MM-yyyy'}}</span>
                   </div>
                 </div>
               </div>
@@ -121,8 +119,8 @@
                     [nzDescription]="'Khi thực hiện điều chỉnh gói dịch vụ, chi phí mới sẽ được tính từ ngày điều chỉnh cho tới ngày hết hạn'"
                 ></nz-alert>
         </div>
-        <div class="text-label mb-3 mt-3">{{ 'project.note38' | i18n }}:</div>
-        <div class="text-label" style="margin-bottom: 20px">{{ 'project.note39' | i18n }}</div>
+        <div class="text-label mb-3 mt-3">{{ 'project.note38' | i18n }}: {{currentOffer.offerName}} ({{currentOffer.config}})</div>
+        <div class="text-label" style="margin-bottom: 20px">{{ 'project.note39' | i18n }}: {{selectedNameFlavor}} {{selectedConfig !== '' ? '(' + selectedConfig + ')' : ''}}</div>
 
         <div>
           <ngu-carousel
@@ -136,7 +134,7 @@
             [@slider]="ani"
           >
             <div
-              style="cursor: pointer"
+              style="cursor: pointer; height: 100%"
               (click)="onInputFlavors(item.id, item.offerName)"
               [id]="'flavor_' + item.id"
             >
@@ -179,7 +177,7 @@
                 </nz-col>
               </nz-row>
                 <div
-                  style="width: 100%; padding-top: 5px"
+                  style="width: 100%; padding-top: 5px; height: 255px;"
                   [class.flavor-footer-active]="
                     selectedElementFlavor === 'flavor_' + item.id
                   "
@@ -219,26 +217,14 @@
     <!---------------CARD-THÀNH TIỀN-------------->
     <nz-col nzSpan="8">
       <nz-affix [nzOffsetTop]="72">
-      <nz-card style="border-radius: 8px;" [nzLoading]="loadingCalculate" class="card-border">
+      <nz-card style="border-radius: 8px;" class="card-border">
         <div style="margin-bottom: 20px">
           <span class="text-card-header">{{'app.estimated.cost' | i18n}}</span>
         </div>
         <div class="card-money">
-        <div class="text-value">Gói dịch vụ</div>
-        <div style="margin-top: 10px" class="text-label">zxczxc</div>
+        <div class="text-value">Gói dịch vụ {{currentOffer?.offerName}}</div>
+        <div style="margin-top: 10px" class="text-label" [innerHTML]="isSelectFlavor === true ? selectedDescription : currentOffer?.description"></div>
        </div>
-        <!-- <nz-row style="margin-bottom: 10px" nzGutter="16">
-          <nz-col nzSpan="16">
-            <span class="text-value">{{'app.service.cost' | i18n}} {{ this.form.controls['numOfMonth'].value || 0 }}
-              {{'app.month' | i18n}}</span>
-          </nz-col>
-          <nz-col class="text-right" nzSpan="8">
-            <span class="text-value" style="color: #0066b3" nzAlign="right">
-              {{ totalAmount || 0 }}
-              VND
-            </span>
-          </nz-col>
-        </nz-row> -->
         <nz-divider></nz-divider>
         <div>
           <nz-row style="margin-bottom: 10px" nzGutter="16">
@@ -274,7 +260,7 @@
               <span class="text-note-italicized">({{'app.payment-detail.vat' | i18n}})</span>
             </nz-col>
             <nz-col class="text-right" nzSpan="8">
-              <span class="text-value" style="color: #ea3829" nzAlign="right">{{ totalPayment | formatPrice  }} VND</span>
+              <span class="text-value" style="color: #ea3829" nzAlign="right">{{ totalincludesVAT | formatPrice  }} VND</span>
             </nz-col>
           </nz-row>
         </div>

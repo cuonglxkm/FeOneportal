@@ -219,6 +219,8 @@ export class ProjectCreateComponent implements OnInit {
   });
   // private inputChangeSubject: Subject<number> = new Subject<number>();
   private inputChangeSubject = new Subject<{ value: number, name: string }>();
+  private inputChangeMax = new Subject<{ value: number, max: number, name: string }>();
+  private inputGPUMax = new Subject<{ index: number, max: number, value: number }>();
 
   private searchSubject = new Subject<string>();
   private readonly debounceTimeMs = 500;
@@ -239,6 +241,9 @@ export class ProjectCreateComponent implements OnInit {
     this.inputChangeSubject.pipe(
       debounceTime(800)
     ).subscribe(data => this.checkNumberInput(data.value, data.name));
+
+    this.inputChangeMax.pipe(debounceTime(800)).subscribe(data => this.checkNumberInputNoBlock(data.value, data.max, data.name));
+    this.inputGPUMax.pipe(debounceTime(800)).subscribe(data => this.getValues(data.index, data.max, data.value));
 
   }
   url = window.location.pathname;
@@ -361,6 +366,7 @@ export class ProjectCreateComponent implements OnInit {
           actionType: 0,
           regionId: this.regionId,
           serviceName: this.form.controls['name'].value,
+          // this.numOfMonth
           // this.form.controls['name'].value
         };
         console.log("requestBody", requestBody)
@@ -407,6 +413,21 @@ export class ProjectCreateComponent implements OnInit {
     this.searchSubject.next('');
 
   }
+  // calculate(number: any,max: number, inputName: string) {
+  //   if (this[inputName] > max) {
+  //     this[inputName] = max;
+  //   }
+  //   if (this.vpcType === '0') {
+  //     this.activeVpc = false;
+  //     this.activeNoneVpc = true;
+  //   } else {
+  //     this.activeVpc = true;
+  //     this.activeNoneVpc = false;
+
+  //   }
+  //   this.searchSubject.next('');
+
+  // }
   getStepBlock(name: string) {
     this.vpc.getStepBlock(name).subscribe((res: any) => {
       const valuestring: any = res.valueString;
@@ -423,28 +444,57 @@ export class ProjectCreateComponent implements OnInit {
     this.inputChangeSubject.next({ value, name });
     this.checkRequired()
   }
+  onInputMax(value: number, max: number, name: string): void {
+    console.log("object value33", value)
 
+    // Gửi giá trị mới đến Subject để xử lý tiếp nếu cần
+    this.inputChangeMax.next({ value, max, name });
+  }
+  gpuMax(index: number, max: number, value: number) {
+    this.inputGPUMax.next({ index, max, value })
+  }
   _hhd: number = this.maxBlock;
 
   get hhd(): number {
-      return this._hhd;
+    return this._hhd;
   }
 
   set hhd(value: number) {
-      this._hhd = Math.min(Math.max(value, this.minBlock), this.maxBlock);
+    this._hhd = Math.min(Math.max(value, this.minBlock), this.maxBlock);
   }
 
   _ssd: number = this.maxBlock;
 
   get ssd(): number {
-      return this._ssd;
+    return this._ssd;
   }
 
   set ssd(value: number) {
-      this._ssd = Math.min(Math.max(value, this.minBlock), this.maxBlock);
+    this._ssd = Math.min(Math.max(value, this.minBlock), this.maxBlock);
   }
 
+  // _hhd: number = this.maxBlock;
+
+  // get hhd(): number {
+  //     return this._hhd;
+  // }
+
+  // set hhd(value: number) {
+  //     this._hhd = Math.min(Math.max(value, this.minBlock), this.maxBlock);
+  // }
+
+  // _ssd: number = this.maxBlock;
+
+  // get ssd(): number {
+  //     return this._ssd;
+  // }
+
+  // set ssd(value: number) {
+  //     this._ssd = Math.min(Math.max(value, this.minBlock), this.maxBlock);
+  // }
+
   checkNumberInput(value: number, name: string): void {
+    console.log("value 55", value)
     const messageStepNotification = `Số lượng phải chia hết cho  ${this.stepBlock} `;
     const numericValue = Number(value);
     if (isNaN(numericValue)) {
@@ -455,7 +505,7 @@ export class ProjectCreateComponent implements OnInit {
     console.log("adjustedValue", adjustedValue)
     if (adjustedValue > this.maxBlock) {
       adjustedValue = Math.floor(this.maxBlock / this.stepBlock) * this.stepBlock;
-      console.log("adjustedValue 34",adjustedValue)
+      console.log("adjustedValue 34", adjustedValue)
     } else if (adjustedValue < this.minBlock) {
       adjustedValue = this.minBlock;
     }
@@ -487,10 +537,53 @@ export class ProjectCreateComponent implements OnInit {
     }
     if (numericValue !== adjustedValue) {
       this[name] = adjustedValue;
+      console.log("this[name] ", this[name])
     }
 
 
     this.calculate(null);
+  }
+  checkNumberInputNoBlock(value: number, max: number, name: string): void {
+    const numericValue = Number(value);
+    console.log("value 666", value)
+    const messageStepNotification = `Vượt quá số lượng max  ${max} `;
+    if (isNaN(numericValue)) {
+      this.notification.warning('', "Giá trị không hợp lệ");
+      return;
+    }
+    let number;
+    if (numericValue > max) {
+      this.notification.warning('', messageStepNotification);
+      number = max;
+    }
+    else {
+      number = numericValue
+    }
+    switch (name) {
+      case "ippublic":
+        this.numberIpPublic = number;
+        break;
+      case "ipfloating":
+        this.numberIpFloating = number;
+        break;
+      case "ipv6":
+        this.numberIpv6 = number;
+        break;
+      case "ram":
+        this.ram = number;
+        break;
+      case "vcpu":
+        this.vCPU = number;
+        break;
+      case "loadbalancer":
+        this.numberLoadBalancer = number;
+        break;
+
+    }
+
+
+    this.calculate(null);
+
   }
   selectPackge = '';
   vpcType = '0';
@@ -675,13 +768,12 @@ export class ProjectCreateComponent implements OnInit {
           specification: JSON.stringify(requestBody),
           specificationType: 'vpc_create',
           price: this.vpcType == '1' ? this.total?.data?.totalAmount?.amount / numOfMonth : 0,
-          serviceDuration: numOfMonth
+          serviceDuration: this.numOfMonth
         }
       ]
     };
 
     if (this.vpcType == '0') {
-      console.log("ha")
       this.orderService
         .validaterOrder(request)
         .pipe(
@@ -694,8 +786,17 @@ export class ProjectCreateComponent implements OnInit {
         .subscribe({
           next: (result) => {
             if (result.success) {
-              this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('project.action.creating'));
+              // this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('project.action.creating'));
+              // this.router.navigate(['/app-smart-cloud/project']);
+              this.vpc.createIpPublic(request).subscribe(
+                data => {
+                  this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('project.action.creating'));
                   this.router.navigate(['/app-smart-cloud/project']);
+                },
+                error => {
+                  this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('project.note51'));
+                }
+              );
             }
             else {
               this.isVisiblePopupError = true;
@@ -736,7 +837,7 @@ export class ProjectCreateComponent implements OnInit {
               localStorage.removeItem("projects");
               localStorage.removeItem("projectId");
               this.router.navigate(['/app-smart-cloud/order/cart'], { state: { data: request, path: returnPath } });
-              if(this.hasRoleSI) {
+              if (this.hasRoleSI) {
                 this.vpc.createIpPublic(request).subscribe(
                   data => {
                     this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('project.action.creating'));
@@ -1039,7 +1140,24 @@ export class ProjectCreateComponent implements OnInit {
       event.preventDefault();
     }
   }
+  checkPossiblePressNoBlock(event: KeyboardEvent, max: number) {
+    const key = event.key;
+    if (isNaN(Number(key)) && key !== 'Backspace' && key !== 'Delete' && key !== 'ArrowLeft' && key !== 'ArrowRight') {
+      event.preventDefault();
+    }
+    const input = (event.target as HTMLInputElement).value;
+    const inputNumber = Number(input + event.key);
 
+    if (inputNumber > max) {
+      event.preventDefault();
+    }
+  }
+  // calculate(value: any, max: number, inputName: string): void {
+  //   if (this[inputName] > max) {
+  //     this[inputName] = max;
+  //   }
+  //   // Perform other calculations if needed
+  // }
 
   private loadInforProjectNormal() {
     this.instancesService.getListOffers(this.regionId, 'vpc').subscribe(
@@ -1137,8 +1255,15 @@ export class ProjectCreateComponent implements OnInit {
   maxNumber: number[] = [8, 8]
 
 
-  getValues(index: number, value: number): void {
-
+  getValues(index: number, max: number, value: number): void {
+    const message = `Vượt quá số lượng max ${max}`
+    if (value > max) {
+      this.notification.warning('', message);
+      this.gpuQuotasGobal[index].GpuCount = max;
+    }
+    else {
+      this.gpuQuotasGobal[index].GpuCount = value;
+    }
     console.log("index", index)
     console.log("value", value)
     console.log("gpuQuotasGobal 123", this.gpuQuotasGobal)

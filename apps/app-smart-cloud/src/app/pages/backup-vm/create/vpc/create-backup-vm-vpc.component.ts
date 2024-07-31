@@ -192,17 +192,25 @@ export class CreateBackupVmVpcComponent implements OnInit {
 
   isLoadingInstance: boolean = false
   getListInstances() {
-    this.isLoadingInstance = true
-    this.instanceService.search(1, 9999, this.region, this.project, '', '', true, this.tokenService.get()?.userId).subscribe(data => {
-      console.log('dataa', data);
-      this.isLoadingInstance = false
-      this.listInstances = data.records;
-      this.listInstances = this.listInstances.filter(item => item.taskState === 'ACTIVE')
-      this.instanceSelected = this.listInstances[0].id
-    }, error => {
-      this.isLoadingInstance = false
-      this.notification.error(error.statusText, this.i18n.fanyi('app.failData'))
-    });
+    this.isLoadingInstance = true;
+    this.instanceService.search(1, 9999, this.region, this.project, '', '', true, this.tokenService.get()?.userId)
+      .subscribe(data => {
+        console.log('data', data);
+        this.isLoadingInstance = false;
+
+        this.listInstances = data.records;
+        this.listInstances = this.listInstances.filter(item => item.taskState === 'ACTIVE');
+        if(this.instanceIdParam == undefined || this.instanceIdParam == null) {
+          this.instanceSelected = this.listInstances[0].id;
+        } else {
+          this.instanceSelected = this.instanceIdParam
+        }
+
+        console.log('data', this.instance);
+      }, error => {
+        this.isLoadingInstance = false;
+        this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.failData'));
+      });
   }
 
   onSelectedInstance(value) {
@@ -349,14 +357,20 @@ export class CreateBackupVmVpcComponent implements OnInit {
     this.project = regionAndProject.projectId;
 
 
-    if (this.activatedRoute.snapshot.paramMap.get('instanceId') != undefined || this.activatedRoute.snapshot.paramMap.get('instanceId') != null) {
-      this.instanceIdParam = Number.parseInt(this.activatedRoute.snapshot.paramMap.get('instanceId'));
-      this.validateForm.controls.instanceId.setValue(this.instanceIdParam)
-      this.getDataByInstanceId(this.instanceIdParam);
-    } else {
-      this.instanceIdParam = null;
-      this.getListInstances();
-    }
+    this.activatedRoute.queryParams.subscribe(params => {
+      const instanceId = params['instanceId'];
+      console.log('here');
+      console.log('instance id param', instanceId);
+      if (instanceId != undefined || instanceId != null) {
+        this.instanceIdParam = Number.parseInt(instanceId);
+        console.log('volumeId', this.instanceIdParam);
+        this.getDataByInstanceId(this.instanceIdParam);
+        this.getListInstances();
+      } else {
+        this.instanceIdParam = null;
+        this.getListInstances();
+      }
+    });
 
     this.getListBackupVm();
     this.getBackupPackage();

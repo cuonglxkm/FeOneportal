@@ -662,6 +662,7 @@
   "app.note.static.web.hosting": "Lưu ý: Để website hoạt động hãy đảm bảo file đã được public",
   "app.label.static.web.hosting": "Chuyển hướng đến một địa chỉ web khác",
   "app.label.static.web.hosting.error1": "Địa chỉ web không đúng định dạng",
+  "app.label.static.web.hosting.error2": "Địa chỉ web không được để trống",
   "app.static.web.hosting": "Chuyển hướng đến một địa chỉ web khác",
   "app.static.web.hosting.create.success": "Chỉnh sửa Static Web Hosting thành công",
   "app.static.web.hosting.create.fail": "Chỉnh sửa Static Web Hosting không thành công",
@@ -930,7 +931,7 @@
   "app.alert.create.load.balancer.vpc": "- Khi tạo xong Load Balancer, gói dịch vụ của Load Balancer sẽ không thể thay đổi tại đây.<br> - Muốn thay đổi gói dịch vụ của Load Balancer vui lòng vào quản lý VPC để điều chỉnh.",
   "app.title.delete.l7.policy": "Xóa L7 Policy {{name}}",
   "app.note.delete.l7.policy": "Để thực hiện xóa L7 Policy {{name}}, vui lòng nhập tên L7 Policy để xác nhận",
-  "app.alert.delete.l7.policy": "Bạn đang thực hiện xóa L7 Policy",
+  "app.alert.delete.l7.policy": "Để thực hiện xóa L7 Policy {{name}}, vui lòng nhập tên L7 Policy để xác nhận",
   "app.note.l7.policy.empty": "Quý khách chưa có L7 Policy nào!",
   "app.can.create": "Quý khách có thể khởi tạo",
   "app.alert.delete.l7.rule": "Bạn đang thực hiện xóa L7 Rule",
@@ -3297,6 +3298,7 @@
   "schedule.backup.vm.backup.volume.mode.date.tooltip": "Ngày thực hiện Backup trong tháng",
   "schedule.backup.vm.backup.volume.mode.day.tooltip": "Ngày thực hiện Backup trong tuần",
   "schedule.backup.vm.backup.volume.mode.week.tooltip": "Số tuần/lần thực hiện Backup",
+  "schedule.backup.block.create": "Dịch vụ đã được lập lịch",
 
 
   "listner.create.duplicate.port.weight": "Các member có cùng IP không được trùng Port và Weight",

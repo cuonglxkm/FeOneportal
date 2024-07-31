@@ -503,6 +503,7 @@ export class OfferItem {
   description: string;
   ipNumber: string;
   numberDomain?:number
+  config?:string
 }
 
 export class Price {

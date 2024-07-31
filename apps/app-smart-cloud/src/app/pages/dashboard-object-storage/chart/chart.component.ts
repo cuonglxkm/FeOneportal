@@ -25,6 +25,8 @@ export class DataChart {
 })
 export class ChartComponent implements AfterViewInit, OnInit {
   @Input() summary: Summary[];
+  @Input() timeSelected: any;
+
   newDate: Date = new Date();
   @ViewChild('chartStorageUse') chartStorageUse!: ElementRef;
   @ViewChild('storageUse') storageUse!: ElementRef;
@@ -533,8 +535,34 @@ export class ChartComponent implements AfterViewInit, OnInit {
     const hours = String(date.getHours()).padStart(2, '0');
     const minutes = String(date.getMinutes()).padStart(2, '0');
     const seconds = String(date.getSeconds()).padStart(2, '0');
+    let returnLabel = ''
+    switch(this.timeSelected){
+      case 5:
+        returnLabel = `${hours}:${minutes}`
+        break;
+      case 15:
+        returnLabel = `${hours}:${minutes}`
+        break;
+      case 60:
+        returnLabel = `${hours}:${minutes}`
+        break;
+      case 1440:
+        returnLabel = `${hours}:00`
+        break;
+      case 10080:
+        returnLabel = `${day}/${month}/${year}`
+        break;
+      case 43200:
+        returnLabel = `${day}/${month}/${year}`
+        break;
+      case 129600:
+        returnLabel = `${day}/${month}/${year}`
+        break;
+      default: 
+        returnLabel = `${hours}:${minutes}`
+    }
 
-    return `${hours}:${minutes}`;
+    return returnLabel;
   }
 
   ngAfterViewInit(): void {

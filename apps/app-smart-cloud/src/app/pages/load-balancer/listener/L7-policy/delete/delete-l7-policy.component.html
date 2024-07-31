@@ -10,7 +10,7 @@
   <div *nzModalContent>
     <nz-alert nzBanner
               nzShowIcon
-              [nzDescription]="'app.alert.delete.l7.policy' | i18n">
+              [nzDescription]="'app.alert.delete.l7.policy' | i18n: {name: L7Name}">
     </nz-alert>
     <div style="margin-top: 10px;">
       <span class="text-label">{{ 'app.alert.delete.l7.policy' | i18n: {name: L7Name} }}</span>
@@ -20,7 +20,7 @@
              [ngModel]="value"
              (keydown.enter)="focusOkButton($event)"
              (ngModelChange)="onInput($event)"
-             [placeholder]="'app.input.name' | i18n"/>
+             [placeholder]="('app.input.name' | i18n) + 'L7 Policy'"/>
       <span *ngIf="isInput" style="color: red;">{{ 'validation.correct.l7.policy.name' | i18n }}</span>
     </div>
   </div>

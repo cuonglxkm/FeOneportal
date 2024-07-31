@@ -1,10 +1,4 @@
-import {
-  ChangeDetectorRef,
-  Component,
-  Inject,
-  OnInit,
-  ViewChild,
-} from '@angular/core';
+import { ChangeDetectorRef, Component, Inject, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { finalize } from 'rxjs/operators';
 import { InstancesService } from '../instances.service';
@@ -15,28 +9,24 @@ import {
   InstancesModel,
   Network,
   UpdateInstances,
-  VlanSubnet,
+  VlanSubnet
 } from '../instances.model';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { getCurrentRegionAndProject } from '@shared';
-import {
-  NotificationService,
-  ProjectModel,
-  RegionModel,
-} from '../../../../../../../libs/common-utils/src';
+import { NotificationService, ProjectModel, RegionModel } from '../../../../../../../libs/common-utils/src';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { Subject, debounceTime, Subscription } from 'rxjs';
-import {
-  FormSearchNetwork,
-  NetWorkModel,
-  Port,
-} from 'src/app/shared/models/vlan.model';
+import { debounceTime, Subject, Subscription } from 'rxjs';
+import { FormSearchNetwork, NetWorkModel, Port } from 'src/app/shared/models/vlan.model';
 import { VlanService } from 'src/app/shared/services/vlan.service';
 import { I18NService } from '@core';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
-import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
+import {
+  ProjectSelectDropdownComponent
+} from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
 import { CatalogService } from 'src/app/shared/services/catalog.service';
+import { BackupSchedule, FormSearchScheduleBackup } from '../../../shared/models/schedule.model';
+import { ScheduleService } from '../../../shared/services/schedule.service';
 
 class SearchParam {
   status: string = '';
@@ -46,7 +36,7 @@ class SearchParam {
 @Component({
   selector: 'one-portal-instances',
   templateUrl: './instances.component.html',
-  styleUrls: ['./instances.component.less'],
+  styleUrls: ['./instances.component.less']
 })
 export class InstancesComponent implements OnInit {
   searchParam: SearchParam = new SearchParam();
@@ -60,7 +50,7 @@ export class InstancesComponent implements OnInit {
   filterStatus = [
     { text: this.i18n.fanyi('app.status.all'), value: '' },
     { text: this.i18n.fanyi('app.status.running'), value: 'KHOITAO' },
-    { text: this.i18n.fanyi('app.status.suspended'), value: 'TAMNGUNG' },
+    { text: this.i18n.fanyi('app.status.suspended'), value: 'TAMNGUNG' }
   ];
 
   listIPAddressOnVLAN: [{ id: ''; text: 'Chọn địa chỉ IP' }];
@@ -84,8 +74,10 @@ export class InstancesComponent implements OnInit {
     private router: Router,
     private notification: NzNotificationService,
     private notificationService: NotificationService,
-    private vlanService: VlanService
-  ) {}
+    private vlanService: VlanService,
+    private backupScheduleService: ScheduleService
+  ) {
+  }
 
   ngOnInit() {
     let regionAndProject = getCurrentRegionAndProject();
@@ -159,6 +151,7 @@ export class InstancesComponent implements OnInit {
   isVolumeSnapshotHdd: boolean = false;
   isVolumeSnapshotSsd: boolean = false;
   isBackupVm: boolean = false;
+
   getActiveServiceByRegion() {
     this.catalogService
       .getActiveServiceByRegion(
@@ -192,6 +185,7 @@ export class InstancesComponent implements OnInit {
   dataSubjectSearchParam: Subject<any> = new Subject<any>();
   private searchSubscription: Subscription;
   private enterPressed: boolean = false;
+
   changeSearchParam(value: string) {
     this.enterPressed = false;
     this.dataSubjectSearchParam.next(value);
@@ -218,16 +212,18 @@ export class InstancesComponent implements OnInit {
       this.searchSubscription.unsubscribe();
     }
   }
+
   //#endregion
 
   isFirstVisit: boolean = true;
+
   onRegionChange(region: RegionModel) {
     // Handle the region change event
     this.isFirstVisit = false;
     this.activeCreate = false;
     this.loading = true;
     this.region = region?.regionId;
-    if(this.projectCombobox){
+    if (this.projectCombobox) {
       this.projectCombobox.loadProjects(true, region.regionId);
     }
     console.log(this.tokenService.get()?.userId);
@@ -273,7 +269,7 @@ export class InstancesComponent implements OnInit {
               e.statusText,
               this.i18n.fanyi('app.notify.get.list.instance')
             );
-          },
+          }
         });
     }
   }
@@ -317,7 +313,7 @@ export class InstancesComponent implements OnInit {
               e.statusText,
               this.i18n.fanyi('app.notify.get.list.instance')
             );
-          },
+          }
         });
     }
   }
@@ -341,6 +337,7 @@ export class InstancesComponent implements OnInit {
   listVlanNetwork: NetWorkModel[] = [];
   vlanCloudId: string;
   isLoadingNetwork: boolean = true;
+
   getListNetwork(): void {
     this.isLoadingNetwork = true;
     let formSearchNetwork: FormSearchNetwork = new FormSearchNetwork();
@@ -364,6 +361,7 @@ export class InstancesComponent implements OnInit {
 
   listPort: Port[] = [];
   portLoading: boolean;
+
   getListPort(networkCloudId: string) {
     this.portLoading = true;
     this.listPort = [];
@@ -382,7 +380,7 @@ export class InstancesComponent implements OnInit {
             e.statusText,
             this.i18n.fanyi('app.notify.get.list.port')
           );
-        },
+        }
       });
   }
 
@@ -395,6 +393,7 @@ export class InstancesComponent implements OnInit {
   listSubnet: VlanSubnet[] = [];
   listSubnetStr: string = '';
   loadingSubnet: boolean = false;
+
   getVlanSubnets(networkCloudId: string): void {
     this.listSubnet = [];
     this.listSubnetStr = '';
@@ -419,12 +418,13 @@ export class InstancesComponent implements OnInit {
             e.statusText,
             this.i18n.fanyi('router.nofitacation.subnet.fail')
           );
-        },
+        }
       });
   }
 
   instanceAction: InstanceAction = new InstanceAction();
   isChoosePort: boolean = true;
+
   showHandleGanVLAN(id: number) {
     this.isChoosePort = true;
     this.instanceAction = new InstanceAction();
@@ -455,7 +455,7 @@ export class InstancesComponent implements OnInit {
           e.statusText,
           this.i18n.fanyi('app.notify.attach.vlan.fail')
         );
-      },
+      }
     });
   }
 
@@ -466,7 +466,7 @@ export class InstancesComponent implements OnInit {
     this.router.navigate(
       [`/app-smart-cloud/vlan/network/detail/${selectedVlan[0].id}`],
       {
-        state: { selectedIndextab: 1 },
+        state: { selectedIndextab: 1 }
       }
     );
   }
@@ -480,6 +480,7 @@ export class InstancesComponent implements OnInit {
   invalidIPAddress: string;
   checkIPAddressModel: CheckIPAddressModel = new CheckIPAddressModel();
   dataSubjectGateway: Subject<any> = new Subject<any>();
+
   inputIPAddress(value) {
     this.dataSubjectGateway.next(value);
   }
@@ -520,15 +521,17 @@ export class InstancesComponent implements OnInit {
                   'validation.ip.address.pattern'
                 );
               }
-            },
+            }
           });
       }
     });
   }
+
   //#endregion
 
   //#region Gỡ khỏi Vlan
   listOfPrivateNetwork: Network[];
+
   getListIpPrivate(id: number) {
     this.dataService
       .getPortByInstance(id, this.region)
@@ -571,23 +574,26 @@ export class InstancesComponent implements OnInit {
           e.statusText,
           this.i18n.fanyi('app.notify.detach.vlan.fail')
         );
-      },
+      }
     });
   }
+
   //#endregion
 
   //#region Tắt máy ảo
   isVisibleShutdown: boolean = false;
   instanceControlId: number = 0;
+
   showModalShutdown(id: number) {
     this.isVisibleShutdown = true;
     this.instanceControlId = id;
   }
+
   handleOkShutdown() {
     this.isVisibleShutdown = false;
     var body = {
       command: 'shutdown',
-      id: this.instanceControlId,
+      id: this.instanceControlId
     };
     this.dataService.postAction(body).subscribe({
       next: (data: any) => {
@@ -604,25 +610,29 @@ export class InstancesComponent implements OnInit {
           e.statusText,
           this.i18n.fanyi('app.notify.request.shutdown.instances.fail')
         );
-      },
+      }
     });
   }
+
   handleCancelShutdown() {
     this.isVisibleShutdown = false;
   }
+
   //#endregion
 
   //#region Bật máy ảo
   isVisibleStart: boolean = false;
+
   showModalStart(id: number) {
     this.isVisibleStart = true;
     this.instanceControlId = id;
   }
+
   handleOkStart() {
     this.isVisibleStart = false;
     var body = {
       command: 'start',
-      id: this.instanceControlId,
+      id: this.instanceControlId
     };
     this.dataService.postAction(body).subscribe({
       next: (data: any) => {
@@ -639,25 +649,29 @@ export class InstancesComponent implements OnInit {
           e.statusText,
           this.i18n.fanyi('app.notify.request.start.instances.fail')
         );
-      },
+      }
     });
   }
+
   handleCancelStart() {
     this.isVisibleStart = false;
   }
+
   //#endregion
 
   //#region Khởi động lại máy ảo
   isVisibleRestart: boolean = false;
+
   showModalRestart(id: number) {
     this.isVisibleRestart = true;
     this.instanceControlId = id;
   }
+
   handleOkRestart() {
     this.isVisibleRestart = false;
     var body = {
       command: 'restart',
-      id: this.instanceControlId,
+      id: this.instanceControlId
     };
     this.dataService.postAction(body).subscribe({
       next: (data) => {
@@ -674,25 +688,29 @@ export class InstancesComponent implements OnInit {
           '',
           this.i18n.fanyi('app.notify.request.reboot.instances.fail')
         );
-      },
+      }
     });
   }
+
   handleCancelRestart() {
     this.isVisibleRestart = false;
   }
+
   //#endregion
 
   //#region Rescuse, UnRescue
   isVisibleRescue: boolean = false;
+
   showModalRescue(id: number) {
     this.isVisibleRescue = true;
     this.instanceControlId = id;
   }
+
   handleOkRescue() {
     this.isVisibleRescue = false;
     var body = {
       command: 'rescue',
-      id: this.instanceControlId,
+      id: this.instanceControlId
     };
     this.dataService.postAction(body).subscribe({
       next: (data) => {
@@ -709,23 +727,26 @@ export class InstancesComponent implements OnInit {
           e.statusText,
           this.i18n.fanyi('app.notify.rescue.instances.fail')
         );
-      },
+      }
     });
   }
+
   handleCancelRescue() {
     this.isVisibleRescue = false;
   }
 
   isVisibleUnRescue: boolean = false;
+
   showModalUnRescue(id: number) {
     this.isVisibleUnRescue = true;
     this.instanceControlId = id;
   }
+
   handleOkUnRescue() {
     this.isVisibleUnRescue = false;
     var body = {
       command: 'unrescue',
-      id: this.instanceControlId,
+      id: this.instanceControlId
     };
     this.dataService.postAction(body).subscribe({
       next: (data) => {
@@ -742,27 +763,30 @@ export class InstancesComponent implements OnInit {
           e.statusText,
           this.i18n.fanyi('app.notify.unrescue.instances.fail')
         );
-      },
+      }
     });
   }
+
   handleCancelUnRescue() {
     this.isVisibleUnRescue = false;
   }
+
   //#endregion
 
   //#region Chỉnh sửa tên máy ảo
   form = new FormGroup({
     name: new FormControl('', {
       nonNullable: true,
-      validators: [Validators.required, Validators.pattern(/^[a-zA-Z0-9_]*$/)],
-    }),
+      validators: [Validators.required, Validators.pattern(/^[a-zA-Z0-9_]*$/)]
+    })
   });
   updateInstances: UpdateInstances = new UpdateInstances();
   isVisibleEdit = false;
   instanceEdit: Instance;
+
   modalEdit(data: Instance) {
     this.instanceEdit = data;
-    this.isVisibleEdit = true
+    this.isVisibleEdit = true;
     this.updateInstances.name = data.name;
     this.updateInstances.customerId = this.userId;
     this.updateInstances.id = data.id;
@@ -774,11 +798,13 @@ export class InstancesComponent implements OnInit {
 
   //Kiểm tra trùng tên máy ảo
   dataSubjectName: Subject<any> = new Subject<any>();
+
   changeName(value: number) {
     this.dataSubjectName.next(value);
   }
 
   isExistName: boolean = false;
+
   checkExistName() {
     this.dataSubjectName
       .pipe(
@@ -818,9 +844,10 @@ export class InstancesComponent implements OnInit {
           e.statusText,
           this.i18n.fanyi('app.notify.edit.instances.fail')
         );
-      },
+      }
     });
   }
+
   //#endregion
 
   openConsole(id: number): void {
@@ -828,8 +855,8 @@ export class InstancesComponent implements OnInit {
       '/app-smart-cloud/instances/instances-console/' + id,
       {
         state: {
-          vmId: id,
-        },
+          vmId: id
+        }
       }
     );
   }
@@ -848,21 +875,67 @@ export class InstancesComponent implements OnInit {
     if (this.typeVpc == 1) {
       this.router.navigate([
         '/app-smart-cloud/backup-vm/create/vpc',
-        { instanceId: id },
+        { instanceId: id }
       ]);
     } else {
       this.router.navigate([
         '/app-smart-cloud/backup-vm/create/no-vpc',
-        { instanceId: id },
+        { instanceId: id }
       ]);
     }
   }
 
   createBackupSchedule(id: number) {
-    this.router.navigate([
-      '/app-smart-cloud/schedule/backup/create',
-      { instanceId: id },
-    ]);
+    this.getListScheduleBackup(id);
+  }
+
+  isLoading = false;
+  listScheduleBackup: BackupSchedule[] = [];
+
+  getListScheduleBackup(id) {
+    this.isLoading = true;
+    let formSearch = new FormSearchScheduleBackup();
+    formSearch.customerId = this.tokenService.get()?.userId;
+    formSearch.scheduleName = '';
+    formSearch.scheduleStatus = 'ACTIVE';
+    formSearch.regionId = this.region;
+    formSearch.projectId = this.projectId;
+    formSearch.serviceType = 1;
+    formSearch.pageSize = 99999;
+    formSearch.pageIndex = 1;
+    formSearch.serviceId = id
+    this.backupScheduleService.search(formSearch).subscribe(data => {
+      this.isLoading = false;
+      this.listScheduleBackup = data?.records;
+      this.listScheduleBackup.forEach(item => {
+        if (this.typeVpc == 1) {
+
+          if (item.serviceId == id) {
+            this.notification.warning('', this.i18n.fanyi('schedule.backup.block.create'));
+          } else {
+            this.router.navigate([
+              '/app-smart-cloud/schedule/backup/create/vpc',
+              { type: 'INSTANCE', instanceId: id }
+            ]);
+          }
+        } else {
+          if (item.serviceId == id) {
+            this.notification.warning('', this.i18n.fanyi('schedule.backup.block.create'));
+          } else {
+            this.router.navigate([
+              '/app-smart-cloud/schedule/backup/create',
+              { type: 'INSTANCE', instanceId: id }
+            ]);
+          }
+
+        }
+
+      });
+    }, error => {
+      this.isLoading = false;
+      this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.failData'));
+    });
+
   }
 
   createSnapshot(id: number) {
@@ -873,6 +946,7 @@ export class InstancesComponent implements OnInit {
   }
 
   instancesModel: InstancesModel = new InstancesModel();
+
   detailConfigPackage(id: number) {
     this.instancesModel = new InstancesModel();
     this.dataService.getById(id, true).subscribe({
@@ -885,7 +959,7 @@ export class InstancesComponent implements OnInit {
           '',
           this.i18n.fanyi('app.notify.get.service.package.fail')
         );
-      },
+      }
     });
   }
 

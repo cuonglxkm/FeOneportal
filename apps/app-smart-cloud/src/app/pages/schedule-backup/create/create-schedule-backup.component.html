@@ -98,7 +98,9 @@
                                  [nzLoading]="isLoadingInstance"
                                  [(ngModel)]="instanceSelected"
                                  (ngModelChange)="selectInstanceChange($event)">
-                        <nz-option [nzValue]="instanceId" [nzLabel]="instanceName"></nz-option>
+                        <nz-option *ngFor="let i of listInstanceNotUse"
+                                   [nzLabel]="i.name"
+                                   [nzValue]="i.id"></nz-option>
                       </nz-select>
                       <nz-select *ngIf="instanceId == null"
                                  formControlName="instanceId"
@@ -569,8 +571,20 @@
                              src="assets/imgs/pajamas_question.svg" alt="" />
                       </div>
                     </nz-form-label>
-                    <nz-form-control nzDisableAutoTips [nzErrorTip]="volumeErrorTpl">
-                      <nz-select formControlName="volumeId"
+                    <nz-form-control nzDisableAutoTips [nzErrorTip]="instanceErrorTpl">
+                      <nz-select *ngIf="volumeId != undefined"
+                                 formControlName="volumeId"
+                                 [nzSize]="'large'"
+                                 nzPlaceHolder="{{'schedule.backup.volume.select' | i18n}}"
+                                 [nzShowSearch]="false"
+                                 [nzLoading]="isLoadingVolume"
+                                 [(ngModel)]="volumeSelected"
+                                 (ngModelChange)="selectVolumeChange($event)">
+                        <nz-option *ngFor="let i of listVolumeNotUseUnique"
+                                   [nzLabel]="i.name"
+                                   [nzValue]="i.id"></nz-option>
+                      </nz-select>
+                      <nz-select *ngIf="volumeId == undefined" formControlName="volumeId"
                                  nzSize="large"
                                  nzPlaceHolder="{{'schedule.backup.volume.select' | i18n}}"
                                  [nzShowSearch]="false"
@@ -581,7 +595,7 @@
                                    [nzLabel]="i.name"
                                    [nzValue]="i.id"></nz-option>
                       </nz-select>
-                      <ng-template #volumeErrorTpl let-control>
+                      <ng-template #instanceErrorTpl let-control>
                         <ng-container *ngIf="control.hasError('required')">{{ 'validation.info.required' | i18n }}
                         </ng-container>
                       </ng-template>

@@ -39,8 +39,7 @@ export class CreateSubUserComponent implements OnInit{
     name: ['', [Validators.required,
       Validators.pattern(/^[a-zA-Z0-9\-]+$/),
       this.duplicateNameValidator.bind(this),
-      Validators.maxLength(50),
-      Validators.minLength(3)]],
+      Validators.maxLength(50)]],
     access: ['full', [Validators.required]]
   })
 

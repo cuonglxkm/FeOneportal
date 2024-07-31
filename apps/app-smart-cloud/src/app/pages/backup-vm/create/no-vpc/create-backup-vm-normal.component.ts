@@ -24,14 +24,16 @@ import { VolumeDTO } from '../../../../shared/dto/volume.dto';
 import { CatalogService } from '../../../../shared/services/catalog.service';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from '@core';
-import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
+import {
+  ProjectSelectDropdownComponent
+} from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
 
 @Component({
   selector: 'one-portal-create-backup-vm-normal',
   templateUrl: './create-backup-vm-normal.component.html',
   styleUrls: ['./create-backup-vm-normal.component.less']
 })
-export class CreateBackupVmNormalComponent implements OnInit{
+export class CreateBackupVmNormalComponent implements OnInit {
   region = JSON.parse(localStorage.getItem('regionId'));
   project = JSON.parse(localStorage.getItem('projectId'));
 
@@ -45,7 +47,7 @@ export class CreateBackupVmNormalComponent implements OnInit{
   isLoading: boolean = true;
 
   securityGroups: SecurityGroup[] = [];
-  securityGroupSelected = []
+  securityGroupSelected = [];
   volumeAttachments: VolumeAttachment[] = [];
   backupPackages: PackageBackupModel[] = [];
   backupPackageDetail: PackageBackupModel;
@@ -111,11 +113,12 @@ export class CreateBackupVmNormalComponent implements OnInit{
 
   regionChanged(region: RegionModel) {
     this.region = region.regionId;
-    if(this.projectCombobox){
+    if (this.projectCombobox) {
       this.projectCombobox.loadProjects(true, region.regionId);
     }
     this.router.navigate(['/app-smart-cloud/backup-vm']);
   }
+
   onRegionChanged(region: RegionModel) {
     this.region = region.regionId;
   }
@@ -153,9 +156,9 @@ export class CreateBackupVmNormalComponent implements OnInit{
       this.volumeAttachments = data;
       this.isLoading = false;
       console.log('volume attach', this.volumeAttachments);
-    }, error =>  {
-      this.isLoading = false
-      this.volumeAttachments = []
+    }, error => {
+      this.isLoading = false;
+      this.volumeAttachments = [];
     });
   }
 
@@ -166,48 +169,54 @@ export class CreateBackupVmNormalComponent implements OnInit{
       this.isLoading = true;
       this.instanceService.getAllSecurityGroupByInstance(this.instance.cloudId, this.instance.regionId,
         this.instance.customerId, this.instance.projectId).subscribe(data => {
-          this.securityGroups = data;
+        this.securityGroups = data;
         // this.securityGroups = data;
         this.securityGroups.forEach(item => {
-          if(item.name.toUpperCase() === 'DEFAULT') {
-            this.securityGroupSelected?.push(item.id)
+          if (item.name.toUpperCase() === 'DEFAULT') {
+            this.securityGroupSelected?.push(item.id);
           }
-        })
+        });
         console.log('sg sag', this.securityGroups);
         console.log('sg', this.securityGroupSelected);
       }, error => {
-        this.isLoading = false
-        this.securityGroups = []
+        this.isLoading = false;
+        this.securityGroups = [];
       });
       this.getVolumeInstanceAttachment(this.instance.id);
     });
   }
 
-  isLoadingInstance: boolean = false
+  isLoadingInstance: boolean = false;
+
   getListInstances() {
-    this.isLoadingInstance = true
+    this.isLoadingInstance = true;
     this.instanceService.search(1, 9999, this.region, this.project, '', '', true, this.tokenService.get()?.userId)
       .subscribe(data => {
-      console.log('data', data);
-      this.isLoadingInstance = false
+        console.log('data', data);
+        this.isLoadingInstance = false;
 
-      this.listInstances = data.records;
-      this.listInstances = this.listInstances.filter(item => item.taskState === 'ACTIVE')
-      this.instanceSelected = this.listInstances[0].id
-      console.log('data', this.instance);
-    }, error => {
-        this.isLoadingInstance = false
-        this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.failData'))
+        this.listInstances = data.records;
+        this.listInstances = this.listInstances.filter(item => item.taskState === 'ACTIVE');
+        if(this.instanceIdParam == undefined || this.instanceIdParam == null) {
+          this.instanceSelected = this.listInstances[0].id;
+        } else {
+          this.instanceSelected = this.instanceIdParam
+        }
+
+        console.log('data', this.instance);
+      }, error => {
+        this.isLoadingInstance = false;
+        this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.failData'));
       });
   }
 
   onSelectedInstance(value) {
     console.log('selected', value);
-    this.instanceSelected = value
+    this.instanceSelected = value;
     this.validateForm.controls.volumeToBackupIds.reset();
     this.validateForm.controls.securityGroupToBackupIds.reset();
-    if(this.instanceSelected != undefined) {
-      this.getDataByInstanceId(this.instanceSelected)
+    if (this.instanceSelected != undefined) {
+      this.getDataByInstanceId(this.instanceSelected);
     }
   }
 
@@ -216,20 +225,20 @@ export class CreateBackupVmNormalComponent implements OnInit{
     this.backupPackageService.search(null, null, this.project, this.region, 9999, 1).subscribe(data => {
       this.isLoading = false;
       data.records.forEach(item => {
-        if(['ACTIVE', 'AVAILABLE'].includes(item.status)) {
-          this.backupPackages?.push(item)
+        if (['ACTIVE', 'AVAILABLE'].includes(item.status)) {
+          this.backupPackages?.push(item);
         }
-      })
+      });
       console.log('backup package', this.backupPackages);
       this.validateForm.controls.backupPacketId.setValue(this.backupPackages[0]?.id);
     }, error => {
-      this.isLoading = false
-      this.backupPackages = []
+      this.isLoading = false;
+      this.backupPackages = [];
     });
   }
 
   onChangeBackupPackage(value) {
-    if(value != undefined) {
+    if (value != undefined) {
       this.backupPackageService.detail(value, this.project).subscribe(data => {
         this.backupPackageDetail = data;
       });
@@ -275,38 +284,38 @@ export class CreateBackupVmNormalComponent implements OnInit{
       createBackupVmSpecification.instanceId = this.validateForm.controls.instanceId.value;
       createBackupVmSpecification.backupInstanceOfferId = 0; // dùng để tính giá về sau
       createBackupVmSpecification.volumeToBackupIds = this.validateForm.controls.volumeToBackupIds.value;
-      createBackupVmSpecification.securityGroupToBackupIds = this.securityGroupSelected
+      createBackupVmSpecification.securityGroupToBackupIds = this.securityGroupSelected;
       createBackupVmSpecification.description = this.validateForm.controls.description.value.trimStart().trimEnd();
       createBackupVmSpecification.backupPackageId = this.validateForm.controls.backupPacketId.value;
       createBackupVmSpecification.customerId = this.tokenService.get()?.userId;
       createBackupVmSpecification.actorEmail = this.tokenService.get()?.email;
       createBackupVmSpecification.userEmail = this.tokenService.get()?.email;
       createBackupVmSpecification.vpcId = this.project;
-      createBackupVmSpecification.projectId = this.project
+      createBackupVmSpecification.projectId = this.project;
       createBackupVmSpecification.regionId = this.region;
       createBackupVmSpecification.serviceName = this.validateForm.controls.backupName.value.trimStart().trimEnd();
       createBackupVmSpecification.serviceType = 9; // 9 là backup_vm
       createBackupVmSpecification.actionType = 0; // 0 là create
       createBackupVmSpecification.serviceInstanceId = 0;
-      createBackupVmSpecification.createDateInContract = null
-      createBackupVmSpecification.saleDept = null
-      createBackupVmSpecification.saleDeptCode = null
-      createBackupVmSpecification.contactPersonEmail = null
-      createBackupVmSpecification.contactPersonPhone = null
-      createBackupVmSpecification.contactPersonName = null
-      createBackupVmSpecification.am = null
-      createBackupVmSpecification.amManager = null
-      createBackupVmSpecification.note = null
-      createBackupVmSpecification.isTrial = false
-      createBackupVmSpecification.offerId = 0
-      createBackupVmSpecification.couponCode = null
-      createBackupVmSpecification.dhsxkd_SubscriptionId = null
-      createBackupVmSpecification.dSubscriptionNumber = null
-      createBackupVmSpecification.dSubscriptionType = null
-      createBackupVmSpecification.oneSMEAddonId = null
-      createBackupVmSpecification.oneSME_SubscriptionId = null
-      createBackupVmSpecification.isSendMail = true
-      createBackupVmSpecification.typeName = "SharedKernel.IntegrationEvents.Orders.Specifications.InstanceBackupCreateSpecification,SharedKernel.IntegrationEvents, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null"
+      createBackupVmSpecification.createDateInContract = null;
+      createBackupVmSpecification.saleDept = null;
+      createBackupVmSpecification.saleDeptCode = null;
+      createBackupVmSpecification.contactPersonEmail = null;
+      createBackupVmSpecification.contactPersonPhone = null;
+      createBackupVmSpecification.contactPersonName = null;
+      createBackupVmSpecification.am = null;
+      createBackupVmSpecification.amManager = null;
+      createBackupVmSpecification.note = null;
+      createBackupVmSpecification.isTrial = false;
+      createBackupVmSpecification.offerId = 0;
+      createBackupVmSpecification.couponCode = null;
+      createBackupVmSpecification.dhsxkd_SubscriptionId = null;
+      createBackupVmSpecification.dSubscriptionNumber = null;
+      createBackupVmSpecification.dSubscriptionType = null;
+      createBackupVmSpecification.oneSMEAddonId = null;
+      createBackupVmSpecification.oneSME_SubscriptionId = null;
+      createBackupVmSpecification.isSendMail = true;
+      createBackupVmSpecification.typeName = 'SharedKernel.IntegrationEvents.Orders.Specifications.InstanceBackupCreateSpecification,SharedKernel.IntegrationEvents, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null';
 
       console.log(createBackupVmSpecification);
 
@@ -348,15 +357,21 @@ export class CreateBackupVmNormalComponent implements OnInit{
     this.region = regionAndProject.regionId;
     this.project = regionAndProject.projectId;
 
-  console.log('detail', this.backupPackageDetail)
-    if (this.activatedRoute.snapshot.paramMap.get('instanceId') != undefined || this.activatedRoute.snapshot.paramMap.get('instanceId') != null) {
-      this.instanceIdParam = Number.parseInt(this.activatedRoute.snapshot.paramMap.get('instanceId'));
-      this.validateForm.controls.instanceId.setValue(this.instanceIdParam)
-      this.getDataByInstanceId(this.instanceIdParam);
-    } else {
-      this.instanceIdParam = null;
-      this.getListInstances();
-    }
+    console.log('detail', this.backupPackageDetail);
+    this.activatedRoute.queryParams.subscribe(params => {
+      const instanceId = params['instanceId'];
+      console.log('here');
+      console.log('instance id param', instanceId);
+      if (instanceId != undefined || instanceId != null) {
+        this.instanceIdParam = Number.parseInt(instanceId);
+        console.log('volumeId', this.instanceIdParam);
+        this.getDataByInstanceId(this.instanceIdParam);
+        this.getListInstances();
+      } else {
+        this.instanceIdParam = null;
+        this.getListInstances();
+      }
+    });
 
     this.getListBackupVm();
     this.getBackupPackage();

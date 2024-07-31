@@ -86,6 +86,11 @@ export class DashboardObjectStorageComponent implements OnInit {
 
   onRegionChange(region: RegionModel) {
     this.region = region.regionId;
+    if(this.region === RegionID.ADVANCE){
+      this.router.navigate(['/app-smart-cloud/object-storage-advance/dashboard']);
+    }else{
+      this.router.navigate(['/app-smart-cloud/object-storage/dashboard']);
+    }
   }
 
   onRegionChanged(region: RegionModel) {

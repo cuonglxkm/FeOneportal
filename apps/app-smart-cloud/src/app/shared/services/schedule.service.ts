@@ -26,27 +26,35 @@ export class ScheduleService extends BaseService {
 
   search(formSearch: FormSearchScheduleBackup) {
     let params = new HttpParams()
-    if(formSearch.scheduleName !== undefined || formSearch.scheduleName !== null || formSearch.scheduleName !== '') {
+    if(formSearch.scheduleName != undefined || formSearch.scheduleName != null || formSearch.scheduleName != '') {
       params = params.append('scheduleName', formSearch.scheduleName)
+    } else {
+      params = params.append('scheduleName', '');
     }
-    if(formSearch.regionId !== undefined) {
+    if(formSearch.regionId != undefined) {
       params = params.append('regionId', formSearch.regionId)
     }
-    if(formSearch.projectId !== undefined) {
+    if(formSearch.projectId != undefined) {
       params = params.append('projectId', formSearch.projectId)
     }
-    if(formSearch.pageSize !== undefined) {
+    if(formSearch.pageSize != undefined) {
       params = params.append('pageSize', formSearch.pageSize)
     } else {
       params = params.append('pageSize', 10)
     }
-    if(formSearch.pageIndex !== undefined) {
+    if(formSearch.pageIndex != undefined) {
       params = params.append('currentPage', formSearch.pageIndex)
     } else {
       params = params.append('currentPage', 1)
     }
-    if(formSearch.scheduleStatus !== undefined || formSearch.scheduleName !== null || formSearch.scheduleName !== '') {
+    if(formSearch.scheduleStatus != undefined || formSearch.scheduleName != null || formSearch.scheduleName != '') {
       params = params.append('scheduleStatus', formSearch.scheduleStatus)
+    } else {
+      params = params.append('scheduleStatus', '');
+    }
+
+    if(formSearch.serviceId != undefined || formSearch.serviceId != null) {
+      params = params.append('serviceId', formSearch.serviceId)
     }
     return this.http.get<BaseResponse<BackupSchedule[]>>(this.baseUrl + this.ENDPOINT.provisions + '/backups/schedules', {
       params: params,

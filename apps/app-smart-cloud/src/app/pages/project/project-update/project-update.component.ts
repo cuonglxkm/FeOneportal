@@ -222,14 +222,14 @@ export class ProjectUpdateComponent implements OnInit {
   typeFile_storage_snapshot: boolean;
   typeVpns2s: boolean;
   typeVm_gpu: boolean;
-  isChangegpu : boolean = false;
+  isChangegpu: boolean = false;
 
   isShowAlertGpu: boolean;
   keySSD: boolean;
-  loadBalancerPrice!:any;
-  loadBalancerLowerPrices!:any;
-  sitetositePrice!:any;
-  listSiteToSitePrice!:any;
+  loadBalancerPrice!: any;
+  loadBalancerLowerPrices!: any;
+  sitetositePrice!: any;
+  listSiteToSitePrice!: any;
 
   form = new FormGroup({
     name: new FormControl({ value: 'loading data....', disabled: false }, { validators: [Validators.required, Validators.pattern(/^[A-Za-z0-9]+$/),] }),
@@ -244,6 +244,8 @@ export class ProjectUpdateComponent implements OnInit {
   });
   private readonly debounceTimeMs = 500;
   private inputChangeSubject = new Subject<{ value: number, name: string }>();
+  private inputChangeMax = new Subject<{ value: number, max: number, name: string }>();
+  private inputGPUMax = new Subject<{ index: number, max: number, value: number }>();
   disisable = true;
 
   constructor(@Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
@@ -264,6 +266,8 @@ export class ProjectUpdateComponent implements OnInit {
     this.inputChangeSubject.pipe(
       debounceTime(500)
     ).subscribe(data => this.checkNumberInput(data.value, data.name));
+    this.inputChangeMax.pipe(debounceTime(800)).subscribe(data => this.checkNumberInputNoBlock(data.value, data.max, data.name));
+    this.inputGPUMax.pipe(debounceTime(800)).subscribe(data => this.getValues(data.index, data.max, data.value));
   }
 
   ngOnInit() {
@@ -279,11 +283,11 @@ export class ProjectUpdateComponent implements OnInit {
     this.dateNow = new Date();
     this.calculate()
 
-      this.getProductActivebyregion();
+    this.getProductActivebyregion();
 
     this.getCatelogOffer()
     this.hasRoleSI = localStorage.getItem('role').includes('SI')
-   
+
 
   }
   openIpSubnet() {
@@ -355,9 +359,9 @@ export class ProjectUpdateComponent implements OnInit {
         newVpnSiteToSiteOfferId: this.siteToSiteId,
 
         // NewGpuQuotas: this.data?.gpuProjects ? this.gpuQuotasGobal : this.newgpu,
-        gpuQuotas: this.isChangegpu ?this.newgpu : this.gpuOld,
-        
-      
+        gpuQuotas: this.isChangegpu ? this.newgpu : this.gpuOld,
+
+
 
         newQuotaSecurityGroupCount: this.numberSecurityGroup,
         newQuotaNetworkCount: this.numberNetwork,
@@ -553,7 +557,7 @@ export class ProjectUpdateComponent implements OnInit {
 
         newVpnSiteToSiteOfferId: this.siteToSiteId,
 
-        gpuQuotas: this.isChangegpu ?this.newgpu : this.gpuOld,
+        gpuQuotas: this.isChangegpu ? this.newgpu : this.gpuOld,
 
         // gpuQuotas: this.newgpu  ?this.newgpu : this.gpuOld,
         // gpuQuotas: (this.gpuQuotasGobal && this.gpuQuotasGobal.length > 0) ?this.newgpu : this.gpuOld,
@@ -577,8 +581,8 @@ export class ProjectUpdateComponent implements OnInit {
         customerId: this.tokenService.get()?.userId,
         createdByUserId: this.tokenService.get()?.userId,
         note: "Cập nhật VPC",
-        totalPayment : this.total.data.totalPayment.amount,
-        totalVAT :this.total.data.totalVAT.amount,
+        totalPayment: this.total.data.totalPayment.amount,
+        totalVAT: this.total.data.totalVAT.amount,
         orderItems: [
           {
             orderItemQuantity: 1,
@@ -601,7 +605,7 @@ export class ProjectUpdateComponent implements OnInit {
         .subscribe({
           next: (result) => {
             if (result.success) {
-              if(this.hasRoleSI) {
+              if (this.hasRoleSI) {
                 this.vpc.createIpPublic(request).subscribe(
                   data => {
                     this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('project.action.resize'));
@@ -730,16 +734,16 @@ export class ProjectUpdateComponent implements OnInit {
 
 
 
-        },error =>{
-       
-          if(error.status===500){
+        }, error => {
+
+          if (error.status === 500) {
             this.router.navigate(['/app-smart-cloud/project']);
-          this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi(error.error.message));
+            this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi(error.error.message));
           }
-         
+
         }
       )
-      this.calculate();
+    this.calculate();
   }
 
   checkPossiblePress(event: KeyboardEvent) {
@@ -756,20 +760,20 @@ export class ProjectUpdateComponent implements OnInit {
           this.instancesService
             .getListOffersByProductId(data[0].id, this.regionId)
             .subscribe((data: any) => {
-             
-              if(this.data?.offerIdLBSDN){
+
+              if (this.data?.offerIdLBSDN) {
                 const loadBalancerIdOld = data.find(lb => lb.id === this.data?.offerIdLBSDN)
                 console.log("lbpriceId", loadBalancerIdOld?.price?.fixedPrice?.amount)
                 this.loadBalancerPrice = loadBalancerIdOld?.price?.fixedPrice?.amount
-                this.listLoadbalancer = data.filter(item =>item.price.fixedPrice.amount>= this.loadBalancerPrice )
-              console.log("huyn loadBalancerLowerPrices", this.listLoadbalancer)
-              this.loadBalancerId = this.data?.offerIdLBSDN;
-              this.findNameLoadBalance(this.loadBalancerId);
+                this.listLoadbalancer = data.filter(item => item.price.fixedPrice.amount >= this.loadBalancerPrice)
+                console.log("huyn loadBalancerLowerPrices", this.listLoadbalancer)
+                this.loadBalancerId = this.data?.offerIdLBSDN;
+                this.findNameLoadBalance(this.loadBalancerId);
               }
-              else{
+              else {
                 this.listLoadbalancer = data;
                 // this.loadBalancerId = this.listLoadbalancer[0].id;
-                this.loadBalancerId =this.data?.offerIdLBSDN
+                this.loadBalancerId = this.data?.offerIdLBSDN
                 this.findNameLoadBalance(this.loadBalancerId);
               }
             });
@@ -786,19 +790,19 @@ export class ProjectUpdateComponent implements OnInit {
             .subscribe((data: any) => {
               // this.listSiteToSite = data;
               // this.findSiteToSitePriceId()
-              if(this.data?.vpnSiteToSiteOfferId){
+              if (this.data?.vpnSiteToSiteOfferId) {
                 const sitetositeIdOld = data.find(vpn => vpn.id === this.data?.vpnSiteToSiteOfferId)
                 this.sitetositePrice = sitetositeIdOld?.price?.fixedPrice?.amount
-                this.listSiteToSite = data.filter(item =>item.price.fixedPrice.amount>= this.sitetositePrice )
-                  console.log("object sitetositeIdOld 444", this.sitetositePrice)
-                  console.log("list listSiteToSitePrice", this.listSiteToSite)
-                  this.siteToSiteId = this.data?.vpnSiteToSiteOfferId;
-              this.findNameSiteToSite(this.siteToSiteId);
+                this.listSiteToSite = data.filter(item => item.price.fixedPrice.amount >= this.sitetositePrice)
+                console.log("object sitetositeIdOld 444", this.sitetositePrice)
+                console.log("list listSiteToSitePrice", this.listSiteToSite)
+                this.siteToSiteId = this.data?.vpnSiteToSiteOfferId;
+                this.findNameSiteToSite(this.siteToSiteId);
               }
-              else{
+              else {
                 this.listSiteToSite = data;
                 // this.siteToSiteId = this.listSiteToSite[0].id;
-                this.siteToSiteId= this.data?.vpnSiteToSiteOfferId
+                this.siteToSiteId = this.data?.vpnSiteToSiteOfferId
                 this.findNameSiteToSite(this.siteToSiteId);
               }
             });
@@ -861,9 +865,9 @@ export class ProjectUpdateComponent implements OnInit {
         for (let gpu of this.gpuQuotasGobal) {
           if (gpu.GpuType == 'NVIDIA-A30') {
             gpu.GpuPrice = item.totalAmount.amount;
-           
+
             gpu.GpuPriceUnit = item.unitPrice.amount;
-            
+
           }
         }
 
@@ -872,9 +876,9 @@ export class ProjectUpdateComponent implements OnInit {
         for (let gpu of this.gpuQuotasGobal) {
           if (gpu.GpuType == 'NVIDIA-A100') {
             gpu.GpuPrice = item.totalAmount.amount;
-          
+
             gpu.GpuPriceUnit = item.unitPrice.amount;
-           
+
           }
         }
       }
@@ -955,25 +959,31 @@ export class ProjectUpdateComponent implements OnInit {
   onInputChange(value: number, name: string): void {
     this.inputChangeSubject.next({ value, name });
   }
-
+  onInputMax(value: number, max: number, name: string): void {
+    console.log("object value33", value)
+    this.inputChangeMax.next({ value, max, name });
+  }
+  gpuMax(index: number, max: number, value: number) {
+    this.inputGPUMax.next({ index, max, value })
+  }
   _hhd: number = this.maxBlock;
 
   get hhd(): number {
-      return this._hhd;
+    return this._hhd;
   }
 
   set hhd(value: number) {
-      this._hhd = Math.min(Math.max(value, this.minBlock), this.maxBlock);
+    this._hhd = Math.min(Math.max(value, this.minBlock), this.maxBlock);
   }
 
   _ssd: number = this.maxBlock;
 
   get ssd(): number {
-      return this._ssd;
+    return this._ssd;
   }
 
   set ssd(value: number) {
-      this._ssd = Math.min(Math.max(value, this.minBlock), this.maxBlock);
+    this._ssd = Math.min(Math.max(value, this.minBlock), this.maxBlock);
   }
   checkNumberInput(value: number, name: string): void {
     const messageStepNotification = `Số lượng phải chia hết cho  ${this.stepBlock} `;
@@ -1019,28 +1029,67 @@ export class ProjectUpdateComponent implements OnInit {
     }
     this.calculate();
   }
-findPriceLowerId(){
-  // if(this.data?.offerIdLBSDN){
-  //   const loadBalancerIdOld = this.listLoadbalancer.find(lb => lb.id === this.data?.offerIdLBSDN)
-  //   console.log("lbpriceId", loadBalancerIdOld?.price?.fixedPrice?.amount)
-  //   this.loadBalancerPrice = loadBalancerIdOld?.price?.fixedPrice?.amount
-  //   this.listLoadbalancer = this.listLoadbalancer.filter(item =>item.price.fixedPrice.amount>= this.loadBalancerPrice )
-  // console.log("huyn loadBalancerLowerPrices", this.listLoadbalancer)
-  // }
-  // else{
-  //   this.listLoadbalancer
-  // }
-  
-}
+
+  checkNumberInputNoBlock(value: number, max: number, name: string): void {
+    const numericValue = Number(value);
+    console.log("value 666", value)
+    const messageStepNotification = `Vượt quá số lượng max  ${max} `;
+    if (isNaN(numericValue)) {
+      this.notification.warning('', "Giá trị không hợp lệ");
+      return;
+    }
+    let number;
+    if (numericValue > max) {
+      this.notification.warning('', messageStepNotification);
+      number = max;
+    }
+    else {
+      number = numericValue
+    }
+    switch (name) {
+      case "ippublic":
+        this.numberIpPublic = number;
+        break;
+      case "ipfloating":
+        this.numberIpFloating = number;
+        break;
+      case "ipv6":
+        this.numberIpv6 = number;
+        break;
+      case "ram":
+        this.ram = number;
+        break;
+      case "vcpu":
+        this.vCPU = number;
+        break;
+      case "loadbalancer":
+        this.numberLoadBalancer = number;
+        break;
+    }
+    this.calculate();
+  }
+  findPriceLowerId() {
+    // if(this.data?.offerIdLBSDN){
+    //   const loadBalancerIdOld = this.listLoadbalancer.find(lb => lb.id === this.data?.offerIdLBSDN)
+    //   console.log("lbpriceId", loadBalancerIdOld?.price?.fixedPrice?.amount)
+    //   this.loadBalancerPrice = loadBalancerIdOld?.price?.fixedPrice?.amount
+    //   this.listLoadbalancer = this.listLoadbalancer.filter(item =>item.price.fixedPrice.amount>= this.loadBalancerPrice )
+    // console.log("huyn loadBalancerLowerPrices", this.listLoadbalancer)
+    // }
+    // else{
+    //   this.listLoadbalancer
+    // }
+
+  }
 
   findNameLoadBalance(loadBalancerId: number) {
     if (loadBalancerId) {
       const selectedLoadBalancer = this.listLoadbalancer.find(lb => lb.id === loadBalancerId)
       this.loadBalancerName = selectedLoadBalancer ? selectedLoadBalancer.offerName : null;
-      
+
     } else {
       this.loadBalancerName = null;
-      
+
     }
     this.calculate();
   }
@@ -1055,53 +1104,56 @@ findPriceLowerId(){
     }
     this.calculate();
   }
-  findSiteToSitePriceId(){
+  findSiteToSitePriceId() {
     const sitetositeIdOld = this.listSiteToSite.find(lb => lb.id === this.data?.vpnSiteToSiteOfferId)
-   this.sitetositePrice = sitetositeIdOld?.price?.fixedPrice?.amount
-   this.listSiteToSitePrice = this.listSiteToSite.filter(item =>item.price.fixedPrice.amount>= this.sitetositePrice )
+    this.sitetositePrice = sitetositeIdOld?.price?.fixedPrice?.amount
+    this.listSiteToSitePrice = this.listSiteToSite.filter(item => item.price.fixedPrice.amount >= this.sitetositePrice)
     console.log("object sitetositeIdOld 444", this.sitetositePrice)
     console.log("list listSiteToSitePrice", this.listSiteToSitePrice)
   }
   getCatelogOffer() {
-    
+
     this.instancesService.getTypeCatelogOffers(this.regionId, 'vm-gpu').subscribe(
       res => {
         this.listTypeCatelogOffer = res
-        this.newgpu= this.gpuQuotasGobal = this.listTypeCatelogOffer.map((item: any) => ({
+        this.newgpu = this.gpuQuotasGobal = this.listTypeCatelogOffer.map((item: any) => ({
           GpuOfferId: item.id,
           GpuCount: 0,
           GpuType: item.offerName,
           GpuPrice: 0,
           GpuPriceUnit: item?.price?.fixedPrice?.amount
         }));
-      
-       
+
+
         console.log("this.gpuQuotasGobal dc", this.gpuQuotasGobal)
         console.log("this.newgpu dc", this.newgpu)
-       
-        
+
+
       }
     );
   }
 
   // maxNumber: number[] = [8, 8];
-  getValues(index: number, value: number): void {
+  getValues(index: number,max: number, value: number): void {
+    const message = `Vượt quá số lượng max ${max}`
+    if (value > max) {
+      this.notification.warning('', message);
+      this.gpuQuotasGobal[index].GpuCount = max;
+    }
+    else {
+      this.gpuQuotasGobal[index].GpuCount = value;
+    }
 
     if (((this.offerIdOld == 0 && this.ssdOld == 0 && this.ssd == 0) || (this.offerIdOld != 0 && this.ssdOld == 0 && this.ssd == 0 && this.keySSDOld == false)) && this.gpuQuotasGobal[index].GpuCount != 0) {
       this.isShowAlertGpu = true
-      console.log("isShowAlertGpu 1", this.isShowAlertGpu)
-
     }
     else {
       this.isShowAlertGpu = false
-      console.log("isShowAlertGpu 2", this.isShowAlertGpu)
-
     }
-    console.log("object this.gpuQuotasGobal", this.gpuQuotasGobal)
-    if(value!=0){
+    if (value != 0) {
       this.getValueNewgpu();
     }
-   
+
     this.calculate();
 
   }
@@ -1119,7 +1171,7 @@ findPriceLowerId(){
     }, {});
     this.newgpu = this.gpuOld.map((item: any) => {
       const gpuOfferId = item.gpuOfferId;
-    
+
       const array2Item = dict2[gpuOfferId];
       const totalCountGpu = item.gpuCount + (array2Item ? array2Item.GpuCount : 0);
       if (totalCountGpu != 0) this.isChangegpu = true;
@@ -1198,9 +1250,9 @@ findPriceLowerId(){
     }
 
   }
-  findLbLowerPrices(){
+  findLbLowerPrices() {
 
-  } 
+  }
 
   initIP() {
     this.activeIP = true;
@@ -1247,11 +1299,11 @@ findPriceLowerId(){
     // this.initLoadBalancerData()
     // this.loadBalancerId = this.data?.offerIdLBSDN;
     // this.findNameLoadBalance(this.loadBalancerId);
-    if(this.data?.offerIdLBSDN){
+    if (this.data?.offerIdLBSDN) {
       this.loadBalancerId = this.data?.offerIdLBSDN;
-    this.findNameLoadBalance(this.loadBalancerId);
+      this.findNameLoadBalance(this.loadBalancerId);
     }
-    else{
+    else {
       this.loadBalancerId = this.listLoadbalancer[0].id;
       this.findNameLoadBalance(this.loadBalancerId);
     }
@@ -1282,11 +1334,11 @@ findPriceLowerId(){
     //   this.siteToSiteId = this.listSiteToSite[1].id;
     //   this.findNameSiteToSite(this.siteToSiteId)
     // }
-    if(this.data?.vpnSiteToSiteOfferId){
+    if (this.data?.vpnSiteToSiteOfferId) {
       this.siteToSiteId = this.data?.vpnSiteToSiteOfferId;
       this.sitetositeName = this.data?.vpnSiteToSiteOfferName;
     }
-    else{
+    else {
       this.siteToSiteId = this.listSiteToSite[0].id;
       this.findNameSiteToSite(this.siteToSiteId);
     }

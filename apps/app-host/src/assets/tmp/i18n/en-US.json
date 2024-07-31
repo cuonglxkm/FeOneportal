@@ -760,6 +760,7 @@
   "app.file.static.web.hosting": "The file containing the content for the homepage of the website can be accessed at the following Endpoint link",
   "app.file.static.web.hosting.tooltip": "Endpoint URL of the bucket on the system when using the Web Hosting feature.Users use this link to access the website.",
   "app.label.static.web.hosting.error1": "The web address is not in the correct format",
+  "app.label.static.web.hosting.error2": "The web address can't be blank",
   "app.file.static.web.hosting.error": "The file containing the error display content of the website",
   "app.file.static.web.space.error": "File name can't contain space",
   "app.file.static.web.space.require": "File name can't be blank",
@@ -1030,7 +1031,7 @@
   "app.alert.create.load.balancer.vpc": "- After creating the Load Balancer, the service package of the Load Balancer cannot be changed here.<br> - To change the service package of the Load Balancer, please go to VPC management to adjust it.",
   "app.title.delete.l7.policy": "Delete the {{name}} L7 Policy",
   "app.note.delete.l7.policy": "To delete the {{name}} L7 Policy, please enter the L7 Policy name to confirm",
-  "app.alert.delete.l7.policy": "You are performing L7 Policy deletion",
+  "app.alert.delete.l7.policy": "To delete Policy L7 {{name}}, please enter Policy L7 name to confirm",
   "app.alert.delete.l7.rule": "You are about to delete an L7 Rule",
   "app.title.delete.l7.rule": "Delete L7 Rule",
   "app.note.delete.l7.rule": "Please press <b>Confirm</b> to delete the L7 Rule",
@@ -2835,7 +2836,8 @@
   "project.note4": "Custom VPC",
   "project.note5": "Default VPC",
   "project.status.enable": "Active",
-  
+
+
 
   "project.status.delete": "Scheduled automatic deletion",
   "project.default": "Default VPC",
@@ -3372,6 +3374,7 @@
   "schedule.backup.vm.backup.volume.mode.date.tooltip": "Backup day of the month",
   "schedule.backup.vm.backup.volume.mode.day.tooltip": "Backup day of the week",
   "schedule.backup.vm.backup.volume.mode.week.tooltip": "Number of weeks per Backup",
+  "schedule.backup.block.create": "The service has been scheduled",
 
 
   "listner.create.duplicate.port.weight": "Members with the same IP cannot have duplicate Port and Weight",

@@ -15,8 +15,13 @@ import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from '@core';
 import { debounceTime, Subject, Subscription } from 'rxjs';
-import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
+import {
+  ProjectSelectDropdownComponent
+} from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
 import { RegionID } from 'src/app/shared/enums/common.enum';
+import { ScheduleService } from '../../../../shared/services/schedule.service';
+import { BackupSchedule, FormSearchScheduleBackup } from '../../../../shared/models/schedule.model';
+import { id } from 'date-fns/locale';
 
 @Component({
   selector: 'app-volume',
@@ -77,14 +82,16 @@ export class VolumeComponent implements OnInit, OnDestroy {
               private cdr: ChangeDetectorRef,
               private notificationService: NotificationService,
               private notification: NzNotificationService,
+              private scheduleBackupService: ScheduleService,
               @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService) {
   }
 
 
   isFirstVisit: boolean = true;
+
   regionChanged(region: RegionModel) {
     this.region = region.regionId;
-    if(this.projectCombobox){
+    if (this.projectCombobox) {
       this.projectCombobox.loadProjects(true, region.regionId);
     }
     setTimeout(() => {
@@ -167,8 +174,8 @@ export class VolumeComponent implements OnInit, OnDestroy {
         if (data) {
           this.isLoading = false;
           this.response = data;
-          if((this.response.records == null || this.response.records.length < 1) && this.pageIndex != 1) {
-            this.pageIndex = 1
+          if ((this.response.records == null || this.response.records.length < 1) && this.pageIndex != 1) {
+            this.pageIndex = 1;
             this.getListVolume(false);
           }
           this.response.records.forEach(item => {
@@ -203,33 +210,33 @@ export class VolumeComponent implements OnInit, OnDestroy {
     if (this.typeVPC == 1) {
       if (this.region === RegionID.ADVANCE) {
         this.router.navigate(['/app-smart-cloud/volume-advance/vpc/create']);
-      }else{
+      } else {
         this.router.navigate(['/app-smart-cloud/volume/vpc/create']);
       }
     } else {
       if (this.region === RegionID.ADVANCE) {
-      this.router.navigate(['/app-smart-cloud/volume-advance/create']);
-      }else{
+        this.router.navigate(['/app-smart-cloud/volume-advance/create']);
+      } else {
         this.router.navigate(['/app-smart-cloud/volume/create']);
       }
     }
 
   }
 
-  navigateToDetail(id){
+  navigateToDetail(id) {
     if (this.region === RegionID.ADVANCE) {
       this.router.navigate(['/app-smart-cloud/volume-advance/detail', id]);
-      }else{
-        this.router.navigate(['/app-smart-cloud/volume/detail', id]);
-      }
+    } else {
+      this.router.navigate(['/app-smart-cloud/volume/detail', id]);
+    }
   }
 
-  navigateToVolume(){
+  navigateToVolume() {
     if (this.region === RegionID.ADVANCE) {
       this.router.navigate(['/app-smart-cloud/volumes-advance']);
-      }else{
-        this.router.navigate(['/app-smart-cloud/volumes']);
-      }
+    } else {
+      this.router.navigate(['/app-smart-cloud/volumes']);
+    }
   }
 
   //attach
@@ -265,48 +272,93 @@ export class VolumeComponent implements OnInit, OnDestroy {
     if (this.typeVPC == 1) {
       if (this.region === RegionID.ADVANCE) {
         this.router.navigate(['/app-smart-cloud/backup-volume-advance/create/vpc', { volumeId: idVolume }]);
-      }else{
-        this.router.navigate(['/app-smart-cloud/backup-volume/create/vpc', { volumeId: idVolume }]);
+      } else {
+        this.router.navigate(['/app-smart-cloud/backup-volume/create/vpc'], {
+          queryParams: { idVolume: idVolume }
+        });
       }
     } else {
       if (this.region === RegionID.ADVANCE) {
         this.router.navigate(['/app-smart-cloud/backup-volume-advance/create/normal', { volumeId: idVolume }]);
-      }else{
-        this.router.navigate(['/app-smart-cloud/backup-volume/create/normal', { volumeId: idVolume }]);
+      } else {
+        this.router.navigate(['/app-smart-cloud/backup-volume/create/normal'], {
+          queryParams: { idVolume: idVolume }
+        });
+
       }
     }
   }
 
   //create schedule backup
   navigateToCreateScheduleBackup(id) {
-    if (this.typeVPC == 1) {
-      if (this.region === RegionID.ADVANCE) {
-      this.router.navigate(['/app-smart-cloud/schedule/backup-advance/create/vpc'], {
-        queryParams: { type: 'VOLUME', idVolume: id }
-      });
-    }else{
-      this.router.navigate(['/app-smart-cloud/schedule/backup/create/vpc'], {
-        queryParams: { type: 'VOLUME', idVolume: id }
-      });
-    }
-    } else {
-      if (this.region === RegionID.ADVANCE) {
-      this.router.navigate(['/app-smart-cloud/schedule/backup-advance/create'], {
-        queryParams: { type: 'VOLUME', idVolume: id }
-      });
-    }else{
-      this.router.navigate(['/app-smart-cloud/schedule/backup/create'], {
-        queryParams: { type: 'VOLUME', idVolume: id }
-      });
-    }
-    }
+    this.getListScheduleBackup(id)
+
   }
 
+  listScheduleBackup: BackupSchedule[] = []
+  getListScheduleBackup(id) {
+    this.isLoading = true
+    let formSearch = new FormSearchScheduleBackup();
+    formSearch.customerId = this.tokenService.get()?.userId;
+    formSearch.scheduleName = ''
+    formSearch.scheduleStatus = 'ACTIVE'
+    formSearch.regionId = this.region
+    formSearch.projectId = this.project
+    formSearch.serviceType = 2
+    formSearch.pageSize = 99999
+    formSearch.pageIndex = 1
+    formSearch.serviceId = id;
+    this.scheduleBackupService.search(formSearch).subscribe(data => {
+      this.isLoading = false
+      this.listScheduleBackup = data?.records
+      if (this.typeVPC == 1) {
+        if (this.region === RegionID.ADVANCE) {
+          this.router.navigate(['/app-smart-cloud/schedule/backup-advance/create/vpc'], {
+            queryParams: { type: 'VOLUME', idVolume: id }
+          });
+        } else {
+          this.listScheduleBackup.forEach(item => {
+            console.log('abc', item.serviceId == id)
+            if(item.serviceId == id) {
+              this.notification.warning('', this.i18n.fanyi('schedule.backup.block.create'))
+              this.navigateToVolume();
+            } else {
+              this.router.navigate(['/app-smart-cloud/schedule/backup/create/vpc'], {
+                queryParams: { type: 'VOLUME', idVolume: id }
+              });
+            }
+          })
+        }
+      } else {
+        if (this.region === RegionID.ADVANCE) {
+          this.router.navigate(['/app-smart-cloud/schedule/backup-advance/create'], {
+            queryParams: { type: 'VOLUME', idVolume: id }
+          });
+        } else {
+          this.listScheduleBackup.forEach(item => {
+            console.log('abc', item.serviceId == id)
+            if(item.serviceId == id) {
+              this.notification.warning('', this.i18n.fanyi('schedule.backup.block.create'))
+              this.navigateToVolume();
+            } else {
+              this.router.navigate(['/app-smart-cloud/schedule/backup/create'], {
+                queryParams: { type: 'VOLUME', idVolume: id }
+              });
+            }
+          })
+        }
+      }
+    }, error => {
+      this.isLoading = false
+      this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.failData'));
+    })
+
+  }
   //create snapshot
   navigateToSnapshot(idVolume: number) {
     if (this.region === RegionID.ADVANCE) {
-    this.router.navigate(['/app-smart-cloud/snapshot-advance/create', { volumeId: idVolume }], { queryParams: { navigateType: 0 } });
-    }else{
+      this.router.navigate(['/app-smart-cloud/snapshot-advance/create', { volumeId: idVolume }], { queryParams: { navigateType: 0 } });
+    } else {
       this.router.navigate(['/app-smart-cloud/snapshot/create', { volumeId: idVolume }], { queryParams: { navigateType: 0 } });
     }
   }
@@ -316,13 +368,14 @@ export class VolumeComponent implements OnInit, OnDestroy {
 
   getSuspendedReason(suspendedReason: string) {
     switch (suspendedReason) {
-      case "CHAMGIAHAN":
-        return this.i18n.fanyi('app.status.low-renew')
-      case "":
+      case 'CHAMGIAHAN':
+        return this.i18n.fanyi('app.status.low-renew');
+      case '':
       default:
         break;
     }
   }
+
   url = window.location.pathname;
 
   ngOnInit() {
