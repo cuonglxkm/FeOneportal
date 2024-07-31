@@ -96,16 +96,21 @@ export class CreateBackupVolumeVpcComponent implements OnInit{
 
   isLoadingVolume: boolean = false
   getListVolumes() {
-    this.isLoadingVolume = true
+    this.isLoadingVolume = true;
     this.volumeService.getVolumes(this.tokenService.get()?.userId, this.project, this.region, 9999, 1, '', '').subscribe(data => {
-      this.isLoadingVolume = false
+      this.isLoadingVolume = false;
       this.listVolumes = data.records;
-      this.listVolumes = this.listVolumes.filter(item => item.status === 'KHOITAO')
-      this.validateForm.controls.volumeId.setValue(this.listVolumes[0]?.id)
+      this.listVolumes = this.listVolumes.filter(item => item.status === 'KHOITAO');
+      if(this.volumeIdParam == undefined || this.volumeIdParam == null) {
+        this.validateForm.controls.volumeId.setValue(this.listVolumes[0]?.id);
+      } else  {
+        this.validateForm.controls.volumeId.setValue(this.volumeIdParam);
+      }
+
     }, error => {
-      this.isLoadingVolume = false
-      this.notification.error(error.statusText, this.i18n.fanyi('app.failData'))
-    })
+      this.isLoadingVolume = false;
+      this.notification.error(error.statusText, this.i18n.fanyi('app.failData'));
+    });
   }
 
   getDataByVolumeId(id) {
@@ -213,15 +218,20 @@ export class CreateBackupVolumeVpcComponent implements OnInit{
     this.region = regionAndProject.regionId;
     this.project = regionAndProject.projectId;
     this.getListBackupVolumes()
-    if (this.activatedRoute.snapshot.paramMap.get('volumeId') != undefined || this.activatedRoute.snapshot.paramMap.get('volumeId') != null) {
-      console.log('here')
-      this.volumeIdParam = Number.parseInt(this.activatedRoute.snapshot.paramMap.get('volumeId'));
-      this.validateForm.controls.volumeId.setValue(this.volumeIdParam);
-      this.getDataByVolumeId(this.volumeIdParam)
-    } else {
-      this.volumeIdParam = null;
-      this.getListVolumes()
-    }
+    this.activatedRoute.queryParams.subscribe(params => {
+      const volumeId = params['idVolume']
+      console.log('here');
+      console.log('volume id param', volumeId)
+      if(volumeId != undefined || volumeId != null) {
+        this.volumeIdParam= Number.parseInt(volumeId);
+        console.log('volumeId', this.volumeIdParam)
+        this.getDataByVolumeId(this.volumeIdParam);
+        this.getListVolumes();
+      } else {
+        this.volumeIdParam = null;
+        this.getListVolumes();
+      }
+    });
 
     this.getInfoProjectVpc(this.project);
   }
