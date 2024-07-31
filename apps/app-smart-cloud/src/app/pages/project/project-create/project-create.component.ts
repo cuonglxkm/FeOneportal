@@ -402,7 +402,6 @@ export class ProjectCreateComponent implements OnInit {
   }
 
   calculate(number: any) {
-
     if (this.vpcType === '0') {
       this.activeVpc = false;
       this.activeNoneVpc = true;
