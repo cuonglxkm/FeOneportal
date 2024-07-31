@@ -10,7 +10,6 @@ import {
   FormControl,
   FormGroup,
   NonNullableFormBuilder,
-  Validators,
 } from '@angular/forms';
 import { I18NService } from '@core';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
@@ -20,6 +19,7 @@ import { debounceTime, finalize, Subject } from 'rxjs';
 import {
   BucketLifecycle,
   BucketLifecycleCreate,
+  BucketLifecycleUpdate,
   LifecycleTagPredicate,
 } from 'src/app/shared/models/bucket.model';
 import { BucketService } from 'src/app/shared/services/bucket.service';
@@ -59,6 +59,23 @@ export class LifecycleConfigComponent implements OnInit {
     @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
     private fb: NonNullableFormBuilder
   ) {}
+
+  onKeyDown(event: KeyboardEvent) {
+    // Lấy giá trị của phím được nhấn
+    const key = event.key;
+    // Kiểm tra xem phím nhấn có phải là một số hoặc phím di chuyển không
+    if (
+      (isNaN(Number(key)) &&
+        key !== 'Backspace' &&
+        key !== 'Delete' &&
+        key !== 'ArrowLeft' &&
+        key !== 'ArrowRight') ||
+      key === '.'
+    ) {
+      // Nếu không phải số hoặc đã nhập dấu chấm và đã có dấu chấm trong giá trị hiện tại
+      event.preventDefault(); // Hủy sự kiện để ngăn người dùng nhập ký tự đó
+    }
+  }
 
   ngOnInit(): void {
     let regionAndProject = getCurrentRegionAndProject();
@@ -137,6 +154,7 @@ export class LifecycleConfigComponent implements OnInit {
   lifecycleCreate: BucketLifecycleCreate = new BucketLifecycleCreate();
   modalCreate() {
     this.isVisibleCreate = true;
+    this.isValidateKey = true;
   }
 
   resetForm() {
@@ -160,21 +178,30 @@ export class LifecycleConfigComponent implements OnInit {
   handleOkCreate() {
     this.isLoadingCreate = true;
     this.lifecycleCreate.bucketName = this.bucketName;
+    this.lifecycleCreate.prefix = this.lifecycleCreate.prefix?.trim();
+    if (this.lifecycleCreate.prefix == '') {
+      this.lifecycleCreate.prefix == null;
+    }
     this.listTag.forEach((e) => {
       let lifecycleTagPredicate: LifecycleTagPredicate =
         new LifecycleTagPredicate();
       if (e.key != '') {
-        lifecycleTagPredicate.metaKey = e.key;
+        lifecycleTagPredicate.metaKey = e.key.trim();
       }
-      lifecycleTagPredicate.metaValue = e.value;
+      lifecycleTagPredicate.metaValue = e.value.trim();
       this.lifecycleCreate.lifecycleTagPredicate.push(lifecycleTagPredicate);
     });
     this.bucketService
       .createBucketLifecycle(this.lifecycleCreate, this.region)
+      .pipe(
+        finalize(() => {
+          this.isLoadingCreate = false;
+          this.cdr.detectChanges();
+        })
+      )
       .subscribe({
         next: (data) => {
           this.isVisibleCreate = false;
-          this.isLoadingCreate = false;
           this.notification.success(
             this.i18n.fanyi('app.status.success'),
             this.i18n.fanyi('app.lifeCycle.create.success')
@@ -184,7 +211,6 @@ export class LifecycleConfigComponent implements OnInit {
           this.cdr.detectChanges();
         },
         error: (e) => {
-          this.isLoadingCreate = false;
           this.notification.error(
             this.i18n.fanyi('app.status.fail'),
             this.i18n.fanyi('app.lifeCycle.create.fail')
@@ -194,20 +220,35 @@ export class LifecycleConfigComponent implements OnInit {
       });
   }
 
+  checkTags(tags: Tag[]): boolean {
+    for (let tag of tags) {
+      if (tag.key === '') {
+        return false;
+      }
+    }
+    return true;
+  }
+  isValidateKey: boolean = true;
   addTag() {
     let tag = new Tag();
     tag.id = this.idTag++;
     this.listTag.push(tag);
+    this.isValidateKey = this.checkTags(this.listTag);
+  }
+  onChangeKey() {
+    this.isValidateKey = this.checkTags(this.listTag);
   }
 
   delelteTag(id: number) {
     this.listTag = this.listTag.filter((item) => item.id != id);
+    this.isValidateKey = this.checkTags(this.listTag);
   }
 
   isVisibleDelete: boolean = false;
   lifecycleDelete: BucketLifecycleCreate = new BucketLifecycleCreate();
   modalDelete(data: any) {
     this.isVisibleDelete = true;
+    this.isValidateKey = true;
     this.lifecycleDelete = data;
   }
 
@@ -219,10 +260,15 @@ export class LifecycleConfigComponent implements OnInit {
     this.isLoadingDelete = true;
     this.bucketService
       .deleteBucketLifecycle(this.lifecycleDelete, this.region)
+      .pipe(
+        finalize(() => {
+          this.isLoadingDelete = false;
+          this.cdr.detectChanges();
+        })
+      )
       .subscribe({
         next: (data) => {
           this.isVisibleDelete = false;
-          this.isLoadingDelete = false;
           this.notification.success(
             this.i18n.fanyi('app.status.success'),
             this.i18n.fanyi('app.lifeCycle.delete.success')
@@ -231,7 +277,6 @@ export class LifecycleConfigComponent implements OnInit {
           this.cdr.detectChanges();
         },
         error: (error) => {
-          this.isLoadingDelete = false;
           this.notification.error(
             this.i18n.fanyi('app.status.fail'),
             this.i18n.fanyi('app.lifeCycle.delete.fail')
@@ -242,11 +287,26 @@ export class LifecycleConfigComponent implements OnInit {
   }
 
   isVisibleUpdate = false;
-  lifecycleUpdate: BucketLifecycleCreate = new BucketLifecycleCreate();
-  modalUpdate(data: any) {
+  lifecycleUpdate: BucketLifecycleUpdate = new BucketLifecycleUpdate();
+  modalUpdate(data: BucketLifecycle) {
     this.isVisibleUpdate = true;
     this.listTag = [];
-    this.lifecycleUpdate = data;
+    this.lifecycleUpdate.bucketName = data.bucketName;
+    this.lifecycleUpdate.enabled = data.enabled;
+    this.lifecycleUpdate.id = data.id;
+    this.lifecycleUpdate.isSetAbortIncompleteMultipartUpload_Day =
+      data.isSetAbortIncompleteMultipartUpload_Day;
+    this.lifecycleUpdate.isSetExpiration_Day = data.isSetExpiration_Day;
+    this.lifecycleUpdate.isSetNoncurrentVersionExpiration_Day =
+      data.isSetNoncurrentVersionExpiration_Day;
+    this.lifecycleUpdate.lifecycleRuleAbortIncompleteMultipartUpload_Day =
+      data.lifecycleRuleAbortIncompleteMultipartUpload_Day;
+    this.lifecycleUpdate.lifecycleRuleExpiration_Day =
+      data.lifecycleRuleExpiration_Day;
+    this.lifecycleUpdate.lifecycleRuleNoncurrentVersionExpiration_Day =
+      data.lifecycleRuleNoncurrentVersionExpiration_Day;
+    this.lifecycleUpdate.lifecycleTagPredicate = data.lifecycleTagPredicate;
+    this.lifecycleUpdate.prefix = data.prefix;
     this.formUpdate.controls.isSetExpiration_Day.setValue(
       this.lifecycleUpdate.isSetExpiration_Day
     );
@@ -273,21 +333,28 @@ export class LifecycleConfigComponent implements OnInit {
 
   handleOkUpdate() {
     this.isLoadingUpdate = true;
-    this.lifecycleUpdate.bucketName = this.bucketName;
+    this.lifecycleUpdate.prefix = this.lifecycleUpdate.prefix?.trim();
     this.lifecycleUpdate.lifecycleTagPredicate = [];
     this.listTag.forEach((e) => {
       let lifecycleTagPredicate: LifecycleTagPredicate =
         new LifecycleTagPredicate();
-      lifecycleTagPredicate.metaKey = e.key;
-      lifecycleTagPredicate.metaValue = e.value;
+      if (e.key != '') {
+        lifecycleTagPredicate.metaKey = e.key.trim();
+      }
+      lifecycleTagPredicate.metaValue = e.value.trim();
       this.lifecycleUpdate.lifecycleTagPredicate.push(lifecycleTagPredicate);
     });
     this.bucketService
       .updateBucketLifecycle(this.lifecycleUpdate, this.region)
+      .pipe(
+        finalize(() => {
+          this.isLoadingUpdate = false;
+          this.cdr.detectChanges();
+        })
+      )
       .subscribe({
         next: (data) => {
           this.isVisibleUpdate = false;
-          this.isLoadingUpdate = false;
           this.searchLifeCycle();
           this.listTag = [];
           this.notification.success(
@@ -297,7 +364,6 @@ export class LifecycleConfigComponent implements OnInit {
           this.cdr.detectChanges();
         },
         error: (e) => {
-          this.isLoadingUpdate = false;
           this.notification.error(
             this.i18n.fanyi('app.status.fail'),
             this.i18n.fanyi('app.lifeCycle.edit.fail')
