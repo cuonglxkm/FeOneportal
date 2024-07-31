@@ -56,7 +56,7 @@ export class ListenerDetailComponent implements OnInit {
   loadingPool = true;
   isLoading: boolean = false;
 
-  pageSize: number = 5;
+  pageSize: number = 10;
   pageIndex: number = 1;
 
   currentPageData: L7Policy[];

@@ -44,27 +44,33 @@ export class BucketConfigureComponent implements OnInit {
     let regionAndProject = getCurrentRegionAndProject();
     this.region = regionAndProject.regionId;
     this.bucketName = this.activatedRoute.snapshot.paramMap.get('bucketName');
-    this.getBucketDetail()
+    this.getBucketDetail();
   }
 
-  getBucketDetail(){
+  getBucketDetail() {
     this.bucketService
       .getBucketDetail(this.bucketName, this.region)
       .pipe(finalize(() => this.loadingSrv.close()))
-      .subscribe((data) => {
-        console.log(data);     
-        this.bucketDetail = data;
-        this.cdr.detectChanges()
+      .subscribe({
+        next: (data) => {
+          console.log(data);
+          this.bucketDetail = data;
+          this.cdr.detectChanges();
+        },
+        error: (e) => {
+          this.notification.error('', e.error.message);
+          this.navigateToBucketList();
+        },
       });
   }
 
   setBucketACL() {
-    this.isLoading = true
+    this.isLoading = true;
     this.bucketService
       .setBucketACL(this.bucketName, this.bucketDetail.aclType, this.region)
       .subscribe({
         next: (data) => {
-          this.isLoading = false
+          this.isLoading = false;
           this.notification.success(
             this.i18n.fanyi('app.status.success'),
             this.i18n.fanyi('app.bucket.access.list.resize.success')
@@ -72,7 +78,7 @@ export class BucketConfigureComponent implements OnInit {
           this.cdr.detectChanges();
         },
         error: (e) => {
-          this.isLoading = false
+          this.isLoading = false;
           this.notification.error(
             this.i18n.fanyi('app.status.fail'),
             this.i18n.fanyi('app.bucket.access.list.resize.fail')
@@ -91,17 +97,21 @@ export class BucketConfigureComponent implements OnInit {
   }
 
   setBucketVersioning() {
-    this.isLoadingVersion = true
+    this.isLoadingVersion = true;
     this.bucketService
-      .setBucketVersioning(this.bucketName, this.bucketDetail.isVersioning, this.region)
+      .setBucketVersioning(
+        this.bucketName,
+        this.bucketDetail.isVersioning,
+        this.region
+      )
       .subscribe({
         next: (data) => {
-          this.isLoadingVersion = false
+          this.isLoadingVersion = false;
           this.notification.success('', 'Điều chỉnh Versioning thành công');
           this.cdr.detectChanges();
         },
         error: (e) => {
-          this.isLoadingVersion = false
+          this.isLoadingVersion = false;
           this.notification.error(
             this.i18n.fanyi('app.status.fail'),
             this.i18n.fanyi('app.bucket.version.resize.fail')
@@ -119,10 +129,10 @@ export class BucketConfigureComponent implements OnInit {
     }
   }
 
-  navigateToBucketList(){
-    if(this.region === RegionID.ADVANCE){
+  navigateToBucketList() {
+    if (this.region === RegionID.ADVANCE) {
       this.router.navigate(['/app-smart-cloud/object-storage-advance/bucket']);
-    }else{
+    } else {
       this.router.navigate(['/app-smart-cloud/object-storage/bucket']);
     }
   }

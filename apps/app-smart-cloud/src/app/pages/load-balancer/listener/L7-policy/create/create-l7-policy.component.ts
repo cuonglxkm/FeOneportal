@@ -61,7 +61,7 @@ export class CreateL7PolicyComponent implements OnInit {
     action: ['', [Validators.required]],
     prioritize: [1, [Validators.required]],
     pool: [''],
-    status: [false, [Validators.required]],
+    status: [true, [Validators.required]],
     description: [''],
     url: ['']
   });
@@ -169,7 +169,7 @@ export class CreateL7PolicyComponent implements OnInit {
 
     this.loadBalancerService.createL7Policy(formCreateL7Policy).subscribe(data => {
       this.isLoading = false
-      this.router.navigate(['/app-smart-cloud/load-balancer/detail/'+this.idLoadBalancer])
+      this.router.navigate(['/app-smart-cloud/load-balancer/'+this.idLoadBalancer+'/listener/detail/'+this.idListener])
       this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('app.notification.create.l7.policy.success'))
     }, error =>  {
       this.isLoading = false

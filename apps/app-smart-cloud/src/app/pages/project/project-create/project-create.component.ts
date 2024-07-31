@@ -219,6 +219,7 @@ export class ProjectCreateComponent implements OnInit {
   });
   // private inputChangeSubject: Subject<number> = new Subject<number>();
   private inputChangeSubject = new Subject<{ value: number, name: string }>();
+  private inputChangeMax = new Subject<{ value: number,max:number, name: string }>();
 
   private searchSubject = new Subject<string>();
   private readonly debounceTimeMs = 500;
@@ -239,6 +240,8 @@ export class ProjectCreateComponent implements OnInit {
     this.inputChangeSubject.pipe(
       debounceTime(800)
     ).subscribe(data => this.checkNumberInput(data.value, data.name));
+
+    this.inputChangeMax.pipe(debounceTime(800)).subscribe(data => this.checkNumberInputNoBlock(data.value,data.max, data.name));
 
   }
   url = window.location.pathname;
@@ -396,6 +399,7 @@ export class ProjectCreateComponent implements OnInit {
   }
 
   calculate(number: any) {
+    
     if (this.vpcType === '0') {
       this.activeVpc = false;
       this.activeNoneVpc = true;
@@ -407,6 +411,21 @@ export class ProjectCreateComponent implements OnInit {
     this.searchSubject.next('');
 
   }
+  // calculate(number: any,max: number, inputName: string) {
+  //   if (this[inputName] > max) {
+  //     this[inputName] = max;
+  //   }
+  //   if (this.vpcType === '0') {
+  //     this.activeVpc = false;
+  //     this.activeNoneVpc = true;
+  //   } else {
+  //     this.activeVpc = true;
+  //     this.activeNoneVpc = false;
+
+  //   }
+  //   this.searchSubject.next('');
+
+  // }
   getStepBlock(name: string) {
     this.vpc.getStepBlock(name).subscribe((res: any) => {
       const valuestring: any = res.valueString;
@@ -422,6 +441,12 @@ export class ProjectCreateComponent implements OnInit {
     console.log("object value", value)
     this.inputChangeSubject.next({ value, name });
     this.checkRequired()
+  }
+  onInputMax(value: number, max:number, name: string): void {
+    console.log("object value33", value)
+    
+    // Gửi giá trị mới đến Subject để xử lý tiếp nếu cần
+    this.inputChangeMax.next({ value, max, name });
   }
 
   _hhd: number = this.maxBlock;
@@ -444,7 +469,28 @@ export class ProjectCreateComponent implements OnInit {
       this._ssd = Math.min(Math.max(value, this.minBlock), this.maxBlock);
   }
 
+  // _hhd: number = this.maxBlock;
+
+  // get hhd(): number {
+  //     return this._hhd;
+  // }
+
+  // set hhd(value: number) {
+  //     this._hhd = Math.min(Math.max(value, this.minBlock), this.maxBlock);
+  // }
+
+  // _ssd: number = this.maxBlock;
+
+  // get ssd(): number {
+  //     return this._ssd;
+  // }
+
+  // set ssd(value: number) {
+  //     this._ssd = Math.min(Math.max(value, this.minBlock), this.maxBlock);
+  // }
+
   checkNumberInput(value: number, name: string): void {
+    console.log("value 55",value)
     const messageStepNotification = `Số lượng phải chia hết cho  ${this.stepBlock} `;
     const numericValue = Number(value);
     if (isNaN(numericValue)) {
@@ -487,10 +533,53 @@ export class ProjectCreateComponent implements OnInit {
     }
     if (numericValue !== adjustedValue) {
       this[name] = adjustedValue;
+      console.log("this[name] ",this[name] )
     }
 
 
     this.calculate(null);
+  }
+  checkNumberInputNoBlock(value: number,max:number,name: string): void {
+    const numericValue = Number(value);
+    console.log("value 666", value)
+    const messageStepNotification = `Vượt quá số lượng max  ${max} `;
+    if (isNaN(numericValue)) {
+      this.notification.warning('', "Giá trị không hợp lệ");
+      return;
+    }
+    let number;
+    if(numericValue>max){
+      this.notification.warning('', messageStepNotification);
+      number = max;
+    }
+    else{
+      number = numericValue
+    }
+    switch (name) {
+      case "ippublic":
+        this.numberIpPublic = number;
+        break;
+      case "ipfloating":
+        this.numberIpFloating = number;
+        break;
+      case "ipv6":
+        this.numberIpv6 = number;
+        break;
+      case "ram":
+          this.ram = number;
+          break;
+      case "vcpu":
+        this.vCPU = number;
+        break;
+      case "loadbalancer":
+        this.numberLoadBalancer = number;
+        break;
+      
+    }
+
+   
+    this.calculate(null);
+    
   }
   selectPackge = '';
   vpcType = '0';
@@ -1039,7 +1128,24 @@ export class ProjectCreateComponent implements OnInit {
       event.preventDefault();
     }
   }
+  checkPossiblePressNoBlock(event: KeyboardEvent, max:number) {
+    const key = event.key;
+    if (isNaN(Number(key)) && key !== 'Backspace' && key !== 'Delete' && key !== 'ArrowLeft' && key !== 'ArrowRight') {
+      event.preventDefault();
+    }
+    const input = (event.target as HTMLInputElement).value;
+      const inputNumber = Number(input + event.key);
 
+      if (inputNumber > max) {
+        event.preventDefault();
+      }
+  }
+  // calculate(value: any, max: number, inputName: string): void {
+  //   if (this[inputName] > max) {
+  //     this[inputName] = max;
+  //   }
+  //   // Perform other calculations if needed
+  // }
 
   private loadInforProjectNormal() {
     this.instancesService.getListOffers(this.regionId, 'vpc').subscribe(
