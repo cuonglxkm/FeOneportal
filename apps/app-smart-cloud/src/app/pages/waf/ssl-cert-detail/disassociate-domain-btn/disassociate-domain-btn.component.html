@@ -1,0 +1,5 @@
+<img nz-popover src="assets/imgs/cancel.svg" alt="" nzPopoverPlacement="bottom"
+    style="cursor: pointer; margin-right: 5px; margin-top: 2px;" [nzPopoverContent]="'Disassociate Certificate'"
+    (click)="openModal()">
+<one-portal-disassociate-ssl-domain [sslCertData]="sslCertData" [domainData]="domainData"
+    (onCancelVisible)="handleCancel()" [isVisible]="isVisible"></one-portal-disassociate-ssl-domain>
