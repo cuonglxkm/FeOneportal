@@ -119,7 +119,7 @@
                     [nzDescription]="'Khi thực hiện điều chỉnh gói dịch vụ, chi phí mới sẽ được tính từ ngày điều chỉnh cho tới ngày hết hạn'"
                 ></nz-alert>
         </div>
-        <div class="text-label mb-3 mt-3">{{ 'project.note38' | i18n }}: {{currentOffer.offerName}} ({{currentOffer.config}})</div>
+        <div class="text-label mb-3 mt-3">{{ 'project.note38' | i18n }}: {{currentOffer?.offerName}} ({{currentOffer?.config}})</div>
         <div class="text-label" style="margin-bottom: 20px">{{ 'project.note39' | i18n }}: {{selectedNameFlavor}} {{selectedConfig !== '' ? '(' + selectedConfig + ')' : ''}}</div>
 
         <div>
@@ -222,7 +222,7 @@
           <span class="text-card-header">{{'app.estimated.cost' | i18n}}</span>
         </div>
         <div class="card-money">
-        <div class="text-value">Gói dịch vụ {{currentOffer?.offerName}}</div>
+        <div class="text-value">Gói dịch vụ {{isSelectFlavor === true ? selectedNameFlavor : currentOffer?.offerName}}</div>
         <div style="margin-top: 10px" class="text-label" [innerHTML]="isSelectFlavor === true ? selectedDescription : currentOffer?.description"></div>
        </div>
         <nz-divider></nz-divider>
@@ -266,7 +266,7 @@
         </div>
         <nz-row>
           <nz-col style="width: 100%">
-            <button style="width: 100%" nz-button nzSize="large" nzType="primary">
+            <button style="width: 100%" nz-button nzSize="large" [disabled]="isSelectFlavor === false" (click)="update()" nzType="primary">
               <span nz-icon nzType="wallet" nzTheme="outline"></span>
               <span>Điều chỉnh</span>
             </button>

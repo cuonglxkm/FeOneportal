@@ -15,7 +15,8 @@
           [routerLink]="'/app-smart-cloud/backup/packages/detail/' + idBackupPackage">{{ 'app.backup.package.breadcrumb.detail'|i18n }}</a>
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>
-        <a routerLink="/app-smart-cloud/backup/packages/extend/{{idBackupPackage}}" >{{ 'app.backup.package.breadcrumb.resize'|i18n }}</a>
+        <a
+          routerLink="/app-smart-cloud/backup/packages/extend/{{idBackupPackage}}">{{ 'app.backup.package.breadcrumb.resize'|i18n }}</a>
       </nz-breadcrumb-item>
     </nz-breadcrumb>
     <ng-template #iconTemplate>
@@ -25,7 +26,8 @@
   <ng-template #action>
     <div class="alain-custom-action text-right">
       <share-users-combobox></share-users-combobox>
-      <region-select-dropdown (regionChange)="onRegionChanged($event)" (valueChanged)="regionChanged($event)"></region-select-dropdown>
+      <region-select-dropdown (regionChange)="onRegionChanged($event)"
+                              (valueChanged)="regionChanged($event)"></region-select-dropdown>
       <project-select-dropdown #projectCombobox (valueChanged)="projectChanged($event)"
                                (userChanged)="userChanged($event)"
                                [regionId]="region"></project-select-dropdown>
@@ -100,12 +102,13 @@
                   <nz-row style="padding: 12px 0 12px 0">
                     <span class="text-label" style="width: 45%">{{ 'app.backup.package.description'|i18n }}</span>
                     <span class="text-value-detail"
-                          *ngIf="packageBackupModel?.description.length > 15"
+                          *ngIf="packageBackupModel && packageBackupModel?.description.length > 15"
                           nz-popover
                           [nzPopoverPlacement]="'bottom'"
                           [nzPopoverContent]="packageBackupModel?.description">
-                      {{ packageBackupModel?.description.substring(0,15).concat('...') }}</span>
-                    <span class="text-value-detail" *ngIf="packageBackupModel?.description.length < 15">{{ packageBackupModel?.description }}</span>
+                      {{ packageBackupModel?.description.substring(0, 15).concat('...') }}</span>
+                    <span class="text-value-detail"
+                          *ngIf="packageBackupModel?.description.length < 15">{{ packageBackupModel?.description }}</span>
                   </nz-row>
                 </nz-col>
               </nz-row>
@@ -146,19 +149,21 @@
                 </ng-template>
               </nz-form-control>
             </nz-form-item>
-<!--            <nz-form-item>-->
-<!--              <nz-form-label>-->
-<!--                <span *ngIf="orderItem != undefined && orderItem?.orderItemPrices?.length > 0">-->
-<!--                  <span>{{ 'volume.unit-price'|i18n }}: </span> {{ orderItem?.orderItemPrices[0]?.unitPrice.amount | number }} {{ orderItem?.orderItemPrices[0]?.unitPrice.currency }}/ GB/ {{ 'app.month'|i18n }}-->
-<!--                </span>-->
-<!--                <span *ngIf="orderItem == undefined && orderItem?.orderItemPrices?.length <= 0">-->
-<!--                  <span>{{ 'volume.unit-price'|i18n }}: </span> 0 VND/ GB/ {{ 'app.month'|i18n }}-->
-<!--                </span>-->
-<!--              </nz-form-label>-->
-<!--            </nz-form-item>-->
+            <!--            <nz-form-item>-->
+            <!--              <nz-form-label>-->
+            <!--                <span *ngIf="orderItem != undefined && orderItem?.orderItemPrices?.length > 0">-->
+            <!--                  <span>{{ 'volume.unit-price'|i18n }}: </span> {{ orderItem?.orderItemPrices[0]?.unitPrice.amount | number }} {{ orderItem?.orderItemPrices[0]?.unitPrice.currency }}/ GB/ {{ 'app.month'|i18n }}-->
+            <!--                </span>-->
+            <!--                <span *ngIf="orderItem == undefined && orderItem?.orderItemPrices?.length <= 0">-->
+            <!--                  <span>{{ 'volume.unit-price'|i18n }}: </span> 0 VND/ GB/ {{ 'app.month'|i18n }}-->
+            <!--                </span>-->
+            <!--              </nz-form-label>-->
+            <!--            </nz-form-item>-->
             <nz-form-item>
               <nz-form-label>
-                  <span *ngIf="orderItem != undefined && orderItem?.orderItemPrices?.length > 0">{{ 'app.adjust.date'|i18n }}: {{ orderItem?.orderItemPrices[0]?.createdDate | date: 'dd/MM/yyyy' }}</span>
+                <span
+                  *ngIf="orderItem != undefined && orderItem != null && orderItem?.orderItemPrices?.length > 0">{{ 'app.adjust.date'|i18n }}
+                  : {{ orderItem?.orderItemPrices[0]?.createdDate | date: 'dd/MM/yyyy' }}</span>
               </nz-form-label>
             </nz-form-item>
           </nz-card>
@@ -184,9 +189,10 @@
                     <span class="text-value">{{ 'app.fee.resize' | i18n }}</span>
                   </nz-col>
                   <nz-col class="text-right" nzSpan="8">
-                    <span class="text-value" style="color: #0066b3" nzAlign="right" *ngIf="orderItem == null">0 VND</span>
+                    <span class="text-value" style="color: #0066b3" nzAlign="right"
+                          *ngIf="orderItem == null">0 VND</span>
                     <span class="text-value" style="color: #0066b3" nzAlign="right" *ngIf="orderItem != undefined">
-                  {{orderItem?.totalAmount?.amount | number }} {{orderItem?.totalAmount?.currency}}
+                  {{ orderItem?.totalAmount?.amount | number }} {{ orderItem?.totalAmount?.currency }}
                 </span>
                   </nz-col>
                 </nz-row>
@@ -195,7 +201,8 @@
                     <span class="text-value">{{ 'app.cost.vat' | i18n }}</span>
                   </nz-col>
                   <nz-col class="text-right" nzSpan="8">
-                    <span class="text-value" style="color: #0066b3" nzAlign="right" *ngIf="orderItem == null">0 VND</span>
+                    <span class="text-value" style="color: #0066b3" nzAlign="right"
+                          *ngIf="orderItem == null">0 VND</span>
                     <span class="text-value" style="color: #0066b3" nzAlign="right" *ngIf="orderItem != undefined">
                   {{ orderItem?.totalVAT?.amount | number }} {{ orderItem?.totalVAT?.currency }}
                 </span>
@@ -223,7 +230,8 @@
                 <nz-col style="width: 100%">
                   <button style="width: 100%" nz-button nzSize="large" nzType="primary"
                           (click)="sendRequestOrder()" [nzLoading]="isLoadingButton"
-                          [disabled]="validateForm.invalid || (validateForm.controls.storage.value == 0)">
+                          [disabled]="validateForm.invalid
+                          || (validateForm.controls.storage.value == 0)">
                     <img src="assets/imgs/wallet.svg" style="margin-right: 5px; padding-bottom: 5px;" />
                     <span [style.color]="validateForm.invalid ? 'gray' : 'white'">{{ 'app.button.resize'|i18n }}</span>
                   </button>

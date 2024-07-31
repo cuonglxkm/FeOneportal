@@ -127,6 +127,7 @@ export class EditBackupPackageComponent implements OnInit {
   onChangeStorage() {
     this.dataSubjectStorage.pipe(debounceTime(500))
       .subscribe((res) => {
+
         if (res % this.stepStorage > 0) {
           this.notification.warning('', this.i18n.fanyi('app.notify.amount.capacity', { number: this.stepStorage }));
           this.storage = this.storage - (res % this.stepStorage);
@@ -147,7 +148,7 @@ export class EditBackupPackageComponent implements OnInit {
       // this.getTotalAmount();
     }, error => {
       this.isLoading = false;
-      this.notification.error(this.i18n.fanyi('app.status.fail'), error.error.detail);
+      this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.failData'));
     });
   }
 

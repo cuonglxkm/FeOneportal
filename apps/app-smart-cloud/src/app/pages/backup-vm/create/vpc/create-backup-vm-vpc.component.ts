@@ -90,6 +90,8 @@ export class CreateBackupVmVpcComponent implements OnInit {
 
   instanceSelected: any;
 
+  projectName: string;
+
   @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
 
   constructor(private backupVmService: BackupVmService,
@@ -132,6 +134,7 @@ export class CreateBackupVmVpcComponent implements OnInit {
   projectChanged(project: ProjectModel) {
     this.project = project?.id;
     this.typeVpc = project?.type;
+    this.projectName = project?.projectName;
   }
 
   userChanged(project: ProjectModel) {

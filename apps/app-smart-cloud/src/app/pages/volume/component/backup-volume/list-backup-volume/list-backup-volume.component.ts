@@ -206,6 +206,8 @@ export class ListBackupVolumeComponent implements OnInit, OnDestroy{
       if (message) {
         switch (message.actionType) {
           case "CREATING":
+            this.getListBackupVolumes(false)
+            break;
           case "CREATED":
           case "RESIZING":
           case "RESIZED":
@@ -213,15 +215,14 @@ export class ListBackupVolumeComponent implements OnInit, OnDestroy{
           case "EXTENDED":
           case "DELETING":
             this.getListBackupVolumes(true)
+            break;
           case "DELETED":
           case "RESTORING":
           case "RESTORED":
             this.getListBackupVolumes(false);
-          break;
+            break;
           }
       }
     });
-
   }
-
 }

@@ -2979,6 +2979,8 @@
   "app.backup.volume.alert.delete": "Bạn đang thực hiện xóa Backup Volume",
   "app.backup.volume.confirm.delete": "Đế thực hiện xoá Backup Volume {{name}}, vui lòng nhập tên Backup để xác nhận.",
   "app.backup.volume.tooltip.type": "",
+  "app.backup.volume.delete.success": "Yêu cầu xóa Backup Volume thành công",
+  "app.backup.volume.delete.error": "Yêu cầu xóa Backup Volume thất bại",
 
   "app.backup.volume.notification.restore.success": "Yêu cầu khôi phục backup volume thành công.",
   "app.backup.volume.notification.restore.fail": "Yêu cầu khôi phục backup volume thất bại. {{error}}",

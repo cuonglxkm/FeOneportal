@@ -159,6 +159,22 @@
               <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
             </nz-col>
           </nz-row>
+          <div
+            *ngIf="(volumeInfo?.sizeInGB) > (backupPackageDetail?.sizeInGB - backupPackageDetail?.usedSize) && backupPackageDetail">
+            <nz-alert nzType="warning"
+                      [nzMessage]="titleMessage"
+                      nzShowIcon></nz-alert>
+            <ng-template #titleMessage>
+              <span
+                style="color: #FF0000;">{{ 'app.backup.package.storage'|i18n }} {{ backupPackageDetail?.packageName }}
+                ({{ 'app.backup.vm.alert.create.remaining.storage'|i18n }} {{ backupPackageDetail?.sizeInGB - backupPackageDetail?.usedSize }}
+                GB)
+                {{ 'app.backup.vm.alert.storage'|i18n }} ({{ volumeInfo?.sizeInGB }} GB).
+                <span>{{ 'app.backup.vm.alert.create'|i18n }} <a
+                  [routerLink]="'/app-smart-cloud/backup/packages/resize/'+backupPackageDetail?.id"> <b>{{ backupPackageDetail?.packageName }}</b></a> {{ 'app.backup.vm.alert.create2'|i18n }}</span>
+              </span>
+            </ng-template>
+          </div>
         </form>
       </nz-card>
     </nz-col>

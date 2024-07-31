@@ -221,17 +221,21 @@ export class ListBackupVmComponent implements OnInit, OnDestroy {
       if (message) {
         switch (message.actionType) {
           case "CREATING":
+            this.getListBackupVM(false);
+            break;
           case "CREATED":
           case "RESIZING":
           case "RESIZED":
           case "EXTENDING":
           case "EXTENDED":
           case "DELETING":
+            this.getListBackupVM(true);
+            break;
           case "DELETED":
           case "RESTORING":
           case "RESTORED":
             this.getListBackupVM(false);
-          break;
+            break;
           }
       }
     });
