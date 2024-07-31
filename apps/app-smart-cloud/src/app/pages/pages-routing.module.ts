@@ -1237,7 +1237,7 @@ const routes: Routes = [
 
   },
   {
-    path: 'object-storage-advance/extend/:id',
+    path: 'object-storage-advance/extend',
     component: ObjectStorageExtendComponent,
     canActivate: [PermissionGuard],
     data: {
@@ -1255,7 +1255,7 @@ const routes: Routes = [
 
   },
   {
-    path: 'object-storage-advance/edit/:id',
+    path: 'object-storage-advance/edit',
     component: ObjectStorageEditComponent,
     canActivate: [PermissionGuard],
     data: {
