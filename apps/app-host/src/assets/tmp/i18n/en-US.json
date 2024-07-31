@@ -3632,6 +3632,10 @@
   "waf.action.delete": "Delete",
   "waf.modal.subtitle.delete": "To delete a waf {{name}}, Please enter the waf name to confirm",
   "waf.notification.input.name": "Please enter the correct waf name.",
+  "waf.domain.https.setting": "HTTPS Settings",
+  "waf.domain.policies": "Edit Policies",
+  "waf.domain.policies.disable": "Disable all Policies",
+  "waf.domain.delete": "Delete domain",
 
   "waf.domain.button.create":"Add domain",
   "waf.table.title.name": "WAF name",

@@ -1,119 +1,90 @@
 <nz-content>
   <nz-card>
-    <ng-container [ngSwitch]="isBegin">
-      <ng-container *ngSwitchCase="false">
-        <nz-row nzJustify="space-between">
-          <nz-col nzSpan="16">
-            <nz-select [(ngModel)]="selectedValue"
-                       nzSize="large"
-                       style="margin-right: 10px; width: 200px;"
-                       (ngModelChange)="onChange($event)"
-                       nzPlaceHolder="{{ 'volume.placeholder.filter.status' | i18n }}"
-                       nzTooltipTitle="{{ 'volume.tooltip.title.filter.status' | i18n }}"
-                       nzTooltipPlacement="bottom"
-                       nz-tooltip>
-              <nz-option *ngFor="let item of options" [nzValue]="item.value" [nzLabel]="item.label"></nz-option>
-            </nz-select>
-            <nz-input-group style="width: 300px;"
-                            [nzPrefix]="prefixIconSearch"
-                            nzSize="large">
-              <input name="name"
-                     nz-input
-                     placeholder="{{ 'waf.placeholder.filter.name' | i18n }}"
-                     [(ngModel)]="value"
-                     (input)="changeInputChange($event)"
-                     (keydown.enter)="onEnter($event)" />
-            </nz-input-group>
-            <ng-template #prefixIconSearch>
-              <img src="assets/imgs/search.svg" alt="" />
-            </ng-template>
-          </nz-col>
-          <nz-col nzSpan="8" style="flex:none;">
-            <button nz-button
-                    nzType="primary"
+    <nz-row nzJustify="space-between">
+      <nz-col nzSpan="16">
+        <nz-select [(ngModel)]="selectedValue"
                     nzSize="large"
-                    (click)="navigateToCreateWaf()">
-              <img style="padding-right: 10px; margin-top: -4px"
-                   src="assets/imgs/add-circle.svg"
-                   alt="" />
-              <span class="button-text-primary">{{ 'waf.button.create' | i18n }}</span>
-            </button>
-          </nz-col>
-        </nz-row>
-        <nz-table #fixedTable
-                  style="margin-top: 20px;"
-                  nzShowSizeChanger
-                  [nzData]="response?.records || []"
-                  [nzPageSize]="response?.pageSize"
-                  (nzPageSizeChange)="onPageSizeChange($event)"
-                  [nzPageIndex]="response?.currentPage"
-                  (nzPageIndexChange)="onPageIndexChange($event)"
-                  [nzTotal]="response?.totalCount"
-                  [nzFrontPagination]="false"
-                  [nzLoading]="isLoading">
-          <thead>
-          <tr>
-            <th nzLeft>{{ 'waf.table.title.name' | i18n }}</th>
-            <th nzBreakWord>{{ 'waf.table.title.package' | i18n }}</th>
-            <th nzBreakWord>{{ 'waf.table.title.startdate' | i18n }}</th>
-            <th nzBreakWord>{{ 'waf.table.title.enddate' | i18n }}</th>
-            <th nzBreakWord>{{ 'waf.table.title.status' | i18n }}</th>
-            <th nzBreakWord>{{ 'waf.table.title.action' | i18n }}</th>
-          </tr>
-          </thead>
-          <tbody>
-          <tr *ngFor="let data of fixedTable.data">
-            <td nzLeft><a [routerLink]="'/app-smart-cloud/volume/detail/' + data.id">{{ data.name }}</a></td>
-            <td nzBreakWord nzAlign="left">{{ data.package }}</td>
-            <td nzBreakWord nzAlign="left">{{ data.begin | date : "dd/MM/yyyy"}}</td>
-            <td nzBreakWord nzAlign="left">{{ data.end | date : "dd/MM/yyyy"}}</td>
-            <ng-container  *ngIf="data.status | ServiceStatusPipe as statusModel">
-              <td
-                  nzBreakWord
-                  nzAlign="left"
-                  [ngStyle]="{color: statusModel.color}">{{ statusModel.status }}
-              </td>
-            </ng-container>
-            <td nzBreakWord nzAlign="center">
-              <div>
-                <img  src="assets/imgs/add.svg" (click)="navigateToAddDomain()" nz-popover
-                  [nzPopoverContent]="'volume.attach' | i18n"
-                  nzPopoverPlacement="bottom" style="cursor: pointer;"/>
-                <one-portal-delete-waf [wafId]="data.id"
-                                        [wafName]="data.name"
-                                        (onOk)="handleOkDelete()" />
-              </div>
-            </td>
-          </tr>
-          </tbody>
-        </nz-table>
-      </ng-container>
-      <ng-container *ngSwitchDefault>
-        <result>
-          <nz-row>
-            <nz-col class="text-center" style="width: 100%">
-              <img src="/assets/imgs/volume.png" alt="" />
-            </nz-col>
-          </nz-row>
-          <nz-row style="margin-top: 20px">
-            <nz-col class="text-center" style="width: 100%">
-              <span class="text-intro-title" style="color: #0066b3">{{ 'volume.intro.title' | i18n }}
-                <br>{{ 'volume.intro.title2' | i18n }}</span>
-            </nz-col>
-          </nz-row>
-          <nz-row style="margin-top: 20px">
-            <nz-col class="text-center" style="width: 100%">
-              <span class="text-intro-desc">{{ 'volume.intro.subtitle' | i18n }}</span>
-            </nz-col>
-          </nz-row>
-          <button style="margin-top: 20px" nz-button [nzType]="'primary'" (click)="navigateToCreateWaf()"
-                  nzSize="large">
-            <img style="padding-right: 10px; margin-top: -4px" src="assets/imgs/cloud-plus-bold.svg" alt="" />
-            {{ 'waf.button.create' | i18n }}
-          </button>
-        </result>
-      </ng-container>
-    </ng-container>
+                    style="margin-right: 10px; width: 200px;"
+                    (ngModelChange)="onChange($event)"
+                    nzPlaceHolder="{{ 'volume.placeholder.filter.status' | i18n }}"
+                    nzTooltipTitle="{{ 'volume.tooltip.title.filter.status' | i18n }}"
+                    nzTooltipPlacement="bottom"
+                    nz-tooltip>
+          <nz-option *ngFor="let item of options" [nzValue]="item.value" [nzLabel]="item.label"></nz-option>
+        </nz-select>
+        <nz-input-group style="width: 300px;"
+                        [nzPrefix]="prefixIconSearch"
+                        nzSize="large">
+          <input name="name"
+                  nz-input
+                  placeholder="{{ 'waf.placeholder.filter.name' | i18n }}"
+                  [(ngModel)]="value"
+                  (input)="changeInputChange($event)"
+                  (keydown.enter)="onEnter($event)" />
+        </nz-input-group>
+        <ng-template #prefixIconSearch>
+          <img src="assets/imgs/search.svg" alt="" />
+        </ng-template>
+      </nz-col>
+      <nz-col nzSpan="8" style="flex:none;">
+        <button nz-button
+                nzType="primary"
+                nzSize="large"
+                (click)="navigateToCreateWaf()">
+          <img style="padding-right: 10px; margin-top: -4px"
+                src="assets/imgs/add-circle.svg"
+                alt="" />
+          <span class="button-text-primary">{{ 'waf.button.create' | i18n }}</span>
+        </button>
+      </nz-col>
+    </nz-row>
+    <nz-table #fixedTable
+              style="margin-top: 20px;"
+              nzShowSizeChanger
+              [nzData]="response?.records || []"
+              [nzPageSize]="response?.pageSize"
+              (nzPageSizeChange)="onPageSizeChange($event)"
+              [nzPageIndex]="response?.currentPage"
+              (nzPageIndexChange)="onPageIndexChange($event)"
+              [nzTotal]="response?.totalCount"
+              [nzFrontPagination]="false"
+              [nzLoading]="isLoading">
+      <thead>
+      <tr>
+        <th nzLeft>{{ 'waf.table.title.name' | i18n }}</th>
+        <th nzBreakWord>{{ 'waf.table.title.package' | i18n }}</th>
+        <th nzBreakWord>{{ 'waf.table.title.startdate' | i18n }}</th>
+        <th nzBreakWord>{{ 'waf.table.title.enddate' | i18n }}</th>
+        <th nzBreakWord>{{ 'waf.table.title.status' | i18n }}</th>
+        <th nzBreakWord>{{ 'waf.table.title.action' | i18n }}</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr *ngFor="let data of fixedTable.data">
+        <td nzLeft><a [routerLink]="'/app-smart-cloud/waf/detail/' + data.id">{{ data.name }}</a></td>
+        <td nzBreakWord nzAlign="left">{{ data.offerName }}</td>
+        <td nzBreakWord nzAlign="left">{{ data.createdDate | date : "dd/MM/yyyy"}}</td>
+        <td nzBreakWord nzAlign="left">{{ data.expiredDate | date : "dd/MM/yyyy"}}</td>
+        <ng-container  *ngIf="data.status | ServiceStatusPipe as statusModel">
+          <td
+              nzBreakWord
+              nzAlign="left"
+              [ngStyle]="{color: statusModel.color}">{{ statusModel.status }}
+          </td>
+        </ng-container>
+        <td nzBreakWord nzAlign="center">
+          <div>
+            <img  src="assets/imgs/add.svg" (click)="navigateToAddDomain()" nz-popover
+              [nzPopoverContent]="'waf.domain.button.create' | i18n"
+              nzPopoverPlacement="bottom" style="cursor: pointer;"/>
+            <one-portal-delete-waf [wafId]="data.id"
+                                    [wafName]="data.name"
+                                    (onOk)="handleOkDelete()" />
+          </div>
+        </td>
+      </tr>
+      </tbody>
+    </nz-table>
   </nz-card>
 </nz-content>
 

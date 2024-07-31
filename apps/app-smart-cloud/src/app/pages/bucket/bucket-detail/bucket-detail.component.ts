@@ -492,6 +492,10 @@ export class BucketDetailComponent extends BaseService implements OnInit {
         this.activatedRoute.snapshot.paramMap.get('name'),
         this.region
       )
+
+
+
+
       .subscribe((data) => {
         this.bucket = data;
         this.cdr.detectChanges()
@@ -501,9 +505,12 @@ export class BucketDetailComponent extends BaseService implements OnInit {
         }
       },
         error => {
-        this.notification.error(this.i18n.fanyi("app.status.fail"),error.error.message)
+        // this.notification.error(this.i18n.fanyi("app.status.fail"),error.error.message)
+        //   this.router.navigate(['/app-smart-cloud/object-storage/bucket']);
+          this.notification.error(this.i18n.fanyi("app.status.fail"),this.i18n.fanyi("app.record.not.found"))
           this.router.navigate(['/app-smart-cloud/object-storage/bucket']);
         });
+
   }
 
   addMoreMetadata() {
