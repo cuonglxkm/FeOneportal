@@ -1,7 +1,6 @@
 import { ChangeDetectionStrategy, Component, Input, Output, EventEmitter, ChangeDetectorRef } from '@angular/core';
 import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
 import { NAME_SNAPSHOT_REGEX } from 'src/app/shared/constants/constants';
-import { WafDomainDTO } from '../../domain-list/domain-list.component';
 
 @Component({
   selector: 'one-portal-delete-domain',
@@ -10,7 +9,7 @@ import { WafDomainDTO } from '../../domain-list/domain-list.component';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DeleteDomainComponent {
-  @Input() domainData: WafDomainDTO
+  @Input() domainData: any
 
   isVisible: boolean = false;
   isLoading: boolean = false;

@@ -7,14 +7,8 @@ import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from '@core';
 import { debounceTime, Subject, Subscription } from 'rxjs';
 import { BaseResponse, NotificationService } from '../../../../../../../libs/common-utils/src';
-
-export class WafDTO{
-  name:string;
-  package:string;
-  begin:Date;
-  end:Date;
-  status:string;
-}
+import { WafDetailDTO } from '../waf.model';
+import { WafService } from 'src/app/shared/services/waf.service';
 
 @Component({
   selector: 'app-waf-list',
@@ -36,7 +30,7 @@ export class WafListComponent implements OnInit, OnDestroy {
   pageSize: number = 10;
   pageIndex: number = 1;
 
-  response: BaseResponse<WafDTO[]>;
+  response: BaseResponse<WafDetailDTO[]>;
 
   isBegin: boolean = false;
 
@@ -47,7 +41,7 @@ export class WafListComponent implements OnInit, OnDestroy {
 
   constructor(@Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
               private router: Router,
-              //private wafService: WafService,
+              private wafService: WafService,
               private fb: NonNullableFormBuilder,
               private cdr: ChangeDetectorRef,
               private notificationService: NotificationService,
@@ -106,43 +100,28 @@ export class WafListComponent implements OnInit, OnDestroy {
   wafInstance: string = '';
 
   getListWaf() {
-    //this.isLoading = true;
+    this.isLoading = true;
 
-    // this.wafService.getWafs(this.customerId, this.project,
-    //   this.region, this.pageSize, this.pageIndex, this.selectedValue, this.value)
-    //   .pipe(debounceTime(500))
-    //   .subscribe(data => {
-    //     if (data) {
-    //       this.isLoading = false;
-    //       this.response = data;
-    //     } else {
-    //       this.isLoading = false;
-    //       this.response = null;
-    //     }
-    //     if (isBegin) {
-    //       this.isBegin = this.response.records.length < 1 || this.response.records === null ? true : false;
-    //     }
-    //   }, error => {
-    //     this.isLoading = false;
-    //     this.response = null;
-    //     console.log(error);
-    //     this.notification.error(error.statusText, this.i18n.fanyi('app.failData'));
-    //   });
+    this.wafService.getWafs(this.pageSize, this.pageIndex, this.selectedValue, this.value, null)
+      .pipe(debounceTime(500))
+      .subscribe({
+        next: data => {
+          if (data) {
+            this.isLoading = false;
+            this.response = data;
+          } else {
+            this.isLoading = false;
+            this.response = null;
+          }
 
-    this.response = {
-      currentPage: 1,
-      pageSize: 10,
-      totalCount: 100,
-      previousPage: 0,
-      records: [{
-        name:"waf_01",
-        package:"CMC01",
-        begin:new Date(),
-        end:new Date(),
-        status:"SUSPENDED",
-      }]
-    }
-    this.isLoading=false;
+          this.isBegin = this.response.records.length < 1 || this.response.records === null ? true : false;
+        },
+        error :error => {
+          this.isLoading = false;
+          this.response = null;
+          console.log(error);
+          this.notification.error(error.statusText, this.i18n.fanyi('app.failData'));
+        }});
   }
 
   navigateToCreateWaf() {
@@ -151,7 +130,7 @@ export class WafListComponent implements OnInit, OnDestroy {
   
   
   navigateToAddDomain() {
-    this.router.navigate(['/app-smart-cloud/waf/create-domain']);
+    this.router.navigate(['/app-smart-cloud/waf/add-domain']);
   }
 
   //delete

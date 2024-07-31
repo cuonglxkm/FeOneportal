@@ -1,7 +1,6 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
 import { ipValidatorMany } from '../../../../../../../../libs/common-utils/src';
-import { WafDomainDTO } from '../../domain-list/domain-list.component';
 
 @Component({
   selector: 'one-portal-edit-domain',
@@ -10,7 +9,7 @@ import { WafDomainDTO } from '../../domain-list/domain-list.component';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class EditDomainComponent {
-  @Input() domainData: WafDomainDTO 
+  @Input() domainData: any 
 
   isVisible: boolean = false;
   isLoading: boolean = false;
