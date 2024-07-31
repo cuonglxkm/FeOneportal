@@ -127,6 +127,22 @@
                 </nz-form-item>
               </nz-col>
             </nz-row>
+            <div
+              *ngIf="(volumeInfo?.sizeInGB) > (projectDetail?.cloudProject.quotaBackupVolumeInGb - projectDetail?.cloudProjectResourceUsed.backup)">
+              <nz-alert nzType="warning"
+                        [nzMessage]="titleMessage"
+                        nzShowIcon></nz-alert>
+              <ng-template #titleMessage>
+              <span
+                style="color: #FF0000;">{{
+                  'app.backup.vm.alert.storage.vpc'|i18n:
+                    { storage: (volumeInfo?.sizeInGB) }
+                }} <a
+                  [routerLink]="'/app-smart-cloud/project/detail/' + project">{{ projectName }}</a> {{ 'schedule.backup.alert.storage.vpc1'|i18n }}</span>
+                <span
+                  style="color: #FF0000;">{{ 'app.backup.vm.alert.storage.vpc'|i18n: { storage: (volumeInfo?.sizeInGB) } }}</span>
+              </ng-template>
+            </div>
           </form>
         </nz-card>
       </nz-col>

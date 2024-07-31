@@ -49,7 +49,7 @@ export class CreateBackupVolumeVpcComponent implements OnInit{
   listVolumes: VolumeDTO[]
   isLoading: boolean = false
   volumeInfo: VolumeDTO = new VolumeDTO()
-
+  projectName: string = ''
   @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
 
   constructor(private activatedRoute: ActivatedRoute,
@@ -78,6 +78,7 @@ export class CreateBackupVolumeVpcComponent implements OnInit{
 
   projectChanged(project: ProjectModel) {
     this.project = project?.id
+    this.projectName = project?.projectName
   }
 
   userChaged(project: ProjectModel) {

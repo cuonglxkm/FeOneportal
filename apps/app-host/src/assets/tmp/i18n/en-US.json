@@ -3072,6 +3072,8 @@
   "app.backup.volume.current": "Restore to the current Volume",
   "app.backup.volume.new": "Restore to a new Volume",
   "app.backup.volume.restore.current": "Select a Volume with a capacity greater than or equal to the backup size",
+  "app.backup.volume.delete.success": "Backup Volume deletion request successful.",
+  "app.backup.volume.delete.error": "Backup Volume deletion request failed",
 
   "app.dashboard.subscription.service": "Service",
   "app.dashboard.subscription.service.active": "Service Active",
