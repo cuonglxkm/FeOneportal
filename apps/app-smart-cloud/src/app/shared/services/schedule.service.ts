@@ -28,6 +28,8 @@ export class ScheduleService extends BaseService {
     let params = new HttpParams()
     if(formSearch.scheduleName != undefined || formSearch.scheduleName != null || formSearch.scheduleName != '') {
       params = params.append('scheduleName', formSearch.scheduleName)
+    } else {
+      params = params.append('scheduleName', '');
     }
     if(formSearch.regionId != undefined) {
       params = params.append('regionId', formSearch.regionId)
@@ -47,6 +49,12 @@ export class ScheduleService extends BaseService {
     }
     if(formSearch.scheduleStatus != undefined || formSearch.scheduleName != null || formSearch.scheduleName != '') {
       params = params.append('scheduleStatus', formSearch.scheduleStatus)
+    } else {
+      params = params.append('scheduleStatus', '');
+    }
+
+    if(formSearch.serviceId != undefined || formSearch.serviceId != null) {
+      params = params.append('serviceId', formSearch.serviceId)
     }
     return this.http.get<BaseResponse<BackupSchedule[]>>(this.baseUrl + this.ENDPOINT.provisions + '/backups/schedules', {
       params: params,

@@ -3296,6 +3296,7 @@
   "schedule.backup.vm.backup.volume.mode.date.tooltip": "Ngày thực hiện Backup trong tháng",
   "schedule.backup.vm.backup.volume.mode.day.tooltip": "Ngày thực hiện Backup trong tuần",
   "schedule.backup.vm.backup.volume.mode.week.tooltip": "Số tuần/lần thực hiện Backup",
+  "schedule.backup.block.create": "Dịch vụ đã được lập lịch",
 
 
   "listner.create.duplicate.port.weight": "Các member có cùng IP không được trùng Port và Weight",

@@ -44,6 +44,7 @@ export class FormSearchScheduleBackup {
   serviceType: number
   pageIndex: number
   pageSize: number
+  serviceId: number
 }
 
 export class FormAction {
