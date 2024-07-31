@@ -50,8 +50,7 @@ export class BucketDetailComponent extends BaseService implements OnInit {
   defaultMetadata = { metaKey: '', metaValue: '' };
   listOfMetadata: any = [];
   bucket: any;
-  size = 5;
-  pageSizeFixed = 5
+  size = 10;
   index: number = 1;
   total: number = 0;
   loading = false;
