@@ -27,6 +27,7 @@ import {
 import { CatalogService } from 'src/app/shared/services/catalog.service';
 import { BackupSchedule, FormSearchScheduleBackup } from '../../../shared/models/schedule.model';
 import { ScheduleService } from '../../../shared/services/schedule.service';
+import { RegionID } from '../../../shared/enums/common.enum';
 
 class SearchParam {
   status: string = '';
@@ -907,30 +908,45 @@ export class InstancesComponent implements OnInit {
     this.backupScheduleService.search(formSearch).subscribe(data => {
       this.isLoading = false;
       this.listScheduleBackup = data?.records;
-      this.listScheduleBackup.forEach(item => {
+      if (this.listScheduleBackup?.length <= 0) {
         if (this.typeVpc == 1) {
 
-          if (item.serviceId == id) {
-            this.notification.warning('', this.i18n.fanyi('schedule.backup.block.create'));
-          } else {
             this.router.navigate([
               '/app-smart-cloud/schedule/backup/create/vpc',
               { type: 'INSTANCE', instanceId: id }
             ]);
-          }
+
         } else {
-          if (item.serviceId == id) {
-            this.notification.warning('', this.i18n.fanyi('schedule.backup.block.create'));
-          } else {
+
             this.router.navigate([
               '/app-smart-cloud/schedule/backup/create',
               { type: 'INSTANCE', instanceId: id }
             ]);
-          }
 
         }
-
-      });
+      } else {
+        this.listScheduleBackup.forEach(item => {
+          if (this.typeVpc == 1) {
+            if (item.serviceId == id) {
+              this.notification.warning('', this.i18n.fanyi('schedule.backup.block.create'));
+            } else {
+              this.router.navigate([
+                '/app-smart-cloud/schedule/backup/create/vpc',
+                { type: 'INSTANCE', instanceId: id }
+              ]);
+            }
+          } else {
+            if (item.serviceId == id) {
+              this.notification.warning('', this.i18n.fanyi('schedule.backup.block.create'));
+            } else {
+              this.router.navigate([
+                '/app-smart-cloud/schedule/backup/create',
+                { type: 'INSTANCE', instanceId: id }
+              ]);
+            }
+          }
+        });
+      }
     }, error => {
       this.isLoading = false;
       this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.failData'));
