@@ -102,7 +102,7 @@
                   <nz-row style="padding: 12px 0 12px 0">
                     <span class="text-label" style="width: 45%">{{ 'app.backup.package.description'|i18n }}</span>
                     <span class="text-value-detail"
-                          *ngIf="packageBackupModel?.description.length > 15"
+                          *ngIf="packageBackupModel && packageBackupModel?.description.length > 15"
                           nz-popover
                           [nzPopoverPlacement]="'bottom'"
                           [nzPopoverContent]="packageBackupModel?.description">
@@ -162,7 +162,7 @@
             <nz-form-item>
               <nz-form-label>
                 <span
-                  *ngIf="orderItem != undefined && orderItem?.orderItemPrices?.length > 0">{{ 'app.adjust.date'|i18n }}
+                  *ngIf="orderItem != undefined && orderItem != null && orderItem?.orderItemPrices?.length > 0">{{ 'app.adjust.date'|i18n }}
                   : {{ orderItem?.orderItemPrices[0]?.createdDate | date: 'dd/MM/yyyy' }}</span>
               </nz-form-label>
             </nz-form-item>

@@ -147,7 +147,7 @@ export class EditBackupPackageComponent implements OnInit {
       // this.getTotalAmount();
     }, error => {
       this.isLoading = false;
-      this.notification.error(this.i18n.fanyi('app.status.fail'), error.error.detail);
+      this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.failData'));
     });
   }
 
