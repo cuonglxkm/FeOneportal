@@ -120,7 +120,7 @@
                 ></nz-alert>
         </div>
         <div class="text-label mb-3 mt-3">{{ 'project.note38' | i18n }}: {{currentOffer.offerName}} ({{currentOffer.config}})</div>
-        <div class="text-label" style="margin-bottom: 20px">{{ 'project.note39' | i18n }}: {{selectedNameFlavor}}</div>
+        <div class="text-label" style="margin-bottom: 20px">{{ 'project.note39' | i18n }}: {{selectedNameFlavor}} {{selectedConfig !== '' ? '(' + selectedConfig + ')' : ''}}</div>
 
         <div>
           <ngu-carousel
@@ -134,7 +134,7 @@
             [@slider]="ani"
           >
             <div
-              style="cursor: pointer"
+              style="cursor: pointer; height: 100%"
               (click)="onInputFlavors(item.id, item.offerName)"
               [id]="'flavor_' + item.id"
             >
@@ -177,7 +177,7 @@
                 </nz-col>
               </nz-row>
                 <div
-                  style="width: 100%; padding-top: 5px"
+                  style="width: 100%; padding-top: 5px; height: 255px;"
                   [class.flavor-footer-active]="
                     selectedElementFlavor === 'flavor_' + item.id
                   "
@@ -217,7 +217,7 @@
     <!---------------CARD-THÀNH TIỀN-------------->
     <nz-col nzSpan="8">
       <nz-affix [nzOffsetTop]="72">
-      <nz-card style="border-radius: 8px;" [nzLoading]="loadingCalculate" class="card-border">
+      <nz-card style="border-radius: 8px;" class="card-border">
         <div style="margin-bottom: 20px">
           <span class="text-card-header">{{'app.estimated.cost' | i18n}}</span>
         </div>
@@ -260,7 +260,7 @@
               <span class="text-note-italicized">({{'app.payment-detail.vat' | i18n}})</span>
             </nz-col>
             <nz-col class="text-right" nzSpan="8">
-              <span class="text-value" style="color: #ea3829" nzAlign="right">{{ totalPayment | formatPrice  }} VND</span>
+              <span class="text-value" style="color: #ea3829" nzAlign="right">{{ totalincludesVAT | formatPrice  }} VND</span>
             </nz-col>
           </nz-row>
         </div>

@@ -11,9 +11,12 @@ import { CatalogService } from 'src/app/shared/services/catalog.service';
 import { OrderService } from 'src/app/shared/services/order.service';
 import { WafService } from 'src/app/shared/services/waf.service';
 import { slider } from '../../../../../../../libs/common-utils/src';
-import { OfferItem } from '../../instances/instances.model';
+import { DataPayment, ItemPayment, OfferItem } from '../../instances/instances.model';
 import { InstancesService } from '../../instances/instances.service';
-import { WafDetailDTO } from '../waf.model';
+import { WafDetailDTO, WAFResize } from '../waf.model';
+import { ServiceActionType, ServiceType } from 'src/app/shared/enums/common.enum';
+import { ObjectStorageService } from 'src/app/shared/services/object-storage.service';
+import { OrderItemObject } from 'src/app/shared/models/price';
 
 @Component({
   selector: 'one-portal-waf-resize',
@@ -37,27 +40,21 @@ export class WAFResizeComponent implements OnInit {
   offerFlavor: OfferItem;
   selectedElementFlavor: any;
 
-  regionId: any;
-  loadingCalculate = false;
   dateNow: any;
   today: any;
   expiredDate: any;
   selectedDescription: string = '';
+  selectedConfig: string = '';
   selectedNameFlavor: string = '';
 
   id: any;
   total: any;
-  totalAmount = 0;
-  totalPayment = 0;
+  totalAmount: number = 0;
+  totalincludesVAT: number = 0;
   totalVAT = 0;
   selectPackge = '';
   private searchSubject = new Subject<string>();
-  selectIndexTab: number = 0;
-  iconToggle: string;
-
-  listTypeCatelogOffer: any;
-  disableIpConnectInternet: boolean = true;
-  loadingIpConnectInternet: boolean = true;
+  selectedOfferId: number = 0;
   currentOffer: any;
   isLoading = false;
   isVisiblePopupError: boolean = false;
@@ -85,7 +82,7 @@ export class WAFResizeComponent implements OnInit {
     private service: WafService,
     private activatedRoute: ActivatedRoute,
     private notification: NzNotificationService,
-    private orderService: OrderService,
+    private orderService: ObjectStorageService,
     private catalogService: CatalogService
   ) {}
 
@@ -122,6 +119,7 @@ export class WAFResizeComponent implements OnInit {
     );
     this.selectedElementFlavor = 'flavor_' + event;
     this.selectedNameFlavor = this.offerFlavor.offerName;
+    this.selectedOfferId = this.offerFlavor.id;
     console.log(this.selectedNameFlavor);
 
     console.log('selectedElementFlavor', this.selectedElementFlavor);
@@ -135,7 +133,13 @@ export class WAFResizeComponent implements OnInit {
       this.selectedDescription = '';
     }
 
-    this.calculate();
+    if (this.offerFlavor?.config) {
+      this.selectedConfig = this.offerFlavor.config;
+    } else {
+      this.selectedConfig = '';
+    }
+
+    this.getTotalAmount();
   }
 
   initFlavors(): void {
@@ -190,9 +194,11 @@ export class WAFResizeComponent implements OnInit {
 
               this.listOfferFlavors.forEach((e: OfferItem) => {
                 e.description = '';
+                e.config = ''
                 e.characteristicValues.forEach((ch) => {
                   if (ch.charName == 'Domain') {
                     e.description += `<b>${ch.charOptionValues}</b> Domain`;
+                    e.config += `${ch.charOptionValues} Domain`;
                   }
                 });
                 e.characteristicValues.forEach((ch) => {
@@ -201,39 +207,71 @@ export class WAFResizeComponent implements OnInit {
                     ch.charOptionValues[0] == 'true'
                   ) {
                     e.description += `<br/><b>Có</b> chống tấn công DDOS`;
+                    e.config += `, Có chống tấn công DDOS`;
                   } else if (
                     ch.charName == 'WAF' &&
                     ch.charOptionValues[0] == 'true'
                   ) {
                     e.description += `<br/><b>Có</b> tường lửa (WAF) chặn tấn công Top 10 OWASP`;
+                    e.config += `, tường lửa (WAF) chặn tấn công Top 10 OWASP`;
                   } else if (
                     ch.charName == 'IP/GeoBlock' &&
                     ch.charOptionValues[0] == 'true'
                   ) {
                     e.description += `<br/><b>Có</b> giới hạn truy cập theo IP, dải IP...`;
+                    e.config += `, Có giới hạn truy cập theo IP, dải IP...`;
                   } else if (ch.charName == 'UsageTraffic') {
                     e.description += `<br/><b>${ch.charOptionValues} GB</b> Lưu lượng sử dụng`;
+                    e.config += `, ${ch.charOptionValues} GB Lưu lượng sử dụng`;
                   }
                 });
               });
             } else {
-              // Handle case where currentOffer is not found
               console.error('Current offer not found');
             }
-
-            console.log(this.listOfferFlavors);
             this.cdr.detectChanges();
           });
       });
   }
 
-  onChangeTime() {
-    const dateNow = new Date();
-    dateNow.setMonth(
-      dateNow.getMonth() + Number(this.form.controls['numOfMonth'].value)
-    );
-    this.expiredDate = dateNow;
+  WAFResize: WAFResize = new WAFResize();
+  initWAFResize() {
+    this.WAFResize.customerId = this.tokenService.get()?.userId;
+    this.WAFResize.userEmail = this.tokenService.get()?.email;
+    this.WAFResize.actorEmail = this.tokenService.get()?.email;
+    this.WAFResize.typeName =
+      'SharedKernel.IntegrationEvents.Orders.Specifications.Waf.WafReizeSpecification,SharedKernel.IntegrationEvents, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null';
+    this.WAFResize.regionId = 0;
+    this.WAFResize.serviceType = ServiceType.WAF;
+    this.WAFResize.actionType = ServiceActionType.RESIZE;
+    this.WAFResize.serviceInstanceId = this.id;
+    this.WAFResize.newOfferId = this.selectedOfferId;
   }
+
+  orderObject: OrderItemObject = new OrderItemObject();
+
+  getTotalAmount() {
+    this.initWAFResize();
+    let itemPayment: ItemPayment = new ItemPayment();
+    itemPayment.orderItemQuantity = 1;
+    itemPayment.specificationString = JSON.stringify(
+      this.WAFResize
+    );
+    itemPayment.specificationType = 'waf_resize';
+    itemPayment.sortItem = 0;
+    let dataPayment: DataPayment = new DataPayment();
+    dataPayment.orderItems = [itemPayment];
+    this.orderService.getTotalAmount(dataPayment).subscribe((result) => {
+      console.log('thanh tien', result);
+      this.totalAmount = Number.parseFloat(result.data.totalAmount.amount);
+      this.totalincludesVAT = Number.parseFloat(
+        result.data.totalPayment.amount
+      );
+      this.orderObject = result.data;
+      this.cdr.detectChanges();
+    });
+}
+
 
   onInputChange(value: number, name: string): void {
     this.inputChangeSubject.next({ value, name });

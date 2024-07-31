@@ -661,6 +661,7 @@
   "app.note.static.web.hosting": "Lưu ý: Để website hoạt động hãy đảm bảo file đã được public",
   "app.label.static.web.hosting": "Chuyển hướng đến một địa chỉ web khác",
   "app.label.static.web.hosting.error1": "Địa chỉ web không đúng định dạng",
+  "app.label.static.web.hosting.error2": "Địa chỉ web không được để trống",
   "app.static.web.hosting": "Chuyển hướng đến một địa chỉ web khác",
   "app.static.web.hosting.create.success": "Chỉnh sửa Static Web Hosting thành công",
   "app.static.web.hosting.create.fail": "Chỉnh sửa Static Web Hosting không thành công",

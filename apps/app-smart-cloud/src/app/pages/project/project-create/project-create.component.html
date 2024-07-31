@@ -860,9 +860,9 @@
                       <nz-form-item>
                         <nz-form-label class="custom-label">Số lượng GPU ({{typeCatelog?.GpuType}})</nz-form-label>
                         <nz-form-control>
-                          <nz-input-number style="width: 100%; margin-left: -1px" nzMin="0" nzMax="1000" nzStep="1"
+                          <nz-input-number style="width: 100%; margin-left: -1px" nzMin="0" nzStep="1"
                             name="gpu" [(ngModel)]="gpuQuotasGobal[i].GpuCount" (keydown)="checkPossiblePress($event)"
-                            (ngModelChange)="getValues(i,gpuQuotasGobal?.[i]?.GpuCount)"
+                            (ngModelChange)="gpuMax(i,5,gpuQuotasGobal?.[i]?.GpuCount)"
                             [ngModelOptions]="{ standalone: true }" nzSize="large"></nz-input-number>
 
                         </nz-form-control>
