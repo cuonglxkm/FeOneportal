@@ -230,7 +230,19 @@
         </td>
         <td nzBreakWord>{{ data.isVersioning }}</td>
         <td nzBreakWord>{{ data.createdDate | date : 'dd/MM/yyyy' }}</td>
-        <td nzBreakWord>{{ data.status }}</td>
+        <td nzBreakWord>
+          <ng-container *ngIf="data.status | ServiceStatusPipe as statusModel">
+<!--            <td *ngIf="!!data.suspendReason">-->
+<!--              <span [ngStyle]="{color: statusModel.color}">-->
+<!--                <img src="assets/imgs/warning-message.svg" alt="" style="cursor: pointer; margin-bottom: 4px;"-->
+<!--                     nzTooltipTitle="{{ item.suspendReason | SuspendStatusPipe }}"-->
+<!--                     nzTooltipPlacement="bottom"-->
+<!--                     nz-tooltip>-->
+<!--                {{ statusModel.status }}</span>-->
+<!--            </td>-->
+              <span [ngStyle]="{color: statusModel.color}">{{ statusModel.status }}</span>
+          </ng-container>
+        </td>
         <td nzRight>
           <img
             src="assets/imgs/uil_setting.svg"

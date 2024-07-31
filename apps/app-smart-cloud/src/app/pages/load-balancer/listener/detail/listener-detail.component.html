@@ -141,8 +141,8 @@
     </nz-form-item>
   </nz-card>
   <nz-card class="text-label" nzTitle="" style="border-radius: 8px;">
-    <nz-tabset>
-      <nz-tab nzTitle="Pool">
+    <nz-tabset [(nzSelectedIndex)]="tabIndex">
+      <nz-tab [tabIndex]="0" nzTitle="Pool">
         <div class="text-card-header" style="margin-bottom: 30px;">{{ 'app.pool.list' | i18n }}</div>
         <nz-table [nzData]="listPool" [nzShowPagination]="false" [nzLoading]="loadingPool">
           <thead>
@@ -183,7 +183,7 @@
           </tbody>
         </nz-table>
       </nz-tab>
-      <nz-tab nzTitle="L7 Policy" *ngIf="protocolListener!='TCP'">
+      <nz-tab [tabIndex]="1" nzTitle="L7 Policy" *ngIf="protocolListener!='TCP'">
         <nz-row style="display: flex;justify-content: space-between;margin-bottom: 30px;">
           <div class="text-card-header">{{ 'app.l7.policy.list' | i18n }}</div>
           <button *ngIf="currentPageData?.length > 0"  nz-button nzType="primary" nzSize="large" [routerLink]="'/app-smart-cloud/load-balancer/'+idLb+'/listener/'+idListener+'/create/l7-policy'">

@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit, ViewChild } from '@angular/core';
+import { Component, Inject, Input, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
 import { ipAddressValidator } from '../create/listener-create.component';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -19,6 +19,7 @@ import { ProjectSelectDropdownComponent } from 'src/app/shared/components/projec
 export class ListenerDetailComponent implements OnInit {
   regionId = JSON.parse(localStorage.getItem('regionId'));
   projectId = JSON.parse(localStorage.getItem('projectId'));
+  @Input() tabIndex: any = 0;
   idListener: any;
   idLb: any;
   listPool: any;
