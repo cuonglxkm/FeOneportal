@@ -112,3 +112,17 @@ export class BucketLifecycleCreate {
   lifecycleRuleAbortIncompleteMultipartUpload_Day: number = 1;
   enabled: boolean;
 }
+
+export class BucketLifecycleUpdate {
+  bucketName: string
+  id: string
+  prefix: string
+  lifecycleTagPredicate: LifecycleTagPredicate[]
+  isSetExpiration_Day: boolean
+  lifecycleRuleExpiration_Day: number
+  isSetNoncurrentVersionExpiration_Day: boolean
+  lifecycleRuleNoncurrentVersionExpiration_Day: number
+  isSetAbortIncompleteMultipartUpload_Day: boolean
+  lifecycleRuleAbortIncompleteMultipartUpload_Day: number
+  enabled: boolean
+}

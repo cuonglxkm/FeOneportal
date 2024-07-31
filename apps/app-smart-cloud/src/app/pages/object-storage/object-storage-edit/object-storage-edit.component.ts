@@ -93,19 +93,18 @@ export class ObjectStorageEditComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.id = this.activatedRoute.snapshot.paramMap.get('id');
     let regionAndProject = getCurrentRegionAndProject();
     this.region = regionAndProject.regionId;
     this.getConfigurations();
     this.getObjectStorage();
-    this.onChangeTotalAmount()
+    this.onChangeTotalAmount();
   }
 
   onRegionChange(region: RegionModel) {
     this.region = region.regionId;
-    if(this.region === RegionID.ADVANCE){
+    if (this.region === RegionID.ADVANCE) {
       this.router.navigate(['/app-smart-cloud/object-storage-advance/bucket']);
-    }else{
+    } else {
       this.router.navigate(['/app-smart-cloud/object-storage/bucket']);
     }
   }
@@ -123,6 +122,7 @@ export class ObjectStorageEditComponent implements OnInit {
       .subscribe({
         next: (data) => {
           this.objectStorage = data;
+          this.id = this.objectStorage.id;
           this.objectStorageResize.newQuota =
             this.addQuota + this.objectStorage.quota;
           this.dataSubject.next(0);
@@ -161,39 +161,38 @@ export class ObjectStorageEditComponent implements OnInit {
   }
 
   onChangeTotalAmount() {
-    this.dataSubject
-    .pipe(
-      debounceTime(500)
-    )
-    .subscribe((res) => {
-      if ((res % this.stepStorage) > 0) {
-        this.notification.warning('', this.i18n.fanyi('app.notify.amount.capacity', { number: this.stepStorage }));
+    this.dataSubject.pipe(debounceTime(500)).subscribe((res) => {
+      if (res % this.stepStorage > 0) {
+        this.notification.warning(
+          '',
+          this.i18n.fanyi('app.notify.amount.capacity', {
+            number: this.stepStorage,
+          })
+        );
         this.addQuota = res - (res % this.stepStorage);
       }
-        this.getTotalAmount()
-      })
+      this.getTotalAmount();
+    });
   }
 
   getTotalAmount() {
-        this.initObjectStorageResize();
-        let itemPayment: ItemPayment = new ItemPayment();
-        itemPayment.orderItemQuantity = 1;
-        itemPayment.specificationString = JSON.stringify(
-          this.objectStorageResize
-        );
-        itemPayment.specificationType = 'objectstorage_resize';
-        itemPayment.sortItem = 0;
-        let dataPayment: DataPayment = new DataPayment();
-        dataPayment.orderItems = [itemPayment];
-        this.service.getTotalAmount(dataPayment).subscribe((result) => {
-          console.log('thanh tien', result);
-          this.totalAmount = Number.parseFloat(result.data.totalAmount.amount);
-          this.totalincludesVAT = Number.parseFloat(
-            result.data.totalPayment.amount
-          );
-          this.orderObject = result.data;
-          this.cdr.detectChanges();
-        });
+    this.initObjectStorageResize();
+    let itemPayment: ItemPayment = new ItemPayment();
+    itemPayment.orderItemQuantity = 1;
+    itemPayment.specificationString = JSON.stringify(this.objectStorageResize);
+    itemPayment.specificationType = 'objectstorage_resize';
+    itemPayment.sortItem = 0;
+    let dataPayment: DataPayment = new DataPayment();
+    dataPayment.orderItems = [itemPayment];
+    this.service.getTotalAmount(dataPayment).subscribe((result) => {
+      console.log('thanh tien', result);
+      this.totalAmount = Number.parseFloat(result.data.totalAmount.amount);
+      this.totalincludesVAT = Number.parseFloat(
+        result.data.totalPayment.amount
+      );
+      this.orderObject = result.data;
+      this.cdr.detectChanges();
+    });
   }
 
   order: Order = new Order();
@@ -247,10 +246,10 @@ export class ObjectStorageEditComponent implements OnInit {
       });
   }
 
-  navigateToBucketList(){
-    if(this.region === RegionID.ADVANCE){
+  navigateToBucketList() {
+    if (this.region === RegionID.ADVANCE) {
       this.router.navigate(['/app-smart-cloud/object-storage-advance/bucket']);
-    }else{
+    } else {
       this.router.navigate(['/app-smart-cloud/object-storage/bucket']);
     }
   }
