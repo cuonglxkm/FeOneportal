@@ -60,7 +60,6 @@
               </nz-form-item>
             </nz-col>
             <nz-col nzSpan="12">
-              <div *ngIf="volumeIdParam == undefined">
                 <nz-form-item>
                   <nz-form-label>
                     <span>{{ 'app.input.backup.volume.select.volume'|i18n }} (<span
@@ -85,22 +84,6 @@
                     </ng-template>
                   </nz-form-control>
                 </nz-form-item>
-              </div>
-              <div *ngIf="volumeIdParam != undefined || volumeIdParam != null">
-                <nz-form-item>
-                  <nz-form-label>
-                    <span>{{ 'app.input.backup.volume.select.volume'|i18n }} (<span
-                      style="color: #EA3829">*</span>)</span>
-                    <img nz-popover
-                         [nzPopoverContent]="''|i18n"
-                         nzPopoverPlacement="bottom" style="margin-left: 5px;"
-                         src="assets/imgs/pajamas_question.svg" alt="" />
-                  </nz-form-label>
-                  <nz-form-control>
-                    <input nz-input class="input-custom" [value]="volumeInfo?.name" [disabled]="true" />
-                  </nz-form-control>
-                </nz-form-item>
-              </div>
             </nz-col>
           </nz-row>
           <nz-row nzGutter="24">

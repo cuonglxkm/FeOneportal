@@ -49,6 +49,7 @@
                      style="width: 100%"
                      class="input-custom"
                      (input)="updateData($event)"
+                     [maxlength]="50"
                      [placeholder]="'app.input.name' | i18n"
                      formControlName="name" />
               <ng-template #nameSubUserErrorTpl let-control>
