@@ -2,6 +2,7 @@ import { AfterViewInit, Component, ElementRef, EventEmitter, Inject, Input, Outp
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from '@core';
+import { WafService } from 'src/app/shared/services/waf.service';
 
 @Component({
   selector: 'one-portal-delete-waf',
@@ -26,7 +27,7 @@ export class DeleteWafComponent implements AfterViewInit{
 
 
   constructor(private notification: NzNotificationService,
-              //private wafService: WafService,
+              private wafService: WafService,
               @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService) {
   }
   focusOkButton(event: KeyboardEvent): void {
@@ -57,17 +58,17 @@ export class DeleteWafComponent implements AfterViewInit{
     this.isLoading = true;
     if (this.value == this.wafName) {
       this.isInput = false;
-      // this.wafService.deleteVolume(this.wafId).subscribe(data => {
-      //     this.isLoading = false;
-      //     this.isVisible = false;
-      //     this.notification.success(this.i18n.fanyi('app.status.success'), 'Yêu cầu xóa volume đã được gửi đi thành công');
-      //     this.onOk.emit(data);
-      // }, error => {
-      //   console.log('error', error);
-      //   this.isLoading = false;
-      //   this.isVisible = false;
-      //   this.notification.error(this.i18n.fanyi('app.status.fail'), 'Yêu cầu xóa volume gửi đi thất bại' + error.error.detail);
-      // });
+      this.wafService.deletePackage(this.wafId).subscribe(data => {
+          this.isLoading = false;
+          this.isVisible = false;
+          this.notification.success(this.i18n.fanyi('app.status.success'), 'Yêu cầu xóa waf đã được gửi đi thành công');
+          this.onOk.emit(data);
+      }, error => {
+        console.log('error', error);
+        this.isLoading = false;
+        this.isVisible = false;
+        this.notification.error(this.i18n.fanyi('app.status.fail'), 'Yêu cầu xóa waf gửi đi thất bại' + error.error.detail);
+      });
     } else {
       this.isInput = true;
       this.isLoading = false;

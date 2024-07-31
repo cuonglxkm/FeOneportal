@@ -21,14 +21,42 @@
   
 </page-header>
 <nz-content>
-  <nz-tabset>
-    <nz-tab nzTitle="Domain">
-      <app-waf-domain-list></app-waf-domain-list>
-    </nz-tab>
-    <nz-tab nzTitle="Gói dịch vụ">
-      <app-waf-list></app-waf-list>
-    </nz-tab>
-  </nz-tabset>
+  
 </nz-content>
-
-
+<ng-container [ngSwitch]="isBegin">
+  <ng-container *ngSwitchCase="false">
+    <nz-tabset>
+      <nz-tab nzTitle="Domain">
+        <app-waf-domain-list></app-waf-domain-list>
+      </nz-tab>
+      <nz-tab nzTitle="Gói dịch vụ">
+        <app-waf-list></app-waf-list>
+      </nz-tab>
+    </nz-tabset>
+  </ng-container>
+  <ng-container *ngSwitchDefault>
+    <result>
+      <nz-row>
+        <nz-col class="text-center" style="width: 100%">
+          <img src="/assets/imgs/volume.png" alt="" />
+        </nz-col>
+      </nz-row>
+      <nz-row style="margin-top: 20px">
+        <nz-col class="text-center" style="width: 100%">
+          <span class="text-intro-title" style="color: #0066b3">{{ 'volume.intro.title' | i18n }}
+            <br>{{ 'volume.intro.title2' | i18n }}</span>
+        </nz-col>
+      </nz-row>
+      <nz-row style="margin-top: 20px">
+        <nz-col class="text-center" style="width: 100%">
+          <span class="text-intro-desc">{{ 'volume.intro.subtitle' | i18n }}</span>
+        </nz-col>
+      </nz-row>
+      <button style="margin-top: 20px" nz-button [nzType]="'primary'" (click)="navigateToCreateWaf()"
+              nzSize="large">
+        <img style="padding-right: 10px; margin-top: -4px" src="assets/imgs/cloud-plus-bold.svg" alt="" />
+        {{ 'waf.button.create' | i18n }}
+      </button>
+    </result>
+  </ng-container>
+</ng-container> 

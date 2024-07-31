@@ -14,6 +14,7 @@ export class WafDTO{
 })
 
 export class WafComponent implements OnInit {
+  isBegin = false;
   constructor() {
     
   }

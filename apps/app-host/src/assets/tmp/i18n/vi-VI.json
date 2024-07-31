@@ -3560,6 +3560,10 @@
   "waf.action.delete": "Xóa dịch vụ",
   "waf.modal.subtitle.delete": "Để thực hiện xóa dịch vụ {{name}}, vui lòng nhập tên waf để xác nhận.",
   "waf.notification.input.name": "Vui lòng nhập đúng tên waf",
+  "waf.domain.https.setting": "HTTPS Settings",
+  "waf.domain.policies": "Chỉnh sửa Policies",
+  "waf.domain.policies.disable": "Disable all Policies",
+  "waf.domain.delete": "Xóa domain",
 
   "waf.domain.button.create":"Thêm domain",
   "waf.table.title.name": "Tên WAF",

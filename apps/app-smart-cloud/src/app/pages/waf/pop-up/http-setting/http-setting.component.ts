@@ -1,6 +1,5 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
 import { NonNullableFormBuilder } from '@angular/forms';
-import { WafDomainDTO } from '../../domain-list/domain-list.component';
 
 
 @Component({
@@ -10,7 +9,7 @@ import { WafDomainDTO } from '../../domain-list/domain-list.component';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class HttpSettingComponent {
-  @Input() domainData: WafDomainDTO ;
+  @Input() domainData: any ;
 
   isLoading: boolean = false;
   isVisibleCreateSsl: boolean = false
