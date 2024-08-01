@@ -230,6 +230,7 @@ export class ProjectUpdateComponent implements OnInit {
   loadBalancerLowerPrices!: any;
   sitetositePrice!: any;
   listSiteToSitePrice!: any;
+  valueVolumeType!:any;
 
   form = new FormGroup({
     name: new FormControl({ value: 'loading data....', disabled: false }, { validators: [Validators.required, Validators.pattern(/^[A-Za-z0-9]+$/),] }),
@@ -299,20 +300,15 @@ export class ProjectUpdateComponent implements OnInit {
 
     if (((this.offerIdOld == 0 && this.ssdOld == 0 && this.ssd == 0) || (this.offerIdOld != 0 && this.ssdOld == 0 && this.ssd == 0 && this.keySSDOld == false))) {
       this.isShowAlertGpu = true
-      console.log("isShowAlertGpu 1", this.isShowAlertGpu)
-
     }
     else {
       this.isShowAlertGpu = false
-      console.log("isShowAlertGpu 2", this.isShowAlertGpu)
-
     }
     let lstIp = this.ipConnectInternet?.split('--');
     let ip = '';
     let ipName = '';
     if (lstIp != null && lstIp != undefined) {
       ip = lstIp[0];
-      console.log("ip", ip)
     }
 
     // let IPFloating = this.ipNetworkAddress !=null ? this.numberIpFloating + this.ipFloatingOld : this.ipFloatingOld;
@@ -324,10 +320,7 @@ export class ProjectUpdateComponent implements OnInit {
       this.loadingCalculate = true;
       if (lstIp != null && lstIp != undefined) {
         ipName = lstIp[1];
-
       }
-      console.log("new gpu 12300", this.newgpu)
-      console.log("new gpuOld 12300", this.gpuOld)
       const requestBody =
       {
 
@@ -395,7 +388,6 @@ export class ProjectUpdateComponent implements OnInit {
         }))
         .subscribe(
           data => {
-            // console.log("totalmont", data)
             this.total = data;
             this.totalAmount = this.total.data.totalAmount.amount;
             this.totalPayment = this.total.data.totalPayment.amount;
@@ -449,29 +441,38 @@ export class ProjectUpdateComponent implements OnInit {
                 offer.id === this.data?.offerId
               )
               this.keySSDOld = checkOfferById?.characteristicValues.find((charName) => charName.charName === 'VolumeType').charOptionValues?.[0] == 'SSD'
-              console.log("object keySSDOld", this.keySSDOld)
-              console.log("checkOfferById", checkOfferById)
               const charName = checkOfferById?.characteristicValues.find((typeName) => typeName.charName === 'VolumeType')
               const typeName = charName?.charOptionValues?.[0]
               this.listOfferByTypeName = this.listOfferFlavors.filter((e: OfferItem) =>
                 e.characteristicValues.find((charName) => charName.charName === 'VolumeType')?.charOptionValues?.[0] == typeName
 
               )
+              console.log("listOfferByTypeNamekk", this.listOfferByTypeName)
               this.checkFlavor()
-              console.log("object listOfferByTypeName", this.listOfferByTypeName)
 
               this.listOfferFlavors.forEach((e: OfferItem) => {
-                e.description = '0 CPU / 0 GB RAM / 0 GB HDD / 0 IP';
+                e.description = '0 vCPU / 0 GB RAM / 0 GB HDD / 0 IP';
                 e.characteristicValues.forEach((ch) => {
-                  if (ch.charName.toUpperCase() == 'CPU') {
-                    e.description.replace(ch.charOptionValues[0] + " CPU", "0 CPU");
+                  // if (ch.charName.toUpperCase() == 'CPU') {
+                  //   e.description.replace(ch.charOptionValues[0] + " CPU", " vCPU");
+                  // }
+                  if (ch.charName == 'CPU') {
+                    e.description =  e.description.replace(/0 vCPU/g, ch.charOptionValues[0] +  " vCPU");
                   }
                   if (ch.charName == 'RAM') {
                     e.description = e.description.replace(/0 GB RAM/g, ch.charOptionValues[0] + " GB RAM");
                   }
 
-                  if (ch.charName == 'HHD') {
-                    e.description = e.description.replace(/0 GB HHD/g, ch.charOptionValues[0] + " GB HHD");
+                  // if (ch.charName == 'HHD') {
+                  //   e.description = e.description.replace(/0 GB HHD/g, ch.charOptionValues[0] + " GB HHD");
+                  // }
+                  
+                  if (ch.charName == 'Storage') {
+                    this.valueVolumeType = ch.charOptionValues[0]              
+                  }
+                  
+                   if (ch.charName == 'VolumeType' && ch.charOptionValues[0]=='HDD') {
+                    e.description = e.description.replace(/0 GB HDD/g, this.valueVolumeType + " GB HHD");
                   }
 
                   if (ch.charName == 'IP') {
@@ -479,6 +480,7 @@ export class ProjectUpdateComponent implements OnInit {
                     e.ipNumber = ch.charOptionValues[0];
                   }
                 });
+                console.log("description  gg", e.description)
               });
               this.cdr.detectChanges();
             });
@@ -506,30 +508,21 @@ export class ProjectUpdateComponent implements OnInit {
 
 
   updateVpc() {
-
-    console.log("this.ipConnectInternet update", this.ipConnectInternet)
-    console.log("ipOld update", this.ipOld);
-    console.log("ipNameOld update", this.ipNameOld)
-    console.log("floating old update", this.ipFloatingOld)
-    console.log("IP floating update", this.numberIpFloating)
     let lstIp = this.ipConnectInternet?.split('--');
     let ip = '';
     let ipName = '';
     if (lstIp != null && lstIp != undefined) {
       ip = lstIp[0];
-      console.log("ip", ip)
     }
 
     // let IPFloating = this.ipNetworkAddress !=null ? this.numberIpFloating + this.ipFloatingOld : this.ipFloatingOld;
     this.numberIpFloating = this.ipConnectInternet != '' ? this.numberIpFloating : 0
-    console.log("object ipFloating", this.numberIpFloating)
 
 
     if ((this.selectIndexTab == 0 || this.offerFlavor != undefined) || (this.selectIndexTab == 1 || (this.vCPU != 0 && this.ram != 0))) {
       this.loadingCalculate = true;
       if (lstIp != null && lstIp != undefined) {
         ipName = lstIp[1];
-        console.log("ipName", ipName)
       }
       const requestBody =
       {
@@ -655,10 +648,7 @@ export class ProjectUpdateComponent implements OnInit {
     }))
       .subscribe(
         data => {
-          console.log("getAllIPSubnet", data)
           this.listIpConnectInternet = data
-
-
         }
       )
   }
@@ -666,9 +656,6 @@ export class ProjectUpdateComponent implements OnInit {
 
   // getDetailTest
   private loadData() {
-    // this.service.getDetailTest().subscribe(data=>
-    //   console.log("data detail test", data)
-    // )
 
     this.vpc.getDetail(this.activatedRoute.snapshot.paramMap.get('id'))
       .pipe(finalize(() => {
@@ -688,24 +675,15 @@ export class ProjectUpdateComponent implements OnInit {
           this.form.controls['description'].setValue(data.description);
           this.today = this.data.createDate;
           this.expiredDate = this.data.expireDate;
-
-
           this.vCPUOld = data.quotavCpu;
           this.ramOld = data.quotaRamInGb;
           this.hhdOld = data.quotaHddInGb;
           this.ssdOld = data.quotaSSDInGb;
-
           this.ipConnectInternet = (data.publicNetworkId && data.publicNetworkAddress) ? data.publicNetworkId + '--' + data.publicNetworkAddress : '';
-
           this.ipOld = data.publicNetworkId;
-          console.log("ipOld1", this.ipOld)
           this.ipNameOld = data.publicNetworkAddress;
-          console.log("ipNameOld1", this.ipNameOld)
-
           this.ipv6Old = data.quotaIpv6Count;
           this.ipFloatingOld = data.quotaIpFloatingCount;
-          console.log(" this.ipFloatingOld 669", this.ipFloatingOld)
-
           this.backupOld = data.quotaBackupVolumeInGb;
           this.loadBalancerOld = data.quotaLoadBalancerSDNCount;
           this.fileSystemOld = data.quotaShareInGb;
@@ -718,7 +696,6 @@ export class ProjectUpdateComponent implements OnInit {
           this.loadBalancerId = data?.offerIdLBSDN;
 
           this.gpuOld = data.gpuProjects;
-          console.log("gpuOld", this.gpuOld)
           this.snapshothddOld = data.quotaVolumeSnapshotHddInGb;
           this.snapshotssdOld = data.quotaVolumeSnapshotSsdInGb;
 
@@ -763,10 +740,8 @@ export class ProjectUpdateComponent implements OnInit {
 
               if (this.data?.offerIdLBSDN) {
                 const loadBalancerIdOld = data.find(lb => lb.id === this.data?.offerIdLBSDN)
-                console.log("lbpriceId", loadBalancerIdOld?.price?.fixedPrice?.amount)
                 this.loadBalancerPrice = loadBalancerIdOld?.price?.fixedPrice?.amount
                 this.listLoadbalancer = data.filter(item => item.price.fixedPrice.amount >= this.loadBalancerPrice)
-                console.log("huyn loadBalancerLowerPrices", this.listLoadbalancer)
                 this.loadBalancerId = this.data?.offerIdLBSDN;
                 this.findNameLoadBalance(this.loadBalancerId);
               }
@@ -794,8 +769,6 @@ export class ProjectUpdateComponent implements OnInit {
                 const sitetositeIdOld = data.find(vpn => vpn.id === this.data?.vpnSiteToSiteOfferId)
                 this.sitetositePrice = sitetositeIdOld?.price?.fixedPrice?.amount
                 this.listSiteToSite = data.filter(item => item.price.fixedPrice.amount >= this.sitetositePrice)
-                console.log("object sitetositeIdOld 444", this.sitetositePrice)
-                console.log("list listSiteToSitePrice", this.listSiteToSite)
                 this.siteToSiteId = this.data?.vpnSiteToSiteOfferId;
                 this.findNameSiteToSite(this.siteToSiteId);
               }
@@ -960,7 +933,6 @@ export class ProjectUpdateComponent implements OnInit {
     this.inputChangeSubject.next({ value, name });
   }
   onInputMax(value: number, max: number, name: string): void {
-    console.log("object value33", value)
     this.inputChangeMax.next({ value, max, name });
   }
   gpuMax(index: number, max: number, value: number) {
@@ -1032,7 +1004,6 @@ export class ProjectUpdateComponent implements OnInit {
 
   checkNumberInputNoBlock(value: number, max: number, name: string): void {
     const numericValue = Number(value);
-    console.log("value 666", value)
     const messageStepNotification = `Vượt quá số lượng max  ${max} `;
     if (isNaN(numericValue)) {
       this.notification.warning('', "Giá trị không hợp lệ");
@@ -1108,8 +1079,6 @@ export class ProjectUpdateComponent implements OnInit {
     const sitetositeIdOld = this.listSiteToSite.find(lb => lb.id === this.data?.vpnSiteToSiteOfferId)
     this.sitetositePrice = sitetositeIdOld?.price?.fixedPrice?.amount
     this.listSiteToSitePrice = this.listSiteToSite.filter(item => item.price.fixedPrice.amount >= this.sitetositePrice)
-    console.log("object sitetositeIdOld 444", this.sitetositePrice)
-    console.log("list listSiteToSitePrice", this.listSiteToSitePrice)
   }
   getCatelogOffer() {
 
@@ -1123,12 +1092,6 @@ export class ProjectUpdateComponent implements OnInit {
           GpuPrice: 0,
           GpuPriceUnit: item?.price?.fixedPrice?.amount
         }));
-
-
-        console.log("this.gpuQuotasGobal dc", this.gpuQuotasGobal)
-        console.log("this.newgpu dc", this.newgpu)
-
-
       }
     );
   }
@@ -1157,11 +1120,7 @@ export class ProjectUpdateComponent implements OnInit {
     this.calculate();
 
   }
-  // checkFlavor() {
-  //   const findKey = this.listOfferByTypeName.find((item: OfferItem) => item.characteristicValues.find((charName) => charName.charName === 'VolumeType').charOptionValues?.[0] == 'SSD')
-  //   // console.log("findKey", findKey)
-
-  // }
+ 
 
   getValueNewgpu() {
     // this.isChangegpu = false;
@@ -1181,7 +1140,7 @@ export class ProjectUpdateComponent implements OnInit {
         GpuCount: totalCountGpu,
       };
     });
-    console.log("object this.newgpu", this.newgpu)
+
   }
   // checkValueGpu(index:number){
   //   for(let item of this.gpuQuotasGobal){
@@ -1215,7 +1174,6 @@ export class ProjectUpdateComponent implements OnInit {
         }
         if (['backup-volume'].includes(item.productName)) {
           this.typeBackup_volume = item.isActive;
-          console.log("typeBackup_volume", this.typeBackup_volume);
         }
         if (['loadbalancer-sdn'].includes(item.productName)) {
           this.typeLoadbalancer_sdn = item.isActive;
@@ -1241,7 +1199,6 @@ export class ProjectUpdateComponent implements OnInit {
   }
   checkFlavor() {
     this.keySSD = this.offerFlavor?.characteristicValues.find((charName) => charName.charName === 'VolumeType').charOptionValues?.[0] == 'SSD'
-    console.log("keySSD2", this.keySSD)
     if (this.keySSD) {
       this.isShowAlertGpu = false
     }
@@ -1271,7 +1228,6 @@ export class ProjectUpdateComponent implements OnInit {
     this.numberIpPublic = 0;
     this.numberIpv6 = 0;
     this.numberIpFloating = 0;
-    console.log("numberIpFloating delete", this.numberIpFloating)
 
     if (this.data.publicNetworkAddress != '' && this.data.publicNetworkId != '') {
       this.ipConnectInternet = this.data.publicNetworkId + '--' + this.data.publicNetworkAddress;

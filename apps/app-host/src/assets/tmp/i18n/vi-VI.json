@@ -33,7 +33,7 @@
   "validation.name.pattern": "Không bao gồm dấu tiếng Việt, dấu cách, ký tự đặc biệt (trừ_)",
   "validation.exist.name": "Tên {{name}} này đã được sử dụng, vui lòng chọn tên khác",
   "validation.choose.required": "Vui lòng chọn {{name}}",
-  "validation.project.required.name":"Không bao gồm ký tự đặc biệt, dấu cách, tiếng Việt, tối đa 50 ký tự, có thể có dấu _ (ký tự đặc biệt: @, #, $, %, &, *, +, -, arrow, star, biểu tượng cảm xúc, dấu câu, dấu ngoặc, hình tròn, hình vuông, hình chữ nhật...)",
+  "validation.project.required.name":"Không bao gồm ký tự đặc biệt, dấu cách, tiếng Việt, tối đa 50 ký tự, có thể có dấu - (ký tự đặc biệt: @, #, $, %, &, *, +, _, arrow, star, biểu tượng cảm xúc, dấu câu, dấu ngoặc, hình tròn, hình vuông, hình chữ nhật...)",
 
   "app.footer": "Một sản phẩm của VNPT-IT",
 

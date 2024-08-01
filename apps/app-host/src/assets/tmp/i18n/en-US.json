@@ -159,7 +159,7 @@
   "validation.name.pattern": "Excluding Vietnamese accents, spaces, and special characters (except _)",
   "validation.exist.name": "This {{name}} name has already been used, please choose another name",
   "validation.choose.required": "Please choose {{name}}",
-  "validation.project.required.name":"Does not include special characters, spaces, Vietnamese, maximum 50 characters, may contain _ (special characters: @, #, $, %, &, *, +, -, arrow, star , emoticons, punctuation, brackets, circles, squares, rectangles...)",
+  "validation.project.required.name":"Does not include special characters, spaces, Vietnamese, maximum 50 characters, may contain - (special characters: @, #, $, %, &, *, +, _, arrow, star , emoticons, punctuation, brackets, circles, squares, rectangles...)",
   "form.account.information": "Account Information",
   "form.account.update.information":"Update account information",
   "form.account.update.invoice":"Update invoicing information",
