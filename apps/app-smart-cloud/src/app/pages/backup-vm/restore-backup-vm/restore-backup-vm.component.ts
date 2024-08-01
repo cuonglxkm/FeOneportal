@@ -433,6 +433,7 @@ export class RestoreBackupVmComponent implements OnInit {
     }
   }
 
+  // Khôi phục vào máy ảo hiện tại
   submitFormCurrent() {
     this.isLoadingCurrent = true;
     let formRestoreCurrent = new RestoreFormCurrent();
@@ -1343,7 +1344,7 @@ export class RestoreBackupVmComponent implements OnInit {
               error: (error) => {
                 this.notification.error(
                   this.i18n.fanyi('app.status.fail'),
-                  error.error.detail
+                  error.error.message
                 );
               },
             });

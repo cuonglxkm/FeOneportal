@@ -528,7 +528,7 @@ export class InstancesCreateVpcComponent implements OnInit {
       this.remainingVolume =
         this.infoVPC.cloudProject.quotaHddInGb -
         this.infoVPC.cloudProjectResourceUsed.hdd;
-      this.instanceCreate.volumeSize = 0;
+      this.instanceCreate.volumeSize = this.minCapacity;
       this.cdr.detectChanges();
     }
   }
@@ -539,7 +539,7 @@ export class InstancesCreateVpcComponent implements OnInit {
       this.remainingVolume =
         this.infoVPC.cloudProject.quotaSSDInGb -
         this.infoVPC.cloudProjectResourceUsed.ssd;
-      this.instanceCreate.volumeSize = 0;
+      this.instanceCreate.volumeSize = this.minCapacity;
       this.cdr.detectChanges();
     }
   }
@@ -657,7 +657,7 @@ export class InstancesCreateVpcComponent implements OnInit {
 
   resetData() {
     this.instanceCreate.cpu = 0;
-    this.instanceCreate.volumeSize = 0;
+    this.instanceCreate.volumeSize = this.minCapacity;
     if (this.isSnapshot) {
       this.instanceCreate.volumeSize =
         this.sizeSnapshotVL < this.stepCapacity
@@ -683,6 +683,7 @@ export class InstancesCreateVpcComponent implements OnInit {
         this.minCapacity = valueArray[0];
         this.stepCapacity = valueArray[1];
         this.maxCapacity = valueArray[2];
+        this.instanceCreate.volumeSize = this.minCapacity;
       },
     });
   }
