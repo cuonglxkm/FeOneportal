@@ -364,7 +364,7 @@
                      src="assets/imgs/pajamas_question.svg" alt="" />
               </nz-form-label>
               <nz-form-control nzDisableAutoTips>
-                <nz-input-number style="margin-left: -2px;width: 90%" formControlName="maxRetries" [nzMin]="0"
+                <nz-input-number style="margin-left: -2px;width: 90%" formControlName="maxRetries" [nzMin]="0" [nzMax]="10"
                                  nzSize="large"
                                  [nzStep]="1" (keydown)="checkPossiblePress($event)"></nz-input-number>
               </nz-form-control>
@@ -379,7 +379,7 @@
                      src="assets/imgs/pajamas_question.svg" alt="" />
               </nz-form-label>
               <nz-form-control nzDisableAutoTips>
-                <nz-input-number style="margin-left: -2px;width: 90%" formControlName="maxRetriesDown" [nzMin]="0"
+                <nz-input-number style="margin-left: -2px;width: 90%" formControlName="maxRetriesDown" [nzMin]="0" [nzMax]="10"
                                  nzSize="large"
                                  [nzStep]="1" (keydown)="checkPossiblePress($event)"></nz-input-number>
               </nz-form-control>
@@ -396,7 +396,7 @@
                      src="assets/imgs/pajamas_question.svg" alt="" />
               </nz-form-label>
               <nz-form-control nzDisableAutoTips>
-                <nz-input-number style="margin-left: -2px;width: 90%" formControlName="delay" [nzMin]="0" nzSize="large"
+                <nz-input-number style="margin-left: -2px;width: 90%" formControlName="delay" [nzMin]="0" nzSize="large" [nzMax]="validateForm.controls['timeoutHealth'].value"
                                  [nzStep]="1"(keydown)="checkPossiblePress($event)"></nz-input-number>
               </nz-form-control>
             </nz-form-item>
@@ -439,10 +439,9 @@
                  src="assets/imgs/pajamas_question.svg" alt="" />
           </nz-form-label>
           <nz-form-control nzDisableAutoTips>
-            <input nz-input
+            <nz-input-number nz-input style="width: 100%; margin-left: -3px"
                    class="input-custom"
-                   formControlName="sucessCode"
-                   [placeholder]="'Nhập sucessCode'" [maxLength]="50" (keydown)="checkPossiblePress($event)"/>
+                   formControlName="sucessCode" [nzMax]="599" [nzMin]="100" (keydown)="checkPossiblePress($event)"/>
           </nz-form-control>
         </nz-form-item>
         <div class="text-right"

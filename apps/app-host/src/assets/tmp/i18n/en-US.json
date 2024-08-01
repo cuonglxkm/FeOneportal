@@ -3649,5 +3649,7 @@
   "waf.domain.table.title.cname":"CNAME",
   "waf.domain.table.title.https":"HTTPS",
   "waf.domain.table.title.status":"Status domain",
-  "waf.domain.table.title.action":"Action"
+  "waf.domain.table.title.action":"Action",
+  "notification.input.name": "Please enter the correct name",
+  "ip.floating.attach.message": "The port is already in use, please select another Port to perform Floating IP binding."
 }

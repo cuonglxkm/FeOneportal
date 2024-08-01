@@ -3577,5 +3577,7 @@
   "waf.domain.table.title.cname":"CNAME",
   "waf.domain.table.title.https":"HTTPS",
   "waf.domain.table.title.status":"Trạng thái domain",
-  "waf.domain.table.title.action":"Thao tác"
+  "waf.domain.table.title.action":"Thao tác",
+  "notification.input.name": "Vui lòng nhập đúng tên",
+  "ip.floating.attach.message": "Port đã được sử dụng, vui lòng chọn Port khác để thực hiện gắn IP Floating."
 }
