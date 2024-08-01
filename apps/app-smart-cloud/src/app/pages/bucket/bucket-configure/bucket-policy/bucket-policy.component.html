@@ -816,20 +816,20 @@
   <ng-container *nzModalContent
     ><nz-tabset nzSize="large">
       <nz-tab nzTitle="Json Item">
-        <div class="json-viewer-bg">
-          <ngx-json-viewer
-            [json]="bucketPolicyDetail"
-            style="position: relative"
-          ></ngx-json-viewer>
-        </div>
+        <textarea
+          style="border-radius: 2px"
+          nz-input
+          rows="15"
+          [(ngModel)]="jsonDataBucketPolicy"
+        ></textarea>
       </nz-tab>
       <nz-tab nzTitle="Json Total">
-        <div class="json-viewer-bg">
-          <ngx-json-viewer
-            [json]="bucketPolicyDetail"
-            style="position: relative"
-          ></ngx-json-viewer>
-        </div>
+        <textarea
+          style="border-radius: 2px"
+          nz-input
+          rows="15"
+          [(ngModel)]="jsonDataBucketPolicy"
+        ></textarea>
       </nz-tab> </nz-tabset
   ></ng-container>
   <div *nzModalFooter>

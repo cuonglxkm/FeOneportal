@@ -36,6 +36,7 @@
             #poolInputName
             nz-input
             formControlName="namePool"
+            [nzMax]="50"
             [(ngModel)]="createPool.name"
             class="input-custom"
             [placeholder]="'app.input.name' | i18n"

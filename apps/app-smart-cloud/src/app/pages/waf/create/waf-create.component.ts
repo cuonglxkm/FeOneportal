@@ -146,7 +146,7 @@ export class WAFCreateComponent implements OnInit {
       domain: ['', [Validators.required,Validators.pattern(DOMAIN_REGEX) ,duplicateDomainValidator]],
       ipPublic: ['', [Validators.required, ipValidatorMany]],
       host: [''],
-      port: [0],
+      port: [null],
       sslCert: ['']
     });
   }

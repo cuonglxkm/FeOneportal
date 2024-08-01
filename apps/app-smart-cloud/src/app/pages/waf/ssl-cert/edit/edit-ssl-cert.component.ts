@@ -11,22 +11,18 @@ import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { getCurrentRegionAndProject } from '@shared';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
-import { FileSystemModel } from 'src/app/shared/models/file-system.model';
-import { FormCreateSslCert } from 'src/app/shared/models/ssl-cert.model';
-import { SSLCertService } from 'src/app/shared/services/ssl-cert.service';
-import { differenceInCalendarDays } from 'date-fns';
-import { NAME_REGEX } from 'src/app/shared/constants/constants';
-import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
 import { NzUploadChangeParam, NzUploadFile } from 'ng-zorro-antd/upload';
+import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
+import { NAME_REGEX } from 'src/app/shared/constants/constants';
 import { WafService } from 'src/app/shared/services/waf.service';
 import { SslCertRequest } from '../../waf.model';
 
 @Component({
-  selector: 'one-portal-create-ssl-cert-waf',
-  templateUrl: './create-ssl-cert.component.html',
-  styleUrls: ['./create-ssl-cert.component.less'],
+  selector: 'one-portal-edit-ssl-cert-waf',
+  templateUrl: './edit-ssl-cert.component.html',
+  styleUrls: ['./edit-ssl-cert.component.less'],
 })
-export class CreateSslCertWAFComponent implements OnInit {
+export class EditSslCertWAFComponent implements OnInit {
   region = JSON.parse(localStorage.getItem('regionId'));
   project = JSON.parse(localStorage.getItem('projectId'));
 

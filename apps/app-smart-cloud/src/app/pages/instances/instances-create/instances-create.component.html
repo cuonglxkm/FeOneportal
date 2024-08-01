@@ -1392,6 +1392,7 @@
                         [ngModelOptions]="{ standalone: true }"
                         nz-input
                         [(ngModel)]="data.name"
+                        [maxlength]="50"
                         [id]="'name_' + data.id"
                       />
                     </td>
@@ -1420,9 +1421,8 @@
                         data.capacity * 10
                       }}</span>
                     </td>
-                    <td>
+                    <td *ngIf="isSupportEncryption">
                       <label
-                        *ngIf="isSupportEncryption"
                         nz-checkbox
                         [(ngModel)]="data.encrypt"
                         (ngModelChange)="changeEncrypt($event, i)"
@@ -1430,9 +1430,8 @@
                         [id]="'encrypt_' + data.id"
                       ></label>
                     </td>
-                    <td>
+                    <td *ngIf="isSupportMultiAttachment">
                       <label
-                        *ngIf="isSupportMultiAttachment"
                         nz-checkbox
                         [(ngModel)]="data.multiattach"
                         (ngModelChange)="changeMultiAttach($event, i)"
