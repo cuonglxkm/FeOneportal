@@ -1015,6 +1015,7 @@
                       [ngModelOptions]="{ standalone: true }"
                       nz-input
                       [(ngModel)]="data.name"
+                      [disabled]="true"
                     />
                   </td>
                   <td *ngIf="selectedOption == 'new'">
@@ -1024,6 +1025,7 @@
                       [placeholder]="'app.input.name' | i18n"
                       [ngModelOptions]="{ standalone: true }"
                       nz-input
+                      [maxlength]="50"
                       [(ngModel)]="data.newName"
                     />
                   </td>

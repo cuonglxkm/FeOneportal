@@ -730,7 +730,9 @@ export class InstancesCreateComponent implements OnInit {
     this.offerFlavor = null;
     this.selectedElementFlavor = null;
     this.configGPU = new ConfigGPU();
+    this.configGPU.storage = this.minCapacity;
     this.configCustom = new ConfigCustom();
+    this.configCustom.capacity = this.minCapacity;
     if (this.isSnapshot && this.isCustomconfig) {
       this.configCustom.capacity =
         this.sizeSnapshotVL < this.stepCapacity
@@ -1094,6 +1096,8 @@ export class InstancesCreateComponent implements OnInit {
         this.stepCapacity = valueArray[1];
         this.maxCapacity = valueArray[2];
         this.surplus = valueArray[2] % valueArray[1];
+        this.configGPU.storage = this.minCapacity;
+        this.configCustom.capacity = this.minCapacity;
         this.cdr.detectChanges();
       },
     });
