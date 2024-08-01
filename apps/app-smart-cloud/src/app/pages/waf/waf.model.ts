@@ -48,6 +48,7 @@ export class WafDetailDTO{
   id: number
   name: string
   policyId: number
+  policyName: number
   offerName: string
   offerId: number
   status: string
@@ -72,6 +73,13 @@ export class WafDetailDTO{
       cdnId: string
     }
   ]
+}
+
+
+export class SslCertRequest{
+ name: string
+ privateKey: string
+ certificate: string
 }
 
 export interface WafDomain {

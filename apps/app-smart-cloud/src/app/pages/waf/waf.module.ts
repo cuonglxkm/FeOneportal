@@ -58,7 +58,7 @@ import { DisassociateDomainBtnComponent } from './ssl-cert-detail/disassociate-d
     DisassociateSslDomainComponent,
     AssociateSslBtnComponent,
     DeleteSslBtnComponent,
-    DisassociateDomainBtnComponent,
+    DisassociateDomainBtnComponent
   ],
   imports: [
     CommonModule,

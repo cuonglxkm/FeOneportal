@@ -61,8 +61,8 @@
         ></nz-option>
       </nz-select>
         </nz-form-control>
-        <span *ngIf="uploadMethod == '1' || uploadMethod == '2'" class="text-desc">Tải lên chứng chỉ (bao gồm nội dung chứng chỉ, private key, nội dung CA...) do cơ quan cấp chứng chỉ cấp và tự động phân tích</span>
-        <span *ngIf="uploadMethod == '3'" class="text-desc">Nhập nội dung chứng chỉ dạng pem, private key và CA content</span>
+        <span *ngIf="uploadMethod == '1'" class="text-desc">Tải lên chứng chỉ (bao gồm nội dung chứng chỉ, private key, nội dung CA...) do cơ quan cấp chứng chỉ cấp và tự động phân tích</span>
+        <span *ngIf="uploadMethod == '2'" class="text-desc">Nhập nội dung chứng chỉ dạng pem, private key và CA content</span>
       </nz-form-item>
       <nz-form-item>
         <div class="text-label d-block" style="width: 100%">
@@ -87,7 +87,7 @@
             appTrim
             nz-input
             placeholder="Nhập tên chứng chỉ"
-            formControlName="name"
+            formControlName="certName"
             [maxlength]="50"
           />
           <ng-template #nameErrorTpl let-control>
@@ -100,40 +100,7 @@
           </ng-template>
         </nz-form-control>
       </nz-form-item> 
-      <nz-form-item *ngIf="uploadMethod == '2'">
-        <div class="text-label d-block" style="width: 100%">
-          <span
-            >Key file password (<span class="text-red">*</span
-            >)</span
-          >
-          <img
-            nz-popover
-            nzPopoverPlacement="bottom"
-            style="margin-left: 5px"
-            src="assets/imgs/pajamas_question.svg"
-            alt=""
-          />
-        </div>
-        <nz-form-control
-          nzDisableAutoTips
-          style="margin-top: 10px"
-        >
-          <input
-            class="input-custom"
-            appTrim
-            nz-input
-            placeholder="Vui lòng nhập mật khẩu tập tin"
-            formControlName="name"
-            [maxlength]="50"
-          />
-          <ng-template #nameErrorTpl let-control>
-            <ng-container *ngIf="control.hasError('required')">{{
-              'validation.snapshot.info.required' | i18n
-            }}</ng-container>
-          </ng-template>
-        </nz-form-control>
-      </nz-form-item>
-      <nz-form-item *ngIf="uploadMethod == '1' || uploadMethod == '2'">
+      <nz-form-item *ngIf="uploadMethod == '1'">
         <div class="text-label">
           <div style="margin-bottom: 10px;">
             <span
@@ -143,6 +110,7 @@
           <nz-upload
               style="margin-left: 5px"
               [nzFileList]="fileList"
+              [nzShowUploadList]="false"
               (nzChange)="handleChange($event)"
             >
               <button nz-button>
@@ -151,10 +119,13 @@
               </button>
             </nz-upload>
           </div>
-          <span class="text-desc">Có thể tải lên tối đa 10 tệp, mỗi tệp không vượt quá 44kb. Định dạng tệp có thể tải lên: .pem, .key, .crt, .cer, .der, .pfx, .jks.</span>
+          <div *ngIf="fileList.length > 0" class="uploaded-files">
+            <p *ngFor="let file of fileList">{{ file.name }}</p>
+          </div>
+          <span class="text-desc">Mỗi tệp không vượt quá 44kb. Định dạng tệp có thể tải lên: .pem, .key, .crt.</span>
         </div>
       </nz-form-item>  
-      <nz-form-item *ngIf="uploadMethod == '3'">
+      <nz-form-item *ngIf="uploadMethod == '2'">
         <div class="text-label d-block" style="width: 100%">
           <span
             >Certificate Content (<span class="text-red">*</span
@@ -167,6 +138,7 @@
         >
         <textarea
         [placeholder]="'Nhập nội dung chứng chỉ (chỉ hỗ trợ mã pem)'"
+        formControlName="certificate"
         rows="4"
         nz-input
       ></textarea>
@@ -177,7 +149,7 @@
           </ng-template>
         </nz-form-control>
       </nz-form-item>
-      <nz-form-item *ngIf="uploadMethod == '3'">
+      <nz-form-item *ngIf="uploadMethod == '2'">
         <div class="text-label d-block" style="width: 100%">
           <span
             >Private Key (<span class="text-red">*</span
@@ -190,6 +162,7 @@
         >
         <textarea
         [placeholder]="'Nhập private key (Chỉ hỗ trợ mã pem)'"
+        formControlName="privateKey"
         rows="4"
         nz-input
       ></textarea>
@@ -200,7 +173,7 @@
           </ng-template>
         </nz-form-control>
       </nz-form-item>
-      <nz-form-item *ngIf="uploadMethod == '3'">
+      <nz-form-item *ngIf="uploadMethod == '2'">
         <div class="text-label d-block" style="width: 100%">
           <span
             >CA Content</span
@@ -258,6 +231,7 @@
         </button>
         <button
           nz-button
+          (click)="handleCreate()"
           nzType="primary"
         >
           <img
