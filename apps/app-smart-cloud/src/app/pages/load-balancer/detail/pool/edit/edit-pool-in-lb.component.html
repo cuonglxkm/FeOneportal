@@ -36,6 +36,7 @@
           <input
             #poolInputName
             nz-input
+            [nzMax]="50"
             formControlName="namePool"
             class="input-custom"
             [placeholder]="'app.input.name' | i18n"
@@ -111,7 +112,7 @@
           />
           <ng-template #protocolErrorTpl let-control>
             <ng-container *ngIf="control.hasError('required')">{{
-              'validation.choose.protocol.requiredl' | i18n
+              'validation.choose.protocol.required' | i18n
             }}</ng-container>
           </ng-template>
         </nz-form-control>

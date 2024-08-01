@@ -236,7 +236,7 @@ export class PoolDetailComponent implements OnInit {
         name: new FormControl('', {
           validators: [
             Validators.required,
-            Validators.pattern(/^[a-zA-Z0-9]*$/),
+            Validators.pattern(/^[a-zA-Z0-9_]*$/),
           ],
         }),
         checkMethod: new FormControl('', {
@@ -282,7 +282,7 @@ export class PoolDetailComponent implements OnInit {
         name: new FormControl('', {
           validators: [
             Validators.required,
-            Validators.pattern(/^[a-zA-Z0-9]*$/),
+            Validators.pattern(/^[a-zA-Z0-9_]*$/),
           ],
         }),
         checkMethod: new FormControl(
@@ -608,7 +608,7 @@ export class PoolDetailComponent implements OnInit {
         name: new FormControl('', {
           validators: [
             Validators.required,
-            Validators.pattern(/^[a-zA-Z0-9]*$/),
+            Validators.pattern(/^[a-zA-Z0-9_]*$/),
           ],
         }),
         ipPrivate: new FormControl(

@@ -116,6 +116,7 @@ export class InstancesEditVpcComponent implements OnInit {
     let regionAndProject = getCurrentRegionAndProject();
     this.region = regionAndProject.regionId;
     this.projectId = regionAndProject.projectId;
+    this.getListIpPublic();
     this.getActiveServiceByRegion();
     this.getConfigurations();
     this.getInfoVPC();
@@ -254,7 +255,7 @@ export class InstancesEditVpcComponent implements OnInit {
         this.dataService.getInfoVPC(this.projectId).subscribe({
           next: (data) => {
             this.infoVPC = data;
-            if (data.volumeType == 0) {
+            if (this.instancesModel.volumeType == 0) {
               this.purchasedVolume = this.infoVPC.cloudProject.quotaHddInGb;
               this.remainingVolume =
                 this.infoVPC.cloudProject.quotaHddInGb -

@@ -468,10 +468,10 @@ export class RestoreBackupVmComponent implements OnInit {
     this.dataService
       .getAllIPPublic(this.project, '', this.userId, this.region, 9999, 1, true)
       .subscribe((data: any) => {
-        const currentDateTime = new Date().toISOString();
         this.listIPPublic = data.records.filter(
           (e) =>
-            e.status == 0 && new Date(e.expiredDate) > new Date(currentDateTime)
+            e.status.toUpperCase() == 'KHOITAO' &&
+            e.resourceStatus.toUpperCase() == 'AVAILABLE'
         );
         console.log('list IP public', this.listIPPublic);
         this.cdr.detectChanges();
