@@ -66,7 +66,6 @@ export class ObjectStorageExtendComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.id = this.activatedRoute.snapshot.paramMap.get('id');
     let regionAndProject = getCurrentRegionAndProject();
     this.region = regionAndProject.regionId;
     this.getObjectStorage();
@@ -83,6 +82,7 @@ export class ObjectStorageExtendComponent implements OnInit {
       .subscribe({
         next: (data) => {
           this.objectStorage = data;
+          this.id = this.objectStorage.id;
           this.cdr.detectChanges();
         },
         error: (e) => {

@@ -1,0 +1,49 @@
+<!-- <li nz-menu-item (click)="openModal()">{{'app.delete' | i18n}}</li> -->
+<!-- <img nz-popover src="assets/imgs/add.svg" alt="" nzPopoverPlacement="bottom"
+    style="cursor: pointer; margin-right: 5px; margin-top: 2px;" [nzPopoverContent]="'Associated domains'"
+    (click)="openModal()"> -->
+<nz-modal [(nzVisible)]="isVisible" [nzTitle]="modalTitle" [nzContent]="modalContent" [nzFooter]="null"
+    (nzOnCancel)="handleCancel()">
+    <ng-template #modalTitle>
+        <h4>
+            <b>{{'Associated domains'}}</b>
+        </h4>
+    </ng-template>
+    <ng-template #modalContent>
+        <div class="text-label">
+            <span>Certificate Name: {{sslCertData.name}}</span>
+        </div>
+        <div class="text-label">
+            <span>Authorized Domain(s): {{sslCertData.authorizedDomains.join(", ")}}</span>
+        </div>
+        <div class="text-label">
+            <span>Certificate Type: {{sslCertData.type}}</span>
+        </div>
+        <div class="text-label">
+            Chọn domains
+        </div>
+        <nz-form-item>
+            <nz-form-control style="margin-top: 10px; margin-bottom: 10px;">
+                <input class="input-custom" appTrim nz-input placeholder="Cert01" [ngModel]="inputConfirm"
+                    [ngModelOptions]="{ standalone: true }" (keyup.enter)="handleOk()"
+                    (ngModelChange)="onInputChange($event)" />
+                <!-- <div *ngIf="checkInputConfirm" style="color: #ff4d4f">
+                    {{ 'validation.correct.instance.name' | i18n }}
+                </div>
+                <div *ngIf="checkInputEmpty" style="color: #ff4d4f">
+                    {{ 'validation.instance.name.required' | i18n }}
+                </div> -->
+            </nz-form-control>
+        </nz-form-item>
+        <div class="d-flex justify-content-end">
+            <button nz-button (click)="handleCancel()">
+                <img style="padding-right: 10px; margin-top: -4px" src="assets/imgs/cancel.svg" alt="" />{{
+                'app.button.cancel' | i18n }}
+            </button>
+            <button nz-button nzType="primary" (click)="handleOk()">
+                <img style="padding-right: 10px; margin-top: -4px" src="assets/imgs/confirm.svg" alt="" />
+                {{ 'app.button.confirm' | i18n }}
+            </button>
+        </div>
+    </ng-template>
+</nz-modal>

@@ -165,7 +165,7 @@
                 nz-button
                 nzSize="large"
                 nzType="primary"
-                [disabled]="invalid"
+                [disabled]="invalid || totalincludesVAT == 0"
                 (click)="extend()"
               >
                 <img

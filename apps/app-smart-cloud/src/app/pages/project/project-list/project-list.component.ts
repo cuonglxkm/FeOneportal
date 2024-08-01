@@ -50,7 +50,7 @@ export class ProjectListComponent implements OnInit {
   disableDelete = true;
   isVisibleEditNormal = false;
   form = new FormGroup({
-    name: new FormControl('', { validators: [Validators.required, Validators.pattern(/^[A-Za-z0-9_]+$/)] }),
+    name: new FormControl('', { validators: [Validators.required, Validators.pattern(/^[A-Za-z0-9-]+$/)] }),
     description: new FormControl('')
   });
   loadingDelete = false;

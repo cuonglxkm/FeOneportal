@@ -1,5 +1,4 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
-import { WafDomainDTO } from '../../domain-list/domain-list.component';
 
 @Component({
   selector: 'one-portal-disable-policy',
@@ -8,7 +7,7 @@ import { WafDomainDTO } from '../../domain-list/domain-list.component';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DisablePolicyComponent {
-  @Input() domainData: WafDomainDTO
+  @Input() domainData: any
 
   isVisible: boolean = false;
 

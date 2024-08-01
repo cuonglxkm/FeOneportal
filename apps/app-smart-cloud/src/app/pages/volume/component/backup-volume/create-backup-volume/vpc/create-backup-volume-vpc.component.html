@@ -89,7 +89,7 @@
                 <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
               </nz-col>
               <nz-col nzSpan="12">
-                <div *ngIf="volumeIdParam == undefined || volumeIdParam == null">
+
                   <nz-form-item>
                     <nz-form-label>
                       <span>{{'app.input.backup.volume.select.volume'|i18n}} (<span style="color: #EA3829">*</span>)</span>
@@ -111,21 +111,6 @@
                       </ng-template>
                     </nz-form-control>
                   </nz-form-item>
-                </div>
-                <div *ngIf="volumeIdParam != undefined || volumeIdParam != null">
-                  <nz-form-item>
-                    <nz-form-label>
-                      <span>{{'app.input.backup.volume.select.volume'|i18n}} (<span style="color: #EA3829">*</span>)</span>
-                      <img nz-popover
-                           [nzPopoverContent]="''|i18n"
-                           nzPopoverPlacement="bottom" style="margin-left: 5px;"
-                           src="assets/imgs/pajamas_question.svg" alt="" />
-                    </nz-form-label>
-                    <nz-form-control>
-                      <input nz-input class="input-custom" [value]="volumeInfo?.name" [disabled]="true" />
-                    </nz-form-control>
-                  </nz-form-item>
-                </div>
                 <nz-form-item>
                   <nz-form-label>
                     <span>{{'app.info.backup.vm.description'|i18n}}</span>
@@ -142,6 +127,22 @@
                 </nz-form-item>
               </nz-col>
             </nz-row>
+            <div
+              *ngIf="(volumeInfo?.sizeInGB) > (projectDetail?.cloudProject.quotaBackupVolumeInGb - projectDetail?.cloudProjectResourceUsed.backup)">
+              <nz-alert nzType="warning"
+                        [nzMessage]="titleMessage"
+                        nzShowIcon></nz-alert>
+              <ng-template #titleMessage>
+              <span
+                style="color: #FF0000;">{{
+                  'app.backup.vm.alert.storage.vpc'|i18n:
+                    { storage: (volumeInfo?.sizeInGB) }
+                }} <a
+                  [routerLink]="'/app-smart-cloud/project/detail/' + project">{{ projectName }}</a> {{ 'schedule.backup.alert.storage.vpc1'|i18n }}</span>
+                <span
+                  style="color: #FF0000;">{{ 'app.backup.vm.alert.storage.vpc'|i18n: { storage: (volumeInfo?.sizeInGB) } }}</span>
+              </ng-template>
+            </div>
           </form>
         </nz-card>
       </nz-col>

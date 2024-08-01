@@ -431,7 +431,6 @@ export class CreateVolumeComponent implements OnInit {
           this.notification.warning('', this.i18n.fanyi('app.notify.amount.capacity', { number: this.stepStorage }));
           this.validateForm.controls.storage.setValue(res - (res % this.stepStorage));
         }
-        console.log('total amount');
         this.getTotalAmount();
       });
   }

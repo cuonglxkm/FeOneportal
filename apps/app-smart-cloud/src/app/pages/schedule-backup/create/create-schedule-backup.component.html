@@ -97,9 +97,10 @@
                                  [nzShowSearch]="false"
                                  [nzLoading]="isLoadingInstance"
                                  [(ngModel)]="instanceSelected"
-                                 [nzDisabled]="true"
                                  (ngModelChange)="selectInstanceChange($event)">
-                        <nz-option [nzValue]="instanceId" [nzLabel]="instanceName"></nz-option>
+                        <nz-option *ngFor="let i of listInstanceNotUse"
+                                   [nzLabel]="i.name"
+                                   [nzValue]="i.id"></nz-option>
                       </nz-select>
                       <nz-select *ngIf="instanceId == null"
                                  formControlName="instanceId"
@@ -576,11 +577,12 @@
                                  [nzSize]="'large'"
                                  nzPlaceHolder="{{'schedule.backup.volume.select' | i18n}}"
                                  [nzShowSearch]="false"
-                                 [nzLoading]="isLoadingInstance"
+                                 [nzLoading]="isLoadingVolume"
                                  [(ngModel)]="volumeSelected"
-                                 [nzDisabled]="true"
-                                 (ngModelChange)="selectInstanceChange($event)">
-                        <nz-option [nzValue]="volumeId" [nzLabel]="volumeName"></nz-option>
+                                 (ngModelChange)="selectVolumeChange($event)">
+                        <nz-option *ngFor="let i of listVolumeNotUseUnique"
+                                   [nzLabel]="i.name"
+                                   [nzValue]="i.id"></nz-option>
                       </nz-select>
                       <nz-select *ngIf="volumeId == undefined" formControlName="volumeId"
                                  nzSize="large"

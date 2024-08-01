@@ -1,4 +1,4 @@
-<!-- <page-header [breadcrumb]="breadcrumb" title="{{ 'waf.detail.title' | i18n }}">
+<page-header [breadcrumb]="breadcrumb" title="{{ 'waf.detail.title' | i18n }}">
   <ng-template #breadcrumb>
     <nz-breadcrumb [nzSeparator]="iconTemplate"><nz-breadcrumb-item [routerLink]="'/'">{{ 'app.breadcrumb.home' | i18n }}</nz-breadcrumb-item>
       <nz-breadcrumb-item>
@@ -49,12 +49,12 @@
               <span class="label-fontsize font-bold ">{{ data.name }}</span>
             </div>
           </div>
-          <div nz-row [nzGutter]="24" class="row-gray-bg content-items-center">
+          <div *ngFor="let item of data.wafDomains" nz-row [nzGutter]="24" class="row-gray-bg content-items-center">
             <div nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="12">
               <span class="label-fontsize">{{'waf.domain.table.title.domain' | i18n}}:</span>
             </div>
             <div nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="12">
-              <span class="label-fontsize font-bold" >{{ "data.domain" }}</span>
+              <span class="label-fontsize font-bold" >{{ "item.domain" }}</span>
             </div>
           </div>
           <div nz-row [nzGutter]="24" class="row-white-bg content-items-center">
@@ -62,7 +62,7 @@
               <span class="label-fontsize">{{'waf.table.title.startdate' | i18n}}:</span>
             </div>
             <div nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="12">
-              <span class="label-fontsize font-bold ">{{data.begin | date : "HH:mm:ss dd/MM/yyyy" }}</span>
+              <span class="label-fontsize font-bold ">{{data.createdDate | date : "HH:mm:ss dd/MM/yyyy" }}</span>
             </div>
           </div>
           <div nz-row [nzGutter]="24" class="row-gray-bg content-items-center">
@@ -85,15 +85,15 @@
               <span class="label-fontsize">{{'waf.table.title.package' | i18n}}:</span>
             </div>
             <div nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="12">
-              <span class="label-fontsize font-bold">{{ data.package }}</span>
+              <span class="label-fontsize font-bold">{{ data.offerName }}</span>
             </div>
           </div>
-          <div nz-row [nzGutter]="24" class="row-gray-bg content-items-center">
+          <div *ngFor="let item of data.wafDomains" nz-row [nzGutter]="24" class="row-gray-bg content-items-center">
             <div nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="12">
               <span class="label-fontsize">{{'waf.domain.table.title.ip' | i18n}}:</span>
             </div>
             <div nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="12">
-              <span class="label-fontsize font-bold">{{'1.1.1.1'}}</span>
+              <span class="label-fontsize font-bold">{{ item.ipPublic }}</span>
             </div>
           </div>
           <div nz-row [nzGutter]="24" class="row-white-bg content-items-center">
@@ -101,7 +101,7 @@
               <span class="label-fontsize">{{'waf.table.title.enddate' | i18n}}:</span>
             </div>
             <div nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="12">
-              <span class="label-fontsize font-bold">{{data.end | date : "HH:mm:ss dd/MM/yyyy" }}</span>
+              <span class="label-fontsize font-bold">{{data.expiredDate | date : "HH:mm:ss dd/MM/yyyy" }}</span>
             </div>
           </div>
           <div nz-row [nzGutter]="24" class="row-gray-bg content-items-center">
@@ -116,4 +116,4 @@
       </div>
     </div>
   </div>
-</nz-card> -->
+</nz-card>

@@ -7,17 +7,10 @@ import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from '@core';
 import { debounceTime, Subject, Subscription } from 'rxjs';
 import { BaseResponse, NotificationService } from '../../../../../../../libs/common-utils/src';
+import { WafService } from 'src/app/shared/services/waf.service';
+import { error } from 'console';
+import { WafDomain } from '../waf.model';
 
-export class WafDomainDTO{
-  id: number;
-  domain: string;
-  ip: string;
-  cname: string;
-  https: string;
-  package: string;
-  wafName: string;
-  status: string;
-}
 
 @Component({
   selector: 'app-waf-domain-list',
@@ -49,7 +42,7 @@ export class WafDomainListComponent implements OnInit, OnDestroy {
   pageSize: number = 10;
   pageIndex: number = 1;
 
-  response: BaseResponse<WafDomainDTO[]>;
+  response: BaseResponse<WafDomain[]>;
 
   isBegin: boolean = false;
 
@@ -60,8 +53,9 @@ export class WafDomainListComponent implements OnInit, OnDestroy {
 
   constructor(@Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
               private router: Router,
-              //private wafService: WafService,
+              private wafService: WafService,
               private notificationService: NotificationService,
+              private notification: NzNotificationService,
               @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService) {
   }
 
@@ -121,57 +115,30 @@ export class WafDomainListComponent implements OnInit, OnDestroy {
   }
 
   getListWafDomain() {
-    //this.isLoading = true;
+    this.isLoading = true;
 
-    // this.wafService.getWafs(this.customerId, this.project,
-    //   this.region, this.pageSize, this.pageIndex, this.selectedValue, this.value)
-    //   .pipe(debounceTime(500))
-    //   .subscribe(data => {
-    //     if (data) {
-    //       this.isLoading = false;
-    //       this.response = data;
-    //     } else {
-    //       this.isLoading = false;
-    //       this.response = null;
-    //     }
-    //     if (isBegin) {
-    //       this.isBegin = this.response.records.length < 1 || this.response.records === null ? true : false;
-    //     }
-    //   }, error => {
-    //     this.isLoading = false;
-    //     this.response = null;
-    //     console.log(error);
-    //     this.notification.error(error.statusText, this.i18n.fanyi('app.failData'));
-    //   });
+    this.wafService.getWafDomains(this.pageSize, this.pageIndex, this.selectedValue, this.value)
+      .pipe(debounceTime(500))
+      .subscribe({
+        next: (data) => {
+          if (data) {
+            this.response = data;
+            this.isLoading = false;
+            console.log(this.response);
+          } else {
+            this.response = null;
+            this.isLoading = false;
+          }
+          //this.isBegin = this.response.records.length < 1 || this.response.records === null ? true : false;
+        },
+        error: (error) => {
+            this.isLoading = false;
+            this.response = null;
+            console.log(error);
+            this.notification.error(error.statusText, this.i18n.fanyi('app.failData'));
+          }}
+      );
 
-    this.response = {
-      currentPage: 1,
-      pageSize: 10,
-      totalCount: 100,
-      previousPage: 0,
-      records: [{
-        id: 1,
-        domain: "cuongpv.it",
-        ip: "1.1.1.1",
-        cname: "cuongpv.it.cdn",
-        https: "enable",
-        package: "CSM",
-        wafName: "waf_01",
-        status: "Succes",
-      },
-      {
-        id: 2,
-        domain: "cuongpv.it.1",
-        ip: "1.1.1.1",
-        cname: "cuongpv.it.cdn",
-        https: "enable",
-        package: "CSM",
-        wafName: "waf_01",
-        status: "Succes",
-      }
-    ]
-    }
-    this.isLoading=false;
   }
 
   navigateToCreateWaf() {

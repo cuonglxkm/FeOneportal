@@ -159,7 +159,7 @@
   "validation.name.pattern": "Excluding Vietnamese accents, spaces, and special characters (except _)",
   "validation.exist.name": "This {{name}} name has already been used, please choose another name",
   "validation.choose.required": "Please choose {{name}}",
-  "validation.project.required.name":"Does not include special characters, spaces, Vietnamese, maximum 50 characters, may contain _ (special characters: @, #, $, %, &, *, +, -, arrow, star , emoticons, punctuation, brackets, circles, squares, rectangles...)",
+  "validation.project.required.name":"Does not include special characters, spaces, Vietnamese, maximum 50 characters, may contain - (special characters: @, #, $, %, &, *, +, _, arrow, star , emoticons, punctuation, brackets, circles, squares, rectangles...)",
   "form.account.information": "Account Information",
   "form.account.update.information":"Update account information",
   "form.account.update.invoice":"Update invoicing information",
@@ -488,6 +488,7 @@
   "app.other": "Other",
   "app.change.info": "Change information",
   "app.use.ipv6": "Use IPv6",
+  "app.all.files": "All files",
 
   "app.instances.list": "Instance list",
   "app.instances.create": "Create Instance",
@@ -759,6 +760,7 @@
   "app.file.static.web.hosting": "The file containing the content for the homepage of the website can be accessed at the following Endpoint link",
   "app.file.static.web.hosting.tooltip": "Endpoint URL of the bucket on the system when using the Web Hosting feature.Users use this link to access the website.",
   "app.label.static.web.hosting.error1": "The web address is not in the correct format",
+  "app.label.static.web.hosting.error2": "The web address can't be blank",
   "app.file.static.web.hosting.error": "The file containing the error display content of the website",
   "app.file.static.web.space.error": "File name can't contain space",
   "app.file.static.web.space.require": "File name can't be blank",
@@ -771,8 +773,8 @@
   "app.bucket.version.resize.fail": "Adjusting Versioning failed",
   "app.lifeCycle.create": "Create new Lifecycle",
   "app.lifeCycle.get.fail": "Retrieving the Bucket Lifecycle list was failed",
-  "app.lifeCycle.create.success": "Create Bucket Lifecycle successfully",
-  "app.lifeCycle.create.fail": "Create Bucket Lifecycle failed",
+  "app.lifeCycle.create.success": "Life Cycle Config was successfully configured",
+  "app.lifeCycle.create.fail": "Life Cycle Config configuration failed",
   "app.lifeCycle.prefix.require": "Tiền tố can't be blank",
   "app.lifeCycle.delete.success": "Delete Lifecycle successfully",
   "app.lifeCycle.delete.fail": "Delete Bucket Lifecycle successfully",
@@ -781,6 +783,7 @@
   "app.lifeCycle.edit": "Edit Lifecycle",
   "app.lifeCycle.config.intro": "Bucket Lifecycle allows you to manage the lifespan and automation of objects within buckets.",
   "app.lifeCycle.config.intro.next": "With Bucket Lifecycle, you can define automatic rules for objects in your bucket, including deleting objects that have expired or are no longer needed to reduce storage costs. Using Bucket Lifecycle also helps reduce administrative workload and increase the availability of objects in the bucket.",
+  "app.key.required": "Please enter the Key",
   "app.bucket.detail": "Bucket Detail",
   "app.bucket.detail.size": "Size",
   "app.bucket.detail.type": "Type",
@@ -2833,7 +2836,7 @@
   "project.note4": "Custom VPC",
   "project.note5": "Default VPC",
   "project.status.enable": "Active",
-  
+
 
 
   "project.status.delete": "Scheduled automatic deletion",
@@ -3069,6 +3072,8 @@
   "app.backup.volume.current": "Restore to the current Volume",
   "app.backup.volume.new": "Restore to a new Volume",
   "app.backup.volume.restore.current": "Select a Volume with a capacity greater than or equal to the backup size",
+  "app.backup.volume.delete.success": "Backup Volume deletion request successful.",
+  "app.backup.volume.delete.error": "Backup Volume deletion request failed",
 
   "app.dashboard.subscription.service": "Service",
   "app.dashboard.subscription.service.active": "Service Active",
@@ -3371,6 +3376,7 @@
   "schedule.backup.vm.backup.volume.mode.date.tooltip": "Backup day of the month",
   "schedule.backup.vm.backup.volume.mode.day.tooltip": "Backup day of the week",
   "schedule.backup.vm.backup.volume.mode.week.tooltip": "Number of weeks per Backup",
+  "schedule.backup.block.create": "The service has been scheduled",
 
 
   "listner.create.duplicate.port.weight": "Members with the same IP cannot have duplicate Port and Weight",
@@ -3626,6 +3632,10 @@
   "waf.action.delete": "Delete",
   "waf.modal.subtitle.delete": "To delete a waf {{name}}, Please enter the waf name to confirm",
   "waf.notification.input.name": "Please enter the correct waf name.",
+  "waf.domain.https.setting": "HTTPS Settings",
+  "waf.domain.policies": "Edit Policies",
+  "waf.domain.policies.disable": "Disable all Policies",
+  "waf.domain.delete": "Delete domain",
 
   "waf.domain.button.create":"Add domain",
   "waf.table.title.name": "WAF name",

@@ -77,6 +77,11 @@ export class S3KeyComponent implements OnInit {
 
   onRegionChange(region: RegionModel) {
     this.region = region.regionId;
+    if(this.region === RegionID.ADVANCE){
+      this.router.navigate(['/app-smart-cloud/object-storage-advance/s3-key']);
+    }else{
+      this.router.navigate(['/app-smart-cloud/object-storage/s3-key']);
+    }
   }
 
   onRegionChanged(region: RegionModel) {

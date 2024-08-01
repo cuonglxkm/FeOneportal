@@ -33,7 +33,7 @@
   "validation.name.pattern": "Không bao gồm dấu tiếng Việt, dấu cách, ký tự đặc biệt (trừ_)",
   "validation.exist.name": "Tên {{name}} này đã được sử dụng, vui lòng chọn tên khác",
   "validation.choose.required": "Vui lòng chọn {{name}}",
-  "validation.project.required.name":"Không bao gồm ký tự đặc biệt, dấu cách, tiếng Việt, tối đa 50 ký tự, có thể có dấu _ (ký tự đặc biệt: @, #, $, %, &, *, +, -, arrow, star, biểu tượng cảm xúc, dấu câu, dấu ngoặc, hình tròn, hình vuông, hình chữ nhật...)",
+  "validation.project.required.name":"Không bao gồm ký tự đặc biệt, dấu cách, tiếng Việt, tối đa 50 ký tự, có thể có dấu - (ký tự đặc biệt: @, #, $, %, &, *, +, _, arrow, star, biểu tượng cảm xúc, dấu câu, dấu ngoặc, hình tròn, hình vuông, hình chữ nhật...)",
 
   "app.footer": "Một sản phẩm của VNPT-IT",
 
@@ -383,6 +383,7 @@
   "app.other": "Khác",
   "app.change.info": "Thông tin thay đổi",
   "app.use.ipv6": "Sử dụng IPv6",
+  "app.all.files": "Tất cả file",
 
   "app.instances.list": "Danh sách máy ảo",
   "app.instances.create": "Khởi tạo máy ảo",
@@ -571,7 +572,7 @@
   "app.ssd.intro.text": "Lựa chọn tốt hơn cho khối lượng công việc phân tích dữ liệu hoặc chơi game",
   "app.password.intro.text": "Thuận tiện cho người dùng",
   "app.keypair.intro.text": "Tăng tính bảo mật khi đăng nhập",
-  "app.placeholder.search": "Tìm kiếm tên",
+  "app.placeholder.search": "Tìm kiếm theo tên",
   "app.hard.drive.type": "Loại ổ cứng",
   "app.domestic.bandwidth": "Băng thông trong nước",
   "app.international.bandwidth": "Băng thông quốc tế",
@@ -661,6 +662,7 @@
   "app.note.static.web.hosting": "Lưu ý: Để website hoạt động hãy đảm bảo file đã được public",
   "app.label.static.web.hosting": "Chuyển hướng đến một địa chỉ web khác",
   "app.label.static.web.hosting.error1": "Địa chỉ web không đúng định dạng",
+  "app.label.static.web.hosting.error2": "Địa chỉ web không được để trống",
   "app.static.web.hosting": "Chuyển hướng đến một địa chỉ web khác",
   "app.static.web.hosting.create.success": "Chỉnh sửa Static Web Hosting thành công",
   "app.static.web.hosting.create.fail": "Chỉnh sửa Static Web Hosting không thành công",
@@ -669,8 +671,8 @@
   "app.bucket.version.resize.fail": "Điều chỉnh Versioning không thành công",
   "app.lifeCycle.create": "Tạo mới Lifecycle",
   "app.lifeCycle.get.fail": "Lấy danh sách Bucket Lifecycle không thành công",
-  "app.lifeCycle.create.success": "Tạo mới Bucket Lifecycle thành công",
-  "app.lifeCycle.create.fail": "Tạo mới Bucket Lifecycle không thành công",
+  "app.lifeCycle.create.success": "Life Cycle Config được cấu hình thành công",
+  "app.lifeCycle.create.fail": "Cấu hình Life Cycle Config không thành công",
   "app.lifeCycle.prefix.require": "Tiền tố không được để trống",
   "app.lifeCycle.delete.success": "Xóa Lifecycle thành công",
   "app.lifeCycle.delete.fail": "Xóa Bucket Lifecycle thành công",
@@ -679,6 +681,7 @@
   "app.lifeCycle.edit": "Chỉnh sửa Lifecycle",
   "app.lifeCycle.config.intro": "Bucket Lifecycle cho phép bạn khả năng quản lý tuổi thọ và sự tự động hóa của các đối tượng (objects) trong các bucket.",
   "app.lifeCycle.config.intro.next": "Với Bucket Lifecycle, bạn có thể định nghĩa các quy tắc tự động cho các đối tượng trong bucket của mình, bao gồm cả việc xóa các đối tượng đã hết hạn hoặc không còn cần thiết để giảm chi phí lưu trữ. Việc sử dụng Bucket Lifecycle cũng giúp giảm tải công việc quản trị và tăng tính khả dụng của các đối tượng trong bucket.",
+  "app.key.required": "Vui lòng nhập Key",
   "app.bucket.detail": "Chi tiết Bucket",
   "app.bucket.detail.size": "Kích thước",
   "app.bucket.detail.type": "Loại",
@@ -2976,6 +2979,8 @@
   "app.backup.volume.alert.delete": "Bạn đang thực hiện xóa Backup Volume",
   "app.backup.volume.confirm.delete": "Đế thực hiện xoá Backup Volume {{name}}, vui lòng nhập tên Backup để xác nhận.",
   "app.backup.volume.tooltip.type": "",
+  "app.backup.volume.delete.success": "Yêu cầu xóa Backup Volume thành công",
+  "app.backup.volume.delete.error": "Yêu cầu xóa Backup Volume thất bại",
 
   "app.backup.volume.notification.restore.success": "Yêu cầu khôi phục backup volume thành công.",
   "app.backup.volume.notification.restore.fail": "Yêu cầu khôi phục backup volume thất bại. {{error}}",
@@ -3295,6 +3300,7 @@
   "schedule.backup.vm.backup.volume.mode.date.tooltip": "Ngày thực hiện Backup trong tháng",
   "schedule.backup.vm.backup.volume.mode.day.tooltip": "Ngày thực hiện Backup trong tuần",
   "schedule.backup.vm.backup.volume.mode.week.tooltip": "Số tuần/lần thực hiện Backup",
+  "schedule.backup.block.create": "Dịch vụ đã được lập lịch",
 
 
   "listner.create.duplicate.port.weight": "Các member có cùng IP không được trùng Port và Weight",
@@ -3554,6 +3560,10 @@
   "waf.action.delete": "Xóa dịch vụ",
   "waf.modal.subtitle.delete": "Để thực hiện xóa dịch vụ {{name}}, vui lòng nhập tên waf để xác nhận.",
   "waf.notification.input.name": "Vui lòng nhập đúng tên waf",
+  "waf.domain.https.setting": "HTTPS Settings",
+  "waf.domain.policies": "Chỉnh sửa Policies",
+  "waf.domain.policies.disable": "Disable all Policies",
+  "waf.domain.delete": "Xóa domain",
 
   "waf.domain.button.create":"Thêm domain",
   "waf.table.title.name": "Tên WAF",

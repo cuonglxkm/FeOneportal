@@ -8,24 +8,39 @@ import { BaseResponse } from '../../../../../../../libs/common-utils/src';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SslCertDetailComponent implements OnInit {
-
-  isLoading: boolean = false
+  isLoading: boolean = false;
   pageSize: number = 10;
   pageIndex: number = 1;
-  response: BaseResponse<any>
+  response: BaseResponse<any>;
+  detail: any;
 
-  constructor(){}
+  isVisibleAssociateDomain: boolean = false;
+
+  constructor() {}
 
   onPageIndexChange(value) {
     this.pageIndex = value;
     this.getListDomains();
   }
 
-  ngOnInit(){
-    this.getListDomains()
+  ngOnInit() {
+    this.getListDomains();
+    this.getSslCertificateDetail()
   }
 
-  getListDomains(){
+  getSslCertificateDetail() {
+    this.detail = {
+      id: 1,
+      name: 'ssl.certificate.1',
+      authorizedDomains: ['smartcloud.vn', '*smartcloud.vn'],
+      status: 'Normal',
+      type: 'RSA Certificate',
+      expiration: new Date(),
+      associatedDomain: ['smartcloud.vn'],
+    };
+  }
+
+  getListDomains() {
     this.response = {
       currentPage: 1,
       pageSize: 10,
@@ -43,8 +58,16 @@ export class SslCertDetailComponent implements OnInit {
           name: 'smartcloud.vn',
           status: 'Deploying successfully',
           usage: 'Internationally HTTPS Transmission (Default)',
-        }
-      ]
-    }
+        },
+      ],
+    };
+  }
+
+  handleOpenAssociateDomain() {
+    this.isVisibleAssociateDomain = true;
+  }
+
+  handleCancelAssociateDomain() {
+    this.isVisibleAssociateDomain = false;
   }
 }

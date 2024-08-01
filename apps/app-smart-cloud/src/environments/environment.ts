@@ -13,7 +13,7 @@ export const environment = {
     refreshTokenEnabled: true,
     refreshTokenType: 'auth-refresh'
   },
-  baseUrl: 'https://api-dev.onsmartcloud.com',
+  baseUrl: 'https://idg-api-gw-dev.onsmartcloud.com',
   //baseUrl: 'http://localhost:3000',
   issuer: 'https://identity-dev.onsmartcloud.com',
   //issuer: 'https://localhost:1000',

@@ -210,7 +210,7 @@ export class ProjectCreateComponent implements OnInit {
 
   isShowAlertGpu: boolean;
   form = new FormGroup({
-    name: new FormControl('', { validators: [Validators.required, Validators.pattern(/^[A-Za-z0-9_]+$/), Validators.maxLength(50)] }),
+    name: new FormControl('', { validators: [Validators.required, Validators.pattern(/^[A-Za-z0-9-]+$/), Validators.maxLength(50)] }),
     description: new FormControl(''),
     ipConnectInternet: new FormControl(''),
     numOfMonth: new FormControl(1, { validators: [Validators.required] })
@@ -489,7 +489,6 @@ export class ProjectCreateComponent implements OnInit {
   // }
 
   checkNumberInput(value: number, name: string): void {
-
     const messageStepNotification = `Số lượng phải chia hết cho  ${this.stepBlock} `;
     const numericValue = Number(value);
     if (isNaN(numericValue)) {

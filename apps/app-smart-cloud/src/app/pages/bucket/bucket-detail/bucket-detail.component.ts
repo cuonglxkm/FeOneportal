@@ -50,8 +50,7 @@ export class BucketDetailComponent extends BaseService implements OnInit {
   defaultMetadata = { metaKey: '', metaValue: '' };
   listOfMetadata: any = [];
   bucket: any;
-  size = 5;
-  pageSizeFixed = 5
+  size = 10;
   index: number = 1;
   total: number = 0;
   loading = false;
@@ -222,6 +221,11 @@ export class BucketDetailComponent extends BaseService implements OnInit {
 
   onRegionChange(region: RegionModel) {
     this.region = region.regionId;
+    if(this.region === RegionID.ADVANCE){
+      this.router.navigate(['/app-smart-cloud/object-storage-advance/bucket']);
+    }else{
+      this.router.navigate(['/app-smart-cloud/object-storage/bucket']);
+    }
   }
 
   onRegionChanged(region: RegionModel) {
@@ -488,6 +492,10 @@ export class BucketDetailComponent extends BaseService implements OnInit {
         this.activatedRoute.snapshot.paramMap.get('name'),
         this.region
       )
+
+
+
+
       .subscribe((data) => {
         this.bucket = data;
         this.cdr.detectChanges()
@@ -497,9 +505,12 @@ export class BucketDetailComponent extends BaseService implements OnInit {
         }
       },
         error => {
-        this.notification.error(this.i18n.fanyi("app.status.fail"),error.error.message)
+        // this.notification.error(this.i18n.fanyi("app.status.fail"),error.error.message)
+        //   this.router.navigate(['/app-smart-cloud/object-storage/bucket']);
+          this.notification.error(this.i18n.fanyi("app.status.fail"),this.i18n.fanyi("app.record.not.found"))
           this.router.navigate(['/app-smart-cloud/object-storage/bucket']);
         });
+
   }
 
   addMoreMetadata() {

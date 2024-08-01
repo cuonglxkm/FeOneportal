@@ -236,12 +236,7 @@ export class CreateScheduleBackupVpcComponent implements OnInit {
   sizeOfVolume: number = 0;
 
   selectVolumeChange(value) {
-    if (value != undefined) {
       this.volumeSelected = value;
-      const find = this.listVolumeNotUseUnique?.find(x => x.id === this.volumeSelected);
-      this.volumeName = find?.name;
-      this.sizeOfVolume += find?.sizeInGB;
-    }
   }
 
   onSelectedVolume(value) {
@@ -304,17 +299,17 @@ export class CreateScheduleBackupVpcComponent implements OnInit {
           this.listInstanceNotUse?.push(item1);
         });
         this.backupScheduleService.search(formSearchBackupSchedule).subscribe(data3 => {
+          console.log('lịch', data3?.records);
           data3.records?.forEach(item3 => {
             this.listInstanceNotUse = this.listInstanceNotUse.filter(ins => ins.id != item3.serviceId && ins.taskState === 'ACTIVE');
 
             console.log('list instance', this.listInstanceNotUse);
-
-            this.instanceSelected = this.listInstanceNotUse[0]?.id;
+            if (this.instanceId == undefined) {
+              this.instanceSelected = this.listInstanceNotUse[0]?.id;
+            }
           });
         });
-
         this.cdr.detectChanges();
-
       }, error => {
         this.isLoadingInstance = false;
         this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.failData'));
@@ -330,7 +325,7 @@ export class CreateScheduleBackupVpcComponent implements OnInit {
     }
   }
 
-  isLoadingVolume: boolean = false;
+  isLoadingVolume: boolean = false
   getListVolume() {
     this.isLoadingVolume = true;
     let customerId = this.tokenService.get()?.userId;
@@ -342,26 +337,28 @@ export class CreateScheduleBackupVpcComponent implements OnInit {
     formSearchBackupSchedule.customerId = customerId;
     formSearchBackupSchedule.scheduleName = '';
     formSearchBackupSchedule.scheduleStatus = '';
-    this.backupVolumeService.getListBackupVolume(this.region, this.project, null, null, 9999, 1).subscribe(data => {
-      this.backupVolumeList = data?.records;
-      this.volumeService.getVolumes(this.tokenService.get()?.userId, this.project, this.region, 9999, 1, null, null).subscribe(data2 => {
+    this.volumeService.getVolumes(this.tokenService.get()?.userId, this.project, this.region, 9999, 1, null, null)
+      .subscribe(data2 => {
+        console.log('list volume', data2.records);
         this.listVolume = data2.records;
         this.listVolume?.forEach(item => {
           this.listVolumeNotUseUnique?.push(item);
         });
         this.backupScheduleService.search(formSearchBackupSchedule).subscribe(data3 => {
+          console.log('lịch', data3?.records);
           data3.records?.forEach(item3 => {
             this.listVolumeNotUseUnique = this.listVolumeNotUseUnique.filter((volume) => volume.id != item3.serviceId && ['AVAILABLE', 'IN-USE'].includes(volume.serviceStatus));
-            this.volumeSelected = this.listVolumeNotUseUnique[0]?.id;
+            console.log('list volume', this.listVolumeNotUseUnique);
+            if (this.volumeId == undefined) {
+              this.volumeSelected = this.listVolumeNotUseUnique[0]?.id;
+            }
+
           });
         });
         this.isLoadingVolume = false;
         console.log('list volume', this.listVolumeNotUseUnique);
         this.cdr.detectChanges();
       });
-    }, error => {
-      this.isLoadingVolume = false;
-    });
   }
 
   modeChange(value) {
@@ -503,9 +500,7 @@ export class CreateScheduleBackupVpcComponent implements OnInit {
   }
 
   doCreateScheduleBackup() {
-
     console.log('click', this.validateForm.get('formInstance').valid);
-
     if (this.selectedOption == 'instance') {
       this.isLoadingAction = true;
       let formCreateSchedule = new FormCreateSchedule();
@@ -636,7 +631,6 @@ export class CreateScheduleBackupVpcComponent implements OnInit {
     this.project = regionAndProject.projectId;
 
     this.modeSelected = 1;
-    debugger
     this.projectService.getByProjectId(this.project).subscribe(data => {
       this.isLoading = false;
       this.sizeInCloudProject = data;
@@ -661,6 +655,7 @@ export class CreateScheduleBackupVpcComponent implements OnInit {
         this.instanceSelected = this.instanceId
         this.validateForm.get('formInstance').get('instanceId').setValue(this.instanceId)
         this.getInstanceById();
+        this.getListInstances()
       }else {
         this.getListInstances();
       }
@@ -673,14 +668,12 @@ export class CreateScheduleBackupVpcComponent implements OnInit {
         this.volumeSelected = this.volumeId
         this.validateForm.get('formVolume').get('volumeId').setValue(this.volumeId)
         this.getVolumeById(this.volumeId);
+        this.getListVolume()
       } else {
         this.getListVolume();
       }
     });
     this.setInitialValues();
-    // this.getListInstances();
-    // this.getInstanceById();
     this.getListScheduleBackup();
-    // this.getListVolume();
   }
 }
