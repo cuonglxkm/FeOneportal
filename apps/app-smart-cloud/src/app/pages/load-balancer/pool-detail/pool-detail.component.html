@@ -328,7 +328,7 @@
                   'validation.info.required' | i18n
                 }}</ng-container>
                 <ng-container *ngIf="control.hasError('pattern')">{{
-                  'validation.health.monitor.name.pattern' | i18n
+                  'validation.name.pattern' | i18n
                 }}</ng-container>
               </ng-template>
             </nz-form-control>
@@ -337,7 +337,7 @@
         <div style="flex: 1; margin-right: 24px">
           <nz-form-item>
             <nz-form-label
-              >{{ 'app.health.monitor.method' | i18n }} (<span class="text-red"
+              >Type (<span class="text-red"
                 >*</span
               >)</nz-form-label
             >
@@ -486,7 +486,7 @@
             <nz-form-label
               >HTTP Method (<span class="text-red">*</span>)</nz-form-label
             >
-            <nz-form-control [nzErrorTip]="gpuErrorTpl">
+            <nz-form-control [nzErrorTip]="httpMethodErrorTpl">
               <nz-select
                 [nzPlaceHolder]="'-- ' + ('app.choose.method' | i18n) + ' --'"
                 [nzShowSearch]="true"
@@ -501,7 +501,7 @@
                 />
               </nz-select>
             </nz-form-control>
-            <ng-template #gpuErrorTpl let-control>
+            <ng-template #httpMethodErrorTpl let-control>
               <ng-container *ngIf="control.hasError('required')">{{
                 'validation.choose.method' | i18n
               }}</ng-container>
@@ -601,7 +601,7 @@
               'validation.info.required' | i18n
             }}</ng-container>
             <ng-container *ngIf="control.hasError('pattern')">{{
-              'validation.member.name.pattern' | i18n
+              'validation.name.pattern' | i18n
             }}</ng-container>
           </ng-template>
         </nz-form-control>
@@ -610,7 +610,7 @@
         <nz-form-label>
           {{ 'app.member.name' | i18n }} (<span class="text-red">*</span>)
         </nz-form-label>
-        <nz-form-control [nzErrorTip]="gpuErrorTpl">
+        <nz-form-control>
           <nz-select
             [nzPlaceHolder]="'-- ' + ('app.choose.member' | i18n) + ' --'"
             [nzShowSearch]="true"
@@ -674,6 +674,7 @@
                 formControlName="port"
                 [nzMin]="1"
                 [nzStep]="1"
+                [nzMax]="65535"
                 nzSize="large"
               ></nz-input-number>
             </nz-form-control>
@@ -691,7 +692,7 @@
                 (keydown)="onKeyDown($event)"
                 formControlName="weight"
                 [nzMin]="1"
-                [nzMax]="100"
+                [nzMax]="256"
                 [nzStep]="1"
                 nzSize="large"
               ></nz-input-number>

@@ -45,7 +45,7 @@ export class IPPublicModel {
   region: number;
   regionText: string;
   createDate: string;
-  status: number;
+  status: string;
   cloudIdentity: number;
   projectName: string;
   projectId: number;
@@ -56,6 +56,7 @@ export class IPPublicModel {
   expiredDate: string;
   resourceStatus: string;
   suspendType: string;
+  suspendReason: string;
   typeIP: string;
   network: string;
   fixedIpAddress: string;
@@ -168,7 +169,7 @@ export class InstancesModel {
   taskState: string;
   rootStatus: string;
   securityGroupStr: string;
-  securityGroups: string
+  securityGroups: string;
   computeHost: string;
   keypair: string;
   offerGpuId: number;
@@ -502,8 +503,8 @@ export class OfferItem {
   characteristicValues: CharacteristicValue[];
   description: string;
   ipNumber: string;
-  numberDomain?:number
-  config?:string
+  numberDomain?: number;
+  config?: string;
 }
 
 export class Price {

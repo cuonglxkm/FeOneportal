@@ -218,6 +218,7 @@ export class RestoreBackupVmVpcComponent implements OnInit {
     this.getAllIPPublic();
     this.getListNetwork();
     this.onChangeCapacity();
+    this.checkExistName();
     this.getAllSSHKey();
     this.getListOptionGpuValue();
     this.getActiveServiceByRegion();
@@ -458,6 +459,7 @@ export class RestoreBackupVmVpcComponent implements OnInit {
     this.cdr.detectChanges();
   }
 
+  // Khôi phục vào máy ảo hiện tại
   submitFormCurrent() {
     this.isLoadingCurrent = true;
     let formRestoreCurrent = new RestoreFormCurrent();
@@ -696,10 +698,10 @@ export class RestoreBackupVmVpcComponent implements OnInit {
     this.dataService
       .getAllIPPublic(this.project, '', this.userId, this.region, 9999, 1, true)
       .subscribe((data: any) => {
-        const currentDateTime = new Date().toISOString();
         this.listIPPublic = data.records.filter(
           (e) =>
-            e.status == 0 && new Date(e.expiredDate) > new Date(currentDateTime)
+            e.status.toUpperCase() == 'KHOITAO' &&
+            e.resourceStatus.toUpperCase() == 'AVAILABLE'
         );
         console.log('list IP public', this.listIPPublic);
       });
@@ -948,7 +950,7 @@ export class RestoreBackupVmVpcComponent implements OnInit {
                       this.notification.success(
                         '',
                         this.i18n.fanyi(
-                          'app.notify.success.instances.order.create'
+                          'app.notify.success.new.instances.restore'
                         )
                       );
                       this.router.navigate(['/app-smart-cloud/instances']);
@@ -957,7 +959,7 @@ export class RestoreBackupVmVpcComponent implements OnInit {
                       this.notification.error(
                         e.statusText,
                         this.i18n.fanyi(
-                          'app.notify.fail.instances.order.create'
+                          'app.notify.fail.new.instances.restore'
                         )
                       );
                     },
@@ -970,7 +972,7 @@ export class RestoreBackupVmVpcComponent implements OnInit {
               error: (error) => {
                 this.notification.error(
                   this.i18n.fanyi('app.status.fail'),
-                  error.error.detail
+                  error.error.message
                 );
               },
             });

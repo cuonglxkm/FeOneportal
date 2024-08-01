@@ -56,13 +56,15 @@
       || volumeInfo?.serviceStatus == 'DELETING'
       || volumeInfo?.serviceStatus == 'ERROR_DELETING'
       || volumeInfo?.serviceStatus == 'ERROR')">
-        <button class="button-fee"
-                nz-button
-                nzType="primary" (click)="navigateToResizeVPC(volumeInfo.id)">
-          <img src="assets/imgs/edit-1.svg" alt=""
-               style="cursor: pointer; width: 20px; height: 20px; margin-bottom: 3px;" />
-          <span style="margin-left: 5px; margin-top: 3px;">{{ 'app.button.resize' | i18n }}</span>
-        </button>
+        <div *ngIf="!['SUSPENDED'].includes(volumeInfo?.status)">
+          <button class="button-fee"
+                  nz-button
+                  nzType="primary" (click)="navigateToResizeVPC(volumeInfo.id)">
+            <img src="assets/imgs/edit-1.svg" alt=""
+                 style="cursor: pointer; width: 20px; height: 20px; margin-bottom: 3px;" />
+            <span style="margin-left: 5px; margin-top: 3px;">{{ 'app.button.resize' | i18n }}</span>
+          </button>
+        </div>
       </div>
     </div>
   </div>

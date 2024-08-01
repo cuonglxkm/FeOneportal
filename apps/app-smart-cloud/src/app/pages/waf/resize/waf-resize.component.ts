@@ -79,7 +79,6 @@ export class WAFResizeComponent implements OnInit {
       { validators: [Validators.required] }
     ),
   });
-  private inputChangeSubject = new Subject<{ value: number; name: string }>();
   disisable = true;
 
   constructor(

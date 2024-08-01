@@ -1169,6 +1169,7 @@
                       [placeholder]="'app.input.name' | i18n"
                       [ngModelOptions]="{ standalone: true }"
                       nz-input
+                      [maxlength]="50"
                       [(ngModel)]="data.newName"
                     />
                   </td>
@@ -1198,18 +1199,16 @@
                       nzSize="large"
                     ></nz-input-number>
                   </td>
-                  <td nzAlign="center">
+                  <td *ngIf="isSupportEncryption" nzAlign="center">
                     <label
-                      *ngIf="isSupportEncryption"
                       nz-checkbox
                       [ngModel]="data.isEncryption"
                       [ngModelOptions]="{ standalone: true }"
                       [disabled]="true"
                     ></label>
                   </td>
-                  <td nzAlign="center">
+                  <td *ngIf="isSupportMultiAttachment" nzAlign="center">
                     <label
-                      *ngIf="isSupportMultiAttachment"
                       nz-checkbox
                       [ngModel]="data.isMultiAttach"
                       [ngModelOptions]="{ standalone: true }"

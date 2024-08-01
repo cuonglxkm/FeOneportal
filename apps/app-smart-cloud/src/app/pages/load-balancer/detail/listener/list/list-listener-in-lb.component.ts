@@ -30,6 +30,7 @@ export class ListListenerInLbComponent implements OnInit{
   loading = false;
   pageIndex: number = 1
   disableDelete= true;
+  begin = true;
   constructor(private loadBalancerService: LoadBalancerService,
               private listenerService: ListenerService,
               public notification: NzNotificationService,
@@ -84,6 +85,7 @@ export class ListListenerInLbComponent implements OnInit{
   }
 
   confirmNameDelete(event: any) {
+    this.begin = false;
     this.nameDelete = '';
     if (event == this.itemDelete.name) {
       this.disableDelete = false;
@@ -93,26 +95,34 @@ export class ListListenerInLbComponent implements OnInit{
   }
 
   openDelete() {
-    this.loading = true;
-    this.listenerService.deleteListner(this.itemDelete.listenerId,this.idLB)
-      .pipe(finalize(() => {
-        this.loading = false;
-        this.isVisibleDelete = false;
-      }))
-      .subscribe(
-      data => {
-        this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('app.notification.delete.listener.success'))
-        this.router.navigate(['/app-smart-cloud/load-balancer/detail/' + this.idLB]);
-      },
-      error => {
-        this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.notification.delete.listener.fail'))
-        this.router.navigate(['/app-smart-cloud/load-balancer/detail/' + this.idLB]);
-      }
-    )
+    if (this.disableDelete == false) {
+      this.loading = true;
+      this.listenerService.deleteListner(this.itemDelete.listenerId,this.idLB)
+        .pipe(finalize(() => {
+          this.loading = false;
+          this.isVisibleDelete = false;
+        }))
+        .subscribe(
+          data => {
+            this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('app.notification.delete.listener.success'))
+            this.router.navigate(['/app-smart-cloud/load-balancer/detail/' + this.idLB]);
+          },
+          error => {
+            this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.notification.delete.listener.fail'))
+            this.router.navigate(['/app-smart-cloud/load-balancer/detail/' + this.idLB]);
+          }
+        )
+    }
   }
 
   activeModalDelete(data: any) {
     this.itemDelete = data;
     this.isVisibleDelete = true
+  }
+
+  cancelDelete() {
+    this.isVisibleDelete = false;
+    this.disableDelete = true;
+    this.begin = true;
   }
 }

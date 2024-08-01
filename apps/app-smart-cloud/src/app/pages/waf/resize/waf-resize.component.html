@@ -44,8 +44,8 @@
                     <span class="label-fontsize">Domain:</span>
                   </div>
                   <div nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="12">
-                    <span class="label-fontsize font-bold">{{WAFDetail?.wafDomains.length > 0 ? WAFDetail?.wafDomains[0].domain : '-'}}</span>
-
+                    <!-- <span class="label-fontsize font-bold">{{WAFDetail?.wafDomains.length > 0 ? WAFDetail?.wafDomains[0].domain : '-'}}</span> -->
+                    <span class="label-fontsize font-bold">-</span>
                   </div>
                 </div>
                 <div nz-row [nzGutter]="24" class="row-white-bg content-items-center">
@@ -53,7 +53,7 @@
                     <span class="label-fontsize">Policy:</span>
                   </div>
                   <div nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="12">
-                    <span class="label-fontsize font-bold ">-</span>
+                    <span class="label-fontsize font-bold ">{{WAFDetail?.policyName === null ? '-' : WAFDetail?.policyName}}</span>
                   </div>
                 </div>
                 <div nz-row [nzGutter]="24" class="row-gray-bg content-items-center">
@@ -82,7 +82,8 @@
                     <span class="label-fontsize">IP Public:</span>
                   </div>
                   <div nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="12">
-                    <span class="label-fontsize font-bold">{{WAFDetail?.wafDomains.length > 0 ? WAFDetail?.wafDomains[0].ipPublic : '-'}}</span>
+                    <!-- <span class="label-fontsize font-bold">{{WAFDetail?.wafDomains.length > 0 ? WAFDetail?.wafDomains[0].ipPublic : '-'}}</span> -->
+                    <span class="label-fontsize font-bold">-</span>
                   </div>
                 </div>
                 <div nz-row [nzGutter]="24" class="row-white-bg content-items-center">

@@ -4,6 +4,8 @@ import SecurityGroupRule, { RuleSearchCondition } from '../../../../shared/model
 import { SecurityGroupRuleService } from '../../../../shared/services/security-group-rule.service';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
+import { SecurityGroup, SecurityGroupSearchCondition } from '../../../../shared/models/security-group';
+import { SecurityGroupService } from '../../../../shared/services/security-group.service';
 
 @Component({
   selector: 'one-portal-list-inbound',
@@ -17,6 +19,8 @@ export class ListInboundComponent implements OnInit, OnChanges {
   @Input() projectId: number
 
 
+
+
   collection: Pagination<SecurityGroupRule>;
   condition = new RuleSearchCondition()
 
@@ -28,6 +32,7 @@ export class ListInboundComponent implements OnInit, OnChanges {
 
   constructor(
     private ruleService: SecurityGroupRuleService,
+    private securityGroupService: SecurityGroupService,
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
     private notification: NzNotificationService) {}
 
@@ -67,12 +72,30 @@ export class ListInboundComponent implements OnInit, OnChanges {
       .subscribe((data) => {
         this.collection = data;
         this.isLoading = false
+        console.log('rule inbound', this.collection)
       }, error => {
         this.isLoading = false
         this.collection = null
         // this.notification.error('Thất bại', `Lấy dữ liệu thất bại`);
       })
 
+  }
+
+  getSecurityGroupNameByRemoteGroupId(remoteGroupId: string): string | null {
+      const sg = this.listSecurityGroup.find(group => group.id === remoteGroupId);
+      return sg ? sg.securityGroupName : '';
+  }
+
+  listSecurityGroup: any;
+  getSecurityGroup()  {
+    let searchForm = new SecurityGroupSearchCondition();
+    searchForm.userId = this.tokenService.get()?.userId
+    searchForm.regionId = this.regionId
+    searchForm.projectId = this.projectId
+
+    this.securityGroupService.search(searchForm).subscribe(data => {
+      this.listSecurityGroup = data;
+    })
   }
 
   handleOkDeleteInbound() {
@@ -84,7 +107,8 @@ export class ListInboundComponent implements OnInit, OnChanges {
   }
 
   ngOnInit(): void {
-    this.getRule()
+    this.getRule();
+    this.getSecurityGroup();
   }
 
   ngOnChanges(changes: SimpleChanges): void {

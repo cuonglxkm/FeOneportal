@@ -500,8 +500,8 @@
   "app.notify.gpu.count.invalid": "Vui lòng chọn số lượng GPU",
   "app.notify.check.config.for.os": "Cấu hình hiện tại chưa phù hợp với hệ điều hành. Vui lòng chọn cấu hình tối thiểu của {{nameHdh}} là {{volume}} GB dung lượng / {{ram}} GB RAM / {{cpu}} vCPU",
   "app.notify.check.config.for.change.os": "Quý khách hiện không đủ tài nguyên để thực hiện việc chuyển đổi hệ điều hành. Vui lòng cập nhật cấu hình tối thiểu của {{nameHdh}} là {{volume}} GB dung lượng / {{ram}} GB RAM / {{cpu}} vCPU",
-  "app.notify.success.instances.order.create": "Tạo order máy ảo thành công",
-  "app.notify.fail.instances.order.create": "Tạo order máy ảo không thành công",
+  "app.notify.success.new.instances.restore": "Yêu cầu khôi phục vào máy ảo mới thành công",
+  "app.notify.fail.new.instances.restore": "Yêu cầu khôi phục vào máy ảo mới không thành công",
   "app.notify.get.vpc.info.fail": "Lấy thông tin VPC không thành công",
   "app.notify.update.instances.success": "Cập nhật máy ảo thành công",
   "app.notify.update.instances.fail": "Cập nhật máy ảo không thành công",
@@ -537,7 +537,7 @@
   "app.notify.amount.ram.add": "Vượt quá quota RAM, đã sử dụng {{num1}}/{{num2}} GB, cần cấp thêm {{num3}} GB",
   "app.notify.amount.cpu.add": "Vượt quá quota CPU, đã sử dụng {{num1}}/{{num2}} vCPU, cần cấp thêm {{num3}} vCPU",
   "app.notify.amount.gpu.add": "Không đủ quota chuyển đổi loại GPU, cần cấp thêm {{num}} GPU",
-  "app.notify.create.instances.success": "Khởi tạo máy ảo {{name}} thành công",
+  "app.notify.create.instances.success": "Yêu cầu khởi tạo máy ảo {{name}} thành công",
   "app.notify.create.instances.fail": "Khởi tạo máy ảo {{name}} không thành công",
   "app.notify.extend.instance.success": "Yêu cầu gia hạn máy ảo thành công",
   "app.notify.extend.instance.fail": "Yêu cầu gia hạn máy ảo không thành công",
@@ -3108,8 +3108,8 @@
   "app.info.backup.vm.restore.information": "Thông tin khôi phục",
   "app.backup.vm.restore.instance.name": "Tên máy ảo hiện tại",
   "app.backup.vm.restore.storage.os": "Dung lượng ổ hệ điều hành",
-  "app.backup.vm.restore.current": "Restore vào máy ảo hiện tại",
-  "app.backup.vm.restore.new": "Restore vào máy ảo mới",
+  "app.backup.vm.restore.current": "Khôi phục vào máy ảo hiện tại",
+  "app.backup.vm.restore.new": "Khôi phục vào máy ảo mới",
   "app.backup.config.vm.new": "Cấu hình máy ảo mới",
   "app.backup.config.vm.attach": "Cấu hình Volume gắn ngoài",
   "app.backup.vm.button.create" : "Khởi tạo Backup VM",
@@ -3137,7 +3137,7 @@
 
   "app.backup.vm.alert.delete": "Bạn đang thực hiện xóa backup",
   "app.backup.vm.confirm.delete": "Đế thực hiện xoá backup {{name}}, vui lòng nhập tên backup để xác nhận.",
-  "app.backup.vm.alert.storage.vpc": "Dung lượng backup còn lại nhỏ hơn dung lượng ổ hệ điều hành + tổng dung lượng volume gắn ngoài ({{storage}} GB). Quý khách hãy điều chỉnh dự án VPC để quá trình backup VM không bị gián đoạn.",
+  "app.backup.vm.alert.storage.vpc": "Dung lượng backup còn lại nhỏ hơn dung lượng ổ hệ điều hành + tổng dung lượng volume gắn ngoài ({{storage}} GB). Quý khách hãy điều chỉnh dự án VPC ",
 
 
   "app.backup.vm.create.placeholder": "Nhập tên Backup VM",
@@ -3270,8 +3270,8 @@
   "schedule.backup.name.empty": "Tên lịch Backup không được để trống",
   "schedule.backup.blank1": "Đặt lịch Backup - Tự động sao lưu",
   "schedule.backup.blank2": "Giải pháp giúp nhà quản trị hẹn lịch sao lưu, hẹn trước thời gian khi cần thiết. Giúp dễ dàng quản lý thời gian, công việc phát triển sản phẩm",
-  "schedule.backup.action1": "Khôi phục lập lịch backup bị tạm dừng",
-  "schedule.backup.action2": "Quý khách đang thực hiện khôi phục lại lịch backup {{name}} đang bị gián đoạn ? Vui lòng xác nhận trước khi khôi phục",
+  "schedule.backup.action1": "Khôi phục lịch backup",
+  "schedule.backup.action2": "Quý khách đang thực hiện khôi phục lịch backup {{name}} đang bị gián đoạn ? Vui lòng xác nhận trước khi khôi phục",
   "schedule.backup.health": "Khôi phục",
   "schedule.backup.reactive": "Tiếp tục lịch Backup",
   "schedule.backup.action3": "Tạm dừng lịch Backup",
@@ -3577,5 +3577,7 @@
   "waf.domain.table.title.cname":"CNAME",
   "waf.domain.table.title.https":"HTTPS",
   "waf.domain.table.title.status":"Trạng thái domain",
-  "waf.domain.table.title.action":"Thao tác"
+  "waf.domain.table.title.action":"Thao tác",
+  "notification.input.name": "Vui lòng nhập đúng tên",
+  "ip.floating.attach.message": "Port đã được sử dụng, vui lòng chọn Port khác để thực hiện gắn IP Floating."
 }

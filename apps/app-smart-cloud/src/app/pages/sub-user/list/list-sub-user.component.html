@@ -72,6 +72,7 @@
               (nzPageIndexChange)="onPageIndexChange($event)"
               [nzTotal]="response?.totalCount"
               [nzFrontPagination]="false"
+              nzTableLayout="fixed"
               [nzLoading]="isLoading">
       <thead>
       <tr>
@@ -86,7 +87,11 @@
       <ng-container *ngFor="let data of fixTable.data; index as i">
         <tr>
           <td>{{ (response?.currentPage - 1) * response?.pageSize + i + 1 }}</td>
-          <td>{{ data.subUserId }}</td>
+          <td title="{{ data.subUserId }}" style="overflow: hidden;
+          font-weight: normal;
+          white-space: nowrap;
+          text-overflow: ellipsis;
+          width: 50px;">{{ data.subUserId }}</td>
           <td>
             <nz-row nzJustify="space-between">
               <nz-col>

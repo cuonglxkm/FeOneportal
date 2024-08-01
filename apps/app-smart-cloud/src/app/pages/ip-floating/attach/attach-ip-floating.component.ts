@@ -82,7 +82,10 @@ export class AttachIpFloatingComponent implements OnInit {
         this.isLoading = false;
         if(error && error.error && error.error.type && error.error.type == "Exception" && error.error.message){
           this.notification.error(this.i18n.fanyi('app.status.fail'), error.error.message);
-        } else {
+        } else if (error && error.error && error.error.message && error.error.message.contain("as that fixed IP already has a floating IP on external network")) {
+          this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('ip.floating.attach.message'));
+        }
+        else {
           this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('ip.floating.nofitacation.attach.fail'));
         }
       })

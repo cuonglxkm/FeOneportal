@@ -43,9 +43,8 @@
           <td nzAlign="right">
             {{ data.iops }}
           </td>
-          <td nzAlign="center">
+          <td *ngIf="isSupportEncryption" nzAlign="center">
             <label
-              *ngIf="isSupportEncryption"
               nz-checkbox
               [ngModel]="data.isEncryption"
               [ngModelOptions]="{ standalone: true }"

@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Inject } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Inject, OnInit } from '@angular/core';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { InstancesService } from '../../instances/instances.service';
 import { Router } from '@angular/router';
@@ -14,6 +14,9 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { DomSanitizer } from '@angular/platform-browser';
 import { DOMAIN_REGEX } from 'src/app/shared/constants/constants';
 import { duplicateDomainValidator, ipValidatorMany } from '../../../../../../../libs/common-utils/src';
+import { AddDomainRequest, WafDetailDTO } from '../waf.model';
+import { WafService } from 'src/app/shared/services/waf.service';
+import { finalize } from 'rxjs';
 
 @Component({
   selector: 'one-portal-add-domain',
@@ -21,11 +24,11 @@ import { duplicateDomainValidator, ipValidatorMany } from '../../../../../../../
   styleUrls: ['./add-domain.component.less'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class AddDomainComponent {
+export class AddDomainComponent implements OnInit {
 
   form: FormGroup = this.fb.group({
     nameWAF: ['', [Validators.required]],
-    domain: ['', [Validators.required,Validators.pattern(DOMAIN_REGEX) ,duplicateDomainValidator]],
+    domain: ['', [Validators.required,Validators.pattern(DOMAIN_REGEX)]],
       ipPublic: ['', [Validators.required, ipValidatorMany]],
       host: [''],
       port: [''],
@@ -33,7 +36,17 @@ export class AddDomainComponent {
       package:['']
   })
 
+  listWafs: WafDetailDTO[]
+
   isVisibleCreateSSLCert = false;
+
+  isLoadingGetWaf: boolean
+
+  isLoadingSubmit: boolean
+
+  selectedPackage: number
+
+  addDomainRequest = new AddDomainRequest()
  
   openModalSSlCert(){
     this.isVisibleCreateSSLCert = true
@@ -41,6 +54,10 @@ export class AddDomainComponent {
 
   handleCancelCreateSSLCert(){
     this.isVisibleCreateSSLCert = false
+  }
+
+  ngOnInit(): void {
+      this.getListWaf()
   }
 
   constructor(@Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
@@ -55,9 +72,46 @@ export class AddDomainComponent {
     private orderService: OrderService,
     private loadingSrv: LoadingService,
     private fb: FormBuilder,
-    private sanitizer: DomSanitizer
-
+    private sanitizer: DomSanitizer,
+    private wafService: WafService
   ) {
   
+  }
+
+  getListWaf(){
+    this.isLoadingGetWaf = true
+    this.wafService.getWafs(9999, 1, 'ACTIVE', '', '').pipe(finalize(()=>{
+      this.isLoadingGetWaf = false
+    })).subscribe((data)=>{
+      console.log('data', data)
+      this.listWafs = data.records
+      this.form.controls.nameWAF.setValue(this.listWafs[0].id)
+      this.form.controls.package.setValue(this.listWafs?.[0].offerId)
+    })
+  }
+
+  onChangeWaf(value: any){
+    const selectedWaf = this.listWafs.filter((waf)=> (waf.id === value))
+    this.selectedPackage = selectedWaf?.[0]?.offerId
+  }
+
+  handleOnSubmit(){
+    this.isLoadingSubmit = true
+    const formValues = this.form.getRawValue()
+    this.addDomainRequest.domain = formValues.domain
+    this.addDomainRequest.host = formValues.host
+    this.addDomainRequest.ipPublic = formValues.ipPublic
+    this.addDomainRequest.packageId = formValues.nameWAF
+    this.addDomainRequest.port = formValues.port || 0
+    this.addDomainRequest.policyId = 0
+    this.addDomainRequest.sslCertId = formValues.sslCert || 0
+
+
+    this.wafService.addDomain(this.addDomainRequest).pipe(finalize(()=>{
+      this.isLoadingSubmit = false
+      this.cdr.detectChanges()
+    })).subscribe()
+
+    
   }
 }

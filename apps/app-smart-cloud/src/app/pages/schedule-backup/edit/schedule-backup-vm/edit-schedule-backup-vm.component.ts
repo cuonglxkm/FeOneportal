@@ -13,6 +13,8 @@ import { getCurrentRegionAndProject } from '@shared';
 import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
 import { PackageBackupModel } from '../../../../shared/models/package-backup.model';
 import { PackageBackupService } from '../../../../shared/services/package-backup.service';
+import { ProjectService } from '../../../../shared/services/project.service';
+import { SizeInCloudProject } from '../../../../shared/models/project.model';
 
 @Component({
   selector: 'one-portal-extend-schedule-backup-vm',
@@ -78,6 +80,8 @@ export class EditScheduleBackupVmComponent implements OnInit {
     daysOfWeekMultiple: [[] as string[]]
   });
 
+  typeVpc: number;
+
   @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
 
   constructor(private fb: NonNullableFormBuilder,
@@ -87,6 +91,7 @@ export class EditScheduleBackupVmComponent implements OnInit {
               @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
               private notification: NzNotificationService,
               private backupPackageService: PackageBackupService,
+              private projectService: ProjectService,
               @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
               public datepipe: DatePipe) {
 
@@ -110,7 +115,8 @@ export class EditScheduleBackupVmComponent implements OnInit {
   }
 
   projectChanged(project: ProjectModel) {
-    this.project = project.id;
+    this.project = project?.id;
+    this.typeVpc = project?.type
   }
 
   duplicateNameValidator(control) {
@@ -242,13 +248,18 @@ export class EditScheduleBackupVmComponent implements OnInit {
     }
   }
 
+  nameVolumeAttach: string;
   getDetail(customerId: number, id: number) {
     this.isLoading = true;
 
     this.scheduleService.detail(customerId, id).subscribe(data => {
       this.backupSchedule = data;
       this.isLoading = false;
-      this.getBackupPackageDetail(this.backupSchedule?.backupPackageId);
+      if(this.typeVpc == 1) {
+        this.getStorageByVpc(this.project)
+      } else {
+        this.getBackupPackageDetail(this.backupSchedule?.backupPackageId);
+      }
       this.validateForm.controls.backupMode.setValue(this.backupSchedule?.mode);
       this.validateForm.controls.times.setValue(this.backupSchedule?.runtime);
       console.log('times', this.validateForm.controls.times.value)
@@ -260,7 +271,7 @@ export class EditScheduleBackupVmComponent implements OnInit {
       this.validateForm.controls.numberOfWeek.setValue(parseInt(this.numberOfWeekChangeSelected, 10));
       this.validateForm.controls.daysOfWeek.setValue(this.backupSchedule?.daysOfWeek);
       this.validateForm.controls.daysOfWeekMultiple.setValue(this.backupSchedule?.daysOfWeek?.split(','));
-
+      // this.nameVolumeAttach = this.backupSchedule?.backupScheduleItems?.
       data.backupScheduleItems?.forEach(item => {
         if (this.listVolume?.length > 0) {
           this.listVolume.push(item.itemName);
@@ -268,7 +279,14 @@ export class EditScheduleBackupVmComponent implements OnInit {
           this.listVolume = [item.itemName];
         }
       });
+      if(this.project != this.backupSchedule.projectId) {
+        this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.failData'));
+        this.router.navigate(['/app-smart-cloud/schedule/backup/list']);
+      }
 
+    }, error => {
+      this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.failData'));
+      this.router.navigate(['/app-smart-cloud/schedule/backup/list']);
     });
   }
 
@@ -287,8 +305,9 @@ export class EditScheduleBackupVmComponent implements OnInit {
             this.nameList = [item.name];
           }
         }
-
       });
+    }, error => {
+
     });
   }
 
@@ -303,8 +322,14 @@ export class EditScheduleBackupVmComponent implements OnInit {
     if (event.target.value === '0') {
       event.target.value = 1;
       this.validateForm.controls.date.setValue(1);
-
     }
+  }
+
+  sizeInGb: SizeInCloudProject;
+  getStorageByVpc(id) {
+    this.projectService.getByProjectId(id).subscribe(data => {
+      this.sizeInGb = data
+    })
   }
 
   ngOnInit(): void {
@@ -313,6 +338,7 @@ export class EditScheduleBackupVmComponent implements OnInit {
     this.project = regionAndProject.projectId;
 
     this.customerId = this.tokenService.get()?.userId;
+
 
     this.route.params.subscribe((params) => {
       this.idSchedule = params['id'];
