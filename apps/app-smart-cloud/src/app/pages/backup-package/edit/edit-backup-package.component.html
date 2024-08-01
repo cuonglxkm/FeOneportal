@@ -16,7 +16,7 @@
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>
         <a
-          routerLink="/app-smart-cloud/backup/packages/extend/{{idBackupPackage}}">{{ 'app.backup.package.breadcrumb.resize'|i18n }}</a>
+          routerLink="/app-smart-cloud/backup/packages/resize/{{idBackupPackage}}">{{ 'app.backup.package.breadcrumb.resize'|i18n }}</a>
       </nz-breadcrumb-item>
     </nz-breadcrumb>
     <ng-template #iconTemplate>
@@ -102,13 +102,13 @@
                   <nz-row style="padding: 12px 0 12px 0">
                     <span class="text-label" style="width: 45%">{{ 'app.backup.package.description'|i18n }}</span>
                     <span class="text-value-detail"
-                          *ngIf="packageBackupModel && packageBackupModel?.description.length > 15"
+                          *ngIf="packageBackupModel && packageBackupModel?.description?.length > 15"
                           nz-popover
                           [nzPopoverPlacement]="'bottom'"
                           [nzPopoverContent]="packageBackupModel?.description">
                       {{ packageBackupModel?.description.substring(0, 15).concat('...') }}</span>
                     <span class="text-value-detail"
-                          *ngIf="packageBackupModel?.description.length < 15">{{ packageBackupModel?.description }}</span>
+                          *ngIf="packageBackupModel?.description?.length < 15">{{ packageBackupModel?.description }}</span>
                   </nz-row>
                 </nz-col>
               </nz-row>

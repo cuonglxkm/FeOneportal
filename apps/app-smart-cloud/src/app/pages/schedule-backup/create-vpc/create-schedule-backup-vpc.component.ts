@@ -225,18 +225,22 @@ export class CreateScheduleBackupVpcComponent implements OnInit {
   }
 
   selectInstanceChange(value) {
-    if (value != undefined) {
-      this.instanceSelected = value;
-      const find = this.listInstanceNotUse?.find(x => x.id === this.instanceSelected);
-      this.instanceName = find?.name;
-      this.getDataFromInstanceId(value);
-    }
+    console.log('value instance select', value);
+    this.instanceSelected = value;
+    const find = this.listInstanceNotUse?.find(x => x.id === this.instanceSelected);
+    this.instanceName = find?.name;
+    this.getDataFromInstanceId(this.instanceSelected);
   }
 
   sizeOfVolume: number = 0;
 
   selectVolumeChange(value) {
-      this.volumeSelected = value;
+    console.log('value volume selected', value);
+
+    this.volumeSelected = value;
+    const find = this.listVolumeNotUseUnique?.find(x => x.id === this.volumeSelected);
+    this.volumeName = find?.name;
+    this.sizeOfVolume += find?.sizeInGB;
   }
 
   onSelectedVolume(value) {
@@ -658,6 +662,7 @@ export class CreateScheduleBackupVpcComponent implements OnInit {
         this.getListInstances()
       }else {
         this.getListInstances();
+        this.instanceSelected = this.listInstanceNotUse[0]?.id
       }
 
       const volumeId = params['idVolume']
@@ -671,6 +676,7 @@ export class CreateScheduleBackupVpcComponent implements OnInit {
         this.getListVolume()
       } else {
         this.getListVolume();
+        this.volumeSelected = this.listVolumeNotUseUnique[0]?.id
       }
     });
     this.setInitialValues();
