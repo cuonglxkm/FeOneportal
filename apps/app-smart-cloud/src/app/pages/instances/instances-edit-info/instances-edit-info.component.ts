@@ -276,14 +276,14 @@ export class InstancesEditInfoComponent implements OnInit {
               next: (data: any) => {
                 this.notification.success(
                   '',
-                  this.i18n.fanyi('app.notify.change.os.success')
+                  this.i18n.fanyi('app.notify.request.change.os.success')
                 );
                 this.returnPage();
               },
               error: (e) => {
                 this.notification.error(
                   e.statusText,
-                  this.i18n.fanyi('app.notify.change.os.fail')
+                  this.i18n.fanyi('app.notify.request.change.os.fail')
                 );
               },
             });
