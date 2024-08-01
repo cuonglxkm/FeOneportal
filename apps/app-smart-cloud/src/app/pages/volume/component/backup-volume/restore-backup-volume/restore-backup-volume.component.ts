@@ -263,7 +263,11 @@ export class RestoreBackupVolumeComponent implements OnInit {
   }
 
   instanceSelectedChange(value: any) {
-    this.instanceSelected = value;
+
+    if(value != null || value != undefined) {
+      this.instanceSelected = value;
+    }
+
   }
 
   //get danh sách máy ảo

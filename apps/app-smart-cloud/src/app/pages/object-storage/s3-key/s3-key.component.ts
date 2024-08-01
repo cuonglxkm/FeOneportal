@@ -71,9 +71,15 @@ export class S3KeyComponent implements OnInit {
     }
     this.hasObjectStorage();
     this.searchDelay.pipe(debounceTime(TimeCommon.timeOutSearch)).subscribe(() => {
-      this.getData(true);
+      this.refreshParams()
+      this.getData();
     });
   }
+
+  refreshParams() {
+    this.index = 10;
+    this.size = 1;
+}
 
   onRegionChange(region: RegionModel) {
     this.region = region.regionId;
@@ -90,7 +96,8 @@ export class S3KeyComponent implements OnInit {
 
   search(search: string) {
     this.value = search.trim();
-    this.getData(false)
+    this.refreshParams()
+    this.getData()
   }
 
   hasOS: boolean = undefined;
@@ -103,7 +110,7 @@ export class S3KeyComponent implements OnInit {
         next: (data) => {
           if (data) {
             this.hasOS = true;
-            this.getData(false);
+            this.getData();
           } else {
             this.hasOS = false;
           }
@@ -137,32 +144,22 @@ export class S3KeyComponent implements OnInit {
 
   onPageSizeChange(event: any) {
     this.size = event;
-    this.getData(false);
+    this.getData();
   }
 
   onPageIndexChange(event: any) {
     this.index = event;
-    this.getData(false);
+    this.getData();
   }
 
-  getData(setdefault: boolean) {
-    if (setdefault) {
-      this.index = 1;
-      this.size = 10;
-      this.service.getDataS3Key(this.value.trim(), 1, 10, this.region).subscribe((data) => {
+  getData() {
+      this.isLoading = true
+      this.service.getDataS3Key(this.value.trim(), this.size, this.index, this.region).subscribe((data) => {
         this.isLoading = false
         this.total = data?.totalCount;
         this.response = data;
         this.listOfS3Key = data?.records;
       });
-    }
-    this.isLoading = true
-    this.service.getDataS3Key(this.value.trim(), this.size, this.index, this.region).subscribe((data) => {
-      this.isLoading = false
-      this.total = data?.totalCount;
-      this.response = data;
-      this.listOfS3Key = data?.records;
-    });
   }
 
   copyText(secretKey: any) {
@@ -181,7 +178,7 @@ export class S3KeyComponent implements OnInit {
       .deleteS3key(this.formDeleteS3Key)
       .pipe(
         finalize(() => {
-          this.getData(false);
+          this.getData();
         })
       )
       .subscribe({
@@ -194,7 +191,7 @@ export class S3KeyComponent implements OnInit {
             .pipe(finalize(() => {
               if (this.listOfS3Key.length <= 0) {
                 this.index = 1;
-                this.getData(false);
+                this.getData();
               }
             }))
             .subscribe((data) => {
@@ -210,7 +207,7 @@ export class S3KeyComponent implements OnInit {
           this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.notification.delete.s3.key.fail'));
         },
       });
-    this.getData(false);
+    this.getData();
     this.isVisibleDelete = false;
   }
 
@@ -233,7 +230,7 @@ export class S3KeyComponent implements OnInit {
           this.isVisibleCreate = false;
           this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('app.notification.create.s3.key.success'));
           this.userCreate.subUserId = '';
-          this.getData(false);
+          this.getData();
         },
         error: (error) => {
           this.isLoadingCreateS3key = false;
@@ -266,7 +263,7 @@ export class S3KeyComponent implements OnInit {
         this.isLoadingReCreateS3key = false;
         this.isVisibleReCreate = false;
         this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('app.notification.regenerate.secretKey.success'));
-        this.getData(false);
+        this.getData();
       },
       error: (error) => {
         this.isLoadingReCreateS3key = false;

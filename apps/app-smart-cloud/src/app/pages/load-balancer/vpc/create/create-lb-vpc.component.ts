@@ -239,8 +239,8 @@ export class CreateLbVpcComponent implements OnInit {
       this.catalogService.getDetailOffer(this.productId).subscribe(
         data2 => {
         this.offerDetail = data2;
-        this.maxAction = data2?.characteristicValues?.find(item => item.charName = 'MaxConnection')?.charOptionValues[0];
-        this.flavorId = this.offerDetail?.characteristicValues[1].charOptionValues[0];
+        this.maxAction = data2?.characteristicValues?.find(item => item.charName == 'MaxConnection')?.charOptionValues[0];
+        this.flavorId = this.offerDetail?.characteristicValues?.find(item => item.charName == 'FlavorId').charOptionValues[0];
       },
         error => {
           this.notification.error(this.i18n.fanyi('app.status.fail'),'Lấy thông tin Flavor lỗi')
