@@ -9,6 +9,7 @@ import { WAFExtendComponent } from "./extend/waf-extend.component";
 import { CreateSslCertWAFComponent } from "./ssl-cert/create/create-ssl-cert.component";
 import { WafDetailComponent } from "./waf-detail/waf-detail.component";
 import { SslCertDetailComponent } from "./ssl-cert-detail/ssl-cert-detail.component";
+import { EditSslCertWAFComponent } from "./ssl-cert/edit/edit-ssl-cert.component";
 
 const routes: Routes = [
   {
@@ -38,6 +39,10 @@ const routes: Routes = [
   {
     path: 'ssl-cert/create',
     component: CreateSslCertWAFComponent,
+  },
+  {
+    path: 'ssl-cert/edit/:id',
+    component: EditSslCertWAFComponent,
   },
   {
     path: 'detail/:id',
