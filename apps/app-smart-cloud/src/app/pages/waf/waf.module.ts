@@ -32,6 +32,7 @@ import { DisassociateSslDomainComponent } from './pop-up/disassociate-ssl-domain
 import { AssociateSslBtnComponent } from './ssl-cert/list-ssl-cert/list-ssl-cert-action-btn/associate-ssl-btn/associate-ssl-btn.component';
 import { DeleteSslBtnComponent } from './ssl-cert/list-ssl-cert/list-ssl-cert-action-btn/delete-ssl-btn/delete-ssl-btn.component';
 import { DisassociateDomainBtnComponent } from './ssl-cert-detail/disassociate-domain-btn/disassociate-domain-btn.component';
+import { EditSslCertWAFComponent } from './ssl-cert/edit/edit-ssl-cert.component';
 
 @NgModule({
   declarations: [
@@ -58,7 +59,8 @@ import { DisassociateDomainBtnComponent } from './ssl-cert-detail/disassociate-d
     DisassociateSslDomainComponent,
     AssociateSslBtnComponent,
     DeleteSslBtnComponent,
-    DisassociateDomainBtnComponent
+    DisassociateDomainBtnComponent,
+    EditSslCertWAFComponent
   ],
   imports: [
     CommonModule,
