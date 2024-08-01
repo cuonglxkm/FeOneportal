@@ -129,7 +129,7 @@ export class InstancesCreateComponent implements OnInit {
       validators: [
         Validators.required,
         Validators.pattern(
-          /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9\s]).{12,20}$/
+          /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9\s])(?!.*[àáạảãâầấậẩẫăằắặẳẵèéẹẻẽêềếệểễìíịỉĩòóọỏõôồốộổỗơờớợởỡùúụủũưừứựửữỳýỵỷỹđ]).{12,20}$/
         ),
       ],
     }),
@@ -1092,9 +1092,9 @@ export class InstancesCreateComponent implements OnInit {
     this.configurationService.getConfigurations('BLOCKSTORAGE').subscribe({
       next: (data) => {
         let valueArray = data.valueString.split('#');
-        this.minCapacity = valueArray[0];
-        this.stepCapacity = valueArray[1];
-        this.maxCapacity = valueArray[2];
+        this.minCapacity = (Number).parseInt(valueArray[0]);
+        this.stepCapacity = (Number).parseInt(valueArray[1]);
+        this.maxCapacity = (Number).parseInt(valueArray[2]);
         this.surplus = valueArray[2] % valueArray[1];
         this.configGPU.storage = this.minCapacity;
         this.configCustom.capacity = this.minCapacity;
@@ -1172,12 +1172,14 @@ export class InstancesCreateComponent implements OnInit {
     this.dataService
       .getListOffers(this.region, 'vm-flavor-gpu')
       .subscribe((data) => {
-        this.listGPUType = data.filter(
+        this.listGPUType = data?.filter(
           (e: OfferItem) => e.status.toUpperCase() == 'ACTIVE'
         );
-        this.listGpuConfigRecommend = getListGpuConfigRecommend(
-          this.listGPUType
-        );
+        if (this.listGPUType) {
+          this.listGpuConfigRecommend = getListGpuConfigRecommend(
+            this.listGPUType
+          );
+        }
         console.log('list gpu config recommend', this.listGpuConfigRecommend);
       });
   }
@@ -1367,7 +1369,7 @@ export class InstancesCreateComponent implements OnInit {
         validators: [
           Validators.required,
           Validators.pattern(
-            /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9\s]).{12,20}$/
+            /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9\s])(?!.*[àáạảãâầấậẩẫăằắặẳẵèéẹẻẽêềếệểễìíịỉĩòóọỏõôồốộổỗơờớợởỡùúụủũưừứựửữỳýỵỷỹđ]).{12,20}$/
           ),
         ],
       })
