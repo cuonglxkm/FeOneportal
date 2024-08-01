@@ -120,6 +120,7 @@ export class CreatePackageBackupComponent implements OnInit {
       this.minStorage = Number.parseInt(arr[0]);
       this.stepStorage = Number.parseInt(arr[1]);
       this.maxStorage = Number.parseInt(arr[2]);
+      this.validateForm.controls.storage.setValue(this.minStorage)
     });
   }
 
@@ -308,6 +309,7 @@ export class CreatePackageBackupComponent implements OnInit {
     this.region = regionAndProject.regionId;
     this.project = regionAndProject.projectId;
     this.hasRoleSI = localStorage.getItem('role').includes('SI');
+
     this.getTotalAmount();
     this.getConfiguration();
     this.onChangeStorage();

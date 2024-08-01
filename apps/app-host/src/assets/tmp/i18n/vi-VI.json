@@ -3137,7 +3137,7 @@
 
   "app.backup.vm.alert.delete": "Bạn đang thực hiện xóa backup",
   "app.backup.vm.confirm.delete": "Đế thực hiện xoá backup {{name}}, vui lòng nhập tên backup để xác nhận.",
-  "app.backup.vm.alert.storage.vpc": "Dung lượng backup còn lại nhỏ hơn dung lượng ổ hệ điều hành + tổng dung lượng volume gắn ngoài ({{storage}} GB). Quý khách hãy điều chỉnh dự án VPC để quá trình backup VM không bị gián đoạn.",
+  "app.backup.vm.alert.storage.vpc": "Dung lượng backup còn lại nhỏ hơn dung lượng ổ hệ điều hành + tổng dung lượng volume gắn ngoài ({{storage}} GB). Quý khách hãy điều chỉnh dự án VPC ",
 
 
   "app.backup.vm.create.placeholder": "Nhập tên Backup VM",
@@ -3270,8 +3270,8 @@
   "schedule.backup.name.empty": "Tên lịch Backup không được để trống",
   "schedule.backup.blank1": "Đặt lịch Backup - Tự động sao lưu",
   "schedule.backup.blank2": "Giải pháp giúp nhà quản trị hẹn lịch sao lưu, hẹn trước thời gian khi cần thiết. Giúp dễ dàng quản lý thời gian, công việc phát triển sản phẩm",
-  "schedule.backup.action1": "Khôi phục lập lịch backup bị tạm dừng",
-  "schedule.backup.action2": "Quý khách đang thực hiện khôi phục lại lịch backup {{name}} đang bị gián đoạn ? Vui lòng xác nhận trước khi khôi phục",
+  "schedule.backup.action1": "Khôi phục lịch backup",
+  "schedule.backup.action2": "Quý khách đang thực hiện khôi phục lịch backup {{name}} đang bị gián đoạn ? Vui lòng xác nhận trước khi khôi phục",
   "schedule.backup.health": "Khôi phục",
   "schedule.backup.reactive": "Tiếp tục lịch Backup",
   "schedule.backup.action3": "Tạm dừng lịch Backup",
@@ -3577,5 +3577,7 @@
   "waf.domain.table.title.cname":"CNAME",
   "waf.domain.table.title.https":"HTTPS",
   "waf.domain.table.title.status":"Trạng thái domain",
-  "waf.domain.table.title.action":"Thao tác"
+  "waf.domain.table.title.action":"Thao tác",
+  "notification.input.name": "Vui lòng nhập đúng tên",
+  "ip.floating.attach.message": "Port đã được sử dụng, vui lòng chọn Port khác để thực hiện gắn IP Floating."
 }

@@ -224,18 +224,18 @@ export class CreateScheduleBackupComponent implements OnInit {
   onSelectionChange(): void {
     console.log('Selected option:', this.selectedOption);
     this.getBackupPackage();
-    if (this.selectedOption === 'instance') {
-      this.validateForm.get('formVolume').clearValidators();
-      this.validateForm.get('formVolume').updateValueAndValidity();
-      this.validateForm.get('formVolume').reset();
 
-      this.validateForm.get('formInstance').get('name').setValidators([this.duplicateNameValidator.bind(this)])
+    if (this.selectedOption === 'instance') {
+      // this.validateForm.get('formVolume').clearValidators();
+      // this.validateForm.get('formVolume').updateValueAndValidity();
+      this.validateForm.get('formVolume').reset();
+      // this.validateForm.get('formInstance').get('name').setValidators([this.duplicateNameValidator.bind(this)]);
     }
     if (this.selectedOption === 'volume') {
-      this.validateForm.get('formInstance').clearValidators();
-      this.validateForm.get('formInstance').updateValueAndValidity();
+      // this.validateForm.get('formInstance').clearValidators();
+      // this.validateForm.get('formInstance').updateValueAndValidity();
       this.validateForm.get('formInstance').reset();
-      this.validateForm.get('formVolume').get('name').setValidators([this.duplicateNameValidator.bind(this)])
+      // this.validateForm.get('formVolume').get('name').setValidators([this.duplicateNameValidator.bind(this)]);
     }
     this.modeSelected = 1;
     this.cdr.detectChanges();
@@ -338,11 +338,14 @@ export class CreateScheduleBackupComponent implements OnInit {
 
   getDataInstanceById(id) {
     console.log('here');
-    this.instanceService.getInstanceById(id).subscribe(data => {
-      this.instance = data;
-      this.isLoading = false;
-      this.getVolumeInstanceAttachment(this.instance.id);
-    });
+    if(id != null || id != undefined ) {
+      this.instanceService.getInstanceById(id).subscribe(data => {
+        this.instance = data;
+        this.isLoading = false;
+        this.getVolumeInstanceAttachment(this.instance.id);
+      });
+    }
+
   }
 
   isLoadingVolume: boolean = false;
@@ -603,15 +606,19 @@ export class CreateScheduleBackupComponent implements OnInit {
   }
 
   getListScheduleBackup() {
-    let formSearch = new FormSearchScheduleBackup();
-    formSearch.pageSize = 9999;
-    formSearch.pageIndex = 1;
-    formSearch.customerId = this.tokenService.get()?.userId;
-    this.backupScheduleService.search(formSearch).subscribe(data => {
-      console.log('name', data?.records)
+    let formSearchBackupSchedule = new FormSearchScheduleBackup();
+    formSearchBackupSchedule.regionId = this.region;
+    formSearchBackupSchedule.projectId = this.project;
+    formSearchBackupSchedule.pageSize = 9999;
+    formSearchBackupSchedule.pageIndex = 1;
+    formSearchBackupSchedule.customerId = this.tokenService.get()?.userId;
+    formSearchBackupSchedule.scheduleName = '';
+    formSearchBackupSchedule.scheduleStatus = '';
+    this.backupScheduleService.search(formSearchBackupSchedule).subscribe(data => {
+      console.log('name', data?.records);
       data?.records?.forEach(item => {
         this.nameList?.push(item.name);
-        console.log(this.nameList)
+        console.log(this.nameList);
       });
 
     });
@@ -718,7 +725,7 @@ export class CreateScheduleBackupComponent implements OnInit {
         this.getListInstances();
       } else {
         this.getListInstances();
-        this.instanceSelected = this.listInstanceNotUse[0]?.id
+        this.instanceSelected = this.listInstanceNotUse[0]?.id;
       }
 
       const volumeId = params['idVolume'];
@@ -732,7 +739,7 @@ export class CreateScheduleBackupComponent implements OnInit {
         this.getListVolume();
       } else {
         this.getListVolume();
-        this.volumeSelected = this.listVolumeNotUseUnique[0]?.id
+        this.volumeSelected = this.listVolumeNotUseUnique[0]?.id;
       }
     });
 

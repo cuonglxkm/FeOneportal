@@ -97,3 +97,13 @@ export interface WafDomain {
   message: string;
   resouceStatus: string;
 }
+
+export class AddDomainRequest {
+  domain: string
+  ipPublic: string
+  host: string
+  port: string
+  sslCertId: string | number
+  policyId: string | number
+  packageId: string | number
+}

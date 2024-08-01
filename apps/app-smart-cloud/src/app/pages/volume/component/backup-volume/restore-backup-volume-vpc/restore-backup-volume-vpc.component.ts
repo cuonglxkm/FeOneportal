@@ -23,7 +23,7 @@ import { InstancesService } from '../../../../instances/instances.service';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from '@core';
-import { ProjectModel, RegionModel } from '../../../../../../../../../libs/common-utils/src';
+import { ProjectModel, RegionModel, storageValidator } from '../../../../../../../../../libs/common-utils/src';
 import { getCurrentRegionAndProject } from '@shared';
 import { SupportService } from '../../../../../shared/models/catalog.model';
 import { CatalogService } from '../../../../../shared/services/catalog.service';
@@ -243,8 +243,10 @@ export class RestoreBackupVolumeVpcComponent implements OnInit {
     }
   }
 
-  instanceSelectedChange(value: any) {
-    this.instanceSelected = value;
+  instanceSelectedChange(value) {
+    if(value != null || value != undefined) {
+      this.instanceSelected = value;
+    }
   }
 
   //get danh sách máy ảo
@@ -253,7 +255,7 @@ export class RestoreBackupVolumeVpcComponent implements OnInit {
       .search(1, 9999, this.region, this.project, '', 'KHOITAO', true, this.tokenService.get()?.userId)
       .subscribe((data) => {
         this.listInstances = data.records;
-        this.listInstances = data.records.filter(item => item.taskState === 'ACTIVE' && item.status === 'KHOITAO');
+        this.listInstances = data.records.filter(item => item?.taskState === 'ACTIVE' && item?.status === 'KHOITAO');
         console.log('list instance', this.listInstances);
         this.cdr.detectChanges();
       });

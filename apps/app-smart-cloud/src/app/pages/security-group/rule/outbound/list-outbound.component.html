@@ -35,6 +35,7 @@
             <th nzAlign="center" class="text-th" nzBreakWord>Protocol</th>
             <th nzAlign="center" class="text-th" nzBreakWord>Port Range</th>
             <th nzAlign="center" class="text-th" nzBreakWord>Remote IP Prefix</th>
+            <th nzAlign="center" class="text-th" nzBreakWord>Remote Security Group</th>
             <th nzAlign="center" class="text-th" style="width: 216px;" nzBreakWord>{{ 'app.action-history.operation' | i18n }}</th>
           </tr>
           </thead>
@@ -44,6 +45,7 @@
             <td nzAlign="center" nzBreakWord>{{ data.protocol }}</td>
             <td nzAlign="center" nzBreakWord>{{ data.portRange }}</td>
             <td nzAlign="center" nzBreakWord>{{ data.remoteIpPrefix }}</td>
+            <td nzAlign="center" nzBreakWord>{{ getSecurityGroupNameByRemoteGroupId(data.remoteGroupId) }}</td>
             <td nzAlign="center" nzBreakWord>
               <div *ngIf="!(securityGroupName?.startsWith('shoot'))">
                 <one-portal-delete-outbound [idOutbound]="data.id"
