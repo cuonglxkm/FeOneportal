@@ -23,6 +23,7 @@ import { ObjectStorageCreate } from 'src/app/shared/models/object-storage.model'
 import { WAFCreate } from '../../../shared/models/waf-init';
 import { ObjectStorageService } from 'src/app/shared/services/object-storage.service';
 import { OrderItemObject } from 'src/app/shared/models/price';
+import { WafService } from 'src/app/shared/services/waf.service';
 
 
 
@@ -90,7 +91,8 @@ export class WAFCreateComponent implements OnInit {
   policy = [
     { label: 'Default', value: '0' },
   ];
-
+  listSslCert: any
+  sslCertIdSelected: any
   policySelected: string = '0';
   numberDomain: number = 0;
   get policySelectedLabel(): string {
@@ -116,7 +118,8 @@ export class WAFCreateComponent implements OnInit {
     private orderService: OrderService,
     private loadingSrv: LoadingService,
     private fb: FormBuilder,
-    private service: ObjectStorageService
+    private service: ObjectStorageService,
+    private wafService: WafService,
 
   ) {
   
@@ -134,6 +137,7 @@ export class WAFCreateComponent implements OnInit {
     } else {
       this.regionId = RegionID.ADVANCE;
     }
+    this.getListSslCert()
     this.initFlavors();
   }
 
@@ -149,6 +153,14 @@ export class WAFCreateComponent implements OnInit {
       port: [null],
       sslCert: ['']
     });
+  }
+
+  getListSslCert(){
+    this.wafService.getListSslCert('', 999, 1).subscribe((res) => {
+      this.listSslCert = res?.records
+    }, (error) => {
+      console.log(error);     
+    })
   }
 
   areAllDomainsValid(): boolean {
