@@ -1,6 +1,7 @@
 export default interface SecurityGroupRule {
   id?: string,
   remoteGroupId?: string,
+  remoteGroupName?: string,
   remoteIpPrefix?: string,
   portRangeMax?: number,
   portRangeMin?: number,
