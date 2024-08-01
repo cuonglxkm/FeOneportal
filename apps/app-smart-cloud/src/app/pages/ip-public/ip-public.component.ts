@@ -151,7 +151,7 @@ export class IpPublicComponent implements OnInit {
           }))
           .subscribe(
           (data) => {
-            this.listInstance = data.records;
+            this.listInstance = data.records.filter(item => item.status.toUpperCase() === 'KHOITAO' && item.taskState.toUpperCase() === 'ACTIVE');
           }
         );
         this.isVisibleMounted = true;

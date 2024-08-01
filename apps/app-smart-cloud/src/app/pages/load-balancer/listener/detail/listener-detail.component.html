@@ -192,14 +192,15 @@
           </button>
         </nz-row>
         <nz-table *ngIf="currentPageData?.length > 0" #fixedTable
+                  [nzFrontPagination]="false"
                   nzShowPagination nzShowSizeChanger
                   [nzData]="currentPageData"
                   [nzLoading]="isLoading"
-                  [nzTotal]="listL7?.length"
+                  [nzTotal]="total"
                   [nzPageSize]="pageSize"
                   [nzPageIndex]="pageIndex"
                   (nzPageSizeChange)="onPageSizeChange($event)"
-                  (nzPageIndexChange)="onPageIndexChange($event)"  [nzShowPagination]="false">
+                  (nzPageIndexChange)="onPageIndexChange($event)" >
           <thead>
           <tr>
             <th>{{ 'app.l7.policy.name' | i18n }}</th>

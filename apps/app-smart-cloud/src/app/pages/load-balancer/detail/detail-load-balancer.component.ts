@@ -23,6 +23,7 @@ export class DetailLoadBalancerComponent implements OnInit{
   idLoadBalancer: number
   loadBalancer: LoadBalancerModel = new LoadBalancerModel()
   dataOffer: OfferDetail;
+  maxAction = '';
   @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
   constructor(@Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
               private router: Router,
@@ -59,6 +60,7 @@ export class DetailLoadBalancerComponent implements OnInit{
       this.catalogService.getDetailOffer(data.offerId).subscribe(
         dataOfer => {
           this.dataOffer = dataOfer
+          this.maxAction = dataOfer?.characteristicValues?.find(item => item.charName == 'MaxConnection')?.charOptionValues[0];
         }
       )
     }, error => {
