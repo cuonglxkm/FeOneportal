@@ -137,7 +137,7 @@ export class ListBackupVmComponent implements OnInit, OnDestroy {
   }
 
   handleOkDelete() {
-    setTimeout(() => {this.getListBackupVM(true)}, 1500)
+    this.getListBackupVM(true)
   }
 
   handleOkUpdate() {
@@ -224,6 +224,8 @@ export class ListBackupVmComponent implements OnInit, OnDestroy {
             this.getListBackupVM(false);
             break;
           case "CREATED":
+            this.getListBackupVM(false);
+            break;
           case "RESIZING":
           case "RESIZED":
           case "EXTENDING":

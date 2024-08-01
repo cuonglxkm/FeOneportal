@@ -153,7 +153,7 @@ export class ListBackupVolumeComponent implements OnInit, OnDestroy{
     }, error =>  {
       this.isLoading = false
       this.response = null
-      this.notification.error(error.statusText, 'Lấy dữ liệu thất bại')
+      this.notification.error(error.statusText, this.i18n.fanyi('app.failData'))
     });
   }
 

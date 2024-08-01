@@ -278,7 +278,14 @@ export class EditScheduleBackupVmComponent implements OnInit {
           this.listVolume = [item.itemName];
         }
       });
+      if(this.project != this.backupSchedule.projectId) {
+        this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.failData'));
+        this.router.navigate(['/app-smart-cloud/schedule/backup/list']);
+      }
 
+    }, error => {
+      this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.failData'));
+      this.router.navigate(['/app-smart-cloud/schedule/backup/list']);
     });
   }
 
@@ -297,8 +304,9 @@ export class EditScheduleBackupVmComponent implements OnInit {
             this.nameList = [item.name];
           }
         }
-
       });
+    }, error => {
+
     });
   }
 

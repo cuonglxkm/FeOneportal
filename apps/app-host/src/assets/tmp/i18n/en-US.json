@@ -3218,7 +3218,7 @@
   "app.backup.vm.alert.create": "Please adjust the <b><i>{{name}}</i></b> setting to ensure uninterrupted VM backup process.",
   "app.backup.vm.alert.delete": "You are currently deleting the backup",
   "app.backup.vm.confirm.delete": "To proceed with deleting Backup {{name}}, please enter the Backup name for confirmation.",
-  "app.backup.vm.alert.storage.vpc": "The backup capacity remaining is smaller than the sum of the operating system's capacity and the total capacity of the attached external volumes ({{storage}} GB). Please adjust the VPC project to ensure that the VM backup process is not interrupted.",
+  "app.backup.vm.alert.storage.vpc": "The backup capacity remaining is smaller than the sum of the operating system's capacity and the total capacity of the attached external volumes ({{storage}} GB). Please adjust the VPC project ",
 
   "app.backup.vm.create.placeholder": "Enter name Backup VM",
   "app.backup.vm.create.name.required": "Please enter the name for the Backup VM.",

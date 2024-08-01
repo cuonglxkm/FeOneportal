@@ -40,9 +40,8 @@
             <th nzAlign="center" class="text-th" nzLeft>IP Version</th>
             <th nzAlign="center" class="text-th" nzBreakWord>Protocol</th>
             <th nzAlign="center" class="text-th" nzBreakWord>Port Range</th>
-            <th nzAlign="center" class="text-th" nzBreakWord>
-              Remote IP Prefix
-            </th>
+            <th nzAlign="center" class="text-th" nzBreakWord>Remote IP Prefix</th>
+            <th nzAlign="center" class="text-th" nzBreakWord>Remote Security Group</th>
             <th
               nzAlign="center"
               class="text-th"
@@ -57,6 +56,7 @@
             <td nzAlign="center" nzBreakWord>{{ data.protocol }}</td>
             <td nzAlign="center" nzBreakWord>{{ data.portRange }}</td>
             <td nzAlign="center" nzBreakWord>{{ data.remoteIpPrefix }}</td>
+            <td nzAlign="center" nzBreakWord>{{ getSecurityGroupNameByRemoteGroupId(data.remoteGroupId) }}</td>
             <td nzAlign="center" nzBreakWord>
               <div *ngIf="!(securityGroupName?.startsWith('shoot'))">
                 <one-portal-delete-inbound nz-tooltip
