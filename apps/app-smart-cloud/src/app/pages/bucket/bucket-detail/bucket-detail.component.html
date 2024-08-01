@@ -465,7 +465,7 @@
             <td nzBreakWord="true">{{ item.name }}</td>
             <td nzBreakWord="true" style="width: 400px">{{ item.type }}</td>
             <td style="width: 400px">
-              <div>{{ (item.size / 1024).toFixed(2) }} KB</div>
+              <div>{{ formatFileSize(item.size) }} KB</div>
               <div>
                 <nz-progress
                   *ngIf="item.isUpload === true"
