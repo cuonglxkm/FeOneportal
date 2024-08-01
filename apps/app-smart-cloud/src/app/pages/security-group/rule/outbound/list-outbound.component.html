@@ -45,7 +45,8 @@
             <td nzAlign="center" nzBreakWord>{{ data.protocol }}</td>
             <td nzAlign="center" nzBreakWord>{{ data.portRange }}</td>
             <td nzAlign="center" nzBreakWord>{{ data.remoteIpPrefix }}</td>
-            <td nzAlign="center" nzBreakWord>{{ getSecurityGroupNameByRemoteGroupId(data.remoteGroupId) }}</td>
+            <td nzAlign="center" nzBreakWord>{{ data.remoteGroupName }}</td>
+<!--            <td nzAlign="center" nzBreakWord>{{ getSecurityGroupNameByRemoteGroupId(data.remoteGroupId) }}</td>-->
             <td nzAlign="center" nzBreakWord>
               <div *ngIf="!(securityGroupName?.startsWith('shoot'))">
                 <one-portal-delete-outbound [idOutbound]="data.id"

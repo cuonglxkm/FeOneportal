@@ -255,14 +255,14 @@ export class EditScheduleBackupVmComponent implements OnInit {
     this.scheduleService.detail(customerId, id).subscribe(data => {
       this.backupSchedule = data;
       this.isLoading = false;
-      if(this.typeVpc == 1) {
+      console.log('type vpc', this.typeVpc)
+      if(this.typeVpc ==  1) {
         this.getStorageByVpc(this.project)
       } else {
         this.getBackupPackageDetail(this.backupSchedule?.backupPackageId);
       }
       this.validateForm.controls.backupMode.setValue(this.backupSchedule?.mode);
       this.validateForm.controls.times.setValue(this.backupSchedule?.runtime);
-      console.log('times', this.validateForm.controls.times.value)
       this.validateForm.controls.name.setValue(this.backupSchedule?.name);
       this.validateForm.controls.description.setValue(this.backupSchedule?.description);
       this.validateForm.controls.months.setValue(this.backupSchedule?.interval);
@@ -271,7 +271,13 @@ export class EditScheduleBackupVmComponent implements OnInit {
       this.validateForm.controls.numberOfWeek.setValue(parseInt(this.numberOfWeekChangeSelected, 10));
       this.validateForm.controls.daysOfWeek.setValue(this.backupSchedule?.daysOfWeek);
       this.validateForm.controls.daysOfWeekMultiple.setValue(this.backupSchedule?.daysOfWeek?.split(','));
-      // this.nameVolumeAttach = this.backupSchedule?.backupScheduleItems?.
+
+      if (this.backupSchedule && this.backupSchedule.backupScheduleItems) {
+        const itemNames = this.backupSchedule.backupScheduleItems.map(item => item.itemName);
+        console.log('xyz', itemNames);
+        this.nameVolumeAttach = itemNames.join(', ');
+      }
+      console.log('abc',this.nameVolumeAttach);
       data.backupScheduleItems?.forEach(item => {
         if (this.listVolume?.length > 0) {
           this.listVolume.push(item.itemName);
@@ -338,8 +344,6 @@ export class EditScheduleBackupVmComponent implements OnInit {
     this.project = regionAndProject.projectId;
 
     this.customerId = this.tokenService.get()?.userId;
-
-
     this.route.params.subscribe((params) => {
       this.idSchedule = params['id'];
       if (this.idSchedule !== undefined) {
@@ -349,8 +353,7 @@ export class EditScheduleBackupVmComponent implements OnInit {
         this.validateForm.get('volumeToBackupIds')?.disable();
         this.getListScheduleBackup();
         this.getDetail(this.customerId, this.idSchedule);
-      } else {
-
+        console.log('typeVpc', this.typeVpc)
       }
     });
 

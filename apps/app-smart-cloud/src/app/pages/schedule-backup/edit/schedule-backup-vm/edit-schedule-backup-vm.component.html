@@ -158,8 +158,8 @@
             </nz-row>
             <div *ngIf="validateForm.controls.backupMode.value === 1">
               <nz-row nzGutter="24" style="margin-bottom: 0;">
-                <nz-col nzSpan="12">
-                  <nz-form-item *ngIf="typeVpc != 1">
+                <nz-col nzSpan="12" *ngIf="typeVpc != 1">
+                  <nz-form-item >
                     <nz-form-label>
                       <div class="label">
                       <span>{{ 'app.backup.volume.backup.package' | i18n }} (<span
@@ -179,6 +179,34 @@
                              [disabled]="true" />
                     </nz-form-control>
                   </nz-form-item>
+                </nz-col>
+                <nz-col nzSpan="12" *ngIf="typeVpc == 1">
+                  <nz-row nzGutter="24">
+                    <nz-col nzSpan="12">
+                      <span class="text-label">{{ 'app.info.backup.vm.total.storage'|i18n }}</span>
+                    </nz-col>
+                    <nz-col nzSpan="12" style="text-align: end;">
+                      <span class="text-label">{{ sizeInGb?.cloudProject?.quotaBackupVolumeInGb }} GB</span>
+                    </nz-col>
+                  </nz-row>
+                  <nz-row nzGutter="24">
+                    <nz-col nzSpan="12">
+                      <span class="text-label">{{ 'app.backup.package.storage.used'|i18n }}</span>
+                    </nz-col>
+                    <nz-col nzSpan="12" style="text-align: end;">
+                      <span class="text-label">{{ sizeInGb?.cloudProjectResourceUsed?.backup }} GB</span>
+                    </nz-col>
+                  </nz-row>
+                  <nz-row nzGutter="24">
+                    <nz-col nzSpan="12">
+                      <span class="text-label">{{ 'app.backup.package.storage.remaining'|i18n }}</span>
+                    </nz-col>
+                    <nz-col nzSpan="12" style="text-align: end;">
+                        <span
+                          class="text-label">{{ sizeInGb?.cloudProject?.quotaBackupVolumeInGb - sizeInGb?.cloudProjectResourceUsed?.backup }}
+                          GB</span>
+                    </nz-col>
+                  </nz-row>
                 </nz-col>
                 <nz-col nzSpan="12">
                   <nz-form-item>
@@ -233,34 +261,7 @@
                     </nz-col>
                   </nz-row>
                 </nz-col>
-                <nz-col nzSpan="12" *ngIf="typeVpc == 1">
-                  <nz-row nzGutter="24">
-                    <nz-col nzSpan="12">
-                      <span class="text-label">{{ 'app.info.backup.vm.total.storage'|i18n }}</span>
-                    </nz-col>
-                    <nz-col nzSpan="12" style="text-align: end;">
-                      <span class="text-label">{{ sizeInGb?.cloudProject?.quotaBackupVolumeInGb }} GB</span>
-                    </nz-col>
-                  </nz-row>
-                  <nz-row nzGutter="24">
-                    <nz-col nzSpan="12">
-                      <span class="text-label">{{ 'app.backup.package.storage.used'|i18n }}</span>
-                    </nz-col>
-                    <nz-col nzSpan="12" style="text-align: end;">
-                      <span class="text-label">{{ sizeInGb?.cloudProjectResourceUsed?.backup }} GB</span>
-                    </nz-col>
-                  </nz-row>
-                  <nz-row nzGutter="24">
-                    <nz-col nzSpan="12">
-                      <span class="text-label">{{ 'app.backup.package.storage.remaining'|i18n }}</span>
-                    </nz-col>
-                    <nz-col nzSpan="12" style="text-align: end;">
-                        <span
-                          class="text-label">{{ sizeInGb?.cloudProject?.quotaBackupVolumeInGb - sizeInGb?.cloudProjectResourceUsed?.backup }}
-                          GB</span>
-                    </nz-col>
-                  </nz-row>
-                </nz-col>
+
               </nz-row>
             </div>
             <nz-row nzGutter="24" *ngIf="validateForm.controls.backupMode.value === 2" style="margin-bottom: 0;">
@@ -557,13 +558,13 @@
               </nz-col>
             </nz-row>
             <nz-row nzGutter="24">
-              <nz-col nzSpan="12">
+              <nz-col nzSpan="12" *ngIf="backupSchedule?.backupScheduleItems?.length > 0">
                 <nz-form-item>
                   <nz-form-label>
                     <span>{{ 'app.info.backup.vm.external.volume'|i18n }}</span>
                   </nz-form-label>
                   <nz-form-control>
-                    <input nz-input class="input-custom" [value]="" [disabled]="true"/>
+                    <input nz-input class="input-custom" [value]="nameVolumeAttach" [disabled]="true"/>
                   </nz-form-control>
                 </nz-form-item>
 
