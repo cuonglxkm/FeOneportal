@@ -248,6 +248,7 @@ export class EditScheduleBackupVmComponent implements OnInit {
     }
   }
 
+  nameVolumeAttach: string;
   getDetail(customerId: number, id: number) {
     this.isLoading = true;
 
@@ -270,7 +271,7 @@ export class EditScheduleBackupVmComponent implements OnInit {
       this.validateForm.controls.numberOfWeek.setValue(parseInt(this.numberOfWeekChangeSelected, 10));
       this.validateForm.controls.daysOfWeek.setValue(this.backupSchedule?.daysOfWeek);
       this.validateForm.controls.daysOfWeekMultiple.setValue(this.backupSchedule?.daysOfWeek?.split(','));
-
+      // this.nameVolumeAttach = this.backupSchedule?.backupScheduleItems?.
       data.backupScheduleItems?.forEach(item => {
         if (this.listVolume?.length > 0) {
           this.listVolume.push(item.itemName);

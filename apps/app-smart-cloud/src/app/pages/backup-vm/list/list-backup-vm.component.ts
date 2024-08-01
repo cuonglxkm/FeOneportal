@@ -221,10 +221,10 @@ export class ListBackupVmComponent implements OnInit, OnDestroy {
       if (message) {
         switch (message.actionType) {
           case "CREATING":
-            this.getListBackupVM(false);
+            this.getListBackupVM(true);
             break;
           case "CREATED":
-            this.getListBackupVM(false);
+            this.getListBackupVM(true);
             break;
           case "RESIZING":
           case "RESIZED":
@@ -234,6 +234,8 @@ export class ListBackupVmComponent implements OnInit, OnDestroy {
             this.getListBackupVM(true);
             break;
           case "DELETED":
+            this.getListBackupVM(true);
+            break;
           case "RESTORING":
           case "RESTORED":
             this.getListBackupVM(false);
