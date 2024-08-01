@@ -1,5 +1,10 @@
 import { Component, Inject, OnInit, ViewChild } from '@angular/core';
-import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
+import {
+  FormControl,
+  FormGroup,
+  NonNullableFormBuilder,
+  Validators,
+} from '@angular/forms';
 import { Router } from '@angular/router';
 import { I18NService } from '@core';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
@@ -13,14 +18,15 @@ import { differenceInCalendarDays } from 'date-fns';
 import { NAME_REGEX } from 'src/app/shared/constants/constants';
 import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
 import { NzUploadChangeParam, NzUploadFile } from 'ng-zorro-antd/upload';
-
+import { WafService } from 'src/app/shared/services/waf.service';
+import { SslCertRequest } from '../../waf.model';
 
 @Component({
   selector: 'one-portal-create-ssl-cert-waf',
   templateUrl: './create-ssl-cert.component.html',
   styleUrls: ['./create-ssl-cert.component.less'],
 })
-export class CreateSslCertWAFComponent implements OnInit{
+export class CreateSslCertWAFComponent implements OnInit {
   region = JSON.parse(localStorage.getItem('regionId'));
   project = JSON.parse(localStorage.getItem('projectId'));
 
@@ -30,26 +36,23 @@ export class CreateSslCertWAFComponent implements OnInit{
   customerId: number;
   selectedFileSystemName: string;
   fileList: NzUploadFile[] = [];
-  formCreateeSslCert: FormCreateSslCert = new FormCreateSslCert();
+  formCreateeSslCert: SslCertRequest = new SslCertRequest();
 
-  passwordVisible: boolean = false
-  uploadMethod: string = '1'
+  passwordVisible: boolean = false;
+  uploadMethod: string = '1';
   uploadMethodList = [
     { label: 'Import from the certificate file', value: '1' },
-    { label: 'Upload from certificate file (with passphrase)', value: '2' },
-    { label: 'Paste certificate content', value: '3' },
+    { label: 'Paste certificate content', value: '2' },
   ];
 
   form: FormGroup<{
     privateKey: FormControl<string>;
-    publicKey: FormControl<string>
-    certName: FormControl<string>
-    passphrase: FormControl<string>
+    certificate: FormControl<string>;
+    certName: FormControl<string>;
   }> = this.fb.group({
     privateKey: ['', Validators.required],
     certName: ['', [Validators.required, Validators.pattern(NAME_REGEX)]],
-    publicKey: ['', Validators.required],
-    passphrase: [''],
+    certificate: ['', Validators.required],
   });
 
   @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
@@ -59,18 +62,15 @@ export class CreateSslCertWAFComponent implements OnInit{
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
     @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
     private fb: NonNullableFormBuilder,
-     private SSLCertService: SSLCertService,
+    private SSLCertService: WafService,
     private notification: NzNotificationService
   ) {}
 
   ngOnInit(): void {
-    let regionAndProject = getCurrentRegionAndProject()
-    this.region = regionAndProject.regionId
-    this.project = regionAndProject.projectId
+    let regionAndProject = getCurrentRegionAndProject();
+    this.region = regionAndProject.regionId;
+    this.project = regionAndProject.projectId;
   }
-
-
-
 
   handleChange(info: NzUploadChangeParam): void {
     let fileList = [...info.fileList];
@@ -80,7 +80,7 @@ export class CreateSslCertWAFComponent implements OnInit{
 
     const validationErrors = new Map<string, string[]>();
 
-    fileList.forEach(file => {
+    fileList.forEach((file) => {
       const fileErrors: string[] = [];
 
       if (file.size > maxSize) {
@@ -93,7 +93,10 @@ export class CreateSslCertWAFComponent implements OnInit{
       }
 
       if (fileList.length > maxFiles) {
-        this.notification.error('File Limit Exceeded', `Không thể tải quá ${maxFiles} files.`);
+        this.notification.error(
+          'File Limit Exceeded',
+          `Không thể tải quá ${maxFiles} files.`
+        );
         fileList = fileList.slice(0, maxFiles);
       }
 
@@ -103,8 +106,11 @@ export class CreateSslCertWAFComponent implements OnInit{
     });
 
     if (fileList.length > maxFiles) {
-      this.notification.error('File Limit Exceeded', `Không thể tải quá  ${maxFiles} files.`);
-      fileList = fileList.slice(0, maxFiles); 
+      this.notification.error(
+        'File Limit Exceeded',
+        `Không thể tải quá  ${maxFiles} files.`
+      );
+      fileList = fileList.slice(0, maxFiles);
     }
 
     if (validationErrors.size > 0) {
@@ -112,46 +118,76 @@ export class CreateSslCertWAFComponent implements OnInit{
         this.notification.error('Thất bại', `${errors.join('<br>')}`);
       });
 
-      
-      fileList = fileList.filter(file => !validationErrors.has(file.name));
+      fileList = fileList.filter((file) => !validationErrors.has(file.name));
     }
 
-    this.fileList = fileList.map(file => {
+    this.fileList = fileList.map((file) => {
       if (file.response) {
         file.url = file.response.url;
       }
       return file;
     });
   }
-  
-  handleCreate() {
-    this.isLoading = true;
-    if (this.form.valid) {
-      console.log(this.formCreateeSslCert);
-      this.SSLCertService
-        .create(this.formCreateeSslCert)
-        .subscribe(
-          (data) => {
-            this.isLoading = false
-            this.notification.success(
-              this.i18n.fanyi('app.status.success'),
-              'Tạo mới ssl cert thành công'
-            );
-            this.router.navigate(['/app-smart-cloud/ssl-cert']);
-          },
-          (error) => {
-            this.isLoading = false
-              this.notification.error(
-                this.i18n.fanyi('app.status.fail'),
-                'Tạo mới ssl cert thất bại'
-              );
-          }
-        );
+
+  async getData() {
+    const allowedFormats = ['pem', 'key', 'crt', 'cer', 'der', 'pfx', 'jks'];
+
+    const validFiles = this.fileList.filter((file) => {
+      const fileExtension = file.name.split('.').pop()?.toLowerCase() || '';
+      return allowedFormats.includes(fileExtension);
+    });
+
+    for (const file of validFiles) {
+      try {
+        const content = await this.readFileContent(file);
+        const fileExtension = file.name.split('.').pop()?.toLowerCase() || '';
+
+        if (fileExtension === 'crt') {
+          this.form.controls.certificate.setValue(content.replace(/\r\n/g, ''));
+        } else if (fileExtension === 'key') {
+          this.form.controls.privateKey.setValue(content.replace(/\r\n/g, ''));
+        }
+      } catch (error) {
+        console.error(`Error reading ${file.name}:`, error);
+      }
     }
+    this.formCreateeSslCert.name = this.form.get('certName').value;
+    this.formCreateeSslCert.certificate = this.form.get('certificate').value;
+    this.formCreateeSslCert.privateKey = this.form.get('privateKey').value;
+    return this.formCreateeSslCert;
   }
 
-
-  navigateToList(){
-    this.router.navigate(['/app-smart-cloud/ssl-cert']);
+  readFileContent(file: NzUploadFile): Promise<string> {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => {
+        resolve(reader.result as string);
+      };
+      reader.onerror = (error) => {
+        reject(error);
+      };
+      reader.readAsText(file.originFileObj as File);
+    });
+  }
+  async handleCreate() {
+    this.isLoading = true;
+    this.formCreateeSslCert = await this.getData();
+    console.log(this.formCreateeSslCert);
+    this.SSLCertService.createSSlCert(this.formCreateeSslCert).subscribe(
+      (data) => {
+        this.isLoading = false;
+        this.notification.success(
+          this.i18n.fanyi('app.status.success'),
+          'Tạo mới ssl cert thành công'
+        );
+      },
+      (error) => {
+        this.isLoading = false;
+        this.notification.error(
+          this.i18n.fanyi('app.status.fail'),
+          'Tạo mới ssl cert thất bại'
+        );
+      }
+    );
   }
 }

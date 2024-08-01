@@ -5,7 +5,7 @@ import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http'
 import { BaseService } from './base.service';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { BaseResponse } from '../../../../../../libs/common-utils/src';
-import { WafDetailDTO, WafDomain, WafDTO } from 'src/app/pages/waf/waf.model';
+import { SslCertRequest, WafDetailDTO, WafDomain, WafDTO } from 'src/app/pages/waf/waf.model';
 import { OfferItem } from 'src/app/pages/instances/instances.model';
 
 @Injectable({
@@ -52,6 +52,11 @@ export class WafService extends BaseService {
     );
   }
 
+  createSSlCert(data: SslCertRequest) {
+    return this.http.post<any>(this.baseUrl + this.ENDPOINT.provisions + '/waf/add-cert', Object.assign(data), {
+      headers: this.getHeaders().headers
+    })
+}
   getWafDomains(pageSize: number, currentPage: number, status: string, name: string) {
     let param = new HttpParams()
     if(status != undefined || status != null) param = param.append('status', status)
