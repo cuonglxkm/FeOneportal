@@ -472,7 +472,7 @@
                           >) - GB</nz-form-label
                         >
                         <nz-slider
-                          [nzMin]="minCapacity"
+                          [nzMin]="0"
                           [nzMax]="maxCapacity"
                           [nzStep]="stepCapacity"
                           [(ngModel)]="configCustom.capacity"
@@ -486,7 +486,7 @@
                           (keydown)="onKeyDown($event)"
                           (ngModelChange)="changeCapacity($event)"
                           [ngModelOptions]="{ standalone: true }"
-                          [nzMin]="minCapacity"
+                          [nzMin]="0"
                           [nzMax]="maxCapacity"
                           [nzStep]="stepCapacity"
                           nzSize="large"
@@ -600,7 +600,7 @@
                           >) - GB</nz-form-label
                         >
                         <nz-slider
-                          [nzMin]="minCapacity"
+                          [nzMin]="0"
                           [nzMax]="maxCapacity"
                           [nzStep]="stepCapacity"
                           [(ngModel)]="configGPU.storage"
@@ -614,7 +614,7 @@
                           (keydown)="onKeyDown($event)"
                           (ngModelChange)="changeStorageOfGpu($event)"
                           [ngModelOptions]="{ standalone: true }"
-                          [nzMin]="minCapacity"
+                          [nzMin]="0"
                           [nzMax]="maxCapacity"
                           [nzStep]="stepCapacity"
                           nzSize="large"

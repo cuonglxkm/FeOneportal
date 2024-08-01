@@ -91,17 +91,12 @@ export class CreateL7RuleComponent implements AfterViewInit {
   handleCancel() {
     this.isVisible = false;
     this.isLoading = false;
-    this.validateForm.controls['invert'].setValue(false);
-    this.validateForm.controls['type'].setValue(null as string);
-    this.validateForm.controls['compareType'].setValue(null as string);
-    this.validateForm.controls['key'].setValue(null as string);
-    this.validateForm.controls['value'].setValue(null as string);
-
-    this.validateForm.controls['invert'].setErrors(null);
-    this.validateForm.controls['type'].setErrors(null);
-    this.validateForm.controls['compareType'].setErrors(null);
-    this.validateForm.controls['key'].setErrors(null);
-    this.validateForm.controls['value'].setErrors(null);
+    // this.validateForm.controls['invert'].setValue(false);
+    // this.validateForm.controls['type'].setValue(null as string);
+    // this.validateForm.controls['compareType'].setValue(null as string);
+    // this.validateForm.controls['key'].setValue(null as string);
+    // this.validateForm.controls['value'].setValue(null as string);
+    this.validateForm.reset();
     this.onCancel.emit();
   }
 

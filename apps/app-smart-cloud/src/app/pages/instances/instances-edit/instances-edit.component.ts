@@ -284,12 +284,19 @@ export class InstancesEditComponent implements OnInit {
   }
 
   resetData() {
+    this.instanceResize = new InstanceResize();
     this.offerFlavor = null;
     this.selectedElementFlavor = null;
     this.configGPU = new ConfigGPU();
-    this.configGPU.storage = this.minCapacity;
+    if (this.isGpuConfig) {
+      this.configGPU.storage = this.minCapacity;
+      this.changeStorageOfGpu(this.configGPU.storage);
+    }
     this.configCustom = new ConfigCustom();
-    this.configCustom.capacity = this.minCapacity;
+    if (this.isCustomconfig) {
+      this.configCustom.capacity = this.minCapacity;
+      this.changeCapacity(this.configCustom.capacity);
+    }
     this.volumeIntoMoney = 0;
     this.ramIntoMoney = 0;
     this.cpuIntoMoney = 0;
@@ -658,9 +665,9 @@ export class InstancesEditComponent implements OnInit {
     this.configurationService.getConfigurations('BLOCKSTORAGE').subscribe({
       next: (data) => {
         let valueArray = data.valueString.split('#');
-        this.minCapacity = valueArray[0];
-        this.stepCapacity = valueArray[1];
-        this.maxCapacity = valueArray[2];
+        this.minCapacity = (Number).parseInt(valueArray[0]);
+        this.stepCapacity = (Number).parseInt(valueArray[1]);
+        this.maxCapacity = (Number).parseInt(valueArray[2]);
         this.surplus = valueArray[2] % valueArray[1];
         this.configGPU.storage = this.minCapacity;
         this.configCustom.capacity = this.minCapacity;
@@ -718,12 +725,14 @@ export class InstancesEditComponent implements OnInit {
     this.dataService
       .getListOffers(this.region, 'vm-flavor-gpu')
       .subscribe((data) => {
-        this.listGPUType = data.filter(
+        this.listGPUType = data?.filter(
           (e: OfferItem) => e.status.toUpperCase() == 'ACTIVE'
         );
-        this.listGpuConfigRecommend = getListGpuConfigRecommend(
-          this.listGPUType
-        );
+        if (this.listGPUType) {
+          this.listGpuConfigRecommend = getListGpuConfigRecommend(
+            this.listGPUType
+          );
+        }
         console.log('list gpu config recommend', this.listGpuConfigRecommend);
         this.getListOptionGpuValue();
       });

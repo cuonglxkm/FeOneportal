@@ -159,7 +159,7 @@
   "validation.name.pattern": "Excluding Vietnamese accents, spaces, and special characters (except _)",
   "validation.exist.name": "This {{name}} name has already been used, please choose another name",
   "validation.choose.required": "Please choose {{name}}",
-  "validation.project.required.name":"Does not include special characters, spaces, Vietnamese, maximum 50 characters, may contain _ (special characters: @, #, $, %, &, *, +, -, arrow, star , emoticons, punctuation, brackets, circles, squares, rectangles...)",
+  "validation.project.required.name":"Does not include special characters, spaces, Vietnamese, maximum 50 characters, may contain - (special characters: @, #, $, %, &, *, +, _, arrow, star , emoticons, punctuation, brackets, circles, squares, rectangles...)",
   "form.account.information": "Account Information",
   "form.account.update.information":"Update account information",
   "form.account.update.invoice":"Update invoicing information",
@@ -617,8 +617,8 @@
   "app.notify.reset.pass.instances.fail": "Failed to reset instance password",
   "app.notify.edit.port.success": "Successfully edited port",
   "app.notify.edit.port.fail": "Failed to edit port",
-  "app.notify.change.os.success": "Operating system change successful",
-  "app.notify.change.os.fail": "Operating system change failed",
+  "app.notify.request.change.os.success": "The request to change the operating system has been submitted",
+  "app.notify.request.change.os.fail": "The request to change the operating system failed",
   "app.notify.attach.vlan.success": "Successfully attached VLAN",
   "app.notify.attach.vlan.fail": "Failed to attach VLAN",
   "app.notify.detach.vlan.success": "Successfully detached from VLAN",
@@ -3649,5 +3649,7 @@
   "waf.domain.table.title.cname":"CNAME",
   "waf.domain.table.title.https":"HTTPS",
   "waf.domain.table.title.status":"Status domain",
-  "waf.domain.table.title.action":"Action"
+  "waf.domain.table.title.action":"Action",
+  "notification.input.name": "Please enter the correct name",
+  "ip.floating.attach.message": "The port is already in use, please select another Port to perform Floating IP binding."
 }

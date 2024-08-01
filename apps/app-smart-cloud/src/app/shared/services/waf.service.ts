@@ -5,7 +5,7 @@ import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http'
 import { BaseService } from './base.service';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { BaseResponse } from '../../../../../../libs/common-utils/src';
-import { SslCertRequest, WafDetailDTO, WafDomain, WafDTO } from 'src/app/pages/waf/waf.model';
+import { AddDomainRequest, SslCertRequest, WafDetailDTO, WafDomain, WafDTO } from 'src/app/pages/waf/waf.model';
 import { OfferItem } from 'src/app/pages/instances/instances.model';
 
 @Injectable({
@@ -90,5 +90,29 @@ export class WafService extends BaseService {
         }
         return throwError(error);
       }))
+  }
+
+  addDomain(data: AddDomainRequest): Observable<any> {
+    return this.http.post<any>(
+      this.baseUrl + this.ENDPOINT.provisions + '/waf/domain',
+      data,
+      this.getHeaders()
+    );
+  }
+
+  deleteDomain(id: number){
+    return this.http.delete(this.baseUrl + this.ENDPOINT.provisions + `/waf/domain/${id}`).pipe(catchError((error: HttpErrorResponse) => {
+      if (error.status === 401) {
+        console.error('login');
+      } else if (error.status === 404) {
+        // Handle 404 Not Found error
+        console.error('Resource not found');
+      }
+      return throwError(error);
+    }))
+  }
+
+  updateDomain(id: number, data: any){
+    return this.http.put(this.baseUrl + this.ENDPOINT.provisions + `/waf/domain/${id}`, data, {headers: this.getHeaders().headers})
   }
 }

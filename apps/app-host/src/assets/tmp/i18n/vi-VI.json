@@ -33,7 +33,7 @@
   "validation.name.pattern": "Không bao gồm dấu tiếng Việt, dấu cách, ký tự đặc biệt (trừ_)",
   "validation.exist.name": "Tên {{name}} này đã được sử dụng, vui lòng chọn tên khác",
   "validation.choose.required": "Vui lòng chọn {{name}}",
-  "validation.project.required.name":"Không bao gồm ký tự đặc biệt, dấu cách, tiếng Việt, tối đa 50 ký tự, có thể có dấu _ (ký tự đặc biệt: @, #, $, %, &, *, +, -, arrow, star, biểu tượng cảm xúc, dấu câu, dấu ngoặc, hình tròn, hình vuông, hình chữ nhật...)",
+  "validation.project.required.name":"Không bao gồm ký tự đặc biệt, dấu cách, tiếng Việt, tối đa 50 ký tự, có thể có dấu - (ký tự đặc biệt: @, #, $, %, &, *, +, _, arrow, star, biểu tượng cảm xúc, dấu câu, dấu ngoặc, hình tròn, hình vuông, hình chữ nhật...)",
 
   "app.footer": "Một sản phẩm của VNPT-IT",
 
@@ -513,8 +513,8 @@
   "app.notify.reset.pass.instances.fail": "Đổi mật khẩu máy ảo không thành công",
   "app.notify.edit.port.success": "Chỉnh sửa port thành công",
   "app.notify.edit.port.fail": "Chỉnh sửa port không thành công",
-  "app.notify.change.os.success": "Thay đổi hệ điều hành thành công",
-  "app.notify.change.os.fail": "Thay đổi hệ điều hành không thành công",
+  "app.notify.request.change.os.success": "Yêu cầu thay đổi hệ điều hành đã được gửi đi",
+  "app.notify.request.change.os.fail": "Yêu cầu thay đổi hệ điều hành không thành công",
   "app.notify.attach.vlan.success": "Gắn VLAN thành công",
   "app.notify.attach.vlan.fail": "Gắn VLAN không thành công",
   "app.notify.detach.vlan.success": "Gỡ khỏi VLAN thành công",
@@ -3577,5 +3577,7 @@
   "waf.domain.table.title.cname":"CNAME",
   "waf.domain.table.title.https":"HTTPS",
   "waf.domain.table.title.status":"Trạng thái domain",
-  "waf.domain.table.title.action":"Thao tác"
+  "waf.domain.table.title.action":"Thao tác",
+  "notification.input.name": "Vui lòng nhập đúng tên",
+  "ip.floating.attach.message": "Port đã được sử dụng, vui lòng chọn Port khác để thực hiện gắn IP Floating."
 }

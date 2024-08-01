@@ -62,6 +62,7 @@ export class ListenerDetailComponent implements OnInit {
 
   currentPageData: L7Policy[];
   @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
+  total: any;
   constructor(private router: Router,
               private fb: NonNullableFormBuilder,
               private service: ListenerService,
@@ -104,7 +105,7 @@ export class ListenerDetailComponent implements OnInit {
           this.validateForm.controls['timeout'].setValue(data.timeoutClientData);
           this.validateForm.controls['member'].setValue(data.timeoutMemberData);
           this.validateForm.controls['connection'].setValue(data.timeoutMemberConnect);
-          this.validateForm.controls['allowCIRR'].setValue(data.allowedCidrs[0]);
+          this.validateForm.controls['allowCIRR'].setValue(data?.allowedCidrs.length > 0 ? data?.allowedCidrs[0] : null);
           this.validateForm.controls['description'].setValue(data.description);
           this.description = data.description;
           this.protocolListener = data.protocol;
@@ -119,10 +120,10 @@ export class ListenerDetailComponent implements OnInit {
     this.loadBalancerService.getListL7Policy(this.regionId, this.projectId, id).subscribe(
       data => {
         this.isLoading = false;
-        this.listL7 = data;
+        this.total = data.length
+        this.listL7 = [...data];
         const startIndex = (this.pageIndex - 1) * this.pageSize;
         const endIndex = this.pageIndex * this.pageSize;
-
         this.currentPageData = this.listL7.slice(startIndex, endIndex);
       }, error => {
         this.isLoading = false;

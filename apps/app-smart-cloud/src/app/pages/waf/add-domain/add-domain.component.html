@@ -34,7 +34,11 @@
                     <nz-form-label nzFor="nameWAF">
                       Tên WAF (<span style="color: rgba(252, 16, 16, 1)">*</span>)
                     </nz-form-label>
-                    <input nz-input type="text" appTrim placeholder="www.example.com" formControlName="nameWAF" class="input-custom" [maxlength]="50" minlength="1" />
+                    <nz-select nzSize="medium" formControlName="nameWAF" nzAllowClear [nzShowSearch]="false" (ngModelChange)="onChangeWaf($event)">
+                      <nz-option *ngFor="let item of listWafs" [nzLabel]="item.name"
+                           [nzValue]="item.id"></nz-option>
+                    </nz-select>
+                    <!-- <input nz-input type="text" appTrim placeholder="www.example.com" formControlName="nameWAF" class="input-custom" [maxlength]="50" minlength="1" /> -->
                     <ng-template #wafErrorTpl let-control>
                       <!-- <ng-container *ngIf="control.hasError('duplicateDomain')">Domain không được trùng nhau</ng-container>
                       <ng-container *ngIf="control.hasError('pattern')">Domain không đúng định dạng</ng-container> -->
@@ -51,7 +55,8 @@
                     <span>{{ 'app.text.package' | i18n }} (<span style="color: red;">*</span>)</span>
                     </nz-form-label>
                     <nz-select [ngModel]="1" [nzDisabled]="true"  class="input-select-custom" formControlName="package">
-                      <nz-option nzLabel="SMC01 (1/2)" [nzValue]="1"></nz-option>
+                      <nz-option *ngFor="let item of listWafs" [nzLabel]="item.offerName + '(' + item.quotaDomain + ')'"
+                           [nzValue]="item.offerId"></nz-option>
                     </nz-select>
                     <!-- <input nz-input type="text" appTrim placeholder="www.example.com" formControlName="domain" class="input-custom" [maxlength]="50" minlength="1" /> -->
                     <ng-template #packageErrorTpl let-control>
@@ -131,9 +136,11 @@
         />{{ 'app.button.cancel' | i18n }}
       </button>
       <button
+        [nzLoading]="isLoadingSubmit"
         nz-button
         nzType="primary"
         [disabled]="form.invalid"
+        (click)="handleOnSubmit()"
       >
         <img
           style="padding-right: 10px; margin-top: -4px"
