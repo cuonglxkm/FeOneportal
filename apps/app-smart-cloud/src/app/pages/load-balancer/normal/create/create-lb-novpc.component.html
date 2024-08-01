@@ -215,7 +215,7 @@
             <nz-col nzSpan="8">
               <span class="text-label" *ngIf="offerDetail?.characteristicValues?.length <= 0"></span>
               <div *ngFor="let model of offerDetail?.characteristicValues;">
-                <span class="text-label" *ngIf="model.charName == 'MaxConnection'">{{ model.charOptionValues[0] }}/s</span>
+                <span class="text-label" *ngIf="model.charName == 'MaxConnection'">{{ maxAction }}/s</span>
               </div>
             </nz-col>
           </nz-row>
