@@ -49,7 +49,7 @@ export class IpPublicComponent implements OnInit {
   statusData = [
     {name: this.i18n.fanyi('app.status.all'), value: ''},
     {name: this.i18n.fanyi('app.status.running'), value: 'KHOITAO'},
-    {name: this.i18n.fanyi('app.status.low-renew'), value: 'TAMNGUNG'}];
+    {name: this.i18n.fanyi('app.suspend'), value: 'TAMNGUNG'}];
   disableDelete = true;
   ipAddressDelete = '';
   @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
