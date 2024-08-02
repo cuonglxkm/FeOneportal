@@ -275,6 +275,7 @@ export class RestoreBackupVmComponent implements OnInit {
         debounceTime(300) // Đợi 500ms sau khi người dùng dừng nhập trước khi xử lý sự kiện
       )
       .subscribe((res) => {
+        this.checkValidConfig();
         this.dataService
           .checkExistName(res, this.region, this.project)
           .subscribe((data) => {

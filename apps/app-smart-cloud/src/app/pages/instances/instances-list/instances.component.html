@@ -641,7 +641,7 @@
       nz-button
       nzType="primary"
       (click)="handleOkGanVLAN()"
-      [disabled]="isInvalidIPAddress"
+      [disabled]="disableAttachVlan || isInvalidIPAddress"
     >
       <img
         style="padding-right: 10px; margin-top: -4px"
