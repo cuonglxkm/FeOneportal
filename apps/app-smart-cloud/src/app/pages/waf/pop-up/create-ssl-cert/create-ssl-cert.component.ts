@@ -55,10 +55,12 @@ export class CreateSSLCertPopupComponent {
     privateKey: FormControl<string>;
     certificate: FormControl<string>;
     certName: FormControl<string>;
+    remarks: FormControl<string>;
   }> = this.fb.group({
     privateKey: ['', Validators.required],
     certName: ['', [Validators.required, Validators.pattern(NAME_REGEX)]],
     certificate: ['', Validators.required],
+    remarks: ['']
   });
 
 
@@ -170,6 +172,7 @@ export class CreateSSLCertPopupComponent {
       }
     }
     this.formCreateeSslCert.name = this.form.get('certName').value;
+    this.formCreateeSslCert.remarks = this.form.get('remarks').value;
     if(this.uploadMethod === '2'){
       this.formCreateeSslCert.certificate = this.form.get('certificate').value;
       this.formCreateeSslCert.privateKey = this.form.get('privateKey').value;

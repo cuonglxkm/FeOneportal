@@ -201,6 +201,7 @@ export class ListSubUserComponent implements OnInit {
 
   copyText(data) {
     this.clipboardService.copyFromContent(data);
+    this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('app.bucket.detail.copy.success'))
   }
 
   handleExpandAccessKey(index: number, event: MouseEvent) {

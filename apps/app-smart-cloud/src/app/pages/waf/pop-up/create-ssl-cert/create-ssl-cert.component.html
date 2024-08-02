@@ -117,6 +117,7 @@
       </div>
       <nz-form-control
         nzDisableAutoTips
+        [nzErrorTip]="certificateErrorTpl"
         style="margin-top: 10px"
       >
       <textarea
@@ -125,11 +126,9 @@
       rows="4"
       nz-input
     ></textarea>
-        <ng-template #nameErrorTpl let-control>
-          <ng-container *ngIf="control.hasError('required')">{{
-            'validation.snapshot.info.required' | i18n
-          }}</ng-container>
-        </ng-template>
+    <ng-template #certificateErrorTpl let-control>
+      <ng-container *ngIf="control.hasError('required')">Nội dung chứng chỉ không được để trống</ng-container>
+    </ng-template>
       </nz-form-control>
     </nz-form-item>
     <nz-form-item *ngIf="uploadMethod == '2'">
@@ -141,6 +140,7 @@
       </div>
       <nz-form-control
         nzDisableAutoTips
+        [nzErrorTip]="privateKeyErrorTpl"
         style="margin-top: 10px;"
       >
       <textarea
@@ -149,11 +149,9 @@
       rows="4"
       nz-input
     ></textarea>
-        <ng-template #nameErrorTpl let-control>
-          <ng-container *ngIf="control.hasError('required')">{{
-            'validation.snapshot.info.required' | i18n
-          }}</ng-container>
-        </ng-template>
+    <ng-template #privateKeyErrorTpl let-control>
+      <ng-container *ngIf="control.hasError('required')">Private key không được để trống</ng-container>
+    </ng-template>
       </nz-form-control>
     </nz-form-item>
     <nz-form-item *ngIf="uploadMethod == '2'">
@@ -193,15 +191,9 @@
           class="input-custom"
           appTrim
           nz-input
-          placeholder="abc"
-          formControlName="name"
-          [maxlength]="50"
+          placeholder="Nhập remarks"
+          formControlName="remarks"
         />
-        <ng-template #nameErrorTpl let-control>
-          <ng-container *ngIf="control.hasError('required')">{{
-            'validation.snapshot.info.required' | i18n
-          }}</ng-container>
-        </ng-template>
       </nz-form-control>
     </nz-form-item> 
     <div class="d-flex justify-content-end">
