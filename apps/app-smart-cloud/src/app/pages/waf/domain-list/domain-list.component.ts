@@ -8,8 +8,8 @@ import { I18NService } from '@core';
 import { debounceTime, Subject, Subscription } from 'rxjs';
 import { BaseResponse, NotificationService } from '../../../../../../../libs/common-utils/src';
 import { WafService } from 'src/app/shared/services/waf.service';
-import { error } from 'console';
-import { WafDomain } from '../waf.model';
+import { debug, error } from 'console';
+import { UpdatePolicies, WafDomain } from '../waf.model';
 
 
 @Component({
@@ -60,7 +60,6 @@ export class WafDomainListComponent implements OnInit, OnDestroy {
   }
 
   onExpandChange(id: number, checked: boolean): void {
-    debugger;
     if (checked) {
       this.expandSet.add(id);
     } else {
@@ -123,8 +122,20 @@ export class WafDomainListComponent implements OnInit, OnDestroy {
         next: (data) => {
           if (data) {
             this.response = data;
+            this.response.records.forEach(x => {
+              if(!x.sysDomainInfoVO){
+                x.sysDomainInfoVO={
+                  customizeRuleSwitch: "OFF",
+                  blockSwitch: "OFF",
+                  rateLimitSwitch: "OFF",
+                  whitelistSwitch: "OFF",
+                  dmsDefendSwitch: "OFF",
+                  intelligenceSwitch: "OFF",
+                  wafDefendSwitch: "OFF",
+                };
+              }
+            });
             this.isLoading = false;
-            console.log(this.response);
           } else {
             this.response = null;
             this.isLoading = false;
@@ -163,6 +174,56 @@ export class WafDomainListComponent implements OnInit, OnDestroy {
   //create schedule snapshot
   navigateToCreateScheduleSnapshot(idWaf: number) {
     this.router.navigate(['/app-smart-cloud/schedule/snapshot/create', { wafId: idWaf }], { queryParams: { snapshotTypeCreate: 0 } });
+  }
+
+  changePolicy(event: any, policyType:string, data){
+    this.isLoading = true;
+    var updateData: UpdatePolicies = {};
+    switch(policyType) {
+      case "blockSwitch":
+        data.sysDomainInfoVO.blockSwitch = event ? "ON" : "OFF";
+        updateData.iPGeoBlock = event;
+        break;
+      case "dmsDefendSwitch":
+        data.sysDomainInfoVO.dmsDefendSwitch = event ? "ON" : "OFF";
+        updateData.ddos = event;
+        break;
+      case "wafDefendSwitch":
+        data.sysDomainInfoVO.wafDefendSwitch = event ? "ON" : "OFF";
+        updateData.waf = event;
+        break;
+      case "intelligenceSwitch":
+        data.sysDomainInfoVO.intelligenceSwitch = event ? "ON" : "OFF";
+        updateData.threatIntelligence = event;
+        break;
+      case "rateLimitSwitch":
+        data.sysDomainInfoVO.rateLimitSwitch = event ? "ON" : "OFF";
+        updateData.rateLimit = event;
+        break;
+      case "customizeRuleSwitch":
+        data.sysDomainInfoVO.customizeRuleSwitch = event ? "ON" : "OFF";
+        updateData.customRules = event;
+        break;  
+      case "whitelistSwitch":
+        data.sysDomainInfoVO.whitelistSwitch = event ? "ON" : "OFF";
+        updateData.whiteList = event;
+        break;
+      default:
+        // code block
+    }
+    this.wafService.updatePolicies(data.id,updateData).subscribe({
+      next: (data) => {
+          if (data) {
+            
+          }
+          this.isLoading = false;
+        },
+      error: (error) => {
+          this.isLoading = false;
+          this.notification.error(error.statusText, this.i18n.fanyi('app.failData'));
+        }
+      }
+    );
   }
 
   ngOnInit() {
