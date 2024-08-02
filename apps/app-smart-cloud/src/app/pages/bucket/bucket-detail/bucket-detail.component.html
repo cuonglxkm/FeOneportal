@@ -229,7 +229,7 @@
           <img style="padding-right: 5px" src="assets/imgs/folder.svg" alt="" />
           {{ item.key.split('/').pop() }}
         </td>
-        <td>{{ (item.size / 1024).toFixed(2) }} KB</td>
+        <td>{{ formatFileSize(item.size) }} KB</td>
         <td nzBreakWord="true" style="text-transform: capitalize;">{{ item.objectType }}</td>
         <td>{{ item.lastModified | date : 'dd/MM/yyyy HH:mm:ss' }}</td>
         <td>{{ item.isPublic == true ? 'Public' : 'Private' }}</td>

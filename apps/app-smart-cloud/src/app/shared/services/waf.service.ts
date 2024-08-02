@@ -5,7 +5,7 @@ import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http'
 import { BaseService } from './base.service';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { BaseResponse } from '../../../../../../libs/common-utils/src';
-import { AddDomainRequest, SslCertRequest, WafDetailDTO, WafDomain, WafDTO } from 'src/app/pages/waf/waf.model';
+import { AddDomainRequest, SslCertRequest, UpdatePolicies, WafDetailDTO, WafDomain, WafDTO } from 'src/app/pages/waf/waf.model';
 import { OfferItem } from 'src/app/pages/instances/instances.model';
 
 @Injectable({
@@ -54,6 +54,11 @@ export class WafService extends BaseService {
 
   getListSslCert(name: string, pageSize: number, currentPage: number): Observable<any> {
     return this.http.get<any>(this.baseUrl + this.ENDPOINT.provisions + `/waf/certificate?name=${name}&pageSize=${pageSize}&currentPage=${currentPage}`);
+  }
+
+  getDetailSslCert(id: number): Observable<any> {
+    return this.http.get<any>(this.baseUrl + this.ENDPOINT.provisions +
+      `/waf/certificate-detail/${id}`, {headers: this.getHeaders().headers})
   }
 
   createSSlCert(data: SslCertRequest) {
@@ -118,5 +123,9 @@ export class WafService extends BaseService {
 
   updateDomain(id: number, data: any){
     return this.http.put(this.baseUrl + this.ENDPOINT.provisions + `/waf/domain/${id}`, data, {headers: this.getHeaders().headers})
+  }
+
+  updatePolicies(domainId: number, data: UpdatePolicies){
+    return this.http.put(this.baseUrl + this.ENDPOINT.provisions + `/waf/policies/${domainId}`, data, {headers: this.getHeaders().headers})
   }
 }

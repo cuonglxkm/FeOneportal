@@ -27,7 +27,7 @@ export class IpPublicComponent implements OnInit {
   listOfIp: IpPublicModel[] = [];
   checkEmpty: IpPublicModel[] = [];
   isBegin: Boolean = false;
-  size = 10;
+  size = 1;
   index: number = 1;
   total: number = 0;
   baseResponse: BaseResponse<IpPublicModel[]>;
@@ -115,7 +115,7 @@ export class IpPublicComponent implements OnInit {
 
   onPageSizeChange(event: any) {
     this.size = event
-    this.refreshParams();
+    // this.refreshParams();
     this.getData(false);
   }
 

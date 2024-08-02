@@ -185,6 +185,7 @@
   "app.account.form.success": "Account updated successfully!",
   "app.account.form.fail": "Account update failed",
   "app.description.maxLength.255": "Allow a maximum of 255 characters input",
+  "app.description.maxLength.200": "Allow a maximum of 200 characters input",
   "app.failData": "Retrieve data failed",
   "app.notify.get.list.province": "Failed to retrieve the list of Provinces/Cities",
 
@@ -1024,6 +1025,7 @@
   "app.tooltip.internal": "Using private IP addresses. Thus, the load balancer can only route<br> requests from clients with access rights to the VPC to the load balancer",
   "app.tooltip.ip.address": "The IP address of the customer. In case the customer does not provide an IP address,<br> the system will automatically assign one. If the customer does provide an IP address,<br> the system will use that IP for the load balancer if it's not already in use by anyone else",
   "app.tooltip.service.package": "<b>Max Connection:</b> The maximum total connections per second<br> <b>Active Connection:</b> The maximum total active connections within 1 second<br> <b>Data transfer:</b> Data transferred in the form of bits and bytes over a digital or analog medium<br> And this process allows for the transmission of both digital or analog communication and its movement between devices",
+  "app.tooltip.pool.algorithm": "Round Robin: This algorithm selects servers sequentially. The Load Balancer goes from the first server to the last and starts over when it reaches the end.<br>Least Connection: Requests are directed to the server with the fewest active connections. This algorithm is considered dynamic as it counts the number of active connections on each server.<br>Source IP: This algorithm combines the source and destination IP addresses of the client and server to create a unique hash key. This key is used to allocate the client to a specific server and can be regenerated if the session times out or is disconnected for some reason. This ensures that the client's requests are directed to the same server they previously used, maintaining consistent connectivity.",
 
   "app.title.delete.load.balancer": "Delete the {{name}} Load Balancer",
   "app.note.delete.load.balancer": "To delete the {{name}} Load Balancer, please enter the Load Balancer name to confirm",
@@ -2515,7 +2517,7 @@
 
   "validation.kafka.topic.name-required": "The Topic name cannot be empty",
   "validation.kafka.topic.name-pattern": "The Topic name can only include letters, numbers, and special characters -",
-  "validation.kafka.topic.name-length": "The Topic name must be between 5 and 255 characters long",
+  "validation.kafka.topic.name-length": "The Topic name must be between 5 and 245 characters long",
   "validation.kafka.topic.partition-required": "Partitions cannot be empty",
   "validation.kafka.topic.partition-length": "Partitions value is between 1 and 100.",
   "validation.kafka.topic.replica-required": "Replication factor cannot be empty",

@@ -364,9 +364,9 @@
                      src="assets/imgs/pajamas_question.svg" alt="" />
               </nz-form-label>
               <nz-form-control nzDisableAutoTips>
-                <nz-input-number style="margin-left: -2px;width: 90%" formControlName="maxRetries" [nzMin]="0" [nzMax]="10"
+                <nz-input-number style="margin-left: -2px;width: 90%" formControlName="maxRetries" [nzMin]="1" [nzMax]="10"
                                  nzSize="large"
-                                 [nzStep]="1" (keydown)="checkPossiblePress($event)"></nz-input-number>
+                                 [nzStep]="1" (keydown)="checkPossiblePress1($event)"></nz-input-number>
               </nz-form-control>
             </nz-form-item>
           </nz-col>
@@ -379,9 +379,9 @@
                      src="assets/imgs/pajamas_question.svg" alt="" />
               </nz-form-label>
               <nz-form-control nzDisableAutoTips>
-                <nz-input-number style="margin-left: -2px;width: 90%" formControlName="maxRetriesDown" [nzMin]="0" [nzMax]="10"
+                <nz-input-number style="margin-left: -2px;width: 90%" formControlName="maxRetriesDown" [nzMin]="1" [nzMax]="10"
                                  nzSize="large"
-                                 [nzStep]="1" (keydown)="checkPossiblePress($event)"></nz-input-number>
+                                 [nzStep]="1" (keydown)="checkPossiblePress1($event)"></nz-input-number>
               </nz-form-control>
             </nz-form-item>
           </nz-col>
@@ -396,8 +396,8 @@
                      src="assets/imgs/pajamas_question.svg" alt="" />
               </nz-form-label>
               <nz-form-control nzDisableAutoTips>
-                <nz-input-number style="margin-left: -2px;width: 90%" formControlName="delay" [nzMin]="0" nzSize="large" [nzMax]="validateForm.controls['timeoutHealth'].value"
-                                 [nzStep]="1"(keydown)="checkPossiblePress($event)"></nz-input-number>
+                <nz-input-number style="margin-left: -2px;width: 90%" formControlName="delay" [nzMin]="1" nzSize="large"
+                                 [nzStep]="1" (keydown)="checkPossiblePress1($event)"></nz-input-number>
               </nz-form-control>
             </nz-form-item>
           </nz-col>
@@ -410,9 +410,9 @@
                      src="assets/imgs/pajamas_question.svg" alt="" />
               </nz-form-label>
               <nz-form-control nzDisableAutoTips>
-                <nz-input-number style="margin-left: -2px;width: 90%" formControlName="timeoutHealth" [nzMin]="0"
+                <nz-input-number style="margin-left: -2px;width: 90%" formControlName="timeoutHealth" [nzMin]="1" [nzMax]="validateForm.controls['delay'].value"
                                  nzSize="large"
-                                 [nzStep]="1" (keydown)="checkPossiblePress($event)"></nz-input-number>
+                                 [nzStep]="1" (keydown)="checkPossiblePress1($event)"></nz-input-number>
               </nz-form-control>
             </nz-form-item>
           </nz-col>
@@ -450,8 +450,9 @@
                   style="border-color: #0066B3;background-color: white;"><span
             style="color:#0066B3">{{ 'app.button.back' | i18n }}</span>
           </button>
-          <button [disabled]="validateForm.controls['poolName'].invalid || validateForm.controls['healthName'].invalid
-          || (selectedCheckMethod == 'HTTP' && (validateForm.controls['path'].invalid || validateForm.controls['sucessCode'].invalid))" nzSize="large"
+          <button [disabled]="validateForm.controls['poolName'].invalid || validateForm.controls['delay'].invalid || validateForm.controls['timeoutHealth'].invalid
+           || validateForm.controls['healthName'].invalid || (selectedCheckMethod == 'HTTP' && ((validateForm.controls['path'].invalid && (validateForm.controls['path'].value) != '/')
+           || validateForm.controls['sucessCode'].invalid))" nzSize="large"
                   (click)="nextStep()" nz-button nzType="primary"
                   style="border: none;margin-left: 30px;">{{ 'app.button.continue' | i18n }}
           </button>
