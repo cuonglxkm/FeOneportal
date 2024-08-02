@@ -312,7 +312,8 @@ export class ProjectUpdateComponent implements OnInit {
     }
 
     // let IPFloating = this.ipNetworkAddress !=null ? this.numberIpFloating + this.ipFloatingOld : this.ipFloatingOld;
-    this.numberIpFloating = this.ipConnectInternet != '' ? this.numberIpFloating : 0
+    // this.numberIpFloating = this.ipConnectInternet != '' ? this.numberIpFloating : 0
+    this.numberIpFloating = this.ipConnectInternet ? this.numberIpFloating : 0
 
 
 
@@ -330,7 +331,8 @@ export class ProjectUpdateComponent implements OnInit {
         newQuotaSsdInGb: this.ssd + this.ssdOld,
 
         newPublicNetworkId: this.ipConnectInternet ? (ip ? ip : '') : this.ipOld,
-        newPublicNetworkAddress: this.ipConnectInternet ? ((ipName != '' && ipName != undefined) ? ipName : '') : this.ipNameOld,
+        // newPublicNetworkAddress: this.ipConnectInternet ? ((ipName != '' && ipName != undefined) ? ipName : '') : this.ipNameOld,
+        newPublicNetworkAddress: this.ipConnectInternet ? (ipName  ? ipName : '') : this.ipNameOld,
         newQuotaIpPublicCount: this.data?.offerDetail ? (this.numberIpPublic + this.ipPublicAddOld) : (this.numberIpPublic + this.ipPublicTotal),
 
 
@@ -447,7 +449,7 @@ export class ProjectUpdateComponent implements OnInit {
                 e.characteristicValues.find((charName) => charName.charName === 'VolumeType')?.charOptionValues?.[0] == typeName
 
               )
-              console.log("listOfferByTypeNamekk", this.listOfferByTypeName)
+
               this.checkFlavor()
 
               this.listOfferFlavors.forEach((e: OfferItem) => {
@@ -480,7 +482,7 @@ export class ProjectUpdateComponent implements OnInit {
                     e.ipNumber = ch.charOptionValues[0];
                   }
                 });
-                console.log("description  gg", e.description)
+    
               });
               this.cdr.detectChanges();
             });
@@ -516,7 +518,8 @@ export class ProjectUpdateComponent implements OnInit {
     }
 
     // let IPFloating = this.ipNetworkAddress !=null ? this.numberIpFloating + this.ipFloatingOld : this.ipFloatingOld;
-    this.numberIpFloating = this.ipConnectInternet != '' ? this.numberIpFloating : 0
+    // this.numberIpFloating = this.ipConnectInternet != '' ? this.numberIpFloating : 0
+    this.numberIpFloating = this.ipConnectInternet  ? this.numberIpFloating : 0
 
 
     if ((this.selectIndexTab == 0 || this.offerFlavor != undefined) || (this.selectIndexTab == 1 || (this.vCPU != 0 && this.ram != 0))) {
@@ -532,7 +535,8 @@ export class ProjectUpdateComponent implements OnInit {
         newQuotaSsdInGb: this.ssd + this.ssdOld,
 
         newPublicNetworkId: this.ipConnectInternet ? (ip ? ip : '') : this.ipOld,
-        newPublicNetworkAddress: this.ipConnectInternet ? ((ipName != '' && ipName != undefined) ? ipName : '') : this.ipNameOld,
+        // newPublicNetworkAddress: this.ipConnectInternet ? ((ipName != '' && ipName != undefined) ? ipName : '') : this.ipNameOld,
+        newPublicNetworkAddress: this.ipConnectInternet ? (ipName  ? ipName : '') : this.ipNameOld,
         newQuotaIpPublicCount: this.data?.offerDetail ? (this.numberIpPublic + this.ipPublicAddOld) : (this.numberIpPublic + this.ipPublicTotal),
         newQuotaIpFloatingCount: this.numberIpFloating + this.ipFloatingOld,
         newQuotaIpv6Count: this.numberIpv6 + this.ipv6Old,
@@ -1195,7 +1199,13 @@ export class ProjectUpdateComponent implements OnInit {
     this.numberIpv6 = 0;
     this.numberIpFloating = 0;
 
-    if (this.data.publicNetworkAddress != '' && this.data.publicNetworkId != '') {
+    // if (this.data.publicNetworkAddress != '' && this.data.publicNetworkId != '') {
+    //   this.ipConnectInternet = this.data.publicNetworkId + '--' + this.data.publicNetworkAddress;
+    // }
+    // else {
+    //   this.ipConnectInternet = '';
+    // }
+    if (this.data.publicNetworkAddress  && this.data.publicNetworkId ) {
       this.ipConnectInternet = this.data.publicNetworkId + '--' + this.data.publicNetworkAddress;
     }
     else {
