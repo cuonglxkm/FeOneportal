@@ -199,7 +199,7 @@
                   <nz-form-item>
                     <nz-form-control>
                       <nz-form-label nzFor="port">Port </nz-form-label>
-                      <input nz-input type="text" appTrim placeholder="Nhập port" formControlName="port" class="input-custom" [maxlength]="50"  />
+                      <nz-input-number style="width: 100%; margin-left: 0;" nz-input type="text" nzPlaceHolder="Nhập port" formControlName="port" class="input-custom" [maxlength]="50"  />
                     </nz-form-control>
                   </nz-form-item>
                 </div>
@@ -392,7 +392,7 @@
 </form>
 
 <!-- Tạo SSL Cert -->
-<one-portal-create-ssl-cert (onCancelVisible)="handleCancelCreateSSLCert()" [isVisibleCreateSSLCert]="isVisibleCreateSSLCert"></one-portal-create-ssl-cert>
+<one-portal-create-ssl-cert (onOk)="handleOkCreateSSLCert()" (onCancelVisible)="handleCancelCreateSSLCert()" [isVisibleCreateSSLCert]="isVisibleCreateSSLCert"></one-portal-create-ssl-cert>
 
 <one-portal-popup-list-error
   [isVisible]="isVisiblePopupError"
