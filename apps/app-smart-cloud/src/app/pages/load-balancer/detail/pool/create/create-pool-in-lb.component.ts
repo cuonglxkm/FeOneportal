@@ -1,5 +1,4 @@
 import {
-  AfterViewInit,
   Component,
   ElementRef,
   EventEmitter,
@@ -10,16 +9,14 @@ import {
   ViewChild,
 } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import {
-  FormControl,
-  FormGroup,
-  NonNullableFormBuilder,
-  Validators,
-} from '@angular/forms';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { LoadBalancerService } from '../../../../../shared/services/load-balancer.service';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
-import { CreatePool, LoadBalancerModel } from 'src/app/shared/models/load-balancer.model';
+import {
+  CreatePool,
+  LoadBalancerModel,
+} from 'src/app/shared/models/load-balancer.model';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from '@core';
 
@@ -39,7 +36,7 @@ export class CreatePoolInLbComponent implements OnInit {
   isVisible: boolean = false;
   isLoading: boolean = false;
   nameList: string[] = [];
-
+  methodStickySession = 'HTTP_COOKIE';
   validateForm: FormGroup;
 
   algorithms = [
@@ -64,7 +61,7 @@ export class CreatePoolInLbComponent implements OnInit {
     @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService
   ) {}
 
-  loadBalancer: LoadBalancerModel = new LoadBalancerModel()
+  loadBalancer: LoadBalancerModel = new LoadBalancerModel();
   ngOnInit(): void {
     this.loadBalancerService
       .getLoadBalancerById(this.loadbalancerId, true)
@@ -118,18 +115,27 @@ export class CreatePoolInLbComponent implements OnInit {
         if (data) {
           this.isVisible = false;
           this.isLoading = false;
-          this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('app.notification.create.pool.success'));
+          this.notification.success(
+            this.i18n.fanyi('app.status.success'),
+            this.i18n.fanyi('app.notification.create.pool.success')
+          );
         } else {
           this.isVisible = false;
           this.isLoading = false;
-          this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.notification.create.pool.fail'));
+          this.notification.error(
+            this.i18n.fanyi('app.status.fail'),
+            this.i18n.fanyi('app.notification.create.pool.fail')
+          );
         }
         this.onOk.emit(data);
       },
       error: (error) => {
         this.isVisible = false;
         this.isLoading = false;
-        this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.notification.create.pool.fail'));
+        this.notification.error(
+          this.i18n.fanyi('app.status.fail'),
+          error.error.message
+        );
       },
     });
   }
@@ -146,7 +152,7 @@ export class CreatePoolInLbComponent implements OnInit {
           namePool: new FormControl('', {
             validators: [
               Validators.required,
-              Validators.pattern(/^[a-zA-Z0-9]*$/),
+              Validators.pattern(/^[a-zA-Z0-9_]*$/),
               this.duplicateNameValidator.bind(this),
               Validators.maxLength(50),
             ],

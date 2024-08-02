@@ -143,7 +143,6 @@ export class InstancesEditVpcComponent implements OnInit {
     );
     this.cloudId = this.instancesModel.cloudId;
     this.region = this.instancesModel.regionId;
-    this.getListIpPublic();
     if (
       this.instancesModel.gpuCount != null &&
       this.instancesModel.gpuType != null
@@ -235,7 +234,7 @@ export class InstancesEditVpcComponent implements OnInit {
         this.infoVPC.cloudProject.gpuProjects.forEach((gputype) =>
           listGpuOfferIds.push(gputype.gpuOfferId)
         );
-        this.purchasedListGPUType = this.listGPUType.filter((e) =>
+        this.purchasedListGPUType = this.listGPUType?.filter((e) =>
           listGpuOfferIds.includes(e.id)
         );
         this.getListOptionGpuValue();
@@ -273,9 +272,7 @@ export class InstancesEditVpcComponent implements OnInit {
             this.remainingVCPU =
               this.infoVPC.cloudProject.quotavCpu -
               this.infoVPC.cloudProjectResourceUsed.cpu;
-            if (this.infoVPC.cloudProject.gpuProjects.length != 0) {
-              this.getListGpuType();
-            }
+            this.getListGpuType();
             this.getConfigurations();
           },
           error: (e) => {

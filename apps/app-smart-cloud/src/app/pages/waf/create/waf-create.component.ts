@@ -1,6 +1,5 @@
 import { ChangeDetectorRef, Component, Inject, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { DomSanitizer } from '@angular/platform-browser';
 import { Router } from '@angular/router';
 import { I18NService } from '@core';
 import { LoadingService } from '@delon/abc/loading';
@@ -9,21 +8,17 @@ import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { NguCarouselConfig } from '@ngu/carousel';
 import { getCurrentRegionAndProject } from '@shared';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
-import { Subject } from 'rxjs';
+import { finalize, Subject } from 'rxjs';
 import { DOMAIN_REGEX } from 'src/app/shared/constants/constants';
 import { RegionID } from 'src/app/shared/enums/common.enum';
-import { CatalogService } from 'src/app/shared/services/catalog.service';
+import { OrderItemObject } from 'src/app/shared/models/price';
+import { ObjectStorageService } from 'src/app/shared/services/object-storage.service';
 import { OrderService } from 'src/app/shared/services/order.service';
-import { VpcService } from 'src/app/shared/services/vpc.service';
+import { WafService } from 'src/app/shared/services/waf.service';
 import { duplicateDomainValidator, ipValidatorMany, slider } from '../../../../../../../libs/common-utils/src';
-import { IpPublicService } from '../../../shared/services/ip-public.service';
+import { WAFCreate } from '../../../shared/models/waf-init';
 import { DataPayment, ItemPayment, OfferItem, Order, OrderItem } from '../../instances/instances.model';
 import { InstancesService } from '../../instances/instances.service';
-import { ObjectStorageCreate } from 'src/app/shared/models/object-storage.model';
-import { WAFCreate } from '../../../shared/models/waf-init';
-import { ObjectStorageService } from 'src/app/shared/services/object-storage.service';
-import { OrderItemObject } from 'src/app/shared/models/price';
-import { WafService } from 'src/app/shared/services/waf.service';
 
 
 
@@ -156,7 +151,10 @@ export class WAFCreateComponent implements OnInit {
   }
 
   getListSslCert(){
-    this.wafService.getListSslCert('', 999, 1).subscribe((res) => {
+    this.loadingSrv.open({ type: 'spin', text: 'Loading...' });
+    this.wafService.getListSslCert('', 999, 1)
+    .pipe(finalize(() => this.loadingSrv.close()))
+    .subscribe((res) => {
       this.listSslCert = res?.records
     }, (error) => {
       console.log(error);     
@@ -239,8 +237,6 @@ export class WAFCreateComponent implements OnInit {
     console.log("object value", value)
     this.inputChangeSubject.next({ value, name });
   }
-
-
 
   selectPackge = '';
 
@@ -361,6 +357,11 @@ export class WAFCreateComponent implements OnInit {
 
   handleCancelCreateSSLCert(){
     this.isVisibleCreateSSLCert = false
+  }
+
+  handleOkCreateSSLCert() {
+    this.isVisibleCreateSSLCert = false;
+    this.getListSslCert()
   }
 
 }

@@ -367,7 +367,7 @@
                         (click)="navigateToPaymentSummary()" [nzLoading]="isLoadingAction"
                         [disabled]="validateForm.invalid
                         || validateForm.controls.storage.value == 0
-                        || this.validateForm.controls.storage.value % this.stepStorage > 0">
+                        || this.validateForm.controls.storage.value % this.stepStorage > 0 || isStorageZero">
                   <img src="assets/imgs/wallet.svg" style="margin-right: 5px; padding-bottom: 5px;" />
                   <span [style.color]="validateForm.invalid
                   || validateForm.controls.storage.value == 0

@@ -32,15 +32,9 @@ export class ResizeVolumeVpcComponent implements OnInit {
   oldSize: number;
   expiryTime: any;
   validateForm: FormGroup<{
-    name: FormControl<string>
-    description: FormControl<string>
     storage: FormControl<number>
-    radio: FormControl<any>
   }> = this.fb.group({
-    name: ['', [Validators.required, Validators.pattern(/^[a-zA-Z0-9\s]+$/), this.duplicateNameValidator.bind(this)]],
-    description: ['', Validators.maxLength(700)],
     storage: [0, [Validators.required, Validators.pattern(/^[0-9]*$/), this.checkQuota.bind(this)]],
-    radio: ['']
   });
 
   nameList: string[] = [];
@@ -188,11 +182,11 @@ export class ResizeVolumeVpcComponent implements OnInit {
       this.isLoading = false;
       this.volumeInfo = data;
       this.oldSize = data.sizeInGB;
-      this.validateForm.controls.name.setValue(data.name);
+      // this.validateForm.controls.name.setValue(data.name);
       // this.validateForm.controls.storage.setValue(data.sizeInGB);
-      this.validateForm.controls.description.setValue(data.description);
+      // this.validateForm.controls.description.setValue(data.description);
       this.selectedValueRadio = data.volumeType;
-      this.validateForm.controls.radio.setValue(data.volumeType);
+      // this.validateForm.controls.radio.setValue(data.volumeType);
       this.volumeEdit.iops = this.volumeInfo?.iops
       if (this.volumeInfo?.instanceId != null) {
         this.getInstanceById(this.volumeInfo?.instanceId);
@@ -203,9 +197,6 @@ export class ResizeVolumeVpcComponent implements OnInit {
           this.listVMs += item.instanceName + '\n';
         });
       }
-
-
-
       //Thoi gian su dung
       const createDate = new Date(this.volumeInfo?.creationDate);
       const exdDate = new Date(this.volumeInfo?.expirationDate);
@@ -318,6 +309,7 @@ export class ResizeVolumeVpcComponent implements OnInit {
   }
 
   showConfirmResize() {
+    console.log('validate', this.validateForm.getRawValue())
     this.isVisibleConfirm = true;
   }
 
@@ -335,6 +327,7 @@ export class ResizeVolumeVpcComponent implements OnInit {
       this.minStorage = Number.parseInt(this.valueString?.split('#')[0])
       this.stepStorage = Number.parseInt(this.valueString?.split('#')[1])
       this.maxStorage = Number.parseInt(this.valueString?.split('#')[2])
+      this.validateForm.controls.storage.setValue(this.minStorage)
     })
   }
   url = window.location.pathname;

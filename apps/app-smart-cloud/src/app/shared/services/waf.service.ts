@@ -56,6 +56,11 @@ export class WafService extends BaseService {
     return this.http.get<any>(this.baseUrl + this.ENDPOINT.provisions + `/waf/certificate?name=${name}&pageSize=${pageSize}&currentPage=${currentPage}`);
   }
 
+  getDetailSslCert(id: number): Observable<any> {
+    return this.http.get<any>(this.baseUrl + this.ENDPOINT.provisions +
+      `/waf/certificate-detail/${id}`, {headers: this.getHeaders().headers})
+  }
+
   createSSlCert(data: SslCertRequest) {
     return this.http.post<any>(this.baseUrl + this.ENDPOINT.provisions + '/waf/add-cert', Object.assign(data), {
       headers: this.getHeaders().headers

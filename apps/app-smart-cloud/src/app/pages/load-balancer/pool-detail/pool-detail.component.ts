@@ -661,7 +661,7 @@ export class PoolDetailComponent implements OnInit {
           error: (e) => {
             this.notification.error(
               e.statusText,
-              this.i18n.fanyi('app.notification.create.member.fail')
+              e.error.message
             );
           },
         });

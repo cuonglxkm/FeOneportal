@@ -298,6 +298,7 @@ export class FormUpdatePool {
   vpcId: number;
   regionId: number;
   actorEmail: string;
+  loadbalancerId: string;
 }
 
 export class MemberOfPool {
