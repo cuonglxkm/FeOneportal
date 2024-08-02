@@ -185,6 +185,7 @@
   "app.account.form.success": "Account updated successfully!",
   "app.account.form.fail": "Account update failed",
   "app.description.maxLength.255": "Allow a maximum of 255 characters input",
+  "app.description.maxLength.200": "Allow a maximum of 200 characters input",
   "app.failData": "Retrieve data failed",
   "app.notify.get.list.province": "Failed to retrieve the list of Provinces/Cities",
 

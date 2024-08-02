@@ -80,6 +80,7 @@
   "app.account.form.success": "Cập nhật tài khoản thành công!",
   "app.account.form.fail": "Cập nhật tài khoản không thành công!",
   "app.description.maxLength.255": "Cho phép nhập tối đa 255 ký tự",
+  "app.description.maxLength.200": "Cho phép nhập tối đa 200 ký tự",
   "app.description.maxLength": "Mô tả chỉ cho phép nhập tối đa 255 ký tự",
   "app.tooltip.time": "Thời gian khách hàng mua {{name}} để sử dụng, tính theo tháng",
   "app.failData": "Lấy dữ liệu thất bại",

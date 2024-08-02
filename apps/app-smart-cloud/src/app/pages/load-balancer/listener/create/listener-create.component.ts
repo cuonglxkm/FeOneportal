@@ -63,8 +63,8 @@ export class ListenerCreateComponent implements OnInit{
   dataListener: any;
   lbId : any;
   order = 0;
-  lstInstance = [{Name: 'a', taskState : 'a', status: 'a', id: 'a', IpAddress: 'a', Port: 0, Weight: 0, Backup: false, order: 0 }];
-  lstInstanceUse = [{Name: 'a', taskState : 'a', status: 'a', id: 'a', IpAddress: 'a', Port: 0, Weight: 0, Backup: false, order: 0}];
+  lstInstance = [{Name: 'a', taskState : 'a', status: 'a', id: 'a', IpAddress: 'a', Port: '0', Weight: '0', Backup: false, order: 0 }];
+  lstInstanceUse = [{Name: 'a', taskState : 'a', status: 'a', id: 'a', IpAddress: 'a', Port: '0', Weight: '0', Backup: false, order: 0}];
   validateForm: FormGroup<{
     listenerName: FormControl<string>
     port: FormControl<number>
@@ -95,9 +95,9 @@ export class ListenerCreateComponent implements OnInit{
     healthName: ['', [Validators.required, Validators.pattern(/^[a-zA-Z0-9_]*$/), Validators.maxLength(50)]],
     maxRetries: [3],
     maxRetriesDown: [3],
-    delay: [5],
-    timeoutHealth: [5],
-    path: ['/',[Validators.required]],
+    delay: [5,[Validators.required]],
+    timeoutHealth: [5,[Validators.required]],
+    path: ['/',[Validators.required,Validators.pattern(/^\/[a-zA-Z0-9-_\/]+\/?$/)]],
     sucessCode: ['200',[Validators.required, Validators.pattern(/^[0-9_]*$/)]]
   });
   protocolListener = 'HTTP';
@@ -124,7 +124,7 @@ export class ListenerCreateComponent implements OnInit{
   selectedCheckMethod = 'HTTP';
   selectedHttpMethod = 'GET';
   loading= false;
-  private disableMember = false;
+  private disableMember = true;
   @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
   constructor(private router: Router,
               private fb: NonNullableFormBuilder,
@@ -263,7 +263,9 @@ export class ListenerCreateComponent implements OnInit{
   }
 
   removeInstance(IpAddress: any,order: any, action: number) {
+
     if (action == 0) {
+
       //xoa
       const index = this.lstInstanceUse.findIndex(e => e.order == order);
       if(index != -1) {
@@ -271,7 +273,9 @@ export class ListenerCreateComponent implements OnInit{
         // this.lstInstance.push(data);
         this.lstInstanceUse.splice(index, 1);
       }
+      this.checkDuplicatePortWeight()
     } else {
+      this.disableMember = true;
       //them
       const index = this.lstInstance.findIndex(e => e.IpAddress == IpAddress);
       if(index >= 0) {
@@ -342,7 +346,50 @@ export class ListenerCreateComponent implements OnInit{
     }
   }
 
+  checkPossiblePress1(event: KeyboardEvent) {
+    const inputElement = event.target as HTMLInputElement;
+    const key = event.key;
+    const currentValue = inputElement.value;
+
+    // Cho phép các phím đặc biệt
+    const allowedKeys = [
+      'Backspace',
+      'Delete',
+      'ArrowLeft',
+      'ArrowRight',
+      'Tab',
+    ];
+
+    // Kiểm tra nếu phím không phải là số, không phải các phím đặc biệt, hoặc là số 0 ở đầu
+    if (
+      (!allowedKeys.includes(key) && isNaN(Number(key))) ||
+      (key === '0' && currentValue.length === 0)
+    ) {
+      event.preventDefault();
+      // Hủy sự kiện để ngăn người dùng nhập ký tự đó
+    }
+
+    const target = event.target as HTMLInputElement;
+    const value = parseInt(target.value + event.key);
+    if (value < 1 && event.key !== 'Backspace' && event.key !== 'Delete') {
+      event.preventDefault();
+    }
+
+    // Kiểm tra nếu nhập vượt quá 100
+    const newValue = currentValue + key;
+    if (Number(newValue) > 100) {
+      event.preventDefault(); // Hủy sự kiện để ngăn người dùng nhập ký tự đó
+    }
+  }
+
   checkDuplicatePortWeight() {
+    for (let i=0; i<this.lstInstanceUse.length; i++) {
+      if (this.lstInstanceUse[i].Port == '' || this.lstInstanceUse[i].Weight == '' || this.lstInstanceUse[i].Port == null|| this.lstInstanceUse[i].Weight == null) {
+        this.disableMember = true;
+        return;
+      }
+    }
+
     for (let i=0; i<this.lstInstanceUse.length-1; i++) {
       const model = this.lstInstanceUse[i];
       for (let j= i+1; j<this.lstInstanceUse.length; j++) {
