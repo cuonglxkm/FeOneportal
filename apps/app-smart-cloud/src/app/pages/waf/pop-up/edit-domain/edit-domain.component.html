@@ -47,7 +47,8 @@
                 <button
                   nz-button
                   nzType="primary"
-                  (click)="submitForm()"
+                  (click)="handleOnEdit()"
+                  [nzLoading]="isLoading"
                 >
                   <img
                     style="padding-right: 10px; margin-top: -4px"

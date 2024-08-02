@@ -5,7 +5,7 @@ import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http'
 import { BaseService } from './base.service';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { BaseResponse } from '../../../../../../libs/common-utils/src';
-import { AddDomainRequest, SslCertRequest, UpdatePolicies, WafDetailDTO, WafDomain, WafDTO } from 'src/app/pages/waf/waf.model';
+import { AddDomainRequest, HttpsSettingRequest, SslCertDTO, SslCertRequest, WafDetailDTO, WafDomain, WafDTO, UpdatePolicies } from 'src/app/pages/waf/waf.model';
 import { OfferItem } from 'src/app/pages/instances/instances.model';
 
 @Injectable({
@@ -125,6 +125,33 @@ export class WafService extends BaseService {
     return this.http.put(this.baseUrl + this.ENDPOINT.provisions + `/waf/domain/${id}`, data, {headers: this.getHeaders().headers})
   }
 
+  disableAllPolicies(id: number){
+    return this.http.put(this.baseUrl + this.ENDPOINT.provisions + `/waf/disable-all-policies/${id}`, {}, this.getHeaders())
+  }
+
+  settingHttps(data: HttpsSettingRequest, id: number){
+    return this.http.put(this.baseUrl + this.ENDPOINT.provisions + `/waf/https-setting/${id}`, Object.assign(data), this.getHeaders())
+  }
+
+  deleteSslCert(id: number){
+    return this.http.delete(this.baseUrl + this.ENDPOINT.provisions + `/waf/certificate/${id}`)
+  }
+
+  getSslCertById(id: number){
+    return this.http.get(this.baseUrl + this.ENDPOINT.provisions + `/waf/certificate/${id}`, {headers: this.getHeaders().headers})
+  }
+
+  associateDomains(){
+    return
+  }
+
+  disAssociateCertificate(){
+    return
+  }
+
+  getSslCertDetail(id: number){
+    return this.http.get(this.baseUrl + this.ENDPOINT.provisions + `/waf/certificate-detail/${id}`, this.getHeaders())
+  }
   updatePolicies(domainId: number, data: UpdatePolicies){
     return this.http.put(this.baseUrl + this.ENDPOINT.provisions + `/waf/policies/${domainId}`, data, {headers: this.getHeaders().headers})
   }

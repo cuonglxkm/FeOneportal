@@ -128,6 +128,31 @@ export class AddDomainRequest {
   packageId: string | number
 }
 
+export class EditDomainRequest {
+  ipPublic: string;
+  host: string;
+  port: string | number
+}
+
+export class HttpsSettingRequest {
+  certId: number;
+  protocol?: string;
+  port?: string
+}
+
+export interface SslCertDTO {
+  id: number;
+  name: string;
+  customerId: number;
+  cdCertId: number;
+  type: number;
+  serial: string;
+  notBefore: string;
+  notAfter: string;
+  commonName: string;
+  issuer: string;
+  subjectAlternativeNames: string[];
+}
 export interface UpdatePolicies {
   ddos?: boolean | null;
   iPGeoBlock?: boolean | null;
