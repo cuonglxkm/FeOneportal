@@ -96,6 +96,26 @@ export interface WafDomain {
   cdnId: number | null;
   message: string;
   resouceStatus: string;
+  offerName: string;
+  wafPackageName: string;
+  sysDomainInfoVO : SysDomainInfoVO;
+}
+
+export interface SysDomainInfoVO{
+    id?: string;
+    domain?: string;
+    createTime?: string;
+    deployStatus?: string;
+    blockSwitch?: string;
+    defendStatus?: string;
+    dmsDefendSwitch?: string;
+    botManageSwitch?: string;
+    customizeRuleSwitch?: string;
+    apiDefendSwitch?: string;
+    rateLimitSwitch?: string;
+    whitelistSwitch?: string;
+    intelligenceSwitch?: string;
+    wafDefendSwitch?: string;
 }
 
 export class AddDomainRequest {
@@ -106,4 +126,14 @@ export class AddDomainRequest {
   sslCertId: string | number
   policyId: string | number
   packageId: string | number
+}
+
+export interface UpdatePolicies {
+  ddos?: boolean | null;
+  iPGeoBlock?: boolean | null;
+  rateLimit?: boolean | null;
+  customRules?: boolean | null;
+  waf?: boolean | null;
+  whiteList?: boolean | null;
+  threatIntelligence?: boolean | null;
 }
