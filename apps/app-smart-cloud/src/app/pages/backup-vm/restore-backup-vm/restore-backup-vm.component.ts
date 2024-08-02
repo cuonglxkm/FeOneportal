@@ -112,7 +112,6 @@ export class RestoreBackupVmComponent implements OnInit {
   ipPublicValue: number = 0;
 
   backupVmModel: BackupVm;
-  backupSize: number = 0;
   listExternalAttachVolume: VolumeBackup[] = [];
   listSecurityGroupBackups: any[] = [];
 
@@ -145,7 +144,7 @@ export class RestoreBackupVmComponent implements OnInit {
         validators: [
           Validators.required,
           Validators.pattern(
-            /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9\s]).{12,20}$/
+            /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9\s])(?!.*[àáạảãâầấậẩẫăằắặẳẵèéẹẻẽêềếệểễìíịỉĩòóọỏõôồốộổỗơờớợởỡùúụủũưừứựửữỳýỵỷỹđ]).{12,20}$/
           ),
         ],
       }),
@@ -336,7 +335,6 @@ export class RestoreBackupVmComponent implements OnInit {
   selectedIndextab: number = 0;
   listAttachVolume: VolumeBackup[] = [];
   getDetailBackupById(id) {
-    this.backupSize = 0;
     this.backupService
       .detail(id)
       .pipe(
@@ -350,7 +348,7 @@ export class RestoreBackupVmComponent implements OnInit {
           .getById(this.backupVmModel.instanceId)
           .subscribe((data) => {
             this.instanceModel = data;
-            if (this.instanceModel.offerId != 0) {
+            if (this.instanceModel.offerId == 0) {
               this.selectedIndextab = 1;
               this.onClickCustomConfig();
             }
@@ -359,9 +357,6 @@ export class RestoreBackupVmComponent implements OnInit {
               this.onClickGpuConfig();
             }
           });
-        this.backupVmModel.volumeBackups.forEach((e) => {
-          this.backupSize += e.size;
-        });
         if (
           this.backupVmModel?.volumeBackups
             .filter((e) => e.isBootable == true)[0]
@@ -573,14 +568,14 @@ export class RestoreBackupVmComponent implements OnInit {
     this.configCustom = new ConfigCustom();
     if (this.isCustomconfig) {
       this.configCustom.capacity =
-        this.backupSize < this.stepCapacity
+        this.backupVmModel?.systemInfoBackups[0].rootSize < this.stepCapacity
           ? this.stepCapacity
-          : this.backupSize;
+          : this.backupVmModel?.systemInfoBackups[0].rootSize;
     } else if (this.isGpuConfig) {
       this.configGPU.storage =
-        this.backupSize < this.stepCapacity
+        this.backupVmModel?.systemInfoBackups[0].rootSize < this.stepCapacity
           ? this.stepCapacity
-          : this.backupSize;
+          : this.backupVmModel?.systemInfoBackups[0].rootSize;
     }
     this.volumeIntoMoney = 0;
     this.ramIntoMoney = 0;
@@ -652,7 +647,7 @@ export class RestoreBackupVmComponent implements OnInit {
           });
         });
         this.listOfferFlavors = this.listOfferFlavors.filter(
-          (e) => Number.parseInt(e.description.split(' ')[7]) >= this.backupSize
+          (e) => Number.parseInt(e.description.split(' ')[7]) >= this.backupVmModel?.systemInfoBackups[0].rootSize
         );
         this.listOfferFlavors = this.listOfferFlavors.sort(
           (a, b) => a.price.fixedPrice.amount - b.price.fixedPrice.amount
@@ -792,9 +787,9 @@ export class RestoreBackupVmComponent implements OnInit {
     this.configurationService.getConfigurations('BLOCKSTORAGE').subscribe({
       next: (data) => {
         let valueArray = data.valueString.split('#');
-        this.minCapacity = valueArray[0];
-        this.stepCapacity = valueArray[1];
-        this.maxCapacity = valueArray[2];
+        this.minCapacity = (Number).parseInt(valueArray[0]);
+        this.stepCapacity = (Number).parseInt(valueArray[1]);
+        this.maxCapacity = (Number).parseInt(valueArray[2]);
         this.surplus = valueArray[2] % valueArray[1];
         this.cdr.detectChanges();
       },
@@ -823,22 +818,22 @@ export class RestoreBackupVmComponent implements OnInit {
           (this.configCustom.capacity % this.stepCapacity);
         if (this.configCustom.capacity < this.stepCapacity) {
           this.configCustom.capacity =
-            this.backupSize < this.stepCapacity
+            this.backupVmModel?.systemInfoBackups[0].rootSize < this.stepCapacity
               ? this.stepCapacity
-              : this.backupSize;
+              : this.backupVmModel?.systemInfoBackups[0].rootSize;
         }
       }
-      if (this.configCustom.capacity < this.backupSize) {
+      if (this.configCustom.capacity < this.backupVmModel?.systemInfoBackups[0].rootSize) {
         this.notification.warning(
           '',
           this.i18n.fanyi('app.notify.amount.capacity.snapshot', {
-            num: this.backupSize,
+            num: this.backupVmModel?.systemInfoBackups[0].rootSize,
           })
         );
         this.configCustom.capacity =
-          this.backupSize < this.stepCapacity
+          this.backupVmModel?.systemInfoBackups[0].rootSize < this.stepCapacity
             ? this.stepCapacity
-            : this.backupSize;
+            : this.backupVmModel?.systemInfoBackups[0].rootSize;
         this.cdr.detectChanges();
       }
       this.getUnitPrice(1, 0, 0, 0, null);
@@ -866,12 +861,14 @@ export class RestoreBackupVmComponent implements OnInit {
     this.dataService
       .getListOffers(this.region, 'vm-flavor-gpu')
       .subscribe((data) => {
-        this.listGPUType = data.filter(
+        this.listGPUType = data?.filter(
           (e: OfferItem) => e.status.toUpperCase() == 'ACTIVE'
         );
-        this.listGpuConfigRecommend = getListGpuConfigRecommend(
-          this.listGPUType
-        );
+        if (this.listGPUType) {
+          this.listGpuConfigRecommend = getListGpuConfigRecommend(
+            this.listGPUType
+          );
+        }
         console.log('list gpu config recommend', this.listGpuConfigRecommend);
         this.cdr.detectChanges();
       });
@@ -936,22 +933,22 @@ export class RestoreBackupVmComponent implements OnInit {
             (this.configGPU.storage % this.stepCapacity);
           if (this.configGPU.storage < this.stepCapacity) {
             this.configGPU.storage =
-              this.backupSize < this.stepCapacity
+              this.backupVmModel?.systemInfoBackups[0].rootSize < this.stepCapacity
                 ? this.stepCapacity
-                : this.backupSize;
+                : this.backupVmModel?.systemInfoBackups[0].rootSize;
           }
         }
-        if (this.configGPU.storage < this.backupSize) {
+        if (this.configGPU.storage < this.backupVmModel?.systemInfoBackups[0].rootSize) {
           this.notification.warning(
             '',
             this.i18n.fanyi('app.notify.amount.capacity.snapshot', {
-              num: this.backupSize,
+              num: this.backupVmModel?.systemInfoBackups[0].rootSize,
             })
           );
           this.configGPU.storage =
-            this.backupSize < this.stepCapacity
+            this.backupVmModel?.systemInfoBackups[0].rootSize < this.stepCapacity
               ? this.stepCapacity
-              : this.backupSize;
+              : this.backupVmModel?.systemInfoBackups[0].rootSize;
         }
         this.getUnitPrice(1, 0, 0, 0, null);
         this.getTotalAmount();
@@ -1202,7 +1199,7 @@ export class RestoreBackupVmComponent implements OnInit {
         validators: [
           Validators.required,
           Validators.pattern(
-            /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9\s]).{12,20}$/
+            /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9\s])(?!.*[àáạảãâầấậẩẫăằắặẳẵèéẹẻẽêềếệểễìíịỉĩòóọỏõôồốộổỗơờớợởỡùúụủũưừứựửữỳýỵỷỹđ]).{12,20}$/
           ),
         ],
       })

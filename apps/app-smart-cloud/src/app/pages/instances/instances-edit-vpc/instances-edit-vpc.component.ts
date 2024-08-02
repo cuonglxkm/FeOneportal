@@ -118,7 +118,6 @@ export class InstancesEditVpcComponent implements OnInit {
     this.projectId = regionAndProject.projectId;
     this.getListIpPublic();
     this.getActiveServiceByRegion();
-    this.getConfigurations();
     this.getInfoVPC();
     this.onChangeCapacity();
   }
@@ -144,7 +143,6 @@ export class InstancesEditVpcComponent implements OnInit {
     );
     this.cloudId = this.instancesModel.cloudId;
     this.region = this.instancesModel.regionId;
-    this.getListIpPublic();
     if (
       this.instancesModel.gpuCount != null &&
       this.instancesModel.gpuType != null
@@ -223,18 +221,20 @@ export class InstancesEditVpcComponent implements OnInit {
     this.dataService
       .getListOffers(this.region, 'vm-flavor-gpu')
       .subscribe((data) => {
-        this.listGPUType = data.filter(
+        this.listGPUType = data?.filter(
           (e: OfferItem) => e.status.toUpperCase() == 'ACTIVE'
         );
-        this.listGpuConfigRecommend = getListGpuConfigRecommend(
-          this.listGPUType
-        );
+        if (this.listGPUType) {
+          this.listGpuConfigRecommend = getListGpuConfigRecommend(
+            this.listGPUType
+          );
+        }
         console.log('list gpu config recommend', this.listGpuConfigRecommend);
         let listGpuOfferIds: number[] = [];
         this.infoVPC.cloudProject.gpuProjects.forEach((gputype) =>
           listGpuOfferIds.push(gputype.gpuOfferId)
         );
-        this.purchasedListGPUType = this.listGPUType.filter((e) =>
+        this.purchasedListGPUType = this.listGPUType?.filter((e) =>
           listGpuOfferIds.includes(e.id)
         );
         this.getListOptionGpuValue();
@@ -272,9 +272,8 @@ export class InstancesEditVpcComponent implements OnInit {
             this.remainingVCPU =
               this.infoVPC.cloudProject.quotavCpu -
               this.infoVPC.cloudProjectResourceUsed.cpu;
-            if (this.infoVPC.cloudProject.gpuProjects.length != 0) {
-              this.getListGpuType();
-            }
+            this.getListGpuType();
+            this.getConfigurations();
           },
           error: (e) => {
             this.notification.error(
@@ -560,10 +559,13 @@ export class InstancesEditVpcComponent implements OnInit {
     this.configurationService.getConfigurations('BLOCKSTORAGE').subscribe({
       next: (data) => {
         let valueArray = data.valueString.split('#');
-        this.minCapacity = valueArray[0];
-        this.stepCapacity = valueArray[1];
-        this.maxCapacity = valueArray[2];
+        this.minCapacity = Number.parseInt(valueArray[0]);
+        this.stepCapacity = Number.parseInt(valueArray[1]);
+        this.maxCapacity = Number.parseInt(valueArray[2]);
         this.storage = this.minCapacity;
+        if (this.storage != 0) {
+          this.changeCapacity(this.storage);
+        }
       },
     });
   }
@@ -582,9 +584,9 @@ export class InstancesEditVpcComponent implements OnInit {
           })
         );
         this.storage = this.storage - (this.storage % this.stepCapacity);
-        this.checkChangeConfig();
-        this.cdr.detectChanges();
       }
+      this.checkChangeConfig();
+      this.cdr.detectChanges();
     });
   }
 

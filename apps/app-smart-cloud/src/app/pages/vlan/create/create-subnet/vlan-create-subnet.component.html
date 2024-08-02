@@ -83,7 +83,7 @@
                  [placeholder]="'x.x.0.0/16'" />
           <ng-template #networkAddressErrorTpl let-control>
             <ng-container *ngIf="control.hasError('required')">{{ 'app.vlan.note29' | i18n }}</ng-container>
-            <ng-container *ngIf="control.hasError('invalidIPAddress')">{{ 'app.vlan.note30' | i18n }}</ng-container>
+            <ng-container *ngIf="control.hasError('invalidIp')">{{ 'app.vlan.note30' | i18n }}</ng-container>
             <!--          <ng-container *ngIf="control.hasError('pattern')">Vui lòng chọn các dải trong khoảng: “10.21.0.0 - 10.255.0.0”, “172.16.0.0 - 172.24.0.0” và “192.168.0.0” và nhập địa chỉ đúng quy định, định dạng: x.x.0.0/16, x.x.x.0/24</ng-container>-->
           </ng-template>
         </nz-form-control>

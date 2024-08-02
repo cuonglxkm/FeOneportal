@@ -86,21 +86,6 @@ export class RestoreBackupVmVpcComponent implements OnInit {
     animation: 'lazy',
   };
 
-  form = new FormGroup({
-    name: new FormControl('', {
-      nonNullable: true,
-      validators: [Validators.required, Validators.pattern(/^[a-zA-Z0-9_]*$/)],
-    }),
-    passOrKeyFormControl: new FormControl('', {
-      validators: [
-        Validators.required,
-        Validators.pattern(
-          /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9\s]).{12,20}$/
-        ),
-      ],
-    }),
-  });
-
   region = JSON.parse(localStorage.getItem('regionId'));
   project = JSON.parse(localStorage.getItem('projectId'));
   userId: number;
@@ -108,7 +93,6 @@ export class RestoreBackupVmVpcComponent implements OnInit {
   restoreInstanceBackup: RestoreInstanceBackup = new RestoreInstanceBackup();
 
   backupVmModel: BackupVm;
-  backupSize: number = 0;
   listExternalAttachVolume: VolumeBackup[] = [];
   listSecurityGroupBackups: any[] = [];
 
@@ -145,7 +129,7 @@ export class RestoreBackupVmVpcComponent implements OnInit {
         validators: [
           Validators.required,
           Validators.pattern(
-            /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9\s]).{12,20}$/
+            /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9\s])(?!.*[àáạảãâầấậẩẫăằắặẳẵèéẹẻẽêềếệểễìíịỉĩòóọỏõôồốộổỗơờớợởỡùúụủũưừứựửữỳýỵỷỹđ]).{12,20}$/
           ),
         ],
       }),
@@ -195,7 +179,7 @@ export class RestoreBackupVmVpcComponent implements OnInit {
 
   updateActivePoint(): void {
     // Gọi hàm reloadCarousel khi cần reload
-    if (this.reloadCarousel) {
+    if (this.reloadCarousel && this.selectedOption == 'new') {
       this.reloadCarousel = false;
       setTimeout(() => {
         this.myCarouselFlavor.reset();
@@ -214,7 +198,6 @@ export class RestoreBackupVmVpcComponent implements OnInit {
     this.getConfigurations();
     this.getDetailBackupById(this.idBackup);
     this.getInfoVPC();
-    this.getListGpuType();
     this.getAllIPPublic();
     this.getListNetwork();
     this.onChangeCapacity();
@@ -355,7 +338,6 @@ export class RestoreBackupVmVpcComponent implements OnInit {
   selectedIndextab: number = 0;
   listAttachVolume: VolumeBackup[] = [];
   getDetailBackupById(id) {
-    this.backupSize = 0;
     this.backupService
       .detail(id)
       .pipe(
@@ -369,18 +351,14 @@ export class RestoreBackupVmVpcComponent implements OnInit {
           .getById(this.backupVmModel.instanceId)
           .subscribe((data) => {
             this.instanceModel = data;
-            if (this.instanceModel.offerId != 0) {
-              this.selectedIndextab = 1;
+            if (this.instanceModel.gpuType == null) {
+              this.selectedIndextab = 0;
               this.onClickCustomConfig();
-            }
-            if (this.instanceModel.gpuType != null) {
-              this.selectedIndextab = 2;
+            } else {
+              this.selectedIndextab = 1;
               this.onClickGpuConfig();
             }
           });
-        this.backupVmModel.volumeBackups.forEach((e) => {
-          this.backupSize += e.size;
-        });
         if (
           this.backupVmModel?.volumeBackups
             .filter((e) => e.isBootable == true)[0]
@@ -508,12 +486,14 @@ export class RestoreBackupVmVpcComponent implements OnInit {
     this.dataService
       .getListOffers(this.region, 'vm-flavor-gpu')
       .subscribe((data) => {
-        this.listGPUType = data.filter(
+        this.listGPUType = data?.filter(
           (e: OfferItem) => e.status.toUpperCase() == 'ACTIVE'
         );
-        this.listGpuConfigRecommend = getListGpuConfigRecommend(
-          this.listGPUType
-        );
+        if (this.listGPUType) {
+          this.listGpuConfigRecommend = getListGpuConfigRecommend(
+            this.listGPUType
+          );
+        }
         console.log('list gpu config recommend', this.listGpuConfigRecommend);
         let listGpuOfferIds: number[] = [];
         this.infoVPC.cloudProject.gpuProjects.forEach((gputype) =>
@@ -593,7 +573,9 @@ export class RestoreBackupVmVpcComponent implements OnInit {
   resetData() {
     this.restoreInstanceBackup.cpu = 0;
     this.restoreInstanceBackup.volumeSize =
-      this.backupSize < this.stepCapacity ? this.stepCapacity : this.backupSize;
+      this.backupVmModel?.systemInfoBackups[0].rootSize < this.stepCapacity
+        ? this.stepCapacity
+        : this.backupVmModel?.systemInfoBackups[0].rootSize;
 
     this.restoreInstanceBackup.ram = 0;
     this.restoreInstanceBackup.gpuCount = 0;
@@ -609,9 +591,9 @@ export class RestoreBackupVmVpcComponent implements OnInit {
     this.configurationService.getConfigurations('BLOCKSTORAGE').subscribe({
       next: (data) => {
         let valueArray = data.valueString.split('#');
-        this.minCapacity = valueArray[0];
-        this.stepCapacity = valueArray[1];
-        this.maxCapacity = valueArray[2];
+        this.minCapacity = Number.parseInt(valueArray[0]);
+        this.stepCapacity = Number.parseInt(valueArray[1]);
+        this.maxCapacity = Number.parseInt(valueArray[2]);
       },
     });
   }
@@ -638,22 +620,27 @@ export class RestoreBackupVmVpcComponent implements OnInit {
             (this.restoreInstanceBackup.volumeSize % this.stepCapacity);
           if (this.restoreInstanceBackup.volumeSize < this.stepCapacity) {
             this.restoreInstanceBackup.volumeSize =
-              this.backupSize < this.stepCapacity
+              this.backupVmModel?.systemInfoBackups[0].rootSize <
+              this.stepCapacity
                 ? this.stepCapacity
-                : this.backupSize;
+                : this.backupVmModel?.systemInfoBackups[0].rootSize;
           }
         }
-        if (this.restoreInstanceBackup.volumeSize < this.backupSize) {
+        if (
+          this.restoreInstanceBackup.volumeSize <
+          this.backupVmModel?.systemInfoBackups[0].rootSize
+        ) {
           this.notification.warning(
             '',
             this.i18n.fanyi('app.notify.amount.capacity.snapshot', {
-              num: this.backupSize,
+              num: this.backupVmModel?.systemInfoBackups[0].rootSize,
             })
           );
           this.restoreInstanceBackup.volumeSize =
-            this.backupSize < this.stepCapacity
+            this.backupVmModel?.systemInfoBackups[0].rootSize <
+            this.stepCapacity
               ? this.stepCapacity
-              : this.backupSize;
+              : this.backupVmModel?.systemInfoBackups[0].rootSize;
         }
         this.checkValidConfig();
         this.cdr.detectChanges();
@@ -791,13 +778,13 @@ export class RestoreBackupVmVpcComponent implements OnInit {
     this.activeBlockPassword = true;
     this.activeBlockSSHKey = false;
     this.selectedSSHKeyName = null;
-    this.form.setControl(
+    (this.validateForm.get('formNew') as FormGroup).setControl(
       'passOrKeyFormControl',
       new FormControl('', {
         validators: [
           Validators.required,
           Validators.pattern(
-            /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9\s]).{12,20}$/
+            /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9\s])(?!.*[àáạảãâầấậẩẫăằắặẳẵèéẹẻẽêềếệểễìíịỉĩòóọỏõôồốộổỗơờớợởỡùúụủũưừứựửữỳýỵỷỹđ]).{12,20}$/
           ),
         ],
       })
@@ -806,8 +793,8 @@ export class RestoreBackupVmVpcComponent implements OnInit {
   initSSHkey(): void {
     this.activeBlockPassword = false;
     this.activeBlockSSHKey = true;
-    this.password = null;
-    this.form.setControl(
+    this.password = '';
+    (this.validateForm.get('formNew') as FormGroup).setControl(
       'passOrKeyFormControl',
       new FormControl('', {
         validators: [Validators.required],
@@ -958,9 +945,7 @@ export class RestoreBackupVmVpcComponent implements OnInit {
                     error: (e) => {
                       this.notification.error(
                         e.statusText,
-                        this.i18n.fanyi(
-                          'app.notify.fail.new.instances.restore'
-                        )
+                        this.i18n.fanyi('app.notify.fail.new.instances.restore')
                       );
                     },
                   });

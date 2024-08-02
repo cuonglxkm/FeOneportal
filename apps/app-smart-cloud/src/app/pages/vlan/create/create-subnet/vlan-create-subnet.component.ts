@@ -13,134 +13,135 @@ import {
 } from '@angular/forms';
 import { FormCreateSubnet, FormSearchSubnet } from '../../../../shared/models/vlan.model';
 import { getCurrentRegionAndProject } from '@shared';
-import { ProjectModel, RegionModel } from '../../../../../../../../libs/common-utils/src';
+import { ipValidatorVlan, ProjectModel, RegionModel } from '../../../../../../../../libs/common-utils/src';
 import { debounceTime, Subject } from 'rxjs';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from '@core';
 import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
+import { ipValidator } from '../../../file-storage/access-rule/action/create/create-access-rule.component';
 
 
-export function ipAddressValidator(): ValidatorFn {
-  return (control: AbstractControl): { [key: string]: any } | null => {
-    const ipAddressList = control.value.split(',').map(ip => ip.trim()); // Tách các địa chỉ IP theo dấu (,)
-
-    for (const ipAddress of ipAddressList) {
-      if (!isValidIPAddress(ipAddress)) {
-        return { 'invalidIPAddress': { value: ipAddress } }; // Địa chỉ IP không hợp lệ
-      }
-    }
-
-    return null; // Địa chỉ IP hợp lệ
-  };
-}
-
-// Hàm kiểm tra xem địa chỉ IP có hợp lệ không
-function isValidIPAddress(ipAddress: string): boolean {
-  // Kiểm tra định dạng chung của địa chỉ IP
-  const ipAndPrefix = ipAddress.split('/');
-  if (ipAndPrefix.length !== 2) {
-    return false;
-  }
-
-  const ipParts = ipAndPrefix[0].split('.');
-  const prefixLength = parseInt(ipAndPrefix[1], 10);
-
-  if (ipParts.length !== 4 || isNaN(prefixLength)) {
-    return false;
-  }
-
-  // Kiểm tra phần prefix length
-  if ((prefixLength !== 16 && prefixLength !== 24)) {
-    return false;
-  }
-
-  // Kiểm tra xem các phần của IP có nằm trong khoảng từ 0 đến 255 không
-  for (const part of ipParts) {
-    const partNumber = parseInt(part, 10);
-    if (partNumber < 0 || partNumber > 255) {
-      return false;
-    }
-  }
-
-  // Kiểm tra xem địa chỉ IP có nằm trong các khoảng hợp lệ không
-  const ipNumber = ipParts.map(part => parseInt(part, 10));
-
-  if (
-    (ipNumber[0] === 10 && ipNumber[1] >= 0 && ipNumber[1] <= 100) ||
-    (ipNumber[0] === 172 && ipNumber[1] >= 16 && ipNumber[1] <= 31) ||
-    (ipNumber[0] === 192 && ipNumber[1] === 168 && ipNumber[2] === 0)
-  ) {
-    return true;
-  }
-
-  return false;
-}
-
-export function ipAddressListValidator(): ValidatorFn {
-  return (control: AbstractControl): { [key: string]: any } | null => {
-
-    // Chuyển đổi các IP thành một mảng
-    const ipAddresses = control?.value?.split(',').map(ip => ip.trim());
-
-    if (control.value.isEmpty) {
-      return null;
-    }
-
-    // Kiểm tra mỗi địa chỉ IP trong mảng
-    for (let i = 0; i < ipAddresses?.length; i++) {
-      const currentIP = ipAddresses[i];
-
-      // Kiểm tra định dạng của IP (x.x.x.x)
-      const ipPattern = /^(\d{1,3}\.){3}\d{1,3}$/;
-      if (!ipPattern.test(currentIP)) {
-        return { 'invalidIpAddressFormat': { value: currentIP } };
-      }
-
-      // Kiểm tra xem IP có nằm trong các dải cho phép không
-      if (!isValidIPAddressAllocation(currentIP)) {
-        return { 'invalidIpAddressRange': { value: currentIP } };
-      }
-
-      // Kiểm tra xem IP có lớn hơn IP trước đó không
-      if (i > 0 && !isGreaterIPAddress(ipAddresses[i - 1], currentIP)) {
-        return { 'invalidIpSequence': { value: currentIP } };
-      }
-    }
-
-    return null;
-  };
-}
-
-function isValidIPAddressAllocation(ip: string): boolean {
-  // Kiểm tra xem IP có nằm trong các dải cho phép không
-  const ipSegments = ip.split('.');
-  const firstSegment = parseInt(ipSegments[0], 10);
-  const secondSegment = parseInt(ipSegments[1], 10);
-  const thirdSegment = parseInt(ipSegments[2], 10);
-
-  if ((firstSegment === 172 && secondSegment >= 16 && secondSegment <= 24) ||
-    (firstSegment === 192 && secondSegment === 168)) {
-    return true;
-  }
-
-  return false;
-}
-
-function isGreaterIPAddress(previousIP: string, currentIP: string): boolean {
-  // So sánh các phần của hai IP để kiểm tra xem IP sau lớn hơn IP trước đó không
-  const previousIPSegments = previousIP.split('.').map(segment => parseInt(segment, 10));
-  const currentIPSegments = currentIP.split('.').map(segment => parseInt(segment, 10));
-
-  for (let i = 0; i < 4; i++) {
-    if (currentIPSegments[i] > previousIPSegments[i]) {
-      return true;
-    } else if (currentIPSegments[i] < previousIPSegments[i]) {
-      return false;
-    }
-  }
-
-  return false;
-}
+// export function ipAddressValidator(): ValidatorFn {
+//   return (control: AbstractControl): { [key: string]: any } | null => {
+//     const ipAddressList = control.value.split(',').map(ip => ip.trim()); // Tách các địa chỉ IP theo dấu (,)
+//
+//     for (const ipAddress of ipAddressList) {
+//       if (!isValidIPAddress(ipAddress)) {
+//         return { 'invalidIPAddress': { value: ipAddress } }; // Địa chỉ IP không hợp lệ
+//       }
+//     }
+//
+//     return null; // Địa chỉ IP hợp lệ
+//   };
+// }
+//
+// // Hàm kiểm tra xem địa chỉ IP có hợp lệ không
+// function isValidIPAddress(ipAddress: string): boolean {
+//   // Kiểm tra định dạng chung của địa chỉ IP
+//   const ipAndPrefix = ipAddress.split('/');
+//   if (ipAndPrefix.length !== 2) {
+//     return false;
+//   }
+//
+//   const ipParts = ipAndPrefix[0].split('.');
+//   const prefixLength = parseInt(ipAndPrefix[1], 10);
+//
+//   if (ipParts.length !== 4 || isNaN(prefixLength)) {
+//     return false;
+//   }
+//
+//   // Kiểm tra phần prefix length
+//   if ((prefixLength !== 16 && prefixLength !== 24)) {
+//     return false;
+//   }
+//
+//   // Kiểm tra xem các phần của IP có nằm trong khoảng từ 0 đến 255 không
+//   for (const part of ipParts) {
+//     const partNumber = parseInt(part, 10);
+//     if (partNumber < 0 || partNumber > 255) {
+//       return false;
+//     }
+//   }
+//
+//   // Kiểm tra xem địa chỉ IP có nằm trong các khoảng hợp lệ không
+//   const ipNumber = ipParts.map(part => parseInt(part, 10));
+//
+//   if (
+//     (ipNumber[0] === 10 && ipNumber[1] >= 0 && ipNumber[1] <= 100) ||
+//     (ipNumber[0] === 172 && ipNumber[1] >= 16 && ipNumber[1] <= 31) ||
+//     (ipNumber[0] === 192 && ipNumber[1] === 168 && ipNumber[2] === 0)
+//   ) {
+//     return true;
+//   }
+//
+//   return false;
+// }
+//
+// export function ipAddressListValidator(): ValidatorFn {
+//   return (control: AbstractControl): { [key: string]: any } | null => {
+//
+//     // Chuyển đổi các IP thành một mảng
+//     const ipAddresses = control?.value?.split(',').map(ip => ip.trim());
+//
+//     if (control.value.isEmpty) {
+//       return null;
+//     }
+//
+//     // Kiểm tra mỗi địa chỉ IP trong mảng
+//     for (let i = 0; i < ipAddresses?.length; i++) {
+//       const currentIP = ipAddresses[i];
+//
+//       // Kiểm tra định dạng của IP (x.x.x.x)
+//       const ipPattern = /^(\d{1,3}\.){3}\d{1,3}$/;
+//       if (!ipPattern.test(currentIP)) {
+//         return { 'invalidIpAddressFormat': { value: currentIP } };
+//       }
+//
+//       // Kiểm tra xem IP có nằm trong các dải cho phép không
+//       if (!isValidIPAddressAllocation(currentIP)) {
+//         return { 'invalidIpAddressRange': { value: currentIP } };
+//       }
+//
+//       // Kiểm tra xem IP có lớn hơn IP trước đó không
+//       if (i > 0 && !isGreaterIPAddress(ipAddresses[i - 1], currentIP)) {
+//         return { 'invalidIpSequence': { value: currentIP } };
+//       }
+//     }
+//
+//     return null;
+//   };
+// }
+//
+// function isValidIPAddressAllocation(ip: string): boolean {
+//   // Kiểm tra xem IP có nằm trong các dải cho phép không
+//   const ipSegments = ip.split('.');
+//   const firstSegment = parseInt(ipSegments[0], 10);
+//   const secondSegment = parseInt(ipSegments[1], 10);
+//   const thirdSegment = parseInt(ipSegments[2], 10);
+//
+//   if ((firstSegment === 172 && secondSegment >= 16 && secondSegment <= 24) ||
+//     (firstSegment === 192 && secondSegment === 168)) {
+//     return true;
+//   }
+//
+//   return false;
+// }
+//
+// function isGreaterIPAddress(previousIP: string, currentIP: string): boolean {
+//   // So sánh các phần của hai IP để kiểm tra xem IP sau lớn hơn IP trước đó không
+//   const previousIPSegments = previousIP.split('.').map(segment => parseInt(segment, 10));
+//   const currentIPSegments = currentIP.split('.').map(segment => parseInt(segment, 10));
+//
+//   for (let i = 0; i < 4; i++) {
+//     if (currentIPSegments[i] > previousIPSegments[i]) {
+//       return true;
+//     } else if (currentIPSegments[i] < previousIPSegments[i]) {
+//       return false;
+//     }
+//   }
+//
+//   return false;
+// }
 
 @Component({
   selector: 'one-portal-vlan-create-subnet',
@@ -164,7 +165,7 @@ export class VlanCreateSubnetComponent implements OnInit {
       Validators.maxLength(50),
       Validators.pattern(/^[a-zA-Z0-9_]*$/),
       this.duplicateNameValidator.bind(this)]],
-    subnetAddressRequired: ['', [Validators.required, ipAddressValidator()]],
+    subnetAddressRequired: ['', [Validators.required, ipValidatorVlan()]],
     disableGatewayIp: [false],
     enableDhcp: [true],
     gateway: [''],
@@ -196,7 +197,7 @@ export class VlanCreateSubnetComponent implements OnInit {
       this.validateForm.controls.allocationPool.clearValidators();
       this.validateForm.controls.allocationPool.updateValueAndValidity();
     } else {
-      this.validateForm.controls.allocationPool.setValidators(ipAddressListValidator());
+      this.validateForm.controls.allocationPool.setValidators(ipValidator());
     }
   }
 

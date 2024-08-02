@@ -5,6 +5,7 @@ import {
   EventEmitter,
   Inject,
   Input,
+  OnInit,
   Output,
   ViewChild,
 } from '@angular/core';
@@ -20,6 +21,7 @@ import { LoadBalancerService } from '../../../../../shared/services/load-balance
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import {
   FormUpdatePool,
+  LoadBalancerModel,
   PoolDetail,
 } from '../../../../../shared/models/load-balancer.model';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
@@ -30,7 +32,7 @@ import { I18NService } from '@core';
   templateUrl: './edit-pool-in-lb.component.html',
   styleUrls: ['./edit-pool-in-lb.component.less'],
 })
-export class EditPoolInLbComponent implements AfterViewInit {
+export class EditPoolInLbComponent implements AfterViewInit, OnInit {
   @Input() region: number;
   @Input() project: number;
   @Input() poolId: string;
@@ -41,7 +43,10 @@ export class EditPoolInLbComponent implements AfterViewInit {
 
   isVisible: boolean = false;
   isLoading: boolean = false;
-
+  methodStickySession = 'HTTP_COOKIE';
+  stickySession: boolean;
+  loadBalancer: LoadBalancerModel = new LoadBalancerModel();
+  
   validateForm: FormGroup<{
     namePool: FormControl<string>;
     algorithm: FormControl<string>;
@@ -82,6 +87,14 @@ export class EditPoolInLbComponent implements AfterViewInit {
     private notification: NzNotificationService
   ) {}
 
+  ngOnInit(): void {
+    this.loadBalancerService
+      .getLoadBalancerById(this.loadBalancerId, true)
+      .subscribe((data) => {
+        this.loadBalancer = data;
+      });
+  }
+
   focusOkButton(event: KeyboardEvent): void {
     if (event.key === 'Enter') {
       event.preventDefault();
@@ -112,7 +125,7 @@ export class EditPoolInLbComponent implements AfterViewInit {
       .getPoolDetail(this.poolId, this.loadBalancerId)
       .subscribe((data) => {
         this.pool = data;
-
+        this.stickySession = data.sessionPersistence;
         this.validateForm.controls.namePool.setValue(data.name);
         this.validateForm.controls.algorithm.setValue(data.lb_algorithm);
         this.validateForm.controls.session.setValue(data.sessionPersistence);
@@ -129,6 +142,7 @@ export class EditPoolInLbComponent implements AfterViewInit {
     this.isLoading = true;
     if (this.validateForm.valid) {
       let formUpdate = new FormUpdatePool();
+      formUpdate.loadbalancerId = this.loadBalancer.cloudId;
       formUpdate.poolId = this.poolId;
       formUpdate.session = this.validateForm.controls.session.value;
       formUpdate.vpcId = this.project;
@@ -154,12 +168,16 @@ export class EditPoolInLbComponent implements AfterViewInit {
           this.isVisible = false;
           this.isLoading = false;
           this.notification.error(
-            error.error.detail,
-            this.i18n.fanyi('app.notification.edit.pool.fail')
+            "",
+            error.error.message
           );
         },
       });
     }
+  }
+
+  onChangeStickySession(event) {
+    this.stickySession = event;
   }
 
   ngAfterViewInit() {

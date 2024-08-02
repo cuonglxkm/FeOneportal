@@ -94,11 +94,13 @@
         </div>
         <one-portal-list-inbound [securityGroupId]="selectedSG?.id"
                                  [securityGroupName]="selectedSG?.name"
+                                 [listSG]="listSG"
                                  [regionId]="region"
                                  [projectId]="project" />
 
         <one-portal-list-outbound [securityGroupId]="selectedSG?.id"
                                   [securityGroupName]="selectedSG?.name"
+                                  [listSG]="listSG"
                                   [regionId]="region"
                                   [projectId]="project" />
         <nz-row>

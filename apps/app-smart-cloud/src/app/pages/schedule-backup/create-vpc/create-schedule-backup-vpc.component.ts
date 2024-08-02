@@ -421,8 +421,9 @@ export class CreateScheduleBackupVpcComponent implements OnInit {
         }
         if (this.modeSelected == 2) {
           this.validateForm.get('formInstance').get('daysOfWeekMultiple').clearValidators();
-          this.validateForm.get('formInstance').get('daysOfWeekMultiple').setValidators([Validators.required]);
           this.validateForm.get('formInstance').get('daysOfWeekMultiple').markAsDirty();
+          this.validateForm.get('formInstance').get('daysOfWeekMultiple').reset();
+          this.validateForm.get('formInstance').get('daysOfWeekMultiple').setValidators([Validators.required]);
         }
       } else {
         this.validateForm.get('formVolume').get('daysOfWeek').clearValidators();
@@ -470,8 +471,9 @@ export class CreateScheduleBackupVpcComponent implements OnInit {
         }
         if (this.modeSelected == 2) {
           this.validateForm.get('formVolume').get('daysOfWeekMultiple').clearValidators();
-          this.validateForm.get('formVolume').get('daysOfWeekMultiple').setValidators([Validators.required]);
           this.validateForm.get('formVolume').get('daysOfWeekMultiple').markAsDirty();
+          this.validateForm.get('formVolume').get('daysOfWeekMultiple').reset();
+          this.validateForm.get('formVolume').get('daysOfWeekMultiple').setValidators([Validators.required]);
         }
       }
     }

@@ -76,11 +76,11 @@
               [nzLoading]="isLoading">
       <thead>
       <tr>
-        <th>STT</th>
-        <th>{{ 'app.sub.user.name' | i18n }}</th>
+        <th style="width: 75px;">STT</th>
+        <th style="width: 200px;">{{ 'app.sub.user.name' | i18n }}</th>
         <th>AccessKey</th>
         <th>{{ 'app.access.rights' | i18n }}</th>
-        <th>{{ 'app.text.operation' | i18n }}</th>
+        <th style="width: 105px;">{{ 'app.text.operation' | i18n }}</th>
       </tr>
       </thead>
       <tbody (click)="handleCloseExpand($event)">

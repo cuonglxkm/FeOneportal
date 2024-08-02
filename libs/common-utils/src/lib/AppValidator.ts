@@ -466,7 +466,7 @@ export function ipValidatorMany(control: AbstractControl): ValidationErrors | nu
 
 export const fileValidator: ValidatorFn = (control: AbstractControl): ValidationErrors | null => {
   const files = control.value as File[]; // Type assertion to File[]
-  
+
   if (!files || !Array.isArray(files)) {
     return { invalidFiles: true };
   }
@@ -530,13 +530,54 @@ export function storageValidator(sizeInGB: number): ValidatorFn {
 }
 
 // Validator function check url chỉ chứa duy nhất 1 dấu '/' ở đầu
-export function startsWithSingleSlashValidator(): ValidatorFn { 
+export function startsWithSingleSlashValidator(): ValidatorFn {
   return (control: AbstractControl): ValidationErrors | null => {
     if (control.value) {
       const isValid = control.value.startsWith('/') && !control.value.slice(1).startsWith('/');
       return isValid ? null : { startsWithSingleSlash: { value: control.value } };
     }
     return null;
+  };
+}
+
+export function ipValidatorVlan(): ValidatorFn {
+  return (control: AbstractControl): ValidationErrors | null => {
+    const ip = control.value;
+    if (!ip) return null; // Không kiểm tra nếu ô input trống
+
+    // Kiểm tra định dạng
+    const ipPattern = /^(25[0-5]|2[0-4][0-9]|[0-1]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[0-1]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[0-1]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[0-1]?[0-9][0-9]?)\/(16|24)$/;
+    if (!ipPattern.test(ip)) return { invalidIp: true };
+
+    // Tách các phần của địa chỉ IP và CIDR
+    const [address, cidr] = ip.split('/');
+    const [a, b, c, d] = address.split('.').map(Number);
+
+    // Kiểm tra các giá trị IP nằm trong khoảng hợp lệ
+    // if (a < 0 || a > 255 || b < 0 || b > 255 || c < 0 || c > 255 || d < 0 || d > 255) {
+    //   return { invalidIp: true };
+    // }
+
+    // Kiểm tra các khoảng hợp lệ
+    if (cidr === '16') {
+      if (
+        (a === 10 && b >= 10 && b <= 100) ||
+        (a === 172 && b >= 16 && b <= 31) ||
+        (a === 192 && b === 168)
+      ) {
+        return null;
+      }
+    } else if (cidr === '24') {
+      if (
+        (a === 10 && b >= 10 && b <= 100) ||
+        (a === 172 && b >= 16 && b <= 31) ||
+        (a === 192 && b === 168)
+      ) {
+        return null;
+      }
+    }
+
+    return { invalidIp: true };
   };
 }
 
