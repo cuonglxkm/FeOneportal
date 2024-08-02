@@ -2515,7 +2515,7 @@
 
   "validation.kafka.topic.name-required": "The Topic name cannot be empty",
   "validation.kafka.topic.name-pattern": "The Topic name can only include letters, numbers, and special characters -",
-  "validation.kafka.topic.name-length": "The Topic name must be between 5 and 255 characters long",
+  "validation.kafka.topic.name-length": "The Topic name must be between 5 and 245 characters long",
   "validation.kafka.topic.partition-required": "Partitions cannot be empty",
   "validation.kafka.topic.partition-length": "Partitions value is between 1 and 100.",
   "validation.kafka.topic.replica-required": "Replication factor cannot be empty",

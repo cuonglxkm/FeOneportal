@@ -2428,7 +2428,7 @@
 
   "validation.kafka.topic.name-required": "Tên topic không được để trống",
   "validation.kafka.topic.name-pattern": "Tên Topic chỉ bao gồm các ký tự chữ, số và ký tự đặc biệt -",
-  "validation.kafka.topic.name-length": "Tên Topic phải có tối thiểu 5 và tối đa 255 ký tự",
+  "validation.kafka.topic.name-length": "Tên Topic phải có tối thiểu 5 và tối đa 245 ký tự",
   "validation.kafka.topic.partition-required": "Partition không được để trống",
   "validation.kafka.topic.partition-length": "Giá trị Partition nằm trong khoảng 1 đến 100",
   "validation.kafka.topic.replica-required": "Replication factor không được để trống",
