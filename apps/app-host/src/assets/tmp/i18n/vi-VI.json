@@ -44,6 +44,7 @@
   "service.status.expired": "Chậm gia hạn",
   "service.status.violation": "Vi phạm điều khoản",
   "service.status.deleting": "Đang xóa",
+  "service.status.error.deleting": "Xoá lỗi",
   "service.status.error": "Lỗi",
   "service.status.restoring": "Đang khôi phục",
   "service.status.disabled": "Gián đoạn",

@@ -129,6 +129,17 @@ export class ProjectListComponent implements OnInit {
     // });
 
   }
+  isProcessingStatus(status: string): boolean {
+    const processingStatuses = [
+      'DELETING',
+      'CREATING',
+      'EXTENDING',
+      'RESIZING',
+      'ERROR_DELETING',
+      'PROCESSING'
+    ];
+    return processingStatuses.includes(status);
+  }
 
   onRegionChange(region: RegionModel) {
     this.regionId = region.regionId;
