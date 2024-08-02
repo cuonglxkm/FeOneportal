@@ -164,29 +164,6 @@ export class RestoreBackupVmVpcComponent implements OnInit {
     }
   }
 
-  @ViewChild('myCarouselFlavor') myCarouselFlavor: NguCarousel<any>;
-  reloadCarousel: boolean = false;
-
-  @HostListener('window:resize', ['$event'])
-  onResize(event: Event): void {
-    this.reloadCarousel = true;
-    this.updateActivePoint();
-  }
-
-  ngAfterViewInit(): void {
-    this.updateActivePoint(); // Gọi hàm này sau khi view đã được init để đảm bảo có giá trị cần thiết
-  }
-
-  updateActivePoint(): void {
-    // Gọi hàm reloadCarousel khi cần reload
-    if (this.reloadCarousel && this.selectedOption == 'new') {
-      this.reloadCarousel = false;
-      setTimeout(() => {
-        this.myCarouselFlavor.reset();
-      }, 100);
-    }
-  }
-
   ngOnInit() {
     this.userId = this.tokenService.get()?.userId;
     let regionAndProject = getCurrentRegionAndProject();
@@ -311,6 +288,23 @@ export class RestoreBackupVmVpcComponent implements OnInit {
     this.router.navigate(['/app-smart-cloud/backup-vm']);
   }
 
+  onKeyDown(event: KeyboardEvent) {
+    // Lấy giá trị của phím được nhấn
+    const key = event.key;
+    // Kiểm tra xem phím nhấn có phải là một số hoặc phím di chuyển không
+    if (
+      (isNaN(Number(key)) &&
+        key !== 'Backspace' &&
+        key !== 'Delete' &&
+        key !== 'ArrowLeft' &&
+        key !== 'ArrowRight') ||
+      key === '.'
+    ) {
+      // Nếu không phải số hoặc đã nhập dấu chấm và đã có dấu chấm trong giá trị hiện tại
+      event.preventDefault(); // Hủy sự kiện để ngăn người dùng nhập ký tự đó
+    }
+  }
+
   handleKeyboardEvent(event: KeyboardEvent) {
     if (event.key === 'ArrowLeft' || event.key === 'ArrowRight') {
       event.preventDefault(); // Ngăn chặn hành vi mặc định của các phím mũi tên
@@ -405,43 +399,15 @@ export class RestoreBackupVmVpcComponent implements OnInit {
       });
   }
 
-  onKeyDown(event: KeyboardEvent) {
-    // Lấy giá trị của phím được nhấn
-    const key = event.key;
-    // Kiểm tra xem phím nhấn có phải là một số hoặc phím di chuyển không
-    if (
-      (isNaN(Number(key)) &&
-        key !== 'Backspace' &&
-        key !== 'Delete' &&
-        key !== 'ArrowLeft' &&
-        key !== 'ArrowRight') ||
-      key === '.'
-    ) {
-      // Nếu không phải số hoặc đã nhập dấu chấm và đã có dấu chấm trong giá trị hiện tại
-      event.preventDefault(); // Hủy sự kiện để ngăn người dùng nhập ký tự đó
-    }
-  }
-
-  onSelectionChange(): void {
-    console.log('Selected option:', this.selectedOption);
-    this.selectedSecurityGroup = [];
-    if (this.selectedOption === 'current') {
-      this.listSecurityGroupBackups.forEach((e) => {
-        if (e.sgName.toUpperCase() == 'DEFAULT') {
-          this.selectedSecurityGroup.push(e.sgName);
-        }
-      });
-    } else if (this.selectedOption === 'new') {
-      this.getAllSecurityGroup();
-    }
-    this.cdr.detectChanges();
-  }
-
   // Khôi phục vào máy ảo hiện tại
   submitFormCurrent() {
     this.isLoadingCurrent = true;
     let formRestoreCurrent = new RestoreFormCurrent();
     formRestoreCurrent.instanceBackupId = this.backupVmModel?.id;
+    formRestoreCurrent.securityGroups = this.selectedSecurityGroup;
+    let listIDAttachVolume: number[] = [];
+    this.listAttachVolume.forEach((e) => listIDAttachVolume.push(e.id));
+    formRestoreCurrent.volumeBackupIds = listIDAttachVolume;
     this.backupService.restoreCurrentBackupVm(formRestoreCurrent).subscribe({
       next: (data) => {
         this.isLoadingCurrent = false;
@@ -748,24 +714,6 @@ export class RestoreBackupVmVpcComponent implements OnInit {
         },
       });
   }
-
-  getAllSecurityGroup() {
-    this.dataService
-      .getAllSecurityGroup(
-        this.region,
-        this.tokenService.get()?.userId,
-        this.project
-      )
-      .subscribe((data: any) => {
-        this.listSecurityGroup = getUniqueObjects(data, 'name');
-        this.listSecurityGroup.forEach((e) => {
-          if (e.name.toUpperCase() == 'DEFAULT') {
-            this.selectedSecurityGroup.push(e.name);
-          }
-        });
-        this.cdr.detectChanges();
-      });
-  }
   //#endregion
 
   //#region selectedPasswordOrSSHkey
@@ -912,13 +860,13 @@ export class RestoreBackupVmVpcComponent implements OnInit {
           let orderItemInstance = new OrderItem();
           orderItemInstance.orderItemQuantity = 1;
           orderItemInstance.specification = specificationInstance;
-          orderItemInstance.specificationType = 'instance_create';
+          orderItemInstance.specificationType = 'restore_instancebackup';
           this.orderItem.push(orderItemInstance);
           console.log('order instance', orderItemInstance);
 
           this.order.customerId = this.tokenService.get()?.userId;
           this.order.createdByUserId = this.tokenService.get()?.userId;
-          this.order.note = 'tạo vm';
+          this.order.note = 'restore vm';
           this.order.orderItems = this.orderItem;
 
           this.orderService
