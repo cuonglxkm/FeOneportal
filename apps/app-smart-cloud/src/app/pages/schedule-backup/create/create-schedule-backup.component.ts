@@ -349,7 +349,6 @@ export class CreateScheduleBackupComponent implements OnInit {
   }
 
   isLoadingVolume: boolean = false;
-
   getListVolume() {
     this.isLoadingVolume = true;
     let customerId = this.tokenService.get()?.userId;
@@ -363,24 +362,19 @@ export class CreateScheduleBackupComponent implements OnInit {
     formSearchBackupSchedule.scheduleStatus = '';
     this.volumeService.getVolumes(this.tokenService.get()?.userId, this.project, this.region, 9999, 1, null, null)
       .subscribe(data2 => {
-        console.log('list volume', data2.records);
         this.listVolume = data2.records;
         this.listVolume?.forEach(item => {
           this.listVolumeNotUseUnique?.push(item);
         });
         this.backupScheduleService.search(formSearchBackupSchedule).subscribe(data3 => {
-          console.log('lịch', data3?.records);
           data3.records?.forEach(item3 => {
             this.listVolumeNotUseUnique = this.listVolumeNotUseUnique.filter((volume) => volume.id != item3.serviceId && ['AVAILABLE', 'IN-USE'].includes(volume.serviceStatus));
-            console.log('list volume', this.listVolumeNotUseUnique);
             if (this.volumeId == undefined) {
               this.volumeSelected = this.listVolumeNotUseUnique[0]?.id;
             }
-
           });
         });
         this.isLoadingVolume = false;
-        console.log('list volume', this.listVolumeNotUseUnique);
         this.cdr.detectChanges();
       });
   }

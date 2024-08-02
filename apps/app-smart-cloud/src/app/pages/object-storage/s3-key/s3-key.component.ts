@@ -77,8 +77,8 @@ export class S3KeyComponent implements OnInit {
   }
 
   refreshParams() {
-    this.index = 10;
-    this.size = 1;
+    this.index = 1;
+    this.size = 10;
 }
 
   onRegionChange(region: RegionModel) {

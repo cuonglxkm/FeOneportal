@@ -4,76 +4,76 @@ import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { VlanService } from '../../../../shared/services/vlan.service';
 import { getCurrentRegionAndProject } from '@shared';
-import {
-  AbstractControl,
-  FormControl,
-  FormGroup,
-  NonNullableFormBuilder,
-  ValidatorFn,
-  Validators
-} from '@angular/forms';
+import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
 import { FormCreateNetwork, FormSearchNetwork } from '../../../../shared/models/vlan.model';
-import { AppValidator, ProjectModel, RegionModel } from '../../../../../../../../libs/common-utils/src';
+import {
+  AppValidator,
+  ipValidatorVlan,
+  ProjectModel,
+  RegionModel
+} from '../../../../../../../../libs/common-utils/src';
 import { debounceTime, Subject } from 'rxjs';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from '@core';
-import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
+import {
+  ProjectSelectDropdownComponent
+} from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
 
-export function ipAddressValidator(): ValidatorFn {
-  return (control: AbstractControl): { [key: string]: any } | null => {
-    const ipAddressList = control.value.split(',').map(ip => ip.trim()); // Tách các địa chỉ IP theo dấu (,)
-
-    for (const ipAddress of ipAddressList) {
-      if (!isValidIPAddress(ipAddress)) {
-        return { 'invalidIPAddress': { value: ipAddress } }; // Địa chỉ IP không hợp lệ
-      }
-    }
-
-    return null; // Địa chỉ IP hợp lệ
-  };
-}
-
-// Hàm kiểm tra xem địa chỉ IP có hợp lệ không
-function isValidIPAddress(ipAddress: string): boolean {
-  // Kiểm tra định dạng chung của địa chỉ IP
-  const ipAndPrefix = ipAddress.split('/');
-  if (ipAndPrefix.length !== 2) {
-    return false;
-  }
-
-  const ipParts = ipAndPrefix[0].split('.');
-  const prefixLength = parseInt(ipAndPrefix[1], 10);
-
-  if (ipParts.length !== 4 || isNaN(prefixLength)) {
-    return false;
-  }
-
-  // Kiểm tra phần prefix length
-  if ((prefixLength !== 16 && prefixLength !== 24)) {
-    return false;
-  }
-
-  // Kiểm tra xem các phần của IP có nằm trong khoảng từ 0 đến 255 không
-  for (const part of ipParts) {
-    const partNumber = parseInt(part, 10);
-    if (partNumber < 0 || partNumber > 255) {
-      return false;
-    }
-  }
-
-  // Kiểm tra xem địa chỉ IP có nằm trong các khoảng hợp lệ không
-  const ipNumber = ipParts.map(part => parseInt(part, 10));
-
-  if (
-    (ipNumber[0] === 10 && ipNumber[1] >= 0 && ipNumber[1] <= 100) ||
-    (ipNumber[0] === 172 && ipNumber[1] >= 16 && ipNumber[1] <= 31) ||
-    (ipNumber[0] === 192 && ipNumber[1] === 168 && ipNumber[2] === 0)
-  ) {
-    return true;
-  }
-
-  return false;
-}
+// export function ipAddressValidator(): ValidatorFn {
+//   return (control: AbstractControl): { [key: string]: any } | null => {
+//     const ipAddressList = control.value.split(',').map(ip => ip.trim()); // Tách các địa chỉ IP theo dấu (,)
+//
+//     for (const ipAddress of ipAddressList) {
+//       if (!isValidIPAddress(ipAddress)) {
+//         return { 'invalidIPAddress': { value: ipAddress } }; // Địa chỉ IP không hợp lệ
+//       }
+//     }
+//
+//     return null; // Địa chỉ IP hợp lệ
+//   };
+// }
+//
+// // Hàm kiểm tra xem địa chỉ IP có hợp lệ không
+// function isValidIPAddress(ipAddress: string): boolean {
+//   // Kiểm tra định dạng chung của địa chỉ IP
+//   const ipAndPrefix = ipAddress.split('/');
+//   if (ipAndPrefix.length !== 2) {
+//     return false;
+//   }
+//
+//   const ipParts = ipAndPrefix[0].split('.');
+//   const prefixLength = parseInt(ipAndPrefix[1], 10);
+//
+//   if (ipParts.length !== 4 || isNaN(prefixLength)) {
+//     return false;
+//   }
+//
+//   // Kiểm tra phần prefix length
+//   if ((prefixLength !== 16 && prefixLength !== 24)) {
+//     return false;
+//   }
+//
+//   // Kiểm tra xem các phần của IP có nằm trong khoảng từ 0 đến 255 không
+//   for (const part of ipParts) {
+//     const partNumber = parseInt(part, 10);
+//     if (partNumber < 0 || partNumber > 255) {
+//       return false;
+//     }
+//   }
+//
+//   // Kiểm tra xem địa chỉ IP có nằm trong các khoảng hợp lệ không
+//   const ipNumber = ipParts.map(part => parseInt(part, 10));
+//
+//   if (
+//     (ipNumber[0] === 10 && ipNumber[1] >= 0 && ipNumber[1] <= 100) ||
+//     (ipNumber[0] === 172 && ipNumber[1] >= 16 && ipNumber[1] <= 31) ||
+//     (ipNumber[0] === 192 && ipNumber[1] === 168 && ipNumber[2] === 0)
+//   ) {
+//     return true;
+//   }
+//
+//   return false;
+// }
 
 @Component({
   selector: 'one-portal-create-network',
@@ -96,7 +96,7 @@ export class CreateNetworkComponent implements OnInit {
 
   formCreateNetwork: FormCreateNetwork = new FormCreateNetwork();
 
-  isInvalidGateway: boolean = false
+  isInvalidGateway: boolean = false;
 
   validateForm: FormGroup<{
     nameNetwork: FormControl<string>
@@ -117,7 +117,7 @@ export class CreateNetworkComponent implements OnInit {
       Validators.maxLength(50),
       Validators.pattern(/^[a-zA-Z0-9_]*$/)]],
     networkAddress: ['', [Validators.required,
-      ipAddressValidator()]],
+      ipValidatorVlan()]],
     disableGatewayIp: [false],
     dhcp: [true],
     gateway: [''],
@@ -125,10 +125,11 @@ export class CreateNetworkComponent implements OnInit {
   });
 
   pool: string = '';
-  gateway: string = ''
+  gateway: string = '';
   dataSubjectCidr: Subject<any> = new Subject<any>();
   dataSubjectGateway: Subject<any> = new Subject<any>();
   @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
+
   constructor(private router: Router,
               @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
               private notification: NzNotificationService,
@@ -163,7 +164,7 @@ export class CreateNetworkComponent implements OnInit {
           this.validateForm.get('nameNetwork').setValue('vlan_', { emitEvent: false });
         }
       }
-    })
+    });
 
   }
 
@@ -175,7 +176,7 @@ export class CreateNetworkComponent implements OnInit {
   }
 
   regionChanged(region: RegionModel) {
-    if(this.projectCombobox){
+    if (this.projectCombobox) {
       this.projectCombobox.loadProjects(true, region.regionId);
     }
     this.router.navigate(['/app-smart-cloud/vlan/network/list']);
@@ -225,9 +226,9 @@ export class CreateNetworkComponent implements OnInit {
 
       }, error => {
         this.isLoading = false;
-        console.log('error', error)
+        console.log('error', error);
         this.router.navigate(['/app-smart-cloud/vlan/network/list']);
-        this.notification.error(this.i18n.fanyi('app.status.fail'), error.error.message)
+        this.notification.error(this.i18n.fanyi('app.status.fail'), error.error.message);
         // this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.vlan.note58') + 'Dải IP ' + this.validateForm.controls.networkAddress.value +' đã tồn tại trong 1 dải Subnet. Vui lòng chọn dải khác');
       });
     } else {
@@ -261,7 +262,7 @@ export class CreateNetworkComponent implements OnInit {
   }
 
   reset() {
-    this.router.navigate(['/app-smart-cloud/vlan/network/list'])
+    this.router.navigate(['/app-smart-cloud/vlan/network/list']);
   }
 
   inputCheckPool(value) {
@@ -273,35 +274,35 @@ export class CreateNetworkComponent implements OnInit {
       this.vlanService.checkAllocationPool(res).subscribe(data => {
         const dataJson = JSON.parse(JSON.stringify(data));
 
-        this.pool = dataJson.ipRange
-        this.gateway = dataJson.gateWay
+        this.pool = dataJson.ipRange;
+        this.gateway = dataJson.gateWay;
 
-        console.log('gateway', this.validateForm.controls.disableGatewayIp.value)
-        if(this.validateForm.controls.disableGatewayIp.value == false) {
-          console.log('here')
-          this.validateForm.controls.gateway.setValue(dataJson.gateWay)
+        console.log('gateway', this.validateForm.controls.disableGatewayIp.value);
+        if (this.validateForm.controls.disableGatewayIp.value == false) {
+          console.log('here');
+          this.validateForm.controls.gateway.setValue(dataJson.gateWay);
         }
 
-        this.validateForm.controls.allocationPool.setValue(this.pool)
-        console.log('pool data', this.pool)
-      })
-    })
+        this.validateForm.controls.allocationPool.setValue(this.pool);
+        console.log('pool data', this.pool);
+      });
+    });
   }
 
-  invalidGateway: string
+  invalidGateway: string;
 
   onCheckGateway() {
     this.dataSubjectGateway.pipe(debounceTime(600)).subscribe((res) => {
       this.vlanService.checkIpAvailable(res, this.validateForm.controls.networkAddress.value, '', this.region).subscribe(data => {
-        this.isInvalidGateway = false
+        this.isInvalidGateway = false;
         const dataJson = JSON.parse(JSON.stringify(data));
-        console.log('gateway data', dataJson)
+        console.log('gateway data', dataJson);
       }, error => {
-        console.log('error', error.error)
-        this.isInvalidGateway = true
-        this.invalidGateway = error.error
-      })
-    })
+        console.log('error', error.error);
+        this.isInvalidGateway = true;
+        this.invalidGateway = error.error;
+      });
+    });
   }
 
   inputGateway(value) {

@@ -275,7 +275,7 @@
                             <p *ngIf="isRequired" class="ml-1 required"> (<span class="red-color">*</span>)</p>
                           </div>
 
-                          <nz-slider [nzMin]="minBlock" [nzStep]="stepBlock" [nzMax]="maxBlock" [nzStep]="stepBlock"
+                          <nz-slider [nzMin]="minBlock" [nzStep]="stepBlock" [nzMax]="maxBlock" 
                             [(ngModel)]="hhd" [ngModelOptions]="{standalone: true}"
                             (ngModelChange)="onInputChange($event, 'hhd')"></nz-slider>
                         </td>
