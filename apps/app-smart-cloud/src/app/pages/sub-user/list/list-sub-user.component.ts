@@ -6,11 +6,12 @@ import { BaseResponse, ProjectModel, RegionModel } from '../../../../../../../li
 import { ClipboardService } from 'ngx-clipboard';
 import { ObjectStorageService } from 'src/app/shared/services/object-storage.service';
 import { LoadingService } from '@delon/abc/loading';
-import { finalize, Subject } from 'rxjs';
+import { debounceTime, finalize, Subject } from 'rxjs';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { I18NService } from '@core';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { RegionID } from 'src/app/shared/enums/common.enum';
+import { TimeCommon } from 'src/app/shared/utils/common';
 
 @Component({
   selector: 'one-portal-list-sub-user',
@@ -67,6 +68,10 @@ export class ListSubUserComponent implements OnInit {
     }
     ;
     this.hasObjectStorage();
+    this.searchDelay.pipe(debounceTime(TimeCommon.timeOutSearch)).subscribe(() => {
+      this.refreshParams()
+      this.getListSubUsers(false);
+    });
   }
 
   hasOS: boolean = undefined;
@@ -142,8 +147,12 @@ export class ListSubUserComponent implements OnInit {
     } else {
       this.router.navigate(['/app-smart-cloud/object-storage/sub-user/create']);
     }
-
   }
+
+  refreshParams() {
+    this.pageIndex = 1;
+    this.pageSize = 10;
+}
 
   getListSubUsers(isBegin) {
     this.isLoading = true;
@@ -205,6 +214,7 @@ export class ListSubUserComponent implements OnInit {
 
   search(search: string) {
     this.value = search.trim();
+    this.refreshParams()
     this.getListSubUsers(false);
   }
 
