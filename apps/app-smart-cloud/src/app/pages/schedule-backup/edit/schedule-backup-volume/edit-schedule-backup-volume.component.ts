@@ -309,21 +309,21 @@ export class EditScheduleBackupVolumeComponent implements OnInit {
   }
 
   getListScheduleBackup() {
-    this.formSearch.pageSize = 1000000;
-    this.formSearch.pageIndex = 1;
-    this.scheduleService.search(this.formSearch).subscribe(data => {
-      console.log('data', data);
-      data.records?.forEach(item => {
-        if (!this.backupSchedule?.name.includes(item.name)) {
-          if (this.nameList?.length > 0) {
-            this.nameList.push(item.name);
-          } else {
-            this.nameList = [item.name];
-          }
-        }
-
+    let formSearchBackupSchedule = new FormSearchScheduleBackup();
+    formSearchBackupSchedule.regionId = this.region;
+    formSearchBackupSchedule.projectId = this.project;
+    formSearchBackupSchedule.pageSize = 9999;
+    formSearchBackupSchedule.pageIndex = 1;
+    formSearchBackupSchedule.customerId = this.tokenService.get()?.userId;
+    formSearchBackupSchedule.scheduleName = '';
+    formSearchBackupSchedule.scheduleStatus = '';
+    this.scheduleService.search(formSearchBackupSchedule).subscribe(data => {
+      console.log('name', data?.records);
+      data?.records?.forEach(item => {
+        this.nameList?.push(item.name);
+        console.log(this.nameList);
       });
-      console.log('name list', this.nameList);
+
     });
   }
 

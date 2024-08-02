@@ -21,6 +21,7 @@ import {
 import { RegionID } from 'src/app/shared/enums/common.enum';
 import { ScheduleService } from '../../../../shared/services/schedule.service';
 import { BackupSchedule, FormSearchScheduleBackup } from '../../../../shared/models/schedule.model';
+import { CatalogService } from '../../../../shared/services/catalog.service';
 
 @Component({
   selector: 'app-volume',
@@ -82,6 +83,7 @@ export class VolumeComponent implements OnInit, OnDestroy {
               private notificationService: NotificationService,
               private notification: NzNotificationService,
               private scheduleBackupService: ScheduleService,
+              private catalogService: CatalogService,
               @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService) {
   }
 
@@ -403,12 +405,20 @@ export class VolumeComponent implements OnInit, OnDestroy {
   }
 
   url = window.location.pathname;
+  isSnapshot: boolean;
+  getCatalog() {
+    this.catalogService.getActiveServiceByRegion(['snapshot'], this.region).subscribe(data => {
+      console.log('data', data)
+
+    })
+  }
 
   ngOnInit() {
     // Lấy thong tin region & project từ local
     let regionAndProject = getCurrentRegionAndProject();
     this.region = regionAndProject.regionId;
     this.project = regionAndProject.projectId;
+    this.getCatalog();
     if (!this.url.includes('advance')) {
       if (Number(localStorage.getItem('regionId')) === RegionID.ADVANCE) {
         this.region = RegionID.NORMAL;
