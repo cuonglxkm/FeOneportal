@@ -80,11 +80,11 @@
             <tr *ngFor="let data of fixedTable.data">
               <td nzLeft><a (click)="navigateToDetail(data.id)">{{ data.name }}</a></td>
               <td nzAlign="center" nzBreakWord>
-                {{data.authorizedDomains.join(", ")}}
+                {{data.subjectAlternativeNames.join(", ")}}
               </td>
               <td nzAlign="center" nzBreakWord>{{data.status}}</td>
-              <td nzAlign="center" nzBreakWord>{{data.type}}</td>
-              <td nzAlign="center" nzBreakWord>{{data.expiration | date: 'HH:mm:ss dd/MM/YYYY'}}</td>
+              <td nzAlign="center" nzBreakWord>{{data.certType}}</td>
+              <td nzAlign="center" nzBreakWord>{{data.notAfter | date: 'HH:mm:ss dd/MM/YYYY'}}</td>
               <td nzAlign="center" nzBreakWord>{{data.associatedDomain.join(", ")}}</td>
               <td nzAlign="center" nzBreakWord>
                 <div>

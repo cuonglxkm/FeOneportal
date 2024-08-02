@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import { SslCertDTO } from 'src/app/pages/waf/waf.model';
 
 @Component({
   selector: 'one-portal-delete-ssl-btn',
@@ -6,7 +7,7 @@ import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DeleteSslBtnComponent {
-  @Input() sslCertData: any
+  @Input() sslCertData: SslCertDTO
 
   isVisible: boolean = false;
   isLoading: boolean = false;
