@@ -230,7 +230,7 @@ export class ProjectUpdateComponent implements OnInit {
   loadBalancerLowerPrices!: any;
   sitetositePrice!: any;
   listSiteToSitePrice!: any;
-  valueVolumeType!:any;
+  valueVolumeType!: any;
 
   form = new FormGroup({
     name: new FormControl({ value: 'loading data....', disabled: false }, { validators: [Validators.required, Validators.pattern(/^[A-Za-z0-9]+$/),] }),
@@ -457,7 +457,7 @@ export class ProjectUpdateComponent implements OnInit {
                   //   e.description.replace(ch.charOptionValues[0] + " CPU", " vCPU");
                   // }
                   if (ch.charName == 'CPU') {
-                    e.description =  e.description.replace(/0 vCPU/g, ch.charOptionValues[0] +  " vCPU");
+                    e.description = e.description.replace(/0 vCPU/g, ch.charOptionValues[0] + " vCPU");
                   }
                   if (ch.charName == 'RAM') {
                     e.description = e.description.replace(/0 GB RAM/g, ch.charOptionValues[0] + " GB RAM");
@@ -466,12 +466,12 @@ export class ProjectUpdateComponent implements OnInit {
                   // if (ch.charName == 'HHD') {
                   //   e.description = e.description.replace(/0 GB HHD/g, ch.charOptionValues[0] + " GB HHD");
                   // }
-                  
+
                   if (ch.charName == 'Storage') {
-                    this.valueVolumeType = ch.charOptionValues[0]              
+                    this.valueVolumeType = ch.charOptionValues[0]
                   }
-                  
-                   if (ch.charName == 'VolumeType' && ch.charOptionValues[0]=='HDD') {
+
+                  if (ch.charName == 'VolumeType' && ch.charOptionValues[0] == 'HDD') {
                     e.description = e.description.replace(/0 GB HDD/g, this.valueVolumeType + " GB HHD");
                   }
 
@@ -1039,19 +1039,7 @@ export class ProjectUpdateComponent implements OnInit {
     }
     this.calculate();
   }
-  findPriceLowerId() {
-    // if(this.data?.offerIdLBSDN){
-    //   const loadBalancerIdOld = this.listLoadbalancer.find(lb => lb.id === this.data?.offerIdLBSDN)
-    //   console.log("lbpriceId", loadBalancerIdOld?.price?.fixedPrice?.amount)
-    //   this.loadBalancerPrice = loadBalancerIdOld?.price?.fixedPrice?.amount
-    //   this.listLoadbalancer = this.listLoadbalancer.filter(item =>item.price.fixedPrice.amount>= this.loadBalancerPrice )
-    // console.log("huyn loadBalancerLowerPrices", this.listLoadbalancer)
-    // }
-    // else{
-    //   this.listLoadbalancer
-    // }
-
-  }
+  findPriceLowerId() {}
 
   findNameLoadBalance(loadBalancerId: number) {
     if (loadBalancerId) {
@@ -1097,7 +1085,7 @@ export class ProjectUpdateComponent implements OnInit {
   }
 
   // maxNumber: number[] = [8, 8];
-  getValues(index: number,max: number, value: number): void {
+  getValues(index: number, max: number, value: number): void {
     const message = `Vượt quá số lượng max ${max}`
     if (value > max) {
       this.notification.warning('', message);
@@ -1120,7 +1108,7 @@ export class ProjectUpdateComponent implements OnInit {
     this.calculate();
 
   }
- 
+
 
   getValueNewgpu() {
     // this.isChangegpu = false;
@@ -1142,19 +1130,6 @@ export class ProjectUpdateComponent implements OnInit {
     });
 
   }
-  // checkValueGpu(index:number){
-  //   for(let item of this.gpuQuotasGobal){
-
-  //   }
-  // }
-  // getProductActivebyregion(catalog: string, regionid: number) {
-  //   // this.vpc.getProductActivebyregion(catalog, regionid).subscribe((res: any) => {
-  //   //   this.productByRegion = res
-  //   //   this.catalogStatus[catalog] = this.productByRegion.some(product => product.isActive === true);
-
-  //   // })
-  // }
-
   getProductActivebyregion() {
     const catalogs = ['ip', 'ipv6', 'volume-snapshot-hdd', 'volume-snapshot-ssd', 'backup-volume', 'loadbalancer-sdn', 'file-storage', 'file-storage-snapshot', 'vpns2s', 'vm-gpu']
     this.catalogService.getActiveServiceByRegion(catalogs, this.regionId).subscribe(data => {
@@ -1207,20 +1182,12 @@ export class ProjectUpdateComponent implements OnInit {
     }
 
   }
-  findLbLowerPrices() {
-
-  }
-
+  findLbLowerPrices() {}
   initIP() {
     this.activeIP = true;
     this.trashIP = true;
     this.loadListIpConnectInternet();
     this.calculate()
-    // if(this.ipNetworkAddress!=''){
-    //   this.ipNetworkAddress =this.data?.publicNetworkAddress
-    // }
-
-
   }
   deleteIP() {
     this.activeIP = false;
@@ -1252,9 +1219,6 @@ export class ProjectUpdateComponent implements OnInit {
   initLoadBalancer() {
     this.activeLoadBalancer = true;
     this.trashLoadBalancer = true;
-    // this.initLoadBalancerData()
-    // this.loadBalancerId = this.data?.offerIdLBSDN;
-    // this.findNameLoadBalance(this.loadBalancerId);
     if (this.data?.offerIdLBSDN) {
       this.loadBalancerId = this.data?.offerIdLBSDN;
       this.findNameLoadBalance(this.loadBalancerId);
@@ -1286,10 +1250,6 @@ export class ProjectUpdateComponent implements OnInit {
   initVpnSiteToSite() {
     this.activeSiteToSite = true;
     this.trashVpnSiteToSite = true;
-    // if (this.siteToSiteId == null) {
-    //   this.siteToSiteId = this.listSiteToSite[1].id;
-    //   this.findNameSiteToSite(this.siteToSiteId)
-    // }
     if (this.data?.vpnSiteToSiteOfferId) {
       this.siteToSiteId = this.data?.vpnSiteToSiteOfferId;
       this.sitetositeName = this.data?.vpnSiteToSiteOfferName;
