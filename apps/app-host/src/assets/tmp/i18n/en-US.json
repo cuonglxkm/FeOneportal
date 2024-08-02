@@ -3382,7 +3382,7 @@
   "schedule.backup.block.create": "The service has been scheduled",
 
 
-  "listner.create.duplicate.port.weight": "Members with the same IP cannot have duplicate Port and Weight",
+  "listner.create.duplicate.port.weight": "Members with the same IP cannot have duplicate Port",
   "app.validate.order.fail": "Fail to validate order",
 
   "app.search.name": "Search by service name.",
@@ -3654,5 +3654,6 @@
   "waf.domain.table.title.status":"Status domain",
   "waf.domain.table.title.action":"Action",
   "notification.input.name": "Please enter the correct name",
+  "notification.input.name.ip": "Please enter the correct ip address",
   "ip.floating.attach.message": "The port is already in use, please select another Port to perform Floating IP binding."
 }
