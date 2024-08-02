@@ -76,7 +76,6 @@ export class InstancesDetailComponent implements OnInit {
             this.loading = false;
             this.cloudId = this.instancesModel.cloudId;
             this.regionId = this.instancesModel.regionId;
-            this.getListIpPublic();
             this.getMonitorData();
             this.dataService
               .getAllSecurityGroupByInstance(
@@ -103,35 +102,6 @@ export class InstancesDetailComponent implements OnInit {
         });
       }
     });
-  }
-
-  listIPPublicStr = '';
-  listIPLanStr = '';
-  getListIpPublic() {
-    this.dataService
-      .getPortByInstance(this.id, this.regionId)
-      .subscribe((dataNetwork: any) => {
-        //list IP public
-        let listOfPublicNetwork: Network[] = dataNetwork.filter(
-          (e: Network) => e.isExternal == true
-        );
-        let listIPPublic: string[] = [];
-        listOfPublicNetwork.forEach((e) => {
-          listIPPublic = listIPPublic.concat(e.fixedIPs);
-        });
-        this.listIPPublicStr = listIPPublic.join(', ');
-
-        //list IP Lan
-        let listOfPrivateNetwork: Network[] = dataNetwork.filter(
-          (e: Network) => e.isExternal == false
-        );
-        let listIPLan: string[] = [];
-        listOfPrivateNetwork.forEach((e) => {
-          listIPLan = listIPLan.concat(e.fixedIPs);
-        });
-        this.listIPLanStr = listIPLan.join(', ');
-        this.cdr.detectChanges();
-      });
   }
 
   onReloadInstanceDetail(data: any) {

@@ -44,8 +44,10 @@
             <td nzAlign="center" nzLeft>{{ data.etherType }}</td>
             <td nzAlign="center" nzBreakWord>{{ data.protocol }}</td>
             <td nzAlign="center" nzBreakWord>{{ data.portRange }}</td>
-            <td nzAlign="center" nzBreakWord>{{ data.remoteIpPrefix }}</td>
-            <td nzAlign="center" nzBreakWord>{{ data.remoteGroupName }}</td>
+            <td nzAlign="center" nzBreakWord *ngIf="data.remoteIpPrefix == null">-</td>
+            <td nzAlign="center" nzBreakWord *ngIf="data.remoteIpPrefix != null">{{ data.remoteIpPrefix }}</td>
+            <td nzAlign="center" nzBreakWord *ngIf="data.remoteGroupName == null">-</td>
+            <td nzAlign="center" nzBreakWord *ngIf="data.remoteGroupName != null">{{ data.remoteGroupName }}</td>
 <!--            <td nzAlign="center" nzBreakWord>{{ getSecurityGroupNameByRemoteGroupId(data.remoteGroupId) }}</td>-->
             <td nzAlign="center" nzBreakWord>
               <div *ngIf="!(securityGroupName?.startsWith('shoot'))">

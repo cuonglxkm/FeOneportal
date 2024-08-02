@@ -9,22 +9,38 @@
 <ng-template #modalContent>
     <p>Chứng chỉ liên quan đến domain: </p>
     <nz-form-item>
-        <nz-form-control>
-            <nz-form-label nzFor="sslCert">Chọn SSL Cert (<span style="color: rgba(252, 16, 16, 1)">*</span>)</nz-form-label>
-            <nz-select formControlName="sslCert"></nz-select>
+        <nz-form-control [nzErrorTip]="certErrorTpl">
+            <nz-form-label nzFor="cert">Chọn SSL Cert (<span style="color: rgba(252, 16, 16, 1)">*</span>)</nz-form-label>
+            <nz-select formControlName="cert" placeholder="Chọn SSL Certificate">
+              <nz-option *ngFor="let data of listSslCert" [nzLabel]="data.name" [nzValue]="data.id"></nz-option>
+            </nz-select>
+            <ng-template #certErrorTpl let-control>
+                <ng-container *ngIf="control.hasError('required')">SSl Certificate không được để trống</ng-container>
+              </ng-template>
         </nz-form-control>
     </nz-form-item>
     <p>Vui lòng thực hiện thêm chứng chỉ và liên kết. (<a (click)="openModalSSlCert()">Tạo mới</a>)</p>
     <nz-form-item>
         <nz-form-control>
             <nz-form-label nzFor="protocol">Chuyển đổi giao thức</nz-form-label>
-            <nz-select formControlName="protocol"></nz-select>
+            <nz-select formControlName="protocol" >
+                <nz-option *ngFor="let data of protocolOptions" [nzLabel]="data.label" [nzValue]="data.value"></nz-option>
+            </nz-select>
         </nz-form-control>
     </nz-form-item>
-    <nz-form-item>
+    <nz-form-item *ngIf="selectedProtocolValue !== 'follow'">
         <nz-form-control>
           <nz-form-label nzFor="port">Port </nz-form-label>
-          <input nz-input type="text" appTrim placeholder="Nhập port" formControlName="port" class="input-custom" [maxlength]="50" minlength="1" />
+          <nz-input-number
+                style="width: 100%; margin-left: 0px"
+                (keydown)="onKeyDown($event)"
+                formControlName="port"
+                [nzMin]="0"
+                [nzStep]="1"
+                [nzMax]="65535"
+                nzSize="large"
+              ></nz-input-number>
+          <!-- <input nz-input-number type="number" appTrim placeholder="Nhập port" formControlName="port" class="input-custom" /> -->
         </nz-form-control>
       </nz-form-item>
 </ng-template>

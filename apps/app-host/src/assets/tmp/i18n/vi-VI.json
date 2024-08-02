@@ -44,6 +44,7 @@
   "service.status.expired": "Chậm gia hạn",
   "service.status.violation": "Vi phạm điều khoản",
   "service.status.deleting": "Đang xóa",
+  "service.status.error.deleting": "Xoá lỗi",
   "service.status.error": "Lỗi",
   "service.status.restoring": "Đang khôi phục",
   "service.status.disabled": "Gián đoạn",
@@ -3305,7 +3306,7 @@
   "schedule.backup.block.create": "Dịch vụ đã được lập lịch",
 
 
-  "listner.create.duplicate.port.weight": "Các member có cùng IP không được trùng Port và Weight",
+  "listner.create.duplicate.port.weight": "Các member có cùng IP không được trùng Port",
 
   "app.validate.order.fail": "Lỗi khi kiểm tra order",
 
@@ -3581,5 +3582,6 @@
   "waf.domain.table.title.status":"Trạng thái domain",
   "waf.domain.table.title.action":"Thao tác",
   "notification.input.name": "Vui lòng nhập đúng tên",
+  "notification.input.name.ip": "Vui lòng nhập đúng địa chỉ ip",
   "ip.floating.attach.message": "Port đã được sử dụng, vui lòng chọn Port khác để thực hiện gắn IP Floating."
 }

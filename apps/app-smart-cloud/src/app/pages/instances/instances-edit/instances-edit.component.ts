@@ -196,7 +196,6 @@ export class InstancesEditComponent implements OnInit {
     this.projectId = regionAndProject.projectId;
     this.getActiveServiceByRegion();
     this.getConfigurations();
-    this.getListIpPublic();
     this.getListGpuType();
     this.hasRoleSI = localStorage.getItem('role').includes('SI');
     this.breakpointObserver
@@ -457,35 +456,6 @@ export class InstancesEditComponent implements OnInit {
         this.returnPage();
       },
     });
-  }
-
-  listIPPublicStr = '';
-  listIPLanStr = '';
-  getListIpPublic() {
-    this.dataService
-      .getPortByInstance(this.id, this.region)
-      .subscribe((dataNetwork: any) => {
-        //list IP public
-        let listOfPublicNetwork: Network[] = dataNetwork.filter(
-          (e: Network) => e.isExternal == true
-        );
-        let listIPPublic: string[] = [];
-        listOfPublicNetwork.forEach((e) => {
-          listIPPublic = listIPPublic.concat(e.fixedIPs);
-        });
-        this.listIPPublicStr = listIPPublic.join(', ');
-
-        //list IP Lan
-        let listOfPrivateNetwork: Network[] = dataNetwork.filter(
-          (e: Network) => e.isExternal == false
-        );
-        let listIPLan: string[] = [];
-        listOfPrivateNetwork.forEach((e) => {
-          listIPLan = listIPLan.concat(e.fixedIPs);
-        });
-        this.listIPLanStr = listIPLan.join(', ');
-        this.cdr.detectChanges();
-      });
   }
 
   onReloadInstanceDetail() {
