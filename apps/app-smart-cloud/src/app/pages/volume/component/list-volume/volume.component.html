@@ -163,7 +163,7 @@
                      nz-popover
                      [nzPopoverContent]="'volume.tooltip.content.create.backup' | i18n"
                      nzPopoverPlacement="bottom"
-                     (click)="navigateToCreateBackup(data.id)" />
+                     (click)="navigateToCreateBackup(data.id)" *ngIf="isBackupVolume"/>
                 <!-----Xóa volume---------->
                 <one-portal-delete-volume [region]="region"
                                           [project]="project"
@@ -181,9 +181,9 @@
                         (click)="navigateToCreateScheduleBackup(data.id)">{{ 'volume.menu.create.schedule.backup' | i18n }}
                     </li>
                     <!-----TẠO SNAPSHOT---------->
-                    <li nz-menu-item (click)="navigateToSnapshot(data.id)">{{ 'app.snapshot.create' | i18n }}</li>
+                    <li *ngIf="(isVolumeSnapshotHdd || isVolumeSnapshotSsd)" nz-menu-item (click)="navigateToSnapshot(data.id)">{{ 'app.snapshot.create' | i18n }}</li>
                     <!-----TẠO LỊCH SNAPSHOT--------->
-                    <li nz-menu-item (click)="navigateToCreateScheduleSnapshot(data.id)">{{ 'volume.menu.create.schedule.snapshot' | i18n }}</li>
+                    <li *ngIf="(isVolumeSnapshotHdd || isVolumeSnapshotSsd)" nz-menu-item (click)="navigateToCreateScheduleSnapshot(data.id)">{{ 'volume.menu.create.schedule.snapshot' | i18n }}</li>
                     <!-----CHỈNH SỬA--------->
                     <one-portal-update-volume [region]="region" [project]="project" [volume]="data"
                                               (onOk)="handleOkUpdate()" />

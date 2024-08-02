@@ -405,11 +405,22 @@ export class VolumeComponent implements OnInit, OnDestroy {
   }
 
   url = window.location.pathname;
-  isSnapshot: boolean;
+  isVolumeSnapshotHdd: boolean = false;
+  isVolumeSnapshotSsd: boolean = false;
+  isBackupVolume: boolean = false;
   getCatalog() {
-    this.catalogService.getActiveServiceByRegion(['snapshot'], this.region).subscribe(data => {
+    this.catalogService.getActiveServiceByRegion(['volume-snapshot-hdd','volume-snapshot-ssd', 'backup-volume'], this.region).subscribe(data => {
       console.log('data', data)
-
+      this.isVolumeSnapshotHdd = data.filter(
+        (e) => e.productName == 'volume-snapshot-hdd'
+      )[0].isActive;
+      this.isVolumeSnapshotSsd = data.filter(
+        (e) => e.productName == 'volume-snapshot-ssd'
+      )[0].isActive;
+      this.isBackupVolume = data.filter(
+        (e) => e.productName == 'backup-volume'
+      )[0].isActive;
+      this.cdr.detectChanges();
     })
   }
 
