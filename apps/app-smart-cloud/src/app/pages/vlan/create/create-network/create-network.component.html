@@ -108,7 +108,7 @@
                  [placeholder]="'x.x.0.0/16'" (ngModelChange)="inputCheckPool($event)" />
           <ng-template #networkAddressErrorTpl let-control>
             <ng-container *ngIf="control.hasError('required')">{{ 'app.vlan.note15' | i18n }}</ng-container>
-            <ng-container *ngIf="control.hasError('invalidIPAddress')">{{ 'app.vlan.note17' | i18n }}</ng-container>
+            <ng-container *ngIf="control.hasError('invalidIp')">{{ 'app.vlan.note17' | i18n }}</ng-container>
           </ng-template>
         </nz-form-control>
       </nz-form-item>

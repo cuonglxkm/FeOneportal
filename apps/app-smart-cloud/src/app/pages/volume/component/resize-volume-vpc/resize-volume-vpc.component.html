@@ -162,7 +162,7 @@
               </div>
               <div class="text-value">{{ 'app.volume.name' | i18n }}</div>
               <div style="margin-top: 10px" class="text-label">
-                {{ validateForm.controls.name.getRawValue() }}
+                {{ volumeInfo?.name }}
               </div>
               <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
               <div class="text-value">{{ 'app.volume.type' | i18n }}</div>
@@ -179,13 +179,19 @@
               <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
               <nz-row>
                 <nz-col style="width: 100%">
-                  <button style="width: 100%" nz-button nzSize="large" nzType="primary" (click)="showConfirmResize()"
-                          [disabled]="validateForm.invalid ||
-                                  sizeInCloudProject == null ||
-                                  (validateForm.controls.storage.value == 0) ||
-                                  (remaining == 0) ||
-                                  (validateForm.controls.storage.value > remaining)">
-                    <img src="assets/imgs/wallet.svg" style="margin-right: 5px; padding-bottom: 5px;" />
+                  <button style="width: 100%"
+                          nz-button
+                          nzSize="large"
+                          nzType="primary"
+                          (click)="showConfirmResize()"
+                          [disabled]="validateForm.invalid  ||
+                          sizeInCloudProject == null ||
+                          (validateForm.controls.storage.value == 0) ||
+                          (remaining == 0) ||
+                          (validateForm.controls.storage.value > remaining)">
+                    <img src="assets/imgs/wallet.svg"
+                         style="margin-right: 5px; padding-bottom: 5px;"
+                         [style.color]="validateForm.invalid ? 'gray' : 'white'"/>
                     <span [style.color]="validateForm.invalid ? 'gray' : 'white'">{{'app.button.resize'|i18n}}</span>
                   </button>
                   <nz-modal [(nzVisible)]="isVisibleConfirm" nzTabScrollList="true"
@@ -195,11 +201,9 @@
                       <span class="text-modal-title">{{'volume.modal.confirm.title.resize-vpc'|i18n}}</span>
                     </div>
                     <div *nzModalContent>
-
                       <div>
                         <span class="text-label" style="text-align: center">{{'volume.modal.confirm.content.resize-vpc'|i18n}}</span>
                       </div>
-
                     </div>
                     <div *nzModalFooter style="padding-left: 8px; padding-right: 8px;">
                       <button nz-button nzType="default" (click)="handleCancelResize()" class="button-cancel">

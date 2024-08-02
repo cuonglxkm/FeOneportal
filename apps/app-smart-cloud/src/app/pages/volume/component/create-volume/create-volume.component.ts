@@ -99,6 +99,8 @@ export class CreateVolumeComponent implements OnInit {
 
   offerId: number;
 
+  isStorageZero = false;
+
   // snapshot: any;
 
   serviceActiveByRegion: SupportService[] = [];
@@ -135,6 +137,10 @@ export class CreateVolumeComponent implements OnInit {
         if (value <= 40) return (this.iops = 400);
         this.iops = value * 10;
       }
+    });
+
+    this.validateForm.controls.storage.valueChanges.subscribe(value => {
+      this.isStorageZero = value === 0;
     });
   }
 
@@ -209,6 +215,7 @@ export class CreateVolumeComponent implements OnInit {
       this.minStorage = Number.parseInt(this.valueString?.split('#')[0]);
       this.stepStorage = Number.parseInt(this.valueString?.split('#')[1]);
       this.maxStorage = Number.parseInt(this.valueString?.split('#')[2]);
+      this.validateForm.controls.storage.setValue(this.minStorage)
     });
   }
 
@@ -360,7 +367,7 @@ export class CreateVolumeComponent implements OnInit {
     }
     console.log('volumeType', this.volumeCreate.volumeType);
     this.volumeCreate.volumeSize = this.validateForm.get('storage').value;
-    this.volumeCreate.description = this.validateForm.get('description').value.trimStart().trimEnd();
+    this.volumeCreate.description = this.validateForm.get('description').value?.trimStart().trimEnd();
     this.volumeCreate.iops = this.iops;
     if (this.validateForm.controls.isSnapshot.value == true) {
       this.volumeCreate.createFromSnapshotId =
@@ -409,7 +416,7 @@ export class CreateVolumeComponent implements OnInit {
     this.volumeCreate.oneSME_SubscriptionId = null;
     this.volumeCreate.actionType = 0;
     this.volumeCreate.regionId = this.region;
-    this.volumeCreate.serviceName = this.validateForm.get('name').value.trimStart().trimEnd();
+    this.volumeCreate.serviceName = this.validateForm.get('name').value?.trimStart().trimEnd();
     this.volumeCreate.typeName =
       'SharedKernel.IntegrationEvents.Orders.Specifications.VolumeCreateSpecification,SharedKernel.IntegrationEvents,Version=1.0.0.0,Culture=neutral,PublicKeyToken=null';
     this.volumeCreate.userEmail = this.tokenService.get()?.email;
@@ -427,6 +434,7 @@ export class CreateVolumeComponent implements OnInit {
   onChangeValueStorage() {
     this.dataSubjectStorage.pipe(debounceTime(500))
       .subscribe((res) => {
+
         if ((res % this.stepStorage) > 0) {
           this.notification.warning('', this.i18n.fanyi('app.notify.amount.capacity', { number: this.stepStorage }));
           this.validateForm.controls.storage.setValue(res - (res % this.stepStorage));
@@ -595,12 +603,13 @@ export class CreateVolumeComponent implements OnInit {
 
   onKeyDown(event: KeyboardEvent) {
     console.log('event', event)
+    console.log('event 2', event)
     if (event.key === 'Enter' &&
       (this.isLoadingAction
         || this.validateForm.invalid
         || this.validateForm.controls.storage.value == 0
         || this.validateForm.controls.time.value == 0
-        || this.validateForm.controls.storage.value % this.stepStorage > 0)) {
+        || this.validateForm.controls.storage.value % this.stepStorage > 0 || this.isStorageZero)) {
       event.preventDefault(); // Prevent default action if conditions are met
     }
   }
@@ -625,6 +634,7 @@ export class CreateVolumeComponent implements OnInit {
     this.onChangeValueStorage();
     this.getTotalAmount();
     this.hasRoleSI = localStorage.getItem('role').includes('SI');
+
   }
 
   //
