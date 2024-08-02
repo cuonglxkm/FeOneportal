@@ -185,6 +185,7 @@
   "app.account.form.success": "Account updated successfully!",
   "app.account.form.fail": "Account update failed",
   "app.description.maxLength.255": "Allow a maximum of 255 characters input",
+  "app.description.maxLength.200": "Allow a maximum of 200 characters input",
   "app.failData": "Retrieve data failed",
   "app.notify.get.list.province": "Failed to retrieve the list of Provinces/Cities",
 
@@ -441,6 +442,7 @@
   "service.status.expired": "Expired",
   "service.status.violation": "Violation of terms",
   "service.status.deleting": "Deleting",
+  "service.status.error.deleting": "Error deleting",
   "service.status.error": "Error",
   "service.status.restoring": "Restoring",
   "service.status.disabled": "Disabled",
@@ -3380,7 +3382,7 @@
   "schedule.backup.block.create": "The service has been scheduled",
 
 
-  "listner.create.duplicate.port.weight": "Members with the same IP cannot have duplicate Port and Weight",
+  "listner.create.duplicate.port.weight": "Members with the same IP cannot have duplicate Port",
   "app.validate.order.fail": "Fail to validate order",
 
   "app.search.name": "Search by service name.",
@@ -3652,5 +3654,6 @@
   "waf.domain.table.title.status":"Status domain",
   "waf.domain.table.title.action":"Action",
   "notification.input.name": "Please enter the correct name",
+  "notification.input.name.ip": "Please enter the correct ip address",
   "ip.floating.attach.message": "The port is already in use, please select another Port to perform Floating IP binding."
 }

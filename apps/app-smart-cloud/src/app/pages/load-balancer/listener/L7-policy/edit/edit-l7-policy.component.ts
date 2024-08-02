@@ -138,7 +138,9 @@ export class EditL7PolicyComponent implements OnInit {
       this.validateForm.controls.prioritize.setValue(this.l7Policy.position)
       this.validateForm.controls.status.setValue(this.l7Policy.adminStateUp)
       this.validateForm.controls.description.setValue(this.l7Policy.description)
-
+      // {value: 'REJECT', label: 'REJECT'},
+      // {value: 'REDIRECT_TO_POOL', label: 'REDIRECT_TO_POOL'},
+      // {value: 'REDIRECT_TO_URL', label: 'REDIRECT_TO_URL'}
     })
   }
 
@@ -191,9 +193,9 @@ export class EditL7PolicyComponent implements OnInit {
       formUpdateL7Policy.name = this.validateForm.controls.nameL7.value
       formUpdateL7Policy.position = this.validateForm.controls.prioritize.value
       formUpdateL7Policy.redirect_http_code = null
-      formUpdateL7Policy.redirect_pool_id = this.validateForm.controls.pool.value
+      formUpdateL7Policy.redirect_pool_id = this.validateForm.controls['action'].value == 'REDIRECT_TO_POOL' ?this.validateForm.controls.pool.value : null
       formUpdateL7Policy.redirect_prefix = null
-      formUpdateL7Policy.redirect_url = this.validateForm.controls.url.value
+      formUpdateL7Policy.redirect_url = this.validateForm.controls['action'].value == 'REDIRECT_TO_URL' ? this.validateForm.controls.url.value : null
       formUpdateL7Policy.tags = null
       formUpdateL7Policy.customerId = this.tokenService.get()?.userId
       formUpdateL7Policy.regionId = this.region
@@ -209,6 +211,10 @@ export class EditL7PolicyComponent implements OnInit {
         this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.notification.update.l7.policy.fail'))
       })
     }
+    // {value: 'REJECT', label: 'REJECT'},
+    // {value: 'REDIRECT_TO_POOL', label: 'REDIRECT_TO_POOL'},
+    // {value: 'REDIRECT_TO_URL', label: 'REDIRECT_TO_URL'}
+
   }
 
   ngOnInit() {

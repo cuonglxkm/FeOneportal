@@ -47,6 +47,7 @@
         />{{ 'app.button.cancel' | i18n }}
       </button>
       <button
+        [nzLoading]="isLoading"
         nz-button
         nzType="primary"
         (click)="handleOkDelete()"

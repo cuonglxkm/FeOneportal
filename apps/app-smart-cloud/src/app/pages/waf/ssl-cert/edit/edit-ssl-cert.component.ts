@@ -5,7 +5,7 @@ import {
   NonNullableFormBuilder,
   Validators,
 } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { I18NService } from '@core';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
@@ -33,13 +33,14 @@ export class EditSslCertWAFComponent implements OnInit {
   selectedFileSystemName: string;
   fileList: NzUploadFile[] = [];
   formCreateeSslCert: SslCertRequest = new SslCertRequest();
-
+  SslCertDetail: any
   passwordVisible: boolean = false;
   uploadMethod: string = '1';
   uploadMethodList = [
     { label: 'Import from the certificate file', value: '1' },
     { label: 'Paste certificate content', value: '2' },
   ];
+  id: number
 
   form: FormGroup<{
     privateKey: FormControl<string>;
@@ -59,13 +60,21 @@ export class EditSslCertWAFComponent implements OnInit {
     @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
     private fb: NonNullableFormBuilder,
     private SSLCertService: WafService,
+    private activatedRoute: ActivatedRoute,
     private notification: NzNotificationService
   ) {}
 
   ngOnInit(): void {
-    let regionAndProject = getCurrentRegionAndProject();
-    this.region = regionAndProject.regionId;
-    this.project = regionAndProject.projectId;
+    this.id = parseInt(this.activatedRoute.snapshot.paramMap.get('id'))
+    this.getDetailSslCert(this.id)
+  }
+
+  getDetailSslCert(id: number) {
+    this.SSLCertService.getDetailSslCert(id).subscribe((res) => {
+      this.SslCertDetail = res
+    }, (err) => {
+      this.notification.error('Thất bại', `Lấy dữ liệu Ssl Cert thất bại`);
+    })
   }
 
   handleChangeMethod(event: any){

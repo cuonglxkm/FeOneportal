@@ -559,20 +559,27 @@ export function ipValidatorVlan(): ValidatorFn {
     // }
 
     // Kiểm tra các khoảng hợp lệ
+    debugger;
     if (cidr === '16') {
       if (
         (a === 10 && b >= 10 && b <= 100) ||
         (a === 172 && b >= 16 && b <= 31) ||
-        (a === 192 && b === 168)
+        (a === 192 && b === 168) 
       ) {
+        if (c != 0 || d != 0) {
+          return { invalidIp: true };
+        }
         return null;
       }
     } else if (cidr === '24') {
       if (
         (a === 10 && b >= 10 && b <= 100) ||
         (a === 172 && b >= 16 && b <= 31) ||
-        (a === 192 && b === 168)
+        (a === 192 && b === 168) && (d != 0)
       ) {
+        if ( d != 0) {
+          return { invalidIp: true };
+        }
         return null;
       }
     }

@@ -27,6 +27,8 @@ export class ServiceStatusPipe implements PipeTransform {
         return new StatusModel("#EA3824", this.i18n.fanyi('service.status.extending'));
       case "DELETING":
         return new StatusModel("#EA3829", this.i18n.fanyi('service.status.deleting'));
+      case "ERROR_DELETING":
+          return new StatusModel("#EA3829", this.i18n.fanyi('service.status.error.deleting'));
       case "ERROR":
         return new StatusModel("#EA3829", this.i18n.fanyi('service.status.error'));
       case "EXPIRED":

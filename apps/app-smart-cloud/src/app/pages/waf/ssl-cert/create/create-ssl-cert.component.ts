@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit, ViewChild } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import {
   FormControl,
   FormGroup,
@@ -9,15 +9,9 @@ import { Router } from '@angular/router';
 import { I18NService } from '@core';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
-import { getCurrentRegionAndProject } from '@shared';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
-import { FileSystemModel } from 'src/app/shared/models/file-system.model';
-import { FormCreateSslCert } from 'src/app/shared/models/ssl-cert.model';
-import { SSLCertService } from 'src/app/shared/services/ssl-cert.service';
-import { differenceInCalendarDays } from 'date-fns';
-import { NAME_REGEX } from 'src/app/shared/constants/constants';
-import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
 import { NzUploadChangeParam, NzUploadFile } from 'ng-zorro-antd/upload';
+import { NAME_REGEX } from 'src/app/shared/constants/constants';
 import { WafService } from 'src/app/shared/services/waf.service';
 import { SslCertRequest } from '../../waf.model';
 
@@ -27,9 +21,6 @@ import { SslCertRequest } from '../../waf.model';
   styleUrls: ['./create-ssl-cert.component.less'],
 })
 export class CreateSslCertWAFComponent implements OnInit {
-  region = JSON.parse(localStorage.getItem('regionId'));
-  project = JSON.parse(localStorage.getItem('projectId'));
-
   value: string;
   isLoading: boolean = false;
   isCheckBegin: boolean = false;
@@ -55,8 +46,6 @@ export class CreateSslCertWAFComponent implements OnInit {
     certificate: ['', Validators.required],
   });
 
-  @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
-
   constructor(
     private router: Router,
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
@@ -67,9 +56,7 @@ export class CreateSslCertWAFComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    let regionAndProject = getCurrentRegionAndProject();
-    this.region = regionAndProject.regionId;
-    this.project = regionAndProject.projectId;
+
   }
 
   handleChangeMethod(event: any){
@@ -137,6 +124,8 @@ export class CreateSslCertWAFComponent implements OnInit {
       }
       return file;
     });
+
+    this.getData();
   }
 
   async getData() {
@@ -198,10 +187,20 @@ export class CreateSslCertWAFComponent implements OnInit {
       },
       (error) => {
         this.isLoading = false;
-        this.notification.error(
-          this.i18n.fanyi('app.status.fail'),
-          'Tạo mới ssl cert thất bại'
-        );
+        if (error.error.detail.includes('SSL name you provided is already')) {
+          this.notification.error(
+            this.i18n.fanyi('app.status.fail'),
+            this.i18n.fanyi('Tên chứng chỉ đã tồn tại')
+          );
+        }else if (error.error.detail.includes('SSL content you provided is already')) {
+          this.notification.error(
+            this.i18n.fanyi('app.status.fail'),
+            this.i18n.fanyi('Nội dung chứng chỉ đã tồn tại')
+          );
+        }else{
+          this.notification.error(
+            this.i18n.fanyi('app.status.fail'), 'Tạo mới ssl cert thất bại');
+        }
       }
     );
   }

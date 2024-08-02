@@ -81,7 +81,7 @@
         </div>
         <nz-form-control
           nzDisableAutoTips
-          style="margin-top: 10px"
+          style="margin-top: 10px" nzErrorTip="nameErrorTpl"
         >
           <input
             class="input-custom"
@@ -232,6 +232,7 @@
         </button>
         <button
           nz-button
+          [disabled]="form.invalid"
           (click)="handleCreate()"
           nzType="primary"
         >

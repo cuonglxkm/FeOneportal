@@ -115,7 +115,10 @@ export class IpPublicComponent implements OnInit {
 
   onPageSizeChange(event: any) {
     this.size = event
-    this.refreshParams();
+    this.index = 1;
+    this.total = 0;
+    this.ipAddress = '';
+    // this.refreshParams();
     this.getData(false);
   }
 
@@ -138,6 +141,7 @@ export class IpPublicComponent implements OnInit {
     this.instanceSelected = '';
     this.isSelected = false;
     this.nameDelete = '';
+    this.begin = true;
   }
 
   openIpMounted(event: any, item: any) {
@@ -197,30 +201,32 @@ export class IpPublicComponent implements OnInit {
   }
 
   openIpDelete() {
-    this.loading = true;
-    this.service.remove(this.id)
-      .pipe(finalize(() => {
-        this.getData(true);
-        this.nameDelete = '';
-      }))
-      .subscribe(
-      {
-        next: post => {
-          this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('app.delete.success'))
-        },
-        error: e => {
-          if(e && e.error && e.error.detail && e.error.detail === "VM need a IP"){
-            this.notification.warning(this.i18n.fanyi('app.status.warning'), this.i18n.fanyi('app.instances') + ' ' + this.instanceName + ' '
-              + this.i18n.fanyi('app.ip.public.attach.warning'));
-          } else {
-            this.notification.error(this.i18n.fanyi('app.status.fail'), e.error.message)
+    if (!this.disableDelete) {
+      this.loading = true;
+      this.service.remove(this.id)
+        .pipe(finalize(() => {
+          this.getData(true);
+          this.nameDelete = '';
+        }))
+        .subscribe(
+          {
+            next: post => {
+              this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('app.delete.success'))
+              this.handleCancel();
+            },
+            error: e => {
+              if(e && e.error && e.error.detail && e.error.detail === "VM need a IP"){
+                this.notification.warning(this.i18n.fanyi('app.status.warning'), this.i18n.fanyi('app.instances') + ' ' + this.instanceName + ' '
+                  + this.i18n.fanyi('app.ip.public.attach.warning'));
+              } else {
+                this.notification.error(this.i18n.fanyi('app.status.fail'), e.error.message)
+              }
+            },
           }
-        },
-      }
-    )
-    this.isVisibleDelete = false;
-    this.refreshParams();
-
+        )
+      this.isVisibleDelete = false;
+      this.refreshParams();
+    }
   }
 
   Mounted() {
@@ -266,8 +272,10 @@ export class IpPublicComponent implements OnInit {
     protected readonly navigator = navigator;
   isSelected = false;
   nameDelete: any;
+  begin = true;
 
   confirmNameDelete(event: any) {
+    this.begin = false;
     if (event == this.ipAddressDelete) {
       this.disableDelete = false;
     } else {
