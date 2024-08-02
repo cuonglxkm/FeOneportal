@@ -65,9 +65,9 @@
           <tr *ngFor="let item of listOfData">
             
             <td>
-              <a *ngIf="item.resourceStatus!='DELETING'" nz-tooltip [nzTooltipTitle]="'app.view.detail' | i18n" nzTooltipPlacement="bottom" [routerLink]="
+              <a *ngIf="!isProcessingStatus(item.resourceStatus)" nz-tooltip [nzTooltipTitle]="'app.view.detail' | i18n" nzTooltipPlacement="bottom" [routerLink]="
               '/app-smart-cloud/project/detail/' + item.id ">{{ item.displayName }}</a>
-              <a *ngIf="item.resourceStatus=='DELETING'" style="cursor: text;" >{{ item.displayName }}</a>
+              <a *ngIf="isProcessingStatus(item.resourceStatus)" style="cursor: text;" >{{ item.displayName }}</a>
             </td>
             <td *ngIf="item.type != 'VPC'">-</td>
             <td *ngIf="item.type != 'VPC'">-</td>
@@ -104,7 +104,7 @@
               <div>
                 <!----Chỉnh sửa    && item.serviceStatus != 'TAMNGUNG'    ----->
                 <img style="cursor: pointer;; margin-right: 10px;"
-                  *ngIf="item.resourceStatus != 'CREATING' && item.resourceStatus != 'RESIZING'&& item.resourceStatus != 'DELETING' && item.resourceStatus!='SUSPENDED'"
+                  *ngIf="item.resourceStatus != 'CREATING' && item.resourceStatus != 'RESIZING'&& item.resourceStatus != 'DELETING' && item.resourceStatus!='SUSPENDED' && item.resourceStatus!='ERROR_DELETING'"
                   src="assets/imgs/edit-2.svg" nz-tooltip nzTooltipTitle="{{ 'app.text.edit' | i18n }}"
                   nzTooltipPlacement="bottom" (click)="edit(item)" />
                 <!----Xóa---->
