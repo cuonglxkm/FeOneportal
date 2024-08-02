@@ -93,16 +93,16 @@
             <td>{{data.resourceStatus}}</td>
             <td>
               <div>
-                <one-portal-attach-ip-floating *ngIf="data.status != 'DANGSUDUNG' && data.status != 'LOI' && data.resourceStatus != 'ERROR' && !!data.suspendReason" [region]="region"
+                <one-portal-attach-ip-floating *ngIf="data.status != 'DANGSUDUNG' && data.status != 'LOI' && data.resourceStatus != 'ERROR' && (!!data.suspendReason || data.suspendReason == '')" [region]="region"
                                                [project]="project"
                                                [idIpFloating]="data.id" [display]="data.ipAddress"
                                                (onOk)="handleOkAttachIpFloating()"/>
 
-                <one-portal-detach-ip-floating *ngIf="data.status == 'DANGSUDUNG' && data.status != 'LOI' && data.resourceStatus != 'ERROR' && !!data.suspendReason" [region]="region"
+                <one-portal-detach-ip-floating *ngIf="data.status == 'DANGSUDUNG' && data.status != 'LOI' && data.resourceStatus != 'ERROR' && (!!data.suspendReason || data.suspendReason == '')" [region]="region"
                                                [project]="project"
                                                [idIpFloating]="data.id"
                                                (onOk)="handleOkDetachIpFloating()" />
-                <img *ngIf="projectType != 1 && data.status != 'LOI' && data.resourceStatus != 'ERROR' && !!data.suspendReason" style="padding-right: 10px;" src="assets/imgs/calendar-tick.svg"
+                <img *ngIf="projectType != 1 && data.status != 'LOI' && data.resourceStatus != 'ERROR' && (!!data.suspendReason || data.suspendReason == '')" style="padding-right: 10px;" src="assets/imgs/calendar-tick.svg"
                      nz-tooltip nzTooltipTitle="{{'app.extend' | i18n}} IP Floating" nzTooltipPlacement="bottom"
                      [routerLink]="['/app-smart-cloud/networks/ip-floating-normal/' + data.id + '/extend']"/>
                 <one-portal-delete-ip-floating *ngIf="data.typeIP == WanFloating || projectType != 1" [region]="region"

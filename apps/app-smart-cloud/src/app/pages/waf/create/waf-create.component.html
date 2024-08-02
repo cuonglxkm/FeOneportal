@@ -208,8 +208,12 @@
                   <nz-form-item>
                     <nz-form-control>
                       <nz-form-label nzFor="sslCert">Chọn SSL Cert (Chọn Cert hoặc <a (click)="openModalSSlCert()">Tạo mới</a>)</nz-form-label>
-                      <nz-select class="input-select-custom" nzPlaceHolder="Chọn SSL Cert" formControlName="sslCert">
-                        <nz-option nzLabel="SSL Cert 1" [nzValue]="1"></nz-option>
+                      <nz-select class="input-select-custom" nzPlaceHolder="Chọn SSL Cert"  formControlName="sslCert">
+                        <nz-option
+                        *ngFor="let data of listSslCert"
+                        [nzLabel]="data.name"
+                        [nzValue]="data.id"
+                      ></nz-option>
                       </nz-select>
                     </nz-form-control>
                   </nz-form-item>
