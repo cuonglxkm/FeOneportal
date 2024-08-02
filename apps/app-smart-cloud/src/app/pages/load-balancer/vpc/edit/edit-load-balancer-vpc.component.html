@@ -177,10 +177,10 @@
               <span>{{ 'app.service.description' | i18n }}</span>
             </nz-form-label>
             <nz-form-control nzDisableAutoTips [nzErrorTip]="descriptionErrorTpl">
-              <textarea nz-input formControlName="description" [placeholder]="'app.input.des' | i18n" [maxLength]="200"
+              <textarea nz-input formControlName="description" [placeholder]="'app.input.des' | i18n" [maxLength]="255"
                         [nzAutosize]="{ minRows: 3, maxRows: 5 }"></textarea>
               <ng-template #descriptionErrorTpl let-control>
-                <ng-container *ngIf="control.hasError('maxlength')">{{ 'app.description.maxLength.200' | i18n }}</ng-container>
+                <ng-container *ngIf="control.hasError('maxlength')">{{ 'app.description.maxLength.255' | i18n }}</ng-container>
               </ng-template>
             </nz-form-control>
           </nz-form-item>

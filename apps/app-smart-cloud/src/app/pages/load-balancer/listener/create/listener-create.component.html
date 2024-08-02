@@ -233,6 +233,7 @@
             <input nz-input
                    class="input-custom"
                    formControlName="poolName"
+                   (ngModelChange)="changeKeySearch.next('')"
                    [placeholder]="'validation.pool.name.pattern' | i18n"
                    [maxLength]="50" />
             <ng-template #nameErrorTpl let-control>
