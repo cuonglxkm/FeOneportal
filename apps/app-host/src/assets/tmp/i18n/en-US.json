@@ -442,6 +442,7 @@
   "service.status.expired": "Expired",
   "service.status.violation": "Violation of terms",
   "service.status.deleting": "Deleting",
+  "service.status.error.deleting": "Error deleting",
   "service.status.error": "Error",
   "service.status.restoring": "Restoring",
   "service.status.disabled": "Disabled",
