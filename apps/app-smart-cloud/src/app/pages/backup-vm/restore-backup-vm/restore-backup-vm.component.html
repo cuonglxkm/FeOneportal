@@ -102,7 +102,7 @@
                 <input
                   nz-input
                   class="input-custom"
-                  [value]="backupSize + ' GB'"
+                  [value]="backupVmModel?.size + ' GB'"
                   [disabled]="true"
                 />
               </nz-form-control>
@@ -145,7 +145,7 @@
                   <input
                     nz-input
                     class="input-custom"
-                    [value]="backupVmModel?.size + ' GB'"
+                    [value]="backupVmModel?.systemInfoBackups[0].rootSize + ' GB'"
                     [disabled]="true"
                   />
                 </nz-form-control>
