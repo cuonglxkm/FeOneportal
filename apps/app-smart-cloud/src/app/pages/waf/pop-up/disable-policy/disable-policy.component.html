@@ -1,4 +1,4 @@
-<li nz-menu-item (click)="openModal()">{{'Disable all Policies'}}</li>
+<li nz-menu-item (click)="openModal()">{{'waf.domain.policies' | i18n}}</li>
 <nz-modal [(nzVisible)]="isVisible" [nzTitle]="modalTitle" [nzContent]="modalContent" [nzFooter]="null"
     (nzOnCancel)="handleCancelDisablePolicyModal()">
     <ng-template #modalTitle>

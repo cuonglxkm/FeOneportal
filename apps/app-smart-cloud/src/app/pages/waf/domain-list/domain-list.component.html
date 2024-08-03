@@ -90,22 +90,18 @@
             </ng-container>
             <td nzBreakWord nzAlign="center">
               <div>
-                <img nz-popover src="assets/imgs/edit-2.svg" alt=""
-                  nzPopoverPlacement="bottom"
-                  (click)="showModal()"
-                  style="cursor: pointer; margin-right: 5px; margin-top: 2px;"
-                  [nzPopoverContent]="'app.text.edit' | i18n" />
-                <img  src="assets/imgs/ph_link-light.svg" (click)="navigateToAddDomain()" nz-popover
-                  [nzPopoverContent]="'waf.domain.https.setting' | i18n"
-                  nzPopoverPlacement="bottom" style="cursor: pointer;margin-right: 5px;"/>
+                  <one-portal-edit-domain [domainData]="data" (onOk)="handleOkUpdate()"></one-portal-edit-domain>
+                  <one-portal-http-setting [domainData]="data" (onOk)="handleOkUpdate()"></one-portal-http-setting>
                 <img nz-dropdown
                   [nzDropdownMenu]="opMenu"
-                  src="assets/imgs/more1.svg" alt="" style="cursor: pointer;" />
+                  src="assets/imgs/more1.svg" alt="" style="cursor: pointer;" /> 
                 <nz-dropdown-menu #opMenu="nzDropdownMenu">
                   <ul nz-menu>
-                    <li nz-menu-item>{{'waf.domain.policies' | i18n}}</li>
+                    <one-portal-disable-policy [domainData]="data" (onOk)="handleOkUpdate()"></one-portal-disable-policy>
+                    <one-portal-delete-domain [domainData]="data" (onOk)="handleOkUpdate()"></one-portal-delete-domain>
+                    <!-- <li nz-menu-item>{{'waf.domain.policies' | i18n}}</li>
                     <li nz-menu-item>{{'waf.domain.policies.disable' | i18n}}</li>
-                    <li nz-menu-item>{{'waf.domain.delete' | i18n}}</li>
+                    <li nz-menu-item>{{'waf.domain.delete' | i18n}}</li> -->
                   </ul>
                 </nz-dropdown-menu>
               </div>
