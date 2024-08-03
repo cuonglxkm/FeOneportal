@@ -53,16 +53,24 @@ export class BucketConfigureComponent implements OnInit {
       .pipe(finalize(() => this.loadingSrv.close()))
       .subscribe({
         next: (data) => {
-          console.log(data);
-          this.bucketDetail = data;
-          this.cdr.detectChanges();
+          if (data === null || data === undefined) {
+            this.notification.error(
+              this.i18n.fanyi('app.status.fail'),
+              'Bản ghi không tồn tại'
+            );
+            this.navigateToBucketList();
+          } else {
+            console.log(data);
+            this.bucketDetail = data;
+            this.cdr.detectChanges();
+          }
         },
         error: (e) => {
           this.notification.error('', e.error.message);
           this.navigateToBucketList();
         },
       });
-  }
+}
 
   setBucketACL() {
     this.isLoading = true;

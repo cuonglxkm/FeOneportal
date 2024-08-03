@@ -76,7 +76,7 @@ export class BucketDetailComponent extends BaseService implements OnInit {
   modalStyle = {
     padding: '20px',
     'border-radius': '10px',
-    width: '80%',
+    width: '55%',
   };
   uploadFailed: boolean = false;
 
