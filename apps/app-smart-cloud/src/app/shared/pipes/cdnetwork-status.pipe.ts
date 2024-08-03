@@ -13,10 +13,14 @@ export class CDNStatusPipe implements PipeTransform {
 
   transform(status: string): StatusModel {
     switch(status?.toLocaleLowerCase()) {
+      case "inprogress":
+        return new StatusModel("#0066B0", "Deploying"); 
       case "deployed":
-        return new StatusModel("#008d47", status);
+        return new StatusModel("#008d47", "Enable");
+      case "deploying":
+        return new StatusModel("#0066B0", "Publishing"); 
       case "success":
-        return new StatusModel("#008d47", status); 
+        return new StatusModel("#008d47", "Success"); 
       default:
         return new StatusModel("#0066B0", status);
     }

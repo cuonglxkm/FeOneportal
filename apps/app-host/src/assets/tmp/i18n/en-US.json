@@ -791,6 +791,7 @@
   "app.bucket.detail.type": "Type",
   "app.bucket.detail.version": "Version",
   "app.bucket.detail.copy": "Copy",
+  "app.bucket.detail.copied": "Copied!",
   "app.bucket.detail.share": "Share",
   "app.bucket.detail.authorize": "Authorize",
   "app.bucket.detail.detail": "Detail",

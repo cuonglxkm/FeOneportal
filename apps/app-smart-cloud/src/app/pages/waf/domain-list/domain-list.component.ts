@@ -38,7 +38,7 @@ export class WafDomainListComponent implements OnInit, OnDestroy {
     {name:"Custom rules", value: true},
     {name:"Whitelist", value: true}
   ]
-
+  copySuccess: boolean;
   pageSize: number = 10;
   pageIndex: number = 1;
 
@@ -223,6 +223,18 @@ export class WafDomainListComponent implements OnInit, OnDestroy {
         }
       }
     );
+  }
+
+  copy(text){
+    if(this.copySuccess) return;
+    navigator.clipboard.writeText(text).then(() => {
+      this.copySuccess = true;
+      setTimeout(() => {
+        this.copySuccess = false;
+      }, 500);
+    }).catch(err => {
+      console.error('Could not copy text: ', err);
+    });;
   }
 
   ngOnInit() {

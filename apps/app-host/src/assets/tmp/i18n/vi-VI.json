@@ -689,6 +689,7 @@
   "app.bucket.detail.type": "Loại",
   "app.bucket.detail.version": "Phiên bản",
   "app.bucket.detail.copy": "Sao chép",
+  "app.bucket.detail.copied": "Đã sao chép!",
   "app.bucket.detail.share": "Chia sẻ",
   "app.bucket.detail.authorize": "Quản lý phân quyền",
   "app.bucket.detail.detail": "Chi tiết",
