@@ -68,6 +68,7 @@
         <th nzBreakWord>{{ 'waf.table.title.package' | i18n }}</th>
         <th nzBreakWord>{{ 'waf.table.title.name' | i18n }}</th>
         <th nzBreakWord>{{ 'waf.domain.table.title.status' | i18n }}</th>
+        <th nzBreakWord>{{ 'waf.domain.table.title.status.cdn' | i18n }}</th>
         <th nzBreakWord>{{ 'waf.domain.table.title.action' | i18n }}</th>
       </tr>
       </thead>
@@ -88,6 +89,10 @@
                   [ngStyle]="{color: statusModel.color}">{{ statusModel.status }}
               </td>
             </ng-container>
+            <td nzBreakWord
+                nzAlign="left"
+                [ngStyle]="{color: (data.resouceStatus | CDNStatusPipe).color}">{{ (data.resouceStatus | CDNStatusPipe).status }}
+            </td>
             <td nzBreakWord nzAlign="center">
               <div>
                   <one-portal-edit-domain [domainData]="data" (onOk)="handleOkUpdate()"></one-portal-edit-domain>
@@ -97,6 +102,7 @@
                   src="assets/imgs/more1.svg" alt="" style="cursor: pointer;" /> 
                 <nz-dropdown-menu #opMenu="nzDropdownMenu">
                   <ul nz-menu>
+                    <li (click)="onExpandChange(data.id, true)" nz-menu-item>{{'waf.domain.policies' | i18n}}</li>
                     <one-portal-disable-policy [domainData]="data" (onOk)="handleOkUpdate()"></one-portal-disable-policy>
                     <one-portal-delete-domain [domainData]="data" (onOk)="handleOkUpdate()"></one-portal-delete-domain>
                     <!-- <li nz-menu-item>{{'waf.domain.policies' | i18n}}</li>

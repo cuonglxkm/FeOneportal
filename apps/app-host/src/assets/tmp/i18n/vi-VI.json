@@ -3581,6 +3581,7 @@
   "waf.domain.table.title.cname":"CNAME",
   "waf.domain.table.title.https":"HTTPS",
   "waf.domain.table.title.status":"Trạng thái domain",
+  "waf.domain.table.title.status.cdn":"Trạng thái tác vụ",
   "waf.domain.table.title.action":"Thao tác",
   "notification.input.name": "Vui lòng nhập đúng tên",
   "notification.input.name.ip": "Vui lòng nhập đúng địa chỉ ip",
