@@ -695,6 +695,7 @@
   "app.bucket.detail.updateTime": "Thời gian chỉnh sửa",
   "app.bucket.detail.createFolder": "Tạo thư mục",
   "app.bucket.detail.createFolder.require": "Tên thư mục không được để trống",
+  "app.bucket.detail.createFolder.duplicate": "Tên thư mục đã tồn tại",
   "app.bucket.detail.createFolder.pattern": "Tên thư mục chỉ được chứa các ký tự: Ký tự chữ và số: 0-9, a-z, A-Z, Ký tự đặc biệt: chấm than (!), gạch nối (-), gạch dưới (_), chấm (.), sao (*), nháy đơn ('), mở ngoặc đơn ((), đóng ngoặc đơn ()). Tối thiểu 3 ký tự, tối đa 64 ký tự",
   "app.bucket.detail.downloadZip": "Tải zip",
   "app.bucket.detail.upload": "Tải file lên",
