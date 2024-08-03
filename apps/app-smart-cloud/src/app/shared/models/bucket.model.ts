@@ -35,6 +35,7 @@ export class BucketDetail {
   linkS3Website: string;
   bucketSize: number;
   bucketItemCount: number;
+  endpoint: string
 }
 
 export class BucketCors {
