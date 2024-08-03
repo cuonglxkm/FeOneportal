@@ -109,15 +109,13 @@ export class InstancesDetailComponent implements OnInit {
   }
 
   onRegionChange(region: RegionModel) {
-    if(this.projectCombobox){
+    if (this.projectCombobox) {
       this.projectCombobox.loadProjects(true, region.regionId);
     }
     this.router.navigate(['/app-smart-cloud/instances']);
   }
 
-  onRegionChanged(region: RegionModel) {
-    
-  }
+  onRegionChanged(region: RegionModel) {}
 
   userChangeProject() {
     this.router.navigate(['/app-smart-cloud/instances']);
@@ -154,7 +152,7 @@ export class InstancesDetailComponent implements OnInit {
   activeGS: boolean = false;
   maxAxis = 1;
   cahrt = [];
-  valueGSCPU: string = 'cpu';
+  valueGSCPU: string = 'ram';
   valueGSTIME: number = 5;
   cloudId: string;
   regionId: number;
@@ -168,7 +166,7 @@ export class InstancesDetailComponent implements OnInit {
     },
     {
       key: 'cpu',
-      name: 'vCPU',
+      name: 'CPU',
     },
     {
       key: 'diskio',

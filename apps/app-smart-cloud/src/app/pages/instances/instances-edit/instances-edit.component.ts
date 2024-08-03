@@ -287,15 +287,7 @@ export class InstancesEditComponent implements OnInit {
     this.offerFlavor = null;
     this.selectedElementFlavor = null;
     this.configGPU = new ConfigGPU();
-    if (this.isGpuConfig) {
-      this.configGPU.storage = this.minCapacity;
-      this.changeStorageOfGpu(this.configGPU.storage);
-    }
     this.configCustom = new ConfigCustom();
-    if (this.isCustomconfig) {
-      this.configCustom.capacity = this.minCapacity;
-      this.changeCapacity(this.configCustom.capacity);
-    }
     this.volumeIntoMoney = 0;
     this.ramIntoMoney = 0;
     this.cpuIntoMoney = 0;
@@ -639,9 +631,6 @@ export class InstancesEditComponent implements OnInit {
         this.stepCapacity = (Number).parseInt(valueArray[1]);
         this.maxCapacity = (Number).parseInt(valueArray[2]);
         this.surplus = valueArray[2] % valueArray[1];
-        this.configGPU.storage = this.minCapacity;
-        this.configCustom.capacity = this.minCapacity;
-        this.cdr.detectChanges();
       },
     });
   }
