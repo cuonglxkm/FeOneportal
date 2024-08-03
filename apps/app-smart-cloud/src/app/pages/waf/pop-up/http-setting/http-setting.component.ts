@@ -17,6 +17,7 @@ import { finalize } from 'rxjs';
 })
 export class HttpSettingComponent implements OnInit {
   @Input() domainData: WafDomain ;
+  @Output() onOk = new EventEmitter();
 
   isLoading: boolean = false;
   isVisibleCreateSsl: boolean = false
@@ -118,7 +119,7 @@ export class HttpSettingComponent implements OnInit {
       next:()=>{
         this.notification.success(this.i18n.fanyi("app.status.success"), "Thao tác thành công")
         this.isVisible = false;
-        this.router.navigate(['app-smart-cloud/waf'])
+        this.onOk.emit()
       },
       error:()=>{
         this.notification.error(this.i18n.fanyi("app.status.error"), "Có lỗi xảy ra")

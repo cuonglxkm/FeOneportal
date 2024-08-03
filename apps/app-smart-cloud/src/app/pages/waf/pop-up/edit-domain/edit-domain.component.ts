@@ -29,6 +29,7 @@ import { I18NService } from '@core';
 })
 export class EditDomainComponent {
   @Input() domainData: WafDomain;
+  @Output() onOk = new EventEmitter();
 
   isVisible: boolean = false;
   isLoading: boolean = false;
@@ -81,6 +82,7 @@ export class EditDomainComponent {
         next: () => {
           this.notification.success(this.i18n.fanyi("app.status.success"),"Thông tin domain đã được cập nhật")
           this.isVisible = false
+          this.onOk.emit()
         },
         error:()=>{
           this.notification.error(this.i18n.fanyi("app.status.error"),"Đã có lỗi xảy ra")

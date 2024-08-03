@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Inject, Input } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Inject, Input, Output } from '@angular/core';
 import { WafDomain } from '../../waf.model';
 import { WafService } from 'src/app/shared/services/waf.service';
 import { Router } from '@angular/router';
@@ -15,6 +15,7 @@ import { finalize } from 'rxjs';
 })
 export class DisablePolicyComponent {
   @Input() domainData: WafDomain
+  @Output() onOk = new EventEmitter();
 
   isVisible: boolean = false;
   isLoading: boolean = false
@@ -43,7 +44,7 @@ export class DisablePolicyComponent {
       next:()=>{
         this.notification.success(this.i18n.fanyi("app.status.success"),"Thao tác thành công")
         this.isVisible = false;
-        this.router.navigate(['/app-smart-cloud/waf'])
+        this.onOk.emit()
       },
       error:()=>{
         this.notification.error(this.i18n.fanyi("app.status.error"),"Có lỗi xảy ra")
