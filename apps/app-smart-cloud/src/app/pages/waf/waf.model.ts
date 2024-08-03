@@ -87,6 +87,7 @@ export interface WafDomain {
   id: number;
   domain: string;
   ipPublic: string;
+  cName:string;
   host: string;
   port: number | null;
   sslCertId: number | null;
