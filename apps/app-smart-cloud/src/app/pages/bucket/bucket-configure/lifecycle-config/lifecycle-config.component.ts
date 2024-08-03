@@ -137,10 +137,7 @@ export class LifecycleConfigComponent implements OnInit {
         },
         error: (e) => {
           this.listLifecycle = [];
-          this.notification.error(
-            this.i18n.fanyi('app.status.fail'),
-            this.i18n.fanyi('app.lifeCycle.get.fail')
-          );
+
         },
       });
   }
