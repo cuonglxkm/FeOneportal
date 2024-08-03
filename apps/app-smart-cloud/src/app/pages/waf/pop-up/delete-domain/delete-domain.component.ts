@@ -30,6 +30,7 @@ import { Router } from '@angular/router';
 })
 export class DeleteDomainComponent {
   @Input() domainData: WafDomain;
+  @Output() onOk = new EventEmitter();
 
   isVisible: boolean = false;
   isLoading: boolean = false;
@@ -76,7 +77,7 @@ export class DeleteDomainComponent {
         next:()=>{
           this.notification.success(this.i18n.fanyi("app.status.success"), "Thao tác thành công")
           this.isVisible = false;
-          this.router.navigate(['/app-smart-cloud/waf'])
+          this.onOk.emit()
         },
         error:()=>{
           this.notification.success(this.i18n.fanyi("app.status.error"), "Đã xảy ra lỗi")

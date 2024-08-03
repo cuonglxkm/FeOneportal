@@ -43,6 +43,8 @@ export class ListSslCertComponent {
   pageSize: number = 10;
   pageIndex: number = 1;
   response: BaseResponse<SslCertDTO[]>;
+
+  searchParam: string
   @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
 
   constructor(
@@ -62,16 +64,18 @@ export class ListSslCertComponent {
   private searchSubscription: Subscription;
   private enterPressed: boolean = false;
 
-  changeSearchParam(value: string) {
+  changeInputChange(evet: Event) {
+    const value = (event.target as HTMLInputElement).value
     this.enterPressed = false;
     this.dataSubjectSearchParam.next(value);
   }
 
-  onChangeSearchParam() {
+  onChangeInputChange() {
     this.searchSubscription = this.dataSubjectSearchParam
       .pipe(debounceTime(700))
       .subscribe((res) => {
         if (!this.enterPressed) {
+          this.searchParam = res.trim()
           this.getListCertificate();
         }
       });
@@ -80,6 +84,8 @@ export class ListSslCertComponent {
   onEnter(event: Event) {
     event.preventDefault();
     this.enterPressed = true;
+    const value = (event.target as HTMLInputElement).value
+    this.searchParam = value.trim()
     this.getListCertificate()
   }
 
@@ -118,7 +124,7 @@ export class ListSslCertComponent {
 
   getListCertificate() {
     this.isLoading = true;
-    this.wafService.getListSslCert('', this.pageIndex, this.pageIndex).pipe(finalize(()=>{
+    this.wafService.getListSslCert(this.searchParam, this.pageIndex, this.pageIndex).pipe(finalize(()=>{
       this.isLoading = false
     })).subscribe({
       next:(data)=>{

@@ -1,4 +1,7 @@
-<li nz-menu-item (click)="openModal()">{{'HTTPS Settings'}}</li>
+<!-- <li nz-menu-item (click)="openModal()">{{'HTTPS Settings'}}</li> -->
+<img  src="assets/imgs/ph_link-light.svg" (click)="openModal()" nz-popover
+[nzPopoverContent]="'waf.domain.https.setting' | i18n"
+nzPopoverPlacement="bottom" style="cursor: pointer;margin-right: 5px;"/>
 <nz-modal [(nzVisible)]="isVisible" [nzTitle]="modalTitle" [nzContent]="modalContent" [nzFooter]="null"
 (nzOnCancel)="handleCancelHttpSetting()">
 <ng-template #modalTitle>
