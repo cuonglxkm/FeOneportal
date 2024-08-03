@@ -17,6 +17,7 @@
   <div style="display: flex">
     <div style="margin-right: 8px;">
       <button class="button-cancel"
+              [routerLink]="'/app-smart-cloud/waf/extend/'+data.id"
               nzType="primary"
               nz-button>
         <img src="assets/imgs/calendar-tick2.svg" alt="" style="cursor: pointer;margin-bottom: 3px;" />
@@ -25,6 +26,7 @@
     </div>
     <div nz-col nzSpan="4">
       <button class="button-fee"
+              [routerLink]="'/app-smart-cloud/waf/resize/'+data.id"
               nz-button
               nzType="primary" >
         <img src="assets/imgs/edit-1.svg" alt=""
