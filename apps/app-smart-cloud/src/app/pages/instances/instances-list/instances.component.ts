@@ -130,6 +130,10 @@ export class InstancesComponent implements OnInit {
               this.updateRowState(taskState, foundIndex);
             case 'DELETED':
               this.reloadTable();
+            case 'DETACH':
+                this.reloadTable();
+            case 'ATTACH':
+                this.reloadTable();
           }
         } else {
           switch (actionType) {
