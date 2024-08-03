@@ -55,6 +55,12 @@ export class CreateL7RuleComponent implements AfterViewInit {
     { value: 'EQUAL_TO', label: 'EQUAL_TO' }
   ];
 
+  compareTypes1 = [
+    { value: 'REGEX', label: 'REGEX  ' },
+    { value: 'EQUAL_TO', label: 'EQUAL_TO' }
+  ];
+
+
   @ViewChild('l7RuleInputName') l7RuleInputName!: ElementRef<HTMLInputElement>;
 
   constructor(private fb: NonNullableFormBuilder,
@@ -78,6 +84,7 @@ export class CreateL7RuleComponent implements AfterViewInit {
       this.validateForm.controls.key.clearValidators()
       this.validateForm.controls.key.updateValueAndValidity()
     }
+    this.validateForm.controls['compareType'].setValue(null as string);
   }
 
   showModal() {

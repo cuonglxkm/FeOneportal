@@ -98,7 +98,7 @@ export class ListenerCreateComponent implements OnInit{
     maxRetriesDown: [3],
     delay: [5,[Validators.required]],
     timeoutHealth: [5,[Validators.required]],
-    path: ['/',[Validators.required,Validators.pattern(/^\/[a-zA-Z0-9-_\/]+\/?$/)]],
+    path: ['/',[Validators.pattern(/^\/[a-zA-Z0-9-_\/]+\/?$/)]],
     sucessCode: ['200',[Validators.required, Validators.pattern(/^[0-9_]*$/)]]
   });
   protocolListener = 'HTTP';

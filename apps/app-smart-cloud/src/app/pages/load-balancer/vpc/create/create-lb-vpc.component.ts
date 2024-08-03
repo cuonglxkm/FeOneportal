@@ -33,8 +33,8 @@ export class CreateLbVpcComponent implements OnInit {
   project = JSON.parse(localStorage.getItem('projectId'));
 
   nameList: string[] = [];
-  enableInternetFacing: boolean = true;
-  enableInternal: boolean = false;
+  enableInternetFacing: boolean = false;
+  enableInternal: boolean = true;
   listSubnets: Subnet[] = [];
   invalidIpAddress = true;
 

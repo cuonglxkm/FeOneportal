@@ -375,6 +375,7 @@
         <ng-container *ngIf="control.hasError('pattern')">{{
           'app.bucket.detail.createFolder.pattern' | i18n
         }}</ng-container>
+        <ng-container *ngIf="control.hasError('duplicateName')">{{ 'app.bucket.detail.createFolder.duplicate' | i18n }}</ng-container>
       </ng-template>
       </nz-form-control>
       </nz-form-item>
