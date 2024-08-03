@@ -63,7 +63,12 @@
         <th nzWidth="60px"></th>
         <th nzLeft>{{ 'waf.domain.table.title.domain' | i18n }}</th>
         <th nzBreakWord>{{ 'waf.domain.table.title.ip' | i18n }}</th>
-        <th nzBreakWord>{{ 'waf.domain.table.title.cname' | i18n }}</th>
+        <th nzBreakWord 
+          nzTooltipTitle="{{ 'Quý khách vui lòng chủ động CNAME để sử dụng dịch vụ' }}"
+          nzTooltipPlacement="top"
+          nz-tooltip>
+          {{ 'waf.domain.table.title.cname' | i18n }}
+        </th>
         <th nzBreakWord>{{ 'waf.domain.table.title.https' | i18n }}</th>
         <th nzBreakWord>{{ 'waf.table.title.package' | i18n }}</th>
         <th nzBreakWord>{{ 'waf.table.title.name' | i18n }}</th>
@@ -78,7 +83,10 @@
             <td [nzExpand]="expandSet.has(data.id)" (nzExpandChange)="onExpandChange(data.id, $event)" ></td>
             <td nzLeft>{{ data.domain }}</td>
             <td nzBreakWord nzAlign="left">{{ data.ipPublic }}</td>
-            <td nzBreakWord nzAlign="left">{{ data.cName }}</td>
+            <td nzBreakWord nzAlign="left">{{ data.cName }} 
+              <img *ngIf="data.cName" nz-popover src="assets/imgs/copy1.svg" alt="" nzPopoverPlacement="bottom" (click)="copy(data.cName)"
+                style="cursor: pointer; margin-right: 5px; margin-top: 2px;" [nzPopoverContent]="copySuccess ? ('app.bucket.detail.copied' | i18n) : ('app.bucket.detail.copy' | i18n)" />
+            </td>
             <td nzBreakWord nzAlign="left">{{ data.sslCertId ? 'ENABLE' : 'DISABLE' }}</td>
             <td nzBreakWord nzAlign="left">{{ data.offerName }}</td>
             <td nzBreakWord nzAlign="left">{{ data.wafPackageName }}</td>
