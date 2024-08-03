@@ -109,10 +109,6 @@ export class BucketPolicyComponent implements OnInit {
         },
         error: (e) => {
           this.listBucketPolicy = [];
-          this.notification.error(
-            this.i18n.fanyi('app.status.fail'),
-            this.i18n.fanyi('app.detail.bucket.policy.fail')
-          );
         },
       });
   }
@@ -559,10 +555,6 @@ export class BucketPolicyComponent implements OnInit {
           this.jsonDataBucketPolicy = JSON.stringify(this.bucketPolicyDetail, null, 2);
         },
         error: (e) => {
-          this.notification.error(
-            e.statusText,
-            'Lấy Bucket Policy JSON không thành công'
-          );
         },
       });
   }

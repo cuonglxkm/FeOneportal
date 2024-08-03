@@ -436,7 +436,7 @@
     >
 
     <nz-form-item>
-    <nz-form-control [nzErrorTip]="nameError">
+    <nz-form-control [nzErrorTip]="'app.router.note46' | i18n">
       <input
         class="input-custom"
         name="name"
@@ -445,10 +445,6 @@
         [(ngModel)]="nameVerify"
         (keyup.enter)="handleOkDelete()"
       />
-      <ng-template #nameError let-i>
-        <ng-container *ngIf="i.errors?.required">{{ 'app.router.note44' | i18n }}</ng-container>
-        <ng-container *ngIf="i.hasError('nameMismatch')">{{ 'app.router.note46' | i18n }}</ng-container>
-      </ng-template>
     </nz-form-control>
   </nz-form-item>
   </ng-container>

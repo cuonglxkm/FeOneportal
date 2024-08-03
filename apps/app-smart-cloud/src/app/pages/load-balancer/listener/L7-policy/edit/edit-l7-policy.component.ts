@@ -205,7 +205,7 @@ export class EditL7PolicyComponent implements OnInit {
         this.isLoading = false
         this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('app.notification.update.l7.policy.success'))
         //navigate detail listener
-        this.router.navigate(['/app-smart-cloud/load-balancer/' + this.idLoadBalancer + '/listener/detail/' + this.idListener])
+        this.router.navigate(['/app-smart-cloud/load-balancer/' + this.idLoadBalancer + '/listener/detail/' + this.idListener],{ queryParams: { tabIndex: 1 } })
       }, error => {
         this.isLoading = false
         this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.notification.update.l7.policy.fail'))

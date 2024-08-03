@@ -89,15 +89,15 @@
           <td>
             <div>
               <!----Gắn----->
-              <img *ngIf="item.status != 'DANGSUDUNG' && item.status != 'LOI' && item.resourceStatus != 'ERROR' && (!!item.suspendReason || item.suspendReason == '')" style="padding-right: 10px;" src="assets/imgs/add.svg"
+              <img *ngIf="item.status != 'DANGSUDUNG' && item.status != 'LOI' && item.resourceStatus != 'ERROR' &&  item.status != 'SUSPENDED'" style="padding-right: 10px;" src="assets/imgs/add.svg"
                    nz-tooltip nzTooltipTitle="{{'app.attach' | i18n}} IP Public" nzTooltipPlacement="bottom"
                    (click)="openIpMounted('Gắn Ip Pulbic', item)"/>
               <!---Gỡ------>
-              <img *ngIf="item.status == 'DANGSUDUNG' && item.status != 'LOI' && item.resourceStatus != 'ERROR' && (!!item.suspendReason || item.suspendReason == '')" style="padding-right: 10px;" src="assets/imgs/cancel.svg"
+              <img *ngIf="item.status == 'DANGSUDUNG' && item.status != 'LOI' && item.resourceStatus != 'ERROR' && item.status != 'SUSPENDED'" style="padding-right: 10px;" src="assets/imgs/cancel.svg"
                    nz-tooltip nzTooltipTitle="{{'app.detach' | i18n}} IP Public" nzTooltipPlacement="bottom"
                    (click)="openIpMounted('Gỡ Ip Pulbic', item)"/>
               <!---Gia Han------>
-              <img *ngIf="projectType != 1 && item.status != 'LOI' && item.resourceStatus != 'ERROR' && (!!item.suspendReason || item.suspendReason == '')" style="padding-right: 10px;" src="assets/imgs/calendar-tick.svg"
+              <img *ngIf="projectType != 1 && item.status != 'LOI' && item.resourceStatus != 'ERROR' && item.status != 'SUSPENDED'" style="padding-right: 10px;" src="assets/imgs/calendar-tick.svg"
                    nz-tooltip nzTooltipTitle="{{'app.extend' | i18n}} IP Public" nzTooltipPlacement="bottom"
                    (click)="openIpMounted('Gia hạn Ip Pulbic', item)"/>
               <!----Xóa---->

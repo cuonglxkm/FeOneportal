@@ -38,7 +38,7 @@ export class WafDomainListComponent implements OnInit, OnDestroy {
     {name:"Custom rules", value: true},
     {name:"Whitelist", value: true}
   ]
-
+  copySuccess: boolean;
   pageSize: number = 10;
   pageIndex: number = 1;
 
@@ -60,6 +60,7 @@ export class WafDomainListComponent implements OnInit, OnDestroy {
   }
 
   onExpandChange(id: number, checked: boolean): void {
+    debugger;
     if (checked) {
       this.expandSet.add(id);
     } else {
@@ -213,10 +214,8 @@ export class WafDomainListComponent implements OnInit, OnDestroy {
     }
     this.wafService.updatePolicies(data.id,updateData).subscribe({
       next: (data) => {
-          if (data) {
-            
-          }
           this.isLoading = false;
+          this.getListWafDomain();
         },
       error: (error) => {
           this.isLoading = false;
@@ -226,11 +225,23 @@ export class WafDomainListComponent implements OnInit, OnDestroy {
     );
   }
 
+  copy(text){
+    if(this.copySuccess) return;
+    navigator.clipboard.writeText(text).then(() => {
+      this.copySuccess = true;
+      setTimeout(() => {
+        this.copySuccess = false;
+      }, 500);
+    }).catch(err => {
+      console.error('Could not copy text: ', err);
+    });;
+  }
+
   ngOnInit() {
     this.selectedValue = this.options[0].value;
     this.onChangeInputChange();
     this.getListWafDomain();
-    this.notificationService.connection.on('UpdateWaf', (message) => {
+    this.notificationService.connection.on('UpdateWafDomain', (message) => {
       if (message) {
         switch (message.actionType) {
           case 'CREATING':

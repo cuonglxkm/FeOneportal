@@ -40,10 +40,12 @@ export class CreateSslCertWAFComponent implements OnInit {
     privateKey: FormControl<string>;
     certificate: FormControl<string>;
     certName: FormControl<string>;
+    remarks: FormControl<string>;
   }> = this.fb.group({
     privateKey: ['', Validators.required],
     certName: ['', [Validators.required, Validators.pattern(NAME_REGEX)]],
     certificate: ['', Validators.required],
+    remarks: ['']
   });
 
   constructor(
@@ -151,6 +153,7 @@ export class CreateSslCertWAFComponent implements OnInit {
       }
     }
     this.formCreateeSslCert.name = this.form.get('certName').value;
+    this.formCreateeSslCert.remarks = this.form.get('remarks').value;
     if(this.uploadMethod === '2'){
       this.formCreateeSslCert.certificate = this.form.get('certificate').value.split('\n').join('');
       this.formCreateeSslCert.privateKey = this.form.get('privateKey').value.split('\n').join('');
@@ -180,6 +183,7 @@ export class CreateSslCertWAFComponent implements OnInit {
     this.SSLCertService.createSSlCert(this.formCreateeSslCert).subscribe(
       (data) => {
         this.isLoading = false;
+        this.router.navigate(['/app-smart-cloud/waf/ssl-cert']);
         this.notification.success(
           this.i18n.fanyi('app.status.success'),
           'Tạo mới ssl cert thành công'

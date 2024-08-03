@@ -39,54 +39,53 @@
   <nz-card style="border-radius: 8px;">
     <span class="text-card-header">{{ 'app.l7.policy.info' | i18n }}</span>
     <form nz-form nzLayout="vertical">
-      <nz-row nzGutter="24">
-        <nz-col nzSpan="12">
-          <nz-form-item style="margin-top: 20px;">
-            <nz-form-label>
-              <span>{{ 'app.l7.policy.name' | i18n }}</span>
-            </nz-form-label>
-            <nz-form-control nzDisableAutoTips>
-              <input nz-input class="input-custom" [value]="l7Policy?.name" [disabled]="true" />
-            </nz-form-control>
-          </nz-form-item>
-          <nz-form-item style="margin-top: 20px;">
-            <nz-form-label>
-              <span>{{ 'app.execute.action' | i18n }}</span>
-            </nz-form-label>
-            <nz-form-control nzDisableAutoTips>
-              <input nz-input class="input-custom" [value]="l7Policy?.action" [disabled]="true" />
-            </nz-form-control>
-          </nz-form-item>
-          <nz-form-item style="margin-top: 20px;">
-            <nz-form-label>
-              <span>{{ 'app.service.description' | i18n }}</span>
-            </nz-form-label>
-            <nz-form-control nzDisableAutoTips>
+      <div class="customRow">
+        <nz-row>
+          <nz-col nzSpan="12">
+            <nz-row style="padding: 12px 0 12px 0">
+              <span class="text-label customSpan" style="width: 35%">{{ 'app.l7.policy.name' | i18n }}</span>
+              <span class="text-value-detail customSpan">{{l7Policy?.name}}</span>
+            </nz-row>
+          </nz-col>
+          <nz-col nzSpan="12">
+            <nz-row style="padding: 12px 0 12px 0">
+              <span class="text-label customSpan" style="width: 35%">{{'app.priority' | i18n}}</span>
+              <span class="text-value-detail customSpan">{{l7Policy?.position}}</span>
+            </nz-row>
+          </nz-col>
+        </nz-row>
+        <nz-row style="background-color: #e2e2e9">
+          <nz-col nzSpan="12">
+            <nz-row style="padding: 12px 0 12px 0">
+              <span class="text-label customSpan" style="width: 35%">{{'app.execute.action' | i18n}}</span>
+              <span class="text-value-detail customSpan">{{l7Policy?.action}}</span>
+            </nz-row>
+          </nz-col>
+          <nz-col nzSpan="12">
+            <nz-row style="padding: 12px 0 12px 0">
+              <span class="text-label customSpan" style="width: 35%">{{'app.text.status' | i18n}}</span>
+              <span class="text-value-detail customSpan">{{l7Policy?.adminStateUp === true ? ('app.start' | i18n) : ('app.off' | i18n)}}</span>
+            </nz-row>
+          </nz-col>
+        </nz-row>
+        <nz-row>
+            <nz-row style="padding: 12px 0 12px 0">
+              <span class="text-label customSpan" style="width: 35%">Url</span>
+              <span class="text-value-detail customSpan">{{l7Policy?.redirectUrl}}</span>
+            </nz-row>
+        </nz-row>
+      </div>
+      <nz-form-item style="margin-top: 20px;">
+        <nz-form-label>
+          <span>{{ 'app.service.description' | i18n }}</span>
+        </nz-form-label>
+        <nz-form-control nzDisableAutoTips>
               <textarea nz-input class="input-custom"
                         [value]="l7Policy?.description"
                         [nzAutosize]="{ minRows: 3, maxRows: 5 }"
                         [disabled]="true"></textarea>
-            </nz-form-control>
-          </nz-form-item>
-        </nz-col>
-        <nz-col nzSpan="12">
-          <nz-form-item style="margin-top: 20px;">
-            <nz-form-label>
-              <span>{{ 'app.priority' | i18n }}</span>
-            </nz-form-label>
-            <nz-form-control nzDisableAutoTips>
-              <input nz-input class="input-custom" [value]="l7Policy?.position" [disabled]="true" />
-            </nz-form-control>
-          </nz-form-item>
-          <nz-form-item>
-            <div style="display: flex;">
-              <span style="margin-right: 15px;">{{ 'app.text.status' | i18n }}</span>
-              <nz-switch [ngModel]="l7Policy?.adminStateUp" [ngModelOptions]="{standalone: true}" [nzDisabled]="true"></nz-switch>
-            </div>
-
-          </nz-form-item>
-        </nz-col>
-      </nz-row>
+        </nz-form-control>
+      </nz-form-item>
     </form>
   </nz-card>
   <nz-card style="border-radius: 8px;">
@@ -129,7 +128,7 @@
       <tr *ngFor="let data of fixedTable.data">
         <td nzAlign="left">{{ data.type }}</td>
         <td nzAlign="left">{{ data.compareType }}</td>
-        <td nzAlign="right">{{ data.key }}</td>
+        <td nzAlign="left">{{ data.key }}</td>
         <td nzAlign="right">{{ data.value }}</td>
         <td nzAlign="left" [ngSwitch]="data.invert">
           <span *ngSwitchCase="false">FALSE</span>

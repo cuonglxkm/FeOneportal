@@ -122,10 +122,6 @@ export class BucketCorsComponent implements OnInit {
         },
         error: (e) => {
           this.listBucketCors = [];
-          this.notification.error(
-            this.i18n.fanyi('app.status.fail'),
-            this.i18n.fanyi('app.get.bucket.cors.fail')
-          );
         },
       });
   }

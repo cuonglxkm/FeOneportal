@@ -49,7 +49,7 @@ export class ServiceStatusPipe implements PipeTransform {
       case "TAMNGUNG":
         return new StatusModel("#FFBB63", this.i18n.fanyi('app.suspend'));
       case "HUY":
-          return new StatusModel("#EA3829", this.i18n.fanyi('service.status.cancel'));  
+          return new StatusModel("#EA3829", this.i18n.fanyi('service.status.cancel')); 
       default:
         return new StatusModel("#4c4f67", this.i18n.fanyi('service.status.unknown'));
     }

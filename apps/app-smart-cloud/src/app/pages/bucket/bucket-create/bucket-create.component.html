@@ -32,7 +32,7 @@
           <span class="text-card-header">{{ 'app.bucket.info' | i18n }}</span>
         </div>
         <div style="margin-bottom: 20px" class="text-label">
-          {{ 'validation.bucket.name' | i18n }}
+          {{ 'validation.bucket.name1' | i18n }}
         </div>
         <nz-row nzGutter="16">
           <nz-col nzSpan="24">
@@ -52,7 +52,7 @@
                       [(ngModel)]="bucketName"
                       id="name"
                       [placeholder]="'app.input.name' | i18n"
-                      maxlength="50"
+                      maxlength="63"
                       minlength="1"
                     />
                   </nz-col>
@@ -192,7 +192,7 @@
               nzType="primary"
               [nzLoading]="isLoading"
               (click)="save()"
-              [disabled]="form.invalid" 
+              [disabled]="form.invalid"
             >
             <img src="assets/imgs/wallet.svg" style="margin-right: 5px; padding-bottom: 5px;" />
             <span [style.color]="form.invalid ? 'gray' : 'white'">{{ 'app.button.create'|i18n }}</span>

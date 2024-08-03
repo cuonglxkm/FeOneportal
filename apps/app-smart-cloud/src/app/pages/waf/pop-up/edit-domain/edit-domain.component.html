@@ -1,4 +1,6 @@
-<li nz-menu-item (click)="openModal()">{{'Chỉnh sửa'}}</li>
+<!-- <li nz-menu-item (click)="openModal()">{{'Chỉnh sửa'}}</li> -->
+<img nz-popover src="assets/imgs/edit-2.svg" alt="" nzPopoverPlacement="bottom" (click)="openModal()"
+    style="cursor: pointer; margin-right: 5px; margin-top: 2px;" [nzPopoverContent]="'app.text.edit' | i18n" />
 <nz-modal [(nzVisible)]="isVisible" [nzTitle]="modalTitle" [nzContent]="modalContent" [nzFooter]="null"
     (nzOnCancel)="handleCancelEditDomain()">
     <ng-template #modalTitle>

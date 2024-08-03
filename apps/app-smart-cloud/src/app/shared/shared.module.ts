@@ -34,6 +34,7 @@ import { TrimDirective } from '../pages/file-storage/TrimDirective';
 import { PhoneValidatorDirective } from './directive/PhoneValidatorDirective';
 import { ServiceTaskStatePipe } from './pipes/task-state.pipe';
 import { SuspendStatusPipe } from './pipes/suspend-status.pipe';
+import { CDNStatusPipe } from './pipes/cdnetwork-status.pipe';
 
 const antDesignIcons = AllIcons as {
   [key: string]: any;
@@ -93,6 +94,7 @@ const DIRECTIVES: Array<Type<any>> = [];
     PaymentSummaryComponent,
     IsPermissionPipe,
     ServiceStatusPipe,
+    CDNStatusPipe,
     SuspendStatusPipe,
     ServiceTaskStatePipe,
     formatPrice,
@@ -115,6 +117,7 @@ const DIRECTIVES: Array<Type<any>> = [];
     ...DIRECTIVES,
     IsPermissionPipe,
     ServiceStatusPipe,
+    CDNStatusPipe,
     SuspendStatusPipe,
     ServiceTaskStatePipe,
     formatPrice,
