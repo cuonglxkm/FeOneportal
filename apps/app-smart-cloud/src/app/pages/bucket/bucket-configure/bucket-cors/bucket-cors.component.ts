@@ -101,7 +101,7 @@ export class BucketCorsComponent implements OnInit {
 
   form = new FormGroup({
     domain: new FormControl('', {
-      validators: [Validators.required, Validators.pattern(/^[a-zA-Z0-9]*$/)],
+      validators: [Validators.required, Validators.pattern(/^(?!-)[a-zA-Z0-9-]{1,63}(?<!-)(\.(?!-)[a-zA-Z0-9-]{1,63}(?<!-)){1,253}$/)],
     }),
   });
 

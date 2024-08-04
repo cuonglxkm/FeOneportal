@@ -1083,8 +1083,8 @@ export class InstancesCreateComponent implements OnInit {
   }
 
   minCapacity: number;
-  maxCapacity: number;
-  stepCapacity: number;
+  maxCapacity: number = 0;
+  stepCapacity: number = 0;
   surplus: number;
   getConfigurations() {
     this.configurationService.getConfigurations('BLOCKSTORAGE').subscribe({

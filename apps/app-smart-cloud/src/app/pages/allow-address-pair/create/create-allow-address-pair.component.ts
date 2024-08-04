@@ -20,8 +20,8 @@ import { AllowAddressPairService } from '../../../shared/services/allow-address-
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { ipValidator } from '../../file-storage/access-rule/action/create/create-access-rule.component';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
-import { I18NService } from '../../../../../../app-kafka/src/app/core/i18n/i18n.service';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
+import { I18NService } from '@core';
 
 @Component({
   selector: 'create-allow-address-pair',

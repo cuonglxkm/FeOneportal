@@ -204,11 +204,11 @@ export class InstancesDetailComponent implements OnInit {
       name: '1 ' + this.i18n.fanyi('app.week'),
     },
     {
-      key: 302400,
+      key: 43200,
       name: '1 ' + this.i18n.fanyi('app.month'),
     },
     {
-      key: 907200,
+      key: 129600,
       name: '3 ' + this.i18n.fanyi('app.months'),
     },
   ];
@@ -242,8 +242,10 @@ export class InstancesDetailComponent implements OnInit {
     this.getMonitorData();
   }
 
+  typeGSTitle: string = 'RAM';
   onChangeCPU(event?: any) {
     this.valueGSCPU = event;
+    this.typeGSTitle = this.GSCPU.filter(e => e.key == this.valueGSCPU)[0].name
     this.getMonitorData();
   }
   onChangeTIME(event?: any) {

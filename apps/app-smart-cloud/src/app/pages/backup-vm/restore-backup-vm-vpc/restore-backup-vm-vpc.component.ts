@@ -551,8 +551,8 @@ export class RestoreBackupVmVpcComponent implements OnInit {
   }
 
   minCapacity: number;
-  maxCapacity: number;
-  stepCapacity: number;
+  maxCapacity: number = 0;
+  stepCapacity: number = 0;
   getConfigurations() {
     this.configurationService.getConfigurations('BLOCKSTORAGE').subscribe({
       next: (data) => {

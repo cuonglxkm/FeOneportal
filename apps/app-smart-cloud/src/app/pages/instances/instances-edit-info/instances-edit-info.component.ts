@@ -274,6 +274,7 @@ export class InstancesEditInfoComponent implements OnInit {
             });
         },
         error: (e) => {
+          this.isVisibleUpdate = false;
           let numbers: number[] = [];
           const regex = /\d+/g;
           const matches = e.error.match(regex);
