@@ -223,8 +223,8 @@ export class LoadBalancerService extends BaseService {
     );
   }
 
-  updatePool(idPool: string, formUpdate: FormUpdatePool) {
-    return this.http.put(this.baseUrl + this.ENDPOINT.provisions + `/loadbalancer/pool/${idPool}`, Object.assign(formUpdate), this.getHeaders())
+  updatePool(formUpdate: FormUpdatePool) {
+    return this.http.put(this.baseUrl + this.ENDPOINT.provisions + `/loadbalancer/pool`, Object.assign(formUpdate), this.getHeaders())
       .pipe(catchError((error: HttpErrorResponse) => {
         if (error.status === 401) {
           console.error('login');

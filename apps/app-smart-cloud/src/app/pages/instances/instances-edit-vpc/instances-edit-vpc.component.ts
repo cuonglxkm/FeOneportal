@@ -370,7 +370,7 @@ export class InstancesEditVpcComponent implements OnInit {
 
   resetData() {
     this.vCPU = 0;
-    this.storage = this.minCapacity;
+    this.storage = 0;
     this.ram = 0;
     this.instanceResize.gpuCount = this.instancesModel.gpuCount;
     this.configRecommend = this.listGpuConfigRecommend.filter(
@@ -533,10 +533,6 @@ export class InstancesEditVpcComponent implements OnInit {
         this.minCapacity = Number.parseInt(valueArray[0]);
         this.stepCapacity = Number.parseInt(valueArray[1]);
         this.maxCapacity = Number.parseInt(valueArray[2]);
-        this.storage = this.minCapacity;
-        if (this.storage != 0) {
-          this.changeCapacity(this.storage);
-        }
       },
     });
   }

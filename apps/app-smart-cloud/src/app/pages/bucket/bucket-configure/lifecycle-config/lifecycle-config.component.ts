@@ -6,11 +6,7 @@ import {
   Input,
   OnInit,
 } from '@angular/core';
-import {
-  FormControl,
-  FormGroup,
-  NonNullableFormBuilder,
-} from '@angular/forms';
+import { FormControl, FormGroup, NonNullableFormBuilder } from '@angular/forms';
 import { I18NService } from '@core';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { getCurrentRegionAndProject } from '@shared';
@@ -137,7 +133,6 @@ export class LifecycleConfigComponent implements OnInit {
         },
         error: (e) => {
           this.listLifecycle = [];
-
         },
       });
   }
@@ -151,7 +146,6 @@ export class LifecycleConfigComponent implements OnInit {
   lifecycleCreate: BucketLifecycleCreate = new BucketLifecycleCreate();
   modalCreate() {
     this.isVisibleCreate = true;
-    this.isValidateKey = true;
   }
 
   resetForm() {
@@ -172,49 +166,68 @@ export class LifecycleConfigComponent implements OnInit {
     this.resetForm();
   }
 
+  listKeyError: boolean[] = [];
   handleOkCreate() {
-    this.isLoadingCreate = true;
-    this.lifecycleCreate.bucketName = this.bucketName;
-    this.lifecycleCreate.prefix = this.lifecycleCreate.prefix?.trim();
-    if (this.lifecycleCreate.prefix == '') {
-      this.lifecycleCreate.prefix == null;
-    }
-    this.listTag.forEach((e) => {
-      let lifecycleTagPredicate: LifecycleTagPredicate =
-        new LifecycleTagPredicate();
-      if (e.key != '') {
-        lifecycleTagPredicate.metaKey = e.key.trim();
-      }
-      lifecycleTagPredicate.metaValue = e.value.trim();
-      this.lifecycleCreate.lifecycleTagPredicate.push(lifecycleTagPredicate);
-    });
-    this.bucketService
-      .createBucketLifecycle(this.lifecycleCreate, this.region)
-      .pipe(
-        finalize(() => {
-          this.isLoadingCreate = false;
-          this.cdr.detectChanges();
-        })
-      )
-      .subscribe({
-        next: (data) => {
-          this.isVisibleCreate = false;
-          this.notification.success(
-            this.i18n.fanyi('app.status.success'),
-            this.i18n.fanyi('app.lifeCycle.create.success')
-          );
-          this.resetForm();
-          this.searchLifeCycle();
-          this.cdr.detectChanges();
-        },
-        error: (e) => {
-          this.notification.error(
-            this.i18n.fanyi('app.status.fail'),
-            this.i18n.fanyi('app.lifeCycle.create.fail')
-          );
-          this.cdr.detectChanges();
-        },
+    let hasKeyNull = this.checkTags(this.listTag);
+    this.listKeyError = [];
+    if (hasKeyNull) {
+      this.listTag.forEach((e) => {
+        if (e.key == '') {
+          this.listKeyError.push(true);
+        } else {
+          this.listKeyError.push(false);
+        }
       });
+    } else {
+      this.isLoadingCreate = true;
+      this.lifecycleCreate.bucketName = this.bucketName;
+      this.lifecycleCreate.prefix = this.lifecycleCreate.prefix?.trim();
+      if (this.lifecycleCreate.prefix == '') {
+        this.lifecycleCreate.prefix == null;
+      }
+      this.listTag.forEach((e) => {
+        let lifecycleTagPredicate: LifecycleTagPredicate =
+          new LifecycleTagPredicate();
+        if (e.key != '') {
+          lifecycleTagPredicate.metaKey = e.key.trim();
+        }
+        lifecycleTagPredicate.metaValue = e.value.trim();
+        this.lifecycleCreate.lifecycleTagPredicate.push(lifecycleTagPredicate);
+      });
+      this.bucketService
+        .createBucketLifecycle(this.lifecycleCreate, this.region)
+        .pipe(
+          finalize(() => {
+            this.isLoadingCreate = false;
+            this.cdr.detectChanges();
+          })
+        )
+        .subscribe({
+          next: (data) => {
+            this.isVisibleCreate = false;
+            this.notification.success(
+              this.i18n.fanyi('app.status.success'),
+              this.i18n.fanyi('app.lifeCycle.create.success')
+            );
+            this.resetForm();
+            this.searchLifeCycle();
+            this.cdr.detectChanges();
+          },
+          error: (e) => {
+            this.notification.error(
+              this.i18n.fanyi('app.status.fail'),
+              this.i18n.fanyi('app.lifeCycle.create.fail')
+            );
+            this.cdr.detectChanges();
+          },
+        });
+    }
+  }
+
+  addTag() {
+    let tag = new Tag();
+    tag.id = this.idTag++;
+    this.listTag.push(tag);
   }
 
   checkTags(tags: Tag[]): boolean {
@@ -225,27 +238,15 @@ export class LifecycleConfigComponent implements OnInit {
     }
     return true;
   }
-  isValidateKey: boolean = true;
-  addTag() {
-    let tag = new Tag();
-    tag.id = this.idTag++;
-    this.listTag.push(tag);
-    this.isValidateKey = this.checkTags(this.listTag);
-  }
-  onChangeKey() {
-    this.isValidateKey = this.checkTags(this.listTag);
-  }
 
   delelteTag(id: number) {
     this.listTag = this.listTag.filter((item) => item.id != id);
-    this.isValidateKey = this.checkTags(this.listTag);
   }
 
   isVisibleDelete: boolean = false;
   lifecycleDelete: BucketLifecycleCreate = new BucketLifecycleCreate();
   modalDelete(data: any) {
     this.isVisibleDelete = true;
-    this.isValidateKey = true;
     this.lifecycleDelete = data;
   }
 
@@ -329,44 +330,56 @@ export class LifecycleConfigComponent implements OnInit {
   }
 
   handleOkUpdate() {
-    this.isLoadingUpdate = true;
-    this.lifecycleUpdate.prefix = this.lifecycleUpdate.prefix?.trim();
-    this.lifecycleUpdate.lifecycleTagPredicate = [];
-    this.listTag.forEach((e) => {
-      let lifecycleTagPredicate: LifecycleTagPredicate =
-        new LifecycleTagPredicate();
-      if (e.key != '') {
-        lifecycleTagPredicate.metaKey = e.key.trim();
-      }
-      lifecycleTagPredicate.metaValue = e.value.trim();
-      this.lifecycleUpdate.lifecycleTagPredicate.push(lifecycleTagPredicate);
-    });
-    this.bucketService
-      .updateBucketLifecycle(this.lifecycleUpdate, this.region)
-      .pipe(
-        finalize(() => {
-          this.isLoadingUpdate = false;
-          this.cdr.detectChanges();
-        })
-      )
-      .subscribe({
-        next: (data) => {
-          this.isVisibleUpdate = false;
-          this.searchLifeCycle();
-          this.listTag = [];
-          this.notification.success(
-            this.i18n.fanyi('app.status.success'),
-            this.i18n.fanyi('app.lifeCycle.edit.success')
-          );
-          this.cdr.detectChanges();
-        },
-        error: (e) => {
-          this.notification.error(
-            this.i18n.fanyi('app.status.fail'),
-            this.i18n.fanyi('app.lifeCycle.edit.fail')
-          );
-          this.cdr.detectChanges();
-        },
+    let hasKeyNull = this.checkTags(this.listTag);
+    this.listKeyError = [];
+    if (hasKeyNull) {
+      this.listTag.forEach((e) => {
+        if (e.key == '') {
+          this.listKeyError.push(true);
+        } else {
+          this.listKeyError.push(false);
+        }
       });
+    } else {
+      this.isLoadingUpdate = true;
+      this.lifecycleUpdate.prefix = this.lifecycleUpdate.prefix?.trim();
+      this.lifecycleUpdate.lifecycleTagPredicate = [];
+      this.listTag.forEach((e) => {
+        let lifecycleTagPredicate: LifecycleTagPredicate =
+          new LifecycleTagPredicate();
+        if (e.key != '') {
+          lifecycleTagPredicate.metaKey = e.key.trim();
+        }
+        lifecycleTagPredicate.metaValue = e.value.trim();
+        this.lifecycleUpdate.lifecycleTagPredicate.push(lifecycleTagPredicate);
+      });
+      this.bucketService
+        .updateBucketLifecycle(this.lifecycleUpdate, this.region)
+        .pipe(
+          finalize(() => {
+            this.isLoadingUpdate = false;
+            this.cdr.detectChanges();
+          })
+        )
+        .subscribe({
+          next: (data) => {
+            this.isVisibleUpdate = false;
+            this.searchLifeCycle();
+            this.listTag = [];
+            this.notification.success(
+              this.i18n.fanyi('app.status.success'),
+              this.i18n.fanyi('app.lifeCycle.edit.success')
+            );
+            this.cdr.detectChanges();
+          },
+          error: (e) => {
+            this.notification.error(
+              this.i18n.fanyi('app.status.fail'),
+              this.i18n.fanyi('app.lifeCycle.edit.fail')
+            );
+            this.cdr.detectChanges();
+          },
+        });
+    }
   }
 }

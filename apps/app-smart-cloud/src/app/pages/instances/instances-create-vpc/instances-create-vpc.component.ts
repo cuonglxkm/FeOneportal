@@ -89,7 +89,7 @@ export class InstancesCreateVpcComponent implements OnInit {
       validators: [
         Validators.required,
         Validators.pattern(
-          /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9\s])(?!.*[àáạảãâầấậẩẫăằắặẳẵèéẹẻẽêềếệểễìíịỉĩòóọỏõôồốộổỗơờớợởỡùúụủũưừứựửữỳýỵỷỹđ]).{12,20}$/
+          /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9\s])(?!.*[àáạảãâầấậẩẫăằắặẳẵèéẹẻẽêềếệểễìíịỉĩòóọỏõôồốộổỗơờớợởỡùúụủũưừứựửữỳýỵỷỹđÀÁẠẢÃÂẦẤẬẨẪĂẰẮẶẲẴÈÉẸẺẼÊỀẾỆỂỄÌÍỊỈĨÒÓỌỎÕÔỒỐỘỔỖƠỜỚỢỞỠÙÚỤỦŨƯỪỨỰỬỮỲÝỴỶỸĐ]).{12,20}$/
         ),
       ],
     }),
@@ -528,7 +528,7 @@ export class InstancesCreateVpcComponent implements OnInit {
       this.remainingVolume =
         this.infoVPC.cloudProject.quotaHddInGb -
         this.infoVPC.cloudProjectResourceUsed.hdd;
-      this.instanceCreate.volumeSize = this.minCapacity;
+      this.instanceCreate.volumeSize = 0;
       this.cdr.detectChanges();
     }
   }
@@ -539,7 +539,7 @@ export class InstancesCreateVpcComponent implements OnInit {
       this.remainingVolume =
         this.infoVPC.cloudProject.quotaSSDInGb -
         this.infoVPC.cloudProjectResourceUsed.ssd;
-      this.instanceCreate.volumeSize = this.minCapacity;
+      this.instanceCreate.volumeSize = 0;
       this.cdr.detectChanges();
     }
   }
@@ -659,7 +659,7 @@ export class InstancesCreateVpcComponent implements OnInit {
 
   resetData() {
     this.instanceCreate.cpu = 0;
-    this.instanceCreate.volumeSize = this.minCapacity;
+    this.instanceCreate.volumeSize = 0;
     if (this.isSnapshot) {
       this.instanceCreate.volumeSize =
         this.sizeSnapshotVL < this.stepCapacity
@@ -685,8 +685,6 @@ export class InstancesCreateVpcComponent implements OnInit {
         this.minCapacity = (Number).parseInt(valueArray[0]);
         this.stepCapacity = (Number).parseInt(valueArray[1]);
         this.maxCapacity = (Number).parseInt(valueArray[2]);
-        this.instanceCreate.volumeSize = this.minCapacity;
-        this.cdr.detectChanges();
       },
     });
   }
@@ -857,7 +855,7 @@ export class InstancesCreateVpcComponent implements OnInit {
         validators: [
           Validators.required,
           Validators.pattern(
-            /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9\s])(?!.*[àáạảãâầấậẩẫăằắặẳẵèéẹẻẽêềếệểễìíịỉĩòóọỏõôồốộổỗơờớợởỡùúụủũưừứựửữỳýỵỷỹđ]).{12,20}$/
+            /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9\s])(?!.*[àáạảãâầấậẩẫăằắặẳẵèéẹẻẽêềếệểễìíịỉĩòóọỏõôồốộổỗơờớợởỡùúụủũưừứựửữỳýỵỷỹđÀÁẠẢÃÂẦẤẬẨẪĂẰẮẶẲẴÈÉẸẺẼÊỀẾỆỂỄÌÍỊỈĨÒÓỌỎÕÔỒỐỘỔỖƠỜỚỢỞỠÙÚỤỦŨƯỪỨỰỬỮỲÝỴỶỸĐ]).{12,20}$/
           ),
         ],
       })

@@ -146,24 +146,23 @@
       >
         {{ 'app.lifeCycle.note' | i18n }}
       </div>
-      <div *ngFor="let item of listTag">
+      <div *ngFor="let item of listTag; let i = index">
         <div style="display: flex">
           <div style="flex: 5; padding-right: 16px">
             <input
               style="margin-bottom: 8px"
               [ngStyle]="{
-                border: item.key.trim() == '' ? '1px solid #ff4d4f' : ''
+                border: listKeyError[i] ? '1px solid #ff4d4f' : ''
               }"
               class="input-custom"
               nz-input
               [placeholder]="'app.input.key' | i18n"
               [(ngModel)]="item.key"
-              (ngModelChange)="onChangeKey()"
               [ngModelOptions]="{ standalone: true }"
             />
             <div
               style="color: #ff4d4f; margin-top: -8px"
-              *ngIf="item.key.trim() == ''"
+              *ngIf="listKeyError[i]"
             >
               {{ 'app.key.required' | i18n }}
             </div>
@@ -302,12 +301,11 @@
         nz-button
         nzType="primary"
         [disabled]="
-          (formCreate.controls['isSetExpiration_Day'].value === false &&
-            formCreate.controls['isSetAbortIncompleteMultipartUpload_Day']
-              .value === false &&
-            formCreate.controls['isSetNoncurrentVersionExpiration_Day']
-              .value === false) ||
-          !isValidateKey
+          formCreate.controls['isSetExpiration_Day'].value === false &&
+          formCreate.controls['isSetAbortIncompleteMultipartUpload_Day']
+            .value === false &&
+          formCreate.controls['isSetNoncurrentVersionExpiration_Day'].value ===
+            false
         "
         [nzLoading]="isLoadingCreate"
         (click)="handleOkCreate()"
@@ -404,24 +402,23 @@
       >
         {{ 'app.lifeCycle.note' | i18n }}
       </div>
-      <div *ngFor="let item of listTag">
+      <div *ngFor="let item of listTag; let i = index">
         <div style="display: flex">
           <div style="flex: 5; padding-right: 16px">
             <input
               style="margin-bottom: 8px"
               [ngStyle]="{
-                border: item.key.trim() == '' ? '1px solid #ff4d4f' : ''
+                border: listKeyError[i] ? '1px solid #ff4d4f' : ''
               }"
               class="input-custom"
               nz-input
               [placeholder]="'app.input.key' | i18n"
               [(ngModel)]="item.key"
-              (ngModelChange)="onChangeKey()"
               [ngModelOptions]="{ standalone: true }"
             />
             <div
               style="color: #ff4d4f; margin-top: -8px"
-              *ngIf="item.key.trim() == ''"
+              *ngIf="listKeyError[i]"
             >
               {{ 'app.key.required' | i18n }}
             </div>
@@ -560,12 +557,11 @@
         nz-button
         nzType="primary"
         [disabled]="
-          (formUpdate.controls['isSetExpiration_Day'].value === false &&
-            formUpdate.controls['isSetAbortIncompleteMultipartUpload_Day']
-              .value === false &&
-            formUpdate.controls['isSetNoncurrentVersionExpiration_Day']
-              .value === false) ||
-          !isValidateKey
+          formUpdate.controls['isSetExpiration_Day'].value === false &&
+          formUpdate.controls['isSetAbortIncompleteMultipartUpload_Day']
+            .value === false &&
+          formUpdate.controls['isSetNoncurrentVersionExpiration_Day'].value ===
+            false
         "
         [nzLoading]="isLoadingUpdate"
         (click)="handleOkUpdate()"
