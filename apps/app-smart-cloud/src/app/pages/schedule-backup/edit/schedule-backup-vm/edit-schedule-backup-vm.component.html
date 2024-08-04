@@ -623,9 +623,16 @@
                   <span *ngSwitchCase="3">{{ 'schedule.backup.label.each.week'|i18n }}</span>
                   <span *ngSwitchCase="4">{{ 'schedule.backup.label.each.month'|i18n }}</span>
                 </div>
-                <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
-                <div class="text-value">{{ 'app.backup.volume.backup.package' | i18n }}</div>
-                <div style="margin-top: 10px" class="text-label">{{ backupSchedule?.backupPackageName }}</div>
+                <div *ngIf="typeVpc != 1">
+                  <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
+                  <div class="text-value">{{ 'app.backup.volume.backup.package' | i18n }}</div>
+                  <div style="margin-top: 10px" class="text-label">{{ backupSchedule?.backupPackageName }}</div>
+                </div>
+                <div *ngIf="typeVpc == 1">
+                  <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
+                  <div class="text-value">{{ 'app.info.backup.vm.total.storage' | i18n }}</div>
+                  <div style="margin-top: 10px" class="text-label">{{ sizeInGb?.cloudProject?.quotaBackupVolumeInGb }} GB</div>
+                </div>
                 <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
                 <div class="text-value">{{ 'app.cluster.action-time' | i18n }}</div>
                 <div style="margin-top: 10px"
@@ -654,12 +661,12 @@
                   <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
                 </div>
                 <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
-                <div *ngIf="validateForm.controls.backupMode.value == 4">
-                  <div class="text-value">{{ 'app.number.of.week.executed' | i18n }}</div>
-                  <div style="margin-top: 10px"
-                       class="text-label">{{ validateForm.controls.numberOfWeek.value }} {{ 'app.Week' |i18n }}
-                  </div>
-                  <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
+                <div *ngIf="validateForm.controls.backupMode.value === 4">
+<!--                  <div class="text-value">{{ 'app.number.of.week.executed' | i18n }}</div>-->
+<!--                  <div style="margin-top: 10px"-->
+<!--                       class="text-label">{{ validateForm.controls.numberOfWeek.value }} {{ 'app.Week' |i18n }}-->
+<!--                  </div>-->
+<!--                  <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>-->
                   <div class="text-value">{{ 'app.number.of.month.executed' | i18n }}</div>
                   <div style="margin-top: 10px"
                        class="text-label">{{ validateForm.controls.months.value }}  {{ 'app.Month'|i18n }}
