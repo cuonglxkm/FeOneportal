@@ -30,7 +30,7 @@
   <div *ngIf="!volumeInfo?.bootable">
     <div *ngIf="typeVPC != 1" style="display: flex">
       <div style="margin-right: 8px;" *ngIf="!['CREATING', 'ATTACHING', 'DELETING', 'ERROR_DELETING', 'ERROR'].includes(volumeInfo?.serviceStatus)">
-        <div nz-col nzSpan="4" *ngIf="!['SUSPENDED'].includes(volumeInfo?.status)">
+        <div nz-col nzSpan="4" *ngIf="!['SUSPENDED'].includes(volumeInfo?.status) && !['ERROR'].includes(volumeInfo?.status)">
           <button class="button-fee"
                   nz-button
                   nzType="primary" (click)="navigateEditVolume(volumeInfo.id)">
@@ -40,7 +40,7 @@
           </button>
         </div>
       </div>
-      <div nz-col nzSpan="4" *ngIf="!['CREATING', 'ATTACHING', 'DELETING', 'ERROR_DELETING', 'ERROR'].includes(volumeInfo?.serviceStatus)">
+      <div nz-col nzSpan="4" *ngIf="!['CREATING', 'ATTACHING', 'DELETING', 'ERROR_DELETING', 'ERROR'].includes(volumeInfo?.serviceStatus) && !['ERROR'].includes(volumeInfo?.status)">
         <button class="button-cancel"
                 nzType="primary"
                 (click)="navigateToRenew(volumeInfo.id)"
@@ -56,7 +56,7 @@
       || volumeInfo?.serviceStatus == 'DELETING'
       || volumeInfo?.serviceStatus == 'ERROR_DELETING'
       || volumeInfo?.serviceStatus == 'ERROR')">
-        <div *ngIf="!['SUSPENDED'].includes(volumeInfo?.status)">
+        <div *ngIf="!['SUSPENDED'].includes(volumeInfo?.status) && !['ERROR'].includes(volumeInfo?.status)">
           <button class="button-fee"
                   nz-button
                   nzType="primary" (click)="navigateToResizeVPC(volumeInfo.id)">

@@ -351,6 +351,7 @@ export class BucketListComponent implements OnInit {
 
   handleCancelDeleteBucket() {
     this.isVisibleDeleteBucket = false;
+    this.formDeleteBucket.reset()
   }
 
   handleOkDeleteBucket() {
@@ -362,6 +363,7 @@ export class BucketListComponent implements OnInit {
           next: (data) => {
             this.isLoadingDeleteBucket = false
             this.isVisibleDeleteBucket = false
+            this.formDeleteBucket.reset()
             this.notification.success(
               this.i18n.fanyi('app.status.success'),
               this.i18n.fanyi('app.bucket.delete.bucket.success')
