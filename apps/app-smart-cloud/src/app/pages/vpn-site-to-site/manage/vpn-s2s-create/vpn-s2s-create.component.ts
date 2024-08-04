@@ -10,9 +10,9 @@ import { ServiceActionType, ServiceType } from 'src/app/shared/enums/common.enum
 import { RegionModel, ProjectModel } from '../../../../../../../../libs/common-utils/src';
 import { FormControl, FormGroup, NonNullableFormBuilder } from '@angular/forms';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
-import { I18NService } from '../../../../../../../app-kafka/src/app/core/i18n/i18n.service';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
+import { I18NService } from '@core';
 @Component({
   selector: 'one-portal-vpn-s2s-create',
   templateUrl: './vpn-s2s-create.component.html',

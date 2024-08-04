@@ -17,8 +17,8 @@ import {
 } from '../../../../../../../libs/common-utils/src';
 import { debounceTime, Subject, Subscription } from 'rxjs';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
-import { I18NService } from '../../../../../../app-kafka/src/app/core/i18n/i18n.service';
 import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
+import { I18NService } from '@core';
 
 @Component({
   selector: 'list-allow-address-pair',
