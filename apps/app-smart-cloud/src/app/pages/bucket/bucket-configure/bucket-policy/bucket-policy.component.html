@@ -41,6 +41,8 @@
   [nzFrontPagination]="false"
   [nzData]="listBucketPolicy"
   [nzTotal]="total"
+  [(nzPageIndex)]="pageNumber"
+  [(nzPageSize)]="pageSize"
   (nzPageIndexChange)="searchBucketPolicy()"
   (nzPageSizeChange)="searchBucketPolicy()"
   nzTableLayout="fixed"
