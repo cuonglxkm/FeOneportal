@@ -68,11 +68,6 @@ export class BucketListComponent implements OnInit {
   hasOS: boolean = undefined;
   region: number;
 
-  formDeleteBucket: FormGroup<{
-    name: FormControl<string>
-  }> = this.fb.group({
-    name: ['', [Validators.required, this.nameBucketValidator.bind(this)]]
-  });
 
   ngOnInit(): void {
     if (!this.url.includes('advance')) {

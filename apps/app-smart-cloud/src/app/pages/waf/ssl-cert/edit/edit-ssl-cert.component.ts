@@ -84,10 +84,16 @@ export class EditSslCertWAFComponent implements OnInit {
   handleChangeMethod(event: any){
     console.log(event);
     if(event === '2'){
-      this.form.reset()
+      this.form.controls.privateKey.reset()
+      this.form.controls.certificate.reset()
+      this.form.get('certName').setValue(this.SslCertDetail.name)
+      this.form.get('remarks').setValue(this.SslCertDetail.remarks)
       this.fileList = []
     }else{
-      this.form.reset()
+      this.form.controls.privateKey.reset()
+      this.form.controls.certificate.reset()
+      this.form.get('certName').setValue(this.SslCertDetail.name)
+      this.form.get('remarks').setValue(this.SslCertDetail.remarks)
     }
   }
 
@@ -146,6 +152,8 @@ export class EditSslCertWAFComponent implements OnInit {
       }
       return file;
     });
+
+    this.getData()
   }
 
   async getData() {

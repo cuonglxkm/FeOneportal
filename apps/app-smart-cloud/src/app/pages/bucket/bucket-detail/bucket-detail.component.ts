@@ -1238,6 +1238,7 @@ export class BucketDetailComponent extends BaseService implements OnInit {
           urlOrigin: this.hostNameUrl,
           regionId: this.region,
           ACL: this.radioValue,
+          metadata: this.listOfMetadata
         };
         this.service.getSignedUrl(data).subscribe(
           (responseData) => {
