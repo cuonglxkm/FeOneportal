@@ -1,4 +1,10 @@
-import { ChangeDetectorRef, Component, Inject, OnInit, ViewChild } from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Component,
+  Inject,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
 import { Router } from '@angular/router';
 import { finalize } from 'rxjs/operators';
 import { InstancesService } from '../instances.service';
@@ -9,23 +15,32 @@ import {
   InstancesModel,
   Network,
   UpdateInstances,
-  VlanSubnet
+  VlanSubnet,
 } from '../instances.model';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { getCurrentRegionAndProject } from '@shared';
-import { NotificationService, ProjectModel, RegionModel } from '../../../../../../../libs/common-utils/src';
+import {
+  NotificationService,
+  ProjectModel,
+  RegionModel,
+} from '../../../../../../../libs/common-utils/src';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { debounceTime, Subject, Subscription } from 'rxjs';
-import { FormSearchNetwork, NetWorkModel, Port } from 'src/app/shared/models/vlan.model';
+import {
+  FormSearchNetwork,
+  NetWorkModel,
+  Port,
+} from 'src/app/shared/models/vlan.model';
 import { VlanService } from 'src/app/shared/services/vlan.service';
 import { I18NService } from '@core';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
-import {
-  ProjectSelectDropdownComponent
-} from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
+import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
 import { CatalogService } from 'src/app/shared/services/catalog.service';
-import { BackupSchedule, FormSearchScheduleBackup } from '../../../shared/models/schedule.model';
+import {
+  BackupSchedule,
+  FormSearchScheduleBackup,
+} from '../../../shared/models/schedule.model';
 import { ScheduleService } from '../../../shared/services/schedule.service';
 
 class SearchParam {
@@ -36,7 +51,7 @@ class SearchParam {
 @Component({
   selector: 'one-portal-instances',
   templateUrl: './instances.component.html',
-  styleUrls: ['./instances.component.less']
+  styleUrls: ['./instances.component.less'],
 })
 export class InstancesComponent implements OnInit {
   searchParam: SearchParam = new SearchParam();
@@ -50,7 +65,7 @@ export class InstancesComponent implements OnInit {
   filterStatus = [
     { text: this.i18n.fanyi('app.status.all'), value: '' },
     { text: this.i18n.fanyi('app.status.running'), value: 'KHOITAO' },
-    { text: this.i18n.fanyi('app.status.suspended'), value: 'TAMNGUNG' }
+    { text: this.i18n.fanyi('app.status.suspended'), value: 'TAMNGUNG' },
   ];
 
   listIPAddressOnVLAN: [{ id: ''; text: 'Chọn địa chỉ IP' }];
@@ -76,8 +91,7 @@ export class InstancesComponent implements OnInit {
     private notificationService: NotificationService,
     private vlanService: VlanService,
     private backupScheduleService: ScheduleService
-  ) {
-  }
+  ) {}
 
   ngOnInit() {
     let regionAndProject = getCurrentRegionAndProject();
@@ -131,9 +145,14 @@ export class InstancesComponent implements OnInit {
             case 'DELETED':
               this.reloadTable();
             case 'DETACH':
-                this.reloadTable();
+              this.reloadTable();
             case 'ATTACH':
-                this.reloadTable();
+              this.reloadTable();
+            case 'RESTORED':
+              this.updateRowState(taskState, foundIndex);
+              break;
+            case 'RESTORING':
+              this.updateRowState(taskState, foundIndex);
           }
         } else {
           switch (actionType) {
@@ -159,11 +178,7 @@ export class InstancesComponent implements OnInit {
   getActiveServiceByRegion() {
     this.catalogService
       .getActiveServiceByRegion(
-        [
-          'volume-snapshot-hdd',
-          'volume-snapshot-ssd',
-          'backup-vm'
-        ],
+        ['volume-snapshot-hdd', 'volume-snapshot-ssd', 'backup-vm'],
         this.region
       )
       .subscribe((data) => {
@@ -274,7 +289,7 @@ export class InstancesComponent implements OnInit {
               e.statusText,
               this.i18n.fanyi('app.notify.get.list.instance')
             );
-          }
+          },
         });
     }
   }
@@ -318,7 +333,7 @@ export class InstancesComponent implements OnInit {
               e.statusText,
               this.i18n.fanyi('app.notify.get.list.instance')
             );
-          }
+          },
         });
     }
   }
@@ -387,7 +402,7 @@ export class InstancesComponent implements OnInit {
             e.statusText,
             this.i18n.fanyi('app.notify.get.list.port')
           );
-        }
+        },
       });
   }
 
@@ -425,7 +440,7 @@ export class InstancesComponent implements OnInit {
             e.statusText,
             this.i18n.fanyi('router.nofitacation.subnet.fail')
           );
-        }
+        },
       });
   }
 
@@ -462,7 +477,7 @@ export class InstancesComponent implements OnInit {
           e.statusText,
           this.i18n.fanyi('app.notify.attach.vlan.fail')
         );
-      }
+      },
     });
   }
 
@@ -473,7 +488,7 @@ export class InstancesComponent implements OnInit {
     this.router.navigate(
       [`/app-smart-cloud/vlan/network/detail/${selectedVlan[0].id}`],
       {
-        state: { selectedIndextab: 1 }
+        state: { selectedIndextab: 1 },
       }
     );
   }
@@ -536,7 +551,7 @@ export class InstancesComponent implements OnInit {
                   'validation.ip.address.pattern'
                 );
               }
-            }
+            },
           });
       }
     });
@@ -589,7 +604,7 @@ export class InstancesComponent implements OnInit {
           e.statusText,
           this.i18n.fanyi('app.notify.detach.vlan.fail')
         );
-      }
+      },
     });
   }
 
@@ -608,7 +623,7 @@ export class InstancesComponent implements OnInit {
     this.isVisibleShutdown = false;
     var body = {
       command: 'shutdown',
-      id: this.instanceControlId
+      id: this.instanceControlId,
     };
     this.dataService.postAction(body).subscribe({
       next: (data: any) => {
@@ -625,7 +640,7 @@ export class InstancesComponent implements OnInit {
           e.statusText,
           this.i18n.fanyi('app.notify.request.shutdown.instances.fail')
         );
-      }
+      },
     });
   }
 
@@ -647,7 +662,7 @@ export class InstancesComponent implements OnInit {
     this.isVisibleStart = false;
     var body = {
       command: 'start',
-      id: this.instanceControlId
+      id: this.instanceControlId,
     };
     this.dataService.postAction(body).subscribe({
       next: (data: any) => {
@@ -664,7 +679,7 @@ export class InstancesComponent implements OnInit {
           e.statusText,
           this.i18n.fanyi('app.notify.request.start.instances.fail')
         );
-      }
+      },
     });
   }
 
@@ -686,7 +701,7 @@ export class InstancesComponent implements OnInit {
     this.isVisibleRestart = false;
     var body = {
       command: 'restart',
-      id: this.instanceControlId
+      id: this.instanceControlId,
     };
     this.dataService.postAction(body).subscribe({
       next: (data) => {
@@ -703,7 +718,7 @@ export class InstancesComponent implements OnInit {
           '',
           this.i18n.fanyi('app.notify.request.reboot.instances.fail')
         );
-      }
+      },
     });
   }
 
@@ -725,7 +740,7 @@ export class InstancesComponent implements OnInit {
     this.isVisibleRescue = false;
     var body = {
       command: 'rescue',
-      id: this.instanceControlId
+      id: this.instanceControlId,
     };
     this.dataService.postAction(body).subscribe({
       next: (data) => {
@@ -742,7 +757,7 @@ export class InstancesComponent implements OnInit {
           e.statusText,
           this.i18n.fanyi('app.notify.rescue.instances.fail')
         );
-      }
+      },
     });
   }
 
@@ -761,7 +776,7 @@ export class InstancesComponent implements OnInit {
     this.isVisibleUnRescue = false;
     var body = {
       command: 'unrescue',
-      id: this.instanceControlId
+      id: this.instanceControlId,
     };
     this.dataService.postAction(body).subscribe({
       next: (data) => {
@@ -778,7 +793,7 @@ export class InstancesComponent implements OnInit {
           e.statusText,
           this.i18n.fanyi('app.notify.unrescue.instances.fail')
         );
-      }
+      },
     });
   }
 
@@ -792,8 +807,8 @@ export class InstancesComponent implements OnInit {
   form = new FormGroup({
     name: new FormControl('', {
       nonNullable: true,
-      validators: [Validators.required, Validators.pattern(/^[a-zA-Z0-9_]*$/)]
-    })
+      validators: [Validators.required, Validators.pattern(/^[a-zA-Z0-9_]*$/)],
+    }),
   });
   updateInstances: UpdateInstances = new UpdateInstances();
   isVisibleEdit = false;
@@ -859,7 +874,7 @@ export class InstancesComponent implements OnInit {
           e.statusText,
           this.i18n.fanyi('app.notify.edit.instances.fail')
         );
-      }
+      },
     });
   }
 
@@ -870,8 +885,8 @@ export class InstancesComponent implements OnInit {
       '/app-smart-cloud/instances/instances-console/' + id,
       {
         state: {
-          vmId: id
-        }
+          vmId: id,
+        },
       }
     );
   }
@@ -890,12 +905,12 @@ export class InstancesComponent implements OnInit {
     if (this.typeVpc == 1) {
       this.router.navigate([
         '/app-smart-cloud/backup-vm/create/vpc',
-        { instanceId: id }
+        { instanceId: id },
       ]);
     } else {
       this.router.navigate([
         '/app-smart-cloud/backup-vm/create/no-vpc',
-        { instanceId: id }
+        { instanceId: id },
       ]);
     }
   }
@@ -918,54 +933,61 @@ export class InstancesComponent implements OnInit {
     formSearch.serviceType = 1;
     formSearch.pageSize = 99999;
     formSearch.pageIndex = 1;
-    formSearch.serviceId = id
-    this.backupScheduleService.search(formSearch).subscribe(data => {
-      this.isLoading = false;
-      this.listScheduleBackup = data?.records;
-      if (this.listScheduleBackup?.length <= 0) {
-        if (this.typeVpc == 1) {
-
+    formSearch.serviceId = id;
+    this.backupScheduleService.search(formSearch).subscribe(
+      (data) => {
+        this.isLoading = false;
+        this.listScheduleBackup = data?.records;
+        if (this.listScheduleBackup?.length <= 0) {
+          if (this.typeVpc == 1) {
             this.router.navigate([
               '/app-smart-cloud/schedule/backup/create/vpc',
-              { type: 'INSTANCE', instanceId: id }
+              { type: 'INSTANCE', instanceId: id },
             ]);
-
-        } else {
-
+          } else {
             this.router.navigate([
               '/app-smart-cloud/schedule/backup/create',
-              { type: 'INSTANCE', instanceId: id }
+              { type: 'INSTANCE', instanceId: id },
             ]);
-
-        }
-      } else {
-        this.listScheduleBackup.forEach(item => {
-          if (this.typeVpc == 1) {
-            if (item.serviceId == id) {
-              this.notification.warning('', this.i18n.fanyi('schedule.backup.block.create'));
-            } else {
-              this.router.navigate([
-                '/app-smart-cloud/schedule/backup/create/vpc',
-                { type: 'INSTANCE', instanceId: id }
-              ]);
-            }
-          } else {
-            if (item.serviceId == id) {
-              this.notification.warning('', this.i18n.fanyi('schedule.backup.block.create'));
-            } else {
-              this.router.navigate([
-                '/app-smart-cloud/schedule/backup/create',
-                { type: 'INSTANCE', instanceId: id }
-              ]);
-            }
           }
-        });
+        } else {
+          this.listScheduleBackup.forEach((item) => {
+            if (this.typeVpc == 1) {
+              if (item.serviceId == id) {
+                this.notification.warning(
+                  '',
+                  this.i18n.fanyi('schedule.backup.block.create')
+                );
+              } else {
+                this.router.navigate([
+                  '/app-smart-cloud/schedule/backup/create/vpc',
+                  { type: 'INSTANCE', instanceId: id },
+                ]);
+              }
+            } else {
+              if (item.serviceId == id) {
+                this.notification.warning(
+                  '',
+                  this.i18n.fanyi('schedule.backup.block.create')
+                );
+              } else {
+                this.router.navigate([
+                  '/app-smart-cloud/schedule/backup/create',
+                  { type: 'INSTANCE', instanceId: id },
+                ]);
+              }
+            }
+          });
+        }
+      },
+      (error) => {
+        this.isLoading = false;
+        this.notification.error(
+          this.i18n.fanyi('app.status.fail'),
+          this.i18n.fanyi('app.failData')
+        );
       }
-    }, error => {
-      this.isLoading = false;
-      this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.failData'));
-    });
-
+    );
   }
 
   createSnapshot(id: number) {
@@ -989,7 +1011,7 @@ export class InstancesComponent implements OnInit {
           '',
           this.i18n.fanyi('app.notify.get.service.package.fail')
         );
-      }
+      },
     });
   }
 

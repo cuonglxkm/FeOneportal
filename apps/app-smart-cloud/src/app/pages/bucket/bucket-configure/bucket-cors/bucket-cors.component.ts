@@ -162,7 +162,7 @@ export class BucketCorsComponent implements OnInit {
   }
 
   handleOkCreate() {
-    if (this.bucketCorsCreate.maxAgeSeconds.toString.length == 0) {
+    if (this.bucketCorsCreate.maxAgeSeconds?.toString.length == 0) {
       this.bucketCorsCreate.maxAgeSeconds = null;
     }
     this.isLoadingCreate = true;
@@ -305,7 +305,7 @@ export class BucketCorsComponent implements OnInit {
 
   handleOkUpdate() {
     this.isLoadingUpdate = true;
-    if (this.bucketCorsUpdate.maxAgeSeconds.toString.length == 0) {
+    if (this.bucketCorsUpdate.maxAgeSeconds?.toString.length == 0) {
       this.bucketCorsUpdate.maxAgeSeconds = null;
     }
     this.bucketCorsUpdate.allowedOrigins = [this.domain];

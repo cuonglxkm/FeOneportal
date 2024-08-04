@@ -233,10 +233,10 @@ export class LifecycleConfigComponent implements OnInit {
   checkTags(tags: Tag[]): boolean {
     for (let tag of tags) {
       if (tag.key === '') {
-        return false;
+        return true;
       }
     }
-    return true;
+    return false;
   }
 
   delelteTag(id: number) {
