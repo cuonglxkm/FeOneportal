@@ -41,6 +41,8 @@
   [nzFrontPagination]="false"
   [nzData]="listLifecycle"
   [nzTotal]="total"
+  [(nzPageIndex)]="pageNumber"
+  [(nzPageSize)]="pageSize"
   (nzPageIndexChange)="searchLifeCycle()"
   (nzPageSizeChange)="searchLifeCycle()"
   nzTableLayout="fixed"

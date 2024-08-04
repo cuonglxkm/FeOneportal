@@ -132,11 +132,20 @@
     </nz-row>
   </div>
 
+  <div class="text-center">
+    <span style="font-weight: 500">Biểu đồ {{ typeGSTitle }}</span>
+  </div>
   <g2-timeline
     [maxAxis]="maxAxis"
     [data]="chartData"
     [height]="289"
-    [titleMap]="{ y1: 'Traflic' }"
+    [titleMap]="{
+      y1:
+        typeGSTitle +
+        (typeGSTitle == 'RAM' || typeGSTitle == 'CPU' ? ' (%)' : '')
+    }"
+    [mask]="valueGSTIME > 1440 ? 'DD/MM' : 'HH:mm'"
+    [maskSlider]="'dd/MM'"
   />
 </nz-card>
 

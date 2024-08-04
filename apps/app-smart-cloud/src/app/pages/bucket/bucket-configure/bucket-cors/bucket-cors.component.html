@@ -37,6 +37,8 @@
   [nzFrontPagination]="false"
   [nzData]="listBucketCors"
   [nzTotal]="total"
+  [(nzPageIndex)]="pageNumber"
+  [(nzPageSize)]="pageSize"
   (nzPageIndexChange)="searchBucketCors()"
   (nzPageSizeChange)="searchBucketCors()"
   nzTableLayout="fixed"
@@ -97,6 +99,7 @@
             class="input-custom"
             nz-input
             placeholder=""
+            [maxlength]="253"
             [(ngModel)]="domain"
             [ngModelOptions]="{ standalone: true }"
             formControlName="domain"
@@ -176,7 +179,9 @@
           <div style="flex: 9">
             <input
               style="margin-bottom: 8px"
-              [ngStyle]="{'border': item.name.includes(' ') ? '1px solid #ff4d4f' : ''}"
+              [ngStyle]="{
+                border: item.name.includes(' ') ? '1px solid #ff4d4f' : ''
+              }"
               class="input-custom"
               nz-input
               placeholder="Header name"
