@@ -335,6 +335,7 @@ export class BucketPolicyComponent implements OnInit {
   bucketPolicyUpdate: bucketPolicyDetail = new bucketPolicyDetail();
   modalUpdate(sid: string) {
     this.isVisibleUpdate = true;
+    this.setActionPermission.clear();
     this.getListSubuser();
     this.bucketService
       .getBucketPolicyDetail(sid, this.bucketName, this.region)

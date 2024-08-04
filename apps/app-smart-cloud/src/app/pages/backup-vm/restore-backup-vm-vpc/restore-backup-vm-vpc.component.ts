@@ -413,7 +413,7 @@ export class RestoreBackupVmVpcComponent implements OnInit {
         this.isLoadingCurrent = false;
         this.notification.success(
           this.i18n.fanyi('app.status.success'),
-          this.i18n.fanyi('app.notification.restore.current.vm.success')
+          this.i18n.fanyi('app.notification.request.restore.current.vm.success')
         );
         this.router.navigate(['/app-smart-cloud/backup-vm']);
       },
@@ -421,7 +421,7 @@ export class RestoreBackupVmVpcComponent implements OnInit {
         this.isLoadingCurrent = false;
         this.notification.error(
           this.i18n.fanyi('app.status.fail'),
-          this.i18n.fanyi('app.notification.restore.current.vm.fail')
+          this.i18n.fanyi('app.notification.request.restore.current.vm.fail')
         );
       },
     });
@@ -793,7 +793,11 @@ export class RestoreBackupVmVpcComponent implements OnInit {
     this.listOfDataBlockStorage.forEach((e) => {
       let volumeExternal = new VolumeExternalBackup();
       volumeExternal.id = e.id;
-      volumeExternal.name = e.newName;
+      if (e.newName && e.newName.length != 0) {
+        volumeExternal.name = e.newName;
+      } else {
+        volumeExternal.name = e.name
+      }
       volumeExternal.size = e.capacity;
       selectedVolumeExternal.push(volumeExternal);
     });
