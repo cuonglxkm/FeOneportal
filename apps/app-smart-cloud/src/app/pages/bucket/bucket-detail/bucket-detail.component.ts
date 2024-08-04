@@ -42,6 +42,7 @@ export class BucketDetailComponent extends BaseService implements OnInit {
   region = JSON.parse(localStorage.getItem('regionId'));
   listOfDataVersioning: ObjectObjectStorageModel[];
   dataAction: ObjectObjectStorageModel;
+  listExistedFolder: any = [];
   listOfFolder: any = [];
   listOfFolderCopy: any = [];
   currentKey = '';
@@ -75,7 +76,7 @@ export class BucketDetailComponent extends BaseService implements OnInit {
   modalStyle = {
     padding: '20px',
     'border-radius': '10px',
-    width: '80%',
+    width: '55%',
   };
   uploadFailed: boolean = false;
 
@@ -147,7 +148,7 @@ export class BucketDetailComponent extends BaseService implements OnInit {
   }> = this.fb.group({
     folderName: [
       '',
-      [Validators.required, Validators.pattern(FOLDER_NAME_REGEX)],
+      [Validators.required, Validators.pattern(FOLDER_NAME_REGEX), this.duplicateFolderNameValidator.bind(this)],
     ],
   });
 
@@ -193,6 +194,17 @@ export class BucketDetailComponent extends BaseService implements OnInit {
       };
     }
   };
+
+  duplicateFolderNameValidator(control) {
+    const value = control.value;
+    // Check if the input name is already in the list
+    if (this.listExistedFolder && this.listExistedFolder.includes(value)) {
+      return { duplicateName: true }; // Duplicate name found
+    } else {
+      return null; // Name is unique
+    }
+  }
+
 
   refreshParams() {
     this.pageSize = 5;
@@ -488,6 +500,7 @@ export class BucketDetailComponent extends BaseService implements OnInit {
         this.pageSize = data.paginationObjectList.pageSize;
         this.pageIndex = data.paginationObjectList.draw;
         this.listOfData = data.paginationObjectList.items;
+        this.listExistedFolder = data.listFolders;
         this.listOfData.map((item) => {
           item.keyName = item.key.split('/').pop();
           if (item.objectType == 'object') {

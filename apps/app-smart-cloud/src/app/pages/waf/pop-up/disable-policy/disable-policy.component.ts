@@ -1,4 +1,11 @@
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Inject, Input, Output } from '@angular/core';
+import { WafDomain } from '../../waf.model';
+import { WafService } from 'src/app/shared/services/waf.service';
+import { Router } from '@angular/router';
+import { NzNotificationService } from 'ng-zorro-antd/notification';
+import { I18NService } from '@core';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
+import { finalize } from 'rxjs';
 
 @Component({
   selector: 'one-portal-disable-policy',
@@ -7,9 +14,19 @@ import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DisablePolicyComponent {
-  @Input() domainData: any
+  @Input() domainData: WafDomain
+  @Output() onOk = new EventEmitter();
 
   isVisible: boolean = false;
+  isLoading: boolean = false
+
+  constructor(
+    private wafService: WafService,
+    private cdr: ChangeDetectorRef,
+    private router: Router,
+    private notification: NzNotificationService, 
+    @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
+  ){}
 
   openModal(){
     this.isVisible = true
@@ -17,5 +34,21 @@ export class DisablePolicyComponent {
 
   handleCancelDisablePolicyModal(){
     this.isVisible = false
+  }
+
+  handleOnSubmit(){
+    this.isLoading = true;
+    this.wafService.disableAllPolicies(this.domainData.id).pipe(finalize(()=>{
+      this.isLoading = false
+    })).subscribe({
+      next:()=>{
+        this.notification.success(this.i18n.fanyi("app.status.success"),"Thao tác thành công")
+        this.isVisible = false;
+        this.onOk.emit()
+      },
+      error:()=>{
+        this.notification.error(this.i18n.fanyi("app.status.error"),"Có lỗi xảy ra")
+      }
+    })
   }
 }

@@ -116,7 +116,6 @@ export class InstancesEditVpcComponent implements OnInit {
     let regionAndProject = getCurrentRegionAndProject();
     this.region = regionAndProject.regionId;
     this.projectId = regionAndProject.projectId;
-    this.getListIpPublic();
     this.getActiveServiceByRegion();
     this.getInfoVPC();
     this.onChangeCapacity();
@@ -293,34 +292,6 @@ export class InstancesEditVpcComponent implements OnInit {
 
   onRegionChanged(region: RegionModel) {
     this.region = region.regionId;
-  }
-  listIPPublicStr = '';
-  listIPLanStr = '';
-  getListIpPublic() {
-    this.dataService
-      .getPortByInstance(this.id, this.region)
-      .subscribe((dataNetwork: any) => {
-        //list IP public
-        let listOfPublicNetwork: Network[] = dataNetwork.filter(
-          (e: Network) => e.isExternal == true
-        );
-        let listIPPublic: string[] = [];
-        listOfPublicNetwork.forEach((e) => {
-          listIPPublic = listIPPublic.concat(e.fixedIPs);
-        });
-        this.listIPPublicStr = listIPPublic.join(', ');
-
-        //list IP Lan
-        let listOfPrivateNetwork: Network[] = dataNetwork.filter(
-          (e: Network) => e.isExternal == false
-        );
-        let listIPLan: string[] = [];
-        listOfPrivateNetwork.forEach((e) => {
-          listIPLan = listIPLan.concat(e.fixedIPs);
-        });
-        this.listIPLanStr = listIPLan.join(', ');
-        this.cdr.detectChanges();
-      });
   }
 
   isCustomconfig = true;

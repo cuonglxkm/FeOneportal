@@ -25,6 +25,7 @@ import {  NotificationService, RegionModel } from '../../../../../../libs/common
 import { RegionSelectDropdownComponent } from 'src/app/shared/components/region-select-dropdown/region-select-dropdown.component';
 import { RegionID } from 'src/app/shared/enums/common.enum';
 import { size } from 'lodash';
+import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
 
 @Component({
   selector: 'one-portal-bucket-list',
@@ -59,9 +60,16 @@ export class BucketListComponent implements OnInit {
     private message: NzMessageService,
     private loadingSrv: LoadingService,
     private notificationService: NotificationService,
+    private fb: NonNullableFormBuilder
   ) {}
   hasOS: boolean = undefined;
   region: number;
+
+  formDeleteBucket: FormGroup<{
+    name: FormControl<string>
+  }> = this.fb.group({
+    name: ['', [Validators.required, this.nameBucketValidator.bind(this)]]
+  });
 
   ngOnInit(): void {
     if (!this.url.includes('advance')) {
@@ -89,8 +97,27 @@ export class BucketListComponent implements OnInit {
     this.searchDelay
       .pipe(debounceTime(TimeCommon.timeOutSearch))
       .subscribe(() => {
+        this.refreshParams()
         this.search();
       });
+  }
+
+  nameBucketValidator(control: FormControl): { [key: string]: any } | null {
+    const name = control.value;
+    if (name !== this.bucketDeleteName) {
+      return { 'nameMismatch': true };
+    }
+    return null;
+  }
+
+  onPageSizeChange(event: any) {
+    this.pageSize = event;
+    this.search();
+  }
+
+  onPageIndexChange(event: any) {
+    this.pageNumber = event;
+    this.search();
   }
 
   hasObjectStorageInfo() {
@@ -172,6 +199,11 @@ export class BucketListComponent implements OnInit {
     this.region = region.regionId;
   }
 
+  refreshParams() {
+    this.pageNumber = 1;
+    this.pageSize = 10;
+}
+
   getUserById(id: number) {
     this.loadingSrv.open({ type: 'spin', text: 'Loading...' });
     this.bucketService
@@ -234,6 +266,7 @@ export class BucketListComponent implements OnInit {
   }
   searchBucket(search: string) {
     this.value = search.trim();
+    this.refreshParams()
     this.search();
   }
 
@@ -390,13 +423,5 @@ export class BucketListComponent implements OnInit {
   }
 
   protected readonly size = size;
-  disableDelete = true;
 
-  checkDisableDelete($event: any) {
-    if ($event === this.bucketDeleteName) {
-      this.disableDelete == false;
-    } else {
-      this.disableDelete == true;
-    }
-  }
 }

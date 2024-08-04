@@ -63,11 +63,17 @@
         <th nzWidth="60px"></th>
         <th nzLeft>{{ 'waf.domain.table.title.domain' | i18n }}</th>
         <th nzBreakWord>{{ 'waf.domain.table.title.ip' | i18n }}</th>
-        <th nzBreakWord>{{ 'waf.domain.table.title.cname' | i18n }}</th>
+        <th nzBreakWord 
+          nzTooltipTitle="{{ 'Quý khách vui lòng chủ động CNAME để sử dụng dịch vụ' }}"
+          nzTooltipPlacement="top"
+          nz-tooltip>
+          {{ 'waf.domain.table.title.cname' | i18n }}
+        </th>
         <th nzBreakWord>{{ 'waf.domain.table.title.https' | i18n }}</th>
         <th nzBreakWord>{{ 'waf.table.title.package' | i18n }}</th>
         <th nzBreakWord>{{ 'waf.table.title.name' | i18n }}</th>
         <th nzBreakWord>{{ 'waf.domain.table.title.status' | i18n }}</th>
+        <th nzBreakWord>{{ 'waf.domain.table.title.status.cdn' | i18n }}</th>
         <th nzBreakWord>{{ 'waf.domain.table.title.action' | i18n }}</th>
       </tr>
       </thead>
@@ -77,7 +83,10 @@
             <td [nzExpand]="expandSet.has(data.id)" (nzExpandChange)="onExpandChange(data.id, $event)" ></td>
             <td nzLeft>{{ data.domain }}</td>
             <td nzBreakWord nzAlign="left">{{ data.ipPublic }}</td>
-            <td nzBreakWord nzAlign="left">{{ data.cname }}</td>
+            <td nzBreakWord nzAlign="left">{{ data.cName }} 
+              <img *ngIf="data.cName" nz-popover src="assets/imgs/copy1.svg" alt="" nzPopoverPlacement="bottom" (click)="copy(data.cName)"
+                style="cursor: pointer; margin-right: 5px; margin-top: 2px;" [nzPopoverContent]="copySuccess ? ('app.bucket.detail.copied' | i18n) : ('app.bucket.detail.copy' | i18n)" />
+            </td>
             <td nzBreakWord nzAlign="left">{{ data.sslCertId ? 'ENABLE' : 'DISABLE' }}</td>
             <td nzBreakWord nzAlign="left">{{ data.offerName }}</td>
             <td nzBreakWord nzAlign="left">{{ data.wafPackageName }}</td>
@@ -88,24 +97,25 @@
                   [ngStyle]="{color: statusModel.color}">{{ statusModel.status }}
               </td>
             </ng-container>
+            <td nzBreakWord
+                nzAlign="left"
+                [ngStyle]="{color: (data.resouceStatus | CDNStatusPipe).color}">{{ (data.resouceStatus | CDNStatusPipe).status }}
+            </td>
             <td nzBreakWord nzAlign="center">
               <div>
-                <img nz-popover src="assets/imgs/edit-2.svg" alt=""
-                  nzPopoverPlacement="bottom"
-                  (click)="showModal()"
-                  style="cursor: pointer; margin-right: 5px; margin-top: 2px;"
-                  [nzPopoverContent]="'app.text.edit' | i18n" />
-                <img  src="assets/imgs/ph_link-light.svg" (click)="navigateToAddDomain()" nz-popover
-                  [nzPopoverContent]="'waf.domain.https.setting' | i18n"
-                  nzPopoverPlacement="bottom" style="cursor: pointer;margin-right: 5px;"/>
+                  <one-portal-edit-domain [domainData]="data" (onOk)="handleOkUpdate()"></one-portal-edit-domain>
+                  <one-portal-http-setting [domainData]="data" (onOk)="handleOkUpdate()"></one-portal-http-setting>
                 <img nz-dropdown
                   [nzDropdownMenu]="opMenu"
-                  src="assets/imgs/more1.svg" alt="" style="cursor: pointer;" />
+                  src="assets/imgs/more1.svg" alt="" style="cursor: pointer;" /> 
                 <nz-dropdown-menu #opMenu="nzDropdownMenu">
                   <ul nz-menu>
-                    <li nz-menu-item>{{'waf.domain.policies' | i18n}}</li>
+                    <li (click)="onExpandChange(data.id, true)" nz-menu-item>{{'waf.domain.policies' | i18n}}</li>
+                    <one-portal-disable-policy [domainData]="data" (onOk)="handleOkUpdate()"></one-portal-disable-policy>
+                    <one-portal-delete-domain [domainData]="data" (onOk)="handleOkUpdate()"></one-portal-delete-domain>
+                    <!-- <li nz-menu-item>{{'waf.domain.policies' | i18n}}</li>
                     <li nz-menu-item>{{'waf.domain.policies.disable' | i18n}}</li>
-                    <li nz-menu-item>{{'waf.domain.delete' | i18n}}</li>
+                    <li nz-menu-item>{{'waf.domain.delete' | i18n}}</li> -->
                   </ul>
                 </nz-dropdown-menu>
               </div>

@@ -1,10 +1,9 @@
 import { ChangeDetectorRef, Component, Inject, OnInit } from '@angular/core';
-import { BaseResponse, ProjectModel, RegionModel } from '../../../../../../libs/common-utils/src';
+import { BaseResponse, RegionModel } from '../../../../../../libs/common-utils/src';
 import { SubUser } from '../../shared/models/sub-user.model';
 import { Router } from '@angular/router';
-import { getCurrentRegionAndProject } from '@shared';
 import { ObjectStorageService } from '../../shared/services/object-storage.service';
-import { Summary, UserInfoObjectStorage } from '../../shared/models/object-storage.model';
+import { Summary } from '../../shared/models/object-storage.model';
 import { BucketService } from '../../shared/services/bucket.service';
 import { BucketModel } from '../../shared/models/bucket.model';
 import { LoadingService } from '@delon/abc/loading';
@@ -61,6 +60,7 @@ export class DashboardObjectStorageComponent implements OnInit {
   }
 
   hasOS: boolean = undefined;
+
   hasObjectStorage() {
     this.loadingSrv.open({ type: 'spin', text: 'Loading...' });
     this.objectStorageService
@@ -80,15 +80,15 @@ export class DashboardObjectStorageComponent implements OnInit {
             this.i18n.fanyi('app.status.fail'),
             this.i18n.fanyi('app.bucket.getObject.fail')
           );
-        },
+        }
       });
   }
 
   onRegionChange(region: RegionModel) {
     this.region = region.regionId;
-    if(this.region === RegionID.ADVANCE){
+    if (this.region === RegionID.ADVANCE) {
       this.router.navigate(['/app-smart-cloud/object-storage-advance/dashboard']);
-    }else{
+    } else {
       this.router.navigate(['/app-smart-cloud/object-storage/dashboard']);
     }
   }
@@ -108,49 +108,49 @@ export class DashboardObjectStorageComponent implements OnInit {
   }
 
 
-
   getSummaryObjectStorage() {
-    console.log('time', this.timeSelected)
+    console.log('time', this.timeSelected);
     this.loadingSrv.open({ type: 'spin', text: 'Loading...' });
     this.objectStorageService.getMonitorObjectStorage(this.bucketSelected, this.timeSelected, this.region)
-    .pipe(finalize(() => this.loadingSrv.close()))
-    .subscribe(data => {
-      this.summary = data;
-    });
+      .pipe(finalize(() => this.loadingSrv.close()))
+      .subscribe(data => {
+        this.summary = data;
+      });
   }
 
   ngOnInit() {
     if (!this.url.includes('advance')) {
-      if(Number(localStorage.getItem('regionId')) === RegionID.ADVANCE) {
-        this.region = RegionID.NORMAL
-      }else{
+      if (Number(localStorage.getItem('regionId')) === RegionID.ADVANCE) {
+        this.region = RegionID.NORMAL;
+      } else {
         this.region = Number(localStorage.getItem('regionId'));
       }
     } else {
       this.region = RegionID.ADVANCE;
-    };
-      this.hasObjectStorage();
-      this.bucketService.getListBucket(1, 9999, '', this.region).subscribe(data => {
-        this.bucketList = data.records;
-        this.bucketSelected = this.bucketList[0].bucketName
-        console.log(this.bucketSelected)
-        console.log(this.bucketList)
-        this.getSummaryObjectStorage()
-      });
+    }
+    ;
+    this.hasObjectStorage();
+    this.bucketService.getListBucket(1, 9999, '', this.region).subscribe(data => {
+      this.bucketList = data.records;
+      this.bucketSelected = this.bucketList[0].bucketName;
+      console.log(this.bucketSelected);
+      console.log(this.bucketList);
+      this.getSummaryObjectStorage();
+    });
   }
 
-  navigateToDashboard(){
-    if(this.region === RegionID.ADVANCE){
+  navigateToDashboard() {
+    if (this.region === RegionID.ADVANCE) {
       this.router.navigate(['/app-smart-cloud/object-storage-advance/dashboard']);
-    }else{
+    } else {
       this.router.navigate(['/app-smart-cloud/object-storage/dashboard']);
     }
   }
 
-  navigateToBucketList(){
-    if(this.region === RegionID.ADVANCE){
+  navigateToBucketList() {
+    if (this.region === RegionID.ADVANCE) {
       this.router.navigate(['/app-smart-cloud/object-storage-advance/bucket']);
-    }else{
+    } else {
       this.router.navigate(['/app-smart-cloud/object-storage/bucket']);
     }
   }

@@ -27,7 +27,6 @@ import {
 import { CatalogService } from 'src/app/shared/services/catalog.service';
 import { BackupSchedule, FormSearchScheduleBackup } from '../../../shared/models/schedule.model';
 import { ScheduleService } from '../../../shared/services/schedule.service';
-import { RegionID } from '../../../shared/enums/common.enum';
 
 class SearchParam {
   status: string = '';
@@ -131,6 +130,10 @@ export class InstancesComponent implements OnInit {
               this.updateRowState(taskState, foundIndex);
             case 'DELETED':
               this.reloadTable();
+            case 'DETACH':
+                this.reloadTable();
+            case 'ATTACH':
+                this.reloadTable();
           }
         } else {
           switch (actionType) {
@@ -241,6 +244,7 @@ export class InstancesComponent implements OnInit {
   }
 
   doSearch() {
+    this.pageIndex = 1;
     if (this.region != undefined && this.region != null) {
       this.loading = true;
       this.dataService
@@ -362,7 +366,6 @@ export class InstancesComponent implements OnInit {
 
   listPort: Port[] = [];
   portLoading: boolean;
-
   getListPort(networkCloudId: string) {
     this.portLoading = true;
     this.listPort = [];
@@ -373,7 +376,10 @@ export class InstancesComponent implements OnInit {
           this.listPort = data.filter((e) => e.attachedDeviceId == '');
           this.portLoading = false;
           if (this.listPort.length != 0) {
+            this.disableAttachVlan = false;
             this.instanceAction.portId = this.listPort[0].id;
+          } else {
+            this.disableAttachVlan = true;
           }
         },
         error: (e) => {
@@ -472,9 +478,17 @@ export class InstancesComponent implements OnInit {
     );
   }
 
+  disableAttachVlan: boolean = true;
   changeAttachType() {
     this.instanceAction.portId = null;
     this.instanceAction.ipAddress = null;
+    if (this.listSubnet?.length != 0 && !this.isChoosePort) {
+      this.disableAttachVlan = false;
+    } else if (this.listPort?.length != 0 && this.isChoosePort) {
+      this.disableAttachVlan = false;
+    } else {
+      this.disableAttachVlan = true;
+    }
   }
 
   isInvalidIPAddress: boolean = false;

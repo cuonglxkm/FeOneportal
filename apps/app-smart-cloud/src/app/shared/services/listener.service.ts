@@ -69,4 +69,9 @@ export class ListenerService extends BaseService{
     return this.http.get<any>(this.baseUrl + this.ENDPOINT.provisions + '/loadbalancer/ssl' + '?customerId=' + userId + '&region=' + regionId +
       '&vpcId='+projectId+'&currentPage=1&pageSize=9999999');
   }
+
+  validatePoolName(lbCloudId: any, regionId: any, projectId: any, name: any): Observable<any> {
+    return this.http.post<HttpResponse<any>>(this.baseUrl + this.ENDPOINT.provisions + `/loadbalancer/checkpoolname?lbCloudId=${lbCloudId}
+    &regionId=${regionId}&projectId=${projectId}&name=${name}`, null, this.getHeaders());
+  }
 }

@@ -38,6 +38,8 @@ export class AddDomainComponent implements OnInit {
 
   listWafs: WafDetailDTO[]
 
+  listSslCert: any
+
   isVisibleCreateSSLCert = false;
 
   isLoadingGetWaf: boolean
@@ -58,6 +60,7 @@ export class AddDomainComponent implements OnInit {
 
   ngOnInit(): void {
       this.getListWaf()
+      this.getListSslCert()
   }
 
   constructor(@Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
@@ -90,6 +93,14 @@ export class AddDomainComponent implements OnInit {
     })
   }
 
+  getListSslCert(){
+    this.wafService.getListSslCert('', 999, 1).subscribe((res) => {
+      this.listSslCert = res?.records
+    }, (error) => {
+      console.log(error);     
+    })
+  }
+
   onChangeWaf(value: any){
     const selectedWaf = this.listWafs.filter((waf)=> (waf.id === value))
     this.selectedPackage = selectedWaf?.[0]?.offerId
@@ -110,8 +121,22 @@ export class AddDomainComponent implements OnInit {
     this.wafService.addDomain(this.addDomainRequest).pipe(finalize(()=>{
       this.isLoadingSubmit = false
       this.cdr.detectChanges()
-    })).subscribe()
+    })).subscribe({
+      next: (data: any)=>{
+        console.log(data)
+        this.notification.success( this.i18n.fanyi("app.status.success"), "Tiến trình sẽ diễn ra trong 1 – 3 phút")
+        this.navigateToListWaf()
+      },
+      error: ()=>{
+        this.notification.error(
+          this.i18n.fanyi("app.status.fail"),
+          "Có lỗi xảy ra, vui lòng thử lại"
+        )
+      }
+    })
+  }
 
-    
+  navigateToListWaf() {
+    this.router.navigate(['/app-smart-cloud/waf']);
   }
 }

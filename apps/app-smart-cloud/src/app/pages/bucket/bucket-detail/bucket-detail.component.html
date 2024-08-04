@@ -41,7 +41,7 @@
   <nz-row>
     <div style="margin-bottom: 10px; margin-right: 8px">URL:</div>
     <div style="font-weight: bold">
-      {{ bucket ? bucket.linkS3Website : '' }}
+      {{ bucket ? bucket.endpoint : '' }}
     </div>
   </nz-row>
   <nz-row>
@@ -229,7 +229,7 @@
           <img style="padding-right: 5px" src="assets/imgs/folder.svg" alt="" />
           {{ item.key.split('/').pop() }}
         </td>
-        <td>{{ formatFileSize(item.size) }} KB</td>
+        <td>{{ formatFileSize(item.size) }}</td>
         <td nzBreakWord="true" style="text-transform: capitalize;">{{ item.objectType }}</td>
         <td>{{ item.lastModified | date : 'dd/MM/yyyy HH:mm:ss' }}</td>
         <td>{{ item.isPublic == true ? 'Public' : 'Private' }}</td>
@@ -375,6 +375,7 @@
         <ng-container *ngIf="control.hasError('pattern')">{{
           'app.bucket.detail.createFolder.pattern' | i18n
         }}</ng-container>
+        <ng-container *ngIf="control.hasError('duplicateName')">{{ 'app.bucket.detail.createFolder.duplicate' | i18n }}</ng-container>
       </ng-template>
       </nz-form-control>
       </nz-form-item>
@@ -1014,6 +1015,7 @@
     <nz-table
       #rowSelectionTable
       [nzData]="listOfDataVersioning"
+      [nzScroll]="{ y: '500px' }"
       [nzLoading]="loadingVersion"
       [nzHideOnSinglePage]="true"
     >
@@ -1034,7 +1036,7 @@
               <div *ngIf="item.isLatest == true">({{ 'app.present' | i18n }})</div>
             </td>
             <td>{{ item.lastModified | date : 'dd/MM/yyyy HH:mm:ss' }}</td>
-            <td>{{ (item.size / 1024).toFixed(2) }} KB</td>
+            <td>{{ formatFileSize(item.size) }}</td>
             <td>{{ item.versionId === "null" ? '' : item.versionId }}</td>
             <td>
               <div>

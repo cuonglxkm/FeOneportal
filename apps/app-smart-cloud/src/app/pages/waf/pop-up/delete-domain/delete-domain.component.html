@@ -1,4 +1,4 @@
-<li nz-menu-item (click)="openModal()">{{'Xóa domain'}}</li>
+<li nz-menu-item (click)="openModal()">{{'waf.domain.delete' | i18n}}</li>
 <nz-modal
 [(nzVisible)]="isVisible"
 [nzTitle]="modalTitle"
@@ -47,6 +47,7 @@
         />{{ 'app.button.cancel' | i18n }}
       </button>
       <button
+        [nzLoading]="isLoading"
         nz-button
         nzType="primary"
         (click)="handleOkDelete()"

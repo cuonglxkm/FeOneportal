@@ -18,6 +18,7 @@ import { finalize } from 'rxjs/operators';
 import { I18NService } from '@core';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
+import { debounceTime, distinctUntilChanged, map, Subject } from 'rxjs';
 export function ipAddressValidator(): ValidatorFn {
   return (control: AbstractControl): { [key: string]: any } | null => {
     const ipAddressList = control.value.split(',').map(ip => ip.trim()); // Tách các địa chỉ IP theo dấu (,)
@@ -97,7 +98,7 @@ export class ListenerCreateComponent implements OnInit{
     maxRetriesDown: [3],
     delay: [5,[Validators.required]],
     timeoutHealth: [5,[Validators.required]],
-    path: ['/',[Validators.required,Validators.pattern(/^\/[a-zA-Z0-9-_\/]+\/?$/)]],
+    path: ['/',[Validators.pattern(/^\/[a-zA-Z0-9-_\/]+\/?$/)]],
     sucessCode: ['200',[Validators.required, Validators.pattern(/^[0-9_]*$/)]]
   });
   protocolListener = 'HTTP';
@@ -124,7 +125,7 @@ export class ListenerCreateComponent implements OnInit{
   selectedCheckMethod = 'HTTP';
   selectedHttpMethod = 'GET';
   loading= false;
-  private disableMember = true;
+  disableMember = false;
   @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
   constructor(private router: Router,
               private fb: NonNullableFormBuilder,
@@ -143,6 +144,13 @@ export class ListenerCreateComponent implements OnInit{
     this.projectId = regionAndProject.projectId;
     this.loadVm();
     this.loadSSlCert();
+    this.changeKeySearch.pipe(
+      debounceTime(500),
+      distinctUntilChanged(),
+      map(key => key.trim())
+    ).subscribe((key: string) => {
+      this.callApiCheck();
+    });
   }
 
   nextStep() {
@@ -213,13 +221,13 @@ export class ListenerCreateComponent implements OnInit{
       }))
       .subscribe(
       data => {
-        this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('app.notification.create.listener.success'));
-        this.dataListener = data;
         if (data.isSuccess === false) {
           this.notification.error(this.i18n.fanyi('app.status.fail'), data.message);
           return false;
+        } else {
+          this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('app.notification.create.listener.success'));
+          this.dataListener = data;
         }
-
         return true;
       },
       error => {
@@ -394,7 +402,7 @@ export class ListenerCreateComponent implements OnInit{
       const model = this.lstInstanceUse[i];
       for (let j= i+1; j<this.lstInstanceUse.length; j++) {
         const check = this.lstInstanceUse[j];
-        if (model.IpAddress == check.IpAddress && model.Port == check.Port && model.Weight == check.Weight) {
+        if (model.IpAddress == check.IpAddress && model.Port == check.Port) {
           this.disableMember = true
           this.notification.error(this.i18n.fanyi('app.status.fail'),this.i18n.fanyi('listner.create.duplicate.port.weight'));
           return;
@@ -402,5 +410,12 @@ export class ListenerCreateComponent implements OnInit{
       }
     }
     this.disableMember = false;
+  }
+
+
+  changeKeySearch = new Subject<string>();
+
+  private callApiCheck() {
+    this.service.validatePoolName(this.lbId,this.regionId,this.projectId,this.validateForm.controls['poolName'].value)
   }
 }

@@ -81,6 +81,7 @@
         </div>
         <nz-form-control
           nzDisableAutoTips
+          [nzErrorTip]="nameErrorTpl"
           style="margin-top: 10px"
         >
           <input
@@ -93,10 +94,10 @@
           />
           <ng-template #nameErrorTpl let-control>
             <ng-container *ngIf="control.hasError('required')">{{
-              'validation.snapshot.info.required' | i18n
+              'Tên chứng chỉ không được để trống' | i18n
             }}</ng-container>
             <ng-container *ngIf="control.hasError('pattern')">{{
-              'validation.snapshot.name.pattern' | i18n
+              'Tên chứng chỉ không đúng định dạng' | i18n
             }}</ng-container>
           </ng-template>
         </nz-form-control>
@@ -135,6 +136,7 @@
         </div>
         <nz-form-control
           nzDisableAutoTips
+          [nzErrorTip]="certificateErrorTpl"
           style="margin-top: 10px"
         >
         <textarea
@@ -143,11 +145,9 @@
         rows="4"
         nz-input
       ></textarea>
-          <ng-template #nameErrorTpl let-control>
-            <ng-container *ngIf="control.hasError('required')">{{
-              'validation.snapshot.info.required' | i18n
-            }}</ng-container>
-          </ng-template>
+      <ng-template #certificateErrorTpl let-control>
+        <ng-container *ngIf="control.hasError('required')">Nội dung chứng chỉ không được để trống</ng-container>
+      </ng-template>
         </nz-form-control>
       </nz-form-item>
       <nz-form-item *ngIf="uploadMethod == '2'">
@@ -159,6 +159,7 @@
         </div>
         <nz-form-control
           nzDisableAutoTips
+          [nzErrorTip]="privateKeyErrorTpl"
           style="margin-top: 10px;"
         >
         <textarea
@@ -167,11 +168,9 @@
         rows="4"
         nz-input
       ></textarea>
-          <ng-template #nameErrorTpl let-control>
-            <ng-container *ngIf="control.hasError('required')">{{
-              'validation.snapshot.info.required' | i18n
-            }}</ng-container>
-          </ng-template>
+      <ng-template #privateKeyErrorTpl let-control>
+        <ng-container *ngIf="control.hasError('required')">Private key không được để trống</ng-container>
+      </ng-template>
         </nz-form-control>
       </nz-form-item>
       <nz-form-item *ngIf="uploadMethod == '2'">
@@ -189,11 +188,6 @@
         rows="4"
         nz-input
       ></textarea>
-          <ng-template #nameErrorTpl let-control>
-            <ng-container *ngIf="control.hasError('required')">{{
-              'validation.snapshot.info.required' | i18n
-            }}</ng-container>
-          </ng-template>
         </nz-form-control>
       </nz-form-item>
       <nz-form-item>
@@ -207,14 +201,14 @@
           [nzErrorTip]="nameErrorTpl"
           style="margin-top: 10px"
         >
-          <input
-            class="input-custom"
-            appTrim
-            nz-input
-            placeholder="abc"
-            formControlName="name"
-            [maxlength]="50"
-          />
+        <input
+        class="input-custom"
+        appTrim
+        nz-input
+        placeholder="Nhập remarks"
+        formControlName="remarks"
+        [maxlength]="50"
+      />
           <ng-template #nameErrorTpl let-control>
             <ng-container *ngIf="control.hasError('required')">{{
               'validation.snapshot.info.required' | i18n
@@ -223,7 +217,7 @@
         </nz-form-control>
       </nz-form-item> 
       <div class="d-flex justify-content-end">
-        <button nz-button>
+        <button nz-button [routerLink]="['/app-smart-cloud/waf/ssl-cert']">
           <img
             style="padding-right: 10px; margin-top: -4px"
             src="assets/imgs/cancel.svg"
@@ -232,10 +226,13 @@
         </button>
         <button
           nz-button
-          (click)="handleCreate()"
+          (click)="handleEdit()"
+          [disabled]="form.invalid"
+          [nzLoading]="isLoading"
           nzType="primary"
         >
           <img
+          *ngIf="isLoading === false"
             style="padding-right: 10px; margin-top: -4px"
             src="assets/imgs/confirm.svg"
             alt=""

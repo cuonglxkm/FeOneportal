@@ -159,7 +159,6 @@ export class InstancesEditInfoComponent implements OnInit {
               this.securityGroupStr = Array.from(SGSet).join(', ');
             }
             this.region = this.instancesModel.regionId;
-            this.getListIpPublic();
             this.getAllOfferImage(this.imageTypeIds);
             this.dataService
               .getImageById(this.instancesModel.imageId)
@@ -183,20 +182,6 @@ export class InstancesEditInfoComponent implements OnInit {
       }
     });
     this.cdr.detectChanges();
-  }
-
-  listIPStr = '';
-  getListIpPublic() {
-    this.dataService
-      .getPortByInstance(this.id, this.region)
-      .subscribe((dataNetwork: any) => {
-        let listIP: string[] = [];
-        dataNetwork.forEach((e) => {
-          listIP = listIP.concat(e.fixedIPs);
-        });
-        this.listIPStr = listIP.join(', ');
-        this.cdr.detectChanges();
-      });
   }
 
   getAllImageType() {

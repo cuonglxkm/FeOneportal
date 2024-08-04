@@ -1,17 +1,8 @@
-import {
-  AfterViewInit,
-  Component,
-  ElementRef,
-  Input,
-  OnInit,
-  SimpleChanges,
-  ViewChild,
-} from '@angular/core';
+import { AfterViewInit, Component, ElementRef, Input, OnInit, SimpleChanges, ViewChild } from '@angular/core';
 import { Summary } from '../../../shared/models/object-storage.model';
 import { Line } from '@antv/g2plot';
 import html2canvas from 'html2canvas';
 import { jsPDF } from 'jspdf';
-import { Chart } from '@antv/g2';
 
 export class DataChart {
   time: any;
@@ -21,7 +12,7 @@ export class DataChart {
 @Component({
   selector: 'one-portal-chart',
   templateUrl: './chart.component.html',
-  styleUrls: ['./chart.component.less'],
+  styleUrls: ['./chart.component.less']
 })
 export class ChartComponent implements AfterViewInit, OnInit {
   @Input() summary: Summary[];
@@ -58,31 +49,32 @@ export class ChartComponent implements AfterViewInit, OnInit {
   }
 
   createChartStorageUse() {
-    const data = this.summary[0]?.datas?.map((item) => ({
+    let data = this.summary[0]?.datas?.map((item) => ({
       year: this.transform(item.timeSpan),
-      value: this.bytesConvert(item.value, true),
+      value: this.bytesConvert(item.value, true)
     }));
+    console.log(this.timeSelected)
 
     console.log('data', data);
-
+    // Cập nhật biểu đồ hoặc tạo mới
     if (this.lineChartStorageUse) {
       this.lineChartStorageUse.changeData(data);
     } else {
       this.lineChartStorageUse = new Line(this.chartStorageUse.nativeElement, {
         data,
         xField: 'year',
-        yField: 'value',
+        yField: 'value'
       });
-
       this.lineChartStorageUse.render();
     }
   }
 
   createNumberObject() {
-    const data = this.summary[1]?.datas?.map((item) => ({
+    let data = this.summary[1]?.datas?.map((item) => ({
       year: this.transform(item.timeSpan),
-      value: item.value,
+      value: item.value
     }));
+
     if (this.lineChartNumberObject) {
       this.lineChartNumberObject.changeData(data);
     } else {
@@ -92,7 +84,7 @@ export class ChartComponent implements AfterViewInit, OnInit {
           data,
           xField: 'year',
           yField: 'value',
-          color: 'green',
+          color: 'green'
         }
       );
 
@@ -101,9 +93,9 @@ export class ChartComponent implements AfterViewInit, OnInit {
   }
 
   createStorageUpload() {
-    const data = this.summary[2]?.datas?.map((item) => ({
+    let data = this.summary[2]?.datas?.map((item) => ({
       year: this.transform(item.timeSpan),
-      value: this.bytesConvert(item.value, true),
+      value: this.bytesConvert(item.value, true)
     }));
 
     if (this.lineChartStorageUpload) {
@@ -115,7 +107,7 @@ export class ChartComponent implements AfterViewInit, OnInit {
           data,
           xField: 'year',
           yField: 'value',
-          color: 'brown',
+          color: 'brown'
         }
       );
 
@@ -124,9 +116,9 @@ export class ChartComponent implements AfterViewInit, OnInit {
   }
 
   createStorageDownload() {
-    const data = this.summary[3]?.datas?.map((item) => ({
+    let data = this.summary[3]?.datas?.map((item) => ({
       year: this.transform(item.timeSpan),
-      value: this.bytesConvert(item.value, true),
+      value: this.bytesConvert(item.value, true)
     }));
 
     if (this.lineChartStorageDownload) {
@@ -138,7 +130,7 @@ export class ChartComponent implements AfterViewInit, OnInit {
           data,
           xField: 'year',
           yField: 'value',
-          color: 'orange',
+          color: 'orange'
         }
       );
 
@@ -517,6 +509,7 @@ export class ChartComponent implements AfterViewInit, OnInit {
       this.fullscreenChangeHandler.bind(this)
     );
     document.addEventListener('keydown', this.keydownHandler.bind(this));
+    console.log('time selected', this.timeSelected);
   }
 
   ngOnDestroy() {
@@ -527,6 +520,10 @@ export class ChartComponent implements AfterViewInit, OnInit {
     document.removeEventListener('keydown', this.keydownHandler.bind(this));
   }
 
+  getFormattedStartDate(timestamp) {
+    return new Date(timestamp * 1000); // Convert Unix timestamp to milliseconds
+  }
+
   transform(timestamp: number): string {
     const date = new Date(timestamp * 1000);
     const day = String(date.getDate()).padStart(2, '0');
@@ -535,31 +532,31 @@ export class ChartComponent implements AfterViewInit, OnInit {
     const hours = String(date.getHours()).padStart(2, '0');
     const minutes = String(date.getMinutes()).padStart(2, '0');
     const seconds = String(date.getSeconds()).padStart(2, '0');
-    let returnLabel = ''
-    switch(this.timeSelected){
+    let returnLabel = '';
+    switch (this.timeSelected) {
       case 5:
-        returnLabel = `${hours}:${minutes}`
+        returnLabel = `${hours}:${minutes}`;
         break;
       case 15:
-        returnLabel = `${hours}:${minutes}`
+        returnLabel = `${hours}:${minutes}`;
         break;
       case 60:
-        returnLabel = `${hours}:${minutes}`
+        returnLabel = `${hours}:${minutes}`;
         break;
       case 1440:
-        returnLabel = `${hours}:00`
+          returnLabel = `${hours}:00`;
         break;
       case 10080:
-        returnLabel = `${day}/${month}/${year}`
+        returnLabel = `${day}/${month}/${year}`;
         break;
       case 43200:
-        returnLabel = `${day}/${month}/${year}`
+        returnLabel = `${day}/${month}/${year}`;
         break;
       case 129600:
-        returnLabel = `${day}/${month}/${year}`
+        returnLabel = `${day}/${month}/${year}`;
         break;
-      default: 
-        returnLabel = `${hours}:${minutes}`
+      default:
+        returnLabel = `${hours}:${minutes}`;
     }
 
     return returnLabel;

@@ -60,8 +60,12 @@
                src="assets/imgs/pajamas_question.svg" alt="" />
         </nz-form-label>
         <nz-form-control nzDisableAutoTips [nzErrorTip]="compareTypeErrorTpl">
-          <nz-select formControlName="compareType" nzSize="large" [nzPlaceHolder]="'app.choose.condition' | i18n" >
+          <nz-select *ngIf="validateForm.controls['type'].value != 'FILE_TYPE'" formControlName="compareType" nzSize="large" [nzPlaceHolder]="'app.choose.condition' | i18n" >
             <nz-option *ngFor="let option of compareTypes" [nzValue]="option.value" [nzLabel]="option.label"></nz-option>
+          </nz-select>
+
+          <nz-select *ngIf="validateForm.controls['type'].value == 'FILE_TYPE'" formControlName="compareType" nzSize="large" [nzPlaceHolder]="'app.choose.condition' | i18n" >
+            <nz-option *ngFor="let option of compareTypes1" [nzValue]="option.value" [nzLabel]="option.label"></nz-option>
           </nz-select>
           <ng-template #compareTypeErrorTpl let-control>
             <ng-container *ngIf="control.hasError('required')">{{ 'validation.info.required' | i18n }}</ng-container>

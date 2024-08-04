@@ -6,6 +6,7 @@ import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { FormCreateL7Rule } from '../../../../../../../shared/models/load-balancer.model';
 import { I18NService } from '@core';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
+import { finalize } from 'rxjs';
 
 @Component({
   selector: 'one-portal-create-l7-rule',
@@ -54,6 +55,12 @@ export class CreateL7RuleComponent implements AfterViewInit {
     { value: 'EQUAL_TO', label: 'EQUAL_TO' }
   ];
 
+  compareTypes1 = [
+    { value: 'REGEX', label: 'REGEX  ' },
+    { value: 'EQUAL_TO', label: 'EQUAL_TO' }
+  ];
+
+
   @ViewChild('l7RuleInputName') l7RuleInputName!: ElementRef<HTMLInputElement>;
 
   constructor(private fb: NonNullableFormBuilder,
@@ -77,6 +84,7 @@ export class CreateL7RuleComponent implements AfterViewInit {
       this.validateForm.controls.key.clearValidators()
       this.validateForm.controls.key.updateValueAndValidity()
     }
+    this.validateForm.controls['compareType'].setValue(null as string);
   }
 
   showModal() {
@@ -115,7 +123,11 @@ export class CreateL7RuleComponent implements AfterViewInit {
       formCreateL7Rule.regionId = this.region
       formCreateL7Rule.vpcId = this.project
 
-      this.loadBalancerService.createL7Rule(formCreateL7Rule).subscribe(data => {
+      this.loadBalancerService.createL7Rule(formCreateL7Rule)
+        .pipe(finalize(() => {
+          this.handleCancel();
+        }))
+        .subscribe(data => {
         this.isVisible = false
         this.isLoading = false
         this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('app.notification.create.L7.rule.success'))

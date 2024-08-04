@@ -164,6 +164,7 @@ export class S3KeyComponent implements OnInit {
 
   copyText(secretKey: any) {
     this.clipboard.copy(secretKey);
+    this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('app.bucket.detail.copy.success'))
   }
 
   deleteSecretKey() {

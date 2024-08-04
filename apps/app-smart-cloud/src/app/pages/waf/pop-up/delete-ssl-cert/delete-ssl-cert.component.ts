@@ -1,4 +1,11 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, Output } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Inject, Input, Output } from '@angular/core';
+import { SslCertDTO } from '../../waf.model';
+import { WafService } from 'src/app/shared/services/waf.service';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
+import { I18NService } from '@core';
+import { Router } from '@angular/router';
+import { finalize } from 'rxjs';
+import { NzNotificationService } from 'ng-zorro-antd/notification';
 
 @Component({
   selector: 'one-portal-delete-ssl-cert',
@@ -7,7 +14,7 @@ import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, In
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DeleteSslCertComponent {
-  @Input() sslCertData: any
+  @Input() sslCertData: SslCertDTO
   @Input() isVisible: boolean 
   @Output() onCancelVisible = new EventEmitter()
 
@@ -17,7 +24,12 @@ export class DeleteSslCertComponent {
   checkInputConfirm: boolean = false;
 
 
-  constructor(private cdr: ChangeDetectorRef){}
+  constructor(private cdr: ChangeDetectorRef,
+    private wafService: WafService,
+    @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
+    private router: Router,
+    private notification: NzNotificationService,
+  ){}
 
   onInputChange(value: string){
     this.inputConfirm = value
@@ -32,7 +44,19 @@ export class DeleteSslCertComponent {
 
   handleOk(){
     if (this.inputConfirm == this.sslCertData.name) {
-      console.log('successfully')
+      this.isLoading = true;
+      this.wafService.deleteSslCert(this.sslCertData.id).pipe(finalize(()=>{
+        this.isLoading = false
+      })).subscribe({
+        next:()=>{
+          this.notification.success(this.i18n.fanyi("app.status.success"), "Thao tác thành công")
+          this.isVisible = false;
+          this.router.navigate(['/app-smart-cloud/waf/ssl-cert'])
+        },
+        error:()=>{
+          this.notification.success(this.i18n.fanyi("app.status.error"), "Đã xảy ra lỗi")
+        }
+      })
     } else if (this.inputConfirm == '') {
       this.checkInputEmpty = true;
       this.checkInputConfirm = false;
