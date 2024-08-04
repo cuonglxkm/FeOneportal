@@ -17,8 +17,8 @@ export class DataChart {
 export class ChartComponent implements AfterViewInit, OnInit {
   @Input() summary: Summary[];
   @Input() timeSelected: any;
+  @Input() newDate: any;
 
-  newDate: Date = new Date();
   @ViewChild('chartStorageUse') chartStorageUse!: ElementRef;
   @ViewChild('storageUse') storageUse!: ElementRef;
 

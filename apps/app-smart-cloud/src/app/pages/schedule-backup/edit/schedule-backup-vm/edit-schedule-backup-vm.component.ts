@@ -332,7 +332,10 @@ export class EditScheduleBackupVmComponent implements OnInit {
   sizeInGb: SizeInCloudProject;
   getStorageByVpc(id) {
     this.projectService.getByProjectId(id).subscribe(data => {
-      this.sizeInGb = data
+      if(data.cloudProject.type == 'VPC') {
+        this.sizeInGb = data
+        this.typeVpc = 1
+      }
     })
   }
 
@@ -342,6 +345,7 @@ export class EditScheduleBackupVmComponent implements OnInit {
     this.project = regionAndProject.projectId;
 
     this.customerId = this.tokenService.get()?.userId;
+    this.getStorageByVpc(this.project)
     this.route.params.subscribe((params) => {
       this.idSchedule = params['id'];
       if (this.idSchedule !== undefined) {
