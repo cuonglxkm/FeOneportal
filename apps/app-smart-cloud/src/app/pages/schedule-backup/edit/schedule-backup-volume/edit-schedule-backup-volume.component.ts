@@ -356,7 +356,7 @@ export class EditScheduleBackupVolumeComponent implements OnInit {
 
     this.isLoading = true;
     this.customerId = this.tokenService.get()?.userId;
-
+    this.getStorageByVpc(this.project);
     this.route.params.subscribe((params) => {
       this.idSchedule = params['id'];
       if (this.idSchedule !== undefined) {
