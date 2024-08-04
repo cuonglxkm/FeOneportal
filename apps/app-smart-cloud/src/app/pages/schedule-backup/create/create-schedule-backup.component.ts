@@ -369,9 +369,14 @@ export class CreateScheduleBackupComponent implements OnInit {
         this.backupScheduleService.search(formSearchBackupSchedule).subscribe(data3 => {
           data3.records?.forEach(item3 => {
             this.listVolumeNotUseUnique = this.listVolumeNotUseUnique.filter((volume) => volume.id != item3.serviceId && ['AVAILABLE', 'IN-USE'].includes(volume.serviceStatus));
-            if (this.volumeId == undefined) {
-              this.volumeSelected = this.listVolumeNotUseUnique[0]?.id;
-            }
+            item3.backupScheduleItems.forEach(item4 => {
+              this.listVolumeNotUseUnique = this.listVolumeNotUseUnique.filter((volume) => volume.id != item4.itemId && ['AVAILABLE', 'IN-USE'].includes(volume.serviceStatus));
+              if (this.volumeId == undefined) {
+                this.volumeSelected = this.listVolumeNotUseUnique[0]?.id;
+              }
+
+            })
+
           });
         });
         this.isLoadingVolume = false;

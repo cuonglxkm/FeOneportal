@@ -327,7 +327,7 @@ export class ResizeVolumeVpcComponent implements OnInit {
       this.minStorage = Number.parseInt(this.valueString?.split('#')[0])
       this.stepStorage = Number.parseInt(this.valueString?.split('#')[1])
       this.maxStorage = Number.parseInt(this.valueString?.split('#')[2])
-      this.validateForm.controls.storage.setValue(this.minStorage)
+      // this.validateForm.controls.storage.setValue(this.minStorage)
     })
   }
   url = window.location.pathname;

@@ -120,7 +120,7 @@ export class CreatePackageBackupComponent implements OnInit {
       this.minStorage = Number.parseInt(arr[0]);
       this.stepStorage = Number.parseInt(arr[1]);
       this.maxStorage = Number.parseInt(arr[2]);
-      this.validateForm.controls.storage.setValue(this.minStorage)
+      // this.validateForm.controls.storage.setValue(this.minStorage)
     });
   }
 
