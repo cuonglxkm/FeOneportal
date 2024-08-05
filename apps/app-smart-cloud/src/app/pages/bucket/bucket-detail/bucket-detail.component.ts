@@ -1239,10 +1239,7 @@ export class BucketDetailComponent extends BaseService implements OnInit {
           urlOrigin: this.hostNameUrl,
           regionId: this.region,
           ACL: this.radioValue,
-          metadata: {
-            'x-amz-meta-custom1': 'value1',
-            'x-amz-meta-custom2': 'value2'
-          }
+          metadata: this.listOfMetadata
         };
         this.service.getSignedUrl(data).subscribe(
           (responseData) => {
@@ -1250,8 +1247,11 @@ export class BucketDetailComponent extends BaseService implements OnInit {
             const xhr = new XMLHttpRequest();
             xhr.open('PUT', presignedUrl, true);
             xhr.setRequestHeader('x-amz-acl', this.radioValue);
-            xhr.setRequestHeader('x-amz-meta-custom1', data.metadata['x-amz-meta-custom1']);
-            xhr.setRequestHeader('x-amz-meta-custom2', data.metadata['x-amz-meta-custom2']);
+            data.metadata.forEach(meta => {
+              if (meta.metaKey && meta.metaValue) {
+                xhr.setRequestHeader(`x-amz-meta-${meta.metaKey}`, meta.metaValue);
+              }
+            });
             startTime = new Date();
             xhr.upload.onprogress = (event) => {
               if (event.lengthComputable) {

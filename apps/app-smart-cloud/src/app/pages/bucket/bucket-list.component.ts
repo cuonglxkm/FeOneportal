@@ -186,6 +186,8 @@ export class BucketListComponent implements OnInit {
 
   onRegionChange(region: RegionModel) {
     this.region = region.regionId;
+    console.log(this.region);
+    
     if(this.region === RegionID.ADVANCE){
       this.router.navigate(['/app-smart-cloud/object-storage-advance/bucket']);
     }else{

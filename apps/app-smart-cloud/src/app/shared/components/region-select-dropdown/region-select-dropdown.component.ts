@@ -96,11 +96,11 @@ export class RegionSelectDropdownComponent implements OnInit {
     const bucketPath = '/app-smart-cloud/object-storage/bucket';
     const bucketAdvancePath = '/app-smart-cloud/object-storage-advance/bucket';
     const subUserPath = '/app-smart-cloud/object-storage/sub-user/list';
-    const subUserAdvancePath = '/app-smart-cloud/object-storage/sub-user-advance/list';
+    const subUserAdvancePath = '/app-smart-cloud/object-storage-advance/sub-user/list';
     const s3KeyPath = '/app-smart-cloud/object-storage/s3-key';
-    const s3KeyAdvancePath = '/app-smart-cloud/object-storage/s3-key-advance';
+    const s3KeyAdvancePath = '/app-smart-cloud/object-storage-advance/s3-key';
     const dashboardPath = '/app-smart-cloud/object-storage/dashboard';
-    const dashboardAdvancePath = '/app-smart-cloud/object-storage/dashboard-advance';
+    const dashboardAdvancePath = '/app-smart-cloud/object-storage-advance/dashboard';
 
 
     const volumesPath = '/app-smart-cloud/volumes';
