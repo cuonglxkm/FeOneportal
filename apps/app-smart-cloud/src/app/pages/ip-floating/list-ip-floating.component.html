@@ -154,7 +154,7 @@
 <!--          >-->
 <!--            {{ 'app.label.create' | i18n }} IP Floating-->
 <!--          </button>-->
-          <one-portal-create-ip-floating [region]="region" [project]="project" [projectType]="projectType" (onOk)="handleOkCreateIpFloating()" [plusImage]="false"/>
+          <one-portal-create-ip-floating *ngIf="project != 1" [region]="region" [project]="project" [projectType]="projectType" (onOk)="handleOkCreateIpFloating()" [plusImage]="false"/>
         </result>
       </ng-container>
     </ng-container>

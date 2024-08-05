@@ -453,7 +453,7 @@
           </button>
           <button [disabled]="validateForm.controls['poolName'].invalid || validateForm.controls['delay'].invalid || validateForm.controls['timeoutHealth'].invalid
            || validateForm.controls['healthName'].invalid || (selectedCheckMethod == 'HTTP' && ((validateForm.controls['path'].invalid && (validateForm.controls['path'].value) != '/')
-           || validateForm.controls['sucessCode'].invalid))" nzSize="large"
+           || validateForm.controls['sucessCode'].invalid)) || disableStep2" nzSize="large"
                   (click)="nextStep()" nz-button nzType="primary"
                   style="border: none;margin-left: 30px;">{{ 'app.button.continue' | i18n }}
           </button>
