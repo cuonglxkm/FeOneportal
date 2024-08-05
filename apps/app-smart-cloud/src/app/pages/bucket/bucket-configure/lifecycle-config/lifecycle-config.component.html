@@ -70,7 +70,7 @@
           {{ item.enabledString }}
         </td>
         <td *ngIf="item.prefix != null">{{ item.prefix }}</td>
-        <td *ngIf="item.prefix == null"><{{ 'app.all.files' | i18n }}></td>
+        <td *ngIf="item.prefix == null">{{ 'app.all.files' | i18n }}</td>
         <td>{{ item.lifecycleTagPredicateString }}</td>
         <td>{{ item.expiration_DayString }}</td>
         <td>{{ item.noncurrentVersionExpiration_DayString }}</td>
@@ -161,6 +161,7 @@
               [placeholder]="'app.input.key' | i18n"
               [(ngModel)]="item.key"
               [ngModelOptions]="{ standalone: true }"
+              (ngModelChange)="onChangeKey()"
             />
             <div
               style="color: #ff4d4f; margin-top: -8px"
@@ -177,6 +178,7 @@
               [placeholder]="'app.input.value' | i18n"
               [(ngModel)]="item.value"
               [ngModelOptions]="{ standalone: true }"
+              (ngModelChange)="onChangeValue()"
             />
           </div>
           <div
@@ -290,6 +292,11 @@
           {{ 'app.lifeCycle.text.input3' | i18n }}
         </div>
       </div>
+      <div
+        *ngIf="duplicateLC === true"
+        class="text-label"
+        style="color: #eb1414; margin-top: 16px; margin-bottom: 10px"
+      >{{ 'app.lifeCycle.validate.duplicate' | i18n }}</div>
     </ng-container>
     <div *nzModalFooter>
       <button nz-button (click)="handleCancelCreate()">
@@ -303,11 +310,11 @@
         nz-button
         nzType="primary"
         [disabled]="
-          formCreate.controls['isSetExpiration_Day'].value === false &&
+          (formCreate.controls['isSetExpiration_Day'].value === false &&
           formCreate.controls['isSetAbortIncompleteMultipartUpload_Day']
             .value === false &&
           formCreate.controls['isSetNoncurrentVersionExpiration_Day'].value ===
-            false
+            false) || duplicateLC === true
         "
         [nzLoading]="isLoadingCreate"
         (click)="handleOkCreate()"
