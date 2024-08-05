@@ -19,6 +19,7 @@ import { duplicateDomainValidator, ipValidatorMany, slider } from '../../../../.
 import { WAFCreate } from '../../../shared/models/waf-init';
 import { DataPayment, ItemPayment, OfferItem, Order, OrderItem } from '../../instances/instances.model';
 import { InstancesService } from '../../instances/instances.service';
+import { NzSelectOptionInterface } from 'ng-zorro-antd/select';
 
 
 
@@ -65,7 +66,7 @@ export class WAFCreateComponent implements OnInit {
   listOfDomain: any = [];
 
   isRequired: boolean = true;
-
+  selectedSslCert: number
   isLoading = false;
   isVisibleCreateSSLCert = false;
   WAFCreate: WAFCreate = new WAFCreate();
@@ -87,6 +88,7 @@ export class WAFCreateComponent implements OnInit {
     { label: 'Default', value: '0' },
   ];
   listSslCert: any
+  selectedSslCertName: string = '';
   sslCertIdSelected: any
   policySelected: string = '0';
   numberDomain: number = 0;
@@ -160,6 +162,12 @@ export class WAFCreateComponent implements OnInit {
       console.log(error);     
     })
   }
+
+  onSslCertChange(selectedId: string) {
+    const selectedCert = this.listSslCert.find(cert => cert?.id === selectedId);
+    this.selectedSslCertName = selectedCert ? selectedCert.name : '';
+  }
+
 
   areAllDomainsValid(): boolean {
     return this.bonusServices.controls.every(control => control.get('domain')?.valid);
