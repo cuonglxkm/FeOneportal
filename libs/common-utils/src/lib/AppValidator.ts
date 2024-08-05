@@ -575,7 +575,7 @@ export function ipValidatorVlan(): ValidatorFn {
       if (
         (a === 10 && b >= 10 && b <= 100) ||
         (a === 172 && b >= 16 && b <= 31) ||
-        (a === 192 && b === 168) && (d != 0)
+        (a === 192 && b === 168) 
       ) {
         if ( d != 0) {
           return { invalidIp: true };
