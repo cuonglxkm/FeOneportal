@@ -118,6 +118,8 @@ export class DashboardObjectStorageComponent implements OnInit {
       .pipe(finalize(() => this.loadingSrv.close()))
       .subscribe(data => {
         this.summary = data;
+      }, error => {
+        console.log('error: ', error)
       });
   }
 
