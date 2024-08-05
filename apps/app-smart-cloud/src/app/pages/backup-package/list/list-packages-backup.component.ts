@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { PackageBackupService } from '../../../shared/services/package-backup.service';
-import { PackageBackupModel, ServiceInPackage } from '../../../shared/models/package-backup.model';
+import { PackageBackupModel } from '../../../shared/models/package-backup.model';
 import {
   BaseResponse,
   NotificationService,
@@ -16,7 +16,9 @@ import { ProjectService } from 'src/app/shared/services/project.service';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from '@core';
 import { debounceTime, Subject, Subscription } from 'rxjs';
-import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
+import {
+  ProjectSelectDropdownComponent
+} from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
 
 @Component({
   selector: 'one-portal-list-packages-backup',
@@ -88,7 +90,7 @@ export class ListPackagesBackupComponent implements OnInit, OnDestroy {
   }
 
   regionChanged(region: RegionModel) {
-    if(this.projectCombobox){
+    if (this.projectCombobox) {
       this.projectCombobox.loadProjects(true, region.regionId);
     }
     this.region = region.regionId;
@@ -100,8 +102,8 @@ export class ListPackagesBackupComponent implements OnInit, OnDestroy {
 
   projectChanged(project: ProjectModel) {
     this.project = project?.id;
-    this.typeVPC = project?.type
-    this.projectName = project?.projectName
+    this.typeVPC = project?.type;
+    this.projectName = project?.projectName;
     this.getListPackageBackups(true);
   }
 
@@ -162,8 +164,8 @@ export class ListPackagesBackupComponent implements OnInit, OnDestroy {
     this.packageBackupService.search(this.value, this.selectedValue, this.project, this.region, this.pageSize, this.pageIndex).subscribe(data => {
       this.isLoading = false;
       this.response = data;
-      if((this.response.records == null || this.response.records.length < 1) && this.pageIndex != 1) {
-        this.pageIndex = 1
+      if ((this.response.records == null || this.response.records.length < 1) && this.pageIndex != 1) {
+        this.pageIndex = 1;
         this.getListPackageBackups(false);
       }
       if (isBegin) {
@@ -181,24 +183,28 @@ export class ListPackagesBackupComponent implements OnInit, OnDestroy {
   }
 
   navigateToExtend(id) {
-    this.router.navigate(['/app-smart-cloud/backup/packages/extend/' + id])
+    this.router.navigate(['/app-smart-cloud/backup/packages/extend/' + id]);
   }
 
   handleDeletedOk() {
-    setTimeout(() => {this.getListPackageBackups(true);}, 2000)
+    setTimeout(() => {
+      this.getListPackageBackups(true);
+    }, 2000);
 
   }
 
   handleUpdateOk() {
-    setTimeout(() => {this.getListPackageBackups(false);}, 2000)
+    setTimeout(() => {
+      this.getListPackageBackups(false);
+    }, 2000);
   }
 
   getSuspendedReason(suspendedReason: string) {
     switch (suspendedReason) {
-      case "CHAMGIAHAN":
-        return this.i18n.fanyi('app.status.low-renew')
-      case "VIPHAMDIEUKHOAN":
-        return this.i18n.fanyi('service.status.violation')
+      case 'CHAMGIAHAN':
+        return this.i18n.fanyi('app.status.low-renew');
+      case 'VIPHAMDIEUKHOAN':
+        return this.i18n.fanyi('service.status.violation');
       default:
         break;
     }

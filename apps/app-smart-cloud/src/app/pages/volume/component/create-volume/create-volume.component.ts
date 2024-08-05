@@ -514,7 +514,7 @@ export class CreateVolumeComponent implements OnInit {
         this.errorList = data.data;
       }
     }, error => {
-      this.notification.error(this.i18n.fanyi('app.status.fail'), error.error.detail);
+      this.notification.error(this.i18n.fanyi('app.status.fail'), error.error.message);
     });
   }
 
