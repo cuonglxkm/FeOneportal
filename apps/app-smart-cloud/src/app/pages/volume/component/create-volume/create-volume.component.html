@@ -24,7 +24,8 @@
   <ng-template #action>
     <div class="alain-custom-action text-right">
       <share-users-combobox></share-users-combobox>
-      <region-select-dropdown (regionChange)="onRegionChanged($event)" (valueChanged)="regionChanged($event)"></region-select-dropdown>
+      <region-select-dropdown (regionChange)="onRegionChanged($event)"
+                              (valueChanged)="regionChanged($event)"></region-select-dropdown>
       <project-select-dropdown #projectCombobox (valueChanged)="projectChanged($event)"
                                (userChanged)="userChangeProject($event)"
                                [regionId]="region"></project-select-dropdown>
@@ -70,7 +71,8 @@
           </nz-form-item>
           <nz-form-item *ngIf="typeSnapshot">
             <div style="display: flex;">
-              <nz-switch formControlName="isSnapshot" [(ngModel)]="isInitSnapshot" (ngModelChange)="onSwitchSnapshot($event)" ></nz-switch>
+              <nz-switch formControlName="isSnapshot" [(ngModel)]="isInitSnapshot"
+                         (ngModelChange)="onSwitchSnapshot($event)"></nz-switch>
               <span style="margin-left: 10px; margin-top: 1px;"
                     class="text-label">{{ 'volume.switch.snapshot'|i18n }}</span>
               <img style="margin-left: 10px"
@@ -199,13 +201,16 @@
                       <ng-container
                         *ngIf="control.hasError('required') || control.hasError('pattern')">{{ 'volume.input.storage.required'|i18n }}
                       </ng-container>
-                      <ng-container *ngIf="control.hasError('outOfStorageSnapshot')">{{'app.file.system.not.enough.quota.snapshot'|i18n: {name: snapshot.sizeInGB + 'GB'} }}</ng-container>
+                      <ng-container
+                        *ngIf="control.hasError('outOfStorageSnapshot')">{{ 'app.file.system.not.enough.quota.snapshot'|i18n: { name: snapshot.sizeInGB + 'GB' } }}
+                      </ng-container>
                     </ng-template>
                   </nz-form-control>
                 </td>
                 <td nzAlign="right">{{ iops }}</td>
                 <td nzAlign="right">
-                  <label class="text-custom-price">{{ unitPrice * validateForm.controls.storage.value | number }}</label>
+                  <label
+                    class="text-custom-price">{{ unitPrice * validateForm.controls.storage.value | number }}</label>
                   <br>
                   <label class="text-custom-price" style="color: #2b2d3b33;">{{ unitPrice | number }}</label>
                 </td>
@@ -294,23 +299,25 @@
             <div style="margin-bottom: 20px">
               <span class="text-card-header">{{ 'app.estimated.cost' | i18n }}</span>
             </div>
-            <div class="text-value">{{ 'app.volume.name' | i18n }}</div>
-            <div style="margin-top: 10px" class="text-label">
-              {{ validateForm.controls.name.getRawValue() }}
+            <div class="card-money">
+              <div class="text-value">{{ 'app.volume.name' | i18n }}</div>
+              <div style="margin-top: 10px" class="text-label">
+                {{ validateForm.controls.name.getRawValue() }}
+              </div>
+              <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
+              <div class="text-value">{{ 'app.volume.type' | i18n }}</div>
+              <div style="margin-top: 10px" class="text-label">
+                <span *ngIf="volumeCreate.volumeType == 'hdd'">{{ 'volume.hdd' | i18n }}</span>
+                <span *ngIf="volumeCreate.volumeType == 'ssd'">{{ 'volume.ssd' | i18n }}</span>
+              </div>
+              <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
+              <div class="text-value">{{ 'volume.storage.volume' | i18n }}</div>
+              <div style="margin-top: 10px" class="text-label">{{ volumeCreate.volumeSize }} GB</div>
+              <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
+              <div class="text-value">{{ 'volume.table.title.iops' | i18n }}</div>
+              <div style="margin-top: 10px" class="text-label">{{ this.iops }}</div>
+              <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
             </div>
-            <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
-            <div class="text-value">{{ 'app.volume.type' | i18n }}</div>
-            <div style="margin-top: 10px" class="text-label">
-              <span *ngIf="volumeCreate.volumeType == 'hdd'">{{ 'volume.hdd' | i18n }}</span>
-              <span *ngIf="volumeCreate.volumeType == 'ssd'">{{ 'volume.ssd' | i18n }}</span>
-            </div>
-            <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
-            <div class="text-value">{{ 'volume.storage.volume' | i18n }}</div>
-            <div style="margin-top: 10px" class="text-label">{{ volumeCreate.volumeSize }} GB</div>
-            <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
-            <div class="text-value">{{ 'volume.table.title.iops' | i18n }}</div>
-            <div style="margin-top: 10px" class="text-label">{{ this.iops }}</div>
-            <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
             <!---THÀNH TIỀN--->
             <div *ngIf="!hasRoleSI">
               <nz-row style="margin-bottom: 10px" nzGutter="16">
@@ -319,11 +326,13 @@
                   class="text-value">{{ 'app.cost.n.month'| i18n : { numberMonth: validateForm.controls.time.value } }}</span>
                 </nz-col>
                 <nz-col class="text-right" nzSpan="8">
-              <span *ngIf="orderItem && orderItem?.orderItemPrices?.length <= 0" class="text-value" style="color: #0066b3"
+              <span *ngIf="orderItem && orderItem?.orderItemPrices?.length <= 0" class="text-value"
+                    style="color: #0066b3"
                     nzAlign="right">
               0 VND
             </span>
-                  <span *ngIf="orderItem && orderItem?.orderItemPrices?.length > 0" class="text-value" style="color: #0066b3"
+                  <span *ngIf="orderItem && orderItem?.orderItemPrices?.length > 0" class="text-value"
+                        style="color: #0066b3"
                         nzAlign="right">
               {{ orderItem?.orderItemPrices[0]?.totalAmount.amount | number: '1.0-0' }} {{ orderItem?.orderItemPrices[0]?.totalAmount.currency }}
             </span>
