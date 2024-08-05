@@ -40,7 +40,7 @@ export class DashboardObjectStorageComponent implements OnInit {
   url = window.location.pathname;
   summary: Summary[];
 
-  newDate: Date;
+  newDate: Date = new Date();
 
   times = [
     { value: 5, label: '5 ' + this.i18n.fanyi('app.minute') },
@@ -118,6 +118,8 @@ export class DashboardObjectStorageComponent implements OnInit {
       .pipe(finalize(() => this.loadingSrv.close()))
       .subscribe(data => {
         this.summary = data;
+      }, error => {
+        console.log('error: ', error)
       });
   }
 

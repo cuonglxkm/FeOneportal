@@ -801,7 +801,7 @@
   "app.s3.key.recreate.alert": "Bạn đang thực hiện tạo lại SecretKey.",
   "app.s3.key.recreate.des": "Quý khách chắc chắn muốn thực hiện tại lại SecretKey?",
 
-  "validation.bucket.name": "Vui lòng nhập ký tự thường a-z, các ký tự số 0-9, dấu gạch ngang và dấu chấm",
+  "validation.bucket.name": "Vui lòng nhập ký tự thường a-z, các ký tự số 0-9, dấu gạch ngang và dấu chấm (không được nhập dấu gạch ngang hoặc dấu chấm ở đầu hoặc cuối)",
   "validation.bucket.name1": "Tên Bucket chỉ được phép dùng các ký tự chữ thường a-z các ký tự số 0-9 dấu gạch ngang (-) và dấu chấm (.), tối thiểu 3 ký tự và tối đa 63 ký tự",
   "validation.bucket.name.invalid": "Tên Bucket không hợp lệ",
   "validation.sub.user.name": "Tên người dùng nên sử dụng các ký tự chữ cái thường, chữ hoa, chữ số và dấu gạch ngang",

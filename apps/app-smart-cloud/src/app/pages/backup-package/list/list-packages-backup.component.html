@@ -117,7 +117,7 @@
                   {{ statusModel.status }}</span>
                 </td>
               </ng-container>
-              <td nzBreakWord>
+              <td nzBreakWord *ngIf="!['DELETING'].includes(data.status)">
                 <div *ngIf="['ACTIVE', 'AVAILABLE'].includes(data.status)">
                   <!---Chỉnh sửa------>
                   <one-portal-update-backup-package [region]="region"

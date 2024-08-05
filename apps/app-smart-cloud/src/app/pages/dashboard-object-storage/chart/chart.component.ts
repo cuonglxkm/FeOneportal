@@ -1,13 +1,18 @@
-import { AfterViewInit, Component, ElementRef, Input, OnInit, SimpleChanges, ViewChild } from '@angular/core';
+import {
+  AfterViewInit,
+  ChangeDetectorRef,
+  Component,
+  ElementRef,
+  Input,
+  OnInit,
+  SimpleChanges,
+  ViewChild
+} from '@angular/core';
 import { Summary } from '../../../shared/models/object-storage.model';
 import { Line } from '@antv/g2plot';
 import html2canvas from 'html2canvas';
 import { jsPDF } from 'jspdf';
-
-export class DataChart {
-  time: any;
-  data: any;
-}
+import { Chart } from 'angular-highcharts';
 
 @Component({
   selector: 'one-portal-chart',
@@ -19,123 +24,291 @@ export class ChartComponent implements AfterViewInit, OnInit {
   @Input() timeSelected: any;
   @Input() newDate: any;
 
-  @ViewChild('chartStorageUse') chartStorageUse!: ElementRef;
+  // @ViewChild('chartStorageUse') chartStorageUse!: ElementRef;
   @ViewChild('storageUse') storageUse!: ElementRef;
-
-  @ViewChild('chartNumberObject') chartNumberObject!: ElementRef;
+  //
+  // @ViewChild('chartNumberObject') chartNumberObject!: ElementRef;
   @ViewChild('numberObject') numberObject!: ElementRef;
-
-  @ViewChild('chartStorageUpload') chartStorageUpload!: ElementRef;
+  //
+  // @ViewChild('chartStorageUpload') chartStorageUpload!: ElementRef;
   @ViewChild('storageUpload') storageUpload!: ElementRef;
-
-  @ViewChild('chartStorageDownload') chartStorageDownload!: ElementRef;
+  //
+  // @ViewChild('chartStorageDownload') chartStorageDownload!: ElementRef;
   @ViewChild('storageDownload') storageDownload!: ElementRef;
   @ViewChild('fullscreenContainer', { static: false })
   fullscreenContainer: ElementRef;
   @ViewChild('fullscreenImage', { static: false }) fullscreenImage: ElementRef;
-  lineChartStorageUse: Line;
-  lineChartNumberObject: Line;
-  lineChartStorageUpload: Line;
+  // lineChartStorageUse: Line;
+  // lineChartNumberObject: Line;
+  // lineChartStorageUpload: Line;
   lineChartStorageDownload: Line;
 
-  bytesConvert(bytes, label) {
-    if (bytes == 0) return '0 byte';
-    var s = ['bytes', 'KB', 'MB', 'GB', 'TB', 'PB'];
-    var e = Math.floor(Math.log(bytes) / Math.log(1024));
-    var value = (bytes / Math.pow(1024, Math.floor(e))).toFixed(2);
-    e = e < 0 ? -e : e;
-    if (label) value += ' ' + s[e];
+  // public chartData: ChartData<'line'>;
+  // public chartOptions: ChartOptions<'line'>;
+
+  public chartStorageUse: Chart;
+  public chartNumberObject: Chart;
+  public chartStorageUpload: Chart;
+  public chartStorageDownload: Chart;
+
+  constructor(private cdr: ChangeDetectorRef) {
+    // Đăng ký các thành phần của Chart.js
+    // Chart.register(...registerables);
+  }
+
+  bytesConvert(bytes: number, label: boolean): string {
+    if (bytes === 0) return '0';
+    const units = ['bytes', 'KB', 'MB', 'GB', 'TB', 'PB'];
+    const exponent = Math.floor(Math.log(bytes) / Math.log(1024));
+    const value = (bytes / Math.pow(1024, exponent)).toFixed(2);
+    if (label) return `${value} ${units[exponent]}`;
     return value;
   }
 
-  createChartStorageUse() {
-    let data = this.summary[0]?.datas?.map((item) => ({
-      year: this.transform(item.timeSpan),
-      value: this.bytesConvert(item.value, true)
-    }));
-    console.log(this.timeSelected)
+  private removeDuplicates(data: { timeSpan: number, value: number }[]): { [key: string]: number } {
+    return data.reduce((acc, item) => {
+      // Lấy chỉ phần thời gian hh:mm
+      const date = new Date(item.timeSpan * 1000);
+      const timeKey = this.transform(item.timeSpan);
 
-    console.log('data', data);
-    // Cập nhật biểu đồ hoặc tạo mới
-    if (this.lineChartStorageUse) {
-      this.lineChartStorageUse.changeData(data);
-    } else {
-      this.lineChartStorageUse = new Line(this.chartStorageUse.nativeElement, {
-        data,
-        xField: 'year',
-        yField: 'value'
-      });
-      this.lineChartStorageUse.render();
+      // Gộp các giá trị trùng lặp
+      if (!acc[timeKey]) {
+        acc[timeKey] = 0;
+      }
+      acc[timeKey] += item.value;
+      return acc;
+    }, {} as { [key: string]: number });
+  }
+
+  private createDefaultChart(startDate, name: string): Chart {
+    const defaultTimeRange = this.generateTimeRange(startDate);
+
+    return new Chart({
+      chart: {
+        type: 'line'
+      },
+      title: {
+        text: ''
+      },
+      xAxis: {
+        categories: defaultTimeRange,
+        title: {
+          text: ''
+        }
+      },
+      yAxis: {
+        title: {
+          text: ''
+        },
+        min: 0,
+        // max: 10
+      },
+      series: [{
+        name: name,
+        data: new Array(defaultTimeRange.length).fill(0)
+      } as any]
+    });
+  }
+
+  private generateTimeRange(startDate): string[] {
+    const startTimestamp = startDate; // Sử dụng startDate hoặc ngày hiện tại
+    const end = new Date(); // Ngày hiện tại
+
+    const timeLabels: string[] = [];
+    const start = new Date(startTimestamp * 1000); // Chuyển đổi từ UNIX timestamp sang Date
+
+    while (start <= end) {
+      timeLabels.push(`${start.getHours()}:${start.getMinutes().toString().padStart(2, '0')}`);
+      start.setMinutes(start.getMinutes() + 60); // Thêm 1 giờ
     }
+    return timeLabels;
+  }
+
+  createChartStorageUse() {
+    const data = this.summary[0]?.datas?.map((item) => ({
+      timeSpan: item.timeSpan,
+      value: parseInt(item.value, 10) // Chuyển đổi value từ chuỗi sang số
+    })) || [];
+    console.log('rawData:', data);
+    if (!data || data.length === 0) {
+      console.warn('Data is null or empty, using default time range.');
+      // Sử dụng ChangeDetectorRef để cập nhật lại biểu đồ
+      this.chartStorageUse = this.createDefaultChart(this.summary[0]?.startDate, 'Dung lượng đã sử dụng');
+      this.cdr.detectChanges(); // Buộc Angular cập nhật lại
+      return;
+    }
+    const uniqueData = this.removeDuplicates(data);
+    // Chuyển đổi timestamp thành định dạng thời gian đọc được
+    const labels = Object.keys(uniqueData);
+    // Trích xuất giá trị dữ liệu
+    const dataValues = Object.values(uniqueData).map(value => value / 1024); // Chuyển từ KB sang MB
+    console.log('dataValues', dataValues)
+    // Cấu hình Highcharts
+    this.chartStorageUse = new Chart({
+      chart: {
+        type: 'line'
+      },
+      title: {
+        text: ''
+      },
+      xAxis: {
+        categories: labels,
+        title: {
+          text: ''
+        }
+      },
+      yAxis: {
+        title: {
+          text: ''
+        }
+      },
+      series: [{
+        name: 'Dung lượng đã sử dụng (MB)',
+        data: dataValues  // Đảm bảo rằng data là một mảng số
+      } as any] // Ép kiểu để khắc phục lỗi TypeScript
+    });
   }
 
   createNumberObject() {
-    let data = this.summary[1]?.datas?.map((item) => ({
-      year: this.transform(item.timeSpan),
-      value: item.value
-    }));
+    const data = this.summary[1]?.datas?.map((item) => ({
+      timeSpan: item.timeSpan,
+      value: parseInt(item.value, 10) // Chuyển đổi value từ chuỗi sang số
+    })) || [];
+    console.log('rawData:', data);
+    if (!data || data.length === 0) {
+      console.warn('Data is null or empty, using default time range.');
 
-    if (this.lineChartNumberObject) {
-      this.lineChartNumberObject.changeData(data);
-    } else {
-      this.lineChartNumberObject = new Line(
-        this.chartNumberObject.nativeElement,
-        {
-          data,
-          xField: 'year',
-          yField: 'value',
-          color: 'green'
-        }
-      );
-
-      this.lineChartNumberObject.render();
+      // Sử dụng ChangeDetectorRef để cập nhật lại biểu đồ
+      this.chartNumberObject = this.createDefaultChart(this.summary[1]?.startDate, 'Số lượng Object');
+      this.cdr.detectChanges(); // Buộc Angular cập nhật lại
+      return;
     }
+    const uniqueData = this.removeDuplicates(data);
+    // Chuyển đổi timestamp thành định dạng thời gian đọc được
+    const labels = Object.keys(uniqueData);
+
+    // Trích xuất giá trị dữ liệu
+    const dataValues = Object.values(uniqueData).map(value => value); // Chuyển từ KB sang MB
+
+    // Cấu hình Highcharts
+    this.chartNumberObject = new Chart({
+      chart: {
+        type: 'line'
+      },
+      title: {
+        text: ''
+      },
+      xAxis: {
+        categories: labels,
+        title: {
+          text: ''
+        }
+      },
+      yAxis: {
+        title: {
+          text: ''
+        }
+      },
+      series: [{
+        name: 'Số lượng Object',
+        data: dataValues // Đảm bảo rằng data là một mảng số
+      } as any] // Ép kiểu để khắc phục lỗi TypeScript
+    });
+
   }
 
   createStorageUpload() {
-    let data = this.summary[2]?.datas?.map((item) => ({
-      year: this.transform(item.timeSpan),
-      value: this.bytesConvert(item.value, true)
-    }));
+    const data = this.summary[2]?.datas?.map((item) => ({
+      timeSpan: item.timeSpan,
+      value: parseInt(item.value, 10) // Chuyển đổi value từ chuỗi sang số
+    })) || [];
+    console.log('rawData:', data);
+    if (!data || data.length === 0) {
+      console.warn('Data is null or empty, using default time range.');
 
-    if (this.lineChartStorageUpload) {
-      this.lineChartStorageUpload.changeData(data);
-    } else {
-      this.lineChartStorageUpload = new Line(
-        this.chartStorageUpload.nativeElement,
-        {
-          data,
-          xField: 'year',
-          yField: 'value',
-          color: 'brown'
-        }
-      );
-
-      this.lineChartStorageUpload.render();
+      // Sử dụng ChangeDetectorRef để cập nhật lại biểu đồ
+      this.chartStorageUpload = this.createDefaultChart(this.summary[2]?.startDate, 'Dung lượng tải lên');
+      this.cdr.detectChanges(); // Buộc Angular cập nhật lại
+      return;
     }
+    const uniqueData = this.removeDuplicates(data);
+    // Chuyển đổi timestamp thành định dạng thời gian đọc được
+    const labels = Object.keys(uniqueData);
+
+    // Trích xuất giá trị dữ liệu
+    const dataValues = Object.values(uniqueData).map(value => value / 1024 ); // Chuyển từ KB sang MB
+
+    // Cấu hình Highcharts
+    this.chartStorageUpload = new Chart({
+      chart: {
+        type: 'line'
+      },
+      title: {
+        text: ''
+      },
+      xAxis: {
+        categories: labels,
+        title: {
+          text: ''
+        }
+      },
+      yAxis: {
+        title: {
+          text: ''
+        }
+      },
+      series: [{
+        name: 'Dung lượng tải lên (MB)',
+        data: dataValues // Đảm bảo rằng data là một mảng số
+      } as any] // Ép kiểu để khắc phục lỗi TypeScript
+    });
   }
 
   createStorageDownload() {
-    let data = this.summary[3]?.datas?.map((item) => ({
-      year: this.transform(item.timeSpan),
-      value: this.bytesConvert(item.value, true)
-    }));
+    const data = this.summary[2]?.datas?.map((item) => ({
+      timeSpan: item.timeSpan,
+      value: parseInt(item.value, 10) // Chuyển đổi value từ chuỗi sang số
+    })) || [];
+    console.log('rawData:', data);
+    if (!data || data.length === 0) {
+      console.warn('Data is null or empty, using default time range.');
 
-    if (this.lineChartStorageDownload) {
-      this.lineChartStorageDownload.changeData(data);
-    } else {
-      this.lineChartStorageDownload = new Line(
-        this.chartStorageDownload.nativeElement,
-        {
-          data,
-          xField: 'year',
-          yField: 'value',
-          color: 'orange'
-        }
-      );
-
-      this.lineChartStorageDownload.render();
+      // Sử dụng ChangeDetectorRef để cập nhật lại biểu đồ
+      this.chartStorageDownload = this.createDefaultChart(this.summary[3]?.startDate, 'Dung lượng tải về');
+      this.cdr.detectChanges(); // Buộc Angular cập nhật lại
+      return;
     }
+    const uniqueData = this.removeDuplicates(data);
+    // Chuyển đổi timestamp thành định dạng thời gian đọc được
+    const labels = Object.keys(uniqueData);
+
+    // Trích xuất giá trị dữ liệu
+    const dataValues = Object.values(uniqueData).map(value => value / 1024); // Chuyển từ KB sang MB
+
+    // Cấu hình Highcharts
+    this.chartStorageDownload = new Chart({
+      chart: {
+        type: 'line'
+      },
+      title: {
+        text: ''
+      },
+      xAxis: {
+        categories: labels,
+        title: {
+          text: ''
+        }
+      },
+      yAxis: {
+        title: {
+          text: ''
+        }
+      },
+      series: [{
+        name: 'Dung lượng tải về (MB)',
+        data: dataValues // Đảm bảo rằng data là một mảng số
+      } as any] // Ép kiểu để khắc phục lỗi TypeScript
+    });
   }
 
   viewFullscreen(type: string): void {
@@ -544,7 +717,7 @@ export class ChartComponent implements AfterViewInit, OnInit {
         returnLabel = `${hours}:${minutes}`;
         break;
       case 1440:
-          returnLabel = `${hours}:00`;
+        returnLabel = `${hours}:00`;
         break;
       case 10080:
         returnLabel = `${day}/${month}/${year}`;
@@ -556,13 +729,14 @@ export class ChartComponent implements AfterViewInit, OnInit {
         returnLabel = `${day}/${month}/${year}`;
         break;
       default:
-        returnLabel = `${hours}:${minutes}`;
+        returnLabel = `${hours}:${minutes}:${seconds}`;
     }
 
     return returnLabel;
   }
 
   ngAfterViewInit(): void {
+    // this.createChartStorageUse();
     this.createChartStorageUse();
     this.createNumberObject();
     this.createStorageUpload();

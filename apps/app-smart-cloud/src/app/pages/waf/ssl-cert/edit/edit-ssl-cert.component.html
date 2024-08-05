@@ -209,11 +209,6 @@
         formControlName="remarks"
         [maxlength]="50"
       />
-          <ng-template #nameErrorTpl let-control>
-            <ng-container *ngIf="control.hasError('required')">{{
-              'validation.snapshot.info.required' | i18n
-            }}</ng-container>
-          </ng-template>
         </nz-form-control>
       </nz-form-item> 
       <div class="d-flex justify-content-end">

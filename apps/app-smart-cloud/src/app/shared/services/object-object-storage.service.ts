@@ -19,11 +19,11 @@ export class ObjectObjectStorageService extends BaseService {
     super(tokenService);
   }
 
-  getData(bucketName: any, folderName: any, filterQuery: any, customerId: any, regionId: any, pageSize: any, currentPage: any): Observable<any> {
+  getData(bucketName: any, folderName: any, filterQuery: any, customerId: any, regionId: any, pageSize: any, currentPage: any, keySearch: any): Observable<any> {
     return this.http.get<any>(this.baseUrl + this.ENDPOINT.provisions + '/object-storage/ListObject?bucketName=' + bucketName +
       '&folderName=' + folderName + '&customerId=' + customerId +
       '&regionId=' + regionId + '&filterQuery=' + filterQuery +
-      '&pageSize=' + pageSize + '&currentPage=' + currentPage);
+      '&pageSize=' + pageSize + '&currentPage=' + currentPage + '&keySearch=' + keySearch);
   }
 
   getDataS3Key(search: string, pageSize: number, currentPage: number, regionId: number): Observable<any> {

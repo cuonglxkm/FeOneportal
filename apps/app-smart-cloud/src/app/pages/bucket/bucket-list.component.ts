@@ -68,11 +68,6 @@ export class BucketListComponent implements OnInit {
   hasOS: boolean = undefined;
   region: number;
 
-  formDeleteBucket: FormGroup<{
-    name: FormControl<string>
-  }> = this.fb.group({
-    name: ['', [Validators.required, this.nameBucketValidator.bind(this)]]
-  });
 
   ngOnInit(): void {
     if (!this.url.includes('advance')) {
@@ -191,6 +186,8 @@ export class BucketListComponent implements OnInit {
 
   onRegionChange(region: RegionModel) {
     this.region = region.regionId;
+    console.log(this.region);
+    
     if(this.region === RegionID.ADVANCE){
       this.router.navigate(['/app-smart-cloud/object-storage-advance/bucket']);
     }else{
