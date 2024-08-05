@@ -6,7 +6,7 @@ import {
   SubscriptionsDashboard,
   SubscriptionsNearExpire
 } from '../../shared/models/dashboard.model';
-import { BaseResponse, NotificationService } from '../../../../../../libs/common-utils/src';
+import { BaseResponse } from '../../../../../../libs/common-utils/src';
 import { Router } from '@angular/router';
 import { Pie } from '@antv/g2plot';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
@@ -132,7 +132,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.getSubscriptionsNearExpire();
   }
 
-  loadingNearExpire: boolean = false
+  loadingNearExpire: boolean = false;
 
   //Lấy thông tin dịch vụ sắp hết hạn
   getSubscriptionsNearExpire() {
@@ -208,11 +208,11 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   //Dẫn sang xem chi tiết thanh toán
   navigateToDetailPayment(id: number, paymentOrder: string) {
-    this.isLoading = true
+    this.isLoading = true;
     this.paymentService.getPaymentByPaymentNumber(paymentOrder).subscribe(data => {
-      this.isLoading = false
+      this.isLoading = false;
       this.router.navigate(['/app-smart-cloud/billing/payments/detail/' + id + '/' + data.orderNumber]);
-    })
+    });
   }
 
   //Dẫn sang trang gia hạn
@@ -220,7 +220,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     switch (serviceType) {
       case 1:
         //VM
-        this.router.navigate(['/app-smart-cloud/instances/instances-extend/'+ serviceInstanceId])
+        this.router.navigate(['/app-smart-cloud/instances/instances-extend/' + serviceInstanceId]);
         break;
       case 2:
         //VOLUME
@@ -231,7 +231,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
         break;
       case 4:
         //IP PUBLIC
-        this.router.navigate(['/app-smart-cloud/ip-public/extend/' + serviceInstanceId])
+        this.router.navigate(['/app-smart-cloud/ip-public/extend/' + serviceInstanceId]);
         break;
       case 5:
         //LOAD BALANCER F5
@@ -256,11 +256,11 @@ export class DashboardComponent implements OnInit, OnDestroy {
         break;
       case 12:
         //VPC
-        this.router.navigate(['/app-smart-cloud/project/extend/' + serviceInstanceId])
+        this.router.navigate(['/app-smart-cloud/project/extend/' + serviceInstanceId]);
         break;
       case 13:
         //OBJECT STORAGE
-        this.router.navigate(['/app-smart-cloud/object-storage/extend/'+serviceInstanceId])
+        this.router.navigate(['/app-smart-cloud/object-storage/extend/' + serviceInstanceId]);
         break;
       case 14:
         this.router.navigate(['/app-smart-cloud/backup/packages/extend/', serviceInstanceId]);
@@ -285,7 +285,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
         break;
       case 20:
         //VPN_SITE_TO_SITE
-        this.router.navigate(['/app-smart-cloud/vpn-site-to-site/extend/' + serviceInstanceId])
+        this.router.navigate(['/app-smart-cloud/vpn-site-to-site/extend/' + serviceInstanceId]);
         break;
       case 21:
         //KAFKA
@@ -298,7 +298,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
         break;
       case 24:
         //FILE SYSTEM SNAPSHOT
-        this.router.navigate(['/app-smart-cloud/file-system-snapshot/extend/' + serviceInstanceId])
+        this.router.navigate(['/app-smart-cloud/file-system-snapshot/extend/' + serviceInstanceId]);
         break;
       case 100:
         //OTHER
@@ -313,79 +313,79 @@ export class DashboardComponent implements OnInit, OnDestroy {
     switch (serviceType) {
       case 1:
         //VM
-        return this.i18n.fanyi('app.instances')
+        return this.i18n.fanyi('app.instances');
       case 2:
         //VOLUME
-        return this.i18n.fanyi('app.volume')
+        return this.i18n.fanyi('app.volume');
       case 3:
         //SNAPSHOT
-        return this.i18n.fanyi('app.snapshot')
+        return this.i18n.fanyi('app.snapshot');
       case 4:
         //IP PUBLIC
-        return this.i18n.fanyi('app.ip-public')
+        return this.i18n.fanyi('app.ip-public');
       case 5:
         //LOAD BALANCER F5
-        return this.i18n.fanyi('app.load-balancer.f5')
+        return this.i18n.fanyi('app.load-balancer.f5');
       case 6:
         // VM SNAPSHOT
-        return this.i18n.fanyi('app.vm.snapshot')
+        return this.i18n.fanyi('app.vm.snapshot');
       case 7:
         //SNAPSHOT VOLUME
-        return this.i18n.fanyi('app.snapshot.volume')
+        return this.i18n.fanyi('app.snapshot.volume');
       case 8:
         // BACKUP VOLUME
-        return this.i18n.fanyi('app.backup.volume')
+        return this.i18n.fanyi('app.backup.volume');
       case 9:
         //BACKUP VM
-        return this.i18n.fanyi('app.backup.vm')
+        return this.i18n.fanyi('app.backup.vm');
       case 10:
         //KEY PAIR
-        return this.i18n.fanyi('app.keypair')
+        return this.i18n.fanyi('app.keypair');
       case 11:
         // SECURITY_GROUP
-        return this.i18n.fanyi('app.security.group')
+        return this.i18n.fanyi('app.security.group');
       case 12:
         //VPC
-        return this.i18n.fanyi('app.vpc')
+        return this.i18n.fanyi('app.vpc');
       case 13:
         //OBJECT STORAGE
-        return this.i18n.fanyi('app.object-storage')
+        return this.i18n.fanyi('app.object-storage');
       case 14:
         //BACKUP_PACKET
-        return this.i18n.fanyi('app.backup-package')
+        return this.i18n.fanyi('app.backup-package');
       case 15:
         //LOAD BALANCER SDN
-        return this.i18n.fanyi('app.load-balancer')
+        return this.i18n.fanyi('app.load-balancer');
       case 16:
         //VLAN
-        return this.i18n.fanyi('app.vlan')
+        return this.i18n.fanyi('app.vlan');
       case 17:
         //ROUTER
-        return this.i18n.fanyi('app.router')
+        return this.i18n.fanyi('app.router');
       case 18:
         //FILE SYSTEM
-        return this.i18n.fanyi('app.file-system')
+        return this.i18n.fanyi('app.file-system');
       case 19:
         //K8s
-        return this.i18n.fanyi('app.k8s')
+        return this.i18n.fanyi('app.k8s');
       case 20:
         //VPN_SITE_TO_SITE
-        return this.i18n.fanyi('app.vpns2s')
+        return this.i18n.fanyi('app.vpns2s');
       case 21:
         //KAFKA
-        return this.i18n.fanyi('app.kafka')
+        return this.i18n.fanyi('app.kafka');
       case 22:
         //SNAPSHOT_PACKAGE
-        return this.i18n.fanyi('app.snapshot-package1')
+        return this.i18n.fanyi('app.snapshot-package1');
       case 23:
         //MONGO_DB
-        return this.i18n.fanyi('app.mongo')
+        return this.i18n.fanyi('app.mongo');
       case 24:
         //FILE SYSTEM SNAPSHOT
-        return this.i18n.fanyi('app.file-system-snapshot')
+        return this.i18n.fanyi('app.file-system-snapshot');
       case 100:
         //OTHER
-        return this.i18n.fanyi('app.other')
+        return this.i18n.fanyi('app.other');
       default:
         break;
     }
@@ -416,13 +416,13 @@ export class DashboardComponent implements OnInit, OnDestroy {
       this.getSubscriptionsNearExpire();
       this.getPaymentCost();
       this.getDataChart();
-    }, 1500)
+    }, 1500);
     this.onChangeInputChange();
-    console.log('role', this.getUserRole())
-    if(this.getUserRole().includes("SI")) {
-      localStorage.setItem('role', 'SI')
+    console.log('role', this.getUserRole());
+    if (this.getUserRole().includes('SI')) {
+      localStorage.setItem('role', 'SI');
     } else {
-      localStorage.setItem('role', '')
+      localStorage.setItem('role', '');
     }
   }
 }
