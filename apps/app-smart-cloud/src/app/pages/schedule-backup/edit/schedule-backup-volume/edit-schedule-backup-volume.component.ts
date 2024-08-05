@@ -166,7 +166,7 @@ export class EditScheduleBackupVolumeComponent implements OnInit {
       this.validateForm.controls.daysOfWeekMultiple.clearValidators();
       this.validateForm.controls.daysOfWeekMultiple.markAsPristine();
       this.validateForm.controls.daysOfWeekMultiple.reset();
-      this.validateForm.controls.daysOfWeekMultiple.setValidators([Validators.required]);
+      // this.validateForm.controls.daysOfWeekMultiple.setValidators([Validators.required]);
     } else if (value === 3) {
       this.modeType = 3;
 
