@@ -115,12 +115,13 @@ export class EditL7PolicyComponent implements OnInit {
     this.isLoading = true
     this.loadBalancerService.getDetailL7Policy(this.idL7Policy, this.region, this.project).subscribe(data => {
       this.l7Policy = data
+      this.validateForm.controls['pool'].setValue(data?.redirectPoolDd)
       this.isLoading = false
 
       this.validateForm.controls.nameL7.setValue(this.l7Policy.name)
       this.validateForm.controls.action.setValue(this.l7Policy.action)
 
-      this.validateForm.controls.pool.setValue(this.l7Policy.poolName)
+      this.validateForm.controls.pool.setValue(this.l7Policy.redirectPoolDd)
       if(!['REDIRECT_TO_POOL'].includes(this.validateForm.controls.action.value)){
         this.validateForm.controls.pool.clearValidators();
         this.validateForm.controls.pool.updateValueAndValidity();

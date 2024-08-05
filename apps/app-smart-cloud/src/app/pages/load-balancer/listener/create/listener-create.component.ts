@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit, ViewChild } from '@angular/core';
+import { Component, Inject, Input, OnInit, ViewChild } from '@angular/core';
 import {
   AbstractControl,
   FormControl,
@@ -19,6 +19,7 @@ import { I18NService } from '@core';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
 import { debounceTime, distinctUntilChanged, map, Subject } from 'rxjs';
+import { da } from 'date-fns/locale';
 export function ipAddressValidator(): ValidatorFn {
   return (control: AbstractControl): { [key: string]: any } | null => {
     const ipAddressList = control.value.split(',').map(ip => ip.trim()); // Tách các địa chỉ IP theo dấu (,)
@@ -127,6 +128,8 @@ export class ListenerCreateComponent implements OnInit{
   loading= false;
   disableMember = false;
   @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
+  @Input() lbCloundId = '';
+  disableStep2: boolean = true;
   constructor(private router: Router,
               private fb: NonNullableFormBuilder,
               private service: ListenerService,
@@ -144,11 +147,7 @@ export class ListenerCreateComponent implements OnInit{
     this.projectId = regionAndProject.projectId;
     this.loadVm();
     this.loadSSlCert();
-    this.changeKeySearch.pipe(
-      debounceTime(500),
-      distinctUntilChanged(),
-      map(key => key.trim())
-    ).subscribe((key: string) => {
+    this.changeKeySearch.pipe(debounceTime(700)).subscribe((key: string) => {
       this.callApiCheck();
     });
   }
@@ -415,7 +414,16 @@ export class ListenerCreateComponent implements OnInit{
 
   changeKeySearch = new Subject<string>();
 
-  private callApiCheck() {
-    this.service.validatePoolName(this.lbId,this.regionId,this.projectId,this.validateForm.controls['poolName'].value)
+  callApiCheck() {
+    console.log('okok')
+    this.service.validatePoolName(this.lbCloundId,this.regionId,this.projectId,this.validateForm.controls['poolName'].value).subscribe(
+      data => {
+        this.disableStep2 = false;
+      },
+      error => {
+        this.disableStep2 = true;
+        this.notification.error(this.i18n.fanyi('app.status.fail'),this.i18n.fanyi('listner.create.duplicate.pool.name'));
+      }
+    )
   }
 }
