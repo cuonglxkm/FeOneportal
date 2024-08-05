@@ -270,7 +270,7 @@ export class PoolDetailComponent implements OnInit {
       this.healthForm.maxRetries = 3;
       this.healthForm.delay = 5;
       this.healthForm.timeout = 5;
-      this.code = 200
+      this.code = 200;
       this.healthForm.urlPath = '/';
       this.isCreate = true;
       this.titleModalHealth = this.i18n.fanyi('app.health.monitor.create');
@@ -314,7 +314,7 @@ export class PoolDetailComponent implements OnInit {
         }),
       });
       this.healthForm = data;
-      this.code = (Number).parseInt(this.healthForm.expectedCodes);
+      this.code = Number.parseInt(this.healthForm.expectedCodes);
       this.isCreate = false;
       this.titleModalHealth = this.i18n.fanyi('app.health.monitor.edit');
     }
@@ -346,7 +346,9 @@ export class PoolDetailComponent implements OnInit {
       this.healthForm.projectId = this.projectId;
       this.healthForm.regionId = this.regionId;
       if (this.healthForm.type == 'HTTP') {
-        this.healthForm.expectedCodes = this.form.get('expectedCode')?.value.toString();
+        this.healthForm.expectedCodes = this.form
+          .get('expectedCode')
+          ?.value.toString();
         this.healthForm.httpMethod = this.form.get('httpMethod')?.value;
         if (
           this.form.get('url')?.value &&
@@ -385,7 +387,9 @@ export class PoolDetailComponent implements OnInit {
       healthUpdate.maxRetries = this.form.get('maxRetries')?.value;
       healthUpdate.timeout = this.form.get('timeout')?.value;
       healthUpdate.adminStateUp = true;
-      healthUpdate.expectedCodes = this.form.get('expectedCode')?.value.toString();
+      healthUpdate.expectedCodes = this.form
+        .get('expectedCode')
+        ?.value.toString();
       healthUpdate.httpMethod = this.form.get('httpMethod')?.value;
       if (
         this.form.get('url')?.value &&
@@ -545,13 +549,15 @@ export class PoolDetailComponent implements OnInit {
         this.regionId,
         this.projectId,
         '',
-        '',
+        'KHOITAO',
         true,
         this.tokenService.get()?.userId
       )
       .subscribe({
         next: (data) => {
-          this.instanceList = data.records;
+          this.instanceList = data.records.filter(
+            (e) => e.ipPrivate != '' && e.ipPrivate != null
+          );
           this.cdr.detectChanges();
         },
         error: (e) => {
@@ -659,10 +665,7 @@ export class PoolDetailComponent implements OnInit {
             }, 1000);
           },
           error: (e) => {
-            this.notification.error(
-              e.statusText,
-              e.error.message
-            );
+            this.notification.error(e.statusText, e.error.message);
           },
         });
     } else {

@@ -132,7 +132,7 @@
     </nz-row>
   </div>
 
-  <div class="text-center">
+  <!-- <div class="text-center">
     <span style="font-weight: 500">Biểu đồ {{ typeGSTitle }}</span>
   </div>
   <g2-timeline
@@ -146,7 +146,15 @@
     }"
     [mask]="valueGSTIME > 1440 ? 'DD/MM' : 'HH:mm'"
     [maskSlider]="'dd/MM'"
-  />
+  /> -->
+  <div>
+    <div class="title">
+      <span class="text-card-header">{{ 'app.storage.usage' | i18n }}</span> <br>
+      <span>{{ getFormattedStartDate(summary[0]?.startDate) | date: 'dd/MM/yyyy hh:mm' }}
+        {{ 'app.to' | i18n }} {{ newDate | date: 'dd/MM/yyyy hh:mm' }}</span>
+    </div>
+    <div [chart]="chartStorageUse"></div>
+  </div>
 </nz-card>
 
 <nz-card
