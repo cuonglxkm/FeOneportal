@@ -261,12 +261,31 @@ export class CreateScheduleBackupVpcComponent implements OnInit {
       this.sizeOfVlAttach = 0;
     }
   }
-
+  isLoadingAttach: boolean = false;
   getVolumeInstanceAttachment(id: number) {
-    this.isLoading = true;
+    this.isLoadingAttach = true;
+
+    let formSearchBackupSchedule = new FormSearchScheduleBackup();
+    formSearchBackupSchedule.regionId = this.region;
+    formSearchBackupSchedule.projectId = this.project;
+    formSearchBackupSchedule.pageSize = 9999;
+    formSearchBackupSchedule.pageIndex = 1;
+    formSearchBackupSchedule.customerId = this.tokenService.get()?.userId;
+    formSearchBackupSchedule.scheduleName = '';
+    formSearchBackupSchedule.scheduleStatus = '';
+
     this.backupVmService.getVolumeInstanceAttachment(id).subscribe(data => {
-      this.isLoading = false;
+      this.isLoadingAttach = false;
       this.volumeAttachments = data;
+      this.backupScheduleService.search(formSearchBackupSchedule).subscribe(data3 => {
+        data3.records?.forEach(item3 => {
+          this.volumeAttachments = this.volumeAttachments.filter((volume) => volume.id != item3.serviceId );
+
+        });
+      });
+    }, error => {
+      this.isLoadingAttach = false;
+      this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.failData'));
     });
   }
 
@@ -355,14 +374,14 @@ export class CreateScheduleBackupVpcComponent implements OnInit {
           this.listVolumeNotUseUnique?.push(item);
         });
         this.backupScheduleService.search(formSearchBackupSchedule).subscribe(data3 => {
-          console.log('lịch', data3?.records);
           data3.records?.forEach(item3 => {
             this.listVolumeNotUseUnique = this.listVolumeNotUseUnique.filter((volume) => volume.id != item3.serviceId && ['AVAILABLE', 'IN-USE'].includes(volume.serviceStatus));
-            console.log('list volume', this.listVolumeNotUseUnique);
-            if (this.volumeId == undefined) {
-              this.volumeSelected = this.listVolumeNotUseUnique[0]?.id;
-            }
-
+            item3.backupScheduleItems.forEach(item4 => {
+              this.listVolumeNotUseUnique = this.listVolumeNotUseUnique.filter((volume) => volume.id != item4.itemId && ['AVAILABLE', 'IN-USE'].includes(volume.serviceStatus));
+              if (this.volumeId == undefined) {
+                this.volumeSelected = this.listVolumeNotUseUnique[0]?.id;
+              }
+            })
           });
         });
         this.isLoadingVolume = false;
