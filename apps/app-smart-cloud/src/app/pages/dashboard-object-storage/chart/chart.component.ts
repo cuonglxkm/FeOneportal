@@ -56,20 +56,20 @@ export class ChartComponent implements AfterViewInit, OnInit {
     // Chart.register(...registerables);
   }
 
-  bytesConvert(bytes, label) {
-    if (bytes == 0) return '0 byte';
-    var s = ['bytes', 'KB', 'MB', 'GB', 'TB', 'PB'];
-    var e = Math.floor(Math.log(bytes) / Math.log(1024));
-    var value = (bytes / Math.pow(1024, Math.floor(e))).toFixed(2);
-    e = e < 0 ? -e : e;
-    if (label) value += ' ' + s[e];
+  bytesConvert(bytes: number, label: boolean): string {
+    if (bytes === 0) return '0';
+    const units = ['bytes', 'KB', 'MB', 'GB', 'TB', 'PB'];
+    const exponent = Math.floor(Math.log(bytes) / Math.log(1024));
+    const value = (bytes / Math.pow(1024, exponent)).toFixed(2);
+    if (label) return `${value} ${units[exponent]}`;
     return value;
   }
+
   private removeDuplicates(data: { timeSpan: number, value: number }[]): { [key: string]: number } {
     return data.reduce((acc, item) => {
       // Lấy chỉ phần thời gian hh:mm
       const date = new Date(item.timeSpan * 1000);
-      const timeKey = `${date.getHours()}:${date.getMinutes().toString().padStart(2, '0')}`; // Định dạng hh:mm
+      const timeKey = this.transform(item.timeSpan);
 
       // Gộp các giá trị trùng lặp
       if (!acc[timeKey]) {
@@ -132,7 +132,6 @@ export class ChartComponent implements AfterViewInit, OnInit {
     console.log('rawData:', data);
     if (!data || data.length === 0) {
       console.warn('Data is null or empty, using default time range.');
-
       // Sử dụng ChangeDetectorRef để cập nhật lại biểu đồ
       this.chartStorageUse = this.createDefaultChart(this.summary[0]?.startDate, 'Dung lượng đã sử dụng');
       this.cdr.detectChanges(); // Buộc Angular cập nhật lại
@@ -141,10 +140,9 @@ export class ChartComponent implements AfterViewInit, OnInit {
     const uniqueData = this.removeDuplicates(data);
     // Chuyển đổi timestamp thành định dạng thời gian đọc được
     const labels = Object.keys(uniqueData);
-
     // Trích xuất giá trị dữ liệu
     const dataValues = Object.values(uniqueData).map(value => value / 1024); // Chuyển từ KB sang MB
-
+    console.log('dataValues', dataValues)
     // Cấu hình Highcharts
     this.chartStorageUse = new Chart({
       chart: {
@@ -165,12 +163,10 @@ export class ChartComponent implements AfterViewInit, OnInit {
         }
       },
       series: [{
-        name: 'Dung lượng đã sử dụng',
-        data: dataValues // Đảm bảo rằng data là một mảng số
+        name: 'Dung lượng đã sử dụng (MB)',
+        data: dataValues  // Đảm bảo rằng data là một mảng số
       } as any] // Ép kiểu để khắc phục lỗi TypeScript
     });
-
-
   }
 
   createNumberObject() {
@@ -262,7 +258,7 @@ export class ChartComponent implements AfterViewInit, OnInit {
         }
       },
       series: [{
-        name: 'Dung lượng tải lên',
+        name: 'Dung lượng tải lên (MB)',
         data: dataValues // Đảm bảo rằng data là một mảng số
       } as any] // Ép kiểu để khắc phục lỗi TypeScript
     });
@@ -309,7 +305,7 @@ export class ChartComponent implements AfterViewInit, OnInit {
         }
       },
       series: [{
-        name: 'Dung lượng tải về',
+        name: 'Dung lượng tải về (MB)',
         data: dataValues // Đảm bảo rằng data là một mảng số
       } as any] // Ép kiểu để khắc phục lỗi TypeScript
     });
@@ -712,13 +708,13 @@ export class ChartComponent implements AfterViewInit, OnInit {
     let returnLabel = '';
     switch (this.timeSelected) {
       case 5:
-        returnLabel = `${hours}:${minutes}:${seconds}`;
+        returnLabel = `${hours}:${minutes}`;
         break;
       case 15:
-        returnLabel = `${hours}:${minutes}:${seconds}`;
+        returnLabel = `${hours}:${minutes}`;
         break;
       case 60:
-        returnLabel = `${hours}:${minutes}:${seconds}`;
+        returnLabel = `${hours}:${minutes}`;
         break;
       case 1440:
         returnLabel = `${hours}:00`;
