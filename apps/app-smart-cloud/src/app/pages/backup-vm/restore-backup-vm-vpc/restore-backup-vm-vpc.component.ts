@@ -796,7 +796,7 @@ export class RestoreBackupVmVpcComponent implements OnInit {
       if (e.newName && e.newName.length != 0) {
         volumeExternal.name = e.newName;
       } else {
-        volumeExternal.name = e.name
+        volumeExternal.name = (e.name + '_' + this.instanceModel.name).slice(0, 49);
       }
       volumeExternal.size = e.capacity;
       selectedVolumeExternal.push(volumeExternal);

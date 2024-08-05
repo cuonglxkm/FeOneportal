@@ -151,6 +151,7 @@ export class BucketCorsComponent implements OnInit {
   bucketCorsCreate: BucketCorsCreate = new BucketCorsCreate();
   modalCreate() {
     this.resetData();
+    this.bucketCorsCreate.maxAgeSeconds = 3600;
     this.isVisibleCreate = true;
   }
 
@@ -158,7 +159,6 @@ export class BucketCorsComponent implements OnInit {
     this.isVisibleCreate = false;
     this.form.reset();
     this.listHeaderName = [];
-    this.bucketCorsCreate.maxAgeSeconds = 3600;
   }
 
   handleOkCreate() {

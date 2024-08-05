@@ -550,8 +550,6 @@ export class BucketPolicyComponent implements OnInit {
       .getBucketPolicyDetail(sid, this.bucketName, this.region)
       .subscribe({
         next: (data) => {
-          console.log(data);
-
           this.bucketPolicyDetail = data;
           this.jsonDataBucketPolicy = JSON.stringify(this.bucketPolicyDetail, null, 2);
         },
