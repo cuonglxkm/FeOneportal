@@ -683,6 +683,7 @@
   "app.lifeCycle.edit": "Chỉnh sửa Lifecycle",
   "app.lifeCycle.config.intro": "Bucket Lifecycle cho phép bạn khả năng quản lý tuổi thọ và sự tự động hóa của các đối tượng (objects) trong các bucket.",
   "app.lifeCycle.config.intro.next": "Với Bucket Lifecycle, bạn có thể định nghĩa các quy tắc tự động cho các đối tượng trong bucket của mình, bao gồm cả việc xóa các đối tượng đã hết hạn hoặc không còn cần thiết để giảm chi phí lưu trữ. Việc sử dụng Bucket Lifecycle cũng giúp giảm tải công việc quản trị và tăng tính khả dụng của các đối tượng trong bucket.",
+  "app.lifeCycle.validate.duplicate": "Lifecycle đã tồn tại",
   "app.key.required": "Vui lòng nhập Key",
   "app.bucket.detail": "Chi tiết Bucket",
   "app.bucket.detail.size": "Kích thước",

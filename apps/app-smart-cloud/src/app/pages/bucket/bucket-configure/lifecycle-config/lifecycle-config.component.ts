@@ -37,6 +37,7 @@ export class LifecycleConfigComponent implements OnInit {
   @Input() bucketName: string;
   value: string = '';
   listLifecycle: BucketLifecycle[] = [];
+  listAllLC: BucketLifecycle[] = [];
   loading: boolean = true;
   pageSize: number = 10;
   pageNumber: number = 1;
@@ -48,6 +49,8 @@ export class LifecycleConfigComponent implements OnInit {
   region = JSON.parse(localStorage.getItem('regionId'));
   idTag: number = 0;
   listTag: Tag[] = [];
+  duplicateLC: boolean = false;
+
   constructor(
     private bucketService: BucketService,
     private notification: NzNotificationService,
@@ -82,6 +85,13 @@ export class LifecycleConfigComponent implements OnInit {
       .subscribe(() => {
         this.searchLifeCycle();
       });
+
+    this.formCreate.valueChanges.subscribe(currentValue  => {
+      // if (currentValue.isSetExpiration_Day == false && currentValue.isSetAbortIncompleteMultipartUpload_Day == false && currentValue.isSetNoncurrentVersionExpiration_Day == false) {
+      //   return;
+      // }
+      this.validateDuplicateLC(currentValue.prefix, currentValue.isSetExpiration_Day, currentValue.isSetAbortIncompleteMultipartUpload_Day, currentValue.isSetNoncurrentVersionExpiration_Day)
+    })
   }
 
   formUpdate: FormGroup<{
@@ -126,10 +136,11 @@ export class LifecycleConfigComponent implements OnInit {
       )
       .subscribe({
         next: (data) => {
-          this.listLifecycle = data.records;
+          this.listLifecycle = data.pagingListBucketLifeCycle.records;
+          this.listAllLC = data.listBucketLifeCycle;
           console.log(this.listLifecycle);
 
-          this.total = data.totalCount;
+          this.total = data.pagingListBucketLifeCycle.totalCount;
         },
         error: (e) => {
           this.listLifecycle = [];
@@ -146,6 +157,27 @@ export class LifecycleConfigComponent implements OnInit {
   lifecycleCreate: BucketLifecycleCreate = new BucketLifecycleCreate();
   modalCreate() {
     this.isVisibleCreate = true;
+  }
+
+  validateDuplicateLC(prefix, isSetExpirationDay, isSetAbortIncompleteMultipartUploadDay, isSetNoncurrentVersionExpirationDay) {
+    this.duplicateLC = false;
+    prefix = !prefix ? null : prefix;
+    var tags : LifecycleTagPredicate[] = [];
+      this.listTag.forEach((e) => {
+        let lifecycleTagPredicate: LifecycleTagPredicate =
+          new LifecycleTagPredicate();
+        if (e.key != '' || e.value != '') {
+          lifecycleTagPredicate.metaKey = e.key.trim();
+          lifecycleTagPredicate.metaValue = e.value.trim();
+          tags.push(lifecycleTagPredicate);
+        }
+    });
+
+    if (this.listAllLC.some(e => {
+      return e.prefix == prefix && JSON.stringify(e.lifecycleTagPredicate) === JSON.stringify(tags) && e.isSetExpiration_Day == isSetExpirationDay && e.isSetAbortIncompleteMultipartUpload_Day == isSetAbortIncompleteMultipartUploadDay && e.isSetNoncurrentVersionExpiration_Day == isSetNoncurrentVersionExpirationDay;
+    })) {
+      this.duplicateLC = true;
+    }
   }
 
   resetForm() {
@@ -194,6 +226,7 @@ export class LifecycleConfigComponent implements OnInit {
         lifecycleTagPredicate.metaValue = e.value.trim();
         this.lifecycleCreate.lifecycleTagPredicate.push(lifecycleTagPredicate);
       });
+
       this.bucketService
         .createBucketLifecycle(this.lifecycleCreate, this.region)
         .pipe(
@@ -224,6 +257,14 @@ export class LifecycleConfigComponent implements OnInit {
     }
   }
 
+  onChangeKey() {
+    this.checkTags(this.listTag);
+  }
+
+  onChangeValue() {
+    this.checkTags(this.listTag);
+  }
+
   addTag() {
     let tag = new Tag();
     tag.id = this.idTag++;
@@ -231,6 +272,11 @@ export class LifecycleConfigComponent implements OnInit {
   }
 
   checkTags(tags: Tag[]): boolean {
+
+    if (this.isVisibleCreate == true) {
+      this.validateDuplicateLC(this.formCreate.controls.prefix.value, this.formCreate.controls.isSetExpiration_Day.value, this.formCreate.controls.isSetAbortIncompleteMultipartUpload_Day.value, this.formCreate.controls.isSetNoncurrentVersionExpiration_Day.value);
+    }
+
     for (let tag of tags) {
       if (tag.key === '') {
         return true;
@@ -241,6 +287,7 @@ export class LifecycleConfigComponent implements OnInit {
 
   delelteTag(id: number) {
     this.listTag = this.listTag.filter((item) => item.id != id);
+    this.checkTags(this.listTag);
   }
 
   isVisibleDelete: boolean = false;
