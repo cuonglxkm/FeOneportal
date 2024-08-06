@@ -236,11 +236,16 @@
                   ]"
                   >{{ item?.serviceName }}</a
                 >
-                <a
-                  *ngSwitchCase="'IP'"
-                  [routerLink]="['/app-smart-cloud/ip-public']"
-                  >{{ item?.serviceName }}</a
-                >
+                <div *ngSwitchCase="'IP'">
+                  <a *ngIf="isIppublic"
+                    [routerLink]="['/app-smart-cloud/ip-public']"
+                  >IP Pulbic</a
+                  >
+                  <a *ngIf="!isIppublic"
+                    [routerLink]="['/app-smart-cloud/networks/ip-floating/list']"
+                  >IP Floating</a
+                  >
+                </div>
                 <a
                   *ngSwitchCase="'VM'"
                   [routerLink]="['/app-smart-cloud/instances']"
