@@ -30,7 +30,7 @@
               <img style="margin-left: 10px" nz-popover nz-tooltip="{{'app.ip.public.note' | i18n}}" src="assets/imgs/pajamas_question.svg" alt="" />
               </nz-form-label>
               <nz-form-control>
-                <nz-select [nzLoading]="loadingIp" [nzDisabled]="disableIp" formControlName="ipSubnet" (nzOpenChange)="caculator(null)"
+                <nz-select [nzLoading]="loadingIp" [nzDisabled]="disableIp" formControlName="ipSubnet" (nzOpenChange)="caculator(null, false)"
                            nzSize="large" style="width: 100%;" nzPlaceHolder="{{'app.ip.public.select.ip.dropdown' | i18n}}">
                   <nz-option *ngFor="let i of listIpSubnet" [nzLabel]="i.displayName" [nzValue]="i.displayName+'|||'+i.networkId" />
                 </nz-select>
@@ -44,9 +44,9 @@
                 <img style="margin-left: 10px" nz-popover nz-tooltip="{{'app.ip.public.note2' | i18n}}" src="assets/imgs/pajamas_question.svg" alt="" />
               </nz-form-label>
               <nz-form-control>
-                <nz-select [nzLoading]="loadingInstanse" nzSize="large" [nzDisabled]="disableInstanse"
-                           [nzAllowClear]="true" formControlName="instanceSelected" style="width: 96%"
-                           nzPlaceHolder="{{'app.ip.public.select.instance.dropdown' | i18n}}" (ngModelChange)="caculator(null)">
+                <nz-select [nzLoading]="loadingInstanse" nzSize="large" [nzDisabled]="disableInstanse" [nzAllowClear]="true"
+                           [(ngModel)]="instanceSelected" [ngModelOptions]="{ standalone: true }" style="width: 96%"
+                           nzPlaceHolder="{{'app.ip.public.select.instance.dropdown' | i18n}}" (ngModelChange)="caculator($event, true)">
                   <nz-option *ngFor="let i of listInstance" [nzLabel]="i.name" [nzValue]="i.name+'|||'+i.id" />
                 </nz-select>
               </nz-form-control>
@@ -55,7 +55,7 @@
         </div>
         <div  *ngIf="checkIpv6 !== null">
           <label class="text-label" nz-checkbox [(ngModel)]="checkIpv6" [ngModelOptions]="{ standalone: true }"
-                 (ngModelChange)="caculator(null)">IPv6</label>
+                 (ngModelChange)="caculator(null, false)">IPv6</label>
           <img
             style="margin-left: 10px"
             nz-tooltip="{{'app.ip.public.note3' | i18n}}"
