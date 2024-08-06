@@ -578,6 +578,7 @@
                                  nzPlaceHolder="{{'schedule.backup.volume.select' | i18n}}"
                                  [nzShowSearch]="false"
                                  [nzLoading]="isLoadingVolume"
+                                 [nzDisabled]="isLoadingVolume"
                                  [(ngModel)]="volumeSelected"
                                  (ngModelChange)="selectVolumeChange($event)">
                         <nz-option *ngFor="let i of listVolumeNotUseUnique"
