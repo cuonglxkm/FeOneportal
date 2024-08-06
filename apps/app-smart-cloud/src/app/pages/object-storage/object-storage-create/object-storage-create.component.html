@@ -57,6 +57,7 @@
               [nzStep]="stepStorage"
               [nzMax]="maxStorage"
               formControlName="quota"
+              (keydown)="onKeyDown($event)"
               [(ngModel)]="objectStorageCreate.quota"
               (ngModelChange)="changeCapacity($event)"
               [ngModelOptions]="{ standalone: true }"
@@ -234,7 +235,7 @@
           <nz-row>
             <nz-col style="width: 100%" class="text-right">
               <button
-                [disabled]="validateForm.invalid || objectStorageCreate.quota <= 0"
+                [disabled]="validateForm.invalid || objectStorageCreate.quota <= 0 || totalincludesVAT == 0"
                 style="width: 100%"
                 nz-button
                 nzSize="large"
