@@ -319,7 +319,7 @@
   [nzTitle]="'app.bucket.detail.createFolder' | i18n"
   [nzOkText]="'app.button.confirm' | i18n"
   [nzCancelText]="'app.button.cancel' | i18n"
-  [nzStyle]="modalStyle" 
+  [nzStyle]="modalStyleCreateObject" 
   (nzOnCancel)="handleCancelCreateFolder()"
 >
   <form nz-form [formGroup]="formCreateFolder">
@@ -1015,6 +1015,7 @@
     <nz-table
       #rowSelectionTable
       [nzData]="listOfDataVersioning"
+      [nzScroll]="{ y: '500px' }"
       [nzLoading]="loadingVersion"
       [nzHideOnSinglePage]="true"
     >
@@ -1035,7 +1036,7 @@
               <div *ngIf="item.isLatest == true">({{ 'app.present' | i18n }})</div>
             </td>
             <td>{{ item.lastModified | date : 'dd/MM/yyyy HH:mm:ss' }}</td>
-            <td>{{ (item.size / 1024).toFixed(2) }} KB</td>
+            <td>{{ formatFileSize(item.size) }}</td>
             <td>{{ item.versionId === "null" ? '' : item.versionId }}</td>
             <td>
               <div>

@@ -97,8 +97,10 @@
               <td  nzBreakWord nzAlign="right">{{ data.sizeInGB }}</td>
               <td  nzBreakWord nzAlign="right">{{ data.usedSize }}</td>
               <td nzBreakWord nzAlign="right">{{ data.availableSize }}</td>
-              <td nzBreakWord nzAlign="center">{{ data.creationDate | date: 'dd/MM/yyyy' }}</td>
-              <td nzBreakWord nzAlign="center">{{ data.expirationDate | date:'dd/MM/yyyy' }}</td>
+              <td nzBreakWord nzAlign="center" *ngIf="data.status == 'CREATING'">-</td>
+              <td nzBreakWord nzAlign="center" *ngIf="data.status != 'CREATING'">{{ data.creationDate | date: 'dd/MM/yyyy' }}</td>
+              <td nzBreakWord nzAlign="center" *ngIf="data.status == 'CREATING'">-</td>
+              <td nzBreakWord nzAlign="center" *ngIf="data.status != 'CREATING'">{{ data.expirationDate | date:'dd/MM/yyyy' }}</td>
               <ng-container *ngIf="data.status | ServiceStatusPipe as statusModel">
                 <td *ngIf="data.status != 'SUSPENDED'"
                     nzBreakWord
@@ -117,7 +119,7 @@
                   {{ statusModel.status }}</span>
                 </td>
               </ng-container>
-              <td nzBreakWord>
+              <td nzBreakWord *ngIf="!['DELETING'].includes(data.status)">
                 <div *ngIf="['ACTIVE', 'AVAILABLE'].includes(data.status)">
                   <!---Chỉnh sửa------>
                   <one-portal-update-backup-package [region]="region"

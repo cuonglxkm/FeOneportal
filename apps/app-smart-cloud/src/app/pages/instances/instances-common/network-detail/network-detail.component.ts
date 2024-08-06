@@ -142,6 +142,25 @@ export class NetworkDetailComponent implements OnInit {
     this.isVisibleEditPort = false;
   }
 
+  changeCheckPort() {
+    this.listSGselected = [];
+    if (this.portSecurity) {
+      this.form.setControl(
+        'securityGroups',
+        new FormControl('', {
+          validators: [Validators.required],
+        })
+      );
+    } else {
+      this.form.setControl(
+        'securityGroups',
+        new FormControl('', {
+          validators: [],
+        })
+      );
+    }
+  }
+
   navigateToCreate() {
     this.route.navigate(['/app-smart-cloud/instances/instances-create']);
   }

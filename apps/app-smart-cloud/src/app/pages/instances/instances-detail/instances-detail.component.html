@@ -132,12 +132,22 @@
     </nz-row>
   </div>
 
-  <g2-timeline
-    [maxAxis]="maxAxis"
-    [data]="chartData"
-    [height]="289"
-    [titleMap]="{ y1: 'Traflic' }"
-  />
+  <div>
+    <div class="title">
+      <span class="text-card-header"
+        >{{ 'app.chart' | i18n }} {{ typeGSTitle }}</span
+      >
+      <br />
+      <span
+        >{{
+          getFormattedStartDate(summary[0]?.startDate)
+            | date : 'dd/MM/yyyy hh:mm'
+        }}
+        {{ 'app.to' | i18n }} {{ newDate | date : 'dd/MM/yyyy hh:mm' }}</span
+      >
+    </div>
+    <div [chart]="chartStorageUse"></div>
+  </div>
 </nz-card>
 
 <nz-card

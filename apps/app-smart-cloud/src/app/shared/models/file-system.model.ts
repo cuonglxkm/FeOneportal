@@ -19,6 +19,7 @@ export class FileSystemModel {
   email: string;
   description: string;
   statusDisplay: string;
+  suspendReason: any;
 }
 
 export class FormSearchFileSystem {

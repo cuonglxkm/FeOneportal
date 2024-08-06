@@ -186,30 +186,34 @@
     nzShowSizeChanger
     [nzScroll]="{ y: '250px' }"
     [nzFrontPagination]="false"
+    nzTableLayout="fixed"
     [nzData]="listBucket"
-    (nzPageSizeChange)="search()"
-    [nzPageIndex]="pageNumber"
+    (nzPageIndexChange)="onPageIndexChange($event)"
     [nzPageSize]="pageSize"
+    (nzPageSizeChange)="onPageSizeChange($event)"
+    [nzPageIndex]="pageNumber"
     [nzTotal]="total"
     [nzLoading]="loading"
   >
     <thead>
       <tr>
         <th nzWidth="150px" nzLeft>{{ 'app.bucket.name' | i18n }}</th>
-        <th nzWidth="150px">URL</th>
-        <th nzWidth="150px">{{ 'app.access.rights' | i18n }}</th>
-        <th nzWidth="150px">Versioning</th>
+        <th nzWidth="330px">URL</th>
+        <th nzWidth="120px">{{ 'app.access.rights' | i18n }}</th>
+        <th nzWidth="100px">Versioning</th>
         <th nzWidth="150px">{{ 'app.service.creation-date' | i18n }}</th>
         <th nzWidth="150px">{{ 'app.text.status' | i18n }}</th>
-        <th nzWidth="150px" nzRight>{{ 'app.text.operation' | i18n }}</th>
+        <th nzWidth="120px" nzRight>{{ 'app.text.operation' | i18n }}</th>
       </tr>
     </thead>
     <tbody>
       <tr *ngFor="let data of listBucket">
-        <td nzLeft>
+        <td title="{{ data.bucketName }}" nzLeft style="overflow: hidden;
+        font-weight: normal;
+        white-space: nowrap;
+        text-overflow: ellipsis;">
           <a
             nz-tooltip
-            [nzTooltipTitle]="'app.view.detail' | i18n"
             nzTooltipPlacement="bottom"
             (click)="handleGoToDetail(data.bucketName)"
             >{{ data.bucketName }}</a
@@ -271,40 +275,44 @@
   [nzTitle]="titleModalDeleteBucket"
   (nzOnCancel)="handleCancelDeleteBucket()"
 >
-  <ng-container *nzModalContent>
-    <span
+    <ng-container *nzModalContent>
+
+      <span
       class="text-label"
       [innerHTML]="
         'app.alert.delete.bucket' | i18n : { name: bucketDeleteName }
       "
     ></span>
-    <input
-      style="margin-top: 5px"
-      class="input-custom"
-      name="name"
-      nz-input
-      [(ngModel)]="codeVerify"
-      (ngModelChange)="checkDisableDelete($event)"
-    />
-  </ng-container>
-  <div *nzModalFooter>
-    <button nz-button (click)="handleCancelDeleteBucket()">
-      <img
-        style="padding-right: 10px; margin-top: -4px"
-        src="assets/imgs/cancel.svg"
-        alt=""
-      />{{ 'app.button.cancel' | i18n }}
-    </button>
-    <button [nzLoading]="isLoadingDeleteBucket" [disabled]="disableDelete" nz-button nzType="primary" (click)="handleOkDeleteBucket()">
-      <img
-        *ngIf="isLoadingDeleteBucket === false"
-        style="padding-right: 10px; margin-top: -4px"
-        src="assets/imgs/confirm.svg"
-        alt=""
+        <input
+        style="margin-top: 5px"
+        class="input-custom"
+        name="name"
+        nz-input
+        (keydown.enter)="focusOkButton($event)"
+        (ngModelChange)="onInputChange($event)"
+        #bucketInputName
+        [(ngModel)]="codeVerify"
       />
-      {{ 'app.button.confirm' | i18n }}
-    </button>
-  </div>
+      <span *ngIf="isInput" style="color: red;">Vui lòng nhập đúng tên Bucket</span>
+  </ng-container>
+    <div *nzModalFooter>
+      <button nz-button (click)="handleCancelDeleteBucket()">
+        <img
+          style="padding-right: 10px; margin-top: -4px"
+          src="assets/imgs/cancel.svg"
+          alt=""
+        />{{ 'app.button.cancel' | i18n }}
+      </button>
+      <button [nzLoading]="isLoadingDeleteBucket" nz-button nzType="primary" (click)="handleOkDeleteBucket()">
+        <img
+          *ngIf="isLoadingDeleteBucket === false"
+          style="padding-right: 10px; margin-top: -4px"
+          src="assets/imgs/confirm.svg"
+          alt=""
+        />
+        {{ 'app.button.confirm' | i18n }}
+      </button>
+    </div>
 </nz-modal>
 
 <nz-modal

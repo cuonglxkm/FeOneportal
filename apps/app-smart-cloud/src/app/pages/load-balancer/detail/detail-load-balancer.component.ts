@@ -10,6 +10,7 @@ import { I18NService } from '@core';
 import { CatalogService } from '../../../shared/services/catalog.service';
 import { OfferDetail } from '../../../shared/models/catalog.model';
 import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
+import { request } from 'express';
 
 @Component({
   selector: 'one-portal-detail-load-balancer',
@@ -92,7 +93,7 @@ export class DetailLoadBalancerComponent implements OnInit{
   }
 
   loadToCreateListener() {
-    this.router.navigate(['/app-smart-cloud/load-balancer/' + this.idLoadBalancer + '/listener/create'])
+    this.router.navigate(['/app-smart-cloud/load-balancer/' + this.idLoadBalancer + '/listener/create'], { queryParams: { lbCloundId: this.loadBalancer.cloudId } })
   }
 
   navigateToExtend() {

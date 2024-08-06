@@ -65,7 +65,7 @@ export class AppValidator {
 
   // @ts-ignore
   static validEmail(control: AbstractControl): ValidationErrors | null { //valid email
-    var regex = new RegExp('^[A-Za-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$');
+    var regex = new RegExp('^[a-zA-Z0-9]+([._-]?[a-zA-Z0-9]+)*@[a-zA-Z0-9-]+(\.[a-zA-Z]{2,})+$');
     // var regex = new RegExp(/^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$/)
     if (control && control.value != null && control.value != undefined && control.value.length > 0) {
       if (regex.test(control.value) == false) {
@@ -575,7 +575,7 @@ export function ipValidatorVlan(): ValidatorFn {
       if (
         (a === 10 && b >= 10 && b <= 100) ||
         (a === 172 && b >= 16 && b <= 31) ||
-        (a === 192 && b === 168) && (d != 0)
+        (a === 192 && b === 168) 
       ) {
         if ( d != 0) {
           return { invalidIp: true };

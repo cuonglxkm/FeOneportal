@@ -476,6 +476,9 @@ export class ProjectUpdateComponent implements OnInit {
                   if (ch.charName == 'VolumeType' && ch.charOptionValues[0] == 'HDD') {
                     e.description = e.description.replace(/0 GB HDD/g, this.valueVolumeType + " GB HDD");
                   }
+                  if (ch.charName == 'VolumeType' && ch.charOptionValues[0] == 'SSD') {
+                    e.description = e.description.replace(/0 GB HDD/g, this.valueVolumeType + " GB SSD");
+                  }
 
                   if (ch.charName == 'IP') {
                     e.description = e.description.replace(/0 IP/g, ch.charOptionValues[0] + " IP");

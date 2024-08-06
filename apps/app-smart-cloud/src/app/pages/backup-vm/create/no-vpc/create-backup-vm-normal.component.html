@@ -73,6 +73,7 @@
                   <nz-form-control nzDisableAutoTips [nzErrorTip]="instanceError">
                     <nz-select (ngModelChange)="onSelectedInstance($event)"
                                [nzLoading]="isLoadingInstance"
+                               [nzDisabled]="isLoadingInstance"
                                nzSize="large"
                                [nzPlaceHolder]="'volume.modal.attach.title'|i18n"
                                [(ngModel)]="instanceSelected"

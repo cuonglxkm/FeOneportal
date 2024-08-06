@@ -210,7 +210,7 @@
                                        id="storage"
                                        style="width: 100%; margin-left: 0;"
                                        (ngModelChange)="changeValueStorage($event)"
-                                       [nzMin]="minStorage"
+                                       [nzMin]="0"
                                        [nzStep]="stepStorage"
                                        [nzMax]="maxStorage"></nz-input-number>
                       <ng-template #storageErrorTpl let-control>

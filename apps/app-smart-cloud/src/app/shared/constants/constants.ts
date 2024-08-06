@@ -9,5 +9,6 @@ export const CIDR_REGEX = '^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}0\\/24
 export const FILE_NO_SPACE_REGEX = /^[a-zA-Z0-9_\-\.]+$/;
 export const FOLDER_NAME_REGEX = /^[A-Za-z0-9!_.*'()-]{3,}$/;
 export const DOMAIN_REGEX = /^[a-zA-Z0-9][a-zA-Z0-9-]{1,61}[a-zA-Z0-9](?:\.[a-zA-Z]{2,})+/;
-export const WEB_REGEX = /^(https?:\/\/)?([a-zA-Z0-9.-]+)\.([a-zA-Z]{2,})(\/)?$/;
+export const FILE_REGEX = /^[a-zA-Z0-9]+(?:\.[a-zA-Z]{2,})+/;
+export const WEB_REGEX = /^(?:(?:https?|ftp):\/\/)?(?:www\.)?[a-z0-9-]+(?:\.[a-z0-9-]+)+[^\s]*$/i
 

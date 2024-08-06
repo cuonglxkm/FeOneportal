@@ -148,7 +148,7 @@ export class EditScheduleBackupVmComponent implements OnInit {
 
     this.validateForm.controls.numberOfWeek.clearValidators();
     this.validateForm.controls.numberOfWeek.markAsPristine();
-    this.validateForm.controls.months.reset();
+    this.validateForm.controls.numberOfWeek.reset();
 
     this.validateForm.controls.months.clearValidators();
     this.validateForm.controls.months.markAsPristine();
@@ -161,30 +161,27 @@ export class EditScheduleBackupVmComponent implements OnInit {
       this.modeType = 1;
     } else if (value === 2) {
       this.modeType = 2;
-
       this.validateForm.controls.daysOfWeekMultiple.clearValidators();
       this.validateForm.controls.daysOfWeekMultiple.markAsPristine();
       this.validateForm.controls.daysOfWeekMultiple.reset();
-      this.validateForm.controls.daysOfWeekMultiple.setValidators([Validators.required])
-
+      // this.validateForm.controls.daysOfWeekMultiple.setValidators([Validators.required]);
     } else if (value === 3) {
       this.modeType = 3;
 
-      this.validateForm.controls.daysOfWeek.setValue('1');
-      this.numberOfWeekChangeSelected = '1'
+      this.validateForm.controls.numberOfWeek.setValidators([Validators.required]);
+      this.validateForm.controls.numberOfWeek.markAsDirty();
+      this.validateForm.controls.numberOfWeek.reset();
 
       this.validateForm.controls.daysOfWeek.setValidators([Validators.required]);
       this.validateForm.controls.daysOfWeek.markAsDirty();
-
-      this.validateForm.controls.numberOfWeek.setValidators([Validators.required]);
-      this.validateForm.controls.numberOfWeek.markAsDirty();
+      this.validateForm.controls.daysOfWeek.reset();
     } else if (value === 4) {
       this.modeType = 4;
       this.validateForm.controls.months.setValidators([Validators.required, Validators.pattern(/^[1-9]$|^1[0-9]$|^2[0-4]$/)]);
       this.validateForm.controls.months.markAsDirty();
       this.validateForm.controls.months.reset();
 
-      this.validateForm.controls.date.setValidators([Validators.required, Validators.pattern(/^[1-9]|[12][0-9]|3[01]*$/)]);
+      this.validateForm.controls.date.setValidators([Validators.required]);
       this.validateForm.controls.date.markAsDirty();
       this.validateForm.controls.date.reset();
     }
@@ -332,7 +329,10 @@ export class EditScheduleBackupVmComponent implements OnInit {
   sizeInGb: SizeInCloudProject;
   getStorageByVpc(id) {
     this.projectService.getByProjectId(id).subscribe(data => {
-      this.sizeInGb = data
+      if(data.cloudProject.type == 'VPC') {
+        this.sizeInGb = data
+        this.typeVpc = 1
+      }
     })
   }
 
@@ -342,6 +342,7 @@ export class EditScheduleBackupVmComponent implements OnInit {
     this.project = regionAndProject.projectId;
 
     this.customerId = this.tokenService.get()?.userId;
+    this.getStorageByVpc(this.project)
     this.route.params.subscribe((params) => {
       this.idSchedule = params['id'];
       if (this.idSchedule !== undefined) {

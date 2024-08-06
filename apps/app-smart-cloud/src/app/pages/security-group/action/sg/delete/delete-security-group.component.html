@@ -1,6 +1,7 @@
 <button style="border: none; background-color: transparent; margin-left: -30px; cursor: pointer;"
         class="button-delete" (click)="showModal()">
-  <img src="assets/imgs/bin.svg" alt="" class="icon-image" />
+  <img src="assets/imgs/delete.svg" alt=""
+       style="width: 35px; height: 35px; cursor: pointer; margin-left: 5px;" class="icon-image" />
 </button>
 <nz-modal [(nzVisible)]="isVisible" (nzOnCancel)="handleCancel()">
   <div *nzModalTitle>

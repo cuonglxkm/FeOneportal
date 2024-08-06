@@ -78,6 +78,11 @@ export class BucketDetailComponent extends BaseService implements OnInit {
     'border-radius': '10px',
     width: '80%',
   };
+  modalStyleCreateObject = {
+    padding: '20px',
+    'border-radius': '10px',
+    width: '55%',
+  };
   uploadFailed: boolean = false;
 
   lstFileUpdate: NzUploadFile[] = [];
@@ -483,12 +488,13 @@ export class BucketDetailComponent extends BaseService implements OnInit {
     this.service
       .getData(
         this.activatedRoute.snapshot.paramMap.get('name'),
-        this.currentKey + this.value.trim(),
+        this.currentKey,
         this.filterQuery,
         this.tokenService.get()?.userId,
         this.region,
         this.size,
-        this.index
+        this.index,
+        this.value.trim()
       )
       .pipe(
         finalize(() => {
@@ -1233,6 +1239,7 @@ export class BucketDetailComponent extends BaseService implements OnInit {
           urlOrigin: this.hostNameUrl,
           regionId: this.region,
           ACL: this.radioValue,
+          metadata: this.listOfMetadata
         };
         this.service.getSignedUrl(data).subscribe(
           (responseData) => {
@@ -1240,6 +1247,11 @@ export class BucketDetailComponent extends BaseService implements OnInit {
             const xhr = new XMLHttpRequest();
             xhr.open('PUT', presignedUrl, true);
             xhr.setRequestHeader('x-amz-acl', this.radioValue);
+            data.metadata.forEach(meta => {
+              if (meta.metaKey && meta.metaValue) {
+                xhr.setRequestHeader(`x-amz-meta-${meta.metaKey}`, meta.metaValue);
+              }
+            });
             startTime = new Date();
             xhr.upload.onprogress = (event) => {
               if (event.lengthComputable) {

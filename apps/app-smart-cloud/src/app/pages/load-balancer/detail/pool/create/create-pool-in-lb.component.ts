@@ -134,7 +134,7 @@ export class CreatePoolInLbComponent implements OnInit {
         this.isLoading = false;
         this.notification.error(
           this.i18n.fanyi('app.status.fail'),
-          error.error.message
+          error.error.detail
         );
       },
     });

@@ -6,11 +6,7 @@ import {
   Input,
   OnInit,
 } from '@angular/core';
-import {
-  FormControl,
-  FormGroup,
-  NonNullableFormBuilder,
-} from '@angular/forms';
+import { FormControl, FormGroup, NonNullableFormBuilder } from '@angular/forms';
 import { I18NService } from '@core';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { getCurrentRegionAndProject } from '@shared';
@@ -41,6 +37,7 @@ export class LifecycleConfigComponent implements OnInit {
   @Input() bucketName: string;
   value: string = '';
   listLifecycle: BucketLifecycle[] = [];
+  listAllLC: BucketLifecycle[] = [];
   loading: boolean = true;
   pageSize: number = 10;
   pageNumber: number = 1;
@@ -52,6 +49,8 @@ export class LifecycleConfigComponent implements OnInit {
   region = JSON.parse(localStorage.getItem('regionId'));
   idTag: number = 0;
   listTag: Tag[] = [];
+  duplicateLC: boolean = false;
+
   constructor(
     private bucketService: BucketService,
     private notification: NzNotificationService,
@@ -86,6 +85,13 @@ export class LifecycleConfigComponent implements OnInit {
       .subscribe(() => {
         this.searchLifeCycle();
       });
+
+    this.formCreate.valueChanges.subscribe(currentValue  => {
+      // if (currentValue.isSetExpiration_Day == false && currentValue.isSetAbortIncompleteMultipartUpload_Day == false && currentValue.isSetNoncurrentVersionExpiration_Day == false) {
+      //   return;
+      // }
+      this.validateDuplicateLC(currentValue.prefix, currentValue.isSetExpiration_Day, currentValue.isSetAbortIncompleteMultipartUpload_Day, currentValue.isSetNoncurrentVersionExpiration_Day)
+    })
   }
 
   formUpdate: FormGroup<{
@@ -130,17 +136,14 @@ export class LifecycleConfigComponent implements OnInit {
       )
       .subscribe({
         next: (data) => {
-          this.listLifecycle = data.records;
+          this.listLifecycle = data.pagingListBucketLifeCycle.records;
+          this.listAllLC = data.listBucketLifeCycle;
           console.log(this.listLifecycle);
 
-          this.total = data.totalCount;
+          this.total = data.pagingListBucketLifeCycle.totalCount;
         },
         error: (e) => {
           this.listLifecycle = [];
-          this.notification.error(
-            this.i18n.fanyi('app.status.fail'),
-            this.i18n.fanyi('app.lifeCycle.get.fail')
-          );
         },
       });
   }
@@ -154,7 +157,28 @@ export class LifecycleConfigComponent implements OnInit {
   lifecycleCreate: BucketLifecycleCreate = new BucketLifecycleCreate();
   modalCreate() {
     this.isVisibleCreate = true;
-    this.isValidateKey = true;
+    this.listKeyError = [];
+  }
+
+  validateDuplicateLC(prefix, isSetExpirationDay, isSetAbortIncompleteMultipartUploadDay, isSetNoncurrentVersionExpirationDay) {
+    this.duplicateLC = false;
+    prefix = !prefix ? null : prefix;
+    var tags : LifecycleTagPredicate[] = [];
+      this.listTag.forEach((e) => {
+        let lifecycleTagPredicate: LifecycleTagPredicate =
+          new LifecycleTagPredicate();
+        if (e.key != '' || e.value != '') {
+          lifecycleTagPredicate.metaKey = e.key.trim();
+          lifecycleTagPredicate.metaValue = e.value.trim();
+          tags.push(lifecycleTagPredicate);
+        }
+    });
+
+    if (this.listAllLC.some(e => {
+      return e.prefix == prefix && JSON.stringify(e.lifecycleTagPredicate) === JSON.stringify(tags) && e.isSetExpiration_Day == isSetExpirationDay && e.isSetAbortIncompleteMultipartUpload_Day == isSetAbortIncompleteMultipartUploadDay && e.isSetNoncurrentVersionExpiration_Day == isSetNoncurrentVersionExpirationDay;
+    })) {
+      this.duplicateLC = true;
+    }
   }
 
   resetForm() {
@@ -175,80 +199,105 @@ export class LifecycleConfigComponent implements OnInit {
     this.resetForm();
   }
 
+  listKeyError: boolean[] = [];
   handleOkCreate() {
-    this.isLoadingCreate = true;
-    this.lifecycleCreate.bucketName = this.bucketName;
-    this.lifecycleCreate.prefix = this.lifecycleCreate.prefix?.trim();
-    if (this.lifecycleCreate.prefix == '') {
-      this.lifecycleCreate.prefix == null;
-    }
-    this.listTag.forEach((e) => {
-      let lifecycleTagPredicate: LifecycleTagPredicate =
-        new LifecycleTagPredicate();
-      if (e.key != '') {
-        lifecycleTagPredicate.metaKey = e.key.trim();
-      }
-      lifecycleTagPredicate.metaValue = e.value.trim();
-      this.lifecycleCreate.lifecycleTagPredicate.push(lifecycleTagPredicate);
-    });
-    this.bucketService
-      .createBucketLifecycle(this.lifecycleCreate, this.region)
-      .pipe(
-        finalize(() => {
-          this.isLoadingCreate = false;
-          this.cdr.detectChanges();
-        })
-      )
-      .subscribe({
-        next: (data) => {
-          this.isVisibleCreate = false;
-          this.notification.success(
-            this.i18n.fanyi('app.status.success'),
-            this.i18n.fanyi('app.lifeCycle.create.success')
-          );
-          this.resetForm();
-          this.searchLifeCycle();
-          this.cdr.detectChanges();
-        },
-        error: (e) => {
-          this.notification.error(
-            this.i18n.fanyi('app.status.fail'),
-            this.i18n.fanyi('app.lifeCycle.create.fail')
-          );
-          this.cdr.detectChanges();
-        },
+    let hasKeyNull = this.checkTags(this.listTag);
+    this.listKeyError = [];
+    if (hasKeyNull) {
+      this.listTag.forEach((e) => {
+        if (e.key.trim() == '') {
+
+          this.listKeyError.push(true);
+        } else {
+          this.listKeyError.push(false);
+        }
       });
+    } else {
+      this.isLoadingCreate = true;
+      this.lifecycleCreate.bucketName = this.bucketName;
+      this.lifecycleCreate.prefix = this.lifecycleCreate.prefix?.trim();
+      if (this.lifecycleCreate.prefix == '') {
+        this.lifecycleCreate.prefix == null;
+      }
+      this.listTag.forEach((e) => {
+        let lifecycleTagPredicate: LifecycleTagPredicate =
+          new LifecycleTagPredicate();
+        if (e.key != '') {
+          lifecycleTagPredicate.metaKey = e.key.trim();
+        }
+        lifecycleTagPredicate.metaValue = e.value.trim();
+        this.lifecycleCreate.lifecycleTagPredicate.push(lifecycleTagPredicate);
+      });
+
+      this.bucketService
+        .createBucketLifecycle(this.lifecycleCreate, this.region)
+        .pipe(
+          finalize(() => {
+            this.isLoadingCreate = false;
+            this.cdr.detectChanges();
+          })
+        )
+        .subscribe({
+          next: (data) => {
+            this.isVisibleCreate = false;
+            this.notification.success(
+              this.i18n.fanyi('app.status.success'),
+              this.i18n.fanyi('app.lifeCycle.create.success')
+            );
+            this.resetForm();
+            this.searchLifeCycle();
+            this.cdr.detectChanges();
+          },
+          error: (e) => {
+            this.notification.error(
+              this.i18n.fanyi('app.status.fail'),
+              this.i18n.fanyi('app.lifeCycle.create.fail')
+            );
+            this.cdr.detectChanges();
+          },
+        });
+    }
   }
 
-  checkTags(tags: Tag[]): boolean {
-    for (let tag of tags) {
-      if (tag.key === '') {
-        return false;
-      }
-    }
-    return true;
+  onChangeKey(index: number) {
+    this.listKeyError[index] = false;
+    this.checkTags(this.listTag);
   }
-  isValidateKey: boolean = true;
+
+  onChangeValue() {
+    this.checkTags(this.listTag);
+  }
+
   addTag() {
     let tag = new Tag();
     tag.id = this.idTag++;
     this.listTag.push(tag);
-    this.isValidateKey = this.checkTags(this.listTag);
-  }
-  onChangeKey() {
-    this.isValidateKey = this.checkTags(this.listTag);
   }
 
-  delelteTag(id: number) {
+  checkTags(tags: Tag[]): boolean {
+
+    if (this.isVisibleCreate == true) {
+      this.validateDuplicateLC(this.formCreate.controls.prefix.value, this.formCreate.controls.isSetExpiration_Day.value, this.formCreate.controls.isSetAbortIncompleteMultipartUpload_Day.value, this.formCreate.controls.isSetNoncurrentVersionExpiration_Day.value);
+    }
+
+    for (let tag of tags) {
+      if (tag.key.trim() === '') {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  delelteTag(id: number, index: number) {
     this.listTag = this.listTag.filter((item) => item.id != id);
-    this.isValidateKey = this.checkTags(this.listTag);
+    this.listKeyError.splice(index, 1);
+    this.checkTags(this.listTag);
   }
 
   isVisibleDelete: boolean = false;
   lifecycleDelete: BucketLifecycleCreate = new BucketLifecycleCreate();
   modalDelete(data: any) {
     this.isVisibleDelete = true;
-    this.isValidateKey = true;
     this.lifecycleDelete = data;
   }
 
@@ -290,6 +339,7 @@ export class LifecycleConfigComponent implements OnInit {
   lifecycleUpdate: BucketLifecycleUpdate = new BucketLifecycleUpdate();
   modalUpdate(data: BucketLifecycle) {
     this.isVisibleUpdate = true;
+    this.listKeyError = [];
     this.listTag = [];
     this.lifecycleUpdate.bucketName = data.bucketName;
     this.lifecycleUpdate.enabled = data.enabled;
@@ -332,44 +382,56 @@ export class LifecycleConfigComponent implements OnInit {
   }
 
   handleOkUpdate() {
-    this.isLoadingUpdate = true;
-    this.lifecycleUpdate.prefix = this.lifecycleUpdate.prefix?.trim();
-    this.lifecycleUpdate.lifecycleTagPredicate = [];
-    this.listTag.forEach((e) => {
-      let lifecycleTagPredicate: LifecycleTagPredicate =
-        new LifecycleTagPredicate();
-      if (e.key != '') {
-        lifecycleTagPredicate.metaKey = e.key.trim();
-      }
-      lifecycleTagPredicate.metaValue = e.value.trim();
-      this.lifecycleUpdate.lifecycleTagPredicate.push(lifecycleTagPredicate);
-    });
-    this.bucketService
-      .updateBucketLifecycle(this.lifecycleUpdate, this.region)
-      .pipe(
-        finalize(() => {
-          this.isLoadingUpdate = false;
-          this.cdr.detectChanges();
-        })
-      )
-      .subscribe({
-        next: (data) => {
-          this.isVisibleUpdate = false;
-          this.searchLifeCycle();
-          this.listTag = [];
-          this.notification.success(
-            this.i18n.fanyi('app.status.success'),
-            this.i18n.fanyi('app.lifeCycle.edit.success')
-          );
-          this.cdr.detectChanges();
-        },
-        error: (e) => {
-          this.notification.error(
-            this.i18n.fanyi('app.status.fail'),
-            this.i18n.fanyi('app.lifeCycle.edit.fail')
-          );
-          this.cdr.detectChanges();
-        },
+    let hasKeyNull = this.checkTags(this.listTag);
+    this.listKeyError = [];
+    if (hasKeyNull) {
+      this.listTag.forEach((e) => {
+        if (e.key.trim() == '') {
+          this.listKeyError.push(true);
+        } else {
+          this.listKeyError.push(false);
+        }
       });
+    } else {
+      this.isLoadingUpdate = true;
+      this.lifecycleUpdate.prefix = this.lifecycleUpdate.prefix?.trim();
+      this.lifecycleUpdate.lifecycleTagPredicate = [];
+      this.listTag.forEach((e) => {
+        let lifecycleTagPredicate: LifecycleTagPredicate =
+          new LifecycleTagPredicate();
+        if (e.key != '') {
+          lifecycleTagPredicate.metaKey = e.key.trim();
+        }
+        lifecycleTagPredicate.metaValue = e.value.trim();
+        this.lifecycleUpdate.lifecycleTagPredicate.push(lifecycleTagPredicate);
+      });
+      this.bucketService
+        .updateBucketLifecycle(this.lifecycleUpdate, this.region)
+        .pipe(
+          finalize(() => {
+            this.isLoadingUpdate = false;
+            this.cdr.detectChanges();
+          })
+        )
+        .subscribe({
+          next: (data) => {
+            this.isVisibleUpdate = false;
+            this.searchLifeCycle();
+            this.listTag = [];
+            this.notification.success(
+              this.i18n.fanyi('app.status.success'),
+              this.i18n.fanyi('app.lifeCycle.edit.success')
+            );
+            this.cdr.detectChanges();
+          },
+          error: (e) => {
+            this.notification.error(
+              this.i18n.fanyi('app.status.fail'),
+              this.i18n.fanyi('app.lifeCycle.edit.fail')
+            );
+            this.cdr.detectChanges();
+          },
+        });
+    }
   }
 }

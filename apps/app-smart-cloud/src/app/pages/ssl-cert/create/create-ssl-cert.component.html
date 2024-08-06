@@ -196,8 +196,8 @@
                 class="input-date-picker"
                 nzFormat="dd/MM/yyyy"
                 style="width: 100%; border-radius: 4px"
-                [(ngModel)]="expireDate"
-                [nzDisabledDate]="disabledDate"
+                [(ngModel)]="nextDay"
+                [nzDisabledDate]="disabledDate" nzAllowClear="false"
                 (ngModelChange)="onChange($event)"
                 [ngModelOptions]="{standalone: true}"
               ></nz-date-picker>

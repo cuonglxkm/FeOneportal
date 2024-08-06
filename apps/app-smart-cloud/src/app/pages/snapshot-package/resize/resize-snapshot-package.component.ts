@@ -24,9 +24,9 @@ import { ProjectService } from 'src/app/shared/services/project.service';
 import { debounceTime, finalize, Subject } from 'rxjs';
 import { ConfigurationsService } from '../../../shared/services/configurations.service';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
-import { I18NService } from '../../../../../../app-kafka/src/app/core/i18n/i18n.service';
 import { OrderService } from '../../../shared/services/order.service';
 import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
+import { I18NService } from '@core';
 
 @Component({
   selector: 'one-portal-resize-snapshot-package',

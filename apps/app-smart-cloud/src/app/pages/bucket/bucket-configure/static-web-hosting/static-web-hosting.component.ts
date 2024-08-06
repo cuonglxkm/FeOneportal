@@ -15,7 +15,7 @@ import { getCurrentRegionAndProject } from '@shared';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { ClipboardService } from 'ngx-clipboard';
-import { DOMAIN_REGEX, FILE_NO_SPACE_REGEX, WEB_REGEX } from 'src/app/shared/constants/constants';
+import {  DOMAIN_REGEX, FILE_REGEX, WEB_REGEX } from 'src/app/shared/constants/constants';
 import { RegionID } from 'src/app/shared/enums/common.enum';
 import {
   BucketDetail,
@@ -37,6 +37,7 @@ export class StaticWebHostingComponent implements OnInit {
   isLoading: boolean = false;
   bucket: any;
   indexDocument : string | null
+  isCheck : boolean = this.bucketDetail?.checkRedirectAllRequests
   region = JSON.parse(localStorage.getItem('regionId'));
   constructor(
     private bucketService: BucketService,
@@ -82,8 +83,8 @@ export class StaticWebHostingComponent implements OnInit {
     indexDocumentSuffix: FormControl<string>;
     redirectAllRequestsTo: FormControl<string>;
   }> = this.fb.group({
-    errorDocument: ['', [Validators.pattern(FILE_NO_SPACE_REGEX)]],
-    indexDocumentSuffix: ['', [Validators.required, Validators.pattern(FILE_NO_SPACE_REGEX)]],
+    errorDocument: ['', [Validators.pattern(FILE_REGEX)]],
+    indexDocumentSuffix: ['', [Validators.required, Validators.pattern(FILE_REGEX)]],
     redirectAllRequestsTo: ['', [Validators.required,Validators.pattern(WEB_REGEX)]],
   });
 
@@ -95,15 +96,17 @@ export class StaticWebHostingComponent implements OnInit {
   isSubmitButtonEnabled = false
   handleChangeRedirect(event){
     if (event === false) {
-     this.formUpdate.controls.errorDocument.setValidators([Validators.pattern(FILE_NO_SPACE_REGEX)])
-     this.formUpdate.controls.indexDocumentSuffix.setValidators([Validators.required, Validators.pattern(FILE_NO_SPACE_REGEX)])
+      this.isCheck = false
+     this.formUpdate.controls.errorDocument.setValidators([Validators.pattern(FILE_REGEX)])
+     this.formUpdate.controls.indexDocumentSuffix.setValidators([Validators.required, Validators.pattern(FILE_REGEX)])
      this.formUpdate.controls.redirectAllRequestsTo.setValidators([Validators.pattern(WEB_REGEX)])
      this.formUpdate.get('indexDocumentSuffix')?.enable();
      this.formUpdate.get('errorDocument')?.enable();
      this.formUpdate.get('redirectAllRequestsTo')?.disable();
     } else {
-     this.formUpdate.controls.errorDocument.setValidators([Validators.pattern(FILE_NO_SPACE_REGEX)])
-     this.formUpdate.controls.indexDocumentSuffix.setValidators([Validators.pattern(FILE_NO_SPACE_REGEX)])
+      this.isCheck = true
+     this.formUpdate.controls.errorDocument.setValidators([Validators.pattern(FILE_REGEX)])
+     this.formUpdate.controls.indexDocumentSuffix.setValidators([Validators.pattern(FILE_REGEX)])
      this.formUpdate.controls.redirectAllRequestsTo.setValidators([Validators.required, Validators.pattern(WEB_REGEX)])
      this.formUpdate.get('indexDocumentSuffix')?.disable();
      this.formUpdate.get('errorDocument')?.disable();
@@ -133,12 +136,18 @@ export class StaticWebHostingComponent implements OnInit {
         .createBucketWebsite(this.bucketWebsitecreate, this.region)
         .subscribe({
           next: (data) => {
+            if(this.isCheck === true){
+              this.formUpdate.controls.errorDocument.reset()
+              this.formUpdate.controls.indexDocumentSuffix.reset()
+            }else{
+              this.formUpdate.controls.redirectAllRequestsTo.reset()
+            }
             this.isLoading = false
-            this.notification.success(
-              this.i18n.fanyi('app.status.success'),
-              this.i18n.fanyi('app.static.web.hosting.create.success')
-            );
-            this.cdr.detectChanges()
+          this.notification.success(
+            this.i18n.fanyi('app.status.success'),
+            this.i18n.fanyi('app.static.web.hosting.create.success')
+          );
+          this.cdr.detectChanges()
           },
           error: (e) => {
             this.isLoading = false

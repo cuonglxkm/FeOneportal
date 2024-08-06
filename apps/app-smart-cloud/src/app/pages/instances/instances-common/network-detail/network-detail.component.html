@@ -76,6 +76,7 @@
           class="text-label"
           nz-checkbox
           [(ngModel)]="portSecurity"
+          (ngModelChange)="changeCheckPort()"
           [ngModelOptions]="{ standalone: true }"
           >Port Security</label
         >

@@ -166,7 +166,7 @@ export class EditScheduleBackupVolumeComponent implements OnInit {
       this.validateForm.controls.daysOfWeekMultiple.clearValidators();
       this.validateForm.controls.daysOfWeekMultiple.markAsPristine();
       this.validateForm.controls.daysOfWeekMultiple.reset();
-      this.validateForm.controls.daysOfWeekMultiple.setValidators([Validators.required]);
+      // this.validateForm.controls.daysOfWeekMultiple.setValidators([Validators.required]);
     } else if (value === 3) {
       this.modeType = 3;
 
@@ -356,7 +356,7 @@ export class EditScheduleBackupVolumeComponent implements OnInit {
 
     this.isLoading = true;
     this.customerId = this.tokenService.get()?.userId;
-
+    this.getStorageByVpc(this.project);
     this.route.params.subscribe((params) => {
       this.idSchedule = params['id'];
       if (this.idSchedule !== undefined) {

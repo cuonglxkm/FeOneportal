@@ -34,7 +34,7 @@
         <div style="margin-bottom: 20px" class="text-label">
           {{ 'validation.bucket.name1' | i18n }}
         </div>
-        <nz-row nzGutter="16">
+        <nz-row nzGutter="16">  
           <nz-col nzSpan="24">
             <nz-form-item>
               <nz-form-label nzFor="name"
@@ -52,7 +52,7 @@
                       [(ngModel)]="bucketName"
                       id="name"
                       [placeholder]="'app.input.name' | i18n"
-                      maxlength="50"
+                      maxlength="63"
                       minlength="1"
                     />
                   </nz-col>
@@ -169,7 +169,7 @@
         </nz-row>
         <nz-row style="margin-bottom: 10px" nzGutter="16">
           <nz-col>
-            <span class="text-label"> {{ bucketName }} </span>
+            <span class="text-label" style="word-break: break-all;"> {{ bucketName }} </span>
           </nz-col>
         </nz-row>
         <nz-row style="margin-bottom: 10px" nzGutter="16">

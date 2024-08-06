@@ -102,7 +102,7 @@ export class WafService extends BaseService {
   }
 
   editSSlCert(id: number, data: SslCertRequest) {
-    return this.http.post<any>(
+    return this.http.put<any>(
       this.baseUrl + this.ENDPOINT.provisions + `/waf/edit-cert/${id}`,
       Object.assign(data),
       {

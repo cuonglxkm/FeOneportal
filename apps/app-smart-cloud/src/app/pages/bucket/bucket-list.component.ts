@@ -2,6 +2,7 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
+  ElementRef,
   Inject,
   OnInit,
   SimpleChanges,
@@ -25,6 +26,7 @@ import {  NotificationService, RegionModel } from '../../../../../../libs/common
 import { RegionSelectDropdownComponent } from 'src/app/shared/components/region-select-dropdown/region-select-dropdown.component';
 import { RegionID } from 'src/app/shared/enums/common.enum';
 import { size } from 'lodash';
+import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
 
 @Component({
   selector: 'one-portal-bucket-list',
@@ -34,12 +36,14 @@ import { size } from 'lodash';
 })
 export class BucketListComponent implements OnInit {
   currentRegion: RegionModel;
+  @ViewChild('bucketInputName') bucketInputName!: ElementRef<HTMLInputElement>;
   objectStorage: ObjectStorage = new ObjectStorage();
   listBucket: BucketModel[] = [];
   pageNumber: number = 1;
   pageSize: number = 10;
   total: number;
   value: string = '';
+  isInput: boolean = false;
   loading: boolean = true;
   isLoadingDeleteOS: boolean = false;
   searchDelay = new Subject<boolean>();
@@ -59,9 +63,11 @@ export class BucketListComponent implements OnInit {
     private message: NzMessageService,
     private loadingSrv: LoadingService,
     private notificationService: NotificationService,
+    private fb: NonNullableFormBuilder
   ) {}
   hasOS: boolean = undefined;
   region: number;
+
 
   ngOnInit(): void {
     if (!this.url.includes('advance')) {
@@ -89,8 +95,27 @@ export class BucketListComponent implements OnInit {
     this.searchDelay
       .pipe(debounceTime(TimeCommon.timeOutSearch))
       .subscribe(() => {
+        this.refreshParams()
         this.search();
       });
+  }
+
+  nameBucketValidator(control: FormControl): { [key: string]: any } | null {
+    const name = control.value;
+    if (name !== this.bucketDeleteName) {
+      return { 'nameMismatch': true };
+    }
+    return null;
+  }
+
+  onPageSizeChange(event: any) {
+    this.pageSize = event;
+    this.search();
+  }
+
+  onPageIndexChange(event: any) {
+    this.pageNumber = event;
+    this.search();
   }
 
   hasObjectStorageInfo() {
@@ -161,6 +186,8 @@ export class BucketListComponent implements OnInit {
 
   onRegionChange(region: RegionModel) {
     this.region = region.regionId;
+    console.log(this.region);
+    
     if(this.region === RegionID.ADVANCE){
       this.router.navigate(['/app-smart-cloud/object-storage-advance/bucket']);
     }else{
@@ -171,6 +198,11 @@ export class BucketListComponent implements OnInit {
   onRegionChanged(region: RegionModel) {
     this.region = region.regionId;
   }
+
+  refreshParams() {
+    this.pageNumber = 1;
+    this.pageSize = 10;
+}
 
   getUserById(id: number) {
     this.loadingSrv.open({ type: 'spin', text: 'Loading...' });
@@ -234,6 +266,7 @@ export class BucketListComponent implements OnInit {
   }
   searchBucket(search: string) {
     this.value = search.trim();
+    this.refreshParams()
     this.search();
   }
 
@@ -318,17 +351,21 @@ export class BucketListComponent implements OnInit {
 
   handleCancelDeleteBucket() {
     this.isVisibleDeleteBucket = false;
+    this.codeVerify = '';
+    this.isInput = false;
   }
 
   handleOkDeleteBucket() {
-    if (this.codeVerify == this.bucketDeleteName) {
       this.isLoadingDeleteBucket = true;
-      this.bucketService
+      if(this.codeVerify == this.bucketDeleteName){
+        this.isInput = false;
+        this.bucketService
         .deleteBucket(this.bucketDeleteName, this.region)
         .subscribe({
           next: (data) => {
             this.isLoadingDeleteBucket = false
             this.isVisibleDeleteBucket = false
+            this.codeVerify = '';
             this.notification.success(
               this.i18n.fanyi('app.status.success'),
               this.i18n.fanyi('app.bucket.delete.bucket.success')
@@ -345,14 +382,18 @@ export class BucketListComponent implements OnInit {
             this.cdr.detectChanges();
           },
         });
-    } else {
-      this.isLoadingDeleteBucket = false
-      this.notification.error(
-        this.i18n.fanyi('app.status.fail'),
-        this.i18n.fanyi('app.bucket.delete.bucket.fail1')
-      );
+      }else{
+        this.isLoadingDeleteBucket = false
+        this.isInput = true;
+      }
     }
-  }
+
+    focusOkButton(event: KeyboardEvent): void {
+      if (event.key === 'Enter') {
+        event.preventDefault();
+        this.handleOkDeleteBucket();
+      }
+    }
 
   isVisibleDeleteOS: boolean = false;
   modalDeleteOS() {
@@ -390,13 +431,5 @@ export class BucketListComponent implements OnInit {
   }
 
   protected readonly size = size;
-  disableDelete = true;
 
-  checkDisableDelete($event: any) {
-    if ($event === this.bucketDeleteName) {
-      this.disableDelete == false;
-    } else {
-      this.disableDelete == true;
-    }
-  }
 }

@@ -37,11 +37,11 @@ export class CreateSslCertComponent implements OnInit{
 
   passwordVisible: boolean = false
 
-  today = new Date();
   disabledDate = (current: Date): boolean =>
-    differenceInCalendarDays(current, this.today) < 0;
+    differenceInCalendarDays(current, this.nextDay) < 0;
 
   expireDate: Date = new Date()
+  nextDay: Date = this.getNextDay();
   form: FormGroup<{
     privateKey: FormControl<string>;
     publicKey: FormControl<string>
@@ -73,9 +73,9 @@ export class CreateSslCertComponent implements OnInit{
 
 
   getData(): FormCreateSslCert {
-    var dd = String(this.expireDate.getDate()).padStart(2, '0');
-    var mm = String(this.expireDate.getMonth() + 1).padStart(2, '0');
-    var yyyy = this.expireDate.getFullYear();
+    var dd = String(this.nextDay.getDate()).padStart(2, '0');
+    var mm = String(this.nextDay.getMonth() + 1).padStart(2, '0');
+    var yyyy = this.nextDay.getFullYear();
 
     let privateKey = this.form.controls.privateKey.value.split('\n').join('');
     let publicKey = this.form.controls.publicKey.value.split('\n').join('');
@@ -95,7 +95,13 @@ export class CreateSslCertComponent implements OnInit{
   }
 
   onChange(result: Date): void {
-    this.expireDate = result
+    this.nextDay = result
+  }
+
+  getNextDay(): Date {
+    let nextDay = new Date(this.expireDate);
+    nextDay.setDate(this.expireDate.getDate() + 1);
+    return nextDay;
   }
   
   handleCreate() {

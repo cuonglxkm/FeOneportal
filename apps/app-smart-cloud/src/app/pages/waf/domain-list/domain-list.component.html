@@ -104,7 +104,7 @@
             <td nzBreakWord nzAlign="center">
               <div>
                   <one-portal-edit-domain [domainData]="data" (onOk)="handleOkUpdate()"></one-portal-edit-domain>
-                  <one-portal-http-setting [domainData]="data" (onOk)="handleOkUpdate()"></one-portal-http-setting>
+                  <one-portal-http-setting [domainData]="data" (onOk)="handleOkUpdate()" [listSslCert]="listSslCert" (onOkCreateSsl)="onOkCreateSslCert()"></one-portal-http-setting>
                 <img nz-dropdown
                   [nzDropdownMenu]="opMenu"
                   src="assets/imgs/more1.svg" alt="" style="cursor: pointer;" /> 
