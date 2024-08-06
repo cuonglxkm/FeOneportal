@@ -121,7 +121,11 @@ export class ListenerUpdateComponent implements OnInit, OnChanges {
         this.router.navigate(['/app-smart-cloud/load-balancer/detail/' + this.activatedRoute.snapshot.paramMap.get('lbId')]);
       },
       error => {
-        this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.notification.update.listener.fail'))
+        if (error?.error?.detail != undefined && error?.error?.detail != '') {
+          this.notification.error(this.i18n.fanyi('app.status.fail'), error?.error?.detail)
+        } else {
+          this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.notification.update.listener.fail'))
+        }
       }
     );
   }

@@ -15,7 +15,7 @@ RUN pwd && ls
 RUN yarn global add @nrwl/cli
 #RUN yarn install
 ENV NODE_OPTIONS=--max_old_space_size=8192
-RUN npx nx build app-smart-cloud --configuration=prod
+RUN npx nx build app-smart-cloud --configuration=test-dbp
 #RUN pwd && ls
 
 #stage 3 nginx 

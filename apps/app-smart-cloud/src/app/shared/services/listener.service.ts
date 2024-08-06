@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@angular/core';
 import { BaseService } from './base.service';
-import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams, HttpResponse } from '@angular/common/http';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { Observable } from 'rxjs';
 import { BaseResponse } from '../../../../../../libs/common-utils/src';
@@ -71,7 +71,12 @@ export class ListenerService extends BaseService{
   }
 
   validatePoolName(lbCloudId: any, regionId: any, projectId: any, name: any): Observable<any> {
-    return this.http.post<HttpResponse<any>>(this.baseUrl + this.ENDPOINT.provisions + `/loadbalancer/checkpoolname?lbCloudId=${lbCloudId}
-    &regionId=${regionId}&projectId=${projectId}&name=${name}`, null, this.getHeaders());
+    return this.http.post<HttpResponse<any>>(this.baseUrl + this.ENDPOINT.provisions + "/loadbalancer/checkpoolname?lbCloudId="+lbCloudId+
+    "&regionId="+regionId+"&projectId="+projectId+"&name="+name, null, this.getHeaders());
+  }
+
+  validateListner(lbId: any, type: any, value: any): Observable<any> {
+    return this.http.post<HttpResponse<any>>(this.baseUrl + this.ENDPOINT.provisions + "/loadbalancer/checkportnamelistener?lbId="+lbId+
+      "&type="+type+"&value="+value, null, this.getHeaders());
   }
 }

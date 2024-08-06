@@ -15,6 +15,7 @@ import { jsPDF } from 'jspdf';
 import { Chart } from 'angular-highcharts';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from '@core';
+import { debug } from 'console';
 
 @Component({
   selector: 'one-portal-chart',
@@ -78,14 +79,15 @@ export class ChartComponent implements AfterViewInit, OnInit {
       if (!acc[timeKey]) {
         acc[timeKey] = 0;
       }
-      acc[timeKey] += item.value;
+      acc[timeKey] = item.value;
       return acc;
     }, {} as { [key: string]: number });
   }
 
   private createDefaultChart(startDate, name: string): Chart {
+    const data: any[] = null
     const defaultTimeRange = this.generateTimeRange(startDate);
-
+    console.log('default time', defaultTimeRange)
     return new Chart({
       chart: {
         type: 'line'
@@ -108,7 +110,7 @@ export class ChartComponent implements AfterViewInit, OnInit {
       },
       series: [{
         name: name,
-        data: new Array(defaultTimeRange.length).fill(0)
+        data: new Array(defaultTimeRange.length)
       } as any]
     });
   }
@@ -117,13 +119,25 @@ export class ChartComponent implements AfterViewInit, OnInit {
     const startTimestamp = startDate; // Sử dụng startDate hoặc ngày hiện tại
     const end = new Date(); // Ngày hiện tại
 
-    const timeLabels: string[] = [];
-    const start = new Date(startTimestamp * 1000); // Chuyển đổi từ UNIX timestamp sang Date
+    let timeLabels: string[] = [];
+    const start = new Date(startTimestamp * 1000);// Chuyển đổi từ UNIX timestamp sang Date
 
-    while (start <= end) {
-      timeLabels.push(`${start.getHours()}:${start.getMinutes().toString().padStart(2, '0')}`);
-      start.setMinutes(start.getMinutes() + 60); // Thêm 1 giờ
-    }
+    do {
+      console.log('==', start == end)
+      timeLabels.push(`${start.getHours().toString().padStart(2, '0')}:${start.getMinutes().toString().padStart(2, '0')}`);
+      if(start < end) {
+        // debugger
+        start.setTime(start.getTime() + 60 * 1000);
+      }
+      if(start.getMinutes() == end.getMinutes()) {
+        // debugger
+        console.log('abc')
+        timeLabels.push(`${start.getHours().toString().padStart(2, '0')}:${start.getMinutes().toString().padStart(2, '0')}`);
+      }
+      console.log('end', end)
+    } while (start <= end)
+
+
     return timeLabels;
   }
 
@@ -136,7 +150,7 @@ export class ChartComponent implements AfterViewInit, OnInit {
     if (!data || data.length === 0) {
       console.warn('Data is null or empty, using default time range.');
       // Sử dụng ChangeDetectorRef để cập nhật lại biểu đồ
-      this.chartStorageUse = this.createDefaultChart(this.summary[0]?.startDate, this.i18n.fanyi('app.storage.usage'));
+      this.chartStorageUse = this.createDefaultChart(this.summary[0]?.startDate, this.i18n.fanyi('app.storage.usage') + ' (MB)');
       this.cdr.detectChanges(); // Buộc Angular cập nhật lại
       return;
     }
@@ -230,7 +244,7 @@ export class ChartComponent implements AfterViewInit, OnInit {
       console.warn('Data is null or empty, using default time range.');
 
       // Sử dụng ChangeDetectorRef để cập nhật lại biểu đồ
-      this.chartStorageUpload = this.createDefaultChart(this.summary[2]?.startDate, this.i18n.fanyi('app.upload.capacity'));
+      this.chartStorageUpload = this.createDefaultChart(this.summary[2]?.startDate, this.i18n.fanyi('app.upload.capacity') + ' (MB)');
       this.cdr.detectChanges(); // Buộc Angular cập nhật lại
       return;
     }
@@ -268,7 +282,7 @@ export class ChartComponent implements AfterViewInit, OnInit {
   }
 
   createStorageDownload() {
-    const data = this.summary[2]?.datas?.map((item) => ({
+    const data = this.summary[3]?.datas?.map((item) => ({
       timeSpan: item.timeSpan,
       value: parseInt(item.value, 10) // Chuyển đổi value từ chuỗi sang số
     })) || [];
@@ -277,7 +291,7 @@ export class ChartComponent implements AfterViewInit, OnInit {
       console.warn('Data is null or empty, using default time range.');
 
       // Sử dụng ChangeDetectorRef để cập nhật lại biểu đồ
-      this.chartStorageDownload = this.createDefaultChart(this.summary[3]?.startDate, this.i18n.fanyi('app.upload.download'));
+      this.chartStorageDownload = this.createDefaultChart(this.summary[3]?.startDate, this.i18n.fanyi('app.upload.download') + ' (MB)');
       this.cdr.detectChanges(); // Buộc Angular cập nhật lại
       return;
     }

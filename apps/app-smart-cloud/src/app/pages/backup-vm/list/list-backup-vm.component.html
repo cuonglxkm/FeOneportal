@@ -95,9 +95,8 @@
             <td nzBreakWord> {{ data.instanceName }}</td>
             <td nzBreakWord nzAlign="right">{{ data.size }}</td>
             <td nzBreakWord *ngIf="typeVPC==0">{{ data.backupPackageName }}</td>
-            <td nzBreakWord nzAlign="center" *ngIf="data.status == 'CREATING'">-</td>
-            <td nzBreakWord nzAlign="center" *ngIf="data.status != 'CREATING'">{{ data.creationDate | date: "dd/MM/yyyy" }}</td>
-            <td nzBreakWord nzAlign="center" *ngIf="data.status == 'CREATING'">-</td>
+            <td nzBreakWord nzAlign="center">{{ data.creationDate | date: "dd/MM/yyyy" }}</td>
+            <td nzBreakWord nzAlign="center" *ngIf="data.status == 'CREATING'"></td>
             <td nzBreakWord nzAlign="center" *ngIf="data.status != 'CREATING'">{{ data.expirationDate | date: "dd/MM/yyyy" }}</td>
             <ng-container *ngIf="data.status | ServiceStatusPipe as statusModel">
               <td *ngIf="data.status != 'SUSPENDED'" nzBreakWord nzAlign="left" [ngStyle]="{color: statusModel.color}">

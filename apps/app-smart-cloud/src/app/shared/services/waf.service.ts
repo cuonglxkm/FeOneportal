@@ -224,4 +224,8 @@ export class WafService extends BaseService {
   updatePolicies(domainId: number, data: UpdatePolicies){
     return this.http.put(this.baseUrl + this.ENDPOINT.provisions + `/waf/policies/${domainId}`, data, {headers: this.getHeaders().headers})
   }
+
+  hasWaf(){
+    return this.http.get(this.baseUrl + this.ENDPOINT.provisions + `/waf/has-waf`, this.getHeaders())
+  }
 }

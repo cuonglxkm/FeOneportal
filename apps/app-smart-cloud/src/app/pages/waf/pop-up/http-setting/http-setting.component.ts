@@ -92,10 +92,10 @@ export class HttpSettingComponent implements OnInit{
   onChangeProtocol(value: any){
     this.selectedProtocolValue = value
     if(value === 'http'){
-      this.validateForm.controls.port.setValue(80)
+      this.validateForm.controls.port.setValue(this.domainData.port ?? 80, {emitEvent: false})
     }
     else if(value === 'https'){
-      this.validateForm.controls.port.setValue(443)
+      this.validateForm.controls.port.setValue(this.domainData.port ?? 443, {emitEvent: false})
     }
   }
 
@@ -115,7 +115,7 @@ export class HttpSettingComponent implements OnInit{
       this.httpsSettingRequest.protocol = formValues.protocol
     }
     this.wafService.settingHttps(this.httpsSettingRequest, this.domainData.id).pipe(finalize(()=>{
-
+      this.isLoading = false
     })).subscribe({
       next:()=>{
         this.notification.success(this.i18n.fanyi("app.status.success"), "Thao tác thành công")
@@ -124,6 +124,7 @@ export class HttpSettingComponent implements OnInit{
       },
       error:()=>{
         this.notification.error(this.i18n.fanyi("app.status.error"), "Có lỗi xảy ra")
+        this.isLoading = false
       }
     })
     this.cdr.detectChanges()

@@ -59,7 +59,11 @@ export class RestoreBackupVolumeComponent implements OnInit {
 
   validateForm = new FormGroup({
     formCurrent: new FormGroup({
-      volumeId: new FormControl(null as number)
+      volumeId: new FormControl(null as number, {
+        nonNullable: true,
+        validators: [Validators.required]
+      }),
+
     }),
     formNew: new FormGroup({
       volumeName: new FormControl('', {
@@ -177,10 +181,12 @@ export class RestoreBackupVolumeComponent implements OnInit {
   onSelectionChange(): void {
     console.log('Selected option:', this.selectedOption);
     if (this.selectedOption === 'current') {
+      this.validateForm.get('formCurrent').get('volumeName').setValidators([Validators.required]);
       this.validateForm.get('formNew').reset();
       this.validateForm.get('formNew').get('volumeName').clearValidators();
       this.validateForm.get('formNew').get('volumeName').updateValueAndValidity();
     } else if (this.selectedOption === 'new') {
+      this.validateForm.get('formCurrent').reset()
 
       this.validateForm.get('formNew').get('storage').setValue(this.backupVolume?.size);
       this.validateForm.get('formNew').get('volumeName').setValidators([Validators.required, Validators.pattern(/^[a-zA-Z0-9_]*$/), this.duplicateNameValidator.bind(this)]);

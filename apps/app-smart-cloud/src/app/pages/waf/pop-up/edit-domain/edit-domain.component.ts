@@ -5,6 +5,7 @@ import {
   EventEmitter,
   Inject,
   Input,
+  OnInit,
   Output,
 } from '@angular/core';
 import {
@@ -13,13 +14,17 @@ import {
   NonNullableFormBuilder,
   Validators,
 } from '@angular/forms';
-import { ipValidatorMany } from '../../../../../../../../libs/common-utils/src';
+import {
+  hostValidator,
+  ipValidatorMany,
+} from '../../../../../../../../libs/common-utils/src';
 import { EditDomainRequest, WafDomain } from '../../waf.model';
 import { WafService } from 'src/app/shared/services/waf.service';
 import { finalize } from 'rxjs';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from '@core';
+import { DOMAIN_REGEX } from 'src/app/shared/constants/constants';
 
 @Component({
   selector: 'one-portal-edit-domain',
@@ -27,7 +32,7 @@ import { I18NService } from '@core';
   styleUrls: ['./edit-domain.component.less'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class EditDomainComponent {
+export class EditDomainComponent implements OnInit {
   @Input() domainData: WafDomain;
   @Output() onOk = new EventEmitter();
 
@@ -39,11 +44,11 @@ export class EditDomainComponent {
   validateForm: FormGroup<{
     ipPublic: FormControl<string>;
     host: FormControl<string>;
-    port: FormControl<string>;
+    port: FormControl<number>;
   }> = this.fb.group({
     ipPublic: ['', [Validators.required, ipValidatorMany]],
-    host: [''],
-    port: [''],
+    host: ['', [hostValidator]],
+    port: [null as number],
   });
 
   constructor(
@@ -51,10 +56,22 @@ export class EditDomainComponent {
     private wafService: WafService,
     private cdr: ChangeDetectorRef,
     @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
-    private notification: NzNotificationService,
+    private notification: NzNotificationService
   ) {}
 
+  ngOnInit(): void {}
+
   openModal() {
+    this.validateForm.controls.ipPublic.setValue(this.domainData.ipPublic, {
+      emitEvent: false,
+    });
+    this.validateForm.controls.host.setValue(this.domainData.host, {
+      emitEvent: false,
+    });
+    this.domainData.port &&
+      this.validateForm.controls.port.setValue(this.domainData.port, {
+        emitEvent: false,
+      });
     this.isVisible = true;
   }
 
@@ -80,13 +97,19 @@ export class EditDomainComponent {
       )
       .subscribe({
         next: () => {
-          this.notification.success(this.i18n.fanyi("app.status.success"),"Thông tin domain đã được cập nhật")
-          this.isVisible = false
-          this.onOk.emit()
+          this.notification.success(
+            this.i18n.fanyi('app.status.success'),
+            'Thông tin domain đã được cập nhật'
+          );
+          this.isVisible = false;
+          this.onOk.emit();
         },
-        error:()=>{
-          this.notification.error(this.i18n.fanyi("app.status.error"),"Đã có lỗi xảy ra")
-        }
+        error: () => {
+          this.notification.error(
+            this.i18n.fanyi('app.status.error'),
+            'Đã có lỗi xảy ra'
+          );
+        },
       });
   }
 }

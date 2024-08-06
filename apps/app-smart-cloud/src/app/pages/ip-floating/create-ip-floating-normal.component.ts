@@ -108,16 +108,16 @@ export class CreateIpFloatingNormalComponent implements OnInit{
     if(this.projectCombobox){
       this.projectCombobox.loadProjects(true, region.regionId);
     }
-    this.router.navigate(['/app-smart-cloud/ip-public']);
+    this.router.navigate(['/app-smart-cloud/networks/ip-floating/list']);
   }
 
   projectChange(project: ProjectModel) {
-    this.router.navigate(['/app-smart-cloud/ip-public']);
+    this.router.navigate(['/app-smart-cloud/networks/ip-floating/list']);
     this.projectId = project.id;
   }
 
   backToList() {
-    this.router.navigate(['/app-smart-cloud/ip-public']);
+    this.router.navigate(['/app-smart-cloud/networks/ip-floating/list']);
   }
 
   createIpPublic() {

@@ -173,8 +173,12 @@ export class CreateL7PolicyComponent implements OnInit {
       this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('app.notification.create.l7.policy.success'))
     }, error =>  {
       this.isLoading = false
-      // this.router.navigate(['/app-smart-cloud/load-balancer/detail/'+this.idLoadBalancer])
-      this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.notification.create.l7.policy.fail'))
+      if (error?.error?.message != undefined && error?.error?.message != '') {
+        this.notification.error(this.i18n.fanyi('app.status.fail'), error?.error?.message)
+      } else {
+        // this.router.navigate(['/app-smart-cloud/load-balancer/detail/'+this.idLoadBalancer])
+        this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.notification.create.l7.policy.fail'))
+      }
     })
   }
 

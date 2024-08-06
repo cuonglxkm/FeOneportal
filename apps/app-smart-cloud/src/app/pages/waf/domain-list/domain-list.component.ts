@@ -62,7 +62,7 @@ export class WafDomainListComponent implements OnInit, OnDestroy {
   }
 
   onExpandChange(id: number, checked: boolean): void {
-    debugger;
+    // debugger;
     if (checked) {
       this.expandSet.add(id);
     } else {
@@ -255,6 +255,7 @@ export class WafDomainListComponent implements OnInit, OnDestroy {
     this.selectedValue = this.options[0].value;
     this.onChangeInputChange();
     this.getListWafDomain();
+    this.getListSslCert()
     this.notificationService.connection.on('UpdateWafDomain', (message) => {
       if (message) {
         switch (message.actionType) {
