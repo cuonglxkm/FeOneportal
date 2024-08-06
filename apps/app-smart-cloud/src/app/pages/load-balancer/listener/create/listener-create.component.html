@@ -61,7 +61,7 @@
         <nz-form-control nzDisableAutoTips [nzErrorTip]="nameErrorTpl">
           <input nz-input
                  class="input-custom"
-                 formControlName="listenerName"
+                 formControlName="listenerName" (ngModelChange)="changeKeySearchListner.next('name')"
                  [placeholder]="'app.input.name' | i18n " [maxLength]="50" />
           <ng-template #nameErrorTpl let-control>
             <ng-container *ngIf="control.hasError('required')">{{ 'validation.info.required' | i18n }}</ng-container>
@@ -99,7 +99,7 @@
                    src="assets/imgs/pajamas_question.svg" alt="" />
             </nz-form-label>
             <nz-form-control nzDisableAutoTips>
-              <nz-input-number formControlName="port" [nzMin]="1" [nzMax]="65535" [nzStep]="1" nzSize="large"
+              <nz-input-number formControlName="port" [nzMin]="1" [nzMax]="65535" [nzStep]="1" nzSize="large" (ngModelChange)="changeKeySearchListner.next('port')"
                                style="margin-left: -2px;" (keydown)="checkPossiblePress($event)"></nz-input-number>
             </nz-form-control>
           </nz-form-item>
@@ -214,7 +214,7 @@
         </button>
         <button
           [disabled]="validateForm.controls['port'].invalid || validateForm.controls['allowCIRR'].invalid || validateForm.controls['listenerName'].invalid
-|| (protocolListener == 'TERMINATED_HTTPS' && (certId == null || certId == ''))"
+|| (protocolListener == 'TERMINATED_HTTPS' && (certId == null || certId == '')) || disableStep1"
           nzSize="large" (click)="nextStep()" nz-button nzType="primary"
           style="border: none;margin-left: 30px;">{{ 'app.button.continue' | i18n }}
         </button>
