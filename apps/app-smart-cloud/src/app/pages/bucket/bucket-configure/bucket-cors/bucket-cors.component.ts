@@ -47,6 +47,7 @@ export class BucketCorsComponent implements OnInit {
   total: number;
   loading: boolean = true;
   domain: string;
+  maxAgeSeconds: number;
   get: boolean = false;
   post: boolean = false;
   put: boolean = false;
@@ -273,6 +274,7 @@ export class BucketCorsComponent implements OnInit {
     this.isVisibleUpdate = true;
     this.bucketCorsUpdate = data;
     this.domain = this.bucketCorsUpdate.allowedOrigins[0];
+    this.maxAgeSeconds = this.bucketCorsUpdate.maxAgeSeconds;
     let idHeader = 0;
     this.bucketCorsUpdate.allowedHeaders.forEach((e) => {
       let headerName = new HeaderName();
@@ -305,6 +307,7 @@ export class BucketCorsComponent implements OnInit {
 
   handleOkUpdate() {
     this.isLoadingUpdate = true;
+    this.bucketCorsUpdate.maxAgeSeconds = this.maxAgeSeconds
     if (this.bucketCorsUpdate.maxAgeSeconds?.toString.length == 0) {
       this.bucketCorsUpdate.maxAgeSeconds = null;
     }

@@ -132,26 +132,19 @@
     </nz-row>
   </div>
 
-  <!-- <div class="text-center">
-    <span style="font-weight: 500">Biểu đồ {{ typeGSTitle }}</span>
-  </div>
-  <g2-timeline
-    [maxAxis]="maxAxis"
-    [data]="chartData"
-    [height]="289"
-    [titleMap]="{
-      y1:
-        typeGSTitle +
-        (typeGSTitle == 'RAM' || typeGSTitle == 'CPU' ? ' (%)' : '')
-    }"
-    [mask]="valueGSTIME > 1440 ? 'DD/MM' : 'HH:mm'"
-    [maskSlider]="'dd/MM'"
-  /> -->
   <div>
     <div class="title">
-      <span class="text-card-header">{{ 'app.storage.usage' | i18n }}</span> <br>
-      <span>{{ getFormattedStartDate(summary[0]?.startDate) | date: 'dd/MM/yyyy hh:mm' }}
-        {{ 'app.to' | i18n }} {{ newDate | date: 'dd/MM/yyyy hh:mm' }}</span>
+      <span class="text-card-header"
+        >{{ 'app.chart' | i18n }} {{ typeGSTitle }}</span
+      >
+      <br />
+      <span
+        >{{
+          getFormattedStartDate(summary[0]?.startDate)
+            | date : 'dd/MM/yyyy hh:mm'
+        }}
+        {{ 'app.to' | i18n }} {{ newDate | date : 'dd/MM/yyyy hh:mm' }}</span
+      >
     </div>
     <div [chart]="chartStorageUse"></div>
   </div>

@@ -386,6 +386,7 @@
   "app.change.info": "Thông tin thay đổi",
   "app.use.ipv6": "Sử dụng IPv6",
   "app.all.files": "Tất cả file",
+  "app.chart": "Biểu đồ",
 
   "app.instances.list": "Danh sách máy ảo",
   "app.instances.create": "Khởi tạo máy ảo",
