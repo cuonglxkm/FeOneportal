@@ -249,8 +249,8 @@ import { SnapshotDetailComponent } from './snapshot/detail/snapshot-detail.compo
 import { QRCodeModule } from 'angularx-qrcode';
 import { InvoiceDetailComponent } from './billing/payment/invoice-detail/invoice-detail.component';
 import { CreateScheduleBackupVpcComponent } from './schedule-backup/create-vpc/create-schedule-backup-vpc.component';
-// import { BaseChartDirective } from 'ng2-charts';
 import { ChartModule } from 'angular-highcharts';
+// import { BaseChartDirective } from 'ng2-charts';
 
 const icons: IconDefinition[] = [SettingOutline, SearchOutline];
 
@@ -512,9 +512,8 @@ const icons: IconDefinition[] = [SettingOutline, SearchOutline];
     NguCarouselDefDirective,
     NguCarouselNextDirective,
     NguCarouselPrevDirective,
-    NguItemComponent,
+    NguItemComponent, 
     QRCodeModule,
-    // BaseChartDirective,
     ChartModule
   ]
 })
