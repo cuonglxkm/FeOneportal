@@ -9,7 +9,7 @@ import { debounceTime, Subject, Subscription } from 'rxjs';
 import { BaseResponse, NotificationService } from '../../../../../../../libs/common-utils/src';
 import { WafService } from 'src/app/shared/services/waf.service';
 import { debug, error } from 'console';
-import { UpdatePolicies, WafDomain } from '../waf.model';
+import { SslCertDTO, UpdatePolicies, WafDomain } from '../waf.model';
 
 
 @Component({
@@ -45,6 +45,8 @@ export class WafDomainListComponent implements OnInit, OnDestroy {
   response: BaseResponse<WafDomain[]>;
 
   isBegin: boolean = false;
+
+  listSslCert: SslCertDTO[]
 
   dataSubjectInputSearch: Subject<any> = new Subject<any>();
   private searchSubscription: Subscription;
@@ -151,6 +153,18 @@ export class WafDomainListComponent implements OnInit, OnDestroy {
           }}
       );
 
+  }
+
+  getListSslCert(){
+    this.wafService.getListSslCert('', 999, 1).subscribe((res) => {
+      this.listSslCert = res?.records
+    }, (error) => {
+      console.log(error);     
+    })
+  }
+
+  onOkCreateSslCert(){
+    this.getListSslCert()
   }
 
   navigateToCreateWaf() {

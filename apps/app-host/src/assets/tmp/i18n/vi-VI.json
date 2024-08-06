@@ -612,7 +612,7 @@
   "app.bucket.getObject.fail": "Lấy Object Strorage không thành công",
   "app.bucket.getBucket.fail": "Lấy danh sách Bucket không thành công",
   "app.bucket.delete.bucket": "Xóa Bucket",
-  "app.bucket.delete.bucket.success": "Xóa Bucket thành công",
+  "app.bucket.delete.bucket.success": "Yêu cầu xóa Bucket thành công",
   "app.bucket.delete.bucket.fail": "Xóa Bucket thất bại",
   "app.bucket.delete.bucket.fail1": "Tên bucket không được trùng nhau",
   "app.button.bucket.create": "Tạo mới Bucket",

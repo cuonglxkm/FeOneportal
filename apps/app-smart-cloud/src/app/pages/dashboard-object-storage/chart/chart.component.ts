@@ -2,7 +2,7 @@ import {
   AfterViewInit,
   ChangeDetectorRef,
   Component,
-  ElementRef,
+  ElementRef, Inject,
   Input,
   OnInit,
   SimpleChanges,
@@ -13,6 +13,8 @@ import { Line } from '@antv/g2plot';
 import html2canvas from 'html2canvas';
 import { jsPDF } from 'jspdf';
 import { Chart } from 'angular-highcharts';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
+import { I18NService } from '@core';
 
 @Component({
   selector: 'one-portal-chart',
@@ -51,7 +53,8 @@ export class ChartComponent implements AfterViewInit, OnInit {
   public chartStorageUpload: Chart;
   public chartStorageDownload: Chart;
 
-  constructor(private cdr: ChangeDetectorRef) {
+  constructor(private cdr: ChangeDetectorRef,
+              @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService) {
     // Đăng ký các thành phần của Chart.js
     // Chart.register(...registerables);
   }
@@ -133,7 +136,7 @@ export class ChartComponent implements AfterViewInit, OnInit {
     if (!data || data.length === 0) {
       console.warn('Data is null or empty, using default time range.');
       // Sử dụng ChangeDetectorRef để cập nhật lại biểu đồ
-      this.chartStorageUse = this.createDefaultChart(this.summary[0]?.startDate, 'Dung lượng đã sử dụng');
+      this.chartStorageUse = this.createDefaultChart(this.summary[0]?.startDate, this.i18n.fanyi('app.storage.usage'));
       this.cdr.detectChanges(); // Buộc Angular cập nhật lại
       return;
     }
@@ -163,7 +166,7 @@ export class ChartComponent implements AfterViewInit, OnInit {
         }
       },
       series: [{
-        name: 'Dung lượng đã sử dụng (MB)',
+        name: this.i18n.fanyi('app.storage.usage') + ' (MB)',
         data: dataValues  // Đảm bảo rằng data là một mảng số
       } as any] // Ép kiểu để khắc phục lỗi TypeScript
     });
@@ -179,7 +182,7 @@ export class ChartComponent implements AfterViewInit, OnInit {
       console.warn('Data is null or empty, using default time range.');
 
       // Sử dụng ChangeDetectorRef để cập nhật lại biểu đồ
-      this.chartNumberObject = this.createDefaultChart(this.summary[1]?.startDate, 'Số lượng Object');
+      this.chartNumberObject = this.createDefaultChart(this.summary[1]?.startDate, this.i18n.fanyi('app.number.object'));
       this.cdr.detectChanges(); // Buộc Angular cập nhật lại
       return;
     }
@@ -210,7 +213,7 @@ export class ChartComponent implements AfterViewInit, OnInit {
         }
       },
       series: [{
-        name: 'Số lượng Object',
+        name: this.i18n.fanyi('app.number.object'),
         data: dataValues // Đảm bảo rằng data là một mảng số
       } as any] // Ép kiểu để khắc phục lỗi TypeScript
     });
@@ -227,7 +230,7 @@ export class ChartComponent implements AfterViewInit, OnInit {
       console.warn('Data is null or empty, using default time range.');
 
       // Sử dụng ChangeDetectorRef để cập nhật lại biểu đồ
-      this.chartStorageUpload = this.createDefaultChart(this.summary[2]?.startDate, 'Dung lượng tải lên');
+      this.chartStorageUpload = this.createDefaultChart(this.summary[2]?.startDate, this.i18n.fanyi('app.upload.capacity'));
       this.cdr.detectChanges(); // Buộc Angular cập nhật lại
       return;
     }
@@ -258,7 +261,7 @@ export class ChartComponent implements AfterViewInit, OnInit {
         }
       },
       series: [{
-        name: 'Dung lượng tải lên (MB)',
+        name: this.i18n.fanyi('app.upload.capacity') + ' (MB)',
         data: dataValues // Đảm bảo rằng data là một mảng số
       } as any] // Ép kiểu để khắc phục lỗi TypeScript
     });
@@ -274,7 +277,7 @@ export class ChartComponent implements AfterViewInit, OnInit {
       console.warn('Data is null or empty, using default time range.');
 
       // Sử dụng ChangeDetectorRef để cập nhật lại biểu đồ
-      this.chartStorageDownload = this.createDefaultChart(this.summary[3]?.startDate, 'Dung lượng tải về');
+      this.chartStorageDownload = this.createDefaultChart(this.summary[3]?.startDate, this.i18n.fanyi('app.upload.download'));
       this.cdr.detectChanges(); // Buộc Angular cập nhật lại
       return;
     }
@@ -305,7 +308,7 @@ export class ChartComponent implements AfterViewInit, OnInit {
         }
       },
       series: [{
-        name: 'Dung lượng tải về (MB)',
+        name: this.i18n.fanyi('app.upload.download') + ' (MB)',
         data: dataValues // Đảm bảo rằng data là một mảng số
       } as any] // Ép kiểu để khắc phục lỗi TypeScript
     });
