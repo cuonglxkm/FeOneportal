@@ -14,6 +14,7 @@ COPY . .
 RUN yarn global add @nrwl/cli
 COPY ./apps/app-host/src/assets/module-federation-test-dbp.manifest.json ./apps/app-host/src/assets/module-federation.manifest.json
 #RUN yarn install
+ENV NODE_OPTIONS=--max_old_space_size=8192
 RUN npx nx build app-host --configuration=test-dbp
 
 # #stage 3
