@@ -48,7 +48,8 @@ export class WAFResizeComponent implements OnInit {
   listOfferFlavors: OfferItem[] = [];
   offerFlavor: OfferItem;
   selectedElementFlavor: any;
-
+  domains: string[] = []
+  ipPublics: string[] = []
   dateNow: any;
   today: any;
   expiredDate: any;
@@ -112,11 +113,23 @@ export class WAFResizeComponent implements OnInit {
     this.service.getDetail(id).subscribe(
       (data) => {
         this.WAFDetail = data;
+        if(data?.wafDomains !== null){
+          this.domains = data.wafDomains.map((item) => item.domain);
+          this.ipPublics = data.wafDomains.map((item) => item.ipPublic);
+        }
       },
       (error) => {
         this.WAFDetail = null;
       }
     );
+  }
+
+  isLastDomain(domain: string): boolean {
+    return this.domains.indexOf(domain) === this.domains.length - 1;
+  }
+
+  isLastIpPublic(ipPublic: string): boolean {
+    return this.ipPublics.indexOf(ipPublic) === this.ipPublics.length - 1;
   }
 
   onInputFlavors(event: any, name: any) {

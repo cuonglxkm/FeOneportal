@@ -275,27 +275,25 @@
   [nzTitle]="titleModalDeleteBucket"
   (nzOnCancel)="handleCancelDeleteBucket()"
 >
-  <form nz-form [formGroup]="formDeleteBucket">
     <ng-container *nzModalContent>
 
-    <nz-form-item>
       <span
       class="text-label"
       [innerHTML]="
         'app.alert.delete.bucket' | i18n : { name: bucketDeleteName }
       "
     ></span>
-      <nz-form-control [nzErrorTip]="'Vui lòng nhập đúng tên Bucket'">
         <input
         style="margin-top: 5px"
         class="input-custom"
         name="name"
         nz-input
+        (keydown.enter)="focusOkButton($event)"
+        (ngModelChange)="onInputChange($event)"
+        #bucketInputName
         [(ngModel)]="codeVerify"
-        formControlName="name"
       />
-      </nz-form-control>
-    </nz-form-item>
+      <span *ngIf="isInput" style="color: red;">Vui lòng nhập đúng tên Bucket</span>
   </ng-container>
     <div *nzModalFooter>
       <button nz-button (click)="handleCancelDeleteBucket()">
@@ -305,7 +303,7 @@
           alt=""
         />{{ 'app.button.cancel' | i18n }}
       </button>
-      <button [nzLoading]="isLoadingDeleteBucket" [disabled]="formDeleteBucket.invalid" nz-button nzType="primary" (click)="handleOkDeleteBucket()">
+      <button [nzLoading]="isLoadingDeleteBucket" nz-button nzType="primary" (click)="handleOkDeleteBucket()">
         <img
           *ngIf="isLoadingDeleteBucket === false"
           style="padding-right: 10px; margin-top: -4px"
@@ -315,7 +313,6 @@
         {{ 'app.button.confirm' | i18n }}
       </button>
     </div>
-  </form>
 </nz-modal>
 
 <nz-modal

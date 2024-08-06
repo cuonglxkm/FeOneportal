@@ -282,7 +282,7 @@ export class CreateBackupVmVpcComponent implements OnInit {
       createBackupVmSpecification.volumeToBackupIds = this.validateForm.controls.volumeToBackupIds.value;
       createBackupVmSpecification.securityGroupToBackupIds = this.securityGroupSelected;
       createBackupVmSpecification.description = this.validateForm.controls.description.value.trimStart().trimEnd();
-      createBackupVmSpecification.backupPackageId = this.validateForm.controls.backupPacketId.value;
+      // createBackupVmSpecification.backupPackageId = this.validateForm.controls.backupPacketId.value;
       createBackupVmSpecification.customerId = this.tokenService.get()?.userId;
       createBackupVmSpecification.actorEmail = this.tokenService.get()?.email;
       createBackupVmSpecification.userEmail = this.tokenService.get()?.email;

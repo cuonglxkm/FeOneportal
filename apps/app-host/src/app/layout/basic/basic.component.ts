@@ -49,10 +49,10 @@ import { environment } from '@env/environment';
         </a>
       </ng-template>
       <layout-default-header-item direction="right" hidden="mobile">
-        <header-task />
+        <!-- <header-task /> -->
       </layout-default-header-item>
       <layout-default-header-item direction="right" hidden="mobile">
-        <header-icon />
+        <!-- <header-icon /> -->
       </layout-default-header-item>
       <layout-default-header-item direction="right" hidden="mobile">
         <div
@@ -66,9 +66,9 @@ import { environment } from '@env/environment';
         </div>
         <nz-dropdown-menu #settingsMenu="nzDropdownMenu">
           <div nz-menu style="width: 200px;">
-            <div nz-menu-item>
+            <!-- <div nz-menu-item>
               <header-rtl />
-            </div>
+            </div> -->
             <div nz-menu-item>
               <header-fullscreen />
             </div>

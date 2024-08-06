@@ -1,9 +1,11 @@
 import {
+  AfterViewInit,
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
   Inject,
   OnInit,
+  SimpleChanges,
   ViewChild,
 } from '@angular/core';
 import {
@@ -23,6 +25,8 @@ import {
 import { I18NService } from '@core';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
+import { Chart } from 'angular-highcharts';
+import { Summary } from 'src/app/shared/models/object-storage.model';
 
 @Component({
   selector: 'one-portal-instances-detail',
@@ -36,6 +40,7 @@ export class InstancesDetailComponent implements OnInit {
   instancesModel: InstancesModel;
   id: number;
   listSecurityGroupModel: SecurityGroupModel[] = [];
+  newDate: Date = new Date();
   @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
   constructor(
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
@@ -109,15 +114,13 @@ export class InstancesDetailComponent implements OnInit {
   }
 
   onRegionChange(region: RegionModel) {
-    if(this.projectCombobox){
+    if (this.projectCombobox) {
       this.projectCombobox.loadProjects(true, region.regionId);
     }
     this.router.navigate(['/app-smart-cloud/instances']);
   }
 
-  onRegionChanged(region: RegionModel) {
-    
-  }
+  onRegionChanged(region: RegionModel) {}
 
   userChangeProject() {
     this.router.navigate(['/app-smart-cloud/instances']);
@@ -154,7 +157,7 @@ export class InstancesDetailComponent implements OnInit {
   activeGS: boolean = false;
   maxAxis = 1;
   cahrt = [];
-  valueGSCPU: string = 'cpu';
+  valueGSCPU: string = 'ram';
   valueGSTIME: number = 5;
   cloudId: string;
   regionId: number;
@@ -168,7 +171,7 @@ export class InstancesDetailComponent implements OnInit {
     },
     {
       key: 'cpu',
-      name: 'vCPU',
+      name: 'CPU',
     },
     {
       key: 'diskio',
@@ -206,15 +209,16 @@ export class InstancesDetailComponent implements OnInit {
       name: '1 ' + this.i18n.fanyi('app.week'),
     },
     {
-      key: 302400,
+      key: 43200,
       name: '1 ' + this.i18n.fanyi('app.month'),
     },
     {
-      key: 907200,
+      key: 129600,
       name: '3 ' + this.i18n.fanyi('app.months'),
     },
   ];
 
+  summary: Summary = new Summary();
   getMonitorData() {
     this.chartData = [];
     this.cahrt = [];
@@ -226,16 +230,9 @@ export class InstancesDetailComponent implements OnInit {
         this.valueGSCPU
       )
       .subscribe((data: any) => {
-        data[0].datas.forEach((e: any) => {
-          const item = {
-            time: this.formatTimestamp(e.timeSpan * 1000),
-            y1: Number.parseFloat(e.value),
-          };
-          this.cahrt.push(item);
-        });
-        this.chartData = this.cahrt;
+        this.summary = data[0];
+        this.createChartStorageUse();
         this.cdr.detectChanges();
-        console.log('dataMonitor', this.chartData);
       });
   }
 
@@ -244,14 +241,180 @@ export class InstancesDetailComponent implements OnInit {
     this.getMonitorData();
   }
 
+  typeGSTitle: string = 'RAM';
   onChangeCPU(event?: any) {
     this.valueGSCPU = event;
+    this.typeGSTitle = this.GSCPU.filter(
+      (e) => e.key == this.valueGSCPU
+    )[0].name;
+    this.newDate = new Date();
     this.getMonitorData();
   }
   onChangeTIME(event?: any) {
     this.valueGSTIME = event;
     if (this.valueGSCPU != '') {
+      this.newDate = new Date();
       this.getMonitorData();
     }
+  }
+
+  private removeDuplicates(data: { timeSpan: number; value: number }[]): {
+    [key: string]: number;
+  } {
+    return data.reduce((acc, item) => {
+      // Lấy chỉ phần thời gian hh:mm
+      const date = new Date(item.timeSpan * 1000);
+      const timeKey = this.transform(item.timeSpan);
+
+      // Gộp các giá trị trùng lặp
+      if (!acc[timeKey]) {
+        acc[timeKey] = 0;
+      }
+      acc[timeKey] += item.value;
+      return acc;
+    }, {} as { [key: string]: number });
+  }
+
+  private createDefaultChart(startDate, name: string): Chart {
+    const defaultTimeRange = this.generateTimeRange(startDate);
+
+    return new Chart({
+      chart: {
+        type: 'line',
+      },
+      title: {
+        text: '',
+      },
+      xAxis: {
+        categories: defaultTimeRange,
+        title: {
+          text: '',
+        },
+      },
+      yAxis: {
+        title: {
+          text: '',
+        },
+        min: 0,
+        // max: 10
+      },
+      series: [
+        {
+          name: name,
+          data: new Array(defaultTimeRange.length).fill(0),
+        } as any,
+      ],
+    });
+  }
+
+  private generateTimeRange(startDate): string[] {
+    const startTimestamp = startDate; // Sử dụng startDate hoặc ngày hiện tại
+    const end = new Date(); // Ngày hiện tại
+
+    const timeLabels: string[] = [];
+    const start = new Date(startTimestamp * 1000); // Chuyển đổi từ UNIX timestamp sang Date
+
+    while (start <= end) {
+      timeLabels.push(
+        `${start.getHours()}:${start.getMinutes().toString().padStart(2, '0')}`
+      );
+      start.setMinutes(start.getMinutes() + 60); // Thêm 1 giờ
+    }
+    return timeLabels;
+  }
+
+  getFormattedStartDate(timestamp) {
+    return new Date(timestamp * 1000); // Convert Unix timestamp to milliseconds
+  }
+
+  transform(timestamp: number): string {
+    const date = new Date(timestamp * 1000);
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const year = String(date.getFullYear()).slice(-2);
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    const seconds = String(date.getSeconds()).padStart(2, '0');
+    let returnLabel = '';
+    switch (this.valueGSTIME) {
+      case 5:
+        returnLabel = `${hours}:${minutes}`;
+        break;
+      case 15:
+        returnLabel = `${hours}:${minutes}`;
+        break;
+      case 60:
+        returnLabel = `${hours}:${minutes}`;
+        break;
+      case 1440:
+        returnLabel = `${hours}:00`;
+        break;
+      case 10080:
+        returnLabel = `${day}/${month}/${year}`;
+        break;
+      case 43200:
+        returnLabel = `${day}/${month}/${year}`;
+        break;
+      case 129600:
+        returnLabel = `${day}/${month}/${year}`;
+        break;
+      default:
+        returnLabel = `${hours}:${minutes}:${seconds}`;
+    }
+
+    return returnLabel;
+  }
+
+  chartStorageUse: Chart;
+  createChartStorageUse() {
+    const data =
+      this.summary?.datas?.map((item) => ({
+        timeSpan: item.timeSpan,
+        value: parseInt(item.value, 10), // Chuyển đổi value từ chuỗi sang số
+      })) || [];
+    console.log('rawData:', data);
+    if (!data || data.length === 0) {
+      console.warn('Data is null or empty, using default time range.');
+      // Sử dụng ChangeDetectorRef để cập nhật lại biểu đồ
+      this.chartStorageUse = this.createDefaultChart(
+        this.summary?.startDate,
+        this.i18n.fanyi('app.chart') + ' ' + this.typeGSTitle
+      );
+      this.cdr.detectChanges(); // Buộc Angular cập nhật lại
+      return;
+    }
+    const uniqueData = this.removeDuplicates(data);
+    // Chuyển đổi timestamp thành định dạng thời gian đọc được
+    const labels = Object.keys(uniqueData);
+    // Trích xuất giá trị dữ liệu
+    const dataValues = Object.values(uniqueData).map((value) => value / 1024); // Chuyển từ KB sang MB
+    console.log('dataValues', dataValues);
+    // Cấu hình Highcharts
+    this.chartStorageUse = new Chart({
+      chart: {
+        type: 'line',
+      },
+      title: {
+        text: '',
+      },
+      xAxis: {
+        categories: labels,
+        title: {
+          text: '',
+        },
+      },
+      yAxis: {
+        title: {
+          text: '',
+        },
+      },
+      series: [
+        {
+          name: this.typeGSTitle + ' (' + this.summary.unit + ')',
+          data: dataValues, // Đảm bảo rằng data là một mảng số
+        } as any,
+      ], // Ép kiểu để khắc phục lỗi TypeScript
+    });
+    this.cdr.detectChanges();
   }
 }

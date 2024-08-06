@@ -9,7 +9,7 @@ import { debounceTime, Subject, Subscription } from 'rxjs';
 import { BaseResponse, NotificationService } from '../../../../../../../libs/common-utils/src';
 import { WafService } from 'src/app/shared/services/waf.service';
 import { debug, error } from 'console';
-import { UpdatePolicies, WafDomain } from '../waf.model';
+import { SslCertDTO, UpdatePolicies, WafDomain } from '../waf.model';
 
 
 @Component({
@@ -46,6 +46,8 @@ export class WafDomainListComponent implements OnInit, OnDestroy {
 
   isBegin: boolean = false;
 
+  listSslCert: SslCertDTO[]
+
   dataSubjectInputSearch: Subject<any> = new Subject<any>();
   private searchSubscription: Subscription;
   private enterPressed: boolean = false;
@@ -60,7 +62,7 @@ export class WafDomainListComponent implements OnInit, OnDestroy {
   }
 
   onExpandChange(id: number, checked: boolean): void {
-    debugger;
+    // debugger;
     if (checked) {
       this.expandSet.add(id);
     } else {
@@ -153,6 +155,18 @@ export class WafDomainListComponent implements OnInit, OnDestroy {
 
   }
 
+  getListSslCert(){
+    this.wafService.getListSslCert('', 999, 1).subscribe((res) => {
+      this.listSslCert = res?.records
+    }, (error) => {
+      console.log(error);     
+    })
+  }
+
+  onOkCreateSslCert(){
+    this.getListSslCert()
+  }
+
   navigateToCreateWaf() {
       this.router.navigate(['/app-smart-cloud/waf/create']);
   }
@@ -241,6 +255,7 @@ export class WafDomainListComponent implements OnInit, OnDestroy {
     this.selectedValue = this.options[0].value;
     this.onChangeInputChange();
     this.getListWafDomain();
+    this.getListSslCert()
     this.notificationService.connection.on('UpdateWafDomain', (message) => {
       if (message) {
         switch (message.actionType) {

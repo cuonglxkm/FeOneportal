@@ -335,6 +335,7 @@ export class BucketPolicyComponent implements OnInit {
   bucketPolicyUpdate: bucketPolicyDetail = new bucketPolicyDetail();
   modalUpdate(sid: string) {
     this.isVisibleUpdate = true;
+    this.setActionPermission.clear();
     this.getListSubuser();
     this.bucketService
       .getBucketPolicyDetail(sid, this.bucketName, this.region)
@@ -549,8 +550,6 @@ export class BucketPolicyComponent implements OnInit {
       .getBucketPolicyDetail(sid, this.bucketName, this.region)
       .subscribe({
         next: (data) => {
-          console.log(data);
-
           this.bucketPolicyDetail = data;
           this.jsonDataBucketPolicy = JSON.stringify(this.bucketPolicyDetail, null, 2);
         },

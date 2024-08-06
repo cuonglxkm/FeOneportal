@@ -129,7 +129,7 @@ export class InstancesCreateComponent implements OnInit {
       validators: [
         Validators.required,
         Validators.pattern(
-          /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9\s])(?!.*[àáạảãâầấậẩẫăằắặẳẵèéẹẻẽêềếệểễìíịỉĩòóọỏõôồốộổỗơờớợởỡùúụủũưừứựửữỳýỵỷỹđ]).{12,20}$/
+          /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9\s])(?!.*[àáạảãâầấậẩẫăằắặẳẵèéẹẻẽêềếệểễìíịỉĩòóọỏõôồốộổỗơờớợởỡùúụủũưừứựửữỳýỵỷỹđÀÁẠẢÃÂẦẤẬẨẪĂẰẮẶẲẴÈÉẸẺẼÊỀẾỆỂỄÌÍỊỈĨÒÓỌỎÕÔỒỐỘỔỖƠỜỚỢỞỠÙÚỤỦŨƯỪỨỰỬỮỲÝỴỶỸĐ]).{12,20}$/
         ),
       ],
     }),
@@ -730,9 +730,7 @@ export class InstancesCreateComponent implements OnInit {
     this.offerFlavor = null;
     this.selectedElementFlavor = null;
     this.configGPU = new ConfigGPU();
-    this.configGPU.storage = this.minCapacity;
     this.configCustom = new ConfigCustom();
-    this.configCustom.capacity = this.minCapacity;
     if (this.isSnapshot && this.isCustomconfig) {
       this.configCustom.capacity =
         this.sizeSnapshotVL < this.stepCapacity
@@ -1085,8 +1083,8 @@ export class InstancesCreateComponent implements OnInit {
   }
 
   minCapacity: number;
-  maxCapacity: number;
-  stepCapacity: number;
+  maxCapacity: number = 0;
+  stepCapacity: number = 0;
   surplus: number;
   getConfigurations() {
     this.configurationService.getConfigurations('BLOCKSTORAGE').subscribe({
@@ -1096,9 +1094,6 @@ export class InstancesCreateComponent implements OnInit {
         this.stepCapacity = (Number).parseInt(valueArray[1]);
         this.maxCapacity = (Number).parseInt(valueArray[2]);
         this.surplus = valueArray[2] % valueArray[1];
-        this.configGPU.storage = this.minCapacity;
-        this.configCustom.capacity = this.minCapacity;
-        this.cdr.detectChanges();
       },
     });
   }
@@ -1369,7 +1364,7 @@ export class InstancesCreateComponent implements OnInit {
         validators: [
           Validators.required,
           Validators.pattern(
-            /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9\s])(?!.*[àáạảãâầấậẩẫăằắặẳẵèéẹẻẽêềếệểễìíịỉĩòóọỏõôồốộổỗơờớợởỡùúụủũưừứựửữỳýỵỷỹđ]).{12,20}$/
+            /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9\s])(?!.*[àáạảãâầấậẩẫăằắặẳẵèéẹẻẽêềếệểễìíịỉĩòóọỏõôồốộổỗơờớợởỡùúụủũưừứựửữỳýỵỷỹđÀÁẠẢÃÂẦẤẬẨẪĂẰẮẶẲẴÈÉẸẺẼÊỀẾỆỂỄÌÍỊỈĨÒÓỌỎÕÔỒỐỘỔỖƠỜỚỢỞỠÙÚỤỦŨƯỪỨỰỬỮỲÝỴỶỸĐ]).{12,20}$/
           ),
         ],
       })

@@ -249,6 +249,8 @@ import { SnapshotDetailComponent } from './snapshot/detail/snapshot-detail.compo
 import { QRCodeModule } from 'angularx-qrcode';
 import { InvoiceDetailComponent } from './billing/payment/invoice-detail/invoice-detail.component';
 import { CreateScheduleBackupVpcComponent } from './schedule-backup/create-vpc/create-schedule-backup-vpc.component';
+import { ChartModule } from 'angular-highcharts';
+// import { BaseChartDirective } from 'ng2-charts';
 
 const icons: IconDefinition[] = [SettingOutline, SearchOutline];
 
@@ -501,7 +503,7 @@ const icons: IconDefinition[] = [SettingOutline, SearchOutline];
     SafePipe,
     EllipsisModule,
     AutofocusDirective,
-    // ChartModule,
+    // NgChartsModule,
     HttpClientModule,
     TrimDirective,
     CarouselModule,
@@ -510,8 +512,9 @@ const icons: IconDefinition[] = [SettingOutline, SearchOutline];
     NguCarouselDefDirective,
     NguCarouselNextDirective,
     NguCarouselPrevDirective,
-    NguItemComponent,
+    NguItemComponent, 
     QRCodeModule,
-  ],
+    ChartModule
+  ]
 })
 export class PagesModule {}

@@ -40,6 +40,8 @@ export class DashboardObjectStorageComponent implements OnInit {
   url = window.location.pathname;
   summary: Summary[];
 
+  newDate: Date = new Date();
+
   times = [
     { value: 5, label: '5 ' + this.i18n.fanyi('app.minute') },
     { value: 15, label: '15 ' + this.i18n.fanyi('app.minute') },
@@ -104,6 +106,7 @@ export class DashboardObjectStorageComponent implements OnInit {
 
   onTimeChange(value) {
     this.timeSelected = value;
+    this.newDate = new Date();
     this.getSummaryObjectStorage();
   }
 
@@ -115,6 +118,8 @@ export class DashboardObjectStorageComponent implements OnInit {
       .pipe(finalize(() => this.loadingSrv.close()))
       .subscribe(data => {
         this.summary = data;
+      }, error => {
+        console.log('error: ', error)
       });
   }
 

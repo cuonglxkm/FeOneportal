@@ -153,7 +153,7 @@ export class EditPoolInLbComponent implements AfterViewInit, OnInit {
       formUpdate.lb_algorithm = this.validateForm.controls.algorithm.value;
       formUpdate.customerId = this.tokenService.get()?.userId;
       formUpdate.actorEmail = this.tokenService.get()?.email;
-      this.loadBalancerService.updatePool(this.poolId, formUpdate).subscribe({
+      this.loadBalancerService.updatePool(formUpdate).subscribe({
         next: (data) => {
           this.isVisible = false;
           this.isLoading = false;
@@ -169,7 +169,7 @@ export class EditPoolInLbComponent implements AfterViewInit, OnInit {
           this.isLoading = false;
           this.notification.error(
             "",
-            error.error.message
+            error.error.detail
           );
         },
       });

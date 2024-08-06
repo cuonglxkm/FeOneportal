@@ -130,7 +130,7 @@
                                  style="width: 100%; margin-left: 0;"
                                  nzAutoFocus
                                  class="input-custom"
-                                 [nzMin]="minStorage"
+                                 [nzMin]="0"
                                  (ngModelChange)="changeValueStorage($event)"
                                  [nzStep]="stepStorage"
                                  [nzMax]="maxStorage"/>
@@ -228,9 +228,9 @@
               <nz-row>
                 <nz-col style="width: 100%">
                   <button style="width: 100%" nz-button nzSize="large" nzType="primary" (click)="navigateToPaymentSummary()" [nzLoading]="isLoadingAction"
-                          [disabled]="validateForm.invalid || (volumeEdit?.newSize == volumeInfo?.sizeInGB)">
+                          [disabled]="validateForm.invalid || validateForm.controls.storage.value == 0 || (validateForm.controls.storage.value % stepStorage > 0)">
                     <img src="assets/imgs/wallet.svg" style="margin-right: 5px; padding-bottom: 5px;" />
-                    <span [style.color]="validateForm.invalid ? 'gray' : 'white'">{{'app.button.resize'|i18n}}</span>
+                    <span [style.color]="validateForm.invalid || validateForm.controls.storage.value == 0 || (validateForm.controls.storage.value % stepStorage > 0) ? 'gray' : 'white'">{{'app.button.resize'|i18n}}</span>
                   </button>
                 </nz-col>
               </nz-row>

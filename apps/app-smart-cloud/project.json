@@ -82,6 +82,30 @@
             "path": "apps/app-smart-cloud/webpack.prod.config.ts"
           }
         },
+        "test-dbp": {
+          "fileReplacements": [
+            {
+              "replace": "apps/app-smart-cloud/src/environments/environment.ts",
+              "with": "apps/app-smart-cloud/src/environments/environment.test-dbp.ts"
+            }
+          ],
+          "budgets": [
+            {
+              "type": "initial",
+              "maximumWarning": "500kb",
+              "maximumError": "5mb"
+            },
+            {
+              "type": "anyComponentStyle",
+              "maximumWarning": "10kb",
+              "maximumError": "100kb"
+            }
+          ],
+          "outputHashing": "all",
+          "customWebpackConfig": {
+            "path": "apps/app-smart-cloud/webpack.prod.config.ts"
+          }
+        },
         "prod": {
           "fileReplacements": [
             {

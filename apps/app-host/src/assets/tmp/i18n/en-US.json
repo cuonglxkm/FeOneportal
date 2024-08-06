@@ -491,6 +491,7 @@
   "app.change.info": "Change information",
   "app.use.ipv6": "Use IPv6",
   "app.all.files": "All files",
+  "app.chart": "Chart",
 
   "app.instances.list": "Instance list",
   "app.instances.create": "Create Instance",
@@ -621,10 +622,10 @@
   "app.notify.edit.port.fail": "Failed to edit port",
   "app.notify.request.change.os.success": "The request to change the operating system has been submitted",
   "app.notify.request.change.os.fail": "The request to change the operating system failed",
-  "app.notify.attach.vlan.success": "Successfully attached VLAN",
-  "app.notify.attach.vlan.fail": "Failed to attach VLAN",
-  "app.notify.detach.vlan.success": "Successfully detached from VLAN",
-  "app.notify.detach.vlan.fail": "Failed to detach from VLAN",
+  "app.notify.attach.vlan.success": "The request to attach VLAN was successful",
+  "app.notify.attach.vlan.fail": "The request to attach VLAN was unsuccessful",
+  "app.notify.detach.vlan.success": "Request to detach from VLAN successful",
+  "app.notify.detach.vlan.fail": "Request to detach from VLAN failed",
   "app.notify.request.shutdown.instances.success": "The request to shut down the instance has been sent",
   "app.notify.request.shutdown.instances.fail": "The request to shut down the instance failed",
   "app.notify.request.start.instances.success": "The request to start the instance has been sent",
@@ -785,6 +786,7 @@
   "app.lifeCycle.edit": "Edit Lifecycle",
   "app.lifeCycle.config.intro": "Bucket Lifecycle allows you to manage the lifespan and automation of objects within buckets.",
   "app.lifeCycle.config.intro.next": "With Bucket Lifecycle, you can define automatic rules for objects in your bucket, including deleting objects that have expired or are no longer needed to reduce storage costs. Using Bucket Lifecycle also helps reduce administrative workload and increase the availability of objects in the bucket.",
+  "app.lifeCycle.validate.duplicate": "Lifecycle already exists",
   "app.key.required": "Please enter the Key",
   "app.bucket.detail": "Bucket Detail",
   "app.bucket.detail.size": "Size",
@@ -3162,8 +3164,8 @@
   "app.notification.extend.fail": "Backup package extend fail. {{error}}",
   "app.notification.update.package.backup.success": "Successfully edited backup package.",
   "app.notification.update.package.backup.error": "Failed to edit backup package. {{error}}",
-  "app.notification.restore.current.vm.success": "Successfully restored to the current instance",
-  "app.notification.restore.current.vm.fail": "Failed to restore to the current instance",
+  "app.notification.request.restore.current.vm.success": "Restoration request to the current virtual machine was successful",
+  "app.notification.request.restore.current.vm.fail": "Restoration request to the current virtual machine failed",
 
   "app.backup.package.name.required": "Please enter the name of the Backup Package.",
   "app.backup.package.name.pattern": "Exclude special characters, spaces, and Vietnamese characters.",
@@ -3659,5 +3661,7 @@
   "waf.domain.table.title.action":"Action",
   "notification.input.name": "Please enter the correct name",
   "notification.input.name.ip": "Please enter the correct ip address",
-  "ip.floating.attach.message": "The port is already in use, please select another Port to perform Floating IP binding."
+  "ip.floating.attach.message": "The port is already in use, please select another Port to perform Floating IP binding.",
+  "listner.create.duplicate.pool.name" : "Pool name is already used",
+  "waf.intro.title1":"Web Application Firewall"
 }

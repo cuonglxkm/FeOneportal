@@ -41,6 +41,8 @@
   [nzFrontPagination]="false"
   [nzData]="listLifecycle"
   [nzTotal]="total"
+  [(nzPageIndex)]="pageNumber"
+  [(nzPageSize)]="pageSize"
   (nzPageIndexChange)="searchLifeCycle()"
   (nzPageSizeChange)="searchLifeCycle()"
   nzTableLayout="fixed"
@@ -68,7 +70,7 @@
           {{ item.enabledString }}
         </td>
         <td *ngIf="item.prefix != null">{{ item.prefix }}</td>
-        <td *ngIf="item.prefix == null"><{{ 'app.all.files' | i18n }}></td>
+        <td *ngIf="item.prefix == null">{{ 'app.all.files' | i18n }}</td>
         <td>{{ item.lifecycleTagPredicateString }}</td>
         <td>{{ item.expiration_DayString }}</td>
         <td>{{ item.noncurrentVersionExpiration_DayString }}</td>
@@ -146,24 +148,24 @@
       >
         {{ 'app.lifeCycle.note' | i18n }}
       </div>
-      <div *ngFor="let item of listTag">
+      <div *ngFor="let item of listTag; let i = index">
         <div style="display: flex">
           <div style="flex: 5; padding-right: 16px">
             <input
               style="margin-bottom: 8px"
               [ngStyle]="{
-                border: item.key.trim() == '' ? '1px solid #ff4d4f' : ''
+                border: listKeyError[i] ? '1px solid #ff4d4f' : ''
               }"
               class="input-custom"
               nz-input
               [placeholder]="'app.input.key' | i18n"
               [(ngModel)]="item.key"
-              (ngModelChange)="onChangeKey()"
               [ngModelOptions]="{ standalone: true }"
+              (ngModelChange)="onChangeKey(i)"
             />
             <div
               style="color: #ff4d4f; margin-top: -8px"
-              *ngIf="item.key.trim() == ''"
+              *ngIf="listKeyError[i]"
             >
               {{ 'app.key.required' | i18n }}
             </div>
@@ -176,6 +178,7 @@
               [placeholder]="'app.input.value' | i18n"
               [(ngModel)]="item.value"
               [ngModelOptions]="{ standalone: true }"
+              (ngModelChange)="onChangeValue()"
             />
           </div>
           <div
@@ -186,7 +189,7 @@
               style="cursor: pointer"
               src="assets/imgs/trash1.svg"
               alt=""
-              (click)="delelteTag(item.id)"
+              (click)="delelteTag(item.id, i)"
             />
           </div>
         </div>
@@ -289,6 +292,13 @@
           {{ 'app.lifeCycle.text.input3' | i18n }}
         </div>
       </div>
+      <div
+        *ngIf="duplicateLC === true"
+        class="text-label"
+        style="color: #eb1414; margin-top: 16px; margin-bottom: 10px"
+      >
+        {{ 'app.lifeCycle.validate.duplicate' | i18n }}
+      </div>
     </ng-container>
     <div *nzModalFooter>
       <button nz-button (click)="handleCancelCreate()">
@@ -307,7 +317,7 @@
               .value === false &&
             formCreate.controls['isSetNoncurrentVersionExpiration_Day']
               .value === false) ||
-          !isValidateKey
+          duplicateLC === true
         "
         [nzLoading]="isLoadingCreate"
         (click)="handleOkCreate()"
@@ -404,24 +414,24 @@
       >
         {{ 'app.lifeCycle.note' | i18n }}
       </div>
-      <div *ngFor="let item of listTag">
+      <div *ngFor="let item of listTag; let i = index">
         <div style="display: flex">
           <div style="flex: 5; padding-right: 16px">
             <input
               style="margin-bottom: 8px"
               [ngStyle]="{
-                border: item.key.trim() == '' ? '1px solid #ff4d4f' : ''
+                border: listKeyError[i] ? '1px solid #ff4d4f' : ''
               }"
               class="input-custom"
               nz-input
               [placeholder]="'app.input.key' | i18n"
               [(ngModel)]="item.key"
-              (ngModelChange)="onChangeKey()"
               [ngModelOptions]="{ standalone: true }"
+              (ngModelChange)="onChangeKey(i)"
             />
             <div
               style="color: #ff4d4f; margin-top: -8px"
-              *ngIf="item.key.trim() == ''"
+              *ngIf="listKeyError[i]"
             >
               {{ 'app.key.required' | i18n }}
             </div>
@@ -444,7 +454,7 @@
               style="cursor: pointer"
               src="assets/imgs/trash1.svg"
               alt=""
-              (click)="delelteTag(item.id)"
+              (click)="delelteTag(item.id, i)"
             />
           </div>
         </div>
@@ -560,12 +570,11 @@
         nz-button
         nzType="primary"
         [disabled]="
-          (formUpdate.controls['isSetExpiration_Day'].value === false &&
-            formUpdate.controls['isSetAbortIncompleteMultipartUpload_Day']
-              .value === false &&
-            formUpdate.controls['isSetNoncurrentVersionExpiration_Day']
-              .value === false) ||
-          !isValidateKey
+          formUpdate.controls['isSetExpiration_Day'].value === false &&
+          formUpdate.controls['isSetAbortIncompleteMultipartUpload_Day']
+            .value === false &&
+          formUpdate.controls['isSetNoncurrentVersionExpiration_Day'].value ===
+            false
         "
         [nzLoading]="isLoadingUpdate"
         (click)="handleOkUpdate()"

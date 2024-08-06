@@ -129,7 +129,7 @@ export class RestoreBackupVmVpcComponent implements OnInit {
         validators: [
           Validators.required,
           Validators.pattern(
-            /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9\s])(?!.*[àáạảãâầấậẩẫăằắặẳẵèéẹẻẽêềếệểễìíịỉĩòóọỏõôồốộổỗơờớợởỡùúụủũưừứựửữỳýỵỷỹđ]).{12,20}$/
+            /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9\s])(?!.*[àáạảãâầấậẩẫăằắặẳẵèéẹẻẽêềếệểễìíịỉĩòóọỏõôồốộổỗơờớợởỡùúụủũưừứựửữỳýỵỷỹđÀÁẠẢÃÂẦẤẬẨẪĂẰẮẶẲẴÈÉẸẺẼÊỀẾỆỂỄÌÍỊỈĨÒÓỌỎÕÔỒỐỘỔỖƠỜỚỢỞỠÙÚỤỦŨƯỪỨỰỬỮỲÝỴỶỸĐ]).{12,20}$/
           ),
         ],
       }),
@@ -413,7 +413,7 @@ export class RestoreBackupVmVpcComponent implements OnInit {
         this.isLoadingCurrent = false;
         this.notification.success(
           this.i18n.fanyi('app.status.success'),
-          this.i18n.fanyi('app.notification.restore.current.vm.success')
+          this.i18n.fanyi('app.notification.request.restore.current.vm.success')
         );
         this.router.navigate(['/app-smart-cloud/backup-vm']);
       },
@@ -421,7 +421,7 @@ export class RestoreBackupVmVpcComponent implements OnInit {
         this.isLoadingCurrent = false;
         this.notification.error(
           this.i18n.fanyi('app.status.fail'),
-          this.i18n.fanyi('app.notification.restore.current.vm.fail')
+          this.i18n.fanyi('app.notification.request.restore.current.vm.fail')
         );
       },
     });
@@ -551,8 +551,8 @@ export class RestoreBackupVmVpcComponent implements OnInit {
   }
 
   minCapacity: number;
-  maxCapacity: number;
-  stepCapacity: number;
+  maxCapacity: number = 0;
+  stepCapacity: number = 0;
   getConfigurations() {
     this.configurationService.getConfigurations('BLOCKSTORAGE').subscribe({
       next: (data) => {
@@ -732,7 +732,7 @@ export class RestoreBackupVmVpcComponent implements OnInit {
         validators: [
           Validators.required,
           Validators.pattern(
-            /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9\s])(?!.*[àáạảãâầấậẩẫăằắặẳẵèéẹẻẽêềếệểễìíịỉĩòóọỏõôồốộổỗơờớợởỡùúụủũưừứựửữỳýỵỷỹđ]).{12,20}$/
+            /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9\s])(?!.*[àáạảãâầấậẩẫăằắặẳẵèéẹẻẽêềếệểễìíịỉĩòóọỏõôồốộổỗơờớợởỡùúụủũưừứựửữỳýỵỷỹđÀÁẠẢÃÂẦẤẬẨẪĂẰẮẶẲẴÈÉẸẺẼÊỀẾỆỂỄÌÍỊỈĨÒÓỌỎÕÔỒỐỘỔỖƠỜỚỢỞỠÙÚỤỦŨƯỪỨỰỬỮỲÝỴỶỸĐ]).{12,20}$/
           ),
         ],
       })
@@ -793,7 +793,11 @@ export class RestoreBackupVmVpcComponent implements OnInit {
     this.listOfDataBlockStorage.forEach((e) => {
       let volumeExternal = new VolumeExternalBackup();
       volumeExternal.id = e.id;
-      volumeExternal.name = e.newName;
+      if (e.newName && e.newName.length != 0) {
+        volumeExternal.name = e.newName;
+      } else {
+        volumeExternal.name = (e.name + '_' + this.instanceModel.name).slice(0, 49);
+      }
       volumeExternal.size = e.capacity;
       selectedVolumeExternal.push(volumeExternal);
     });

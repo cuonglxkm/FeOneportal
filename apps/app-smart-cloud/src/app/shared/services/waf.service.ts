@@ -102,7 +102,7 @@ export class WafService extends BaseService {
   }
 
   editSSlCert(id: number, data: SslCertRequest) {
-    return this.http.post<any>(
+    return this.http.put<any>(
       this.baseUrl + this.ENDPOINT.provisions + `/waf/edit-cert/${id}`,
       Object.assign(data),
       {
@@ -223,5 +223,9 @@ export class WafService extends BaseService {
   }
   updatePolicies(domainId: number, data: UpdatePolicies){
     return this.http.put(this.baseUrl + this.ENDPOINT.provisions + `/waf/policies/${domainId}`, data, {headers: this.getHeaders().headers})
+  }
+
+  hasWaf(){
+    return this.http.get(this.baseUrl + this.ENDPOINT.provisions + `/waf/has-waf`, this.getHeaders())
   }
 }

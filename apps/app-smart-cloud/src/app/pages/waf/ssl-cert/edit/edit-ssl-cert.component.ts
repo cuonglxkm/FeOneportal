@@ -84,10 +84,16 @@ export class EditSslCertWAFComponent implements OnInit {
   handleChangeMethod(event: any){
     console.log(event);
     if(event === '2'){
-      this.form.reset()
+      this.form.controls.privateKey.reset()
+      this.form.controls.certificate.reset()
+      this.form.get('certName').setValue(this.SslCertDetail.name)
+      this.form.get('remarks').setValue(this.SslCertDetail.remarks)
       this.fileList = []
     }else{
-      this.form.reset()
+      this.form.controls.privateKey.reset()
+      this.form.controls.certificate.reset()
+      this.form.get('certName').setValue(this.SslCertDetail.name)
+      this.form.get('remarks').setValue(this.SslCertDetail.remarks)
     }
   }
 
@@ -146,6 +152,8 @@ export class EditSslCertWAFComponent implements OnInit {
       }
       return file;
     });
+
+    this.getData()
   }
 
   async getData() {
@@ -171,9 +179,10 @@ export class EditSslCertWAFComponent implements OnInit {
       }
     }
     this.formEditSslCert.name = this.form.get('certName').value;
+    this.formEditSslCert.name = this.form.get('remarks').value;
     if(this.uploadMethod === '2'){
-      this.formEditSslCert.certificate = this.form.get('certificate').value.split('\n').join('');
-      this.formEditSslCert.privateKey = this.form.get('privateKey').value.split('\n').join('');
+      this.formEditSslCert.certificate = this.form.get('certificate').value;
+      this.formEditSslCert.privateKey = this.form.get('privateKey').value;
     }else{
       this.formEditSslCert.certificate = this.form.get('certificate').value;
       this.formEditSslCert.privateKey = this.form.get('privateKey').value;

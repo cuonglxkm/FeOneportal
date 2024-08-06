@@ -168,14 +168,18 @@ export class RestoreBackupVolumeVpcComponent implements OnInit {
   onSelectionChange(): void {
     console.log('Selected option:', this.selectedOption);
     if (this.selectedOption === 'current') {
+      this.validateForm.get('formCurrent').get('volumeName').setValidators([Validators.required]);
+      // this.validateForm.get('formCurrent').get()
       this.validateForm.get('formNew').reset();
       this.validateForm.get('formNew').get('volumeName').clearValidators();
       this.validateForm.get('formNew').get('volumeName').updateValueAndValidity();
     } else if (this.selectedOption === 'new') {
+      this.validateForm.get('formCurrent').get('volumeName').clearValidators()
+      this.validateForm.get('formCurrent').get('volumeName').updateValueAndValidity()
 
       this.validateForm.get('formNew').get('storage').setValue(this.backupVolume?.size);
       this.validateForm.get('formNew').get('volumeName').setValidators([Validators.required, Validators.pattern(/^[a-zA-Z0-9_]*$/), this.duplicateNameValidator.bind(this)]);
-      this.validateForm.get('formNew').get('storage').setValidators([Validators.required, Validators.pattern(/^[0-9]*$/)]);
+      this.validateForm.get('formNew').get('storage').setValidators([Validators.required, Validators.pattern(/^[0-9]*$/), storageValidator(this.backupVolume?.size)]);
       // this.validateForm.get
     }
     this.cdr.detectChanges();
@@ -200,10 +204,13 @@ export class RestoreBackupVolumeVpcComponent implements OnInit {
 
   getInfoProjectVpc(id) {
     this.projectService.getProjectVpc(id).subscribe(data => {
-      this.projectDetail = data;
-      this.storageInVpc = this.projectDetail.cloudProject.quotaBackupVolumeInGb;
-      this.storageUsed = this.projectDetail.cloudProjectResourceUsed.backup;
-      this.storageRemaining = this.projectDetail.cloudProject.quotaBackupVolumeInGb - this.projectDetail.cloudProjectResourceUsed.backup;
+      if(data.cloudProject.type == 'VPC') {
+        this.projectDetail = data
+        this.storageInVpc = this.projectDetail.cloudProject.quotaBackupVolumeInGb;
+        this.storageUsed = this.projectDetail.cloudProjectResourceUsed.backup;
+        this.storageRemaining = this.projectDetail.cloudProject.quotaBackupVolumeInGb - this.projectDetail.cloudProjectResourceUsed.backup;
+        this.typeVpc = 1
+      }
     });
   }
 

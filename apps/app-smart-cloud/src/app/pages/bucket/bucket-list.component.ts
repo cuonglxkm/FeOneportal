@@ -2,6 +2,7 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
+  ElementRef,
   Inject,
   OnInit,
   SimpleChanges,
@@ -35,12 +36,14 @@ import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@ang
 })
 export class BucketListComponent implements OnInit {
   currentRegion: RegionModel;
+  @ViewChild('bucketInputName') bucketInputName!: ElementRef<HTMLInputElement>;
   objectStorage: ObjectStorage = new ObjectStorage();
   listBucket: BucketModel[] = [];
   pageNumber: number = 1;
   pageSize: number = 10;
   total: number;
   value: string = '';
+  isInput: boolean = false;
   loading: boolean = true;
   isLoadingDeleteOS: boolean = false;
   searchDelay = new Subject<boolean>();
@@ -65,11 +68,6 @@ export class BucketListComponent implements OnInit {
   hasOS: boolean = undefined;
   region: number;
 
-  formDeleteBucket: FormGroup<{
-    name: FormControl<string>
-  }> = this.fb.group({
-    name: ['', [Validators.required, this.nameBucketValidator.bind(this)]]
-  });
 
   ngOnInit(): void {
     if (!this.url.includes('advance')) {
@@ -188,6 +186,8 @@ export class BucketListComponent implements OnInit {
 
   onRegionChange(region: RegionModel) {
     this.region = region.regionId;
+    console.log(this.region);
+    
     if(this.region === RegionID.ADVANCE){
       this.router.navigate(['/app-smart-cloud/object-storage-advance/bucket']);
     }else{
@@ -351,17 +351,21 @@ export class BucketListComponent implements OnInit {
 
   handleCancelDeleteBucket() {
     this.isVisibleDeleteBucket = false;
+    this.codeVerify = '';
+    this.isInput = false;
   }
 
   handleOkDeleteBucket() {
-    if (this.codeVerify == this.bucketDeleteName) {
       this.isLoadingDeleteBucket = true;
-      this.bucketService
+      if(this.codeVerify == this.bucketDeleteName){
+        this.isInput = false;
+        this.bucketService
         .deleteBucket(this.bucketDeleteName, this.region)
         .subscribe({
           next: (data) => {
             this.isLoadingDeleteBucket = false
             this.isVisibleDeleteBucket = false
+            this.codeVerify = '';
             this.notification.success(
               this.i18n.fanyi('app.status.success'),
               this.i18n.fanyi('app.bucket.delete.bucket.success')
@@ -378,14 +382,18 @@ export class BucketListComponent implements OnInit {
             this.cdr.detectChanges();
           },
         });
-    } else {
-      this.isLoadingDeleteBucket = false
-      this.notification.error(
-        this.i18n.fanyi('app.status.fail'),
-        this.i18n.fanyi('app.bucket.delete.bucket.fail1')
-      );
+      }else{
+        this.isLoadingDeleteBucket = false
+        this.isInput = true;
+      }
     }
-  }
+
+    focusOkButton(event: KeyboardEvent): void {
+      if (event.key === 'Enter') {
+        event.preventDefault();
+        this.handleOkDeleteBucket();
+      }
+    }
 
   isVisibleDeleteOS: boolean = false;
   modalDeleteOS() {

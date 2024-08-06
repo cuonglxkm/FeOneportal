@@ -48,6 +48,7 @@ export class DisablePolicyComponent {
       },
       error:()=>{
         this.notification.error(this.i18n.fanyi("app.status.error"),"Có lỗi xảy ra")
+        this.isLoading = false
       }
     })
   }

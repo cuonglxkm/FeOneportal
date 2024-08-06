@@ -69,11 +69,23 @@
           </nz-col>
         </nz-row>
         <nz-row>
-            <nz-row style="padding: 12px 0 12px 0">
-              <span class="text-label customSpan" style="width: 35%">Url</span>
-              <span class="text-value-detail customSpan">{{l7Policy?.redirectUrl}}</span>
+          <nz-col nzSpan="12">
+            <nz-row *ngIf="l7Policy.action == 'REDIRECT_TO_POOL'" style="padding: 12px 0 12px 0">
+              <span class="text-label customSpan" style="width: 35%">{{ 'app.pool.name' | i18n }}</span>
+              <span class="text-value-detail customSpan">{{l7Policy?.poolName}}</span>
             </nz-row>
+            <nz-row *ngIf="l7Policy.action == 'REDIRECT_TO_URL'" style="padding: 12px 0 12px 0">
+              <span class="text-label customSpan" style="width: 35%">Url</span>
+              <span class="text-value-detail customSpan" [nz-tooltip]="l7Policy?.redirectUrl"
+                    style="overflow: hidden; white-space: nowrap;text-overflow: ellipsis; width: 40%;">
+                {{l7Policy?.redirectUrl}}</span>
+            </nz-row>
+          </nz-col>
+
         </nz-row>
+<!--        {value: 'REJECT', label: 'REJECT'},-->
+<!--        {value: 'REDIRECT_TO_POOL', label: 'REDIRECT_TO_POOL'},-->
+<!--        {value: 'REDIRECT_TO_URL', label: 'REDIRECT_TO_URL'}-->
       </div>
       <nz-form-item style="margin-top: 20px;">
         <nz-form-label>
@@ -102,9 +114,9 @@
     </nz-row>
     <nz-table #fixedTable
               style="margin-top: 20px;"
-              nzShowPagination
-              [nzData]="l7RuleList || []"
+              nzShowPagination nzShowSizeChanger
               [nzFrontPagination]="false"
+              [nzData]="currentPageData || []"
               [nzLoading]="isLoadingL7Rule"
               [nzTotal]="l7RuleList.length"
               [nzPageSize]="pageSize"
@@ -129,7 +141,7 @@
         <td nzAlign="left">{{ data.type }}</td>
         <td nzAlign="left">{{ data.compareType }}</td>
         <td nzAlign="left">{{ data.key }}</td>
-        <td nzAlign="right">{{ data.value }}</td>
+        <td nzAlign="left">{{ data.value }}</td>
         <td nzAlign="left" [ngSwitch]="data.invert">
           <span *ngSwitchCase="false">FALSE</span>
           <span *ngSwitchCase="true">TRUE</span>

@@ -39,13 +39,14 @@
                     <span class="label-fontsize font-bold ">{{WAFDetail?.name}}</span>
                   </div>
                 </div>
-                <div nz-row [nzGutter]="24" class="row-gray-bg content-items-center">
+                <div nz-row [nzGutter]="24" class="row-gray-bg content-items-center d-flex">
                   <div nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="12">
                     <span class="label-fontsize">Domain:</span>
                   </div>
-                  <div nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="12">
-                    <!-- <span class="label-fontsize font-bold">{{WAFDetail?.wafDomains.length > 0 ? WAFDetail?.wafDomains[0].domain : '-'}}</span> -->
-                    <span class="label-fontsize font-bold">-</span>
+                  <div class="text-hidden" title={{domains}} nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="12">
+                    <span class="label-fontsize font-bold" *ngFor="let domain of domains">
+                      {{ domain }}<span *ngIf="!isLastDomain(domain)">, </span>
+                    </span>
                   </div>
                 </div>
                 <div nz-row [nzGutter]="24" class="row-white-bg content-items-center">
@@ -77,13 +78,14 @@
                     <span class="label-fontsize font-bold">{{ currentOffer?.offerName }}</span>
                   </div>
                 </div>
-                <div nz-row [nzGutter]="24" class="row-gray-bg content-items-center">
+                <div class="text-hidden" nz-row [nzGutter]="24" class="row-gray-bg content-items-center">
                   <div nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="12">
                     <span class="label-fontsize">IP Public:</span>
                   </div>
                   <div nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="12">
-                    <!-- <span class="label-fontsize font-bold">{{WAFDetail?.wafDomains.length > 0 ? WAFDetail?.wafDomains[0].ipPublic : '-'}}</span> -->
-                    <span class="label-fontsize font-bold">-</span>
+                    <span class="label-fontsize font-bold" *ngFor="let ipPublic of ipPublics">
+                      {{ ipPublic }}<span *ngIf="!isLastIpPublic(ipPublic)">; </span>
+                    </span>
                   </div>
                 </div>
                 <div nz-row [nzGutter]="24" class="row-white-bg content-items-center">

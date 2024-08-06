@@ -14,7 +14,7 @@ import { RegionModel, ProjectModel } from '../../../../../../../libs/common-util
 import { debounceTime, finalize, Subject } from 'rxjs';
 import { OrderService } from '../../../shared/services/order.service';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
-import { I18NService } from '../../../../../../app-kafka/src/app/core/i18n/i18n.service';
+import { I18NService } from '@core';
 import { ConfigurationsService } from '../../../shared/services/configurations.service';
 import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
 

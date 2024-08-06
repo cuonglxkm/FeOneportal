@@ -38,6 +38,8 @@ export class WAFExtendComponent implements OnInit {
   orderObject: OrderItemObject = new OrderItemObject();
   isVisiblePopupError: boolean = false;
   errorList: string[] = [];
+  domains: string[] = []
+  ipPublics: string[] = []
   closePopupError() {
     this.isVisiblePopupError = false;
   }
@@ -91,11 +93,23 @@ export class WAFExtendComponent implements OnInit {
         (data) => {
           this.WAFDetail = data;
           this.getOfferById(data.offerId)
+          if(data?.wafDomains !== null){
+            this.domains = data.wafDomains.map((item) => item.domain);
+            this.ipPublics = data.wafDomains.map((item) => item.ipPublic);
+          }
         },
         (error) => {
           this.WAFDetail = null;
         }
       );
+  }
+
+  isLastDomain(domain: string): boolean {
+    return this.domains.indexOf(domain) === this.domains.length - 1;
+  }
+
+  isLastIpPublic(ipPublic: string): boolean {
+    return this.ipPublics.indexOf(ipPublic) === this.ipPublics.length - 1;
   }
 
   getOfferById(id) {
