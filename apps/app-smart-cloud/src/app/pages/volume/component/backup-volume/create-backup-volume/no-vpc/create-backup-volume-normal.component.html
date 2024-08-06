@@ -74,6 +74,7 @@
                                nzSize="large"
                                [nzPlaceHolder]="'schedule.backup.volume.select'|i18n"
                                [nzLoading]="isLoadingVolume"
+                               [nzDisabled]="isLoadingVolume"
                                formControlName="volumeId">
                       <nz-option *ngFor="let i of listVolumes" [nzValue]="i.id" [nzLabel]="i.name"></nz-option>
                     </nz-select>
