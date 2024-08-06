@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { I18NService } from '@core';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
-import { HttpsSettingRequest, WafDomain } from '../../waf.model';
+import { HttpsSettingRequest, SslCertDTO, WafDomain } from '../../waf.model';
 import { WafService } from 'src/app/shared/services/waf.service';
 import { finalize } from 'rxjs';
 
@@ -15,9 +15,11 @@ import { finalize } from 'rxjs';
   styleUrls: ['./http-setting.component.less'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class HttpSettingComponent implements OnInit {
+export class HttpSettingComponent implements OnInit{
   @Input() domainData: WafDomain ;
+  @Input() listSslCert: SslCertDTO[]
   @Output() onOk = new EventEmitter();
+  @Output() onOkCreateSsl = new EventEmitter()
 
   isLoading: boolean = false;
   isVisibleCreateSsl: boolean = false
@@ -26,8 +28,6 @@ export class HttpSettingComponent implements OnInit {
   selectedProtocolValue: string = 'follow'
 
   httpsSettingRequest = new HttpsSettingRequest()
-
-  listSslCert: any
 
   constructor(
     private fb: NonNullableFormBuilder,
@@ -39,11 +39,12 @@ export class HttpSettingComponent implements OnInit {
   ){}
 
   ngOnInit(): void {
-    this.getListSslCert()
+    this.validateForm.controls.cert.setValue(this.domainData.sslCertId)
+    this.validateForm.controls.port.setValue(this.domainData.port)
   }
 
   validateForm = this.fb.group({
-    cert: ['', [Validators.required]],
+    cert: [null as number , [Validators.required]],
     port: [0],
     protocol: ['follow' ,[Validators.required]]
   })
@@ -63,13 +64,13 @@ export class HttpSettingComponent implements OnInit {
     }
   ]
 
-  getListSslCert(){
-    this.wafService.getListSslCert('', 999, 1).subscribe((res) => {
-      this.listSslCert = res?.records
-    }, (error) => {
-      console.log(error);     
-    })
-  }
+  // getListSslCert(){
+  //   this.wafService.getListSslCert('', 999, 1).subscribe((res) => {
+  //     this.listSslCert = res?.records
+  //   }, (error) => {
+  //     console.log(error);     
+  //   })
+  // }
 
   onKeyDown(event: KeyboardEvent) {
     // Lấy giá trị của phím được nhấn
@@ -134,5 +135,10 @@ export class HttpSettingComponent implements OnInit {
 
   cancelModalSslCert(){
     this.isVisibleCreateSsl = false
+  }
+
+  handleOnAddCert(){
+    this.onOkCreateSsl.emit()
+    this.cancelModalSslCert()
   }
 }

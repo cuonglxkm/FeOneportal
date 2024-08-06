@@ -139,4 +139,9 @@ export class AddDomainComponent implements OnInit {
   navigateToListWaf() {
     this.router.navigate(['/app-smart-cloud/waf']);
   }
+
+  onOkCreateSsl(){
+    this.isVisibleCreateSSLCert = false;
+    this.getListSslCert()
+  }
 }
