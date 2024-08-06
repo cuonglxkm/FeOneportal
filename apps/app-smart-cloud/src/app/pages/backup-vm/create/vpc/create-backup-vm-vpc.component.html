@@ -74,6 +74,7 @@
                              [nzPlaceHolder]="'volume.modal.attach.title'|i18n"
                              nzSize="large"
                              [nzLoading]="isLoadingInstance"
+                             [nzDisabled]="isLoadingInstance"
                              [(ngModel)]="instanceSelected"
                              formControlName="instanceId">
                     <nz-option *ngFor="let i of listInstances" [nzValue]="i.id" [nzLabel]="i.name"></nz-option>
