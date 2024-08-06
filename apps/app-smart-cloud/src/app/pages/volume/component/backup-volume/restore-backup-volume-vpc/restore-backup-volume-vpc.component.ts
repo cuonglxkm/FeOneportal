@@ -175,7 +175,7 @@ export class RestoreBackupVolumeVpcComponent implements OnInit {
 
       this.validateForm.get('formNew').get('storage').setValue(this.backupVolume?.size);
       this.validateForm.get('formNew').get('volumeName').setValidators([Validators.required, Validators.pattern(/^[a-zA-Z0-9_]*$/), this.duplicateNameValidator.bind(this)]);
-      this.validateForm.get('formNew').get('storage').setValidators([Validators.required, Validators.pattern(/^[0-9]*$/)]);
+      this.validateForm.get('formNew').get('storage').setValidators([Validators.required, Validators.pattern(/^[0-9]*$/), storageValidator(this.backupVolume?.size)]);
       // this.validateForm.get
     }
     this.cdr.detectChanges();
