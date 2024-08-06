@@ -43,7 +43,7 @@
                     <span class="label-fontsize font-bold ">{{WAFDetail?.name}}</span>
                   </div>
                 </div>
-                <div class="text-hidden" nz-row [nzGutter]="24" class="row-gray-bg content-items-center">
+                <div nz-row [nzGutter]="24" class="row-gray-bg content-items-center text-hidden">
                   <div nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="12">
                     <span class="label-fontsize">Domain:</span>
                   </div>
@@ -75,13 +75,13 @@
                     <span class="label-fontsize font-bold">{{offerItem?.offerName}}</span>
                   </div>
                 </div>
-                <div class="text-hidden" nz-row [nzGutter]="24" class="row-gray-bg content-items-center">
+                <div nz-row [nzGutter]="24" class="row-gray-bg content-items-center te">
                   <div nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="12">
                     <span class="label-fontsize">IP Public:</span>
                   </div>
                   <div nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="12">
                     <span class="label-fontsize font-bold" *ngFor="let ipPublic of ipPublics">
-                      {{ ipPublic }}<span *ngIf="!isLastIpPublic(ipPublic)">, </span>
+                      {{ ipPublic }}<span *ngIf="!isLastIpPublic(ipPublic)">; </span>
                     </span>
                   </div>
                 </div>

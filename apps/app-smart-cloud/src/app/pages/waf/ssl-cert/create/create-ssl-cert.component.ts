@@ -155,8 +155,8 @@ export class CreateSslCertWAFComponent implements OnInit {
     this.formCreateeSslCert.name = this.form.get('certName').value;
     this.formCreateeSslCert.remarks = this.form.get('remarks').value;
     if(this.uploadMethod === '2'){
-      this.formCreateeSslCert.certificate = this.form.get('certificate').value.split('\n').join('');
-      this.formCreateeSslCert.privateKey = this.form.get('privateKey').value.split('\n').join('');
+      this.formCreateeSslCert.certificate = this.form.get('certificate').value;
+      this.formCreateeSslCert.privateKey = this.form.get('privateKey').value;
     }else{
       this.formCreateeSslCert.certificate = this.form.get('certificate').value;
       this.formCreateeSslCert.privateKey = this.form.get('privateKey').value;

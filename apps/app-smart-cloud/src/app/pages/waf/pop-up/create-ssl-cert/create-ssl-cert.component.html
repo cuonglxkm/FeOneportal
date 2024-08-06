@@ -209,8 +209,10 @@
         (click)="handleCreate()"
         nzType="primary"
         [disabled]="form.invalid"
+        [nzLoading]="isLoading"
       >
         <img
+          *ngIf="isLoading === false"
           style="padding-right: 10px; margin-top: -4px"
           src="assets/imgs/confirm.svg"
           alt=""

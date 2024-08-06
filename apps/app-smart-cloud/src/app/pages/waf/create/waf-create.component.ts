@@ -158,6 +158,7 @@ export class WAFCreateComponent implements OnInit {
     .pipe(finalize(() => this.loadingSrv.close()))
     .subscribe((res) => {
       this.listSslCert = res?.records
+      this.onSslCertChange
     }, (error) => {
       console.log(error);     
     })
