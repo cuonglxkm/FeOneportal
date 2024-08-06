@@ -44,7 +44,7 @@ export class ListSslCertComponent {
   pageIndex: number = 1;
   response: BaseResponse<SslCertDTO[]>;
 
-  searchParam: string
+  searchParam: string = ''
   @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
 
   constructor(
