@@ -140,7 +140,7 @@
       <br />
       <span
         >{{
-          getFormattedStartDate(summary[0]?.startDate)
+          getFormattedStartDate(summary?.startDate)
             | date : 'dd/MM/yyyy hh:mm'
         }}
         {{ 'app.to' | i18n }} {{ newDate | date : 'dd/MM/yyyy hh:mm' }}</span
