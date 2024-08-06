@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { WafService } from 'src/app/shared/services/waf.service';
 
 export class WafDTO{
   name:string;
@@ -14,11 +15,18 @@ export class WafDTO{
 })
 
 export class WafComponent implements OnInit {
-  isBegin = false;
-  constructor() {
+  isBegin = true;
+  constructor(
+    private wafService: WafService) {
     
   }
   ngOnInit() {
-    
+    this.wafService.hasWaf().subscribe({next:(data)=>{
+      if(data){
+        this.isBegin = false;
+      }
+    },error:(err)=>{
+      
+    }})
   }
 }
