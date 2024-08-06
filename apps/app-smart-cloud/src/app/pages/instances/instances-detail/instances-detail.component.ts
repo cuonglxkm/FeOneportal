@@ -218,7 +218,7 @@ export class InstancesDetailComponent implements OnInit {
     },
   ];
 
-  summary: Summary;
+  summary: Summary = new Summary();
   getMonitorData() {
     this.chartData = [];
     this.cahrt = [];
@@ -230,8 +230,9 @@ export class InstancesDetailComponent implements OnInit {
         this.valueGSCPU
       )
       .subscribe((data: any) => {
-        this.summary = data;
+        this.summary = data[0];
         this.createChartStorageUse();
+        this.cdr.detectChanges();
       });
   }
 
@@ -367,7 +368,7 @@ export class InstancesDetailComponent implements OnInit {
   chartStorageUse: Chart;
   createChartStorageUse() {
     const data =
-      this.summary[0]?.datas?.map((item) => ({
+      this.summary?.datas?.map((item) => ({
         timeSpan: item.timeSpan,
         value: parseInt(item.value, 10), // Chuyển đổi value từ chuỗi sang số
       })) || [];
@@ -376,7 +377,7 @@ export class InstancesDetailComponent implements OnInit {
       console.warn('Data is null or empty, using default time range.');
       // Sử dụng ChangeDetectorRef để cập nhật lại biểu đồ
       this.chartStorageUse = this.createDefaultChart(
-        this.summary[0]?.startDate,
+        this.summary?.startDate,
         this.i18n.fanyi('app.chart') + ' ' + this.typeGSTitle
       );
       this.cdr.detectChanges(); // Buộc Angular cập nhật lại
@@ -414,5 +415,6 @@ export class InstancesDetailComponent implements OnInit {
         } as any,
       ], // Ép kiểu để khắc phục lỗi TypeScript
     });
+    this.cdr.detectChanges();
   }
 }
