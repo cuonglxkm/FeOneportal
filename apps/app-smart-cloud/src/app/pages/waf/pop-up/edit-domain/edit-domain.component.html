@@ -12,7 +12,7 @@
     <ng-template #modalContent>
         <form nz-form nzLayout="vertical" [formGroup]="validateForm">
             <nz-form-item>
-                <nz-form-control>
+                <nz-form-control [nzErrorTip]="ipErrorTpl">
                     <nz-form-label nzFor="ipPublic">
                         IP Public (<span style="color: rgba(252, 16, 16, 1)">*</span>)
                     </nz-form-label>
@@ -25,10 +25,13 @@
                 </nz-form-control>
             </nz-form-item>
             <nz-form-item>
-                <nz-form-control>
+                <nz-form-control [nzErrorTip]="hostErrorTpl">
                     <nz-form-label nzFor="host">Host </nz-form-label>
                     <input nz-input type="text" appTrim placeholder="Nhập host" formControlName="host"
                         class="input-custom" [maxlength]="50" minlength="1" />
+                        <ng-template #hostErrorTpl let-control>
+                            <ng-container *ngIf="control.hasError('invalidHost')">Host không đúng định dạng</ng-container>
+                          </ng-template>
                 </nz-form-control>
             </nz-form-item>
             <nz-form-item>
@@ -51,6 +54,7 @@
                   nzType="primary"
                   (click)="handleOnEdit()"
                   [nzLoading]="isLoading"
+                  [disabled]="validateForm.invalid || !validateForm.dirty"
                 >
                   <img
                     style="padding-right: 10px; margin-top: -4px"
