@@ -26,6 +26,7 @@ import { CommonModule } from '@angular/common';
 import { InstancesExtendComponent } from './instances-extend/instances-extend.component';
 import { InstancesCreateVpcComponent } from './instances-create-vpc/instances-create-vpc.component';
 import { InstancesEditVpcComponent } from './instances-edit-vpc/instances-edit-vpc.component';
+import { ChartModule } from 'angular-highcharts';
 
 @NgModule({
   declarations: [
@@ -57,6 +58,7 @@ import { InstancesEditVpcComponent } from './instances-edit-vpc/instances-edit-v
     NguCarouselPrevDirective,
     NguItemComponent,
     CommonModule,
+    ChartModule
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
