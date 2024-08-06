@@ -130,6 +130,7 @@ export class ListenerCreateComponent implements OnInit{
   @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
   @Input() lbCloundId = '';
   disableStep2: boolean = true;
+  disableStep1: boolean = true;
   constructor(private router: Router,
               private fb: NonNullableFormBuilder,
               private service: ListenerService,
@@ -149,6 +150,10 @@ export class ListenerCreateComponent implements OnInit{
     this.loadSSlCert();
     this.changeKeySearch.pipe(debounceTime(700)).subscribe((key: string) => {
       this.callApiCheck();
+    });
+
+    this.changeKeySearchListner.pipe(debounceTime(700)).subscribe((key: string) => {
+      this.callApiCheckListner(key);
     });
   }
 
@@ -413,16 +418,37 @@ export class ListenerCreateComponent implements OnInit{
 
 
   changeKeySearch = new Subject<string>();
+  changeKeySearchListner = new Subject<string>();
 
   callApiCheck() {
-    console.log('okok')
-    this.service.validatePoolName(this.lbCloundId,this.regionId,this.projectId,this.validateForm.controls['poolName'].value).subscribe(
+    const encodedValue = encodeURIComponent(this.lbCloundId);
+    this.service.validatePoolName(encodedValue,this.regionId,this.projectId,this.validateForm.controls['poolName'].value).subscribe(
       data => {
         this.disableStep2 = false;
       },
       error => {
         this.disableStep2 = true;
         this.notification.error(this.i18n.fanyi('app.status.fail'),this.i18n.fanyi('listner.create.duplicate.pool.name'));
+      }
+    )
+  }
+
+  callApiCheckListner(type: any) {
+    this.service.validateListner(this.lbId, type, type == 'name'? this.validateForm.controls['listenerName'].value : this.validateForm.controls['port'].value).subscribe(
+      data => {
+        this.service.validateListner(this.lbId, type == 'name'? 'port' : 'name', type == 'port'? this.validateForm.controls['listenerName'].value : this.validateForm.controls['port'].value).subscribe(
+          data => {
+            this.disableStep1 = false;
+          },
+          error => {
+            this.disableStep1 = true;
+            this.notification.error(this.i18n.fanyi('app.status.fail'),error.error.message);
+          }
+        )
+      },
+      error => {
+        this.disableStep1 = true;
+        this.notification.error(this.i18n.fanyi('app.status.fail'),error.error.message);
       }
     )
   }
