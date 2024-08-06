@@ -161,7 +161,7 @@
               [placeholder]="'app.input.key' | i18n"
               [(ngModel)]="item.key"
               [ngModelOptions]="{ standalone: true }"
-              (ngModelChange)="onChangeKey()"
+              (ngModelChange)="onChangeKey(i)"
             />
             <div
               style="color: #ff4d4f; margin-top: -8px"
@@ -189,7 +189,7 @@
               style="cursor: pointer"
               src="assets/imgs/trash1.svg"
               alt=""
-              (click)="delelteTag(item.id)"
+              (click)="delelteTag(item.id, i)"
             />
           </div>
         </div>
@@ -296,7 +296,9 @@
         *ngIf="duplicateLC === true"
         class="text-label"
         style="color: #eb1414; margin-top: 16px; margin-bottom: 10px"
-      >{{ 'app.lifeCycle.validate.duplicate' | i18n }}</div>
+      >
+        {{ 'app.lifeCycle.validate.duplicate' | i18n }}
+      </div>
     </ng-container>
     <div *nzModalFooter>
       <button nz-button (click)="handleCancelCreate()">
@@ -311,10 +313,11 @@
         nzType="primary"
         [disabled]="
           (formCreate.controls['isSetExpiration_Day'].value === false &&
-          formCreate.controls['isSetAbortIncompleteMultipartUpload_Day']
-            .value === false &&
-          formCreate.controls['isSetNoncurrentVersionExpiration_Day'].value ===
-            false) || duplicateLC === true
+            formCreate.controls['isSetAbortIncompleteMultipartUpload_Day']
+              .value === false &&
+            formCreate.controls['isSetNoncurrentVersionExpiration_Day']
+              .value === false) ||
+          duplicateLC === true
         "
         [nzLoading]="isLoadingCreate"
         (click)="handleOkCreate()"
@@ -424,6 +427,7 @@
               [placeholder]="'app.input.key' | i18n"
               [(ngModel)]="item.key"
               [ngModelOptions]="{ standalone: true }"
+              (ngModelChange)="onChangeKey(i)"
             />
             <div
               style="color: #ff4d4f; margin-top: -8px"
@@ -450,7 +454,7 @@
               style="cursor: pointer"
               src="assets/imgs/trash1.svg"
               alt=""
-              (click)="delelteTag(item.id)"
+              (click)="delelteTag(item.id, i)"
             />
           </div>
         </div>

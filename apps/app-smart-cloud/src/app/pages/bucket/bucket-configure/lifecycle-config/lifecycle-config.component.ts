@@ -157,6 +157,7 @@ export class LifecycleConfigComponent implements OnInit {
   lifecycleCreate: BucketLifecycleCreate = new BucketLifecycleCreate();
   modalCreate() {
     this.isVisibleCreate = true;
+    this.listKeyError = [];
   }
 
   validateDuplicateLC(prefix, isSetExpirationDay, isSetAbortIncompleteMultipartUploadDay, isSetNoncurrentVersionExpirationDay) {
@@ -204,7 +205,8 @@ export class LifecycleConfigComponent implements OnInit {
     this.listKeyError = [];
     if (hasKeyNull) {
       this.listTag.forEach((e) => {
-        if (e.key == '') {
+        if (e.key.trim() == '') {
+
           this.listKeyError.push(true);
         } else {
           this.listKeyError.push(false);
@@ -257,7 +259,8 @@ export class LifecycleConfigComponent implements OnInit {
     }
   }
 
-  onChangeKey() {
+  onChangeKey(index: number) {
+    this.listKeyError[index] = false;
     this.checkTags(this.listTag);
   }
 
@@ -278,15 +281,16 @@ export class LifecycleConfigComponent implements OnInit {
     }
 
     for (let tag of tags) {
-      if (tag.key === '') {
+      if (tag.key.trim() === '') {
         return true;
       }
     }
     return false;
   }
 
-  delelteTag(id: number) {
+  delelteTag(id: number, index: number) {
     this.listTag = this.listTag.filter((item) => item.id != id);
+    this.listKeyError.splice(index, 1);
     this.checkTags(this.listTag);
   }
 
@@ -335,6 +339,7 @@ export class LifecycleConfigComponent implements OnInit {
   lifecycleUpdate: BucketLifecycleUpdate = new BucketLifecycleUpdate();
   modalUpdate(data: BucketLifecycle) {
     this.isVisibleUpdate = true;
+    this.listKeyError = [];
     this.listTag = [];
     this.lifecycleUpdate.bucketName = data.bucketName;
     this.lifecycleUpdate.enabled = data.enabled;
@@ -381,7 +386,7 @@ export class LifecycleConfigComponent implements OnInit {
     this.listKeyError = [];
     if (hasKeyNull) {
       this.listTag.forEach((e) => {
-        if (e.key == '') {
+        if (e.key.trim() == '') {
           this.listKeyError.push(true);
         } else {
           this.listKeyError.push(false);

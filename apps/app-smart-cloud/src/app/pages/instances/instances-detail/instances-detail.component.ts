@@ -64,7 +64,7 @@ export class InstancesDetailComponent implements OnInit {
 
     return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}.${milliseconds}Z`;
   }
-  
+
   checkPermission: boolean = false;
   ngOnInit(): void {
     this.getData();
@@ -232,16 +232,6 @@ export class InstancesDetailComponent implements OnInit {
       .subscribe((data: any) => {
         this.summary = data;
         this.createChartStorageUse();
-        data[0].datas.forEach((e: any) => {
-          const item = {
-            time: this.formatTimestamp(e.timeSpan * 1000),
-            y1: Number.parseFloat(e.value),
-          };
-          this.cahrt.push(item);
-        });
-        this.chartData = this.cahrt;
-        this.cdr.detectChanges();
-        console.log('dataMonitor', this.chartData);
       });
   }
 
@@ -253,7 +243,9 @@ export class InstancesDetailComponent implements OnInit {
   typeGSTitle: string = 'RAM';
   onChangeCPU(event?: any) {
     this.valueGSCPU = event;
-    this.typeGSTitle = this.GSCPU.filter(e => e.key == this.valueGSCPU)[0].name
+    this.typeGSTitle = this.GSCPU.filter(
+      (e) => e.key == this.valueGSCPU
+    )[0].name;
     this.newDate = new Date();
     this.getMonitorData();
   }
@@ -265,7 +257,9 @@ export class InstancesDetailComponent implements OnInit {
     }
   }
 
-  private removeDuplicates(data: { timeSpan: number, value: number }[]): { [key: string]: number } {
+  private removeDuplicates(data: { timeSpan: number; value: number }[]): {
+    [key: string]: number;
+  } {
     return data.reduce((acc, item) => {
       // Lấy chỉ phần thời gian hh:mm
       const date = new Date(item.timeSpan * 1000);
@@ -285,28 +279,30 @@ export class InstancesDetailComponent implements OnInit {
 
     return new Chart({
       chart: {
-        type: 'line'
+        type: 'line',
       },
       title: {
-        text: ''
+        text: '',
       },
       xAxis: {
         categories: defaultTimeRange,
         title: {
-          text: ''
-        }
+          text: '',
+        },
       },
       yAxis: {
         title: {
-          text: ''
+          text: '',
         },
         min: 0,
         // max: 10
       },
-      series: [{
-        name: name,
-        data: new Array(defaultTimeRange.length).fill(0)
-      } as any]
+      series: [
+        {
+          name: name,
+          data: new Array(defaultTimeRange.length).fill(0),
+        } as any,
+      ],
     });
   }
 
@@ -318,7 +314,9 @@ export class InstancesDetailComponent implements OnInit {
     const start = new Date(startTimestamp * 1000); // Chuyển đổi từ UNIX timestamp sang Date
 
     while (start <= end) {
-      timeLabels.push(`${start.getHours()}:${start.getMinutes().toString().padStart(2, '0')}`);
+      timeLabels.push(
+        `${start.getHours()}:${start.getMinutes().toString().padStart(2, '0')}`
+      );
       start.setMinutes(start.getMinutes() + 60); // Thêm 1 giờ
     }
     return timeLabels;
@@ -368,15 +366,19 @@ export class InstancesDetailComponent implements OnInit {
 
   chartStorageUse: Chart;
   createChartStorageUse() {
-    const data = this.summary[0]?.datas?.map((item) => ({
-      timeSpan: item.timeSpan,
-      value: parseInt(item.value, 10) // Chuyển đổi value từ chuỗi sang số
-    })) || [];
+    const data =
+      this.summary[0]?.datas?.map((item) => ({
+        timeSpan: item.timeSpan,
+        value: parseInt(item.value, 10), // Chuyển đổi value từ chuỗi sang số
+      })) || [];
     console.log('rawData:', data);
     if (!data || data.length === 0) {
       console.warn('Data is null or empty, using default time range.');
       // Sử dụng ChangeDetectorRef để cập nhật lại biểu đồ
-      this.chartStorageUse = this.createDefaultChart(this.summary[0]?.startDate, 'Biểu đồ ' + this.typeGSTitle);
+      this.chartStorageUse = this.createDefaultChart(
+        this.summary[0]?.startDate,
+        this.i18n.fanyi('app.chart') + ' ' + this.typeGSTitle
+      );
       this.cdr.detectChanges(); // Buộc Angular cập nhật lại
       return;
     }
@@ -384,31 +386,33 @@ export class InstancesDetailComponent implements OnInit {
     // Chuyển đổi timestamp thành định dạng thời gian đọc được
     const labels = Object.keys(uniqueData);
     // Trích xuất giá trị dữ liệu
-    const dataValues = Object.values(uniqueData).map(value => value / 1024); // Chuyển từ KB sang MB
-    console.log('dataValues', dataValues)
+    const dataValues = Object.values(uniqueData).map((value) => value / 1024); // Chuyển từ KB sang MB
+    console.log('dataValues', dataValues);
     // Cấu hình Highcharts
     this.chartStorageUse = new Chart({
       chart: {
-        type: 'line'
+        type: 'line',
       },
       title: {
-        text: ''
+        text: '',
       },
       xAxis: {
         categories: labels,
         title: {
-          text: ''
-        }
+          text: '',
+        },
       },
       yAxis: {
         title: {
-          text: ''
-        }
+          text: '',
+        },
       },
-      series: [{
-        name: 'Dung lượng đã sử dụng (MB)',
-        data: dataValues  // Đảm bảo rằng data là một mảng số
-      } as any] // Ép kiểu để khắc phục lỗi TypeScript
+      series: [
+        {
+          name: this.typeGSTitle + ' (' + this.summary.unit + ')',
+          data: dataValues, // Đảm bảo rằng data là một mảng số
+        } as any,
+      ], // Ép kiểu để khắc phục lỗi TypeScript
     });
   }
 }

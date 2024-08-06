@@ -491,6 +491,7 @@
   "app.change.info": "Change information",
   "app.use.ipv6": "Use IPv6",
   "app.all.files": "All files",
+  "app.chart": "Chart",
 
   "app.instances.list": "Instance list",
   "app.instances.create": "Create Instance",
