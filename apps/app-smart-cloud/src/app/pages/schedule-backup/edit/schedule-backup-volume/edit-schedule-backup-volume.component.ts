@@ -345,7 +345,10 @@ export class EditScheduleBackupVolumeComponent implements OnInit {
   sizeInGb: SizeInCloudProject;
   getStorageByVpc(id) {
     this.projectService.getByProjectId(id).subscribe(data => {
-      this.sizeInGb = data
+      if(data.cloudProject.type == 'VPC') {
+        this.sizeInGb = data
+        this.typeVpc = 1
+      }
     })
   }
 
