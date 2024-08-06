@@ -3590,5 +3590,8 @@
   "notification.input.name": "Vui lòng nhập đúng tên",
   "notification.input.name.ip": "Vui lòng nhập đúng địa chỉ ip",
   "ip.floating.attach.message": "Port đã được sử dụng, vui lòng chọn Port khác để thực hiện gắn IP Floating.",
-  "listner.create.duplicate.pool.name" : "Tên pool đã được sử dụng"
+  "listner.create.duplicate.pool.name" : "Tên pool đã được sử dụng",
+  "waf.intro.title1":"Web Application Firewall",
+  "waf.intro.title2":"Bảo vệ ứng dụng web khỏi các tình huống khai thác web phổ biến",
+  "waf.intro.subtitle":"Phương thức hiệu quả chống lại các mối đe dọa và lỗ hổng đối với Web Application. Nhận diện và chống lại các botnet xấu. Che giấy địa chỉ IP gốc, ngặn chặn các truy cập không hợp lệ"
 }

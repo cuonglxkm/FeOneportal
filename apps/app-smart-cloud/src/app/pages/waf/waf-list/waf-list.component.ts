@@ -150,6 +150,7 @@ export class WafListComponent implements OnInit, OnDestroy {
 
 
   ngOnInit() {
+    debugger;
     this.selectedValue = this.options[0].value;
     this.onChangeInputChange();
     this.getListWaf();
