@@ -491,6 +491,7 @@
   "app.change.info": "Change information",
   "app.use.ipv6": "Use IPv6",
   "app.all.files": "All files",
+  "app.chart": "Chart",
 
   "app.instances.list": "Instance list",
   "app.instances.create": "Create Instance",
@@ -3661,5 +3662,6 @@
   "notification.input.name": "Please enter the correct name",
   "notification.input.name.ip": "Please enter the correct ip address",
   "ip.floating.attach.message": "The port is already in use, please select another Port to perform Floating IP binding.",
-  "listner.create.duplicate.pool.name" : "Pool name is already used"
+  "listner.create.duplicate.pool.name" : "Pool name is already used",
+  "waf.intro.title1":"Web Application Firewall"
 }

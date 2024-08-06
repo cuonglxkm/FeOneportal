@@ -27,7 +27,7 @@ nzPopoverPlacement="bottom" style="cursor: pointer;margin-right: 5px;"/>
     <nz-form-item>
         <nz-form-control>
             <nz-form-label nzFor="protocol">Chuyển đổi giao thức</nz-form-label>
-            <nz-select formControlName="protocol" >
+            <nz-select formControlName="protocol" (ngModelChange)="onChangeProtocol($event)">
                 <nz-option *ngFor="let data of protocolOptions" [nzLabel]="data.label" [nzValue]="data.value"></nz-option>
             </nz-select>
         </nz-form-control>

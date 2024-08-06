@@ -1,0 +1,8 @@
+{
+  "app-smart-cloud": "https://test-app-portal.cloud.vnpt.vn",
+  "app-kafka": "https://test-app-kafka.cloud.vnpt.vn",
+  "app-kubernetes": "https://test-app-k8s.cloud.vnpt.vn",
+  "app-mongodb-replicaset": "https://test-app-mongodb.cloud.vnpt.vn",
+  "app-k8s-premium": "https://test-app-k8spre.cloud.vnpt.vn",
+  "app-ecr": "https://test-app-ecr.cloud.vnpt.vn"
+}

@@ -386,6 +386,7 @@
   "app.change.info": "Thông tin thay đổi",
   "app.use.ipv6": "Sử dụng IPv6",
   "app.all.files": "Tất cả file",
+  "app.chart": "Biểu đồ",
 
   "app.instances.list": "Danh sách máy ảo",
   "app.instances.create": "Khởi tạo máy ảo",
@@ -3589,5 +3590,8 @@
   "notification.input.name": "Vui lòng nhập đúng tên",
   "notification.input.name.ip": "Vui lòng nhập đúng địa chỉ ip",
   "ip.floating.attach.message": "Port đã được sử dụng, vui lòng chọn Port khác để thực hiện gắn IP Floating.",
-  "listner.create.duplicate.pool.name" : "Tên pool đã được sử dụng"
+  "listner.create.duplicate.pool.name" : "Tên pool đã được sử dụng",
+  "waf.intro.title1":"Web Application Firewall",
+  "waf.intro.title2":"Bảo vệ ứng dụng web khỏi các tình huống khai thác web phổ biến",
+  "waf.intro.subtitle":"Phương thức hiệu quả chống lại các mối đe dọa và lỗ hổng đối với Web Application. Nhận diện và chống lại các botnet xấu. Che giấy địa chỉ IP gốc, ngặn chặn các truy cập không hợp lệ"
 }

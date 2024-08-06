@@ -449,6 +449,7 @@ export class InstancesComponent implements OnInit {
 
   showHandleGanVLAN(id: number) {
     this.isChoosePort = true;
+    this.isInvalidIPAddress = false;
     this.instanceAction = new InstanceAction();
     this.getListNetwork();
     this.instanceAction.id = id;
@@ -512,6 +513,7 @@ export class InstancesComponent implements OnInit {
   dataSubjectGateway: Subject<any> = new Subject<any>();
 
   inputIPAddress(value) {
+    this.isInvalidIPAddress = true;
     this.dataSubjectGateway.next(value);
   }
 
@@ -520,6 +522,7 @@ export class InstancesComponent implements OnInit {
     this.dataSubjectGateway.pipe(debounceTime(500)).subscribe((res) => {
       if (res == null || res == '') {
         this.invalidIPAddress = '';
+        this.isInvalidIPAddress = false;
       } else {
         this.checkIPAddressModel.ipAddress = res;
         this.checkIPAddressModel.listCIDR = this.listVlanNetwork

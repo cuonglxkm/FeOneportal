@@ -68,11 +68,11 @@
               <nz-radio-group style="width: 100%;" formControlName="radio">
                 <nz-row>
                   <nz-col nzSpan="12">
-                    <label [tabIndex]="0" nz-radio class="custom-tabindex"
+                    <label [tabIndex]="0" nz-radio class="custom-tabindex" [disabled]="true"
                            [ngModel]="enableInternetFacing"
                            [ngModelOptions]="{ standalone: true }"
-                           (click)="onChangeStatusInternetFacing()"
-                           (keyup.enter)="onChangeStatusInternetFacing()">
+                           (keyup.enter)="onChangeStatusInternetFacing()"
+                    >
                       Internet Facing
                       <img nz-popover
                            [nzPopoverContent]="'app.tooltip.internet.facing' | i18n"

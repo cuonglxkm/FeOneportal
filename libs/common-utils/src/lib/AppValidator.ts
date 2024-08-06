@@ -588,7 +588,24 @@ export function ipValidatorVlan(): ValidatorFn {
   };
 }
 
+export function hostValidator(control: AbstractControl): ValidationErrors | null {
+  if (!control.value) {
+    return null;
+  }
 
+  const ipPattern = /\b((1\d{0,2}|2[0-4]\d|25[0-5])\.)((1?\d{1,2}|2[0-4]\d|25[0-5])\.){2}(1?\d{1,2}|2[0-4]\d|25[0-5])\b/
+
+  const domainPattern = /^[a-zA-Z0-9][a-zA-Z0-9-]{1,61}[a-zA-Z0-9](?:\.[a-zA-Z]{2,})+/;
+
+  const isValidDomain = domainPattern.test(control.value.trim())
+  const isValidIp = ipPattern.test(control.value.trim())
+
+  if(!isValidDomain && !isValidIp){
+    return {invalidHost: true}
+  }
+
+  return null;
+}
 
 
 
