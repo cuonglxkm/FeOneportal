@@ -47,7 +47,6 @@ export class CreateUpdateIpPublicComponent implements OnInit {
   form = new FormGroup({
     ipSubnet: new FormControl('', {validators: [Validators.required]}),
     numOfMonth: new FormControl(1, {validators: [Validators.required, this.validNumOfMonth.bind(this)]}),
-    instanceSelected: new FormControl('', {}),
   });
   dateStringExpired = new Date();
   ipName = '';
@@ -207,7 +206,8 @@ export class CreateUpdateIpPublicComponent implements OnInit {
     )
   }
 
-  caculator(event) {
+  caculator(event: any, isCheckVm: boolean) {
+
     let ip = '';
     let lstIp = this.form.controls['ipSubnet'].value.split('|||');
     if (lstIp.length > 1) {
@@ -215,10 +215,11 @@ export class CreateUpdateIpPublicComponent implements OnInit {
       this.ipName = lstIp[0];
     }
 
-    const vmSelect = this.form.controls['instanceSelected'].value;
-    if (vmSelect == null) {
-      this.form.controls['instanceSelected'].setValue('');
+    const vmSelect = this.instanceSelected;
+    if (vmSelect == null || (isCheckVm && event == null)) {
+      this.instanceSelected = '';
       this.VMName = ''
+      this.VMId = ''
     } else {
       let lstVm = vmSelect.split('|||');
       if (lstVm.length > 1) {
@@ -324,6 +325,6 @@ export class CreateUpdateIpPublicComponent implements OnInit {
 
   onChangeTime($event: any) {
     this.form.controls['numOfMonth'].setValue($event);
-    this.caculator(null);
+    this.caculator(null, false);
   }
 }
