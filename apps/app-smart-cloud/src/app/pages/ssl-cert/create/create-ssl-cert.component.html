@@ -229,7 +229,7 @@
       nz-button
       nzType="primary"
       (click)="handleCreate()"
-      [disabled]="form.invalid" [nzLoading]="isLoading"
+      [disabled]="form.invalid || isExistName" [nzLoading]="isLoading"
       
     >
       <img
