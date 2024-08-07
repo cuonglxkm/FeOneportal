@@ -143,13 +143,11 @@ export class InstancesDetailComponent implements OnInit {
   //Giám sát
   activeGS: boolean = false;
   maxAxis = 1;
-  cahrt = [];
   valueGSCPU: string = 'ram';
   valueGSTIME: number = 5;
   cloudId: string;
   regionId: number;
   projectId: number;
-  chartData: G2TimelineData[] = [];
 
   GSCPU = [
     {
@@ -207,7 +205,6 @@ export class InstancesDetailComponent implements OnInit {
   dataChart: any;
 
   getMonitorData() {
-    this.chartData = [];
     this.dataService
       .getMonitorByCloudId(
         this.cloudId,
@@ -215,10 +212,15 @@ export class InstancesDetailComponent implements OnInit {
         this.valueGSTIME,
         this.valueGSCPU
       )
-      .subscribe((data: any) => {
-        this.dataChart = data;
-        this.createChart();
-        this.cdr.detectChanges();
+      .subscribe({
+        next: (data: any) => {
+          this.dataChart = data;
+          this.createChart();
+          this.cdr.detectChanges();
+        },
+        error: (e) => {
+          this.notification.error(e.error.message, '');
+        },
       });
   }
 
@@ -251,58 +253,12 @@ export class InstancesDetailComponent implements OnInit {
   } {
     return data.reduce((acc, item) => {
       const timeKey = this.transform(item.timeSpan);
-      if (!acc[timeKey]) {
-        acc[timeKey] = 0;
+      // Nếu khóa chưa có trong acc hoặc giá trị mới lớn hơn giá trị hiện tại
+      if (!(timeKey in acc) || item.value > acc[timeKey]) {
+        acc[timeKey] = Number(item.value);
       }
-      acc[timeKey] = item.value;
       return acc;
     }, {} as { [key: string]: number });
-  }
-
-  private createDefaultChart(startDate, name: string): Chart {
-    const defaultTimeRange = this.generateTimeRange(startDate);
-
-    return new Chart({
-      chart: {
-        type: 'line',
-      },
-      title: {
-        text: '',
-      },
-      xAxis: {
-        categories: defaultTimeRange,
-        title: {
-          text: '',
-        },
-      },
-      yAxis: {
-        title: {
-          text: '',
-        },
-        min: 0,
-      },
-      series: [
-        {
-          name: name,
-          data: new Array(defaultTimeRange.length).fill(0),
-        } as any,
-      ],
-    });
-  }
-
-  private generateTimeRange(startDate): string[] {
-    const startTimestamp = startDate;
-    const end = new Date();
-    const timeLabels: string[] = [];
-    const start = new Date(startTimestamp * 1000);
-
-    while (start <= end) {
-      timeLabels.push(
-        `${start.getHours()}:${start.getMinutes().toString().padStart(2, '0')}`
-      );
-      start.setMinutes(start.getMinutes() + 60);
-    }
-    return timeLabels;
   }
 
   getFormattedStartDate(timestamp) {

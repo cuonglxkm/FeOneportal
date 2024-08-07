@@ -158,7 +158,7 @@ export class ChartComponent implements AfterViewInit, OnInit {
     // Chuyển đổi timestamp thành định dạng thời gian đọc được
     const labels = Object.keys(uniqueData);
     // Trích xuất giá trị dữ liệu
-    const dataValues = Object.values(uniqueData).map(value => value / 1024); // Chuyển từ KB sang MB
+    const dataValues = Object.values(uniqueData).map(value  => (value / 1024).toFixed(2)); // Chuyển từ KB sang MB
     console.log('dataValues', dataValues)
     // Cấu hình Highcharts
     this.chartStorageUse = new Chart({
@@ -253,7 +253,7 @@ export class ChartComponent implements AfterViewInit, OnInit {
     const labels = Object.keys(uniqueData);
 
     // Trích xuất giá trị dữ liệu
-    const dataValues = Object.values(uniqueData).map(value => value / 1024 ); // Chuyển từ KB sang MB
+    const dataValues = Object.values(uniqueData).map(value => (value / 1024).toFixed(2) ); // Chuyển từ KB sang MB
 
     // Cấu hình Highcharts
     this.chartStorageUpload = new Chart({
@@ -300,7 +300,7 @@ export class ChartComponent implements AfterViewInit, OnInit {
     const labels = Object.keys(uniqueData);
 
     // Trích xuất giá trị dữ liệu
-    const dataValues = Object.values(uniqueData).map(value => value / 1024); // Chuyển từ KB sang MB
+    const dataValues = Object.values(uniqueData).map(value => (value / 1024).toFixed(2)); // Chuyển từ KB sang MB
 
     // Cấu hình Highcharts
     this.chartStorageDownload = new Chart({
