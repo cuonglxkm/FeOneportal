@@ -1,4 +1,4 @@
-<page-header [breadcrumb]="breadcrumb" [action]="action" [title]="'app.listener.detail' | i18n">
+  <page-header [breadcrumb]="breadcrumb" [action]="action" [title]="'app.listener.detail' | i18n">
   <ng-template #breadcrumb>
     <nz-breadcrumb [nzSeparator]="iconTemplate">
       <ng-template #iconTemplate><one-portal-svg-icon [icon]="'icon_breadcrumb'"></one-portal-svg-icon></ng-template>
@@ -30,112 +30,71 @@
 <form nz-form [formGroup]="validateForm" [nzLayout]="'vertical'">
   <nz-card class="text-label" nzTitle="" style="border-radius: 8px;" [nzLoading]="loadingDetail">
     <div class="text-card-header" style="margin-bottom: 15px;">{{ 'app.listener.info' | i18n }}</div>
-    <nz-form-item>
-      <nz-form-label>
-        <span>{{ 'app.load.listener.name' | i18n }} (<span style="color: red;">*</span>) </span>
-      </nz-form-label>
-      <nz-form-control nzDisableAutoTips [nzErrorTip]="nameErrorTpl">
-        <nz-input-number [nzDisabled]="true"
-                         class="input-custom"
-               formControlName="listenerName"  style="margin-left: -2px;width: 100%"
-               />
-        <ng-template #nameErrorTpl let-control>
-          <ng-container *ngIf="control.hasError('required')">{{ 'validation.info.required' | i18n }}</ng-container>
-          <ng-container *ngIf="control.hasError('pattern')">{{ 'validation.name.pattern' | i18n }}
-          </ng-container>
-          <ng-container *ngIf="control.hasError('maxLength')">{{ 'volume.notification.input.name.maxLength' | i18n }}</ng-container>
-          <ng-container *ngIf="control.hasError('duplicateName')">{{ 'validation.exist.name' | i18n : { name: 'Listener' } }}
-          </ng-container>
-        </ng-template>
-      </nz-form-control>
-    </nz-form-item>
-
-    <nz-row>
-      <nz-col nzSpan="16">
-        <nz-form-item>
-          <nz-form-label>
-            <span>{{ 'app.protocol' | i18n }} (<span style="color: red;">*</span>) </span>
-          </nz-form-label>
-          <nz-form-control nzDisableAutoTips>
-            <nz-radio-group [disabled]="true" [(ngModel)]="protocolListener" [ngModelOptions]="{standalone: true}" nzSize="large">
-              <label nz-radio nzValue="HTTP">HTTP</label>
-              <label nz-radio nzValue="TCP">TCP</label>
-              <label nz-radio nzValue="TERMINATED_HTTPS">TERMINATED_HTTPS</label>
-            </nz-radio-group>
-          </nz-form-control>
-        </nz-form-item>
-      </nz-col>
-      <nz-col nzSpan="8">
-        <nz-form-item>
-          <nz-form-label>
-            <span>Port (<span style="color: red;">*</span>) </span>
-          </nz-form-label>
-          <nz-form-control nzDisableAutoTips>
-            <nz-input-number nzSize="large" formControlName="port" [nzMin]="0" [nzStep]="1" [nzDisabled]="true"
-                             style="margin-left: -2px;"></nz-input-number>
-          </nz-form-control>
-        </nz-form-item>
-      </nz-col>
-    </nz-row>
-
-    <nz-row>
-      <nz-col nzSpan="6">
-        <nz-form-item>
-          <nz-form-label>
-            <span>Client timeout (ms)</span>
-          </nz-form-label>
-          <nz-form-control nzDisableAutoTips>
-            <nz-input-number [nzDisabled]="true" style="margin-left: -2px;width: 90%" formControlName="timeout" [nzMin]="0" nzSize="large"
-                             [nzStep]="1"></nz-input-number>
-          </nz-form-control>
-        </nz-form-item>
-      </nz-col>
-      <nz-col nzSpan="6">
-        <nz-form-item>
-          <nz-form-label>
-            <span>Member timeout (ms)</span>
-          </nz-form-label>
-          <nz-form-control nzDisableAutoTips>
-            <nz-input-number [nzDisabled]="true" style="margin-left: -2px;width: 90%" formControlName="member" [nzMin]="0" nzSize="large"
-                             [nzStep]="1"></nz-input-number>
-          </nz-form-control>
-        </nz-form-item>
-      </nz-col>
-      <nz-col nzSpan="6">
-        <nz-form-item>
-          <nz-form-label>
-            <span>Member connection timeout (ms)</span>
-          </nz-form-label>
-          <nz-form-control nzDisableAutoTips>
-            <nz-input-number [nzDisabled]="true" style="margin-left: -2px;width: 90%" formControlName="connection" [nzMin]="0" nzSize="large"
-                             [nzStep]="1"></nz-input-number>
-          </nz-form-control>
-        </nz-form-item>
-      </nz-col>
-      <nz-col nzSpan="6">
-        <nz-form-item>
-          <nz-form-label>
-            <span>Allowed CIDRs (<span style="color: red;">*</span>) </span>
-          </nz-form-label>
-          <nz-form-control nzDisableAutoTips>
-            <nz-input-number
-                   class="input-custom"
-                   formControlName="allowCIRR"
-                   [nzDisabled]="true" style="margin-left: -2px;width: 90%"/>
-            <!--              <nz-input-number style="margin-left: -2px;width: 90%" formControlName="" [nzMin]="0"-->
-            <!--                               [nzStep]="1"></nz-input-number>-->
-          </nz-form-control>
-        </nz-form-item>
-      </nz-col>
-    </nz-row>
-
+    <div class="customRow">
+      <nz-row>
+        <nz-col nzSpan="12">
+          <nz-row style="padding: 12px 0 12px 0">
+            <span class="text-label customSpan" style="width: 35%">{{ 'app.load.listener.name' | i18n }}</span>
+            <span class="text-value-detail customSpan">{{validateForm.controls['listenerName'].value}}</span>
+          </nz-row>
+        </nz-col>
+        <nz-col nzSpan="12">
+          <nz-row style="padding: 12px 0 12px 0">
+            <span class="text-label customSpan" style="width: 35%">Client timeout</span>
+            <span class="text-value-detail customSpan">{{validateForm.controls['timeout'].value}}</span>
+          </nz-row>
+        </nz-col>
+      </nz-row>
+      <nz-row style="background-color: #e2e2e9">
+        <nz-col nzSpan="12">
+          <nz-row style="padding: 12px 0 12px 0">
+            <span class="text-label customSpan" style="width: 35%">{{'app.protocol' | i18n}}</span>
+            <span class="text-value-detail customSpan">{{protocolListener}}</span>
+          </nz-row>
+        </nz-col>
+        <nz-col nzSpan="12">
+          <nz-row style="padding: 12px 0 12px 0">
+            <span class="text-label customSpan" style="width: 35%">Member timeout</span>
+            <span class="text-value-detail customSpan">{{validateForm.controls['member'].value}}</span>
+          </nz-row>
+        </nz-col>
+      </nz-row>
+      <nz-row>
+        <nz-col nzSpan="12">
+          <nz-row style="padding: 12px 0 12px 0">
+            <span class="text-label customSpan" style="width: 35%">Port</span>
+            <span class="text-value-detail customSpan">{{validateForm.controls['port'].value}}</span>
+          </nz-row>
+        </nz-col>
+        <nz-col nzSpan="12">
+          <nz-row style="padding: 12px 0 12px 0">
+            <span class="text-label customSpan" style="width: 35%">Member connection timeout</span>
+            <span class="text-value-detail customSpan">{{validateForm.controls['connection'].value}}</span>
+          </nz-row>
+        </nz-col>
+      </nz-row>
+      <nz-row style="background-color: #e2e2e9">
+        <nz-col nzSpan="12">
+          <nz-row style="padding: 12px 0 12px 0">
+            <span class="text-label customSpan" style="width: 35%">SSL Cert</span>
+            <span class="text-value-detail customSpan">{{sslCert}}</span>
+          </nz-row>
+        </nz-col>
+        <nz-col nzSpan="12">
+          <nz-row style="padding: 12px 0 12px 0">
+            <span class="text-label customSpan" style="width: 35%">Allow CIDRs</span>
+            <span class="text-value-detail customSpan">{{validateForm.controls['allowCIRR'].value}}</span>
+          </nz-row>
+        </nz-col>
+      </nz-row>
+    </div>
 
     <nz-form-item>
       <nz-form-label>
         <span>{{ 'app.service.description' | i18n }}</span>
       </nz-form-label>
       <nz-form-control nzDisableAutoTips>
-          <textarea nz-input [disabled]="true" [nzAutosize]="{ minRows: 3 }" [placeholder]="'app.input.des' | i18n" style="width: 100%"
+          <textarea nz-input [disabled]="true" [nzAutosize]="{ minRows: 3 }" [placeholder]="''" style="width: 100%"
                     [ngModel]="description" [ngModelOptions]="{standalone : true}"></textarea>
       </nz-form-control>
     </nz-form-item>

@@ -906,6 +906,8 @@
   "app.s3.key.recreate.des": "Are you sure you want to re-create SecretKey?",
 
   "validation.bucket.name": "Please enter lowercase characters a-z, numeric characters 0-9, hyphens and dots",
+  "validation.bucket.name.less2": "Please enter a minimum of 3 characters",
+  "validation.bucket.name.more63": "Please do not enter more than 63 characters",
   "validation.bucket.name.1": "Group names are allowed to use lowercase letters a-z, characters 0-9 horizontally, dashes (-) and dots (.), minimum 3 characters and maximum 63 characters",
   "validation.bucket.name.invalid": "The Bucket name is invalid",
   "validation.sub.user.name": "Username should use lowercase letters, uppercase letters, numbers, and hyphens",
@@ -3663,5 +3665,6 @@
   "notification.input.name.ip": "Please enter the correct ip address",
   "ip.floating.attach.message": "The port is already in use, please select another Port to perform Floating IP binding.",
   "listner.create.duplicate.pool.name" : "Pool name is already used",
-  "waf.intro.title1":"Web Application Firewall"
+  "waf.intro.title1":"Web Application Firewall",
+  "app.non.vietnamese": "None vietnamese"
 }
