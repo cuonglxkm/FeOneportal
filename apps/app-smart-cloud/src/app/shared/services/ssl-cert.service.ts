@@ -97,4 +97,13 @@ export class SSLCertService extends BaseService {
         })
       );
   }
+
+  checkNameExist(regionId: number,projectId: number,name: string) {
+    return this.http.post<any>(
+      this.baseUrl + this.ENDPOINT.provisions + `/loadbalancer/checkssl?regionId=${regionId}&projectId=${projectId}&name=${name}`,
+      {
+        headers: this.getHeaders().headers,
+      }
+    );
+  }
 }

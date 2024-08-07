@@ -63,8 +63,8 @@
                     [nzPageIndex]="response?.currentPage"
                     (nzPageIndexChange)="onPageIndexChange($event)"
                     [nzTotal]="response?.totalCount"
-                    [nzFrontPagination]="false"
-                    [nzLoading]="false">
+                    [nzFrontPagination]="false" 
+                    [nzLoading]="isLoading">
             <thead>
             <tr>
               <th nzLeft>Certificate Name</th>
