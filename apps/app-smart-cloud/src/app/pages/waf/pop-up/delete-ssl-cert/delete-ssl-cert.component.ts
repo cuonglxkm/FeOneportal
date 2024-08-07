@@ -17,6 +17,7 @@ export class DeleteSslCertComponent {
   @Input() sslCertData: SslCertDTO
   @Input() isVisible: boolean 
   @Output() onCancelVisible = new EventEmitter()
+  @Output() onOk = new EventEmitter()
 
   isLoading: boolean = false;
   inputConfirm: string = ''
@@ -51,7 +52,7 @@ export class DeleteSslCertComponent {
         next:()=>{
           this.notification.success(this.i18n.fanyi("app.status.success"), "Thao tác thành công")
           this.isVisible = false;
-          this.router.navigate(['/app-smart-cloud/waf/ssl-cert'])
+          this.onOk.emit()
         },
         error:()=>{
           this.notification.success(this.i18n.fanyi("app.status.error"), "Đã xảy ra lỗi")

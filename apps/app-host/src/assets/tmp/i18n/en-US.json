@@ -450,6 +450,8 @@
   "service.status.processing": "In-Process",
   "service.status.unknown": "Unknown ",
   "service.status.cancel": "Cancel",
+  "service.status.normal": "Normal",
+  "service.status.pending.expired": "Pending Expired",
 
 
   "app.breadcrumb.home": "Home",

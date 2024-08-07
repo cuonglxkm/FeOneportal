@@ -3,6 +3,7 @@ import {
   ChangeDetectorRef,
   Component,
   Inject,
+  OnInit,
   ViewChild,
 } from '@angular/core';
 import {
@@ -21,19 +22,16 @@ import { I18NService } from '@core';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { SSLCertService } from 'src/app/shared/services/ssl-cert.service';
 import { debounceTime, finalize, Subject, Subscription } from 'rxjs';
-import { SslCertDTO } from '../../waf.model';
+import { AssociatedDomainDTO, SslCertDTO } from '../../waf.model';
 import { WafService } from 'src/app/shared/services/waf.service';
 
 @Component({
   selector: 'one-portal-list-ssl-cert',
   templateUrl: './list-ssl-cert.component.html',
   styleUrls: ['./list-ssl-cert.component.less'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ListSslCertComponent {
-  isLoading: boolean = true;
-  region = JSON.parse(localStorage.getItem('regionId'));
-  project = JSON.parse(localStorage.getItem('projectId'));
+export class ListSslCertComponent implements OnInit {
+  isLoadingList: boolean = false;
 
   isBegin: boolean = false;
   typeVPC: number;
@@ -45,17 +43,11 @@ export class ListSslCertComponent {
   response: BaseResponse<SslCertDTO[]>;
 
   searchParam: string = ''
-  @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
 
   constructor(
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
     private router: Router,
-    private volumeService: VolumeService,
-    private fb: NonNullableFormBuilder,
-    private cdr: ChangeDetectorRef,
-    private notificationService: NotificationService,
     private notification: NzNotificationService,
-    private SslCertService: SSLCertService,
     @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
     private wafService: WafService
   ) {}
@@ -63,6 +55,15 @@ export class ListSslCertComponent {
   dataSubjectSearchParam: Subject<any> = new Subject<any>();
   private searchSubscription: Subscription;
   private enterPressed: boolean = false;
+
+  ngOnInit(): void {
+      this.getListCertificate()
+  }
+
+  onPageSizeChange(value) {
+    this.pageSize = value;
+    this.getListCertificate();
+  }
 
   changeInputChange(evet: Event) {
     const value = (event.target as HTMLInputElement).value
@@ -95,44 +96,21 @@ export class ListSslCertComponent {
     }
   }
 
-  regionChanged(region: RegionModel) {
-    this.region = region.regionId;
-    if (this.projectCombobox) {
-      this.projectCombobox.loadProjects(true, region.regionId);
-    }
-    setTimeout(() => {
-      // this.getListVolume(true);
-    }, 2500);
-  }
-
-  onRegionChanged(region: RegionModel) {
-    this.region = region.regionId;
-  }
-
-  projectChanged(project: ProjectModel) {
-    this.isFirstVisit = false;
-    this.project = project?.id;
-    this.typeVPC = project?.type;
-    this.isLoading = true;
-    this.getListCertificate();
-  }
-
   onPageIndexChange(value) {
     this.pageIndex = value;
     this.getListCertificate();
   }
 
   getListCertificate() {
-    this.isLoading = true;
-    this.wafService.getListSslCert(this.searchParam, this.pageIndex, this.pageIndex).pipe(finalize(()=>{
-      this.isLoading = false
-    })).subscribe({
+    this.isLoadingList = true;
+    this.wafService.getListSslCert(this.searchParam, this.pageSize, this.pageIndex).subscribe({
       next:(data)=>{
+        this.isLoadingList = false
         this.response = data
       },
       error:(error)=>{
         this.response = null;
-        console.log(error);
+        this.isLoadingList = false
         this.notification.error(error.statusText, this.i18n.fanyi('app.failData'))
       }
     })
@@ -140,5 +118,20 @@ export class ListSslCertComponent {
 
   navigateToDetail(id: number){
     this.router.navigate([`/app-smart-cloud/waf/ssl-cert/${id}`])
+  }
+
+  navigateToCreateSsl(){
+    this.router.navigate(["/app-smart-cloud/waf/ssl-cert/create"])
+  }
+
+  getListAssociatedDomains(domains: AssociatedDomainDTO[]){
+    if(domains.length){
+      return domains?.map(item => item.domainName)?.join(", ")
+    }
+    return "_"
+  }
+
+  onOkAction(){
+    this.getListCertificate()
   }
 }
