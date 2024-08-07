@@ -145,7 +145,7 @@ export class CreateL7PolicyComponent implements OnInit {
   getListPool() {
     this.loadBalancerService.getListPoolInLB(this.idLoadBalancer).subscribe(data => {
       this.listPool = data
-      this.listPool = this.listPool.filter(item => item.protocol.includes("HTTP"))
+      this.listPool = this.listPool.filter(item => item.protocol.includes("HTTP") && (item.listener_id == null || item.listener_id == this.idListener))
       this.listPool = this.listPool.filter(item => item.listener_id.includes(this.idListener) || item.listener_id == null)
     })
   }

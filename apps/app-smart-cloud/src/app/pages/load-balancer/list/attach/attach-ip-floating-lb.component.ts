@@ -9,7 +9,7 @@ import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from '@core';
 import { isCheckDisabled } from 'ng-zorro-antd/core/tree';
-import { LoadBalancerModel } from '../../../../shared/models/load-balancer.model';
+import { IPBySubnet, LoadBalancerModel } from '../../../../shared/models/load-balancer.model';
 import { Router } from '@angular/router';
 
 @Component({
@@ -33,7 +33,8 @@ export class AttachIpFloatingLbComponent implements OnInit {
   disableAttach = true;
   ipId: number;
   subnetName = 'okok';
-  response: IpFloating[];
+  response: IPBySubnet[];
+  subnetId: string;
 
   constructor(private ipService: IpFloatingService,
               private loadBalancerService: LoadBalancerService,
@@ -45,6 +46,7 @@ export class AttachIpFloatingLbComponent implements OnInit {
 
   ngOnInit() {
     this.subnetName = this.data.subnetName + '(' + this.data.ipAddress + ')';
+    this.subnetId = this.data.subnetId
     this.isLoadingIpFloating();
   }
 
@@ -77,20 +79,30 @@ export class AttachIpFloatingLbComponent implements OnInit {
 
 
   private isLoadingIpFloating() {
-    this.isLoading = true;
-    let formSearchIpFloating: FormSearchIpFloating = new FormSearchIpFloating();
-    formSearchIpFloating.projectId = this.project;
-    formSearchIpFloating.regionId = this.region;
-    formSearchIpFloating.ipAddress = '';
-    formSearchIpFloating.pageSize = 99999;
-    formSearchIpFloating.currentPage = 1;
-    formSearchIpFloating.customerId = this.tokenService.get()?.userId;
-    this.ipService.getListIpFloating(formSearchIpFloating)
+    // this.isLoading = true;
+    // let formSearchIpFloating: FormSearchIpFloating = new FormSearchIpFloating();
+    // formSearchIpFloating.projectId = this.project;
+    // formSearchIpFloating.regionId = this.region;
+    // formSearchIpFloating.ipAddress = '';
+    // formSearchIpFloating.pageSize = 99999;
+    // formSearchIpFloating.currentPage = 1;
+    // formSearchIpFloating.customerId = this.tokenService.get()?.userId;
+    // this.ipService.getListIpFloating(formSearchIpFloating)
+    //   .pipe(debounceTime(500))
+    //   .subscribe(data => {
+    //     this.isLoading = false;
+    //     console.log('data', data);
+    //     this.response = data.records;
+    //   }, error => {
+    //     this.isLoading = false;
+    //     this.response = null;
+    //   });
+
+    this.loadBalancerService.getIPBySubnet(this.subnetId, this.project, this.region)
       .pipe(debounceTime(500))
       .subscribe(data => {
         this.isLoading = false;
-        console.log('data', data);
-        this.response = data.records;
+        this.response = data;
       }, error => {
         this.isLoading = false;
         this.response = null;

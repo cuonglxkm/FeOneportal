@@ -806,6 +806,8 @@
   "app.s3.key.recreate.des": "Quý khách chắc chắn muốn thực hiện tại lại SecretKey?",
 
   "validation.bucket.name": "Vui lòng nhập ký tự thường a-z, các ký tự số 0-9, dấu gạch ngang và dấu chấm (không được nhập dấu gạch ngang hoặc dấu chấm ở đầu hoặc cuối)",
+  "validation.bucket.name.less2": "Vui lòng nhập tối thiểu 3 ký tự",
+  "validation.bucket.name.more63": "Vui lòng không nhập quá 63 ký tự",
   "validation.bucket.name1": "Tên Bucket chỉ được phép dùng các ký tự chữ thường a-z các ký tự số 0-9 dấu gạch ngang (-) và dấu chấm (.), tối thiểu 3 ký tự và tối đa 63 ký tự",
   "validation.bucket.name.invalid": "Tên Bucket không hợp lệ",
   "validation.sub.user.name": "Tên người dùng nên sử dụng các ký tự chữ cái thường, chữ hoa, chữ số và dấu gạch ngang",
@@ -3595,5 +3597,6 @@
   "listner.create.duplicate.pool.name" : "Tên pool đã được sử dụng",
   "waf.intro.title1":"Web Application Firewall",
   "waf.intro.title2":"Bảo vệ ứng dụng web khỏi các tình huống khai thác web phổ biến",
-  "waf.intro.subtitle":"Phương thức hiệu quả chống lại các mối đe dọa và lỗ hổng đối với Web Application. Nhận diện và chống lại các botnet xấu. Che giấy địa chỉ IP gốc, ngặn chặn các truy cập không hợp lệ"
+  "waf.intro.subtitle":"Phương thức hiệu quả chống lại các mối đe dọa và lỗ hổng đối với Web Application. Nhận diện và chống lại các botnet xấu. Che giấy địa chỉ IP gốc, ngặn chặn các truy cập không hợp lệ",
+  "app.non.vietnamese": "Không được nhập tiếng việt"
 }

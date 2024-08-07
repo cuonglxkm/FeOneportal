@@ -290,6 +290,7 @@ export class InstancesEditInfoComponent implements OnInit {
               })
             );
           }
+          this.cdr.detectChanges();
         },
       });
   }

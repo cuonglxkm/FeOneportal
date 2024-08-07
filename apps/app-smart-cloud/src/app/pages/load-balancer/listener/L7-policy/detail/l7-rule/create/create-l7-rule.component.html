@@ -84,6 +84,7 @@
           <input #l7RuleInputName nz-input class="input-custom" formControlName="value" (keydown.enter)="focusOkButton($event)" />
           <ng-template #valueErrorTpl let-control>
             <ng-container *ngIf="control.hasError('required')">{{ 'validation.info.required' | i18n }}</ng-container>
+            <ng-container *ngIf="control.hasError('pattern')">{{ 'app.non.vietnamese' | i18n }}</ng-container>
           </ng-template>
         </nz-form-control>
       </nz-form-item>
