@@ -28,7 +28,6 @@ import { WafService } from 'src/app/shared/services/waf.service';
   selector: 'one-portal-list-ssl-cert',
   templateUrl: './list-ssl-cert.component.html',
   styleUrls: ['./list-ssl-cert.component.less'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ListSslCertComponent {
   isLoading: boolean = true;
@@ -81,6 +80,10 @@ export class ListSslCertComponent {
       });
   }
 
+  ngOnInit(): void {
+    this.getListCertificate()    
+  }
+
   onEnter(event: Event) {
     event.preventDefault();
     this.enterPressed = true;
@@ -124,11 +127,10 @@ export class ListSslCertComponent {
 
   getListCertificate() {
     this.isLoading = true;
-    this.wafService.getListSslCert(this.searchParam, this.pageIndex, this.pageIndex).pipe(finalize(()=>{
-      this.isLoading = false
-    })).subscribe({
+    this.wafService.getListSslCert(this.searchParam, this.pageIndex, this.pageIndex).subscribe({
       next:(data)=>{
         this.response = data
+        this.isLoading = false
       },
       error:(error)=>{
         this.response = null;
