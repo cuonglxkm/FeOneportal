@@ -349,27 +349,69 @@ export class InstancesDetailComponent implements OnInit {
 
   chart: Chart;
   unitChart: string;
-
+  maxValue: number;
   createChart() {
+    this.maxValue = 0;
     if (!this.dataChart || this.dataChart.length === 0) {
-      console.warn('No data available for chart.');
+      console.warn('No data available for chart');
       return;
     }
 
+    this.dataChart.forEach((item) => {
+      item.datas.forEach((data) => {
+        const value = parseFloat(data.value);
+        if (value > this.maxValue) {
+          this.maxValue = value;
+        }
+      });
+    });
+    console.log('max value', this.maxValue);
+
     const seriesData = this.dataChart.map((item) => {
       let data;
+      let unit = item.unit;
       if (item.title.includes('CPU')) {
-        this.unitChart = item.unit;
         data = item.datas.map((d) => ({
           timeSpan: d.timeSpan,
           value: Number(parseFloat(d.value).toFixed(2)),
         }));
       } else {
-        this.unitChart = 'GiB';
-        data = item.datas.map((d) => ({
-          timeSpan: d.timeSpan,
-          value: Number((parseFloat(d.value) / 1073741824).toFixed(2)),
-        }));
+        if (this.maxValue >= 1099511627776 / 10) {
+          // Convert to TiB
+          data = item.datas.map((d) => ({
+            timeSpan: d.timeSpan,
+            value: Number((parseFloat(d.value) / 1099511627776).toFixed(2)),
+          }));
+          unit = 'TiB';
+        } else if (this.maxValue >= 1073741824 / 10) {
+          // Convert to GiB
+          data = item.datas.map((d) => ({
+            timeSpan: d.timeSpan,
+            value: Number((parseFloat(d.value) / 1073741824).toFixed(2)),
+          }));
+          unit = 'GiB';
+        } else if (this.maxValue >= 1048576 / 10) {
+          // Convert to MiB
+          data = item.datas.map((d) => ({
+            timeSpan: d.timeSpan,
+            value: Number((parseFloat(d.value) / 1048576).toFixed(2)),
+          }));
+          unit = 'MiB';
+        } else if (this.maxValue >= 1024 / 10) {
+          // Convert to KiB
+          data = item.datas.map((d) => ({
+            timeSpan: d.timeSpan,
+            value: Number((parseFloat(d.value) / 1024).toFixed(2)),
+          }));
+          unit = 'KiB';
+        } else {
+          // Keep as bytes
+          data = item.datas.map((d) => ({
+            timeSpan: d.timeSpan,
+            value: Number(parseFloat(d.value).toFixed(2)),
+          }));
+          unit = 'byte';
+        }
       }
 
       const uniqueData = this.removeDuplicates(data);
@@ -377,7 +419,7 @@ export class InstancesDetailComponent implements OnInit {
       const dataValues = Object.values(uniqueData);
 
       return {
-        name: item.title + ' (' + this.unitChart + ')',
+        name: item.title + ' (' + unit + ')',
         data: dataValues,
         labels: labels,
       };
