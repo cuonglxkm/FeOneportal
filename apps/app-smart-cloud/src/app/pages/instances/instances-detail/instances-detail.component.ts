@@ -52,19 +52,6 @@ export class InstancesDetailComponent implements OnInit {
     private notification: NzNotificationService
   ) {}
 
-  formatTimestamp(timestamp: number): string {
-    const date = new Date(timestamp);
-    const year = date.getUTCFullYear();
-    const month = `0${date.getUTCMonth() + 1}`.slice(-2);
-    const day = `0${date.getUTCDate()}`.slice(-2);
-    const hours = `0${date.getUTCHours()}`.slice(-2);
-    const minutes = `0${date.getUTCMinutes()}`.slice(-2);
-    const seconds = `0${date.getUTCSeconds()}`.slice(-2);
-    const milliseconds = `00${date.getUTCMilliseconds()}`.slice(-3);
-
-    return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}.${milliseconds}Z`;
-  }
-
   checkPermission: boolean = false;
   ngOnInit(): void {
     this.getData();
@@ -181,11 +168,10 @@ export class InstancesDetailComponent implements OnInit {
       key: 'network',
       name: 'Network IO',
     },
-
-    // {
-    //   key: 'diskrw',
-    //   name: 'Disk Read / Write',
-    // },
+    {
+      key: 'diskrw',
+      name: 'Disk Read / Write',
+    },
   ];
   GSTIME = [
     {
@@ -218,10 +204,10 @@ export class InstancesDetailComponent implements OnInit {
     },
   ];
 
-  summary: Summary = new Summary();
+  dataChart: any;
+
   getMonitorData() {
     this.chartData = [];
-    this.cahrt = [];
     this.dataService
       .getMonitorByCloudId(
         this.cloudId,
@@ -230,8 +216,8 @@ export class InstancesDetailComponent implements OnInit {
         this.valueGSCPU
       )
       .subscribe((data: any) => {
-        this.summary = data[0];
-        this.createChartStorageUse();
+        this.dataChart = data;
+        this.createChart();
         this.cdr.detectChanges();
       });
   }
@@ -242,6 +228,7 @@ export class InstancesDetailComponent implements OnInit {
   }
 
   typeGSTitle: string = 'RAM';
+
   onChangeCPU(event?: any) {
     this.valueGSCPU = event;
     this.typeGSTitle = this.GSCPU.filter(
@@ -250,6 +237,7 @@ export class InstancesDetailComponent implements OnInit {
     this.newDate = new Date();
     this.getMonitorData();
   }
+
   onChangeTIME(event?: any) {
     this.valueGSTIME = event;
     if (this.valueGSCPU != '') {
@@ -262,10 +250,7 @@ export class InstancesDetailComponent implements OnInit {
     [key: string]: number;
   } {
     return data.reduce((acc, item) => {
-      // Lấy chỉ phần thời gian hh:mm
       const timeKey = this.transform(item.timeSpan);
-
-      // Gộp các giá trị trùng lặp
       if (!acc[timeKey]) {
         acc[timeKey] = 0;
       }
@@ -295,7 +280,6 @@ export class InstancesDetailComponent implements OnInit {
           text: '',
         },
         min: 0,
-        // max: 10
       },
       series: [
         {
@@ -307,23 +291,22 @@ export class InstancesDetailComponent implements OnInit {
   }
 
   private generateTimeRange(startDate): string[] {
-    const startTimestamp = startDate; // Sử dụng startDate hoặc ngày hiện tại
-    const end = new Date(); // Ngày hiện tại
-
+    const startTimestamp = startDate;
+    const end = new Date();
     const timeLabels: string[] = [];
-    const start = new Date(startTimestamp * 1000); // Chuyển đổi từ UNIX timestamp sang Date
+    const start = new Date(startTimestamp * 1000);
 
     while (start <= end) {
       timeLabels.push(
         `${start.getHours()}:${start.getMinutes().toString().padStart(2, '0')}`
       );
-      start.setMinutes(start.getMinutes() + 60); // Thêm 1 giờ
+      start.setMinutes(start.getMinutes() + 60);
     }
     return timeLabels;
   }
 
   getFormattedStartDate(timestamp) {
-    return new Date(timestamp * 1000); // Convert Unix timestamp to milliseconds
+    return new Date(timestamp * 1000);
   }
 
   transform(timestamp: number): string {
@@ -364,44 +347,47 @@ export class InstancesDetailComponent implements OnInit {
     return returnLabel;
   }
 
-  chartStorageUse: Chart;
+  chart: Chart;
   unitChart: string;
-  createChartStorageUse() {
-    let data;
-    if (this.typeGSTitle == 'RAM') {
-      this.unitChart = 'GiB';
-      data =
-        this.summary?.datas?.map((item) => ({
-          timeSpan: item.timeSpan,
-          value: Number((parseFloat(item.value) / 1073741824).toFixed(2)), // Chuyển đổi value từ chuỗi sang số
-        })) || [];
-    } else {
-      this.unitChart = this.summary.unit;
-      data =
-        this.summary?.datas?.map((item) => ({
-          timeSpan: item.timeSpan,
-          value: Number(parseFloat(item.value).toFixed(2)), // Chuyển đổi value từ chuỗi sang số
-        })) || [];
-    }
-    console.log('rawData:', data);
-    if (!data || data.length === 0) {
-      console.warn('Data is null or empty, using default time range.');
-      // Sử dụng ChangeDetectorRef để cập nhật lại biểu đồ
-      this.chartStorageUse = this.createDefaultChart(
-        this.summary?.startDate,
-        this.i18n.fanyi('app.chart') + ' ' + this.typeGSTitle
-      );
-      this.cdr.detectChanges(); // Buộc Angular cập nhật lại
+
+  createChart() {
+    if (!this.dataChart || this.dataChart.length === 0) {
+      console.warn('No data available for chart.');
       return;
     }
-    const uniqueData = this.removeDuplicates(data);
-    // Chuyển đổi timestamp thành định dạng thời gian đọc được
-    const labels = Object.keys(uniqueData);
-    // Trích xuất giá trị dữ liệu
-    const dataValues = Object.values(uniqueData).map((value) => value);
-    console.log('dataValues', dataValues);
-    // Cấu hình Highcharts
-    this.chartStorageUse = new Chart({
+
+    const seriesData = this.dataChart.map((item) => {
+      let data;
+      if (item.title.includes('CPU')) {
+        this.unitChart = item.unit;
+        data = item.datas.map((d) => ({
+          timeSpan: d.timeSpan,
+          value: Number(parseFloat(d.value).toFixed(2)),
+        }));
+      } else {
+        this.unitChart = 'GiB';
+        data = item.datas.map((d) => ({
+          timeSpan: d.timeSpan,
+          value: Number((parseFloat(d.value) / 1073741824).toFixed(2)),
+        }));
+      }
+
+      const uniqueData = this.removeDuplicates(data);
+      const labels = Object.keys(uniqueData);
+      const dataValues = Object.values(uniqueData);
+
+      return {
+        name: item.title + ' (' + this.unitChart + ')',
+        data: dataValues,
+        labels: labels,
+      };
+    });
+
+    const allLabels: string[] = Array.from(
+      new Set(seriesData.flatMap((series) => series.labels))
+    );
+
+    this.chart = new Chart({
       chart: {
         type: 'line',
       },
@@ -409,7 +395,7 @@ export class InstancesDetailComponent implements OnInit {
         text: '',
       },
       xAxis: {
-        categories: labels,
+        categories: allLabels,
         title: {
           text: '',
         },
@@ -419,13 +405,12 @@ export class InstancesDetailComponent implements OnInit {
           text: '',
         },
       },
-      series: [
-        {
-          name: this.typeGSTitle + ' (' + this.unitChart + ')',
-          data: dataValues, // Đảm bảo rằng data là một mảng số
-        } as any,
-      ], // Ép kiểu để khắc phục lỗi TypeScript
+      series: seriesData.map((series) => ({
+        name: series.name,
+        data: series.data,
+      })) as any,
     });
+
     this.cdr.detectChanges();
   }
 }
