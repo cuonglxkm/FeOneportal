@@ -157,6 +157,7 @@ export interface SslCertDTO {
   domains: AssociatedDomainDTO[];
   content: string;
   certType: string;
+  domainAllowAssociates: AllowedAssociatedDomainDTO[]
 }
 export interface UpdatePolicies {
   ddos?: boolean | null;
@@ -171,4 +172,9 @@ export interface UpdatePolicies {
 export interface AssociatedDomainDTO {
   domainName: string;
   domainStatus: string
+}
+
+export interface AllowedAssociatedDomainDTO {
+  domainName: string;
+  id: number
 }

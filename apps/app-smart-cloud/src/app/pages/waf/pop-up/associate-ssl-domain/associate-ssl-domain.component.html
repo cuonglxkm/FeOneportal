@@ -28,8 +28,8 @@
                     <nz-select nzMode="multiple" [nzPlaceHolder]="
             'Chọn domains'
           " [nzShowSearch]="true" nzSize="large" formControlName="listDomainIds">
-                        <nz-option *ngFor="let data of sslCertData?.subjectAlternativeNames" [nzLabel]="data"
-                            [nzValue]="data"></nz-option>
+                        <nz-option *ngFor="let data of sslCertData?.domainAllowAssociates" [nzLabel]="data?.domainName"
+                            [nzValue]="data?.id"></nz-option>
                     </nz-select>
                 </nz-form-control>
             </nz-form-item>
