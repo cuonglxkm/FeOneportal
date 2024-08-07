@@ -90,7 +90,7 @@ export class CreateUpdateIpPublicComponent implements OnInit {
       }))
       .subscribe(
         (data) => {
-          this.listInstance = data.records;
+          this.listInstance = data.records.filter(item => item.taskState == 'ACTIVE' && item.status == 'KHOITAO');
         }
       );
 

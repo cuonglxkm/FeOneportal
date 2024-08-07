@@ -37,6 +37,7 @@ export class OrderDetailComponent {
   unitPrice = 0;
   specType: string
   isLoadingTotalAmount: boolean = false
+  isIppublic = true
   constructor(
     private router: Router,
     private activatedRoute: ActivatedRoute,
@@ -115,7 +116,7 @@ export class OrderDetailComponent {
                 item.serviceNameLink = this.serviceName
               }
             })
-            
+
 
             if(data.statusCode == 1){
               data.statusCode = 6
@@ -138,6 +139,12 @@ export class OrderDetailComponent {
         .getDetail(idParse)
         .subscribe({
           next: (data) => {
+            let obj = JSON.parse(data?.orderItems[0]?.serviceDetail);
+            if (obj != null && obj.IsFloating === true) {
+              this.isIppublic = false;
+            } else {
+              this.isIppublic = true;
+            }
             this.data = data;
             this.getSpecType()
             if(this.data.paymentUrl === '' && this.data.statusCode == 0  && this.specType !== undefined){
@@ -387,7 +394,7 @@ export class OrderDetailComponent {
       if (!this.orderItem || !this.orderItem.orderItemPrices || !this.orderItem.orderItemPrices[0]) {
         return;
       }
-      
+
       console.log(this.orderItem?.totalPayment?.amount);
       this.unitPrice = this.orderItem.orderItemPrices[0]?.unitPrice?.amount;
     }, (error) => {

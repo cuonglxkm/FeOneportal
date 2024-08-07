@@ -179,9 +179,10 @@ export class EditSslCertWAFComponent implements OnInit {
       }
     }
     this.formEditSslCert.name = this.form.get('certName').value;
+    this.formEditSslCert.name = this.form.get('remarks').value;
     if(this.uploadMethod === '2'){
-      this.formEditSslCert.certificate = this.form.get('certificate').value.split('\n').join('');
-      this.formEditSslCert.privateKey = this.form.get('privateKey').value.split('\n').join('');
+      this.formEditSslCert.certificate = this.form.get('certificate').value;
+      this.formEditSslCert.privateKey = this.form.get('privateKey').value;
     }else{
       this.formEditSslCert.certificate = this.form.get('certificate').value;
       this.formEditSslCert.privateKey = this.form.get('privateKey').value;

@@ -88,9 +88,8 @@
             <td>{{ data.volumeName }}</td>
             <td nzAlign="right">{{ data.size }}</td>
             <td *ngIf="typeVpc == 0">{{ data.backupPackageName }}</td>
-            <td *ngIf="data.status == 'CREATING'">-</td>
-            <td *ngIf="data.status != 'CREATING'">{{ data.creationDate | date: 'dd/MM/yyyy' }}</td>
-            <td *ngIf="data.status == 'CREATING'">-</td>
+            <td>{{ data.creationDate | date: 'dd/MM/yyyy' }}</td>
+            <td *ngIf="data.status == 'CREATING'"></td>
             <td *ngIf="data.status != 'CREATING'">{{ data.expirationDate | date: 'dd/MM/yyyy' }}</td>
             <ng-container *ngIf="data.status | ServiceStatusPipe as statusModel">
               <td *ngIf="data.status != 'SUSPENDED'" nzBreakWord nzAlign="left" [ngStyle]="{color: statusModel.color}">{{statusModel.status}}</td>
