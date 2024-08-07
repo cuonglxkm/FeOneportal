@@ -263,14 +263,13 @@ export class InstancesDetailComponent implements OnInit {
   } {
     return data.reduce((acc, item) => {
       // Lấy chỉ phần thời gian hh:mm
-      const date = new Date(item.timeSpan * 1000);
       const timeKey = this.transform(item.timeSpan);
 
       // Gộp các giá trị trùng lặp
       if (!acc[timeKey]) {
         acc[timeKey] = 0;
       }
-      acc[timeKey] += item.value;
+      acc[timeKey] = item.value;
       return acc;
     }, {} as { [key: string]: number });
   }
@@ -366,12 +365,24 @@ export class InstancesDetailComponent implements OnInit {
   }
 
   chartStorageUse: Chart;
+  unitChart: string;
   createChartStorageUse() {
-    const data =
-      this.summary?.datas?.map((item) => ({
-        timeSpan: item.timeSpan,
-        value: parseInt(item.value, 10), // Chuyển đổi value từ chuỗi sang số
-      })) || [];
+    let data;
+    if (this.typeGSTitle == 'RAM') {
+      this.unitChart = 'GiB';
+      data =
+        this.summary?.datas?.map((item) => ({
+          timeSpan: item.timeSpan,
+          value: Number((parseFloat(item.value) / 1073741824).toFixed(2)), // Chuyển đổi value từ chuỗi sang số
+        })) || [];
+    } else {
+      this.unitChart = this.summary.unit;
+      data =
+        this.summary?.datas?.map((item) => ({
+          timeSpan: item.timeSpan,
+          value: Number(parseFloat(item.value).toFixed(2)), // Chuyển đổi value từ chuỗi sang số
+        })) || [];
+    }
     console.log('rawData:', data);
     if (!data || data.length === 0) {
       console.warn('Data is null or empty, using default time range.');
@@ -387,7 +398,7 @@ export class InstancesDetailComponent implements OnInit {
     // Chuyển đổi timestamp thành định dạng thời gian đọc được
     const labels = Object.keys(uniqueData);
     // Trích xuất giá trị dữ liệu
-    const dataValues = Object.values(uniqueData).map((value) => value / 1024); // Chuyển từ KB sang MB
+    const dataValues = Object.values(uniqueData).map((value) => value);
     console.log('dataValues', dataValues);
     // Cấu hình Highcharts
     this.chartStorageUse = new Chart({
@@ -410,7 +421,7 @@ export class InstancesDetailComponent implements OnInit {
       },
       series: [
         {
-          name: this.typeGSTitle + ' (' + this.summary.unit + ')',
+          name: this.typeGSTitle + ' (' + this.unitChart + ')',
           data: dataValues, // Đảm bảo rằng data là một mảng số
         } as any,
       ], // Ép kiểu để khắc phục lỗi TypeScript
