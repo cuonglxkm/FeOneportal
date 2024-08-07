@@ -465,6 +465,7 @@
         nz-checkbox
         [(ngModel)]="lifecycleUpdate.isSetExpiration_Day"
         formControlName="isSetExpiration_Day"
+        (ngModelChange)="changeIsSetExpiration_Day()"
         [ngModelOptions]="{ standalone: true }"
         >{{ 'app.delete.file.current.version' | i18n }}</label
       >
@@ -494,6 +495,7 @@
         style="margin-top: 16px"
         nz-checkbox
         [(ngModel)]="lifecycleUpdate.isSetNoncurrentVersionExpiration_Day"
+        (ngModelChange)="changeSetNoncurrentVersionExpiration_Day()"
         formControlName="isSetNoncurrentVersionExpiration_Day"
         [ngModelOptions]="{ standalone: true }"
         >{{ 'app.delete.file.non.current.version' | i18n }}</label
@@ -528,6 +530,7 @@
         style="margin-top: 16px"
         nz-checkbox
         [(ngModel)]="lifecycleUpdate.isSetAbortIncompleteMultipartUpload_Day"
+        (ngModelChange)="changeSetAbortIncompleteMultipartUpload_Day()"
         formControlName="isSetAbortIncompleteMultipartUpload_Day"
         [ngModelOptions]="{ standalone: true }"
         >{{ 'app.delete.multi.upload' | i18n }}</label
