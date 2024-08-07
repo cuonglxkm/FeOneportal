@@ -63,6 +63,7 @@ export class ListenerDetailComponent implements OnInit {
   currentPageData: L7Policy[];
   @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
   total: any;
+  sslCert = '';
   constructor(private router: Router,
               private fb: NonNullableFormBuilder,
               private service: ListenerService,
@@ -109,6 +110,7 @@ export class ListenerDetailComponent implements OnInit {
           this.validateForm.controls['description'].setValue(data.description);
           this.description = data.description;
           this.protocolListener = data.protocol;
+          this.sslCert = data?.sslCertification[0]?.name;
           this.getPool(this.activatedRoute.snapshot.paramMap.get('id'));
           this.getListL7Policy(this.activatedRoute.snapshot.paramMap.get('id'));
         }
