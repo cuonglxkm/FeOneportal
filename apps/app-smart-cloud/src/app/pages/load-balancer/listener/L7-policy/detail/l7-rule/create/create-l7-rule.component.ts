@@ -19,7 +19,7 @@ export class CreateL7RuleComponent implements AfterViewInit {
   @Input() l7policyId: string;
   @Output() onOk = new EventEmitter();
   @Output() onCancel = new EventEmitter();
-
+  isVisible12: boolean = false;
   isVisible: boolean = false;
   isLoading: boolean = false;
 
