@@ -24,16 +24,27 @@ import {
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { I18NService } from '@core';
 import { environment } from '@env/environment';
-import { FormUpdateUserInvoice } from '../../../../../app-smart-cloud/src/app/shared/models/invoice';
-import { InvoiceService } from '../../../../../app-smart-cloud/src/app/shared/services/invoice.service';
 import { Router } from '@angular/router';
 import { finalize } from 'rxjs';
 
+class FormUpdateUserInvoice {
+  id: number
+  fullName: string
+  companyName: string
+  phoneNumber: string
+  email: string
+  taxCode: string
+  address: string
+  customerGroupId: number
+  customerTypeId: number
+  customerId: number
+}
 @Component({
   selector: 'one-portal-user-profile',
   templateUrl: './user-profile.component.html',
   styleUrls: ['./user-profile.component.less'],
 })
+
 export class UserProfileComponent implements OnInit {
   constructor(
     public http: HttpClient,
@@ -41,7 +52,6 @@ export class UserProfileComponent implements OnInit {
     public notification: NzNotificationService,
     @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
     private fb: NonNullableFormBuilder,
-    private invoiceService: InvoiceService,
     private settings: SettingsService,
     private router: Router,
     private cdr: ChangeDetectorRef
@@ -304,6 +314,7 @@ export class UserProfileComponent implements OnInit {
   }
 
   handleOkUpdateCustomerInvoice() {
+    const baseUrl = environment['baseUrl'];
     if (this.userModel && this.userModel.customerInvoice === null) {
       this.isLoadingUpdateInfo = true;
       this.formHandleUserInvoice.companyName =
@@ -323,7 +334,7 @@ export class UserProfileComponent implements OnInit {
       this.formHandleUserInvoice.customerId = this.tokenService.get()?.userId;
       console.log(this.formHandleUserInvoice);
 
-      this.invoiceService.createInvoice(this.formHandleUserInvoice).subscribe({
+      this.http.post(baseUrl + '/users' + '/invoice', Object.assign(this.formHandleUserInvoice), this.httpOptions).subscribe({
         next: (data) => {
           this.isLoadingUpdateInfo = false;
           this.notification.success(
@@ -360,7 +371,7 @@ export class UserProfileComponent implements OnInit {
       this.formHandleUserInvoice.id = this.userModel.customerInvoice.id;
       console.log(this.formHandleUserInvoice);
 
-      this.invoiceService.updateInvoice(this.formHandleUserInvoice).subscribe({
+      this.http.put(baseUrl + '/users' + '/invoice', Object.assign(this.formHandleUserInvoice), this.httpOptions).subscribe({
         next: (data) => {
           this.isLoadingUpdateInfo = false;
           this.notification.success(
@@ -384,6 +395,12 @@ export class UserProfileComponent implements OnInit {
     headers: new HttpHeaders({
       'Content-Type': 'application/json',
       Authorization: 'Bearer ' + this.tokenService.get()?.token,
+      'User-Root-Id':
+          localStorage.getItem('UserRootId') &&
+          Number(localStorage.getItem('UserRootId')) > 0
+            ? Number(localStorage.getItem('UserRootId'))
+            : this.tokenService.get()?.userId,
+        'Project-Id': localStorage.getItem('projectId') && Number(localStorage.getItem('projectId')) > 0 ? Number(localStorage.getItem('projectId')) : 0,
     }),
   };
 
