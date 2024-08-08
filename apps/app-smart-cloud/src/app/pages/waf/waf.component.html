@@ -21,7 +21,7 @@
   
 </page-header>
 
-<ng-container [ngSwitch]="isBegin">
+<ng-container *ngIf="isLoaded" [ngSwitch]="isBegin">
   <ng-container *ngSwitchCase="false">
     <nz-tabset>
       <nz-tab [nzTitle]="'waf.domain.table.title.domain' | i18n">
