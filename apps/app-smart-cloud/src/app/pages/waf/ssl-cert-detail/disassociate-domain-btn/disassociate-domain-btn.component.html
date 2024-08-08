@@ -1,5 +1,7 @@
-<img nz-popover src="assets/imgs/cancel.svg" alt="" nzPopoverPlacement="bottom"
-    style="cursor: pointer; margin-right: 5px; margin-top: 2px;" [nzPopoverContent]="'Disassociate Certificate'"
-    (click)="openModal()">
+<img *ngIf="domainData?.domainStatus !== 'inprocess'" nz-popover src="assets/imgs/blue-cancel.svg" alt=""
+    nzPopoverPlacement="bottom" style="cursor: pointer; margin-right: 5px; margin-top: 2px;"
+    [nzPopoverContent]="'Disassociate Certificate'" (click)="openModal()">
+<img *ngIf="domainData?.domainStatus === 'inprocess'" nz-popover src="assets/imgs/disable-cancel.svg" alt=""
+    style="cursor: not-allowed; margin-right: 5px; margin-top: 2px;">
 <one-portal-disassociate-ssl-domain [sslCertData]="sslCertData" [domainData]="domainData"
-    (onCancelVisible)="handleCancel()" [isVisible]="isVisible"></one-portal-disassociate-ssl-domain>
+    (onCancelVisible)="handleCancel()" [isVisible]="isVisible" (onOk)="handleOnOk()"></one-portal-disassociate-ssl-domain>
