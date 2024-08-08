@@ -31,6 +31,7 @@ export class WafComponent implements OnInit {
       this.isLoaded = true;
     },error:(err)=>{
       this.isBegin = false;
+      this.isLoaded = true;
     }})
   }
   navigateToCreateWaf() {
