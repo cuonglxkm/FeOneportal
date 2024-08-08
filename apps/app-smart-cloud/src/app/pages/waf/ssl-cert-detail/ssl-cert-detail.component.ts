@@ -1,5 +1,13 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Inject, OnInit } from '@angular/core';
 import { BaseResponse } from '../../../../../../../libs/common-utils/src';
+import { WafService } from 'src/app/shared/services/waf.service';
+import { ActivatedRoute, Router } from '@angular/router';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
+import { I18NService } from '@core';
+import { NzNotificationService } from 'ng-zorro-antd/notification';
+import { AssociatedDomainDTO, SslCertDTO } from '../waf.model';
+import { LoadingService } from '@delon/abc/loading';
+import { finalize } from 'rxjs';
 
 @Component({
   selector: 'one-portal-ssl-cert-detail',
@@ -9,58 +17,40 @@ import { BaseResponse } from '../../../../../../../libs/common-utils/src';
 })
 export class SslCertDetailComponent implements OnInit {
   isLoading: boolean = false;
-  pageSize: number = 10;
-  pageIndex: number = 1;
-  response: BaseResponse<any>;
-  detail: any;
+  detail: SslCertDTO;
 
   isVisibleAssociateDomain: boolean = false;
+  associatedDomains: AssociatedDomainDTO[];
 
-  constructor() {}
-
-  onPageIndexChange(value) {
-    this.pageIndex = value;
-    this.getListDomains();
-  }
+  constructor(
+    private service: WafService,
+    private router: Router,
+    private loadingService: LoadingService,
+    @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
+    private activatedRoute: ActivatedRoute,
+    private notification: NzNotificationService,
+    private cdr: ChangeDetectorRef
+  ) {}
 
   ngOnInit() {
-    this.getListDomains();
-    this.getSslCertificateDetail()
+    const id = this.activatedRoute.snapshot.paramMap.get('id')
+    this.getSslCertificateDetail(id);
   }
 
-  getSslCertificateDetail() {
-    this.detail = {
-      id: 1,
-      name: 'ssl.certificate.1',
-      authorizedDomains: ['smartcloud.vn', '*smartcloud.vn'],
-      status: 'Normal',
-      type: 'RSA Certificate',
-      expiration: new Date(),
-      associatedDomain: ['smartcloud.vn'],
-    };
-  }
-
-  getListDomains() {
-    this.response = {
-      currentPage: 1,
-      pageSize: 10,
-      totalCount: 100,
-      previousPage: 0,
-      records: [
-        {
-          id: 1,
-          name: 'smartcloud.vn',
-          status: 'Deploying successfully',
-          usage: 'Internationally HTTPS Transmission (Default)',
-        },
-        {
-          id: 2,
-          name: 'smartcloud.vn',
-          status: 'Deploying successfully',
-          usage: 'Internationally HTTPS Transmission (Default)',
-        },
-      ],
-    };
+  private getSslCertificateDetail(id) {
+    this.loadingService.open({ type: "spin", text: "Loading..." });
+    this.service.getDetailSslCert(id).pipe(
+          finalize(() => this.loadingService.close())
+        ).subscribe({
+      next:(data)=>{
+        this.detail = data
+        this.associatedDomains = data?.domains
+        this.cdr.detectChanges()
+      },
+      error:(error)=>{
+        this.notification.error(this.i18n.fanyi("app.status.fail"), this.i18n.fanyi(error.error.message))
+      }
+    })
   }
 
   handleOpenAssociateDomain() {
@@ -69,5 +59,10 @@ export class SslCertDetailComponent implements OnInit {
 
   handleCancelAssociateDomain() {
     this.isVisibleAssociateDomain = false;
+  }
+
+  handleOk(){
+    const id = this.activatedRoute.snapshot.paramMap.get('id')
+    this.getSslCertificateDetail(id)
   }
 }

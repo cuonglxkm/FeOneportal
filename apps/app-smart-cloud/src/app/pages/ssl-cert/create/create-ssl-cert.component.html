@@ -124,9 +124,13 @@
                 required
                 placeholder="Nhập tên SSL Cert"
                 formControlName="certName"
+                (ngModelChange)="changeName($event)"
                 class="input-custom"
                 maxlength="50"
               />
+              <div *ngIf="isExistName" style="color: #ff4d4f">
+                Tên SSL Cert đã tồn tại
+              </div>
               <ng-template #nameErrorTpl>
                 <ng-container *ngIf="form.get('certName').hasError('required')">Tên SSL Cert không được để trống </ng-container>
                 <ng-container *ngIf="form.get('certName').hasError('pattern')">Tên SSL Cert không bao gồm dấu Tiếng Việt, dấu cách, ký tự đặc biệt (trừ _) </ng-container>
@@ -225,7 +229,7 @@
       nz-button
       nzType="primary"
       (click)="handleCreate()"
-      [disabled]="form.invalid" [nzLoading]="isLoading"
+      [disabled]="form.invalid || isExistName" [nzLoading]="isLoading"
       
     >
       <img

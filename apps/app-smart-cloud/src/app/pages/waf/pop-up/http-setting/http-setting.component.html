@@ -60,7 +60,7 @@ nzPopoverPlacement="bottom" style="cursor: pointer;margin-right: 5px;"/>
           nzType="primary"
           (click)="handleSubmit()"
           [nzLoading]="isLoading"
-          [disabled]="validateForm.invalid || !validateForm.isDirty"
+          [disabled]="validateForm.invalid"
         >
           <img
             style="padding-right: 10px; margin-top: -4px"

@@ -34,7 +34,8 @@ export class BucketCreateComponent implements OnInit {
       nonNullable: true,
       validators: [
         Validators.required,
-        Validators.pattern(/^(?!-)(?!.*-$)(?!\.)(?!.*\.$)[a-z0-9-.]{3,63}$/),
+        Validators.pattern(/^(?!-)(?!.*-$)(?!\.)(?!.*\.$)[a-z0-9-.]*$/),
+        this.checkErrorName.bind(this)
       ],
     }),
   });
@@ -133,7 +134,7 @@ export class BucketCreateComponent implements OnInit {
         this.isLoading = false
 
         console.log(e);
-        
+
         if(e.status === 500){
           this.notification.error(
             this.i18n.fanyi('app.status.fail'),
@@ -155,6 +156,17 @@ export class BucketCreateComponent implements OnInit {
       this.router.navigate(['/app-smart-cloud/object-storage-advance/bucket']);
     }else{
       this.router.navigate(['/app-smart-cloud/object-storage/bucket']);
+    }
+  }
+
+  checkErrorName(control) {
+    const value = control.value;
+    if (value.length <= 2) {
+      return { lessTwo: true };
+    } else  if (value.length > 63){
+      return { more63: true };
+    } else {
+      return null;
     }
   }
 }

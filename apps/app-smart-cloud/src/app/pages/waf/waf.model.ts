@@ -154,6 +154,11 @@ export interface SslCertDTO {
   commonName: string;
   issuer: string;
   subjectAlternativeNames: string[];
+  domains: AssociatedDomainDTO[];
+  content: string;
+  certType: string;
+  domainAllowAssociates: AllowedAssociatedDomainDTO[]
+  keyUsage: string;
 }
 export interface UpdatePolicies {
   ddos?: boolean | null;
@@ -163,4 +168,15 @@ export interface UpdatePolicies {
   waf?: boolean | null;
   whiteList?: boolean | null;
   threatIntelligence?: boolean | null;
+}
+
+export interface AssociatedDomainDTO {
+  domainName: string;
+  domainStatus: string
+  id: number
+}
+
+export interface AllowedAssociatedDomainDTO {
+  domainName: string;
+  id: number
 }
