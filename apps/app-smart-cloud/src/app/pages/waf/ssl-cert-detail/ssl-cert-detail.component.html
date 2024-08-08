@@ -95,10 +95,28 @@
                   >Key Usage:</span
                 >
                 <span class="text-value-detail customSpan">{{
-                  'Signature And Encipherment'
+                  detail?.keyUsage || ''
                 }}</span>
               </nz-row></nz-col>
         </nz-row>
+        <nz-collapse nzGhost *ngIf="detail?.content">
+          <nz-collapse-panel [nzShowArrow]="false" [nzHeader]="nzHeader">
+            <ng-template #nzHeader>
+              <div class="custom-collapse-header">
+                {{ 'Show original certificate information' }}
+                <img src="assets/imgs/arrow-down.svg" alt="" class="custom-arrow"/>
+              </div>
+            </ng-template>
+            <p>Certificate And CA</p>
+            <div style="background-color: #e2e2e9; padding: 16px; border-radius: 8px;">{{detail?.content || ''}}</div>
+          </nz-collapse-panel>
+          <ng-template #nzHeader>
+      <div class="custom-collapse-header">
+        {{ panel.header }}
+        <i nz-icon nzType="caret-right" class="custom-arrow"></i>  <!-- Custom arrow -->
+      </div>
+    </ng-template>
+        </nz-collapse>
     </nz-card>
     <nz-card>
         <div class="d-flex" style="justify-content: space-between; align-items: center">

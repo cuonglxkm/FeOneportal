@@ -22,3 +22,21 @@
     font-weight: 700;
     color: #2B2D3B;
 }
+
+::ng-deep {
+    .ant-collapse-content-box, .ant-collapse-header{
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+    }
+    .ant-collapse-header{
+        color: #0066B3 !important;
+    }
+}
+
+.custom-collapse-header .custom-arrow {
+    transition: transform 0.2s;
+}
+
+.ant-collapse-item-active .custom-collapse-header .custom-arrow {
+    transform: rotate(180deg);
+}

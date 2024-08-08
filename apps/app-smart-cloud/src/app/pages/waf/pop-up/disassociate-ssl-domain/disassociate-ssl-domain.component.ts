@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Inject, Input, Output } from '@angular/core';
-import { SslCertDTO, WafDomain } from '../../waf.model';
+import { AssociatedDomainDTO, SslCertDTO } from '../../waf.model';
 import { WafService } from 'src/app/shared/services/waf.service';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { I18NService } from '@core';
@@ -12,7 +12,7 @@ import { ALAIN_I18N_TOKEN } from '@delon/theme';
 })
 export class DisassociateSslDomainComponent {
   @Input() sslCertData: SslCertDTO
-  @Input() domainData: WafDomain
+  @Input() domainData: AssociatedDomainDTO
   @Input() isVisible: boolean 
   @Output() onCancelVisible = new EventEmitter()
   @Output() onOk = new EventEmitter()
