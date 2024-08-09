@@ -13,7 +13,7 @@ import { LoadingService } from '@delon/abc/loading';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { DomSanitizer } from '@angular/platform-browser';
 import { DOMAIN_REGEX } from 'src/app/shared/constants/constants';
-import { duplicateDomainValidator, ipValidatorMany } from '../../../../../../../libs/common-utils/src';
+import { duplicateDomainValidator, ipValidatorMany, ipWafDomainValidatorMany } from '../../../../../../../libs/common-utils/src';
 import { AddDomainRequest, WafDetailDTO } from '../waf.model';
 import { WafService } from 'src/app/shared/services/waf.service';
 import { finalize } from 'rxjs';
@@ -29,7 +29,7 @@ export class AddDomainComponent implements OnInit {
   form: FormGroup = this.fb.group({
     nameWAF: ['', [Validators.required]],
     domain: ['', [Validators.required,Validators.pattern(DOMAIN_REGEX)]],
-      ipPublic: ['', [Validators.required, ipValidatorMany]],
+      ipPublic: ['', [Validators.required, ipWafDomainValidatorMany]],
       host: [''],
       port: [''],
       sslCert: [''],
@@ -113,7 +113,7 @@ export class AddDomainComponent implements OnInit {
     this.addDomainRequest.host = formValues.host
     this.addDomainRequest.ipPublic = formValues.ipPublic
     this.addDomainRequest.packageId = formValues.nameWAF
-    this.addDomainRequest.port = formValues.port || 0
+    if(formValues.port) this.addDomainRequest.port = formValues.port
     this.addDomainRequest.policyId = 0
     this.addDomainRequest.sslCertId = formValues.sslCert || 0
 
@@ -123,7 +123,6 @@ export class AddDomainComponent implements OnInit {
       this.cdr.detectChanges()
     })).subscribe({
       next: (data: any)=>{
-        console.log(data)
         this.notification.success( this.i18n.fanyi("app.status.success"), "Tiến trình sẽ diễn ra trong 1 – 3 phút")
         this.navigateToListWaf()
       },

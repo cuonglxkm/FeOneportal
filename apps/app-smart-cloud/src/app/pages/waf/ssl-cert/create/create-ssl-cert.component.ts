@@ -11,7 +11,7 @@ import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { NzUploadChangeParam, NzUploadFile } from 'ng-zorro-antd/upload';
-import { NAME_REGEX } from 'src/app/shared/constants/constants';
+import { NAME_CERT_REGEX, NAME_REGEX } from 'src/app/shared/constants/constants';
 import { WafService } from 'src/app/shared/services/waf.service';
 import { SslCertRequest } from '../../waf.model';
 
@@ -43,7 +43,7 @@ export class CreateSslCertWAFComponent implements OnInit {
     remarks: FormControl<string>;
   }> = this.fb.group({
     privateKey: ['', Validators.required],
-    certName: ['', [Validators.required, Validators.pattern(NAME_REGEX)]],
+    certName: ['', [Validators.required, Validators.pattern(NAME_CERT_REGEX)]],
     certificate: ['', Validators.required],
     remarks: ['']
   });
@@ -73,24 +73,26 @@ export class CreateSslCertWAFComponent implements OnInit {
 
   handleChange(info: NzUploadChangeParam): void {
     let fileList = [...info.fileList];
-    const maxFiles = 10;
     const maxSize = 44 * 1024;
     const allowedFormats = ['pem', 'key', 'crt'];
-
+  
     const validationErrors = new Map<string, string[]>();
-
+  
+    let containsPemFile = fileList.some(file => file.name.split('.').pop()?.toLowerCase() === 'pem');
+    let maxFiles = containsPemFile ? 1 : 2;
+  
     fileList.forEach((file) => {
       const fileErrors: string[] = [];
-
+  
       if (file.size > maxSize) {
         fileErrors.push(`File không được vượt quá 44kb.`);
       }
-
+  
       const fileExtension = file.name.split('.').pop()?.toLowerCase() || '';
       if (!allowedFormats.includes(fileExtension)) {
         fileErrors.push(`File không đúng định dạng`);
       }
-
+  
       if (fileList.length > maxFiles) {
         this.notification.error(
           'File Limit Exceeded',
@@ -98,12 +100,12 @@ export class CreateSslCertWAFComponent implements OnInit {
         );
         fileList = fileList.slice(0, maxFiles);
       }
-
+  
       if (fileErrors.length > 0) {
         validationErrors.set(file.name, fileErrors);
       }
     });
-
+  
     if (fileList.length > maxFiles) {
       this.notification.error(
         'File Limit Exceeded',
@@ -111,22 +113,22 @@ export class CreateSslCertWAFComponent implements OnInit {
       );
       fileList = fileList.slice(0, maxFiles);
     }
-
+  
     if (validationErrors.size > 0) {
       validationErrors.forEach((errors, fileName) => {
         this.notification.error('Thất bại', `${errors.join('<br>')}`);
       });
-
+  
       fileList = fileList.filter((file) => !validationErrors.has(file.name));
     }
-
+  
     this.fileList = fileList.map((file) => {
       if (file.response) {
         file.url = file.response.url;
       }
       return file;
     });
-
+  
     this.getData();
   }
 
@@ -146,6 +148,9 @@ export class CreateSslCertWAFComponent implements OnInit {
         if (fileExtension === 'crt') {
           this.form.controls.certificate.setValue(content);
         } else if (fileExtension === 'key') {
+          this.form.controls.privateKey.setValue(content);
+        } else if (fileExtension === 'pem') {
+          this.form.controls.certificate.setValue(content);
           this.form.controls.privateKey.setValue(content);
         }
       } catch (error) {

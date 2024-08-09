@@ -259,6 +259,7 @@
         </div>
       </div>
       <label
+        *ngIf="listTag?.length == 0"
         class="text-label"
         style="margin-top: 16px"
         nz-checkbox
@@ -267,7 +268,7 @@
         formControlName="isSetAbortIncompleteMultipartUpload_Day"
         >{{ 'app.delete.multi.upload' | i18n }}</label
       >
-      <div style="display: flex; margin-top: 5px">
+      <div *ngIf="listTag?.length == 0" style="display: flex; margin-top: 5px">
         <div style="flex: 2; padding-right: 16px">
           <nz-input-number
             style="width: 100%; margin-left: 0px"
@@ -526,6 +527,7 @@
         </div>
       </div>
       <label
+        *ngIf="listTag?.length == 0"
         class="text-label"
         style="margin-top: 16px"
         nz-checkbox
@@ -535,7 +537,7 @@
         [ngModelOptions]="{ standalone: true }"
         >{{ 'app.delete.multi.upload' | i18n }}</label
       >
-      <div style="display: flex; margin-top: 5px">
+      <div *ngIf="listTag?.length == 0" style="display: flex; margin-top: 5px">
         <div style="flex: 2; padding-right: 16px">
           <nz-input-number
             style="width: 100%; margin-left: 0px"
