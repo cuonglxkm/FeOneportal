@@ -81,12 +81,6 @@ export class ObjectStorageCreateComponent implements OnInit {
   ngOnInit(): void {
     let regionAndProject = getCurrentRegionAndProject();
     this.region = regionAndProject.regionId;
-    this.dataSubject.next(1);
-    this.timeChangeSubject.pipe(
-      debounceTime(300)
-    ).subscribe(value => {
-      this.handleTimeChange(value);
-    });
     this.updateExpiredDate(this.validateForm.controls.time.value);
     this.onChangeCapacity();
     this.getConfigurations();
@@ -101,20 +95,15 @@ export class ObjectStorageCreateComponent implements OnInit {
     quota: [0, Validators.required],
   });
 
-  timeChangeSubject: Subject<number> = new Subject<number>();
-  isUpdating: boolean = false;
-  onChangeTime(value: number) {
-    this.timeChangeSubject.next(value);
+  dataSubjectTime: Subject<any> = new Subject<any>();
+  changeTime(value: number) {
+    this.dataSubjectTime.next(value);
   }
 
-  handleTimeChange(value: number) {
+  onChangeTime(value) {
     this.timeSelected = value;
-    if (this.validateForm.controls.time.value !== this.timeSelected) {
-      this.isUpdating = true;
-      this.validateForm.controls.time.setValue(this.timeSelected);
-      this.isUpdating = false;
-    }
-    this.updateExpiredDate(this.timeSelected);
+    this.validateForm.controls.time.setValue(this.timeSelected);
+    console.log(this.timeSelected);
     this.getTotalAmount();
   }
 
