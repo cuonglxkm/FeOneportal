@@ -122,6 +122,14 @@ export class BucketService extends BaseService {
     );
   }
 
+  getBucketPolicyJson(sid: string, bucketName: string, regionId: number): Observable<any> {
+    let url_ = `/object-storage/BucketPolicy/Json?id=${sid}&bucketName=${bucketName}&regionId=${regionId}`;
+    return this.http.get<any>(
+      this.baseUrl + this.ENDPOINT.provisions + url_,
+      this.getHeaders()
+    );
+  }
+
   createBucketPolicy(
     bucketName: string,
     effect: string,

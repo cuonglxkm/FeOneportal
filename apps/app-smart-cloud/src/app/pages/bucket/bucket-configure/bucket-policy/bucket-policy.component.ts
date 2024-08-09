@@ -542,16 +542,17 @@ export class BucketPolicyComponent implements OnInit {
   }
 
   isVisibleJson: boolean = false;
-  jsonDataBucketPolicy: string;
+  jsonItemDataBucketPolicy: string;
+  jsonTotalDataBucketPolicy: string;
   bucketPolicyDetail: bucketPolicyDetail = new bucketPolicyDetail();
   modalJson(sid: string) {
     this.isVisibleJson = true;
     this.bucketService
-      .getBucketPolicyDetail(sid, this.bucketName, this.region)
+      .getBucketPolicyJson(sid, this.bucketName, this.region)
       .subscribe({
         next: (data) => {
-          this.bucketPolicyDetail = data;
-          this.jsonDataBucketPolicy = JSON.stringify(this.bucketPolicyDetail, null, 2);
+          this.jsonItemDataBucketPolicy = JSON.stringify(data.JsonItem, null, 2);
+          this.jsonTotalDataBucketPolicy = JSON.stringify(data.JsonTotal, null, 2);
         },
         error: (e) => {
         },

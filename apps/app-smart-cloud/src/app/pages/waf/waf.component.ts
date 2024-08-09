@@ -17,6 +17,7 @@ export class WafDTO{
 
 export class WafComponent implements OnInit {
   isBegin = true;
+  isLoaded = false;
   constructor(
     private wafService: WafService,
     private router: Router) {
@@ -27,8 +28,10 @@ export class WafComponent implements OnInit {
       if(data){
         this.isBegin = false;
       }
+      this.isLoaded = true;
     },error:(err)=>{
-      
+      this.isBegin = false;
+      this.isLoaded = true;
     }})
   }
   navigateToCreateWaf() {
