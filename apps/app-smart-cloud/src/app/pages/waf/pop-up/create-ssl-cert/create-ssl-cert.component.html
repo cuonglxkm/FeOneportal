@@ -71,7 +71,7 @@
           nz-input
           placeholder="Nhập tên chứng chỉ"
           formControlName="certName"
-          [maxlength]="50"
+          [maxlength]="128"
         />
         <ng-template #nameErrorTpl let-control>
           <ng-container *ngIf="control.hasError('required')">{{
@@ -192,6 +192,7 @@
           appTrim
           nz-input
           placeholder="Nhập remarks"
+          maxlength="255"
           formControlName="remarks"
         />
       </nz-form-control>

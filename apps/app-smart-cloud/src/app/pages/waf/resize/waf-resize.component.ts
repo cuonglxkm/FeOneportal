@@ -113,9 +113,13 @@ export class WAFResizeComponent implements OnInit {
     this.service.getDetail(id).subscribe(
       (data) => {
         this.WAFDetail = data;
-        if(data?.wafDomains !== null){
-          this.domains = data.wafDomains.map((item) => item.domain);
-          this.ipPublics = data.wafDomains.map((item) => item.ipPublic);
+        if (data?.wafDomains !== null) {
+          this.domains = data.wafDomains
+            .sort((a, b) => a.id - b.id)
+            .map((item) => item.domain);
+          this.ipPublics = data.wafDomains
+            .sort((a, b) => a.id - b.id)
+            .map((item) => item.ipPublic);
         }
       },
       (error) => {

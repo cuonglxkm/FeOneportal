@@ -51,7 +51,7 @@
                 >Tên WAF không được để trống
               </ng-container>
               <ng-container *ngIf="control.hasError('pattern')"
-                >{{ 'validation.project.required.name' | i18n }}
+                >Tên WAF không đúng định dạng
               </ng-container>
             </ng-template>
           </nz-form-control>
@@ -188,9 +188,12 @@
 
                 <div nz-col [nzSpan]="12" class="gutter-row">
                   <nz-form-item>
-                    <nz-form-control>
+                    <nz-form-control [nzErrorTip]="hostErrorTpl">
                       <nz-form-label nzFor="host">Host </nz-form-label>
-                      <input nz-input type="text" appTrim placeholder="Nhập host" formControlName="host" class="input-custom" [maxlength]="50" />                    
+                      <input nz-input type="text" appTrim placeholder="Nhập host" formControlName="host" class="input-custom" [maxlength]="50" />  
+                      <ng-template #hostErrorTpl let-control>
+                        <ng-container *ngIf="control.hasError('pattern')">Host không đúng định dạng</ng-container>
+                      </ng-template>                  
                     </nz-form-control>
                   </nz-form-item>
                 </div>
@@ -199,7 +202,7 @@
                   <nz-form-item>
                     <nz-form-control>
                       <nz-form-label nzFor="port">Port </nz-form-label>
-                      <nz-input-number style="width: 100%; margin-left: 0;" nz-input type="text" nzPlaceHolder="Nhập port" formControlName="port" class="input-custom" [maxlength]="50"  />
+                      <nz-input-number nzMax="65535" style="width: 100%; margin-left: 0;" nz-input type="text" nzPlaceHolder="Nhập port" formControlName="port" class="input-custom" />
                     </nz-form-control>
                   </nz-form-item>
                 </div>

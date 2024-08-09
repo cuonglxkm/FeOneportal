@@ -452,8 +452,9 @@ export function ipValidatorMany(control: AbstractControl): ValidationErrors | nu
     return null;
   }
 
-  const ipPattern = /^(?:\d{1,3}\.){3}\d{1,3}$/;
-  const ips = control.value.split(',');
+  const ipPattern = /^(?:[1-9]\d{0,2}|1\d{2}|2[0-4]\d|25[0-5])\.(?:\d{1,2}|1\d{2}|2[0-4]\d|25[0-5])\.(?:\d{1,2}|1\d{2}|2[0-4]\d|25[0-5])\.(?:\d{1,2}|1\d{2}|2[0-4]\d|25[0-5])$/;
+  
+  const ips = control.value.split(';');
 
   for (const ip of ips) {
     if (!ipPattern.test(ip.trim())) {
