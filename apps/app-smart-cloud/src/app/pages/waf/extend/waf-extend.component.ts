@@ -93,9 +93,13 @@ export class WAFExtendComponent implements OnInit {
         (data) => {
           this.WAFDetail = data;
           this.getOfferById(data.offerId)
-          if(data?.wafDomains !== null){
-            this.domains = data.wafDomains.map((item) => item.domain);
-            this.ipPublics = data.wafDomains.map((item) => item.ipPublic);
+          if (data?.wafDomains !== null) {
+            this.domains = data.wafDomains
+              .sort((a, b) => a.id - b.id)
+              .map((item) => item.domain);
+            this.ipPublics = data.wafDomains
+              .sort((a, b) => a.id - b.id)
+              .map((item) => item.ipPublic);
           }
         },
         (error) => {
@@ -104,13 +108,6 @@ export class WAFExtendComponent implements OnInit {
       );
   }
 
-  isLastDomain(domain: string): boolean {
-    return this.domains.indexOf(domain) === this.domains.length - 1;
-  }
-
-  isLastIpPublic(ipPublic: string): boolean {
-    return this.ipPublics.indexOf(ipPublic) === this.ipPublics.length - 1;
-  }
 
   getOfferById(id) {
     this.service
