@@ -22,7 +22,8 @@ export class WafDomainListComponent implements OnInit, OnDestroy {
   isLoading: boolean = true;
   selectedValue: string;
   value: string;
-
+  disablePolicies = false;
+  
   options = [
     { label: this.i18n.fanyi('app.status.all'), value: '' },
     { label: this.i18n.fanyi('service.status.active'), value: 'ACTIVE' },
