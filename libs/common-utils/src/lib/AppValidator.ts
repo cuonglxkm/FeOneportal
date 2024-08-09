@@ -607,5 +607,21 @@ export function hostValidator(control: AbstractControl): ValidationErrors | null
   return null;
 }
 
+export function ipWafDomainValidatorMany(control: AbstractControl): ValidationErrors | null {
+  if (!control.value) {
+    return null;
+  }
+
+  const ipPattern = /\b((1\d{0,2}|2[0-4]\d|25[0-5])\.)((1?\d{1,2}|2[0-4]\d|25[0-5])\.){2}(1?\d{1,2}|2[0-4]\d|25[0-5])\b/
+  const ips = control.value.split(',');
+
+  for (const ip of ips) {
+    if (!ipPattern.test(ip.trim())) {
+      return { invalidIP: true };
+    }
+  }
+
+  return null;
+}
 
 
