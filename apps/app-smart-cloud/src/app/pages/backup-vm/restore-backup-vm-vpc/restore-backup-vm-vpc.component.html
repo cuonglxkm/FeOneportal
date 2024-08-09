@@ -639,10 +639,10 @@
                       nzSize="large"
                     >
                       <nz-option
-                        *ngFor="let i of listSecurityGroupBackups"
-                        [nzLabel]="i.name"
-                        [nzValue]="i.name"
-                        [nzDisabled]="i.name.toUpperCase() === 'DEFAULT'"
+                        *ngFor="let sg of listSecurityGroupBackups"
+                        [nzLabel]="sg.sgName"
+                        [nzValue]="sg.sgName"
+                        [nzDisabled]="sg.sgName.toUpperCase() === 'DEFAULT'"
                       />
                     </nz-select>
                   </nz-form-control>
