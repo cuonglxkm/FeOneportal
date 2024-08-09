@@ -291,6 +291,13 @@ export class LifecycleConfigComponent implements OnInit {
     let tag = new Tag();
     tag.id = this.idTag++;
     this.listTag.push(tag);
+    this.lifecycleUpdate.isSetAbortIncompleteMultipartUpload_Day = false;
+    this.formCreate.controls.isSetAbortIncompleteMultipartUpload_Day.setValue(
+      false
+    );
+    this.formUpdate.controls.isSetAbortIncompleteMultipartUpload_Day.setValue(
+      false
+    );
   }
 
   checkTags(tags: Tag[]): boolean {
@@ -315,6 +322,9 @@ export class LifecycleConfigComponent implements OnInit {
     this.listTag = this.listTag.filter((item) => item.id != id);
     this.listKeyError.splice(index, 1);
     this.checkTags(this.listTag);
+    if (this.listTag?.length != 0) {
+      this.lifecycleUpdate.isSetAbortIncompleteMultipartUpload_Day = false;
+    }
   }
 
   isVisibleDelete: boolean = false;
