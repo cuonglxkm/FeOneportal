@@ -32,6 +32,9 @@ export class WafDetailComponent implements OnInit{
       .subscribe({
         next: data => {
           this.data = data;
+          this.data.wafDomains.sort((a,b)=>{
+            return a.id - b.id;
+          });
         },
         error: error =>{
           this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi(error.error.message));

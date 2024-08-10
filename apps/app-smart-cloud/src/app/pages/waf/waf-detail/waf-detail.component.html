@@ -43,7 +43,7 @@
     <div nz-row [nzGutter]="24" class="info-project" >
       <div nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="12">
         <div>
-          <div nz-row [nzGutter]="24" class="row-white-bg content-items-center">
+          <div nz-row [nzGutter]="24" class="row-bg content-items-center">
             <div nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="12">
               <span class="label-fontsize">{{'waf.table.title.name' | i18n}}:</span>
             </div>
@@ -51,15 +51,15 @@
               <span class="label-fontsize font-bold ">{{ data.name }}</span>
             </div>
           </div>
-          <div *ngFor="let item of data.wafDomains" nz-row [nzGutter]="24" class="row-gray-bg content-items-center">
+          <div *ngFor="let item of data.wafDomains; let i = index" nz-row [nzGutter]="24" class="row-bg content-items-center">
             <div nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="12">
-              <span class="label-fontsize">{{'waf.domain.table.title.domain' | i18n}}:</span>
+              <span class="label-fontsize">{{'waf.domain.table.title.domain' | i18n}} ({{i+1}}):</span>
             </div>
             <div nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="12">
               <span class="label-fontsize font-bold" >{{ item.domain }}</span>
             </div>
           </div>
-          <div nz-row [nzGutter]="24" class="row-white-bg content-items-center">
+          <div nz-row [nzGutter]="24" class="row-bg content-items-center">
             <div nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="12">
               <span class="label-fontsize">{{'waf.table.title.startdate' | i18n}}:</span>
             </div>
@@ -67,7 +67,7 @@
               <span class="label-fontsize font-bold ">{{data.createdDate | date : "HH:mm:ss dd/MM/yyyy" }}</span>
             </div>
           </div>
-          <div nz-row [nzGutter]="24" class="row-gray-bg content-items-center">
+          <div nz-row [nzGutter]="24" class="row-bg content-items-center">
             <div nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="12">
               <span class="label-fontsize">{{'waf.table.title.status' | i18n}}:</span>
             </div>
@@ -82,7 +82,7 @@
       </div>
       <div nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="12">
         <div class="" style="margin-left:20px">
-          <div nz-row [nzGutter]="24" class="row-white-bg content-items-center" >
+          <div nz-row [nzGutter]="24" class="row-bg content-items-center" >
             <div nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="12">
               <span class="label-fontsize">{{'waf.table.title.package' | i18n}}:</span>
             </div>
@@ -90,15 +90,15 @@
               <span class="label-fontsize font-bold">{{ data.offerName }}</span> 
             </div>
           </div>
-          <div *ngFor="let item of data.wafDomains" nz-row [nzGutter]="24" class="row-gray-bg content-items-center">
+          <div *ngFor="let item of data.wafDomains; let i = index" nz-row [nzGutter]="24" class="row-bg content-items-center">
             <div nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="12">
-              <span class="label-fontsize">{{'waf.domain.table.title.ip' | i18n}}:</span>
+              <span class="label-fontsize">{{'waf.domain.table.title.ip' | i18n}} ({{i+1}}):</span>
             </div>
             <div nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="12">
               <span class="label-fontsize font-bold">{{ item.ipPublic }}</span>
             </div>
           </div>
-          <div nz-row [nzGutter]="24" class="row-white-bg content-items-center">
+          <div nz-row [nzGutter]="24" class="row-bg content-items-center">
             <div nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="12">
               <span class="label-fontsize">{{'waf.table.title.enddate' | i18n}}:</span>
             </div>
@@ -106,7 +106,7 @@
               <span class="label-fontsize font-bold">{{data.expiredDate | date : "HH:mm:ss dd/MM/yyyy" }}</span>
             </div>
           </div>
-          <div nz-row [nzGutter]="24" class="row-gray-bg content-items-center">
+          <div nz-row [nzGutter]="24" class="row-bg content-items-center">
             <div nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="12">
               <span class="label-fontsize" style="display: inline-block"></span>
             </div>
