@@ -150,12 +150,10 @@ export class WafListComponent implements OnInit, OnDestroy {
 
 
   ngOnInit() {
-    debugger;
     this.selectedValue = this.options[0].value;
     this.onChangeInputChange();
     this.getListWaf();
     this.notificationService.connection.on('UpdateWafDomain', (message) => {
-      debugger;
       if (message) {
         switch (message.actionType) {
           case 'CREATING':
