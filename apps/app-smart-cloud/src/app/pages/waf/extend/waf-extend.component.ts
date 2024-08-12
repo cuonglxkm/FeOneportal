@@ -86,6 +86,10 @@ export class WAFExtendComponent implements OnInit {
   WAFExtend: WAFExtend = new WAFExtend();
   WAFDetail: WafDetailDTO = new WafDetailDTO();
 
+  isLastDomain(domain: string): boolean {
+    return this.domains.indexOf(domain) === this.domains.length - 1;
+  }
+
   getWAFById(id) {
     this.service
       .getDetail(id)
@@ -104,6 +108,13 @@ export class WAFExtendComponent implements OnInit {
         },
         (error) => {
           this.WAFDetail = null;
+          if(error.status == 500){
+            this.router.navigate(['/app-smart-cloud/waf']);
+          this.notification.error(
+            this.i18n.fanyi('app.status.fail'),
+            'Bản ghi không tồn tại'
+          );
+          }
         }
       );
   }

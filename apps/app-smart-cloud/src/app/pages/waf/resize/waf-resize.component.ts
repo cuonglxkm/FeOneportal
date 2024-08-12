@@ -124,6 +124,13 @@ export class WAFResizeComponent implements OnInit {
       },
       (error) => {
         this.WAFDetail = null;
+        if(error.status == 500){
+          this.router.navigate(['/app-smart-cloud/waf']);
+        this.notification.error(
+          this.i18n.fanyi('app.status.fail'),
+          'Bản ghi không tồn tại'
+        );
+        }
       }
     );
   }

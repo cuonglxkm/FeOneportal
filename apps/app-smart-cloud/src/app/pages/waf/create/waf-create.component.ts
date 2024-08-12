@@ -66,7 +66,6 @@ export class WAFCreateComponent implements OnInit {
   listOfDomain: any = [];
 
   isRequired: boolean = true;
-  selectedSslCert: number
   isLoading = false;
   isVisibleCreateSSLCert = false;
   WAFCreate: WAFCreate = new WAFCreate();
@@ -121,7 +120,6 @@ export class WAFCreateComponent implements OnInit {
   ) {
   
   }
-
   ngOnInit() {
     let regionAndProject = getCurrentRegionAndProject();
     this.regionId = regionAndProject.regionId;
@@ -158,16 +156,11 @@ export class WAFCreateComponent implements OnInit {
     .pipe(finalize(() => this.loadingSrv.close()))
     .subscribe((res) => {
       this.listSslCert = res?.records
-      this.onSslCertChange
     }, (error) => {
       console.log(error);     
     })
   }
 
-  onSslCertChange(selectedId: string) {
-    const selectedCert = this.listSslCert.find(cert => cert?.id === selectedId);
-    this.selectedSslCertName = selectedCert ? selectedCert.name : '';
-  }
 
 
   areAllDomainsValid(): boolean {
