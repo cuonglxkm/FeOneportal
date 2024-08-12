@@ -285,7 +285,7 @@ export class InstancesDetailComponent implements OnInit {
         returnLabel = `${hours}:${minutes}`;
         break;
       case 1440:
-        returnLabel = `${hours}:00`;
+        returnLabel = `${day}/${month}/${year} ${hours}:00`;
         break;
       case 10080:
         returnLabel = `${day}/${month}/${year}`;
@@ -331,42 +331,50 @@ export class InstancesDetailComponent implements OnInit {
           timeSpan: d.timeSpan,
           value: Number(parseFloat(d.value).toFixed(2)),
         }));
-      } else {
-        if (this.maxValue >= 1099511627776 / 10) {
+      } 
+      if(this.valueGSCPU === 'diskio'){
+        data = item.datas.map((d) => ({
+          timeSpan: d.timeSpan,
+          value: Number((parseFloat(d.value)).toFixed(2)),
+        }));
+        unit = 'io/s'
+      }
+      else {
+        if (this.maxValue >= 1099511627776) {
           // Convert to TiB
           data = item.datas.map((d) => ({
             timeSpan: d.timeSpan,
             value: Number((parseFloat(d.value) / 1099511627776).toFixed(2)),
           }));
-          unit = 'TiB';
-        } else if (this.maxValue >= 1073741824 / 10) {
+          unit = this.valueGSCPU !== 'network' ? 'TiB' : 'TiB/s';
+        } else if (this.maxValue >= 1073741824) {
           // Convert to GiB
           data = item.datas.map((d) => ({
             timeSpan: d.timeSpan,
             value: Number((parseFloat(d.value) / 1073741824).toFixed(2)),
           }));
-          unit = 'GiB';
-        } else if (this.maxValue >= 1048576 / 10) {
+          unit = this.valueGSCPU !== 'network' ?'GiB':'GiB/s';
+        } else if (this.maxValue >= 1048576) {
           // Convert to MiB
           data = item.datas.map((d) => ({
             timeSpan: d.timeSpan,
             value: Number((parseFloat(d.value) / 1048576).toFixed(2)),
           }));
-          unit = 'MiB';
-        } else if (this.maxValue >= 1024 / 10) {
+          unit = this.valueGSCPU !== 'network' ?'MiB':'MiB/s';
+        } else if (this.maxValue >= 1024) {
           // Convert to KiB
           data = item.datas.map((d) => ({
             timeSpan: d.timeSpan,
             value: Number((parseFloat(d.value) / 1024).toFixed(2)),
           }));
-          unit = 'KiB';
+          unit = this.valueGSCPU !== 'network' ?'KiB':'KiB/s';
         } else {
           // Keep as bytes
           data = item.datas.map((d) => ({
             timeSpan: d.timeSpan,
             value: Number(parseFloat(d.value).toFixed(2)),
           }));
-          unit = 'byte';
+          unit = this.valueGSCPU !== 'network' ?'byte':'byte/s';
         }
       }
 
@@ -397,6 +405,15 @@ export class InstancesDetailComponent implements OnInit {
         title: {
           text: '',
         },
+        labels: {
+          formatter: function(){
+            const toStringValue = this.value.toString()
+            if(toStringValue.includes(" ")){
+              return toStringValue.split(" ")?.[1]
+            }
+            return `${this.value.toString()}`
+          }
+        }
       },
       yAxis: {
         title: {
