@@ -73,6 +73,8 @@ export class CreateSSLCertPopupComponent {
   ) {}
 
   handleCancelCreateSSLCert(){
+    this.form.reset()
+    this.fileList = []
     this.onCancelVisible.emit(false)
   }
 
@@ -212,6 +214,8 @@ export class CreateSSLCertPopupComponent {
           this.i18n.fanyi('app.status.success'),
           'Tạo mới ssl cert thành công'
         );
+        this.form.reset()
+        this.fileList = []
         this.onOk.emit(data);
       },
       (error) => {
