@@ -35,6 +35,7 @@ import { DOMAIN_REGEX } from 'src/app/shared/constants/constants';
 export class EditDomainComponent implements OnInit {
   @Input() domainData: WafDomain;
   @Output() onOk = new EventEmitter();
+  @Input() canClick: boolean;
 
   isVisible: boolean = false;
   isLoading: boolean = false;

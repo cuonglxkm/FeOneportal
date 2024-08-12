@@ -1,7 +1,10 @@
 <!-- <li nz-menu-item (click)="openModal()">{{'HTTPS Settings'}}</li> -->
-<img  src="assets/imgs/ph_link-light.svg" (click)="openModal()" nz-popover
+<img  src="assets/imgs/ph_link-light.svg" nz-popover
 [nzPopoverContent]="'waf.domain.https.setting' | i18n"
-nzPopoverPlacement="bottom" style="cursor: pointer;margin-right: 5px;"/>
+nzPopoverPlacement="bottom" style="margin-right: 5px;"
+(click)="canClick ? openModal() : null"
+[style.filter]="canClick ? null : 'opacity(0.25) drop-shadow(0 0 0 rgba(0, 0, 0, 1))'" 
+[style.cursor]="canClick ? 'pointer' : 'not-allowed'" />
 <nz-modal [(nzVisible)]="isVisible" [nzTitle]="modalTitle" [nzContent]="modalContent" [nzFooter]="null"
 (nzOnCancel)="handleCancelHttpSetting()">
 <ng-template #modalTitle>

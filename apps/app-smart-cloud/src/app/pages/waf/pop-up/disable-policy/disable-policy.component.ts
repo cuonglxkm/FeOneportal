@@ -14,7 +14,8 @@ import { finalize } from 'rxjs';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DisablePolicyComponent {
-  @Input() domainData: WafDomain
+  @Input() domainData: WafDomain;
+  @Input() canClick: boolean;
   @Output() onOk = new EventEmitter();
 
   isVisible: boolean = false;

@@ -13,6 +13,7 @@ import { WafService } from 'src/app/shared/services/waf.service';
 export class DeleteWafComponent implements AfterViewInit{
   @Input() wafId: number;
   @Input() wafName: string;
+  @Input() canClick: boolean;
   @Output() onOk = new EventEmitter();
   @Output() onCancel = new EventEmitter();
 

@@ -30,6 +30,7 @@ import { Router } from '@angular/router';
 })
 export class DeleteDomainComponent {
   @Input() domainData: WafDomain;
+  @Input() canClick: boolean;
   @Output() onOk = new EventEmitter();
 
   isVisible: boolean = false;
