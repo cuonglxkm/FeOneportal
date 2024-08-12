@@ -103,6 +103,7 @@ export interface WafDomain {
   offerName: string;
   wafPackageName: string;
   sysDomainInfoVO : SysDomainInfoVO;
+  packagePolicies: PackagePolicies;
 }
 
 export interface SysDomainInfoVO{
@@ -181,4 +182,14 @@ export interface AssociatedDomainDTO {
 export interface AllowedAssociatedDomainDTO {
   domainName: string;
   id: number
+}
+
+export interface PackagePolicies {
+  ddos: boolean;
+  ipGeoBlock: boolean;
+  rateLimit: boolean;
+  customRules: boolean;
+  waf: boolean;
+  whiteList: boolean;
+  threatIntelligence: boolean;
 }
