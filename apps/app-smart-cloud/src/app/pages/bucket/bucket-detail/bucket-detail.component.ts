@@ -29,7 +29,7 @@ import { getCurrentRegionAndProject } from '@shared';
 import { RegionModel } from '../../../../../../../libs/common-utils/src';
 import { LoadingService } from '@delon/abc/loading';
 import { ObjectStorageService } from 'src/app/shared/services/object-storage.service';
-import { FOLDER_NAME_REGEX } from 'src/app/shared/constants/constants';
+import { FOLDER_NAME_REGEX, NAME_CONTAIN_NUMBERIC_ALPHABET } from 'src/app/shared/constants/constants';
 import { RegionID } from 'src/app/shared/enums/common.enum';
 
 @Component({
@@ -155,6 +155,14 @@ export class BucketDetailComponent extends BaseService implements OnInit {
       '',
       [Validators.required, Validators.pattern(FOLDER_NAME_REGEX), this.duplicateFolderNameValidator.bind(this)],
     ],
+  });
+
+  formUploadFile: FormGroup<{
+    metaKey: FormControl<string>;
+    metaValue: FormControl<string>;
+  }> = this.fb.group({
+    metaKey: ['', [Validators.pattern(NAME_CONTAIN_NUMBERIC_ALPHABET)]],
+    metaValue: ['', [Validators.pattern(NAME_CONTAIN_NUMBERIC_ALPHABET)]],
   });
 
   range(start: number, end: number): number[] {

@@ -294,11 +294,16 @@
                   [routerLink]="['/app-smart-cloud/snapshot/packages']"
                   >{{ item?.serviceName }}</a
                 >
-                <a
-                  *ngSwitchCase="'Object Storage'"
-                  [routerLink]="['/app-smart-cloud/object-storage/bucket']"
-                  >{{ item?.serviceName }}</a
-                >
+                <ng-container
+                  *ngSwitchCase="'Object Storage'"                  
+                  >
+                <a *ngIf="serviceSpec?.RegionId === 7" [routerLink]="['/app-smart-cloud/object-storage-advance/bucket']">
+                  {{ item?.serviceName }}
+                </a>
+                <a *ngIf="serviceSpec?.RegionId !== 7" [routerLink]="['/app-smart-cloud/object-storage/bucket']">
+                  {{ item?.serviceName }}
+                </a>
+                </ng-container>
                 <a
                   *ngSwitchCase="'Mongodb'"
                   [routerLink]="['/app-mongodb-replicaset']"
