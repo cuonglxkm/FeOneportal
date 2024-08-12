@@ -75,7 +75,6 @@
     </div>
   </nz-row>
   <div
-    *ngIf="objectStorage?.status !== 'TAMNGUNG'"
     style="margin-bottom: 10px"
     class="text-label"
   >
@@ -98,32 +97,32 @@
       objectStorage.expiredDate | date : 'dd/MM/yyyy'
     }}</span>
   </div>
-<!--  <ng-container *ngIf="objectStorage">-->
-<!--    <div-->
-<!--      *ngIf="-->
-<!--      objectStorage?.status !== 'TAMNGUNG'"-->
-<!--      style="margin-bottom: 10px"-->
-<!--      class="text-label"-->
-<!--    >-->
-<!--      {{ 'app.payment.status' | i18n }}:-->
-<!--      <span class="text-value">-->
-<!--        {{ objectStorage.statusDisplay }}-->
-<!--      </span>-->
-<!--    </div>-->
-<!--    <div-->
-<!--      *ngIf="-->
-<!--      objectStorage?.status === 'TAMNGUNG'"-->
-<!--      style="margin-bottom: 10px"-->
-<!--      class="text-label"-->
-<!--    >-->
-<!--      {{ 'app.payment.status' | i18n }}:-->
-<!--      <span class="text-value">-->
-<!--        {{ 'app.suspend' | i18n }} ({{-->
-<!--          objectStorage?.suspendReason | SuspendStatusPipe-->
-<!--        }})-->
-<!--      </span>-->
-<!--    </div>-->
-<!--  </ng-container>-->
+ <ng-container *ngIf="objectStorage">
+   <div
+     *ngIf="
+     objectStorage?.status !== 'TAMNGUNG'"
+     style="margin-bottom: 10px"
+     class="text-label"
+   >
+     {{ 'app.payment.status' | i18n }}:
+     <span class="text-value">
+       {{ objectStorage.statusDisplay }}
+     </span>
+   </div>
+   <div
+     *ngIf="
+     objectStorage?.status === 'TAMNGUNG'"
+     style="margin-bottom: 10px"
+     class="text-label"
+   >
+     {{ 'app.payment.status' | i18n }}:
+     <span class="text-value">
+       {{ 'app.suspend' | i18n }} ({{
+         objectStorage?.suspendReason | SuspendStatusPipe
+       }})
+     </span>
+   </div>
+ </ng-container> 
 </nz-card>
 <nz-card *ngIf="hasOS && objectStorage?.status !== 'TAMNGUNG'" style="border-radius: 4px" [nzBordered]="false">
   <div nz-row [nzGutter]="24">
@@ -236,7 +235,7 @@
         <td nzBreakWord>{{ data.createdDate | date : 'dd/MM/yyyy' }}</td>
         <td nzBreakWord>
           <ng-container *ngIf="data.status | ServiceStatusPipe as statusModel">
-<!--            <td *ngIf="!!data.suspendReason">-->
+<!--            <td *ngIf="!!data.suspendReason"> -->
 <!--              <span [ngStyle]="{color: statusModel.color}">-->
 <!--                <img src="assets/imgs/warning-message.svg" alt="" style="cursor: pointer; margin-bottom: 4px;"-->
 <!--                     nzTooltipTitle="{{ item.suspendReason | SuspendStatusPipe }}"-->
