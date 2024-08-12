@@ -90,6 +90,8 @@ export interface WafDomain {
   cName:string;
   host: string;
   port: number | null;
+  protocol: string;
+  portRewriting:number | null;
   sslCertId: number | null;
   policyId: number | null;
   status: string;
