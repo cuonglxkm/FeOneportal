@@ -412,6 +412,7 @@
   [nzStyle]="modalStyle" 
   (nzOnCancel)="handleCancelUploadFile()"
 >
+  <form nz-form [formGroup]="formUploadFile">
   <ng-container *nzModalContent>
     <!--      2 case trống file-->
     <div *ngIf="emptyFileUpload">
@@ -419,6 +420,7 @@
         [nzFileList]="lstFileUpdate"
         nzType="drag"
         [nzMultiple]="true"
+        [ngModelOptions]="{ standalone: true }"
         (nzChange)="handleChange($event)"
       >
         <img
@@ -443,9 +445,28 @@
     </div>
     <div *ngIf="!emptyFileUpload">
       <p class="text-label">{{ 'app.bucket.detail.uploadFile.chooseRight' | i18n }}</p>
-      <nz-radio-group [(ngModel)]="radioValue">
-        <label nz-radio nzValue="public-read" class="text-label">Public</label>
-        <label nz-radio nzValue="private" class="text-label">Private</label>
+      <nz-radio-group [ngModelOptions]="{ standalone: true }" [(ngModel)]="radioValue">
+        <label nz-radio nzValue="public-read" class="text-label">
+          Public
+          <img
+          style="padding-right: 10px; margin-top: -4px"
+          [nz-tooltip]="publicTooltip"
+          src="assets/imgs/pajamas_question.svg"
+          alt=""
+        />
+        <ng-template #publicTooltip>
+          <div [innerHTML]="'app.bucket.detail.upload.public.tooltip' | i18n"></div>
+        </ng-template>
+        </label>
+        <label nz-radio nzValue="private" class="text-label">
+          Private
+          <img
+          style="padding-right: 10px; margin-top: -4px"
+          [nz-tooltip]="'app.bucket.detail.upload.private.tooltip' | i18n "
+          src="assets/imgs/pajamas_question.svg"
+          alt=""
+        />
+        </label>
       </nz-radio-group>
       <nz-divider class="mb-3" />
       <span class="mt-2 d-block text-label float-right mb-4" *ngIf="lstFileUpdate.length > 0">{{countSuccessUpload}} của {{lstFileUpdate.length}}</span>
@@ -519,20 +540,33 @@
       />
       </h3>
       <nz-row *ngFor="let item of listOfMetadata" style="margin-top: 10px">
+        <nz-form-item style="width: 40%;">
+          <nz-form-control [nzErrorTip]="'app.bucket.detail.upload.metakey.wrong' | i18n ">
+            <input
+              style="width: 100%; margin-right: 5%"
+              nzSize="large"
+              nz-input
+              [ngModelOptions]="{ standalone: true }"
+              [placeholder]="'app.bucket.detail.uploadFile.key' | i18n "
+              [(ngModel)]="item.metaKey"
+              formControlName="metaKey"
+            />
+
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item style="width: 40%; margin-left: 5%">
+          <nz-form-control [nzErrorTip]="'app.bucket.detail.upload.metavalue.wrong' | i18n ">
         <input
-          style="width: 40%; margin-right: 5%"
+          style="width: 100%; margin-right: 5%"
           nzSize="large"
           nz-input
-          [placeholder]="'app.bucket.detail.uploadFile.key' | i18n "
-          [(ngModel)]="item.metaKey"
-        />
-        <input
-          style="width: 40%; margin-right: 5%"
-          nzSize="large"
-          nz-input
+          [ngModelOptions]="{ standalone: true }"
           [placeholder]="'app.bucket.detail.uploadFile.value' | i18n "
+          formControlName="metaValue"
           [(ngModel)]="item.metaValue"
         />
+      </nz-form-control>
+    </nz-form-item>
         <button
           style="border: none"
           nz-button
@@ -586,7 +620,7 @@
       nz-button
       nzType="primary"
       (click)="uploadAllFile()" 
-      [disabled]="lstFileUpdate.length === 0"
+      [disabled]="lstFileUpdate.length === 0 || formUploadFile.invalid"
     >
       <div class="d-flex align-items-center">
         <img
@@ -598,6 +632,7 @@
       </div>
     </button>
   </div>
+  </form>
 </nz-modal>
 
 <!--Chi tiết-->

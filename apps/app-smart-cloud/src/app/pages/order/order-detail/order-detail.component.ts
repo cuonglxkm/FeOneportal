@@ -38,6 +38,7 @@ export class OrderDetailComponent {
   specType: string
   isLoadingTotalAmount: boolean = false
   isIppublic = true
+  serviceSpec: any
   constructor(
     private router: Router,
     private activatedRoute: ActivatedRoute,
@@ -117,6 +118,7 @@ export class OrderDetailComponent {
               }
             })
 
+            this.serviceSpec = JSON.parse(data?.orderItems[0]?.serviceDetail);
 
             if(data.statusCode == 1){
               data.statusCode = 6
@@ -161,6 +163,10 @@ export class OrderDetailComponent {
                 item.serviceNameLink = this.serviceName
               }
             })
+
+            this.serviceSpec = JSON.parse(data?.orderItems[0]?.serviceDetail);
+            console.log(this.serviceSpec);
+            
 
             if(data.statusCode == 1){
               data.statusCode = 6
