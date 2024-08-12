@@ -345,9 +345,8 @@ export class RestoreBackupVmComponent implements OnInit {
       )
       .subscribe((data) => {
         this.backupVmModel = data;
-        this.dataService
-          .getById(this.backupVmModel.instanceId)
-          .subscribe((data) => {
+        this.dataService.getById(this.backupVmModel.instanceId).subscribe({
+          next: (data) => {
             this.instanceModel = data;
             if (this.instanceModel.offerId == 0) {
               this.selectedIndextab = 1;
@@ -357,7 +356,12 @@ export class RestoreBackupVmComponent implements OnInit {
               this.selectedIndextab = 2;
               this.onClickGpuConfig();
             }
-          });
+          },
+          error: (e) => {
+            this.selectedIndextab = 0;
+            this.onClickCustomConfig();
+          },
+        });
         if (
           this.backupVmModel?.volumeBackups
             .filter((e) => e.isBootable == true)[0]
@@ -781,7 +785,7 @@ export class RestoreBackupVmComponent implements OnInit {
       });
   }
 
-  minCapacity: number;
+  minCapacity: number = 0;
   maxCapacity: number = 0;
   stepCapacity: number = 0;
   surplus: number;
@@ -1391,7 +1395,10 @@ export class RestoreBackupVmComponent implements OnInit {
       if (e.newName && e.newName.length != 0) {
         volumeExternal.name = e.newName;
       } else {
-        volumeExternal.name = (e.name + '_' + this.instanceModel.name).slice(0, 49);
+        volumeExternal.name = (e.name + '_' + this.instanceModel.name).slice(
+          0,
+          49
+        );
       }
       volumeExternal.size = e.capacity;
       selectedVolumeExternal.push(volumeExternal);
