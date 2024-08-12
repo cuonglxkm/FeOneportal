@@ -103,16 +103,16 @@
             </td>
             <td nzBreakWord nzAlign="center">
               <div>
-                  <one-portal-edit-domain [domainData]="data" (onOk)="handleOkUpdate()"></one-portal-edit-domain>
-                  <one-portal-http-setting [domainData]="data" (onOk)="handleOkUpdate()" [listSslCert]="listSslCert" (onOkCreateSsl)="onOkCreateSslCert()"></one-portal-http-setting>
+                  <one-portal-edit-domain [canClick]="data.status=='ACTIVE'" [domainData]="data" (onOk)="handleOkUpdate()"></one-portal-edit-domain>
+                  <one-portal-http-setting [canClick]="data.status=='ACTIVE'" [domainData]="data" (onOk)="handleOkUpdate()" [listSslCert]="listSslCert" (onOkCreateSsl)="onOkCreateSslCert()"></one-portal-http-setting>
                 <img nz-dropdown
                   [nzDropdownMenu]="opMenu"
                   src="assets/imgs/more1.svg" alt="" style="cursor: pointer;" /> 
                 <nz-dropdown-menu #opMenu="nzDropdownMenu">
                   <ul nz-menu>
                     <li (click)="onExpandChange(data.id, true)" nz-menu-item>{{'waf.domain.policies' | i18n}}</li>
-                    <one-portal-disable-policy [domainData]="data" (onOk)="handleOkUpdate()"></one-portal-disable-policy>
-                    <one-portal-delete-domain [domainData]="data" (onOk)="handleOkUpdate()"></one-portal-delete-domain>
+                    <one-portal-disable-policy [canClick]="data.status=='ACTIVE'" [domainData]="data" (onOk)="handleOkUpdate()"></one-portal-disable-policy>
+                    <one-portal-delete-domain [canClick]="data.status=='ACTIVE'" [domainData]="data" (onOk)="handleOkUpdate()"></one-portal-delete-domain>
                     <!-- <li nz-menu-item>{{'waf.domain.policies' | i18n}}</li>
                     <li nz-menu-item>{{'waf.domain.policies.disable' | i18n}}</li>
                     <li nz-menu-item>{{'waf.domain.delete' | i18n}}</li> -->
