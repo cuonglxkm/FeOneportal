@@ -18,6 +18,7 @@ import { finalize } from 'rxjs';
 export class HttpSettingComponent implements OnInit{
   @Input() domainData: WafDomain ;
   @Input() listSslCert: SslCertDTO[]
+  @Input() canClick: boolean;
   @Output() onOk = new EventEmitter();
   @Output() onOkCreateSsl = new EventEmitter()
 

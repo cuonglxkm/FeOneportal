@@ -1,4 +1,4 @@
-<li nz-menu-item (click)="openModal()">{{'waf.domain.policies.disable' | i18n}}</li>
+<li nz-menu-item (click)="canClick ? openModal() : null" [nzDisabled]="!canClick">{{'waf.domain.policies.disable' | i18n}}</li>
 <nz-modal [(nzVisible)]="isVisible" [nzTitle]="modalTitle" [nzContent]="modalContent" [nzFooter]="null"
     (nzOnCancel)="handleCancelDisablePolicyModal()">
     <ng-template #modalTitle>

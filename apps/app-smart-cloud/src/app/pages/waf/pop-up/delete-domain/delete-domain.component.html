@@ -1,4 +1,4 @@
-<li nz-menu-item (click)="openModal()">{{'waf.domain.delete' | i18n}}</li>
+<li nz-menu-item (click)="canClick ? openModal() : null" [nzDisabled]="!canClick">{{'waf.domain.delete' | i18n}}</li>
 <nz-modal
 [(nzVisible)]="isVisible"
 [nzTitle]="modalTitle"

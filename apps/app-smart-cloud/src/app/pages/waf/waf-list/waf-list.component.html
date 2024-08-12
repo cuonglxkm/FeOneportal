@@ -77,7 +77,7 @@
             <img  src="assets/imgs/add.svg" (click)="navigateToAddDomain()" nz-popover
               [nzPopoverContent]="'waf.domain.button.create' | i18n"
               nzPopoverPlacement="bottom" style="cursor: pointer;"/>
-            <one-portal-delete-waf [wafId]="data.id"
+            <one-portal-delete-waf [canClick]="data.status=='ACTIVE'" [wafId]="data.id"
                                     [wafName]="data.name"
                                     (onOk)="handleOkDelete()" />
           </div>
