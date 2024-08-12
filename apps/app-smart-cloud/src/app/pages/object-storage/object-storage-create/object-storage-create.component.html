@@ -53,11 +53,10 @@
           <nz-form-control nzErrorTip="Dung lượng không được để trống">
             <nz-input-number
               style="width: 100%; margin-left: 0px"
-              [nzMin]="minStorage"
+              [nzMin]="0"
               [nzStep]="stepStorage"
               [nzMax]="maxStorage"
               formControlName="quota"
-              (keydown)="onKeyDown($event)"
               [(ngModel)]="objectStorageCreate.quota"
               (ngModelChange)="changeCapacity($event)"
               [ngModelOptions]="{ standalone: true }"
@@ -71,7 +70,7 @@
             <nz-textarea-count [nzMaxCharacterCount]="250">
               <textarea
                 rows="4"
-                maxlength="250"
+                maxlength="255"
                 [(ngModel)]="objectStorageCreate.note"
                 [ngModelOptions]="{ standalone: true }"
                 [placeholder]="'volume.tooltip.description' | i18n"

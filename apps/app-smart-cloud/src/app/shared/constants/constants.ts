@@ -12,4 +12,5 @@ export const DOMAIN_REGEX = /^(?![-.])[a-zA-Z0-9-]{1,61}(?:\.[a-zA-Z0-9-]{1,61})
 export const FILE_REGEX = /^[a-zA-Z0-9]+(?:\.[a-zA-Z]{2,})+/;
 export const WEB_REGEX = /^(?:(?:https?|ftp):\/\/)?(?:www\.)?[a-z0-9-]+(?:\.[a-z0-9-]+)+[^\s]*$/i
 export const NAME_CERT_REGEX = /^[a-zA-Z0-9][a-zA-Z0-9-]+$/;
+export const NAME_CONTAIN_NUMBERIC_ALPHABET = /^[a-zA-Z0-9]+$/;
 
