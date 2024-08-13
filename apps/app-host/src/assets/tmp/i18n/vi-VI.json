@@ -3582,6 +3582,7 @@
   "waf.domain.policies": "Chỉnh sửa Policies",
   "waf.domain.policies.disable": "Disable all Policies",
   "waf.domain.delete": "Xóa domain",
+  "waf.notification.input.name.delete": "Nhập tên WAF",
 
   "waf.domain.button.create":"Thêm domain",
   "waf.table.title.name": "Tên WAF",

@@ -111,7 +111,7 @@
                 <nz-dropdown-menu #opMenu="nzDropdownMenu">
                   <ul nz-menu>
                     <li (click)="onExpandChange(data.id, true)" nz-menu-item>{{'waf.domain.policies' | i18n}}</li>
-                    <one-portal-disable-policy [canClick]="data.status=='ACTIVE'" [domainData]="data" (onOk)="handleOkUpdate()"></one-portal-disable-policy>
+                    <one-portal-disable-policy [canClick]="data.status=='ACTIVE' && data.someSwitchesOn" [domainData]="data" (onOk)="handleOkUpdate()"></one-portal-disable-policy>
                     <one-portal-delete-domain [canClick]="data.status=='ACTIVE'" [domainData]="data" (onOk)="handleOkUpdate()"></one-portal-delete-domain>
                     <!-- <li nz-menu-item>{{'waf.domain.policies' | i18n}}</li>
                     <li nz-menu-item>{{'waf.domain.policies.disable' | i18n}}</li>

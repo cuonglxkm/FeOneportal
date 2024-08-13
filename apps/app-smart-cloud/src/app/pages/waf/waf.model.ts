@@ -104,6 +104,7 @@ export interface WafDomain {
   wafPackageName: string;
   sysDomainInfoVO : SysDomainInfoVO;
   packagePolicies: PackagePolicies;
+  someSwitchesOn : boolean;
 }
 
 export interface SysDomainInfoVO{
