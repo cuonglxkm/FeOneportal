@@ -3654,6 +3654,7 @@
   "waf.domain.policies": "Edit Policies",
   "waf.domain.policies.disable": "Disable all Policies",
   "waf.domain.delete": "Delete domain",
+  "waf.notification.input.name.delete": "Enter WAF name",
 
   "waf.domain.button.create":"Add domain",
   "waf.table.title.name": "WAF name",
