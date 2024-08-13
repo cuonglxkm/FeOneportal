@@ -351,6 +351,8 @@
         <img
         style="padding-right: 10px; margin-top: -4px"
         [nz-tooltip]="foldertooltip"
+
+        [nzTooltipOverlayStyle]="{ 'max-width': '280px' }"
         src="assets/imgs/pajamas_question.svg"
         alt=""
       />
@@ -469,11 +471,12 @@
         </label>
       </nz-radio-group>
       <nz-divider class="mb-3" />
-      <span class="mt-2 d-block text-label float-right mb-4" *ngIf="lstFileUpdate.length > 0">{{countSuccessUpload}} của {{lstFileUpdate.length}}</span>
+      <span class="mt-2 d-block text-label float-right mb-4" *ngIf="lstFileUpdate.length > 0">
+        {{speed}} | {{formatFileSize(countSize)}} / {{formatFileSize(totalSize)}} | {{countSuccessUpload}} của {{lstFileUpdate.length}}</span>
       <nz-table
         [nzData]="lstFileUpdate"
         style="margin-top: 10px" nzHideOnSinglePage nzShowPagination="false"
-      >
+        >
         <thead>
           <tr>
             <th>{{ 'app.name' | i18n }}</th>
@@ -508,25 +511,21 @@
                 style="margin-right: 10px; cursor: pointer"
                 nz-tooltip
                 [nzTooltipTitle]="'app.bucket.detail.uploadFile.upload' | i18n "
-                src="assets/imgs/download.svg"
+                src="assets/imgs/upload-file.png"
+                [style.pointer-events]="isUploading ? 'none' : 'auto'"
+                [style.opacity]="isUploading ? 0.5 : 1"
                 (click)="uploadSingleFile(item, i)"
               />
               <img
-                *ngIf="!item.isUpload"
                 style="cursor: pointer"
                 nz-tooltip
                 [nzTooltipTitle]="'app.delete' | i18n"
                 src="assets/imgs/delete.svg"
                 (click)="removeFile(item)"
+                [style.pointer-events]="isUploading ? 'none' : 'auto'"
+                [style.opacity]="isUploading ? 0.5 : 1"
               />
-              <img
-                *ngIf="item.isUpload === true"
-                style="cursor: pointer"
-                nz-tooltip
-                [nzTooltipTitle]="'app.button.confirm' | i18n"
-                src="assets/imgs/delete.svg"
-                (click)="removeFile(item)"
-              />
+
             </td>
           </tr></tbody
       ></nz-table>
@@ -539,23 +538,28 @@
         alt=""
       />
       </h3>
-      <nz-row *ngFor="let item of listOfMetadata" style="margin-top: 10px">
+      <nz-row *ngFor="let item of metaDataControls; let i = index" style="margin-top: 10px" [formGroup]="item">
         <nz-form-item style="width: 40%;">
-          <nz-form-control [nzErrorTip]="'app.bucket.detail.upload.metakey.wrong' | i18n ">
+          <nz-form-control [nzErrorTip]="metaKeyErrorTpl">
             <input
               style="width: 100%; margin-right: 5%"
               nzSize="large"
               nz-input
-              [ngModelOptions]="{ standalone: true }"
               [placeholder]="'app.bucket.detail.uploadFile.key' | i18n "
-              [(ngModel)]="item.metaKey"
               formControlName="metaKey"
             />
-
+            <ng-template #metaKeyErrorTpl let-control>
+              <ng-container *ngIf="control.hasError('required')">
+                {{ 'app.bucket.detail.upload.metakey.empty' | i18n }}
+              </ng-container>
+              <ng-container *ngIf="control.hasError('pattern')">
+                {{ 'app.bucket.detail.upload.metakey.wrong' | i18n }}
+              </ng-container>
+            </ng-template>
           </nz-form-control>
         </nz-form-item>
         <nz-form-item style="width: 40%; margin-left: 5%">
-          <nz-form-control [nzErrorTip]="'app.bucket.detail.upload.metavalue.wrong' | i18n ">
+          <nz-form-control [nzErrorTip]="metaValueErrorTpl">
         <input
           style="width: 100%; margin-right: 5%"
           nzSize="large"
@@ -563,14 +567,21 @@
           [ngModelOptions]="{ standalone: true }"
           [placeholder]="'app.bucket.detail.uploadFile.value' | i18n "
           formControlName="metaValue"
-          [(ngModel)]="item.metaValue"
         />
+        <ng-template #metaValueErrorTpl let-control>
+          <ng-container *ngIf="control.hasError('required')">{{
+            'app.bucket.detail.upload.metavalue.empty' | i18n
+          }}</ng-container>
+          <ng-container *ngIf="control.hasError('pattern')">{{
+            'app.bucket.detail.upload.metavalue.wrong' | i18n
+          }}</ng-container>
+        </ng-template>
       </nz-form-control>
     </nz-form-item>
         <button
           style="border: none"
           nz-button
-          (click)="removeMetadata(item.metaKey)"
+          (click)="removeMetadata(i)"
           nzSize="large"
         >
           <img style="margin-top: -4px" src="assets/imgs/delete.svg" />
@@ -876,7 +887,7 @@
       nzFormat="yyyy-MM-dd HH:mm:ss"
       [nzDisabledDate]="disabledDate"
       [nzDisabledTime]="disabledDateTime"
-      [ngModel]="nextDay"
+      [ngModel]="nextDay" nzShowNow="false"
       (ngModelChange)="getLinkShare($event)"
       [nzShowTime]="{ nzDefaultOpenValue: timeDefaultValue }"
       style="width: 100%; border-radius: 4px"

@@ -1,6 +1,7 @@
 import { Clipboard } from '@angular/cdk/clipboard';
 import { ChangeDetectorRef, Component, Inject, OnInit } from '@angular/core';
 import {
+  FormArray,
   FormControl,
   FormGroup,
   NonNullableFormBuilder,
@@ -48,8 +49,6 @@ export class BucketDetailComponent extends BaseService implements OnInit {
   currentKey = '';
   date: Date = new Date();
   orderMetadata = 0;
-  defaultMetadata = { metaKey: '', metaValue: '' };
-  listOfMetadata: any = [];
   bucket: any;
   size = 10;
   index: number = 1;
@@ -121,14 +120,16 @@ export class BucketDetailComponent extends BaseService implements OnInit {
   filterQuery: string = '';
   listFile = [];
   hostNameUrl = window.location.origin;
-
+  speed: string = '0 Kb/s'
+  isDownload: boolean = false
   isLoadingCreateFolder: boolean = false;
   isLoadingAuthorize: boolean = false;
   isLoadingDeleteObject: boolean = false;
   isLoadingDeleteVersion: boolean = false;
   isLoadingRestoreVersion: boolean = false;
   isClickCopy: boolean = false;
-
+  totalSize: number
+  countSize: number = 0
   countSuccessUpload: number = 0;
   constructor(
     private service: ObjectObjectStorageService,
@@ -157,13 +158,33 @@ export class BucketDetailComponent extends BaseService implements OnInit {
     ],
   });
 
-  formUploadFile: FormGroup<{
-    metaKey: FormControl<string>;
-    metaValue: FormControl<string>;
-  }> = this.fb.group({
-    metaKey: ['', [Validators.pattern(NAME_CONTAIN_NUMBERIC_ALPHABET)]],
-    metaValue: ['', [Validators.pattern(NAME_CONTAIN_NUMBERIC_ALPHABET)]],
+  formUploadFile: FormGroup = this.fb.group({
+    listMetadata: this.fb.array([]),
   });
+
+  createMetaData(): FormGroup {
+    return this.fb.group({
+      metaKey: ['', [Validators.pattern(NAME_CONTAIN_NUMBERIC_ALPHABET), Validators.required]],
+      metaValue: ['', [Validators.pattern(NAME_CONTAIN_NUMBERIC_ALPHABET), Validators.required]],
+    });
+  }
+
+  get getMetaData(): FormArray {
+    return this.formUploadFile.get('listMetadata') as FormArray;
+  }
+  
+  // Getter to get controls as FormGroup[] for easier access in the template
+  get metaDataControls(): FormGroup[] {
+    return this.getMetaData.controls as FormGroup[];
+  }
+  
+  addMoreMetadata() {
+    this.getMetaData.push(this.createMetaData());
+  }
+  
+  removeMetadata(index: number) {
+    this.getMetaData.removeAt(index);
+  }
 
   range(start: number, end: number): number[] {
     const result: number[] = [];
@@ -379,8 +400,7 @@ export class BucketDetailComponent extends BaseService implements OnInit {
 
   formatFileSize(size: number): string {
     const units = ['bytes', 'KB', 'MB', 'GB', 'TB', 'PB'];
-    let unitIndex = 0;
-  
+    let unitIndex = 0;   
     while (size >= 1024 && unitIndex < units.length - 1) {
       size /= 1024;
       unitIndex++;
@@ -401,6 +421,9 @@ export class BucketDetailComponent extends BaseService implements OnInit {
       return;
     }
 
+    this.totalSize = newFiles.reduce((acc, item) => acc + item.size, 0) + 
+                     this.lstFileUpdate.reduce((acc, item) => acc + item.size, 0);
+
     // Add new files to lstFileUpdate
     this.lstFileUpdate = [...this.lstFileUpdate, ...newFiles];
 
@@ -408,60 +431,20 @@ export class BucketDetailComponent extends BaseService implements OnInit {
   }
 
   removeFile(item: NzUploadFile) {
-    if (item.isUpload && item.isUpload === true && item.uploadId) {
-      let dataError = {
-        bucketName: this.activatedRoute.snapshot.paramMap.get('name'),
-        key: this.currentKey + item.name,
-        uploadId: item.uploadId,
-        regionId: this.region,
-      };
-      const modal: NzModalRef = this.modalService.create({
-        nzTitle: this.i18n.fanyi('app.bucket.detail.deleteFile'),
-        nzContent: this.i18n.fanyi('app.bucket.detail.deleteFile.alert'),
-        nzFooter: [
-          {
-            label: this.i18n.fanyi('app.button.cancel'),
-            type: 'default',
-            onClick: () => modal.destroy(),
-          },
-          {
-            label: this.i18n.fanyi('app.button.confirm'),
-            type: 'primary',
-            onClick: () => {
-              this.service.abortmultipart(dataError).subscribe(
-                (data) => {
-                  let index = this.lstFileUpdate.findIndex(
-                    (file) => file.uid === item.uid
-                  );
-                  if (index >= 0) {
-                    this.lstFileUpdate.splice(index, 1);
-                    this.countSuccessUpload -= 1;
-                  }
-                  this.notification.success(
-                    this.i18n.fanyi('app.status.success'),
-                    this.i18n.fanyi('app.bucket.detail.deleteFile.success')
-                  );
-                },
-                (error) => {
-                  console.log(error);
-                }
-              );
-              modal.destroy();
-            },
-          },
-        ],
-      });
-    } else {
       let index = this.lstFileUpdate.findIndex((file) => file.uid === item.uid);
       if (index >= 0) {
         this.lstFileUpdate.splice(index, 1);
-        this.countSuccessUpload -= 1;
+        if(this.countSuccessUpload > 0){
+          this.countSuccessUpload -= 1;
+        }else{
+          this.countSuccessUpload = 0
+        }
+        this.totalSize -= item.size 
       }
       this.notification.success(
         this.i18n.fanyi('app.status.success'),
         this.i18n.fanyi('app.bucket.detail.deleteFile.success')
       );
-    }
   }
 
   updateCheckedSet(checked: boolean, key: any): void {
@@ -490,6 +473,7 @@ export class BucketDetailComponent extends BaseService implements OnInit {
     this.listOfData.forEach((item) => this.updateCheckedSet(isAddAll, item));
     this.refreshCheckedStatus();
   }
+
 
   loadData() {
     this.loading = true;
@@ -531,41 +515,25 @@ export class BucketDetailComponent extends BaseService implements OnInit {
         this.activatedRoute.snapshot.paramMap.get('name'),
         this.region
       )
-
-
-
-
       .subscribe((data) => {
         this.bucket = data;
         this.cdr.detectChanges()
         if (data == undefined || data == null) {
           this.notification.error(this.i18n.fanyi("app.status.fail"),this.i18n.fanyi("app.record.not.found"))
-          this.router.navigate(['/app-smart-cloud/object-storage/bucket']);
+          this.navigateToBucketList()
         }
       },
         error => {
-        // this.notification.error(this.i18n.fanyi("app.status.fail"),error.error.message)
-        //   this.router.navigate(['/app-smart-cloud/object-storage/bucket']);
           this.notification.error(this.i18n.fanyi("app.status.fail"),this.i18n.fanyi("app.record.not.found"))
-          this.router.navigate(['/app-smart-cloud/object-storage/bucket']);
+          this.navigateToBucketList()
         });
 
   }
 
-  addMoreMetadata() {
-    let defaultValue = { ...this.defaultMetadata };
-    this.listOfMetadata.push(defaultValue);
-  }
+ 
 
   handleChange2({ file, fileList }: NzUploadChangeParam) {
     this.lstFileUpdate.push(file);
-  }
-
-  removeMetadata(key: any) {
-    const index = this.listOfMetadata.findIndex((item) => item.metaKey == key);
-    if (index >= 0) {
-      this.listOfMetadata.splice(index, 1);
-    }
   }
 
   deleteFolder() {
@@ -1009,31 +977,37 @@ export class BucketDetailComponent extends BaseService implements OnInit {
 
     this.loadData();
   }
-
+  isUploading: boolean = false;
   uploadAllFile() {
     const filesToUpload = this.lstFileUpdate.filter((item) => !item.isUpload);
-
-    console.log(filesToUpload);
-
     if (filesToUpload.length == 0) {
       this.notification.warning(
         this.i18n.fanyi('app.status.warning'),
         this.i18n.fanyi('app.bucket.detail.uploadFile.warning')
       );
-    } else {
-      const uploadNextFile = (index) => {
-        if (index < filesToUpload.length) {
-          const item = filesToUpload[index];
-          item.percent = 0;
-          this.uploadSingleFile(item).then(() => {
-            uploadNextFile(index + 1);
-          });
-        }
-      };
-
-      uploadNextFile(0);
+      return;
     }
+    
+    this.isUploading = true;
+    
+    const uploadNextFile = (index) => {
+      if (index < filesToUpload.length) {
+        const item = filesToUpload[index];
+        item.percent = 0;
+        this.uploadSingleFile(item).then(() => {
+          uploadNextFile(index + 1);
+        }).catch(() => {
+          this.isUploading = false;
+        });
+      } else {
+        this.isUploading = false;
+      }
+    };
+  
+    uploadNextFile(0);
   }
+  
+  
 
   uploadSingleFile(item) {
     if (item.isUpload) {
@@ -1062,11 +1036,11 @@ export class BucketDetailComponent extends BaseService implements OnInit {
         var params = {
           bucketName: this.activatedRoute.snapshot.paramMap.get('name'),
           key: this.currentKey + item.name,
-          metadata: this.listOfMetadata,
+          metadata: this.formUploadFile.get('listMetadata')?.value,
           acl: this.radioValue,
           regionId: this.region,
         };
-
+        this.isUploading = true; 
         this.service.createMultiPartUpload(params).subscribe(
           (data) => {
             upload_id = data.data;
@@ -1111,13 +1085,22 @@ export class BucketDetailComponent extends BaseService implements OnInit {
             'Bearer ' + this.tokenService.get()?.token
           );
           xhr.setRequestHeader('Content-Type', 'application/json');
-
+          startTime = new Date();
           xhr.upload.onprogress = (event) => {
             var totalPercentComplete = Math.round(
               (chunkCounter / numberofChunks) * 100
             );
             console.log(totalPercentComplete);
-
+            const currentTime = new Date();
+                const timeDiff = (currentTime.getTime() - startTime.getTime()) / 1000; // Time in seconds
+                const speedKBps = event.loaded / timeDiff / 1024; // Speed in KB/s
+          
+                if (speedKBps >= 1024) {
+                  const speedMBps = speedKBps / 1024;
+                  this.speed = `${speedMBps.toFixed(2)} MB/s`;
+                } else {
+                  this.speed = `${speedKBps.toFixed(2)} KB/s`;
+                }
             if (event.lengthComputable) {
               item.percentage = Math.round(
                 (event.loaded / event.total) * totalPercentComplete
@@ -1131,6 +1114,8 @@ export class BucketDetailComponent extends BaseService implements OnInit {
                 this.i18n.fanyi('app.bucket.detail.uploadFile.success')
               );
               this.countSuccessUpload += 1;
+              this.countSize += item.size;
+              this.isUploading = false;
               this.loadData();
               resolve();
             } else {
@@ -1147,7 +1132,8 @@ export class BucketDetailComponent extends BaseService implements OnInit {
             this.notification.error(
               this.i18n.fanyi('app.status.fail'),
               this.i18n.fanyi('app.bucket.detail.uploadFile.fail')
-            );
+            )
+            this.isUploading = false;
             reject();
           };
 
@@ -1173,11 +1159,23 @@ export class BucketDetailComponent extends BaseService implements OnInit {
                 index: index,
               });
               const xhr = new XMLHttpRequest();
+              startTime = new Date();
               xhr.open('PUT', presignedUrl, true);
               xhr.upload.onprogress = (event) => {
                 var totalPercentComplete = Math.round(
                   ((chunkCounter - 1) / numberofChunks) * 100
                 );
+                const currentTime = new Date();
+                const timeDiff = (currentTime.getTime() - startTime.getTime()) / 1000; // Time in seconds
+                const speedKBps = event.loaded / timeDiff / 1024; // Speed in KB/s
+          
+                if (speedKBps >= 1024) {
+                  const speedMBps = speedKBps / 1024;
+                  this.speed = `${speedMBps.toFixed(2)} MB/s`;
+                } else {
+                  this.speed = `${speedKBps.toFixed(2)} KB/s`;
+                }
+          
 
                 if (event.lengthComputable) {
                   item.percentage = Math.round(totalPercentComplete);
@@ -1222,6 +1220,7 @@ export class BucketDetailComponent extends BaseService implements OnInit {
                     console.log(error);
                   }
                 );
+
                 reject();
               };
               xhr.send(blob);
@@ -1239,7 +1238,7 @@ export class BucketDetailComponent extends BaseService implements OnInit {
       return new Promise<void>((resolve, reject) => {
         item.isUpload = true;
         console.log(item);
-
+        this.isUploading = true; 
         let data = {
           bucketName: this.activatedRoute.snapshot.paramMap.get('name'),
           key: this.currentKey + item.name,
@@ -1247,7 +1246,7 @@ export class BucketDetailComponent extends BaseService implements OnInit {
           urlOrigin: this.hostNameUrl,
           regionId: this.region,
           ACL: this.radioValue,
-          metadata: this.listOfMetadata
+          metadata: this.formUploadFile.get('listMetadata')?.value
         };
         this.service.getSignedUrl(data).subscribe(
           (responseData) => {
@@ -1264,14 +1263,17 @@ export class BucketDetailComponent extends BaseService implements OnInit {
             xhr.upload.onprogress = (event) => {
               if (event.lengthComputable) {
                 const currentTime = new Date();
-                const timeDiff =
-                  (currentTime.getTime() - startTime.getTime()) / 1000; // Time in seconds
-                const speed = event.loaded / timeDiff / 1024;
-                item.percentage = Math.round(
-                  (event.loaded / event.total) * 100
-                );
-                item.speed = speed.toFixed(2); // Display speed
-                console.log(`Upload speed: ${speed.toFixed(2)} KB/s`);
+                const timeDiff = (currentTime.getTime() - startTime.getTime()) / 1000; // Time in seconds
+                const speedKBps = event.loaded / timeDiff / 1024; // Speed in KB/s
+          
+                if (speedKBps >= 1024) {
+                  const speedMBps = speedKBps / 1024;
+                  this.speed = `${speedMBps.toFixed(2)} MB/s`;
+                } else {
+                  this.speed = `${speedKBps.toFixed(2)} KB/s`;
+                }
+          
+                item.percentage = Math.round((event.loaded / event.total) * 100);
               }
 
             };
@@ -1282,7 +1284,9 @@ export class BucketDetailComponent extends BaseService implements OnInit {
                 this.i18n.fanyi('app.bucket.detail.uploadFile.success')
               );
               this.loadData();
+              this.isUploading = false; 
               this.countSuccessUpload += 1;
+              this.countSize += item.size;
               resolve();
             };
             xhr.onerror = () => {
@@ -1291,6 +1295,7 @@ export class BucketDetailComponent extends BaseService implements OnInit {
                 this.i18n.fanyi('app.status.fail'),
                 this.i18n.fanyi('app.bucket.detail.uploadFile.fail')
               );
+              this.isUploading = false; 
               reject();
             };
             xhr.send(item.originFileObj);
@@ -1301,6 +1306,7 @@ export class BucketDetailComponent extends BaseService implements OnInit {
               this.i18n.fanyi('app.status.fail'),
               this.i18n.fanyi('app.bucket.detail.uploadFile.fail')
             );
+            this.isUploading = false; 
             reject();
           }
         );
@@ -1308,10 +1314,42 @@ export class BucketDetailComponent extends BaseService implements OnInit {
     }
   }
 
+//   uploadTime: number
+//   displayTime: string = '00:00:00'
+//   intervalId: any
+
+//   startUploadTimer() {
+//     this.uploadTime = 0;
+//     this.intervalId = setInterval(() => {
+//       this.uploadTime++;
+//       this.displayTime = this.formatTime(this.uploadTime);
+//     }, 1000);
+// }
+
+// stopUploadTimer() {
+//   if (this.intervalId) {
+//     clearInterval(this.intervalId);
+//   }
+// }
+
+// padZero(num: number): string {
+//     return num < 10 ? '0' + num : num.toString();
+// }
+
+// formatTime(seconds: number): string {
+//   const h = Math.floor(seconds / 3600).toString().padStart(2, '0');
+//   const m = Math.floor((seconds % 3600) / 60).toString().padStart(2, '0');
+//   const s = (seconds % 60).toString().padStart(2, '0');
+//   return `${h}:${m}:${s}`;
+// }
+
   handleCancelUploadFile() {
     this.lstFileUpdate = [];
-    this.listOfMetadata = [];
+    this.formUploadFile.get('listMetadata')?.reset()
     this.countSuccessUpload = 0;
+    this.totalSize = 0;
+    this.countSize= 0;
+    this.isUploading = false;
     this.radioValue = 'public-read';
     this.isVisibleUploadFile = false;
     this.emptyFileUpload = true;
@@ -1388,7 +1426,7 @@ export class BucketDetailComponent extends BaseService implements OnInit {
     let data = {
       bucketName: this.activatedRoute.snapshot.paramMap.get('name'),
       customerId: this.tokenService.get()?.userId,
-      regionId: 0,
+      regionId: this.region,
       selectedItems: [...this.setOfCheckedId],
     };
 

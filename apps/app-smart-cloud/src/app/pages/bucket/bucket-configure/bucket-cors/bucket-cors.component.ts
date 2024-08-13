@@ -185,9 +185,11 @@ export class BucketCorsComponent implements OnInit {
       this.bucketCorsCreate.allowedMethods.push('head');
     }
     this.listHeaderName.forEach((element) => {
-      this.bucketCorsCreate.allowedHeaders.push(element.name);
+      if (element.name.trim() !== '') {
+        this.bucketCorsCreate.allowedHeaders.push(element.name);
+      }
     });
-
+    console.log('cors update', this.bucketCorsCreate);
     this.bucketService
       .createBucketCORS(this.bucketCorsCreate, this.region)
       .pipe(
@@ -204,6 +206,8 @@ export class BucketCorsComponent implements OnInit {
             this.i18n.fanyi('app.create.bucket.cors.success')
           );
           this.form.reset();
+          this.bucketCorsCreate.allowedHeaders = [];
+          this.bucketCorsCreate.allowedMethods = [];
           this.searchBucketCors();
           this.cdr.detectChanges();
         },
@@ -212,6 +216,8 @@ export class BucketCorsComponent implements OnInit {
             this.i18n.fanyi('app.status.fail'),
             this.i18n.fanyi('app.bucket.cors.fail')
           );
+          this.bucketCorsCreate.allowedHeaders = [];
+          this.bucketCorsCreate.allowedMethods = [];
           this.cdr.detectChanges();
         },
       });
@@ -330,8 +336,11 @@ export class BucketCorsComponent implements OnInit {
     if (this.head == true) {
       this.bucketCorsUpdate.allowedMethods.push('HEAD');
     }
+
     this.listHeaderName.forEach((element) => {
-      this.bucketCorsUpdate.allowedHeaders.push(element.name);
+      if (element.name.trim() !== '') {
+        this.bucketCorsUpdate.allowedHeaders.push(element.name);
+      }
     });
 
     this.bucketService

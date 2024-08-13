@@ -87,7 +87,7 @@
       </nz-col>
     </nz-row>
     <nz-row nzGutter="24">
-      <nz-col nzSpan="12">
+      <nz-col nzSpan="24">
         <nz-form-item>
           <nz-form-label nzFor="projectIds">
             <div class="name-rule d-flex">
@@ -118,7 +118,7 @@
       </nz-col>
     </nz-row>
     <nz-row nzGutter="24">
-      <nz-col nzSpan="12" style="border-radius: 8px">
+      <nz-col nzSpan="24" style="border-radius: 8px">
         <nz-alert
           nzType="warning"
           [nzDescription]="nzDescriptionWarning06"
@@ -145,14 +145,15 @@
         </ng-template>
       </nz-col>
     </nz-row>
+    
   </nz-card>
 </form>
-
 <one-portal-attach-permission-policy
   [isCreate]="true"
   (listGroupNames)="onChangeGroupNames($event)"
   (listPolicyNames)="onChangePolicyNames($event)"
 ></one-portal-attach-permission-policy>
+
 <div nz-row [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 24 }">
   <div
     class="text-right p-0 m-b-0 d-flex"

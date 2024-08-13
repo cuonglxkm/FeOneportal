@@ -72,7 +72,7 @@
           </nz-form-label>
           <nz-form-control>
             <input style="border-radius: 8px;" nz-input class="custom-input"
-                   value="{{ listProjectNameStr }}" disabled="true" />
+                   [value]="listProjectNameStr" disabled="true" />
           </nz-form-control>
         </nz-form-item>
       </nz-col>
@@ -171,7 +171,7 @@
       <div class="tab-group">
         <div nz-row [nzGutter]="24">
           <div nz-col [nzLg]="8" [nzMd]="8" [nzSm]="24" [nzXl]="8" [nzXs]="24" [nzXXl]="12" class="items-center-text">
-            <p class="custom-text">{{"app.user.group.join"|i18n}}  <span style="margin-left:5px">({{user.userGroups.length}})</span></p>
+            <p class="custom-text">{{"app.user.group.join"|i18n}}  <span style="margin-left:5px">({{user?.userGroups?.length}})</span></p>
 
           </div>
           <div class="text-right p-0 m-b-0 d-flex" nz-col [nzLg]="16" [nzMd]="16" [nzSm]="24" [nzXl]="16" [nzXs]="24" style="justify-content: end;"
@@ -219,17 +219,17 @@
                 (nzCheckedChange)="onItemCheckedGroup(item.name, $event)" nzLeft></td>
               <td class="fieldColor">{{ item.name }}</td>
               <td>{{ item.numberOfUser }}</td>
-              <td *ngIf="item.policies.length == 0">None</td>
-              <td class="fieldColor" *ngIf="item.policies.length == 1">
+              <td *ngIf="item.policies?.length == 0">None</td>
+              <td class="fieldColor" *ngIf="item.policies?.length == 1">
                 {{ item.policies[0] }}
               </td>
-              <td class="fieldColor" *ngIf="item.policies.length == 2">
+              <td class="fieldColor" *ngIf="item.policies?.length == 2">
                 {{ item.policies[0] }}, {{ item.policies[1] }}
               </td>
-              <td class="fieldColor" *ngIf="item.policies.length > 2">
+              <td class="fieldColor" *ngIf="item.policies?.length > 2">
                 {{ item.policies[0] }}, {{ item.policies[1] }}
                 <span class="nameField">
-                  and {{ item.policies.length - 2 }} policies
+                  and {{ item.policies?.length - 2 }} policies
                 </span>
               </td>
               <td>{{ item.createdDate | date : 'HH:mm:ss dd/MM/yyyy' }}</td>

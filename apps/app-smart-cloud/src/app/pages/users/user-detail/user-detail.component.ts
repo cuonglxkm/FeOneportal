@@ -83,7 +83,7 @@ export class UserDetailComponent implements OnInit {
     this.listPolicyNames = [];
     this.service.getUserByUsername(this.userName).subscribe((data: any) => {
       this.user = data;
-      data.projectIds.forEach(item => {
+      data.projectIds?.forEach(item => {
         this.projectService.getByProjectId(item).subscribe(data2 => {
           this.listProjectName?.push(data2?.cloudProject?.displayName)
           this.listProjectNameStr = this.listProjectName.join(', ')
@@ -100,6 +100,7 @@ export class UserDetailComponent implements OnInit {
       this.listPolicyNames = this.listPolicyNames.filter((e) => e != '');
       this.getGroup();
       this.getPolicies();
+      this.cdr.detectChanges()
     });
   }
 
@@ -188,7 +189,7 @@ export class UserDetailComponent implements OnInit {
 
   refreshCheckedStatusPolicy(): void {
     const listOfEnabledData = this.listOfPolicies;
-    this.checkedPolicy = listOfEnabledData.every(({ name }) =>
+    this.checkedPolicy = listOfEnabledData?.every(({ name }) =>
       this.setOfCheckedPolicy.has(name)
     );
     this.indeterminatePolicy =
