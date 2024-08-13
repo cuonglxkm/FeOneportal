@@ -121,7 +121,8 @@ export class BucketDetailComponent extends BaseService implements OnInit {
   filterQuery: string = '';
   listFile = [];
   hostNameUrl = window.location.origin;
-
+  speed: string = '0'
+  isDownload: boolean = false
   isLoadingCreateFolder: boolean = false;
   isLoadingAuthorize: boolean = false;
   isLoadingDeleteObject: boolean = false;
@@ -435,7 +436,11 @@ export class BucketDetailComponent extends BaseService implements OnInit {
                   );
                   if (index >= 0) {
                     this.lstFileUpdate.splice(index, 1);
-                    this.countSuccessUpload -= 1;
+                    if(this.countSuccessUpload > 0){
+                      this.countSuccessUpload -= 1;
+                    }else{
+                      this.countSuccessUpload = 0
+                    }
                   }
                   this.notification.success(
                     this.i18n.fanyi('app.status.success'),
@@ -455,7 +460,12 @@ export class BucketDetailComponent extends BaseService implements OnInit {
       let index = this.lstFileUpdate.findIndex((file) => file.uid === item.uid);
       if (index >= 0) {
         this.lstFileUpdate.splice(index, 1);
-        this.countSuccessUpload -= 1;
+        if(this.countSuccessUpload > 0){
+          this.countSuccessUpload -= 1;
+        }else{
+          this.countSuccessUpload = 0
+        }
+
       }
       this.notification.success(
         this.i18n.fanyi('app.status.success'),
@@ -1111,13 +1121,22 @@ export class BucketDetailComponent extends BaseService implements OnInit {
             'Bearer ' + this.tokenService.get()?.token
           );
           xhr.setRequestHeader('Content-Type', 'application/json');
-
+          startTime = new Date();
           xhr.upload.onprogress = (event) => {
             var totalPercentComplete = Math.round(
               (chunkCounter / numberofChunks) * 100
             );
             console.log(totalPercentComplete);
-
+            const currentTime = new Date();
+                const timeDiff = (currentTime.getTime() - startTime.getTime()) / 1000; // Time in seconds
+                const speedKBps = event.loaded / timeDiff / 1024; // Speed in KB/s
+          
+                if (speedKBps >= 1024) {
+                  const speedMBps = speedKBps / 1024;
+                  this.speed = `${speedMBps.toFixed(2)} MB/s`;
+                } else {
+                  this.speed = `${speedKBps.toFixed(2)} KB/s`;
+                }
             if (event.lengthComputable) {
               item.percentage = Math.round(
                 (event.loaded / event.total) * totalPercentComplete
@@ -1173,11 +1192,23 @@ export class BucketDetailComponent extends BaseService implements OnInit {
                 index: index,
               });
               const xhr = new XMLHttpRequest();
+              startTime = new Date();
               xhr.open('PUT', presignedUrl, true);
               xhr.upload.onprogress = (event) => {
                 var totalPercentComplete = Math.round(
                   ((chunkCounter - 1) / numberofChunks) * 100
                 );
+                const currentTime = new Date();
+                const timeDiff = (currentTime.getTime() - startTime.getTime()) / 1000; // Time in seconds
+                const speedKBps = event.loaded / timeDiff / 1024; // Speed in KB/s
+          
+                if (speedKBps >= 1024) {
+                  const speedMBps = speedKBps / 1024;
+                  this.speed = `${speedMBps.toFixed(2)} MB/s`;
+                } else {
+                  this.speed = `${speedKBps.toFixed(2)} KB/s`;
+                }
+          
 
                 if (event.lengthComputable) {
                   item.percentage = Math.round(totalPercentComplete);
@@ -1264,14 +1295,17 @@ export class BucketDetailComponent extends BaseService implements OnInit {
             xhr.upload.onprogress = (event) => {
               if (event.lengthComputable) {
                 const currentTime = new Date();
-                const timeDiff =
-                  (currentTime.getTime() - startTime.getTime()) / 1000; // Time in seconds
-                const speed = event.loaded / timeDiff / 1024;
-                item.percentage = Math.round(
-                  (event.loaded / event.total) * 100
-                );
-                item.speed = speed.toFixed(2); // Display speed
-                console.log(`Upload speed: ${speed.toFixed(2)} KB/s`);
+                const timeDiff = (currentTime.getTime() - startTime.getTime()) / 1000; // Time in seconds
+                const speedKBps = event.loaded / timeDiff / 1024; // Speed in KB/s
+          
+                if (speedKBps >= 1024) {
+                  const speedMBps = speedKBps / 1024;
+                  this.speed = `${speedMBps.toFixed(2)} MB/s`;
+                } else {
+                  this.speed = `${speedKBps.toFixed(2)} KB/s`;
+                }
+          
+                item.percentage = Math.round((event.loaded / event.total) * 100);
               }
 
             };

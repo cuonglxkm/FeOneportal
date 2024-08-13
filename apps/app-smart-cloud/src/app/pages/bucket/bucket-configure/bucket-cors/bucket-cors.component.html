@@ -217,7 +217,7 @@
           <nz-input-number
             style="width: 100%; margin-left: 0px; margin-top: 5px"
             nzSize="large"
-            [nzMax]="99999999999"
+            [nzMax]="2147483647"
             [(ngModel)]="bucketCorsCreate.maxAgeSeconds"
             [ngModelOptions]="{ standalone: true }"
             (keydown)="onKeyDown($event)"
@@ -408,7 +408,7 @@
             style="width: 100%; margin-left: 0px; margin-top: 5px"
             [ngModelOptions]="{ standalone: true }"
             nzSize="large"
-            [nzMax]="99999999999"
+            [nzMax]="2147483647"
             [(ngModel)]="maxAgeSeconds"
             (keydown)="onKeyDown($event)"
           />
