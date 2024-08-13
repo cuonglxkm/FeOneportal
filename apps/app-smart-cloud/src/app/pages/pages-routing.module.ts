@@ -184,18 +184,10 @@ const routes: Routes = [
   {
     path: 'volumes',
     component: VolumeComponent,
-    canActivate: [PermissionGuard],
-    data: {
-      permission: 'volume:List'
-    }
   },
   {
     path: 'volumes-advance',
     component: VolumeComponent,
-    canActivate: [PermissionGuard],
-    data: {
-      permission: 'volume:List'
-    }
   },
   {
     path: 'volume/create',
@@ -249,9 +241,6 @@ const routes: Routes = [
     path: 'keypair',
     component: SshKeyComponent,
     canActivate: [PermissionGuard],
-    data: {
-      permission: 'keypair:List'
-    }
   },
   {
     path: 'instances',
@@ -259,11 +248,6 @@ const routes: Routes = [
       import('../pages/instances/instances.module').then(
         (m) => m.InstancesModule
       ),
-    canActivate: [PermissionGuard],
-    data: {
-      permission: 'instance:List'
-    }
-
   },
   {
     path: 'instanceadvance',
@@ -271,20 +255,10 @@ const routes: Routes = [
       import('../pages/instances/instances.module').then(
         (m) => m.InstancesModule
       ),
-    canActivate: [PermissionGuard],
-    data: {
-      permission: 'instance:List'
-    }
-
   },
   {
     path: 'ip-public',
     component: IpPublicComponent,
-    canActivate: [PermissionGuard],
-    data: {
-      permission: 'ippublic:List'
-    }
-
   },
   {
     path: 'ip-public/create',
@@ -324,19 +298,10 @@ const routes: Routes = [
   {
     path: 'action-history',
     component: ActionHistoryComponent,
-    canActivate: [PermissionGuard],
-    data: {
-      permission: 'actionlogs:List'
-    }
-
   },
   {
     path: 'snapshotvls',
     component: SnapshotVolumeListComponent,
-    canActivate: [PermissionGuard],
-    data: {
-      permission: 'volumesnapshot:List'
-    }
   },
   {
     path: 'snapshotvls/detail/:id',
@@ -349,11 +314,6 @@ const routes: Routes = [
   {
     path: 'backup-vm',
     component: ListBackupVmComponent,
-    canActivate: [PermissionGuard],
-    data: {
-      permission: 'backup:List'
-    }
-
   },
   {
     path: 'backup-vm/restore-backup-vm/:id',
@@ -470,11 +430,6 @@ const routes: Routes = [
   {
     path: 'backup-volume',
     component: ListBackupVolumeComponent,
-    canActivate: [PermissionGuard],
-    data: {
-      permission: 'backup:List'
-    }
-
   },
   {
     path: 'iam/dashboard',
@@ -678,18 +633,10 @@ const routes: Routes = [
   {
     path: 'schedule/snapshot',
     component: SnapshotScheduleListComponent,
-    canActivate: [PermissionGuard],
-    data: {
-      permission: 'volumesnapshotschedule:List'
-    }
   },
   {
     path: 'schedule/snapshot-advance',
     component: SnapshotScheduleListComponent,
-    canActivate: [PermissionGuard],
-    data: {
-      permission: 'volumesnapshotschedule:List'
-    }
   },
   {
     path: 'schedule/snapshot/create',
@@ -763,20 +710,10 @@ const routes: Routes = [
   {
     path: 'billing/payments',
     component: ListPaymentComponent,
-    // canActivate: [PermissionGuard],
-    // data: {
-    //   permission: 'payment:List'
-    // }
-
   },
   {
     path: 'order',
     component: OrderListComponent,
-    // canActivate: [PermissionGuard],
-    // data: {
-    //   permission: 'order:List'
-    // }
-
   },
   {
     path: 'order/detail/:id',
@@ -808,10 +745,6 @@ const routes: Routes = [
   {
     path: 'backup/packages',
     component: ListPackagesBackupComponent,
-    canActivate: [PermissionGuard],
-    data: {
-      permission: 'backup:ListBackupPacket'
-    }
   },
   {
     path: 'backup/packages/detail/:id',
@@ -898,40 +831,20 @@ const routes: Routes = [
   {
     path: 'vlan/network/detail/:id',
     component: VlanDetailComponent,
-    canActivate: [PermissionGuard],
-    data: {
-      permission: 'vlan:List'
-    }
-
   },
   {
     path: 'project',
     loadChildren: () =>
       import('../pages/project/project.module').then((m) => m.ProjectModule),
-
-    canActivate: [PermissionGuard],
-    data: {
-      permission: 'project:List'
-    }
   },
   {
     path: 'project-advance',
     loadChildren: () =>
       import('../pages/project/project.module').then((m) => m.ProjectModule),
-
-    canActivate: [PermissionGuard],
-    data: {
-      permission: 'project:List'
-    }
   },
   {
     path: 'network/router',
     component: RouterListComponent,
-    canActivate: [PermissionGuard],
-    data: {
-      permission: 'router:List'
-    }
-
   },
   {
     path: 'network/router/detail/:name/:id',
@@ -961,11 +874,6 @@ const routes: Routes = [
   {
     path: 'networks/ip-floating/list',
     component: ListIpFloatingComponent,
-    canActivate: [PermissionGuard],
-    data: {
-      permission: 'ipfloating:List'
-    }
-
   },
   {
     path: 'networks/ip-floating-normal/create',
@@ -988,11 +896,6 @@ const routes: Routes = [
   {
     path: 'networks/ip-wan/list',
     component: ListWanComponent,
-    canActivate: [PermissionGuard],
-    data: {
-      permission: 'ipwan:List'
-    }
-
   },
   {
     path: 'file-storage/file-system/create',
@@ -1087,11 +990,6 @@ const routes: Routes = [
   {
     path: 'networks/ip-floating/list',
     component: ListIpFloatingComponent,
-    canActivate: [PermissionGuard],
-    data: {
-      permission: 'ipfloating:List'
-    }
-
   },
   {
     path: 'file-system-snapshot',
@@ -1285,10 +1183,6 @@ const routes: Routes = [
       import('../pages/vpn-site-to-site/vpn-site-to-site.module').then(
         (m) => m.VpnSiteToSiteModule
       ),
-    canActivate: [PermissionGuard],
-    data: {
-      permission: 'vpnsitetosites:List'
-    }
   },
   {
     path: 'object-storage/s3-key',
@@ -1312,10 +1206,6 @@ const routes: Routes = [
       import('../pages/snapshot-package/packages-snapshot.module').then(
         (m) => m.PackageSnapshotModule
       ),
-    canActivate: [PermissionGuard],
-    data: {
-      permission: 'SnapshotPackage:List'
-    }
   },
   {
     path: 'snapshot-advance/packages',
@@ -1323,26 +1213,14 @@ const routes: Routes = [
       import('../pages/snapshot-package/packages-snapshot.module').then(
         (m) => m.PackageSnapshotModule
       ),
-    canActivate: [PermissionGuard],
-    data: {
-      permission: 'SnapshotPackage:List'
-    }
   },
   {
     path: 'security-group/list',
     component: ListSecurityGroupComponent,
-    canActivate: [PermissionGuard],
-    data: {
-      permission: 'securitygroup:List'
-    }
   },
   {
     path: 'load-balancer/list',
     component: ListLoadBalancerComponent,
-    canActivate: [PermissionGuard],
-    data: {
-      permission: 'loadbalancer:List'
-    }
   },
   {
     path: 'load-balancer/create',

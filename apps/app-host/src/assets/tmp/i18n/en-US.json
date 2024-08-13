@@ -3674,5 +3674,7 @@
   "ip.floating.attach.message": "The port is already in use, please select another Port to perform Floating IP binding.",
   "listner.create.duplicate.pool.name" : "Pool name is already used",
   "waf.intro.title1":"Web Application Firewall",
-  "app.non.vietnamese": "None vietnamese"
+  "app.non.vietnamese": "None vietnamese",
+
+  "app.non.permission": "User does not have this permission"
 }

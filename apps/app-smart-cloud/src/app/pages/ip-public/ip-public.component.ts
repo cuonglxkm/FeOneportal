@@ -14,6 +14,7 @@ import { TimeCommon } from '../../shared/utils/common';
 import { debounceTime, Subject } from 'rxjs';
 import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
 import { error } from 'console';
+import { PolicyService } from 'src/app/shared/services/policy.service';
 
 @Component({
   selector: 'one-portal-ip-public',
@@ -52,13 +53,16 @@ export class IpPublicComponent implements OnInit {
     {name: this.i18n.fanyi('app.suspend'), value: 'TAMNGUNG'}];
   disableDelete = true;
   ipAddressDelete = '';
+  isCreateOrder: boolean = false;
   @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
 
   constructor(private service: IpPublicService, private router: Router,
               @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
               private instancService: InstancesService,
               private notification: NzNotificationService,
-              @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,) {
+              @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
+              private policyService: PolicyService,
+  ) {
   }
 
   modalStyle = {
@@ -86,13 +90,30 @@ export class IpPublicComponent implements OnInit {
     this.loading = true;
     this.service.getData(this.ipAddress, this.selectedStatus, this.tokenService.get()?.userId, this.projectId, this.regionId, this.isCheckState, this.size, this.index)
       .pipe(finalize(() => this.loading = false))
-      .subscribe(baseResponse => {
-        this.listOfIp = baseResponse.records;
-        this.total = baseResponse.totalCount;
-        if (isCheckBegin) {
-          this.isBegin = this.listOfIp === null || this.listOfIp.length < 1 ? true : false;
-        }
-      });
+      .subscribe({
+        next: (next) => {
+          this.listOfIp = next.records;
+          this.total = next.totalCount;
+          if (isCheckBegin) {
+            this.isBegin = this.listOfIp === null || this.listOfIp.length < 1 ? true : false;
+          }
+        },
+        error: (e) => {
+          this.listOfIp = [];
+          if(e.status == 403){
+            this.notification.error(
+              e.statusText,
+              this.i18n.fanyi('app.non.permission')
+            );
+          } else {
+            this.notification.error(
+              e.statusText,
+              this.i18n.fanyi('app.notify.get.list.ip.public')
+            );
+          }
+        },
+      }
+    );
   }
 
   onRegionChange(region: RegionModel) {
@@ -111,6 +132,7 @@ export class IpPublicComponent implements OnInit {
     this.projectId = project.id;
     this.projectType = project.type;
     this.getData(true);
+    this.isCreateOrder = this.policyService.hasPermission("order:Create");
   }
 
   onPageSizeChange(event: any) {
