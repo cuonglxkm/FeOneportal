@@ -116,6 +116,11 @@ export class WafDomainListComponent implements OnInit, OnDestroy {
     this.pageIndex = value;
     this.getListWafDomain();
   }
+  
+  someSwitchesOn(sysDomainInfoVO): boolean {
+    debugger;
+    return Object.values(sysDomainInfoVO).some(value => value === "ON");
+  }
 
   getListWafDomain() {
     this.isLoading = true;
@@ -138,6 +143,7 @@ export class WafDomainListComponent implements OnInit, OnDestroy {
                   wafDefendSwitch: "OFF",
                 };
               }
+              x.someSwitchesOn = this.someSwitchesOn(x.sysDomainInfoVO);
             });
             this.isLoading = false;
           } else {
