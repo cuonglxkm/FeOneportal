@@ -34,7 +34,7 @@ export class BucketCreateComponent implements OnInit {
       nonNullable: true,
       validators: [
         Validators.required,
-        Validators.pattern(/^(?!-)(?!.*-$)(?!\.)(?!.*\.$)[a-z0-9-.]*$/),
+        Validators.pattern(/^(?!-)(?!.*-$)(?!\.)(?!.*\.$)[a-z0-9]+(?:[-.][a-z0-9]+)*$/),
         this.checkErrorName.bind(this)
       ],
     }),

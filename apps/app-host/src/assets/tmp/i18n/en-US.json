@@ -809,6 +809,8 @@
   "app.bucket.detail.upload.public.tooltip": "Everyone can access the file information.<br/>Note, Bucket is public, but if the object is private, it cannot be accessed from the outside",
   "app.bucket.detail.upload.private.tooltip": "Only authorized users have access",
   "app.bucket.detail.upload.metakey.wrong": "Meta key is not correct format",
+  "app.bucket.detail.upload.metakey.empty": "Meta key can't be blank",
+  "app.bucket.detail.upload.metavalue.empty": "Meta value can't be blank",
   "app.bucket.detail.upload.metavalue.wrong": "Meta value is not correct format",
   "app.bucket.detail.select": "Select {{countObjectSelected}} Objects.",
   "app.bucket.detail.url": "URL",
