@@ -469,11 +469,11 @@
         </label>
       </nz-radio-group>
       <nz-divider class="mb-3" />
-      <span class="mt-2 d-block text-label float-right mb-4" *ngIf="lstFileUpdate.length > 0">{{countSuccessUpload}} của {{lstFileUpdate.length}}</span>
+      <span class="mt-2 d-block text-label float-right mb-4" *ngIf="lstFileUpdate.length > 0">{{speed}} |  {{countSuccessUpload}} của {{lstFileUpdate.length}}</span>
       <nz-table
         [nzData]="lstFileUpdate"
         style="margin-top: 10px" nzHideOnSinglePage nzShowPagination="false"
-      >
+        >
         <thead>
           <tr>
             <th>{{ 'app.name' | i18n }}</th>
@@ -508,7 +508,7 @@
                 style="margin-right: 10px; cursor: pointer"
                 nz-tooltip
                 [nzTooltipTitle]="'app.bucket.detail.uploadFile.upload' | i18n "
-                src="assets/imgs/download.svg"
+                src="assets/imgs/upload-file.png"
                 (click)="uploadSingleFile(item, i)"
               />
               <img

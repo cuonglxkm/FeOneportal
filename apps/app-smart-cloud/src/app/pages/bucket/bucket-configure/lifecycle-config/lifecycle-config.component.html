@@ -69,8 +69,9 @@
         <td>
           {{ item.enabledString }}
         </td>
-        <td *ngIf="item.prefix != null">{{ item.prefix }}</td>
-        <td *ngIf="item.prefix == null">{{ 'app.all.files' | i18n }}</td>
+        <td>{{ item.prefixString }}</td>
+        <!-- <td *ngIf="item.prefix != null">{{ item.prefix }}</td>
+        <td *ngIf="item.prefix == null">{{ 'app.all.files' | i18n }}</td> -->
         <td>{{ item.lifecycleTagPredicateString }}</td>
         <td>{{ item.expiration_DayString }}</td>
         <td>{{ item.noncurrentVersionExpiration_DayString }}</td>
