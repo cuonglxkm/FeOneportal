@@ -83,6 +83,7 @@ export class LifecycleConfigComponent implements OnInit {
     this.searchDelay
       .pipe(debounceTime(TimeCommon.timeOutSearch))
       .subscribe(() => {
+        this.refreshParams()
         this.searchLifeCycle();
       });
 
@@ -123,6 +124,11 @@ export class LifecycleConfigComponent implements OnInit {
     isSetNoncurrentVersionExpiration_Day: [false],
   });
 
+  refreshParams() {
+    this.pageNumber = 1;
+    this.pageSize = 10;
+}
+
   searchLifeCycle() {
     this.loading = true;
     this.bucketService
@@ -155,6 +161,7 @@ export class LifecycleConfigComponent implements OnInit {
 
   search(search: string) {
     this.value = search.trim();
+    this.refreshParams()
     this.searchLifeCycle();
   }
 
