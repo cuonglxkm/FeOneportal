@@ -431,55 +431,6 @@ export class BucketDetailComponent extends BaseService implements OnInit {
   }
 
   removeFile(item: NzUploadFile) {
-    if (item.isUpload && item.isUpload === true && item.uploadId) {
-      let dataError = {
-        bucketName: this.activatedRoute.snapshot.paramMap.get('name'),
-        key: this.currentKey + item.name,
-        uploadId: item.uploadId,
-        regionId: this.region,
-      };
-      const modal: NzModalRef = this.modalService.create({
-        nzTitle: this.i18n.fanyi('app.bucket.detail.deleteFile'),
-        nzContent: this.i18n.fanyi('app.bucket.detail.deleteFile.alert'),
-        nzFooter: [
-          {
-            label: this.i18n.fanyi('app.button.cancel'),
-            type: 'default',
-            onClick: () => modal.destroy(),
-          },
-          {
-            label: this.i18n.fanyi('app.button.confirm'),
-            type: 'primary',
-            onClick: () => {
-              this.service.abortmultipart(dataError).subscribe(
-                (data) => {
-                  let index = this.lstFileUpdate.findIndex(
-                    (file) => file.uid === item.uid
-                  );
-                  if (index >= 0) {
-                    this.lstFileUpdate.splice(index, 1);
-                    if(this.countSuccessUpload > 0){
-                      this.countSuccessUpload -= 1;
-                    }else{
-                      this.countSuccessUpload = 0
-                    }
-                  }
-                  this.totalSize -= item.size
-                  this.notification.success(
-                    this.i18n.fanyi('app.status.success'),
-                    this.i18n.fanyi('app.bucket.detail.deleteFile.success')
-                  );
-                },
-                (error) => {
-                  console.log(error);
-                }
-              );
-              modal.destroy();
-            },
-          },
-        ],
-      });
-    } else {
       let index = this.lstFileUpdate.findIndex((file) => file.uid === item.uid);
       if (index >= 0) {
         this.lstFileUpdate.splice(index, 1);
@@ -494,7 +445,6 @@ export class BucketDetailComponent extends BaseService implements OnInit {
         this.i18n.fanyi('app.status.success'),
         this.i18n.fanyi('app.bucket.detail.deleteFile.success')
       );
-    }
   }
 
   updateCheckedSet(checked: boolean, key: any): void {
@@ -1027,7 +977,7 @@ export class BucketDetailComponent extends BaseService implements OnInit {
 
     this.loadData();
   }
-
+  isUploading: boolean = false;
   uploadAllFile() {
     const filesToUpload = this.lstFileUpdate.filter((item) => !item.isUpload);
     if (filesToUpload.length == 0) {
@@ -1035,18 +985,26 @@ export class BucketDetailComponent extends BaseService implements OnInit {
         this.i18n.fanyi('app.status.warning'),
         this.i18n.fanyi('app.bucket.detail.uploadFile.warning')
       );
-    } 
-      const uploadNextFile = (index) => {
-        if (index < filesToUpload.length) {
-          const item = filesToUpload[index];
-          item.percent = 0;
-          this.uploadSingleFile(item).then(() => {
-            uploadNextFile(index + 1);
-          });
-        }
-      };
+      return;
+    }
+    
+    this.isUploading = true;
+    
+    const uploadNextFile = (index) => {
+      if (index < filesToUpload.length) {
+        const item = filesToUpload[index];
+        item.percent = 0;
+        this.uploadSingleFile(item).then(() => {
+          uploadNextFile(index + 1);
+        }).catch(() => {
+          this.isUploading = false;
+        });
+      } else {
+        this.isUploading = false;
+      }
+    };
   
-      uploadNextFile(0);
+    uploadNextFile(0);
   }
   
   
@@ -1082,7 +1040,7 @@ export class BucketDetailComponent extends BaseService implements OnInit {
           acl: this.radioValue,
           regionId: this.region,
         };
-
+        this.isUploading = true; 
         this.service.createMultiPartUpload(params).subscribe(
           (data) => {
             upload_id = data.data;
@@ -1157,6 +1115,7 @@ export class BucketDetailComponent extends BaseService implements OnInit {
               );
               this.countSuccessUpload += 1;
               this.countSize += item.size;
+              this.isUploading = false;
               this.loadData();
               resolve();
             } else {
@@ -1174,6 +1133,7 @@ export class BucketDetailComponent extends BaseService implements OnInit {
               this.i18n.fanyi('app.status.fail'),
               this.i18n.fanyi('app.bucket.detail.uploadFile.fail')
             )
+            this.isUploading = false;
             reject();
           };
 
@@ -1278,7 +1238,7 @@ export class BucketDetailComponent extends BaseService implements OnInit {
       return new Promise<void>((resolve, reject) => {
         item.isUpload = true;
         console.log(item);
-
+        this.isUploading = true; 
         let data = {
           bucketName: this.activatedRoute.snapshot.paramMap.get('name'),
           key: this.currentKey + item.name,
@@ -1324,6 +1284,7 @@ export class BucketDetailComponent extends BaseService implements OnInit {
                 this.i18n.fanyi('app.bucket.detail.uploadFile.success')
               );
               this.loadData();
+              this.isUploading = false; 
               this.countSuccessUpload += 1;
               this.countSize += item.size;
               resolve();
@@ -1334,6 +1295,7 @@ export class BucketDetailComponent extends BaseService implements OnInit {
                 this.i18n.fanyi('app.status.fail'),
                 this.i18n.fanyi('app.bucket.detail.uploadFile.fail')
               );
+              this.isUploading = false; 
               reject();
             };
             xhr.send(item.originFileObj);
@@ -1344,6 +1306,7 @@ export class BucketDetailComponent extends BaseService implements OnInit {
               this.i18n.fanyi('app.status.fail'),
               this.i18n.fanyi('app.bucket.detail.uploadFile.fail')
             );
+            this.isUploading = false; 
             reject();
           }
         );
@@ -1386,6 +1349,7 @@ export class BucketDetailComponent extends BaseService implements OnInit {
     this.countSuccessUpload = 0;
     this.totalSize = 0;
     this.countSize= 0;
+    this.isUploading = false;
     this.radioValue = 'public-read';
     this.isVisibleUploadFile = false;
     this.emptyFileUpload = true;
