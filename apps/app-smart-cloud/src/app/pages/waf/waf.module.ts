@@ -60,7 +60,7 @@ import { EditSslCertWAFComponent } from './ssl-cert/edit/edit-ssl-cert.component
     AssociateSslBtnComponent,
     DeleteSslBtnComponent,
     DisassociateDomainBtnComponent,
-    EditSslCertWAFComponent
+    EditSslCertWAFComponent,
   ],
   imports: [
     CommonModule,
