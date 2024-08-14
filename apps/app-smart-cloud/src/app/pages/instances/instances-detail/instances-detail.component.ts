@@ -331,8 +331,9 @@ export class InstancesDetailComponent implements OnInit {
           timeSpan: d.timeSpan,
           value: Number(parseFloat(d.value).toFixed(2)),
         }));
+        unit = '%'
       } 
-      if(this.valueGSCPU === 'diskio'){
+      else if(this.valueGSCPU === 'diskio'){
         data = item.datas.map((d) => ({
           timeSpan: d.timeSpan,
           value: Number((parseFloat(d.value)).toFixed(2)),
