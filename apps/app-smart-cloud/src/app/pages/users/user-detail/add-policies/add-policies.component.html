@@ -1,4 +1,4 @@
-<page-header [breadcrumb]="breadcrumb" [action]="action" [title]="'app.user-detail.addPolicies' | i18n">
+<page-header [breadcrumb]="breadcrumb" [title]="'app.user-detail.addPolicies' | i18n">
   <ng-template #breadcrumb>
     <nz-breadcrumb [nzSeparator]="iconTemplate">
       <nz-breadcrumb-item><a [routerLink]="['/']">{{ 'app.breadcrumb.home' | i18n }}</a></nz-breadcrumb-item>
@@ -18,13 +18,13 @@
     </nz-breadcrumb>
     <ng-template #iconTemplate><one-portal-svg-icon [icon]="'icon_breadcrumb'"></one-portal-svg-icon></ng-template>
   </ng-template>
-  <ng-template #action>
+  <!-- <ng-template #action>
     <div class="alain-custom-action text-right">
       <share-users-combobox></share-users-combobox>
       <region-select-dropdown (regionChange)="onRegionChanged($event)" (valueChanged)="onRegionChange($event)"></region-select-dropdown>
       <project-select-dropdown #projectCombobox [regionId]="regionId" (valueChanged)="onProjectChange($event)"></project-select-dropdown>
     </div>
-  </ng-template>
+  </ng-template> -->
 </page-header>
 
 <one-portal-attach-permission-policy [isCreate]="false" [userName]="userName"
