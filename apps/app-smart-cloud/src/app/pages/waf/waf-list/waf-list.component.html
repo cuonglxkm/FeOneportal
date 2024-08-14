@@ -76,7 +76,10 @@
           <div>
             <img  src="assets/imgs/add.svg" (click)="navigateToAddDomain()" nz-popover
               [nzPopoverContent]="'waf.domain.button.create' | i18n"
-              nzPopoverPlacement="bottom" style="cursor: pointer;"/>
+              nzPopoverPlacement="bottom" 
+              (click)="data.status=='ACTIVE' ? navigateToAddDomain() : null"
+              [style.filter]="data.status=='ACTIVE' ? null : 'opacity(0.25) drop-shadow(0 0 0 rgba(0, 0, 0, 1))'" 
+              [style.cursor]="data.status=='ACTIVE' ? 'pointer' : 'not-allowed'"/>
             <one-portal-delete-waf [canClick]="data.status=='ACTIVE'" [wafId]="data.id"
                                     [wafName]="data.name"
                                     (onOk)="handleOkDelete()" />

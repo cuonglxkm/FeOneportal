@@ -14,9 +14,9 @@ export class CDNStatusPipe implements PipeTransform {
   transform(status: string): StatusModel {
     switch(status?.toLocaleLowerCase()) {
       case "inprogress":
-        return new StatusModel("#0066B0", "Deploying"); 
+        return new StatusModel("#0066B0", "Processing"); 
       case "deployed":
-        return new StatusModel("#008d47", "Enable");
+        return new StatusModel("#0066B0", "Deploying");
       case "deploying":
         return new StatusModel("#0066B0", "Publishing"); 
       case "success":
