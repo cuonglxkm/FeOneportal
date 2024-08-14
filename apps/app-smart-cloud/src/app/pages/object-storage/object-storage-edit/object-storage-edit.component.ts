@@ -121,11 +121,23 @@ export class ObjectStorageEditComponent implements OnInit {
       .pipe(finalize(() => this.loadingSrv.close()))
       .subscribe({
         next: (data) => {
-          this.objectStorage = data;
-          this.id = this.objectStorage.id;
-          this.objectStorageResize.newQuota =
-            this.addQuota + this.objectStorage.quota;
-          this.dataSubject.next(0);
+          if(data.status === 'TAMNGUNG'){
+            this.notification.error(
+              this.i18n.fanyi('app.status.fail'),
+              'Object Storage đã hết hạn, vui lòng gia hạn thêm'
+            );
+            if (this.region === RegionID.ADVANCE) {
+              this.router.navigateByUrl('/app-smart-cloud/object-storage-advance/extend');
+            } else {
+              this.router.navigateByUrl('/app-smart-cloud/object-storage/extend');
+            }
+          }else{
+            this.objectStorage = data;
+            this.id = this.objectStorage.id;
+            this.objectStorageResize.newQuota =
+              this.addQuota + this.objectStorage.quota;
+            this.dataSubject.next(0);
+          }
           this.cdr.detectChanges();
         },
         error: (e) => {
