@@ -1,9 +1,10 @@
 <page-header [breadcrumb]="breadcrumb"
              [action]="action"
-             [title]="'Gói Snapshot'" xmlns="http://www.w3.org/1999/html">
+             [title]="'Danh sách gói Snapshot'" xmlns="http://www.w3.org/1999/html">
   <ng-template #breadcrumb>
     <nz-breadcrumb [nzSeparator]="separatorTemplate">
-      <nz-breadcrumb-item>Trang chủ</nz-breadcrumb-item>
+      <nz-breadcrumb-item>
+        <a routerLink="/app-smart-cloud">Trang chủ</a></nz-breadcrumb-item>
       <nz-breadcrumb-item>
         Dịch vụ hạ tầng
       </nz-breadcrumb-item>
@@ -32,7 +33,6 @@
   <nz-card>
     <ng-container [ngSwitch]="isBegin">
       <ng-container *ngSwitchCase="false">
-        <span class="text-card-header">Danh sách gói Snapshot</span>
         <nz-row nzJustify="space-between" style="margin-top: 20px;">
           <nz-col nzSpan="16">
             <nz-select [nzPlaceHolder]="'Trạng thái'"
@@ -41,14 +41,15 @@
                        nzSize="large"
                        style="margin-right: 15px; width: 170px;"
                        nzPlaceHolder="Tất cả trạng thái"
-                       nzTooltipTitle="Tìm kiếm theo trạng thi"
+                       nzTooltipTitle="Tìm kiếm theo trạng thái"
                        nzTooltipPlacement="bottom"
                        nz-tooltip>
               <nz-option nzValue="" nzLabel="Tất cả trạng thái"></nz-option>
               <nz-option nzValue="AVAILABLE" nzLabel="Đang hoạt động"></nz-option>
-              <nz-option nzValue="CREATING" nzLabel="Đang khởi tạo"></nz-option>
+              <!-- <nz-option nzValue="CREATING" nzLabel="Đang khởi tạo"></nz-option> -->
               <nz-option nzValue="SUSPEND" nzLabel="Tạm ngưng"></nz-option>
-              <nz-option nzValue="DELETEING" nzLabel="Đang xóa"></nz-option>
+              <!-- <nz-option nzValue="DELETEING" nzLabel="Đang xóa"></nz-option> -->
+              <!-- <nz-option nzValue="DELETEING" nzLabel="Lỗi"></nz-option> -->
             </nz-select>
             <!--        <nz-input-group [nzSuffix]="suffixIconSearch" style="margin-left: 15px; width: 250px; border-radius: 8px;">-->
             <!--          <input nz-input-->
@@ -63,16 +64,17 @@
               <input
                 name="name"
                 nz-input
-                placeholder="Tìm kiếm tên ..."
+                placeholder="Tìm kiếm theo tên"
                 [(ngModel)]="value"
+                (keyup.enter)="onInputChange(value)"
                 (input)="onInputChange($event.target['value'])"/>
             </nz-input-group>
-            <ng-template #prefixIconSearch>
-              <img
+            <ng-template #prefixIconSearch >
+              <img 
                 src="assets/imgs/search.svg"
                 alt=""
-                style="cursor: pointer"
-                nz-tooltip="Tìm kiếm"/>
+                style="cursor: auto"
+                />
             </ng-template>
           </nz-col>
           <nz-col nzSpan="8" style="flex:none;">
@@ -137,9 +139,14 @@
             <td>{{data.expirationDate | date:'dd/MM/yyyy'}}</td>
             <td>
               <div>
-                <img *ngIf="data.suspendType == null || data.suspendType === ''" src="assets/imgs/edit-2.svg" alt="" (click)="showUpdate(data)" nz-tooltip nzTooltipTitle="{{'app.text.edit' | i18n}}"
+                <!-- *ngIf="data.suspendType == null || data.suspendType === ''" -->
+                <img 
+                *ngIf="data.status != 'CREATING' && data.status != 'RESIZING'&& data.status != 'DELETING' && data.status!='SUSPENDED' && data.status !='ERROR_DELETING'"
+                src="assets/imgs/edit-2.svg" alt="" (click)="showUpdate(data)" nz-tooltip nzTooltipTitle="{{'app.text.edit' | i18n}}"
                      style="cursor: pointer; width: 20px; height: 20px;" />
-                <img src="assets/imgs/delete.svg" style="width: 28px;height: 28px; cursor: pointer;"
+                <img src="assets/imgs/delete.svg"
+                *ngIf="data.status != 'CREATING' && data.status != 'RESIZING'&& data.status != 'DELETING' && data.status!='SUSPENDED' "
+                style="width: 28px;height: 28px; cursor: pointer;"
                      nz-tooltip nzTooltipTitle="{{'app.delete' | i18n}}" nzTooltipPlacement="bottom"
                      (click)="showDelete(data)"/>
               </div>
@@ -253,7 +260,7 @@
             <div style="margin-top: 15px;">
               <span>Tên gói Snapshot</span>
               (<span style="color: rgba(252, 16, 16, 1); ">*</span>)
-              <img style="margin-left: 3px" [nz-tooltip]="'Tên gói Snapshot của khách hàng. Không bao gồm ký tự đặc biệt, dấu cách, dấu tiếng Việt. Tối đa 50 ký tự.'" src="assets/imgs/pajamas_question.svg" alt="" />
+              <img style="margin-left: 3px" [nz-tooltip]="'Tên chỉ có thể chứa các ký tự chữ và số (a-z, A-Z, 0-9, \'_\'). Độ dài dữ liệu đầu vào của bạn tối đa 50 ký tự.'" src="assets/imgs/pajamas_question.svg" alt="" />
             </div>
           </nz-form-label>
           <nz-form-control nzDisableAutoTips [nzErrorTip]="nameErrorTpl">

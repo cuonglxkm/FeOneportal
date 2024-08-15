@@ -1,7 +1,7 @@
-<page-header [breadcrumb]="breadcrumb" [action]="action" [extra]="extra" [title]="title" [content]="content">
+<page-header [breadcrumb]="breadcrumb" [action]="action" title="Xem chi tiết gói Snapshot" >
   <ng-template #breadcrumb>
     <nz-breadcrumb [nzSeparator]="separatorTemplate">
-      <nz-breadcrumb-item>Trang chủ</nz-breadcrumb-item>
+      <nz-breadcrumb-item><a routerLink="/app-smart-cloud"> Trang chủ</a></nz-breadcrumb-item>
       <nz-breadcrumb-item>
         Dịch vụ hạ tầng
       </nz-breadcrumb-item>
@@ -12,7 +12,7 @@
         <a routerLink="/app-smart-cloud/snapshot/packages">Gói Snapshot</a>
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>
-        <a routerLink="/app-smart-cloud/snapshot/packages/detail/{{idPackageBackup}}">Thông tin gói Snapshot</a>
+        <a routerLink="/app-smart-cloud/snapshot/packages/detail/{{idPackageBackup}}">{{packageSnapshotModel.packageName}}</a>
       </nz-breadcrumb-item>
     </nz-breadcrumb>
     <ng-template #separatorTemplate
@@ -27,33 +27,47 @@
                                [regionId]="region"></project-select-dropdown>
     </div>
   </ng-template>
-  <ng-template #title>
+  <!-- <ng-template #title>
     <div nz-row nzJustify="space-between">
       <nz-row>
         <nz-col>
-          <div>Chi tiết gói Snapshot</div>
+          <div>Xem chi tiết gói Snapshot</div>
         </nz-col>
       </nz-row>
+      
       </div>
-  </ng-template>
-  <ng-template #content>
+      
+  </ng-template> -->
+  <!-- <ng-template #content>
     <h3 style="display: none;">.</h3>
-  </ng-template>
-  <ng-template #extra>
-    <button nz-button nzType="primary" (click)="navigateToExtend()" nzSize="large">
-      <img style="padding-right: 10px;" src="assets/imgs/extend.png" alt="" />
-      <span class="button-text-primary">Gia hạn</span>
-    </button>
+  </ng-template> -->
+  <!-- <ng-template #extra>
     <button *ngIf="packageSnapshotModel.suspendType == null || packageSnapshotModel.suspendType === ''" nz-button nzType="primary" (click)="navigateToEdit()" nzSize="large">
       <img style="padding-right: 10px;" src="assets/imgs/edit-1.svg" alt="" />
       <span class="button-text-primary">Điều chỉnh</span>
     </button>
-  </ng-template>
+    <button nz-button nzType="primary" (click)="navigateToExtend()" nzSize="large">
+      <img style="padding-right: 10px;" src="assets/imgs/extend.png" alt="" />
+      <span class="button-text-primary">Gia hạn</span>
+    </button>
+    
+  </ng-template> -->
 </page-header>
 <nz-content>
+  <div class="text-left" style="margin-bottom: 1.5rem;">
+    <button *ngIf="packageSnapshotModel.suspendType == null || packageSnapshotModel.suspendType === ''" nz-button nzType="primary" (click)="navigateToEdit()" nzSize="large">
+      <img style="padding-right: 10px;" src="assets/imgs/edit-1.svg" alt="" />
+      <span class="button-text-primary">Điều chỉnh</span>
+    </button>
+    <button nz-button nzType="primary" (click)="navigateToExtend()" nzSize="large">
+      <img style="padding-right: 10px;" src="assets/imgs/extend.png" alt="" />
+      <span class="button-text-primary">Gia hạn</span>
+    </button>
+  </div>
   <form nz-form nzLayout="vertical">
     <nz-card>
-      <div class="text-card-header">Thông tin của gói Snapshot</div>
+      <div class="text-card-header">Thông tin gói Snapshot</div>
+
       <div class="customRow" style="margin-top: 15px;">
         <nz-row>
           <nz-col nzSpan="12">
