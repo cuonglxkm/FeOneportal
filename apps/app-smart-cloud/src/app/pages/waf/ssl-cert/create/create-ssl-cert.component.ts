@@ -78,8 +78,7 @@ export class CreateSslCertWAFComponent implements OnInit {
   
     const validationErrors = new Map<string, string[]>();
   
-    let containsPemFile = fileList.some(file => file.name.split('.').pop()?.toLowerCase() === 'pem');
-    let maxFiles = containsPemFile ? 1 : 2;
+    let maxFiles = 2;
   
     fileList.forEach((file) => {
       const fileErrors: string[] = [];
@@ -150,8 +149,33 @@ export class CreateSslCertWAFComponent implements OnInit {
         } else if (fileExtension === 'key') {
           this.form.controls.privateKey.setValue(content);
         } else if (fileExtension === 'pem') {
-          this.form.controls.certificate.setValue(content);
-          this.form.controls.privateKey.setValue(content);
+          if(content.includes('-----BEGIN PRIVATE KEY-----') && !content.includes('-----BEGIN CERTIFICATE----')){
+            const privateKey = content.substring(
+              content.indexOf('-----BEGIN PRIVATE KEY-----'),
+              content.indexOf('-----END PRIVATE KEY-----') + '-----END PRIVATE KEY-----'.length
+            );
+            this.form.controls.privateKey.setValue(privateKey);
+            this.form.controls.certificate.setValue('a');
+          }else if(content.includes('-----BEGIN CERTIFICATE----') && !content.includes('-----BEGIN PRIVATE KEY-----')){
+            const certificate = content.substring(
+              content.indexOf('-----BEGIN CERTIFICATE-----'),
+              content.indexOf('-----END CERTIFICATE-----') + '-----END CERTIFICATE-----'.length
+            );          
+            this.form.controls.certificate.setValue(certificate);
+            this.form.controls.privateKey.setValue('a');
+          }else if(content.includes('-----BEGIN CERTIFICATE----') && content.includes('-----BEGIN PRIVATE KEY-----')){
+            const privateKey = content.substring(
+              content.indexOf('-----BEGIN PRIVATE KEY-----'),
+              content.indexOf('-----END PRIVATE KEY-----') + '-----END PRIVATE KEY-----'.length
+            );
+            const certificate = content.substring(
+              content.indexOf('-----BEGIN CERTIFICATE-----'),
+              content.indexOf('-----END CERTIFICATE-----') + '-----END CERTIFICATE-----'.length
+            );  
+            this.form.controls.certificate.setValue(certificate);
+            this.form.controls.privateKey.setValue(privateKey);
+          }
+          
         }
       } catch (error) {
         console.error(`Error reading ${file.name}:`, error);
@@ -206,7 +230,17 @@ export class CreateSslCertWAFComponent implements OnInit {
             this.i18n.fanyi('app.status.fail'),
             this.i18n.fanyi('Nội dung chứng chỉ đã tồn tại')
           );
-        }else{
+        }else if (this.form.get('privateKey').value === 'a') {
+          this.notification.error(
+            this.i18n.fanyi('app.status.fail'),
+            this.i18n.fanyi('Private Key không hợp lệ')
+          );
+        }else if (this.form.get('certificate').value === 'a') {
+          this.notification.error(
+            this.i18n.fanyi('app.status.fail'),
+            this.i18n.fanyi('Certificate không hợp lệ')
+          );
+        }else {
           this.notification.error(
             this.i18n.fanyi('app.status.fail'), 'Tạo mới ssl cert thất bại');
         }
