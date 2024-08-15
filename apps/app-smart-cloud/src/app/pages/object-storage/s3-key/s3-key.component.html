@@ -78,7 +78,7 @@
 <!--    [nzTotal]="total" [nzLoading]="isLoading"-->
 <!--  >-->
     <nz-table #rowSelectionTable nzShowPagination nzShowSizeChanger [nzData]="listOfS3Key" style="margin-top: 24px"
-              [nzTotal]="total" [nzPageSize]="size" nzTableLayout="fixed" (nzPageSizeChange)="onPageSizeChange($event)" [nzFrontPagination]="false"
+              [nzTotal]="total" [nzPageSize]="size" nzTableLayout="fixed" (nzPageSizeChange)="onPageSizeChange($event)" [nzFrontPagination]="false" [nzPageIndex]="index"
               (nzPageIndexChange)="onPageIndexChange($event)" [nzLoading]="isLoading">
     <thead>
       <tr>

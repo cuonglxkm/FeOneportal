@@ -15,7 +15,7 @@ import { OrderItemObject } from 'src/app/shared/models/price';
 import { ObjectStorageService } from 'src/app/shared/services/object-storage.service';
 import { OrderService } from 'src/app/shared/services/order.service';
 import { WafService } from 'src/app/shared/services/waf.service';
-import { duplicateDomainValidator, ipValidatorMany, slider } from '../../../../../../../libs/common-utils/src';
+import { duplicateDomainValidator, hostValidator, ipValidatorMany, slider } from '../../../../../../../libs/common-utils/src';
 import { WAFCreate } from '../../../shared/models/waf-init';
 import { DataPayment, ItemPayment, OfferItem, Order, OrderItem } from '../../instances/instances.model';
 import { InstancesService } from '../../instances/instances.service';
@@ -144,7 +144,7 @@ export class WAFCreateComponent implements OnInit {
     return this.fb.group({
       domain: ['', [Validators.required,Validators.pattern(DOMAIN_REGEX) ,duplicateDomainValidator]],
       ipPublic: ['', [Validators.required, ipValidatorMany]],
-      host: ['',Validators.pattern(DOMAIN_REGEX)],
+      host: ['',hostValidator],
       port: [null],
       sslCert: ['']
     });
@@ -207,10 +207,17 @@ export class WAFCreateComponent implements OnInit {
       .join(', ');
   }
 
+  isInvalid: boolean = false
+
   onChangeTime(numberMonth: number) {
-    this.timeSelected = numberMonth;
-    this.form.controls.time.setValue(this.timeSelected);
-    this.getTotalAmount();
+    if(numberMonth === undefined){
+      this.isInvalid = true
+    }else{
+      this.isInvalid = false
+      this.timeSelected = numberMonth;
+      this.form.controls.time.setValue(this.timeSelected);
+      this.getTotalAmount();
+    }
   }
 
 

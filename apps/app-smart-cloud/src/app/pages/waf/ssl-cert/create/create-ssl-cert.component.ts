@@ -155,14 +155,20 @@ export class CreateSslCertWAFComponent implements OnInit {
               content.indexOf('-----END PRIVATE KEY-----') + '-----END PRIVATE KEY-----'.length
             );
             this.form.controls.privateKey.setValue(privateKey);
-            this.form.controls.certificate.setValue('a');
+            if(this.form.get('certificate').value === ''){
+              this.form.controls.certificate.removeValidators(Validators.required);
+              this.form.controls.certificate.setValue('');
+            }         
           }else if(content.includes('-----BEGIN CERTIFICATE----') && !content.includes('-----BEGIN PRIVATE KEY-----')){
             const certificate = content.substring(
               content.indexOf('-----BEGIN CERTIFICATE-----'),
               content.indexOf('-----END CERTIFICATE-----') + '-----END CERTIFICATE-----'.length
             );          
             this.form.controls.certificate.setValue(certificate);
-            this.form.controls.privateKey.setValue('a');
+            if(this.form.get('privateKey').value === ''){
+              this.form.controls.privateKey.removeValidators(Validators.required);
+              this.form.controls.privateKey.setValue('');
+            }
           }else if(content.includes('-----BEGIN CERTIFICATE----') && content.includes('-----BEGIN PRIVATE KEY-----')){
             const privateKey = content.substring(
               content.indexOf('-----BEGIN PRIVATE KEY-----'),
@@ -230,12 +236,12 @@ export class CreateSslCertWAFComponent implements OnInit {
             this.i18n.fanyi('app.status.fail'),
             this.i18n.fanyi('Nội dung chứng chỉ đã tồn tại')
           );
-        }else if (this.form.get('privateKey').value === 'a') {
+        }else if (this.form.get('privateKey').value === '') {
           this.notification.error(
             this.i18n.fanyi('app.status.fail'),
             this.i18n.fanyi('Private Key không hợp lệ')
           );
-        }else if (this.form.get('certificate').value === 'a') {
+        }else if (this.form.get('certificate').value === '') {
           this.notification.error(
             this.i18n.fanyi('app.status.fail'),
             this.i18n.fanyi('Certificate không hợp lệ')
