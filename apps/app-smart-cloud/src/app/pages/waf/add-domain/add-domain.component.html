@@ -48,8 +48,8 @@
             <nz-form-label nzFor="package">
               <span>{{ 'app.text.package' | i18n }} (<span style="color: red;">*</span>)</span>
             </nz-form-label>
-            <nz-select [ngModel]="1" [nzDisabled]="true" class="input-select-custom" formControlName="package">
-              <nz-option *ngFor="let item of listWafs" [nzLabel]="item.offerName + '(' + item.quotaDomain + ')'"
+            <nz-select [ngModel]="selectedPackage" [nzDisabled]="true" class="input-select-custom" formControlName="package">
+              <nz-option *ngFor="let item of listWafs" [nzLabel]="item.offerName"
                 [nzValue]="item.offerId"></nz-option>
             </nz-select>
             <!-- <input nz-input type="text" appTrim placeholder="www.example.com" formControlName="domain" class="input-custom" [maxlength]="50" minlength="1" /> -->
@@ -67,8 +67,8 @@
             <nz-form-label nzFor="domain">
               Domain (<span style="color: rgba(252, 16, 16, 1)">*</span>)
             </nz-form-label>
-            <input nz-input type="text" appTrim placeholder="www.example.com" formControlName="domain"
-              class="input-custom" [maxlength]="50" minlength="1" />
+            <input #domainInput nz-input type="text" appTrim placeholder="www.example.com" formControlName="domain"
+              class="input-custom" [maxlength]="50" minlength="1" (input)="handleOnChangeDomain($event)" />
             <ng-template #domainErrorTpl let-control>
               <!-- <ng-container *ngIf="control.hasError('duplicateDomain')">Domain không được trùng nhau</ng-container> -->
               <ng-container *ngIf="control.hasError('pattern')">Domain không đúng định dạng</ng-container>
@@ -119,7 +119,7 @@
             <nz-form-label nzFor="sslCert">Chọn SSL Cert (Chọn Cert hoặc <a (click)="openModalSSlCert()">Tạo
                 mới</a>)</nz-form-label>
             <nz-select class="input-select-custom" nzPlaceHolder="Chọn SSL Cert" formControlName="sslCert">
-              <nz-option *ngFor="let data of listSslCert" [nzLabel]="data.name" [nzValue]="data.id"></nz-option>
+              <nz-option *ngFor="let data of listSslCertOptions" [nzLabel]="data.name" [nzValue]="data.id"></nz-option>
             </nz-select>
           </nz-form-control>
         </nz-form-item>

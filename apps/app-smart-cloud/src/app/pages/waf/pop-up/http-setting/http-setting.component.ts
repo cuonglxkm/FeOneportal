@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Inject, Input, OnInit, Output } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Inject, Input, OnInit, Output } from '@angular/core';
 import { NonNullableFormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { I18NService } from '@core';
@@ -7,6 +7,7 @@ import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { HttpsSettingRequest, SslCertDTO, WafDomain } from '../../waf.model';
 import { WafService } from 'src/app/shared/services/waf.service';
 import { finalize } from 'rxjs';
+import { checkProperSslWithDomain } from 'src/app/shared/utils/common';
 
 
 @Component({
@@ -15,7 +16,7 @@ import { finalize } from 'rxjs';
   styleUrls: ['./http-setting.component.less'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class HttpSettingComponent implements OnInit{
+export class HttpSettingComponent implements OnInit, AfterViewInit{
   @Input() domainData: WafDomain ;
   @Input() listSslCert: SslCertDTO[]
   @Input() canClick: boolean;
@@ -25,8 +26,11 @@ export class HttpSettingComponent implements OnInit{
   isLoading: boolean = false;
   isVisibleCreateSsl: boolean = false
   isVisible: boolean = false
+  listOptionsSsl: SslCertDTO[]
 
   selectedProtocolValue: string = 'follow'
+
+  isDisableSubmit: boolean
 
   httpsSettingRequest = new HttpsSettingRequest()
 
@@ -40,9 +44,15 @@ export class HttpSettingComponent implements OnInit{
   ){}
 
   ngOnInit(): void {
-    this.validateForm.controls.cert.setValue(this.domainData.sslCertId)
-    this.validateForm.controls.port.setValue(this.domainData.portRewriting)
-    this.selectedProtocolValue = this.domainData.protocol
+    this.listOptionsSsl = this.listSslCert?.filter((cert) => {
+      return checkProperSslWithDomain(this.domainData?.domain, cert.subjectAlternativeNames)
+    })
+    this.setFormValues()
+    this.cdr.detectChanges()
+  }
+
+  ngAfterViewInit(): void {
+    
   }
 
   validateForm = this.fb.group({
@@ -73,6 +83,14 @@ export class HttpSettingComponent implements OnInit{
   //     console.log(error);     
   //   })
   // }
+
+  setFormValues(){
+    this.validateForm.controls.cert.setValue(this.domainData.sslCertId)
+    this.validateForm.controls.port.setValue(this.domainData.portRewriting)
+    !!this.domainData.protocol && this.validateForm.controls.protocol.setValue(this.domainData.protocol)
+    !this.domainData.protocol && this.validateForm.controls.protocol.setValue('follow')
+    this.selectedProtocolValue = this.domainData.protocol
+  }
 
   onKeyDown(event: KeyboardEvent) {
     // Lấy giá trị của phím được nhấn
@@ -112,7 +130,7 @@ export class HttpSettingComponent implements OnInit{
   handleSubmit(){
     const formValues = this.validateForm.getRawValue()
     this.httpsSettingRequest.certId = Number(formValues.cert)
-    if(formValues.protocol){
+    if(formValues.protocol && formValues.protocol !== 'follow'){
       this.httpsSettingRequest.port = String(formValues.port)
       this.httpsSettingRequest.protocol = formValues.protocol
     }
@@ -137,11 +155,16 @@ export class HttpSettingComponent implements OnInit{
   }
 
   cancelModalSslCert(){
+    this.setFormValues()
     this.isVisibleCreateSsl = false
   }
 
   handleOnAddCert(){
     this.onOkCreateSsl.emit()
     this.cancelModalSslCert()
+  }
+
+  onChangePort(value: any){
+    this.isDisableSubmit = !value && this.validateForm.controls.protocol.getRawValue() !== 'follow'
   }
 }

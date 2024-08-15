@@ -3607,5 +3607,7 @@
   "waf.intro.subtitle":"Phương thức hiệu quả chống lại các mối đe dọa và lỗ hổng đối với Web Application. Nhận diện và chống lại các botnet xấu. Che giấy địa chỉ IP gốc, ngặn chặn các truy cập không hợp lệ",
   "app.non.vietnamese": "Không được nhập tiếng việt",
 
-  "app.non.permission": "Người dùng không có quyền truy cập dịch vụ này"
+  "app.non.permission": "Người dùng không có quyền truy cập dịch vụ này",
+  "validation.waf.domain.delete.name.invalid": "Vui lòng nhập đúng tên máy domain",
+  "validation.waf.domain.delete.name.required": "Vui lòng nhập tên domain"
 }
