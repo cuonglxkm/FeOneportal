@@ -51,14 +51,43 @@
               <span class="label-fontsize font-bold ">{{ data.name }}</span>
             </div>
           </div>
-          <div *ngFor="let item of data.wafDomains; let i = index" nz-row [nzGutter]="24" class="row-bg content-items-center">
-            <div nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="12">
-              <span class="label-fontsize">{{'waf.domain.table.title.domain' | i18n}} ({{i+1}}):</span>
+          <ng-container *ngFor="let item of data.wafDomains; let i = index">
+            <ng-template #popoverContentTemplate>
+              <div nz-row [nzGutter]="24" style="width: 300px;" >
+                <div nz-col nzSm="12" nzMd="12" nzLg="12">
+                  <span class="label-fontsize">{{'IP Public'}}:</span>
+                </div>
+                <div nz-col nzSm="12" nzMd="12" nzLg="12">
+                  <span class="label-fontsize align-right">{{ item.ipPublic }}</span>
+                </div>
+              </div>
+              <div nz-row [nzGutter]="24" >
+                <div nz-col nzSm="12" nzMd="12" nzLg="12">
+                  <span class="label-fontsize">{{'Host'}}:</span>
+                </div>
+                <div nz-col nzSm="12" nzMd="12" nzLg="12">
+                  <span class="label-fontsize align-right">{{ item.host }}</span>
+                </div>
+              </div>
+              <div nz-row [nzGutter]="24" >
+                <div nz-col nzSm="12" nzMd="12" nzLg="12">
+                  <span class="label-fontsize">{{'Port'}}:</span>
+                </div>
+                <div nz-col nzSm="12" nzMd="12" nzLg="12">
+                  <span class="label-fontsize align-right">{{ item.port }}</span>
+                </div>
+              </div>
+            </ng-template>
+            <div  nz-row [nzGutter]="24" class="row-bg content-items-center" >
+              <div nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="12">
+                <span class="label-fontsize">{{'waf.domain.table.title.domain' | i18n}} ({{i+1}}):</span>
+              </div>
+              <div nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="12" nz-popover [nzPopoverTitle]="item.domain" [nzPopoverContent]="popoverContentTemplate"  nzPopoverOverlayClassName="custom-popover" nzPopoverPlacement="topLeft">
+                <span class="label-fontsize font-bold" >{{ item.domain }}</span>
+              </div>
             </div>
-            <div nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="12">
-              <span class="label-fontsize font-bold" >{{ item.domain }}</span>
-            </div>
-          </div>
+          </ng-container>
+          
           <div nz-row [nzGutter]="24" class="row-bg content-items-center">
             <div nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="12">
               <span class="label-fontsize">{{'waf.table.title.startdate' | i18n}}:</span>
