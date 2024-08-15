@@ -175,7 +175,7 @@ export class ChartComponent implements AfterViewInit, OnInit {
       },
       yAxis: {
         title: {
-          text: ''
+          text: 'Dung lượng sử dụng'
         }
       },
       series: [{
