@@ -110,29 +110,34 @@ export class WAFResizeComponent implements OnInit {
   WAFDetail: WafDetailDTO = new WafDetailDTO();
 
   getWAFById(id) {
-    this.service.getDetail(id).subscribe(
-      (data) => {
-        this.WAFDetail = data;
-        if (data?.wafDomains !== null) {
-          this.domains = data.wafDomains
-            .sort((a, b) => a.id - b.id)
-            .map((item) => item.domain);
-          this.ipPublics = data.wafDomains
-            .sort((a, b) => a.id - b.id)
-            .map((item) => item.ipPublic);
+    this.isLoading = true
+    this.service
+      .getDetail(id)
+      .subscribe(
+        (data) => {
+          this.isLoading = false
+          this.WAFDetail = data;
+          if (data?.wafDomains !== null) {
+            this.domains = data.wafDomains
+              .sort((a, b) => a.id - b.id)
+              .map((item) => item.domain);
+            this.ipPublics = data.wafDomains
+              .sort((a, b) => a.id - b.id)
+              .map((item) => item.ipPublic);
+          }
+        },
+        (error) => {
+          this.isLoading = false
+          this.WAFDetail = null;
+          if(error.status == 500){
+            this.router.navigate(['/app-smart-cloud/waf']);
+          this.notification.error(
+            this.i18n.fanyi('app.status.fail'),
+            'Bản ghi không tồn tại'
+          );
+          }
         }
-      },
-      (error) => {
-        this.WAFDetail = null;
-        if(error.status == 500){
-          this.router.navigate(['/app-smart-cloud/waf']);
-        this.notification.error(
-          this.i18n.fanyi('app.status.fail'),
-          'Bản ghi không tồn tại'
-        );
-        }
-      }
-    );
+      );
   }
 
   isLastDomain(domain: string): boolean {
