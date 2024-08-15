@@ -1,19 +1,19 @@
 <div class="container">
   <nz-row>
-    <div nz-col nzFlex="2">
+    <div nz-col nzFlex="2" class="banner-register">
       <div class="container" style="background: #0066B3; width: 100%">
         <div nz-row class="" style="width: 468px; margin-left: 38px; padding-top: 35px">
           <div class="space-align-container" style="">
             <a (click)="navigateToCloud($event)">
-            <div nz-space nzAlign="center" class="space-align-block">
-              <ng-container *nzSpaceItem>
-                  <img width="274" height="40" src="assets/imgs/logo_vnpt_white.svg"/>
+              <div nz-space nzAlign="center" class="space-align-block">
+                <ng-container *nzSpaceItem>
+                  <img width="274" height="40" src="assets/imgs/logo_vnpt_white.svg" />
                 </ng-container>
               </div>
             </a>
           </div>
 
-          <p style="margin-top: 120px" class="text-1">Chào mừng đến với</p> <br/>
+          <p style="margin-top: 120px" class="text-1">Chào mừng đến với </p> <br />
           <div nz-row>
             <div nz-col nzSpan="12">
               <p class="text-2">VNPT</p>
@@ -23,21 +23,21 @@
               <img src="assets/imgs/banner_blue_line.png" style="position: absolute; top: 80%">
             </div>
           </div>
-          <br/>
+          <br />
 
-<!--          <nz-space nzDirection="vertical" nzSize="small">-->
-<!--            <span *nzSpaceItem class="text-3">Cloud</span>-->
-<!--            <img *nzSpaceItem src="assets/imgs/banner_blue_line.png">-->
-<!--          </nz-space>-->
-<!--          <p class="text-2">VNPT <span class="text-3">Cloud</span></p> <br/>-->
+          <!--          <nz-space nzDirection="vertical" nzSize="small">-->
+          <!--            <span *nzSpaceItem class="text-3">Cloud</span>-->
+          <!--            <img *nzSpaceItem src="assets/imgs/banner_blue_line.png">-->
+          <!--          </nz-space>-->
+          <!--          <p class="text-2">VNPT <span class="text-3">Cloud</span></p> <br/>-->
 
           <p class="text-4">Giải pháp và hạ tầng máy chủ Cloud với chi phí thấp mà tính hiệu quả cao, đầy đủ tính năng
             đáp ứng tối đa cho khách hàng.</p>
         </div>
 
 
-       
-        <img class="image-bg-2" src="assets/imgs/web_hosting_image.png"/>
+
+        <img class="image-bg-2" src="assets/imgs/web_hosting_image.png" />
       </div>
 
     </div>
@@ -45,11 +45,11 @@
 
     <div nz-col nzFlex="4">
 
-<!--      <header-i18n showLangText="true" class="langs"/>-->
+      <!--      <header-i18n showLangText="true" class="langs"/>-->
       <div class="wrap">
-        <router-outlet/>
+        <router-outlet />
         <global-footer [links]="links">
-          {{'app.footer' | i18n}} 
+          {{'app.footer' | i18n}}
           <!--          <i nz-icon nzType="copyright"></i> 2021 <a href="//github.com/cipchk" target="_blank">卡色</a>出品-->
         </global-footer>
       </div>
