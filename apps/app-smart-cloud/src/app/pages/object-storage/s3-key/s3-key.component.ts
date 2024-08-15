@@ -139,6 +139,8 @@ export class S3KeyComponent implements OnInit {
   }
 
   onPageSizeChange(event: any) {
+    console.log(event);
+    this.index = 1
     this.size = event;
     this.getData();
   }

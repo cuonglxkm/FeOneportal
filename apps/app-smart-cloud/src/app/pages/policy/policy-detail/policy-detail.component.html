@@ -1,4 +1,4 @@
-<page-header [breadcrumb]="breadcrumb" [action]="action" [title]="'app.breadcrumb.detail-policy' | i18n">
+<page-header [breadcrumb]="breadcrumb" [title]="'app.breadcrumb.detail-policy' | i18n">
   <ng-template #breadcrumb>
     <nz-breadcrumb [nzSeparator]="separatorTemplate">
       <nz-breadcrumb-item>
@@ -15,13 +15,13 @@
       ><img src="assets/imgs/arrow-square-right.svg" alt="" />
     </ng-template>
   </ng-template>
-  <ng-template #action>
+  <!-- <ng-template #action>
     <div class="alain-custom-action text-right">
       <share-users-combobox></share-users-combobox>
       <region-select-dropdown (regionChange)="onRegionChanged($event)" (valueChanged)="regionChanged($event)"></region-select-dropdown>
       <project-select-dropdown #projectCombobox [regionId]="region" (valueChanged)="projectChanged($event)" (userChanged)="projectChanged($event)"></project-select-dropdown>
     </div>
-  </ng-template>
+  </ng-template> -->
 </page-header>
 <nz-spin [nzSpinning]="isLoadingPolicyInfo" nzSize="large">
   <nz-content>

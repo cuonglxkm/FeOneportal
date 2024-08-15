@@ -13,8 +13,8 @@ import { LoadingService } from '@delon/abc/loading';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { DomSanitizer } from '@angular/platform-browser';
 import { DOMAIN_REGEX } from 'src/app/shared/constants/constants';
-import { duplicateDomainValidator, ipValidatorMany, ipWafDomainValidatorMany } from '../../../../../../../libs/common-utils/src';
-import { AddDomainRequest, SslCertDTO, WafDetailDTO } from '../waf.model';
+import { duplicateDomainValidator, hostValidator, ipValidatorMany, ipWafDomainValidatorMany } from '../../../../../../../libs/common-utils/src';
+import { AddDomainRequest, WafDetailDTO, SslCertDTO } from '../waf.model';
 import { WafService } from 'src/app/shared/services/waf.service';
 import { debounceTime, finalize, fromEvent, map } from 'rxjs';
 import { checkProperSslWithDomain } from 'src/app/shared/utils/common';
@@ -33,7 +33,7 @@ export class AddDomainComponent implements OnInit {
     nameWAF: ['', [Validators.required]],
     domain: ['', [Validators.required,Validators.pattern(DOMAIN_REGEX)]],
       ipPublic: ['', [Validators.required, ipValidatorMany]],
-      host: [''],
+      host: ['', hostValidator],
       port: [''],
       sslCert: [''],
       package:['']

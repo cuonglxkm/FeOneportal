@@ -40,6 +40,7 @@ export class WAFExtendComponent implements OnInit {
   errorList: string[] = [];
   domains: string[] = []
   ipPublics: string[] = []
+  isLoading: boolean = false;
   closePopupError() {
     this.isVisiblePopupError = false;
   }
@@ -70,7 +71,9 @@ export class WAFExtendComponent implements OnInit {
 
   invalid: boolean = false;
   onChangeTime(value) {
-    if (value.length == 0) {
+    console.log(value);
+    
+    if (value == 0 || value == undefined) {
       this.invalid = true;
       this.totalAmount = 0;
       this.totalincludesVAT = 0;
@@ -91,10 +94,12 @@ export class WAFExtendComponent implements OnInit {
   }
 
   getWAFById(id) {
+    this.isLoading = true
     this.service
       .getDetail(id)
       .subscribe(
         (data) => {
+          this.isLoading = false
           this.WAFDetail = data;
           this.getOfferById(data.offerId)
           if (data?.wafDomains !== null) {
@@ -107,6 +112,7 @@ export class WAFExtendComponent implements OnInit {
           }
         },
         (error) => {
+          this.isLoading = false
           this.WAFDetail = null;
           if(error.status == 500){
             this.router.navigate(['/app-smart-cloud/waf']);

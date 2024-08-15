@@ -192,7 +192,7 @@
                       <nz-form-label nzFor="host">Host </nz-form-label>
                       <input nz-input type="text" appTrim placeholder="Nhập host" formControlName="host" class="input-custom" [maxlength]="50" />  
                       <ng-template #hostErrorTpl let-control>
-                        <ng-container *ngIf="control.hasError('pattern')">Host không hợp lệ. Vui lòng nhập lại</ng-container>
+                        <ng-container *ngIf="control.hasError('invalidHost')">Host không hợp lệ. Vui lòng nhập lại</ng-container>
                       </ng-template>                  
                     </nz-form-control>
                   </nz-form-item>
@@ -372,7 +372,7 @@
           <nz-row>
             <nz-col style="width: 100%" class="text-right">
               <button
-                [disabled]="form.get('nameWAF').invalid || selectedOfferId == 0 || !areAllDomainsValid() || bonusServices.at(0).get('ipPublic')?.invalid"
+                [disabled]="form.get('nameWAF').invalid || selectedOfferId == 0 || !areAllDomainsValid() || bonusServices.at(0).get('ipPublic')?.invalid || isInvalid"
                 style="width: 100%"
                 nz-button
                 nzSize="large"

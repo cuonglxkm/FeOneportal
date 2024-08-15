@@ -98,9 +98,8 @@ export class CreateSSLCertPopupComponent {
     const allowedFormats = ['pem', 'key', 'crt'];
   
     const validationErrors = new Map<string, string[]>();
-  
-    let containsPemFile = fileList.some(file => file.name.split('.').pop()?.toLowerCase() === 'pem');
-    let maxFiles = containsPemFile ? 1 : 2;
+
+    let maxFiles = 2;
   
     fileList.forEach((file) => {
       const fileErrors: string[] = [];
@@ -171,9 +170,40 @@ export class CreateSSLCertPopupComponent {
           this.form.controls.certificate.setValue(content);
         } else if (fileExtension === 'key') {
           this.form.controls.privateKey.setValue(content);
-        }else if (fileExtension === 'pem') {
-          this.form.controls.certificate.setValue(content);
-          this.form.controls.privateKey.setValue(content);
+        } else if (fileExtension === 'pem') {
+          if(content.includes('-----BEGIN PRIVATE KEY-----') && !content.includes('-----BEGIN CERTIFICATE----')){
+            const privateKey = content.substring(
+              content.indexOf('-----BEGIN PRIVATE KEY-----'),
+              content.indexOf('-----END PRIVATE KEY-----') + '-----END PRIVATE KEY-----'.length
+            );
+            this.form.controls.privateKey.setValue(privateKey);
+            if(this.form.get('certificate').value === ''){
+              this.form.controls.certificate.removeValidators(Validators.required);
+              this.form.controls.certificate.setValue('');
+            }         
+          }else if(content.includes('-----BEGIN CERTIFICATE----') && !content.includes('-----BEGIN PRIVATE KEY-----')){
+            const certificate = content.substring(
+              content.indexOf('-----BEGIN CERTIFICATE-----'),
+              content.indexOf('-----END CERTIFICATE-----') + '-----END CERTIFICATE-----'.length
+            );          
+            this.form.controls.certificate.setValue(certificate);
+            if(this.form.get('privateKey').value === ''){
+              this.form.controls.privateKey.removeValidators(Validators.required);
+              this.form.controls.privateKey.setValue('');
+            }
+          }else if(content.includes('-----BEGIN CERTIFICATE----') && content.includes('-----BEGIN PRIVATE KEY-----')){
+            const privateKey = content.substring(
+              content.indexOf('-----BEGIN PRIVATE KEY-----'),
+              content.indexOf('-----END PRIVATE KEY-----') + '-----END PRIVATE KEY-----'.length
+            );
+            const certificate = content.substring(
+              content.indexOf('-----BEGIN CERTIFICATE-----'),
+              content.indexOf('-----END CERTIFICATE-----') + '-----END CERTIFICATE-----'.length
+            );  
+            this.form.controls.certificate.setValue(certificate);
+            this.form.controls.privateKey.setValue(privateKey);
+          }
+          
         }
       } catch (error) {
         console.error(`Error reading ${file.name}:`, error);
@@ -229,6 +259,16 @@ export class CreateSSLCertPopupComponent {
           this.notification.error(
             this.i18n.fanyi('app.status.fail'),
             this.i18n.fanyi('Nội dung chứng chỉ đã tồn tại')
+          );
+        }else if (this.form.get('privateKey').value === '') {
+          this.notification.error(
+            this.i18n.fanyi('app.status.fail'),
+            this.i18n.fanyi('Private Key không hợp lệ')
+          );
+        }else if (this.form.get('certificate').value === '') {
+          this.notification.error(
+            this.i18n.fanyi('app.status.fail'),
+            this.i18n.fanyi('Certificate không hợp lệ')
           );
         }else{
           this.notification.error(
