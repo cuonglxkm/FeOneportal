@@ -66,7 +66,7 @@
           <td nzLeft nzBreakWord>
             <div>
               <one-portal-associate-ssl-btn [sslCertData]="data" (onOk)="onOkAction()"></one-portal-associate-ssl-btn>
-              <img nz-popover src="assets/imgs/edit-2.svg" alt="" nzPopoverPlacement="bottom"
+              <img nz-popover src="assets/imgs/edit-2.svg" alt="" [routerLink]="['/waf/ssl-cert/edit', data.id]" nzPopoverPlacement="bottom"
                 style="cursor: pointer; margin-right: 5px; margin-top: 2px;"
                 [nzPopoverContent]="'app.text.edit' | i18n">
               <one-portal-delete-ssl-btn [sslCertData]="data" (onOk)="onOkAction()"></one-portal-delete-ssl-btn>

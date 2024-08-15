@@ -105,6 +105,7 @@ export interface WafDomain {
   sysDomainInfoVO : SysDomainInfoVO;
   packagePolicies: PackagePolicies;
   someSwitchesOn : boolean;
+  sslCertName: string
 }
 
 export interface SysDomainInfoVO{

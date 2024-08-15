@@ -31,10 +31,10 @@
           (ngModelChange)="onInputChange($event)"
         />
         <div *ngIf="checkInputConfirm" style="color: #ff4d4f">
-          {{ 'validation.correct.instance.name' | i18n }}
+          {{ 'validation.waf.domain.delete.name.invalid' | i18n }}
         </div>
         <div *ngIf="checkInputEmpty" style="color: #ff4d4f">
-          {{ 'validation.instance.name.required' | i18n }}
+          {{ 'validation.waf.domain.delete.name.required' | i18n }}
         </div>
       </nz-form-control>
     </nz-form-item>

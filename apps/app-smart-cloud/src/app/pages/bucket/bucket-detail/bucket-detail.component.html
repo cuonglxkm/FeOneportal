@@ -29,6 +29,7 @@
   </ng-template>
 </page-header>
 
+<nz-spin [nzSpinning]="isLoadingZipFile">
 <!--THÔNG TIN BUCKET-->
 <nz-card class="text-label" nzTitle="" style="border-radius: 8px">
   <div style="margin-bottom: 20px">
@@ -312,7 +313,7 @@
     </tbody>
   </nz-table>
 </nz-card>
-
+</nz-spin>
 <!--Tạo thư mục-->
 <nz-modal
   [(nzVisible)]="isVisibleCreateFolder"
