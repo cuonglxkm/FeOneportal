@@ -265,7 +265,7 @@ export class ProjectCreateComponent implements OnInit {
     this.initLoadBalancerData();
     this.loadListIpConnectInternet();
     this.loadInforProjectNormal();
-    this.calculateReal();
+    // this.calculateReal();
     this.hasRoleSI = localStorage.getItem('role').includes('SI')
     this.searchSubject.pipe(debounceTime(this.debounceTimeMs)).subscribe((searchValue) => {
       this.calculateReal();
