@@ -8,3 +8,26 @@ export function checkPossiblePressNumber(event: KeyboardEvent) {
     event.preventDefault();
   }
 }
+
+export function checkProperSslWithDomain(domain: string, domainList: string[]){
+  for (let i = 0; i < domainList.length; i++) {
+    let pattern = domainList[i];
+
+    if (pattern.startsWith('*.')) {
+        let basePattern = pattern.substring(2);
+        if (domain.endsWith(basePattern)) {
+            let subdomains = domain.split('.');
+            if (subdomains.length > 2 && domain.endsWith('.' + basePattern)) {
+                return true;
+            } else if (domain === basePattern) {
+                return true;
+            }
+        }
+    } else {
+        if (domain === pattern) {
+            return true;
+        }
+    }
+}
+return false;
+}

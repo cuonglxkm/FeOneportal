@@ -118,7 +118,7 @@ export class WafDomainListComponent implements OnInit, OnDestroy {
   }
   
   someSwitchesOn(sysDomainInfoVO): boolean {
-    debugger;
+    // debugger;
     return Object.values(sysDomainInfoVO).some(value => value === "ON");
   }
 

@@ -123,37 +123,37 @@
           </tr>
           <tr [nzExpand]="expandSet.has(data.id)">
             <div nz-row [nzGutter]="[16, 24]">
-              <div nz-col class="gutter-row" [nzSpan]="6"  *ngIf="data.packagePolicies.ipGeoBlock">
+              <div nz-col class="gutter-row" [nzSpan]="6"  *ngIf="data.packagePolicies?.ipGeoBlock">
                 <div class="inner-box">
                   <nz-switch [nzDisabled]="data.status!='ACTIVE'" [ngModel]="data.sysDomainInfoVO.blockSwitch == 'ON'" (ngModelChange)="changePolicy($event,'blockSwitch', data)"></nz-switch> IP / Geo Block
                 </div>
               </div>
-              <div nz-col class="gutter-row" [nzSpan]="6" *ngIf="data.packagePolicies.ddos">
+              <div nz-col class="gutter-row" [nzSpan]="6" *ngIf="data.packagePolicies?.ddos">
                 <div class="inner-box">
                   <nz-switch [nzDisabled]="data.status!='ACTIVE'" [ngModel]="data.sysDomainInfoVO.dmsDefendSwitch == 'ON'" (ngModelChange)="changePolicy($event,'dmsDefendSwitch', data)"></nz-switch> DDos Protection
                 </div>
               </div>
-              <div nz-col class="gutter-row" [nzSpan]="6" *ngIf="data.packagePolicies.waf">
+              <div nz-col class="gutter-row" [nzSpan]="6" *ngIf="data.packagePolicies?.waf">
                 <div class="inner-box">
                   <nz-switch [nzDisabled]="data.status!='ACTIVE'" [ngModel]="data.sysDomainInfoVO.wafDefendSwitch == 'ON'" (ngModelChange)="changePolicy($event,'wafDefendSwitch', data)"></nz-switch> WAF
                 </div>
               </div>
-              <div nz-col class="gutter-row" [nzSpan]="6" *ngIf="data.packagePolicies.threatIntelligence">
+              <div nz-col class="gutter-row" [nzSpan]="6" *ngIf="data.packagePolicies?.threatIntelligence">
                 <div class="inner-box">
                   <nz-switch [nzDisabled]="data.status!='ACTIVE'" [ngModel]="data.sysDomainInfoVO.intelligenceSwitch == 'ON'" (ngModelChange)="changePolicy($event,'intelligenceSwitch', data)"></nz-switch> Threat Intelligence
                 </div>
               </div>
-              <div nz-col class="gutter-row" [nzSpan]="6" *ngIf="data.packagePolicies.rateLimit">
+              <div nz-col class="gutter-row" [nzSpan]="6" *ngIf="data.packagePolicies?.rateLimit">
                 <div class="inner-box">
                   <nz-switch [nzDisabled]="data.status!='ACTIVE'" [ngModel]="data.sysDomainInfoVO.rateLimitSwitch == 'ON'" (ngModelChange)="changePolicy($event,'rateLimitSwitch', data)"></nz-switch> Rate Limiting
                 </div>
               </div>
-              <div nz-col class="gutter-row" [nzSpan]="6" *ngIf="data.packagePolicies.customRules">
+              <div nz-col class="gutter-row" [nzSpan]="6" *ngIf="data.packagePolicies?.customRules">
                 <div class="inner-box">
                   <nz-switch [nzDisabled]="data.status!='ACTIVE'" [ngModel]="data.sysDomainInfoVO.customizeRuleSwitch == 'ON'" (ngModelChange)="changePolicy($event,'customizeRuleSwitch', data)"></nz-switch> Custom Rules
                 </div>
               </div>
-              <div nz-col class="gutter-row" [nzSpan]="6" *ngIf="data.packagePolicies.whiteList">
+              <div nz-col class="gutter-row" [nzSpan]="6" *ngIf="data.packagePolicies?.whiteList">
                 <div class="inner-box">
                   <nz-switch [nzDisabled]="data.status!='ACTIVE'" [ngModel]="data.sysDomainInfoVO.whitelistSwitch == 'ON'" (ngModelChange)="changePolicy($event,'whitelistSwitch', data)"></nz-switch> Whitelist
                 </div>

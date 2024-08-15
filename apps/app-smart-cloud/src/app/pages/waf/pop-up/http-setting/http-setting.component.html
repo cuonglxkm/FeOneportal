@@ -1,80 +1,73 @@
 <!-- <li nz-menu-item (click)="openModal()">{{'HTTPS Settings'}}</li> -->
-<img  src="assets/imgs/ph_link-light.svg" nz-popover
-[nzPopoverContent]="'waf.domain.https.setting' | i18n"
-nzPopoverPlacement="bottom" style="margin-right: 5px;"
-(click)="canClick ? openModal() : null"
-[style.filter]="canClick ? null : 'opacity(0.25) drop-shadow(0 0 0 rgba(0, 0, 0, 1))'" 
-[style.cursor]="canClick ? 'pointer' : 'not-allowed'" />
+<img src="assets/imgs/ph_link-light.svg" nz-popover [nzPopoverContent]="'waf.domain.https.setting' | i18n"
+  nzPopoverPlacement="bottom" style="margin-right: 5px;" (click)="canClick ? openModal() : null"
+  [style.filter]="canClick ? null : 'opacity(0.25) drop-shadow(0 0 0 rgba(0, 0, 0, 1))'"
+  [style.cursor]="canClick ? 'pointer' : 'not-allowed'" />
 <nz-modal [(nzVisible)]="isVisible" [nzTitle]="modalTitle" [nzContent]="modalContent" [nzFooter]="null"
-(nzOnCancel)="handleCancelHttpSetting()">
-<ng-template #modalTitle>
+  (nzOnCancel)="handleCancelHttpSetting()">
+  <ng-template #modalTitle>
     <h4>
-        <b>HTTPS Settings {{domainData?.name}}</b>
+      <b>HTTPS Settings ({{domainData?.domain}})</b>
     </h4>
-</ng-template>
-<ng-template #modalContent>
+  </ng-template>
+  <ng-template #modalContent>
     <form nz-form nz-layout="vertical" [formGroup]="validateForm">
-        <p>Chứng chỉ liên quan đến domain: </p>
-    <nz-form-item>
+      <p style="font-size: 1rem;">Chứng chỉ liên quan đến domain: {{domainData.sslCertName}}</p>
+      <nz-form-item>
         <nz-form-control [nzErrorTip]="certErrorTpl">
-            <nz-form-label nzFor="cert">Chọn SSL Cert (<span style="color: rgba(252, 16, 16, 1)">*</span>)</nz-form-label>
-            <nz-select formControlName="cert" placeholder="Chọn SSL Certificate">
-              <nz-option *ngFor="let data of listSslCert" [nzLabel]="data.name" [nzValue]="data.id"></nz-option>
-            </nz-select>
-            <ng-template #certErrorTpl let-control>
-                <ng-container *ngIf="control.hasError('required')">SSl Certificate không được để trống</ng-container>
+          <div class="text-label">Chọn SSL Cert (<span style="color: rgba(252, 16, 16, 1)">*</span>) <img nz-popover
+              nzPopoverPlacement="right" [nzPopoverContent]="sslContent" style="margin-left: 5px" src="assets/imgs/pajamas_question.svg" alt="" />
+              <ng-template #sslContent>
+                <div style="width: 300px;">Những chứng chỉ cho phép domain sử dụng sẽ được hiển thị</div>
               </ng-template>
+          </div>
+          <nz-select formControlName="cert" [nzPlaceHolder]="'Chọn SSL Cert'">
+            <nz-option *ngFor="let data of listOptionsSsl" [nzLabel]="data.name" [nzValue]="data.id"></nz-option>
+          </nz-select>
+          <ng-template #certErrorTpl let-control>
+            <ng-container *ngIf="control.hasError('required')">SSL Certificate không được để trống</ng-container>
+          </ng-template>
         </nz-form-control>
-    </nz-form-item>
-    <p>Vui lòng thực hiện thêm chứng chỉ và liên kết. (<a (click)="openModalSSlCert()">Tạo mới</a>)</p>
-    <nz-form-item>
+      </nz-form-item>
+      <p style="font-size: 1rem;">Vui lòng thực hiện thêm chứng chỉ và liên kết. <a href="/app-smart-cloud/waf/ssl-cert/create" style="font-size: 1rem;"
+          >Tạo mới Cert</a></p>
+      <nz-form-item>
         <nz-form-control>
-            <nz-form-label nzFor="protocol">Chuyển đổi giao thức</nz-form-label>
-            <nz-select formControlName="protocol" (ngModelChange)="onChangeProtocol($event)">
-                <nz-option *ngFor="let data of protocolOptions" [nzLabel]="data.label" [nzValue]="data.value"></nz-option>
-            </nz-select>
+          <div class="text-label">Chuyển đổi giao thức <img nz-popover nzPopoverPlacement="right" [nzPopoverContent]="protocolContent"
+              style="margin-left: 5px" src="assets/imgs/pajamas_question.svg" alt="" />
+              <ng-template #protocolContent>
+                <div style="width: 300px;">
+                Nếu chọn HTTPS => HTTP, port 80 sẽ được sử dụng theo mặc định. Nếu chọn HTTP => HTTPS, port 443 sẽ được sử dụng theo mặc định
+                </div>
+              </ng-template>
+            </div>
+          <nz-select formControlName="protocol" (ngModelChange)="onChangeProtocol($event)">
+            <nz-option *ngFor="let data of protocolOptions" [nzLabel]="data.label" [nzValue]="data.value"></nz-option>
+          </nz-select>
         </nz-form-control>
-    </nz-form-item>
-    <nz-form-item *ngIf="selectedProtocolValue !== 'follow'">
+      </nz-form-item>
+      <nz-form-item *ngIf="selectedProtocolValue !== 'follow' && !!selectedProtocolValue">
         <nz-form-control>
           <nz-form-label nzFor="port">Port </nz-form-label>
-          <nz-input-number
-                style="width: 100%; margin-left: 0px"
-                (keydown)="onKeyDown($event)"
-                formControlName="port"
-                [nzMin]="0"
-                [nzStep]="1"
-                [nzMax]="65535"
-                nzSize="large"
-              ></nz-input-number>
+          <nz-input-number style="width: 100%; margin-left: 0px" (ngModelChange)="onChangePort($event)" (keydown)="onKeyDown($event)" formControlName="port"
+            [nzMin]="0" [nzStep]="1" [nzMax]="65535" nzSize="large"></nz-input-number>
           <!-- <input nz-input-number type="number" appTrim placeholder="Nhập port" formControlName="port" class="input-custom" /> -->
         </nz-form-control>
       </nz-form-item>
       <div class="d-flex justify-content-end">
         <button nz-button (click)="handleCancelHttpSetting()">
-          <img
-            style="padding-right: 10px; margin-top: -4px"
-            src="assets/imgs/cancel.svg"
-            alt=""
-          />{{ 'app.button.cancel' | i18n }}
+          <img style="padding-right: 10px; margin-top: -4px" src="assets/imgs/cancel.svg" alt="" />{{
+          'app.button.cancel' | i18n }}
         </button>
-        <button
-          nz-button
-          nzType="primary"
-          (click)="handleSubmit()"
-          [nzLoading]="isLoading"
-          [disabled]="validateForm.invalid"
-        >
-          <img
-            style="padding-right: 10px; margin-top: -4px"
-            src="assets/imgs/confirm.svg"
-            alt=""
-          />
+        <button nz-button nzType="primary" (click)="handleSubmit()" [nzLoading]="isLoading"
+          [disabled]="validateForm.invalid || isDisableSubmit">
+          <img style="padding-right: 10px; margin-top: -4px" src="assets/imgs/confirm.svg" alt="" />
           {{ 'app.button.confirm' | i18n }}
         </button>
       </div>
     </form>
-</ng-template>
+  </ng-template>
 </nz-modal>
 
-<one-portal-create-ssl-cert (onCancelVisible)="cancelModalSslCert()" [isVisibleCreateSSLCert]="isVisibleCreateSsl" (onOk)="handleOnAddCert()"></one-portal-create-ssl-cert>
+<one-portal-create-ssl-cert (onCancelVisible)="cancelModalSslCert()" [isVisibleCreateSSLCert]="isVisibleCreateSsl"
+  (onOk)="handleOnAddCert()"></one-portal-create-ssl-cert>
