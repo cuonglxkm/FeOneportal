@@ -1,9 +1,11 @@
 <page-header [breadcrumb]="breadcrumb"
              [action]="action"
-             [title]="title">
+             title="Gia hạn gói Snapshot">
   <ng-template #breadcrumb>
     <nz-breadcrumb [nzSeparator]="separatorTemplate">
-      <nz-breadcrumb-item>Trang chủ</nz-breadcrumb-item>
+      <nz-breadcrumb-item>
+        <a routerLink="/app-smart-cloud"> Trang chủ</a>
+       </nz-breadcrumb-item>
       <nz-breadcrumb-item>
         Dịch vụ hạ tầng
       </nz-breadcrumb-item>
@@ -13,9 +15,7 @@
       <nz-breadcrumb-item>
         <a routerLink="/app-smart-cloud/snapshot/packages">Gói Snapshot</a>
       </nz-breadcrumb-item>
-      <nz-breadcrumb-item>
-        <a routerLink="/app-smart-cloud/snapshot/packages/detail/{{idSnapshotPackage}}">Thông tin gói Snapshot</a>
-      </nz-breadcrumb-item>
+ 
       <nz-breadcrumb-item>
         <a routerLink="/app-smart-cloud/snapshot/packages/extend/{{idSnapshotPackage}}">Gia hạn gói Snapshot</a>
       </nz-breadcrumb-item>
@@ -32,22 +32,14 @@
                                [regionId]="region"></project-select-dropdown>
     </div>
   </ng-template>
-  <ng-template #title>
-    <div nz-row nzJustify="space-between">
-      <nz-row>
-        <nz-col>
-          <div>Gia hạn gói Snapshot</div>
-        </nz-col>
-      </nz-row>
-    </div>
-  </ng-template>
+  
 </page-header>
 <nz-content>
   <form nz-form [formGroup]="validateForm" nzLayout="vertical">
     <nz-row nzGutter="24">
       <nz-col nzSpan="16">
         <nz-card>
-          <div class="text-card-header">Thông tin của gói Snapshot</div>
+          <div class="text-card-header">Thông tin gói Snapshot</div>
           <div class="customRow" style="margin-top: 15px;">
             <nz-row style="background-color: #e2e2e9">
               <nz-col nzSpan="12">

@@ -368,7 +368,7 @@
   "app.delete.alow.address.pair": "Xóa Allow Address Pair",
   "app.instances": "Máy ảo",
   "app.ip-public": "IP Public",
-  "app.snapshot-package": "Package snapshot",
+  "app.snapshot-package": "gói Snapshot",
   "app.ip-loating": "IP Floating",
   "app.load-balancer": "Load Balancer",
   "app.load-balancer.f5": "Load Balancer F5",

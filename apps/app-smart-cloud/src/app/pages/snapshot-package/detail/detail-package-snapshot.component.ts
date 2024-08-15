@@ -12,6 +12,8 @@ import { PackageSnapshotModel } from '../../../shared/models/package-snapshot.mo
 import { PackageSnapshotService } from '../../../shared/services/package-snapshot.service';
 import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
 import { RegionID } from 'src/app/shared/enums/common.enum';
+import { I18NService } from '@core';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
 
 @Component({
   selector: 'one-portal-detail-package-snapshot',
@@ -35,7 +37,8 @@ export class DetailSnapshotComponent implements OnInit{
               private notification: NzNotificationService,
               private route: ActivatedRoute,
               private fb: NonNullableFormBuilder,
-              private projectService: ProjectService) {
+              private projectService: ProjectService,
+              @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService) {
   }
 
   navigateToSnapshotPackage(){
@@ -78,6 +81,12 @@ export class DetailSnapshotComponent implements OnInit{
     this.packageSnapshotService.detail(id, this.project).subscribe(data => {
       console.log('data', data);
       this.packageSnapshotModel = data;
+    },error =>{      
+      if(error.status===500){
+        this.router.navigate(['/app-smart-cloud/snapshot/packages']);
+        this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi(error.error.detail));
+      }
+      
     });
   }
 

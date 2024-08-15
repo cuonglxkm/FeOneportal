@@ -1,14 +1,14 @@
 <page-header [breadcrumb]="breadcrumb"
              [action]="action"
-             [title]="'Khởi tạo Snapshot Volume'" xmlns="http://www.w3.org/1999/html">
+             [title]="'Khởi tạo Snapshot'" xmlns="http://www.w3.org/1999/html">
   <ng-template #breadcrumb>
     <nz-breadcrumb [nzSeparator]="iconTemplate">
       <ng-template #iconTemplate><one-portal-svg-icon [icon]="'icon_breadcrumb'"></one-portal-svg-icon></ng-template>
       <nz-breadcrumb-item><a [routerLink]="['/']">{{ 'app.breadcrumb.home' | i18n }}</a></nz-breadcrumb-item>
       <nz-breadcrumb-item>{{'app.breadcrumb.infrastructure.service' | i18n }}</nz-breadcrumb-item>
       <nz-breadcrumb-item>Block Storage</nz-breadcrumb-item>
-      <nz-breadcrumb-item><a routerLink="/app-smart-cloud/snapshot">Snapshot Volume</a></nz-breadcrumb-item>
-      <nz-breadcrumb-item><a routerLink="/app-smart-cloud/snapshot/create">Khởi tạo Snapshot Volume</a></nz-breadcrumb-item>
+      <nz-breadcrumb-item><a routerLink="/app-smart-cloud/snapshot">Snapshot</a></nz-breadcrumb-item>
+      <!-- <nz-breadcrumb-item><a routerLink="/app-smart-cloud/snapshot/create">Khởi tạo Snapshot</a></nz-breadcrumb-item> -->
     </nz-breadcrumb>
     <ng-template #separatorTemplate
     ><img src="assets/imgs/arrow-square-right.svg" alt="" />
@@ -29,7 +29,7 @@
     <nz-row nzGutter="24">
       <nz-col nzSpan="16">
         <nz-card style="border-radius: 8px;">
-          <span class="text-card-header">Thông tin Snapshot Volume</span>
+          <span class="text-card-header">Thông tin Snapshot</span>
           <nz-alert  nzBanner *ngIf="disableCreate == false"
                      style="margin-bottom: 10px;margin-top: 15px"
                      [nzMessage]="nzMessage"
@@ -43,9 +43,9 @@
           <nz-form-item style="margin-top: 15px;">
             <nz-form-label>
               <span> {{ 'app.snapshot.name' | i18n }} (<span style="color: red;">*</span>) </span>
-              <img nz-popover
-                   [nzPopoverContent]="'Cho phép chứa ký tự số, chữ, dấu gạch dưới, tối đa 50 ký tự, không chứa ký tự đặc   biệt, không chứa dấu tiếng việt, không chứa dấu cách (ký tự đặc biệt: @,   #, $, %, &, *, +, -, arrow, star, biểu tượng cảm xúc, dấu câu, dấu ngoặc,   hình tròn, hình vuông, hình chữ nhật...)'"
-                   nzPopoverPlacement="bottom" style="margin-left: 5px;"
+              <img 
+              [nz-tooltip]="'Cho phép chứa ký tự số, chữ, dấu gạch dưới, tối đa 50 ký tự, không chứa ký tự đặc   biệt, không chứa dấu tiếng việt, không chứa dấu cách'"
+                  style="margin-left: 5px;"
                    src="assets/imgs/pajamas_question.svg" alt="" />
             </nz-form-label>
             <nz-form-control nzDisableAutoTips [nzErrorTip]="nameErrorTpl">
@@ -70,9 +70,9 @@
                 <nz-form-item>
                   <nz-form-label>
                   <span>Loại Snapshot (<span style="color: red;">*</span>)
-                  <img nz-popover
-                       [nzPopoverContent]="'Người dùng có thể chọn Snapshot Volume hoặc máy ảo'"
-                       nzPopoverPlacement="bottom" style="margin-left: 5px;"
+                  <img 
+                  [nz-tooltip]="'Người dùng có thể chọn Snapshot Volume hoặc máy ảo'"
+                       style="margin-left: 5px;"
                        src="assets/imgs/pajamas_question.svg" alt="" /></span>
                   </nz-form-label>
                   <nz-form-control nzDisableAutoTips>
@@ -89,9 +89,8 @@
                 <nz-form-item *ngIf="selectedSnapshotType == 0">
                   <nz-form-label>
                     <span>{{'schedule.backup.volume.select' | i18n}} (<span style="color: red;">*</span>)
-                  <img nz-popover
-                       [nzPopoverContent]="'{{\'app.snapshot.schedule.select.volume\' | i18n}}'"
-                       nzPopoverPlacement="bottom" style="margin-left: 5px;"
+                  <img style="margin-left: 5px;"
+                  [nz-tooltip]="'Chọn Volume cần Snapshot'"
                        src="assets/imgs/pajamas_question.svg" alt="" /></span>
                   </nz-form-label>
                   <nz-form-control nzDisableAutoTips>
@@ -106,9 +105,7 @@
                 <nz-form-item *ngIf="selectedSnapshotType == 1">
                   <nz-form-label>
                   <span>{{'wan.label.instance.select' | i18n}} (<span style="color: red;">*</span>)
-                  <img nz-popover
-                       [nzPopoverContent]="'Chọn máy ảo cần Snapshot'"
-                       nzPopoverPlacement="bottom" style="margin-left: 5px;"
+                  <img   [nz-tooltip]="'Chọn Volume cần máy ảo'" style="margin-left: 5px;"
                        src="assets/imgs/pajamas_question.svg" alt="" /></span>
                   </nz-form-label>
                   <nz-form-control nzDisableAutoTips>
@@ -127,9 +124,7 @@
                 <nz-form-item>
                   <nz-form-label>
                     <span>Dung lượng Snapshot (<span style="color: red;">*</span>)</span>
-                    <img nz-popover
-                         [nzPopoverContent]="'Dung lượng Snapshot bằng với dung lượng của Volume/máy ảo đã chọn'"
-                         nzPopoverPlacement="bottom" style="margin-left: 5px;"
+                    <img [nz-tooltip]="'Dung lượng Snapshot bằng với dung lượng của Volume/máy ảo đã chọn'" style="margin-left: 5px;"
                          src="assets/imgs/pajamas_question.svg" alt="" />
                   </nz-form-label>
                   <nz-form-control nzDisableAutoTips>
@@ -142,9 +137,7 @@
                 <nz-form-item>
                   <nz-form-label>
                     <span>Chọn gói Snapshot (<span style="color: red;">*</span>)</span>
-                    <img nz-popover
-                         [nzPopoverContent]="'Chọn gói Snapshot để sử dụng dịch vụ Snapshot, nếu chưa có, vui lòng khởi tạo gói Snapshot tại Quản lý gói Snapshot'"
-                         nzPopoverPlacement="bottom" style="margin-left: 5px;"
+                    <img [nz-tooltip]="'Chọn gói Snapshot để sử dụng dịch vụ Snapshot, nếu chưa có, vui lòng khởi tạo gói Snapshot tại Quản lý gói Snapshot'" style="margin-left: 5px;"
                          src="assets/imgs/pajamas_question.svg" alt="" />
                   </nz-form-label>
                   <nz-form-control nzDisableAutoTips>
