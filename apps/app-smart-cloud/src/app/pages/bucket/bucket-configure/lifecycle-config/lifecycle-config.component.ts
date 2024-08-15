@@ -83,15 +83,21 @@ export class LifecycleConfigComponent implements OnInit {
     this.searchDelay
       .pipe(debounceTime(TimeCommon.timeOutSearch))
       .subscribe(() => {
+        this.refreshParams()
         this.searchLifeCycle();
       });
 
-    this.formCreate.valueChanges.subscribe(currentValue  => {
+    this.formCreate.valueChanges.subscribe((currentValue) => {
       // if (currentValue.isSetExpiration_Day == false && currentValue.isSetAbortIncompleteMultipartUpload_Day == false && currentValue.isSetNoncurrentVersionExpiration_Day == false) {
       //   return;
       // }
-      this.validateDuplicateLC(currentValue.prefix, currentValue.isSetExpiration_Day, currentValue.isSetAbortIncompleteMultipartUpload_Day, currentValue.isSetNoncurrentVersionExpiration_Day)
-    })
+      this.validateDuplicateLC(
+        currentValue.prefix,
+        currentValue.isSetExpiration_Day,
+        currentValue.isSetAbortIncompleteMultipartUpload_Day,
+        currentValue.isSetNoncurrentVersionExpiration_Day
+      );
+    });
   }
 
   formUpdate: FormGroup<{
@@ -117,6 +123,11 @@ export class LifecycleConfigComponent implements OnInit {
     isSetAbortIncompleteMultipartUpload_Day: [false],
     isSetNoncurrentVersionExpiration_Day: [false],
   });
+
+  refreshParams() {
+    this.pageNumber = 1;
+    this.pageSize = 10;
+}
 
   searchLifeCycle() {
     this.loading = true;
@@ -150,6 +161,7 @@ export class LifecycleConfigComponent implements OnInit {
 
   search(search: string) {
     this.value = search.trim();
+    this.refreshParams()
     this.searchLifeCycle();
   }
 
@@ -160,23 +172,38 @@ export class LifecycleConfigComponent implements OnInit {
     this.listKeyError = [];
   }
 
-  validateDuplicateLC(prefix, isSetExpirationDay, isSetAbortIncompleteMultipartUploadDay, isSetNoncurrentVersionExpirationDay) {
+  validateDuplicateLC(
+    prefix,
+    isSetExpirationDay,
+    isSetAbortIncompleteMultipartUploadDay,
+    isSetNoncurrentVersionExpirationDay
+  ) {
     this.duplicateLC = false;
     prefix = !prefix ? null : prefix;
-    var tags : LifecycleTagPredicate[] = [];
-      this.listTag.forEach((e) => {
-        let lifecycleTagPredicate: LifecycleTagPredicate =
-          new LifecycleTagPredicate();
-        if (e.key != '' || e.value != '') {
-          lifecycleTagPredicate.metaKey = e.key.trim();
-          lifecycleTagPredicate.metaValue = e.value.trim();
-          tags.push(lifecycleTagPredicate);
-        }
+    var tags: LifecycleTagPredicate[] = [];
+    this.listTag.forEach((e) => {
+      let lifecycleTagPredicate: LifecycleTagPredicate =
+        new LifecycleTagPredicate();
+      if (e.key != '' || e.value != '') {
+        lifecycleTagPredicate.metaKey = e.key.trim();
+        lifecycleTagPredicate.metaValue = e.value.trim();
+        tags.push(lifecycleTagPredicate);
+      }
     });
 
-    if (this.listAllLC.some(e => {
-      return e.prefix == prefix && JSON.stringify(e.lifecycleTagPredicate) === JSON.stringify(tags) && e.isSetExpiration_Day == isSetExpirationDay && e.isSetAbortIncompleteMultipartUpload_Day == isSetAbortIncompleteMultipartUploadDay && e.isSetNoncurrentVersionExpiration_Day == isSetNoncurrentVersionExpirationDay;
-    })) {
+    if (
+      this.listAllLC.some((e) => {
+        return (
+          e.prefix == prefix &&
+          JSON.stringify(e.lifecycleTagPredicate) === JSON.stringify(tags) &&
+          e.isSetExpiration_Day == isSetExpirationDay &&
+          e.isSetAbortIncompleteMultipartUpload_Day ==
+            isSetAbortIncompleteMultipartUploadDay &&
+          e.isSetNoncurrentVersionExpiration_Day ==
+            isSetNoncurrentVersionExpirationDay
+        );
+      })
+    ) {
       this.duplicateLC = true;
     }
   }
@@ -206,7 +233,6 @@ export class LifecycleConfigComponent implements OnInit {
     if (hasKeyNull) {
       this.listTag.forEach((e) => {
         if (e.key.trim() == '') {
-
           this.listKeyError.push(true);
         } else {
           this.listKeyError.push(false);
@@ -272,12 +298,23 @@ export class LifecycleConfigComponent implements OnInit {
     let tag = new Tag();
     tag.id = this.idTag++;
     this.listTag.push(tag);
+    this.lifecycleUpdate.isSetAbortIncompleteMultipartUpload_Day = false;
+    this.formCreate.controls.isSetAbortIncompleteMultipartUpload_Day.setValue(
+      false
+    );
+    this.formUpdate.controls.isSetAbortIncompleteMultipartUpload_Day.setValue(
+      false
+    );
   }
 
   checkTags(tags: Tag[]): boolean {
-
     if (this.isVisibleCreate == true) {
-      this.validateDuplicateLC(this.formCreate.controls.prefix.value, this.formCreate.controls.isSetExpiration_Day.value, this.formCreate.controls.isSetAbortIncompleteMultipartUpload_Day.value, this.formCreate.controls.isSetNoncurrentVersionExpiration_Day.value);
+      this.validateDuplicateLC(
+        this.formCreate.controls.prefix.value,
+        this.formCreate.controls.isSetExpiration_Day.value,
+        this.formCreate.controls.isSetAbortIncompleteMultipartUpload_Day.value,
+        this.formCreate.controls.isSetNoncurrentVersionExpiration_Day.value
+      );
     }
 
     for (let tag of tags) {
@@ -292,6 +329,9 @@ export class LifecycleConfigComponent implements OnInit {
     this.listTag = this.listTag.filter((item) => item.id != id);
     this.listKeyError.splice(index, 1);
     this.checkTags(this.listTag);
+    if (this.listTag?.length != 0) {
+      this.lifecycleUpdate.isSetAbortIncompleteMultipartUpload_Day = false;
+    }
   }
 
   isVisibleDelete: boolean = false;
@@ -432,6 +472,36 @@ export class LifecycleConfigComponent implements OnInit {
             this.cdr.detectChanges();
           },
         });
+    }
+  }
+
+  changeIsSetExpiration_Day() {
+    if (
+      this.lifecycleUpdate.isSetExpiration_Day &&
+      this.lifecycleUpdate.lifecycleRuleExpiration_Day == 0
+    ) {
+      this.lifecycleUpdate.lifecycleRuleExpiration_Day = 1;
+      this.cdr.detectChanges();
+    }
+  }
+
+  changeSetNoncurrentVersionExpiration_Day() {
+    if (
+      this.lifecycleUpdate.isSetNoncurrentVersionExpiration_Day &&
+      this.lifecycleUpdate.lifecycleRuleNoncurrentVersionExpiration_Day == 0
+    ) {
+      this.lifecycleUpdate.lifecycleRuleNoncurrentVersionExpiration_Day = 1;
+      this.cdr.detectChanges();
+    }
+  }
+
+  changeSetAbortIncompleteMultipartUpload_Day() {
+    if (
+      this.lifecycleUpdate.isSetAbortIncompleteMultipartUpload_Day &&
+      this.lifecycleUpdate.lifecycleRuleAbortIncompleteMultipartUpload_Day == 0
+    ) {
+      this.lifecycleUpdate.lifecycleRuleAbortIncompleteMultipartUpload_Day = 1;
+      this.cdr.detectChanges();
     }
   }
 }

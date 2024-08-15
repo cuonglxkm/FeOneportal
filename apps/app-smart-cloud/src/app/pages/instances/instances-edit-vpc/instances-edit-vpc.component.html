@@ -99,6 +99,16 @@
                 <span class="text-value-detail"
                   >{{ instancesModel.imageName }}
                   <img
+                    *ngIf="
+                      instancesModel.status.toUpperCase() == 'KHOITAO' &&
+                      !instancesModel.taskState.toUpperCase().includes('ING') &&
+                      instancesModel.taskState.toUpperCase() !=
+                        'REBOOT_STARTED' &&
+                      instancesModel.taskState.toUpperCase() != 'ERROR' &&
+                      instancesModel.taskState.toUpperCase() != 'SHUTOFF' &&
+                      instancesModel.taskState.toUpperCase() != 'RESCUE' &&
+                      instancesModel.taskState.toUpperCase() != 'DELETED'
+                    "
                     style="cursor: pointer; margin-left: 10px"
                     [nz-tooltip]="'app.change' | i18n"
                     src="assets/imgs/refresh.svg"
@@ -196,7 +206,9 @@
                 <span class="text-label" style="width: 35%"
                   >{{ 'app.ip.public' | i18n }}:</span
                 >
-                <span class="text-value-detail">{{ instancesModel.ipPublic }}</span>
+                <span class="text-value-detail">{{
+                  instancesModel.ipPublic
+                }}</span>
               </nz-row></nz-col
             >
           </nz-row>
@@ -223,7 +235,9 @@
                 <span class="text-label" style="width: 35%"
                   >{{ 'app.ip.lan' | i18n }}:</span
                 >
-                <span class="text-value-detail">{{ instancesModel.ipPrivate }}</span>
+                <span class="text-value-detail">{{
+                  instancesModel.ipPrivate
+                }}</span>
               </nz-row></nz-col
             >
           </nz-row>

@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, Output, EventEmitter } from '@angular/core';
 import { SslCertDTO } from 'src/app/pages/waf/waf.model';
 
 @Component({
@@ -8,6 +8,7 @@ import { SslCertDTO } from 'src/app/pages/waf/waf.model';
 })
 export class DeleteSslBtnComponent {
   @Input() sslCertData: SslCertDTO
+  @Output() onOk = new EventEmitter()
 
   isVisible: boolean = false;
   isLoading: boolean = false;
@@ -18,5 +19,9 @@ export class DeleteSslBtnComponent {
 
   handleCancel(){
     this.isVisible = false
+  }
+
+  onOkAction(){
+    this.onOk.emit()
   }
 }

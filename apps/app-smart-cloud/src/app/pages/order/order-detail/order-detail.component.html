@@ -119,26 +119,25 @@
         </nz-col>
         <nz-col nzSpan="7">
           <nz-form-item>
-            <h3 style="font-weight: 600; font-size: 16px">
+            <h3 style="font-weight: 600; font-size: 16px; word-break: break-all">
               {{
                 (userModel$ | async)?.fullName === ''
                   ? '-'
                   : (userModel$ | async)?.fullName
               }}
             </h3>
-            <h3 style="color: white">.</h3>
           </nz-form-item>
           <nz-form-item>
-            <h3 style="font-weight: 600; font-size: 16px">
+            <h3 style="font-weight: 600; font-size: 16px; word-break: break-all">
               {{ data?.phoneNumber === '' ? '-' : data?.phoneNumber }}
             </h3>
-            <h3 style="color: white">.</h3>
+            
           </nz-form-item>
           <nz-form-item>
-            <h3 style="font-weight: 600; font-size: 16px">
+            <h3 style="font-weight: 600; font-size: 16px; word-break: break-all">
               {{ data?.email === '' ? '-' : data?.email }}
             </h3>
-            <h3 style="color: white">.</h3>
+            
           </nz-form-item>
           <nz-form-item>
             <h3
@@ -170,10 +169,10 @@
             <h3 style="font-weight: 600; font-size: 16px">
               {{ data?.orderDate | date : 'HH:mm:ss dd/MM/yyyy' }}
             </h3>
-            <h3 style="color: white">.</h3>
+            
           </nz-form-item>
           <nz-form-item>
-            <h3 style="font-weight: 600; font-size: 16px">
+            <h3 style="font-weight: 600; font-size: 16px; word-break: break-all">
               {{ data?.paymentMethod === '' ? '-' : data?.paymentMethod }}
             </h3>
           </nz-form-item>
@@ -239,7 +238,7 @@
                 <div *ngSwitchCase="'IP'">
                   <a *ngIf="isIppublic"
                     [routerLink]="['/app-smart-cloud/ip-public']"
-                  >IP Pulbic</a
+                  >IP Public</a
                   >
                   <a *ngIf="!isIppublic"
                     [routerLink]="['/app-smart-cloud/networks/ip-floating/list']"
@@ -295,11 +294,16 @@
                   [routerLink]="['/app-smart-cloud/snapshot/packages']"
                   >{{ item?.serviceName }}</a
                 >
-                <a
-                  *ngSwitchCase="'Object Storage'"
-                  [routerLink]="['/app-smart-cloud/object-storage/bucket']"
-                  >{{ item?.serviceName }}</a
-                >
+                <ng-container
+                  *ngSwitchCase="'Object Storage'"                  
+                  >
+                <a *ngIf="serviceSpec?.RegionId === 7" [routerLink]="['/app-smart-cloud/object-storage-advance/bucket']">
+                  {{ item?.serviceName }}
+                </a>
+                <a *ngIf="serviceSpec?.RegionId !== 7" [routerLink]="['/app-smart-cloud/object-storage/bucket']">
+                  {{ item?.serviceName }}
+                </a>
+                </ng-container>
                 <a
                   *ngSwitchCase="'Mongodb'"
                   [routerLink]="['/app-mongodb-replicaset']"

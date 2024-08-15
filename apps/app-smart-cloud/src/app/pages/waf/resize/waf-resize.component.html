@@ -9,6 +9,7 @@
       <nz-breadcrumb-item> {{ 'app.breadcrumb.infrastructure.service' | i18n }} </nz-breadcrumb-item>
       <nz-breadcrumb-item>Web Application Firewall</nz-breadcrumb-item>
       <nz-breadcrumb-item><a [routerLink]="['/app-smart-cloud/waf']">WAF</a></nz-breadcrumb-item>
+      <nz-breadcrumb-item><a [routerLink]="['/app-smart-cloud/waf/detail', id]">Chi tiết WAF</a></nz-breadcrumb-item>
       <nz-breadcrumb-item>Điều chỉnh WAF</nz-breadcrumb-item>
     </nz-breadcrumb>
     <ng-template #iconTemplate
@@ -39,17 +40,21 @@
                     <span class="label-fontsize font-bold ">{{WAFDetail?.name}}</span>
                   </div>
                 </div>
-                <div nz-row [nzGutter]="24" class="row-gray-bg content-items-center d-flex">
-                  <div nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="12">
-                    <span class="label-fontsize">Domain:</span>
+                <ng-container *ngFor="let domain of domains; let i = index">
+                  <div nz-row [nzGutter]="24" 
+                       [ngClass]="{'row-white-bg': i % 2 !== 0, 'row-gray-bg': i % 2 === 0}" 
+                       class="content-items-center">
+                    <div nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="12">
+                      <span class="label-fontsize">Domain ({{i + 1}}):</span>
+                    </div>
+                    <div nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="12">
+                      <span class="label-fontsize font-bold">
+                        {{ domain }} 
+                      </span>
+                    </div>
                   </div>
-                  <div class="text-hidden" title={{domains}} nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="12">
-                    <span class="label-fontsize font-bold" *ngFor="let domain of domains">
-                      {{ domain }}<span *ngIf="!isLastDomain(domain)">, </span>
-                    </span>
-                  </div>
-                </div>
-                <div nz-row [nzGutter]="24" class="row-white-bg content-items-center">
+                </ng-container>
+                <div [ngClass]="{'row-white-bg': domains.length % 2 !== 0, 'row-gray-bg': domains.length % 2 === 0}" nz-row [nzGutter]="24" class="content-items-center">
                   <div nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="12">
                     <span class="label-fontsize">Policy:</span>
                   </div>
@@ -57,13 +62,13 @@
                     <span class="label-fontsize font-bold ">{{WAFDetail?.policyName === null ? '-' : WAFDetail?.policyName}}</span>
                   </div>
                 </div>
-                <div nz-row [nzGutter]="24" class="row-gray-bg content-items-center">
+                <div [ngClass]="{'row-gray-bg': domains.length % 2 !== 0, 'row-white-bg': domains.length % 2 === 0}" nz-row [nzGutter]="24" class="content-items-center">
                   <div nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="12">
                     <span class="label-fontsize">Ngày khởi tạo:</span>
                   </div>
                   <div nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="12">
 
-                    <span class="label-fontsize font-bold">{{WAFDetail?.createdDate | date: 'dd-MM-yyyy'}}</span>
+                    <span class="label-fontsize font-bold">{{WAFDetail?.createdDate | date: 'hh:mm:ss dd/MM/yyyy'}}</span>
                   </div>
                 </div>
               </div>
@@ -78,17 +83,19 @@
                     <span class="label-fontsize font-bold">{{ currentOffer?.offerName }}</span>
                   </div>
                 </div>
-                <div class="text-hidden" nz-row [nzGutter]="24" class="row-gray-bg content-items-center">
-                  <div nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="12">
-                    <span class="label-fontsize">IP Public:</span>
+                <ng-container *ngFor="let ipPublic of ipPublics; let i = index">
+                  <div  [ngClass]="{'row-white-bg': i % 2 !== 0, 'row-gray-bg': i % 2 === 0}" nz-row [nzGutter]="24" class="content-items-center te">
+                    <div nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="12">
+                      <span class="label-fontsize">IP Public ({{i + 1}}):</span>
+                    </div>
+                    <div nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="12">
+                      <span class="label-fontsize font-bold" >
+                        {{ ipPublic }}
+                      </span>
+                    </div>
                   </div>
-                  <div nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="12">
-                    <span class="label-fontsize font-bold" *ngFor="let ipPublic of ipPublics">
-                      {{ ipPublic }}<span *ngIf="!isLastIpPublic(ipPublic)">; </span>
-                    </span>
-                  </div>
-                </div>
-                <div nz-row [nzGutter]="24" class="row-white-bg content-items-center">
+                </ng-container>
+                <div [ngClass]="{'row-white-bg': domains.length % 2 !== 0, 'row-gray-bg': domains.length % 2 === 0}" nz-row [nzGutter]="24" class="content-items-center">
                   <div nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="12">
                     <span class="label-fontsize">Trạng thái dịch vụ:</span>
                   </div>
@@ -98,12 +105,12 @@
                     </ng-container>
                   </div>
                 </div>
-                <div nz-row [nzGutter]="24" class="row-gray-bg content-items-center">
+                <div [ngClass]="{'row-gray-bg': domains.length % 2 !== 0, 'row-white-bg': domains.length % 2 === 0}" nz-row [nzGutter]="24" class="content-items-center">
                   <div nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="12">
                     <span class="label-fontsize">Ngày hết hạn:</span>
                   </div>
                   <div nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="12">
-                    <span class="label-fontsize font-bold">{{WAFDetail?.expiredDate | date: 'dd-MM-yyyy'}}</span>
+                    <span class="label-fontsize font-bold">{{WAFDetail?.expiredDate | date: 'hh:mm:ss dd/MM/yyyy'}}</span>
                   </div>
                 </div>
               </div>

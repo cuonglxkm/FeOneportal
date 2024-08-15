@@ -62,7 +62,7 @@ export class ListenerService extends BaseService{
   }
 
   deleteListner(listenerId: any, idLB: any) {
-    return this.http.delete<any>(this.baseUrl + this.ENDPOINT.provisions + "/loadbalancer/listener/" + listenerId + "?lbId=" + idLB);
+    return this.http.delete<any>(this.baseUrl + this.ENDPOINT.provisions + "/loadbalancer/listener/" + listenerId + "?lbId=" + idLB, this.getHeaders());
   }
 
   loadSSlCert(userId: any, regionId: any, projectId) {

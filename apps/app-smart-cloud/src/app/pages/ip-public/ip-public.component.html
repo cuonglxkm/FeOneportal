@@ -39,7 +39,7 @@
         </div>
         <div class="text-right p-0 m-b-0" nz-col [nzLg]="12" [nzMd]="12" [nzSm]="24" [nzXl]="12" [nzXs]="24"
              [nzXXl]="12">
-          <button *ngIf="projectType != 1" nz-button nzType="primary" (click)="createIp()" nzSize="large">
+          <button *ngIf="projectType != 1 && isCreateOrder" nz-button nzType="primary" (click)="createIp()" nzSize="large">
             <img style="padding-right: 10px;" src="assets/imgs/add-circle.svg" alt=""/>
             <span class="button-text-primary">{{'app.ip.public.create.label' | i18n}}</span>
           </button>
@@ -89,19 +89,19 @@
           <td>
             <div>
               <!----Gắn----->
-              <img *ngIf="item.status != 'DANGSUDUNG' && item.status != 'LOI' && item.resourceStatus != 'ERROR' &&  item.status != 'SUSPENDED'" style="padding-right: 10px;" src="assets/imgs/add.svg"
+              <img *ngIf="item.status != 'DANGSUDUNG' && item.status != 'LOI' && item.resourceStatus != 'ERROR' &&  item.status != 'SUSPENDED' && ('ippublic:IpPublicAttach' | IsPermissionPipe)" style="padding-right: 10px;" src="assets/imgs/add.svg"
                    nz-tooltip nzTooltipTitle="{{'app.attach' | i18n}} IP Public" nzTooltipPlacement="bottom"
                    (click)="openIpMounted('Gắn Ip Pulbic', item)"/>
               <!---Gỡ------>
-              <img *ngIf="item.status == 'DANGSUDUNG' && item.status != 'LOI' && item.resourceStatus != 'ERROR' && item.status != 'SUSPENDED'" style="padding-right: 10px;" src="assets/imgs/cancel.svg"
+              <img *ngIf="item.status == 'DANGSUDUNG' && item.status != 'LOI' && item.resourceStatus != 'ERROR' && item.status != 'SUSPENDED' && ('ippublic:IpPublicAttach' | IsPermissionPipe)" style="padding-right: 10px;" src="assets/imgs/cancel.svg"
                    nz-tooltip nzTooltipTitle="{{'app.detach' | i18n}} IP Public" nzTooltipPlacement="bottom"
                    (click)="openIpMounted('Gỡ Ip Pulbic', item)"/>
               <!---Gia Han------>
-              <img *ngIf="projectType != 1 && item.status != 'LOI' && item.resourceStatus != 'ERROR' && item.status != 'SUSPENDED'" style="padding-right: 10px;" src="assets/imgs/calendar-tick.svg"
+              <img *ngIf="projectType != 1 && item.status != 'LOI' && item.resourceStatus != 'ERROR' && item.status != 'SUSPENDED' && ('order:Create' | IsPermissionPipe)" style="padding-right: 10px;" src="assets/imgs/calendar-tick.svg"
                    nz-tooltip nzTooltipTitle="{{'app.extend' | i18n}} IP Public" nzTooltipPlacement="bottom"
                    (click)="openIpMounted('Gia hạn Ip Pulbic', item)"/>
               <!----Xóa---->
-              <img *ngIf="projectType != 1" src="assets/imgs/delete.svg" style="width: 28px;height: 28px; cursor: pointer;"
+              <img *ngIf="projectType != 1 && ('ippublic:Delete' | IsPermissionPipe)" src="assets/imgs/delete.svg" style="width: 28px;height: 28px; cursor: pointer;"
                    nz-tooltip nzTooltipTitle="{{'app.delete' | i18n}}" nzTooltipPlacement="bottom"
                    (click)="openIpMounted('Xóa', item)"/>
             </div>
@@ -136,7 +136,7 @@
           ></nz-col>
         </nz-row>
         <button
-          *ngIf="projectType != 1"
+          *ngIf="projectType != 1 && isCreateOrder"
           style="margin-top: 20px"
           nz-button
           [nzType]="'primary'"

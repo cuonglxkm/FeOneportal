@@ -2,7 +2,10 @@
      style="cursor: pointer; width: 28px; height: 28px;"
      nz-popover
      [nzPopoverContent]="('app.delete' | i18n) + ' WAF'"
-     nzPopoverPlacement="bottom" (click)="showModal()"/>
+     nzPopoverPlacement="bottom"
+     (click)="canClick ? showModal() : null"
+    [style.filter]="canClick ? null : 'opacity(0.25) drop-shadow(0 0 0 rgba(0, 0, 0, 1))'" 
+    [style.cursor]="canClick ? 'pointer' : 'not-allowed'"/>
 <nz-modal [(nzVisible)]="isVisible" (nzOnCancel)="handleCancel()" nzMask="false">
   <div *nzModalTitle>
     <span class="text-modal-title">{{ 'waf.action.delete' | i18n }} {{ wafName }}</span>

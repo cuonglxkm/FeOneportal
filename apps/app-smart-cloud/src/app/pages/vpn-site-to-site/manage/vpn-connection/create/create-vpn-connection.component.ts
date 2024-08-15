@@ -234,11 +234,8 @@ export class CreateVpnConnectionComponent implements OnInit {
       .subscribe((data) => {
         this.isLoadingVpnService = false;
         this.disableVpnService = false;
-        const vpnServiceList = data.records.filter((vpnService) => {
-          return vpnService.status !== 'PENDING_CREATE';
-        });
 
-        vpnServiceList.forEach((vpnService) => {
+        data.records.forEach((vpnService) => {
           this.vpnServiceList.push({
             label: vpnService.name,
             value: vpnService.id,

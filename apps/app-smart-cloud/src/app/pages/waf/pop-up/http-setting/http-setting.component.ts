@@ -18,6 +18,7 @@ import { finalize } from 'rxjs';
 export class HttpSettingComponent implements OnInit{
   @Input() domainData: WafDomain ;
   @Input() listSslCert: SslCertDTO[]
+  @Input() canClick: boolean;
   @Output() onOk = new EventEmitter();
   @Output() onOkCreateSsl = new EventEmitter()
 
@@ -40,7 +41,8 @@ export class HttpSettingComponent implements OnInit{
 
   ngOnInit(): void {
     this.validateForm.controls.cert.setValue(this.domainData.sslCertId)
-    this.validateForm.controls.port.setValue(this.domainData.port)
+    this.validateForm.controls.port.setValue(this.domainData.portRewriting)
+    this.selectedProtocolValue = this.domainData.protocol
   }
 
   validateForm = this.fb.group({

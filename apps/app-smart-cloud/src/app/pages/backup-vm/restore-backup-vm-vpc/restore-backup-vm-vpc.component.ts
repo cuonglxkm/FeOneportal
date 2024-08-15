@@ -341,9 +341,8 @@ export class RestoreBackupVmVpcComponent implements OnInit {
       )
       .subscribe((data) => {
         this.backupVmModel = data;
-        this.dataService
-          .getById(this.backupVmModel.instanceId)
-          .subscribe((data) => {
+        this.dataService.getById(this.backupVmModel.instanceId).subscribe({
+          next: (data) => {
             this.instanceModel = data;
             if (this.instanceModel.gpuType == null) {
               this.selectedIndextab = 0;
@@ -352,7 +351,12 @@ export class RestoreBackupVmVpcComponent implements OnInit {
               this.selectedIndextab = 1;
               this.onClickGpuConfig();
             }
-          });
+          },
+          error: (e) => {
+            this.selectedIndextab = 0;
+            this.onClickCustomConfig();
+          },
+        });
         if (
           this.backupVmModel?.volumeBackups
             .filter((e) => e.isBootable == true)[0]
@@ -550,7 +554,7 @@ export class RestoreBackupVmVpcComponent implements OnInit {
     this.configRecommend = null;
   }
 
-  minCapacity: number;
+  minCapacity: number = 0;
   maxCapacity: number = 0;
   stepCapacity: number = 0;
   getConfigurations() {
@@ -645,7 +649,6 @@ export class RestoreBackupVmVpcComponent implements OnInit {
 
   //#region Chọn IP Public Chọn Security Group
   listIPPublic: IPPublicModel[] = [];
-  listSecurityGroup: any[] = [];
   selectedSecurityGroup: any[] = [];
   getAllIPPublic() {
     this.dataService
@@ -796,7 +799,10 @@ export class RestoreBackupVmVpcComponent implements OnInit {
       if (e.newName && e.newName.length != 0) {
         volumeExternal.name = e.newName;
       } else {
-        volumeExternal.name = (e.name + '_' + this.instanceModel.name).slice(0, 49);
+        volumeExternal.name = (e.name + '_' + this.instanceModel.name).slice(
+          0,
+          49
+        );
       }
       volumeExternal.size = e.capacity;
       selectedVolumeExternal.push(volumeExternal);

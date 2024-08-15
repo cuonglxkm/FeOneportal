@@ -51,6 +51,10 @@ export class ServiceStatusPipe implements PipeTransform {
         return new StatusModel("#FFBB63", this.i18n.fanyi('app.suspend'));
       case "HUY":
           return new StatusModel("#EA3829", this.i18n.fanyi('service.status.cancel'));
+      case "NORMAL":
+          return new StatusModel("#009B4E", this.i18n.fanyi('service.status.normal'))
+      case "PENDING EXPIRED":
+          return new StatusModel("#FFA100", this.i18n.fanyi('service.status.pending.expired'))
       default:
         return new StatusModel("#4c4f67", this.i18n.fanyi('service.status.unknown'));
     }

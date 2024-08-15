@@ -40,6 +40,7 @@ export class WAFExtendComponent implements OnInit {
   errorList: string[] = [];
   domains: string[] = []
   ipPublics: string[] = []
+  isLoading: boolean = false;
   closePopupError() {
     this.isVisiblePopupError = false;
   }
@@ -70,7 +71,9 @@ export class WAFExtendComponent implements OnInit {
 
   invalid: boolean = false;
   onChangeTime(value) {
-    if (value.length == 0) {
+    console.log(value);
+    
+    if (value == 0 || value == undefined) {
       this.invalid = true;
       this.totalAmount = 0;
       this.totalincludesVAT = 0;
@@ -86,31 +89,42 @@ export class WAFExtendComponent implements OnInit {
   WAFExtend: WAFExtend = new WAFExtend();
   WAFDetail: WafDetailDTO = new WafDetailDTO();
 
-  getWAFById(id) {
-    this.service
-      .getDetail(id)
-      .subscribe(
-        (data) => {
-          this.WAFDetail = data;
-          this.getOfferById(data.offerId)
-          if(data?.wafDomains !== null){
-            this.domains = data.wafDomains.map((item) => item.domain);
-            this.ipPublics = data.wafDomains.map((item) => item.ipPublic);
-          }
-        },
-        (error) => {
-          this.WAFDetail = null;
-        }
-      );
-  }
-
   isLastDomain(domain: string): boolean {
     return this.domains.indexOf(domain) === this.domains.length - 1;
   }
 
-  isLastIpPublic(ipPublic: string): boolean {
-    return this.ipPublics.indexOf(ipPublic) === this.ipPublics.length - 1;
+  getWAFById(id) {
+    this.isLoading = true
+    this.service
+      .getDetail(id)
+      .subscribe(
+        (data) => {
+          this.isLoading = false
+          this.WAFDetail = data;
+          this.getOfferById(data.offerId)
+          if (data?.wafDomains !== null) {
+            this.domains = data.wafDomains
+              .sort((a, b) => a.id - b.id)
+              .map((item) => item.domain);
+            this.ipPublics = data.wafDomains
+              .sort((a, b) => a.id - b.id)
+              .map((item) => item.ipPublic);
+          }
+        },
+        (error) => {
+          this.isLoading = false
+          this.WAFDetail = null;
+          if(error.status == 500){
+            this.router.navigate(['/app-smart-cloud/waf']);
+          this.notification.error(
+            this.i18n.fanyi('app.status.fail'),
+            'Bản ghi không tồn tại'
+          );
+          }
+        }
+      );
   }
+
 
   getOfferById(id) {
     this.service

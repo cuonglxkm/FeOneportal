@@ -9,7 +9,7 @@ import { NguCarouselConfig } from '@ngu/carousel';
 import { getCurrentRegionAndProject } from '@shared';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { finalize, Subject } from 'rxjs';
-import { DOMAIN_REGEX } from 'src/app/shared/constants/constants';
+import { DOMAIN_REGEX, NAME_REGEX } from 'src/app/shared/constants/constants';
 import { RegionID } from 'src/app/shared/enums/common.enum';
 import { OrderItemObject } from 'src/app/shared/models/price';
 import { ObjectStorageService } from 'src/app/shared/services/object-storage.service';
@@ -66,7 +66,6 @@ export class WAFCreateComponent implements OnInit {
   listOfDomain: any = [];
 
   isRequired: boolean = true;
-  selectedSslCert: number
   isLoading = false;
   isVisibleCreateSSLCert = false;
   WAFCreate: WAFCreate = new WAFCreate();
@@ -98,7 +97,7 @@ export class WAFCreateComponent implements OnInit {
   }
 
     form: FormGroup = this.fb.group({
-      nameWAF: ['', [Validators.required]],
+      nameWAF: ['', [Validators.required, Validators.pattern(NAME_REGEX)]],
       bonusServices: this.fb.array([this.createBonusService()]),
       time: [1]
     });
@@ -121,7 +120,6 @@ export class WAFCreateComponent implements OnInit {
   ) {
   
   }
-
   ngOnInit() {
     let regionAndProject = getCurrentRegionAndProject();
     this.regionId = regionAndProject.regionId;
@@ -146,7 +144,7 @@ export class WAFCreateComponent implements OnInit {
     return this.fb.group({
       domain: ['', [Validators.required,Validators.pattern(DOMAIN_REGEX) ,duplicateDomainValidator]],
       ipPublic: ['', [Validators.required, ipValidatorMany]],
-      host: [''],
+      host: ['',Validators.pattern(DOMAIN_REGEX)],
       port: [null],
       sslCert: ['']
     });
@@ -158,16 +156,11 @@ export class WAFCreateComponent implements OnInit {
     .pipe(finalize(() => this.loadingSrv.close()))
     .subscribe((res) => {
       this.listSslCert = res?.records
-      this.onSslCertChange
     }, (error) => {
       console.log(error);     
     })
   }
 
-  onSslCertChange(selectedId: string) {
-    const selectedCert = this.listSslCert.find(cert => cert?.id === selectedId);
-    this.selectedSslCertName = selectedCert ? selectedCert.name : '';
-  }
 
 
   areAllDomainsValid(): boolean {

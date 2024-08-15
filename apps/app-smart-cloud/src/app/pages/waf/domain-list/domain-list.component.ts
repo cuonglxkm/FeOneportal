@@ -22,7 +22,8 @@ export class WafDomainListComponent implements OnInit, OnDestroy {
   isLoading: boolean = true;
   selectedValue: string;
   value: string;
-
+  disablePolicies = false;
+  
   options = [
     { label: this.i18n.fanyi('app.status.all'), value: '' },
     { label: this.i18n.fanyi('service.status.active'), value: 'ACTIVE' },
@@ -115,6 +116,11 @@ export class WafDomainListComponent implements OnInit, OnDestroy {
     this.pageIndex = value;
     this.getListWafDomain();
   }
+  
+  someSwitchesOn(sysDomainInfoVO): boolean {
+    debugger;
+    return Object.values(sysDomainInfoVO).some(value => value === "ON");
+  }
 
   getListWafDomain() {
     this.isLoading = true;
@@ -137,6 +143,7 @@ export class WafDomainListComponent implements OnInit, OnDestroy {
                   wafDefendSwitch: "OFF",
                 };
               }
+              x.someSwitchesOn = this.someSwitchesOn(x.sysDomainInfoVO);
             });
             this.isLoading = false;
           } else {
@@ -191,6 +198,34 @@ export class WafDomainListComponent implements OnInit, OnDestroy {
     this.router.navigate(['/app-smart-cloud/schedule/snapshot/create', { wafId: idWaf }], { queryParams: { snapshotTypeCreate: 0 } });
   }
 
+  backPolicy(event, policyType:string, data){
+    switch(policyType) {
+      case "blockSwitch":
+        data.sysDomainInfoVO.blockSwitch = event ? "ON" : "OFF";
+        break;
+      case "dmsDefendSwitch":
+        data.sysDomainInfoVO.dmsDefendSwitch = event ? "ON" : "OFF";
+        break;
+      case "wafDefendSwitch":
+        data.sysDomainInfoVO.wafDefendSwitch = event ? "ON" : "OFF";
+        break;
+      case "intelligenceSwitch":
+        data.sysDomainInfoVO.intelligenceSwitch = event ? "ON" : "OFF";
+        break;
+      case "rateLimitSwitch":
+        data.sysDomainInfoVO.rateLimitSwitch = event ? "ON" : "OFF";
+        break;
+      case "customizeRuleSwitch":
+        data.sysDomainInfoVO.customizeRuleSwitch = event ? "ON" : "OFF";
+        break;  
+      case "whitelistSwitch":
+        data.sysDomainInfoVO.whitelistSwitch = event ? "ON" : "OFF";
+        break;
+      default:
+        // code block
+    }
+  }
+
   changePolicy(event: any, policyType:string, data){
     this.isLoading = true;
     var updateData: UpdatePolicies = {};
@@ -233,6 +268,7 @@ export class WafDomainListComponent implements OnInit, OnDestroy {
         },
       error: (error) => {
           this.isLoading = false;
+          this.backPolicy(!event,policyType,data);
           this.notification.error(error.statusText, this.i18n.fanyi('app.failData'));
         }
       }

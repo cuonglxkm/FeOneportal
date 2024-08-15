@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { WafService } from 'src/app/shared/services/waf.service';
 
 export class WafDTO{
@@ -16,8 +17,10 @@ export class WafDTO{
 
 export class WafComponent implements OnInit {
   isBegin = true;
+  isLoaded = false;
   constructor(
-    private wafService: WafService) {
+    private wafService: WafService,
+    private router: Router) {
     
   }
   ngOnInit() {
@@ -25,8 +28,13 @@ export class WafComponent implements OnInit {
       if(data){
         this.isBegin = false;
       }
+      this.isLoaded = true;
     },error:(err)=>{
-      
+      this.isBegin = false;
+      this.isLoaded = true;
     }})
+  }
+  navigateToCreateWaf() {
+    this.router.navigate(['/app-smart-cloud/waf/create']);
   }
 }

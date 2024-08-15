@@ -34,7 +34,7 @@
         <div style="margin-bottom: 20px" class="text-label">
           {{ 'validation.bucket.name1' | i18n }}
         </div>
-        <nz-row nzGutter="16">  
+        <nz-row nzGutter="16">
           <nz-col nzSpan="24">
             <nz-form-item>
               <nz-form-label nzFor="name"
@@ -53,7 +53,7 @@
                       id="name"
                       [placeholder]="'app.input.name' | i18n"
                       maxlength="63"
-                      minlength="1"
+                      minlength="3"
                     />
                   </nz-col>
                 </nz-row>
@@ -64,6 +64,12 @@
                   <ng-container *ngIf="control.hasError('pattern')">{{
                     'validation.bucket.name' | i18n
                   }}</ng-container>
+                  <ng-container *ngIf="control.hasError('lessTwo')">{{
+                      'validation.bucket.name.less2' | i18n
+                    }}</ng-container>
+                  <ng-container *ngIf="control.hasError('more63')">{{
+                      'validation.bucket.name.more63' | i18n
+                    }}</ng-container>
                 </ng-template>
               </nz-form-control>
             </nz-form-item>

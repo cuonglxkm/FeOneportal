@@ -52,6 +52,8 @@
   "service.status.processing": "Đang xử lý",
   "service.status.unknown": "Không xác định",
   "service.status.cancel": "Hủy",
+  "service.status.normal": "Bình thường",
+  "service.status.pending.expired": "Chờ hết hạn",
 
 
   "form.clear.local.storage": "Làm sạch Local Storage",
@@ -679,7 +681,7 @@
   "app.lifeCycle.prefix.require": "Tiền tố không được để trống",
   "app.lifeCycle.delete.success": "Xóa Lifecycle thành công",
   "app.lifeCycle.delete.fail": "Xóa Bucket Lifecycle thành công",
-  "app.lifeCycle.edit.success": "Chỉnh sửa Bucket Lifecycle không thành công",
+  "app.lifeCycle.edit.success": "Chỉnh sửa Bucket Lifecycle thành công",
   "app.lifeCycle.edit.fail": "Chỉnh sửa Lifecycle không thành công",
   "app.lifeCycle.edit": "Chỉnh sửa Lifecycle",
   "app.lifeCycle.config.intro": "Bucket Lifecycle cho phép bạn khả năng quản lý tuổi thọ và sự tự động hóa của các đối tượng (objects) trong các bucket.",
@@ -702,6 +704,12 @@
   "app.bucket.detail.createFolder.pattern": "Tên thư mục chỉ được chứa các ký tự: Ký tự chữ và số: 0-9, a-z, A-Z, Ký tự đặc biệt: chấm than (!), gạch nối (-), gạch dưới (_), chấm (.), sao (*), nháy đơn ('), mở ngoặc đơn ((), đóng ngoặc đơn ()). Tối thiểu 3 ký tự, tối đa 64 ký tự",
   "app.bucket.detail.downloadZip": "Tải zip",
   "app.bucket.detail.upload": "Tải file lên",
+  "app.bucket.detail.upload.metakey.wrong": "Meta key không đúng định dạng",
+  "app.bucket.detail.upload.metakey.empty": "Meta key không được để trống",
+  "app.bucket.detail.upload.public.tooltip": "Tất cả mọi người đều có thể truy cập thông tin của file.<br/>Lưu ý, Bucket public nhưng nếu object private thì cũng không truy cập được từ bên ngoài",
+  "app.bucket.detail.upload.private.tooltip": "Chỉ những người dùng có quyền mới được truy cập",
+  "app.bucket.detail.upload.metavalue.wrong": "Meta value không đúng định dạng",
+  "app.bucket.detail.upload.metavalue.empty": "Meta value không được để trống",
   "app.bucket.detail.select": "Đã chọn {{countObjectSelected}} Objects.",
   "app.bucket.detail.url": "Đường dẫn",
   "app.bucket.detail.createFolder.name": "Tên thư mục",
@@ -803,7 +811,9 @@
   "app.s3.key.recreate.alert": "Bạn đang thực hiện tạo lại SecretKey.",
   "app.s3.key.recreate.des": "Quý khách chắc chắn muốn thực hiện tại lại SecretKey?",
 
-  "validation.bucket.name": "Vui lòng nhập ký tự thường a-z, các ký tự số 0-9, dấu gạch ngang và dấu chấm (không được nhập dấu gạch ngang hoặc dấu chấm ở đầu hoặc cuối)",
+  "validation.bucket.name": "Vui lòng nhập ký tự thường a-z, các ký tự số 0-9, dấu gạch ngang và dấu chấm (không được nhập dấu gạch ngang hoặc dấu chấm ở đầu hoặc cuối). ",
+  "validation.bucket.name.less2": "Vui lòng nhập tối thiểu 3 ký tự",
+  "validation.bucket.name.more63": "Vui lòng không nhập quá 63 ký tự",
   "validation.bucket.name1": "Tên Bucket chỉ được phép dùng các ký tự chữ thường a-z các ký tự số 0-9 dấu gạch ngang (-) và dấu chấm (.), tối thiểu 3 ký tự và tối đa 63 ký tự",
   "validation.bucket.name.invalid": "Tên Bucket không hợp lệ",
   "validation.sub.user.name": "Tên người dùng nên sử dụng các ký tự chữ cái thường, chữ hoa, chữ số và dấu gạch ngang",
@@ -3572,6 +3582,7 @@
   "waf.domain.policies": "Chỉnh sửa Policies",
   "waf.domain.policies.disable": "Disable all Policies",
   "waf.domain.delete": "Xóa domain",
+  "waf.notification.input.name.delete": "Nhập tên WAF",
 
   "waf.domain.button.create":"Thêm domain",
   "waf.table.title.name": "Tên WAF",
@@ -3593,5 +3604,8 @@
   "listner.create.duplicate.pool.name" : "Tên pool đã được sử dụng",
   "waf.intro.title1":"Web Application Firewall",
   "waf.intro.title2":"Bảo vệ ứng dụng web khỏi các tình huống khai thác web phổ biến",
-  "waf.intro.subtitle":"Phương thức hiệu quả chống lại các mối đe dọa và lỗ hổng đối với Web Application. Nhận diện và chống lại các botnet xấu. Che giấy địa chỉ IP gốc, ngặn chặn các truy cập không hợp lệ"
+  "waf.intro.subtitle":"Phương thức hiệu quả chống lại các mối đe dọa và lỗ hổng đối với Web Application. Nhận diện và chống lại các botnet xấu. Che giấy địa chỉ IP gốc, ngặn chặn các truy cập không hợp lệ",
+  "app.non.vietnamese": "Không được nhập tiếng việt",
+
+  "app.non.permission": "Người dùng không có quyền truy cập dịch vụ này"
 }

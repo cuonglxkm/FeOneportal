@@ -51,7 +51,7 @@
                 >Tên WAF không được để trống
               </ng-container>
               <ng-container *ngIf="control.hasError('pattern')"
-                >{{ 'validation.project.required.name' | i18n }}
+                >Tên WAF không đúng định dạng
               </ng-container>
             </ng-template>
           </nz-form-control>
@@ -163,7 +163,7 @@
                       <input nz-input type="text" appTrim placeholder="www.example.com" formControlName="domain" class="input-custom" [maxlength]="50" minlength="1" />
                       <ng-template #domainErrorTpl let-control>
                         <ng-container *ngIf="control.hasError('duplicateDomain')">Domain không được trùng nhau</ng-container>
-                        <ng-container *ngIf="control.hasError('pattern')">Domain không đúng định dạng</ng-container>
+                        <ng-container *ngIf="control.hasError('pattern')">Domain không hợp lệ. Vui lòng nhập lại</ng-container>
                         <ng-container *ngIf="control.hasError('required')">Domain không được để trống</ng-container>
                       </ng-template>
                     </nz-form-control>
@@ -180,7 +180,7 @@
                       <input nz-input type="text" appTrim placeholder="Nhập IP Public" formControlName="ipPublic" class="input-custom" [maxlength]="50" minlength="1" />
                       <ng-template #ipErrorTpl let-control>
                         <ng-container *ngIf="control.hasError('required')">IP Public không được để trống</ng-container>
-                        <ng-container *ngIf="control.hasError('invalidIP')">Địa chỉ IP không hợp lệ</ng-container>
+                        <ng-container *ngIf="control.hasError('invalidIP')">IP Public không hợp lệ. Vui lòng nhập lại</ng-container>
                       </ng-template>
                     </nz-form-control>
                   </nz-form-item>
@@ -188,9 +188,12 @@
 
                 <div nz-col [nzSpan]="12" class="gutter-row">
                   <nz-form-item>
-                    <nz-form-control>
+                    <nz-form-control [nzErrorTip]="hostErrorTpl">
                       <nz-form-label nzFor="host">Host </nz-form-label>
-                      <input nz-input type="text" appTrim placeholder="Nhập host" formControlName="host" class="input-custom" [maxlength]="50" />                    
+                      <input nz-input type="text" appTrim placeholder="Nhập host" formControlName="host" class="input-custom" [maxlength]="50" />  
+                      <ng-template #hostErrorTpl let-control>
+                        <ng-container *ngIf="control.hasError('pattern')">Host không hợp lệ. Vui lòng nhập lại</ng-container>
+                      </ng-template>                  
                     </nz-form-control>
                   </nz-form-item>
                 </div>
@@ -199,7 +202,7 @@
                   <nz-form-item>
                     <nz-form-control>
                       <nz-form-label nzFor="port">Port </nz-form-label>
-                      <nz-input-number style="width: 100%; margin-left: 0;" nz-input type="text" nzPlaceHolder="Nhập port" formControlName="port" class="input-custom" [maxlength]="50"  />
+                      <nz-input-number nzMax="65535" style="width: 100%; margin-left: 0;" nz-input type="text" nzPlaceHolder="Nhập port" formControlName="port" class="input-custom" />
                     </nz-form-control>
                   </nz-form-item>
                 </div>
@@ -286,10 +289,6 @@
           <div class="text-label" style="margin-bottom: 12px">
             <h3 class="custom-subtitle">Tên miền</h3>
             <span>{{getDomainValues()}}</span>
-          </div>
-          <div class="text-label" style="margin-bottom: 12px">
-            <h3 class="custom-subtitle">Certificate SSL</h3>
-            <span>{{ selectedSslCertName }}</span>
           </div>
           <div class="text-label" style="margin-bottom: 12px">
             <h3 class="custom-subtitle">Policy</h3>

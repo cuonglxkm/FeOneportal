@@ -140,13 +140,12 @@
       <br />
       <span
         >{{
-          getFormattedStartDate(summary?.startDate)
-            | date : 'dd/MM/yyyy hh:mm'
+          getFormattedStartDate(dataChart[0]?.startDate) | date : 'dd/MM/yyyy hh:mm'
         }}
         {{ 'app.to' | i18n }} {{ newDate | date : 'dd/MM/yyyy hh:mm' }}</span
       >
     </div>
-    <div [chart]="chartStorageUse"></div>
+    <div [chart]="chart"></div>
   </div>
 </nz-card>
 
@@ -179,6 +178,15 @@
           <span class="text-value-detail"
             >{{ instancesModel.imageName }}
             <img
+              *ngIf="
+                instancesModel.status.toUpperCase() == 'KHOITAO' &&
+                !instancesModel.taskState.toUpperCase().includes('ING') &&
+                instancesModel.taskState.toUpperCase() != 'REBOOT_STARTED' &&
+                instancesModel.taskState.toUpperCase() != 'ERROR' &&
+                instancesModel.taskState.toUpperCase() != 'SHUTOFF' &&
+                instancesModel.taskState.toUpperCase() != 'RESCUE' &&
+                instancesModel.taskState.toUpperCase() != 'DELETED'
+              "
               style="cursor: pointer; margin-left: 10px"
               [nz-tooltip]="'app.change' | i18n"
               src="assets/imgs/refresh.svg"

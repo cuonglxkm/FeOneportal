@@ -13,6 +13,7 @@ import { BaseResponse, ProjectModel, RegionModel } from '../../../../../../../li
 import { differenceInCalendarDays } from 'date-fns';
 import { NAME_REGEX } from 'src/app/shared/constants/constants';
 import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
+import { debounceTime, Subject } from 'rxjs';
 
 
 @Component({
@@ -69,6 +70,31 @@ export class CreateSslCertComponent implements OnInit{
     let regionAndProject = getCurrentRegionAndProject()
     this.region = regionAndProject.regionId
     this.project = regionAndProject.projectId
+    this.checkExistName()
+  }
+
+  dataSubjectName: Subject<any> = new Subject<any>();
+  changeName(value: number) {
+    this.dataSubjectName.next(value);
+  }
+
+  isExistName: boolean = false;
+  checkExistName() {
+    this.dataSubjectName
+      .pipe(
+        debounceTime(300)
+      )
+      .subscribe((res) => {
+        this.SSLCertService
+          .checkNameExist(this.region, this.project, res)
+          .subscribe((data) => {
+            if (data == true) {
+              this.isExistName = true;
+            } else {
+              this.isExistName = false;
+            }
+          });
+      });
   }
 
 

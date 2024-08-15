@@ -69,8 +69,9 @@
         <td>
           {{ item.enabledString }}
         </td>
-        <td *ngIf="item.prefix != null">{{ item.prefix }}</td>
-        <td *ngIf="item.prefix == null">{{ 'app.all.files' | i18n }}</td>
+        <td>{{ item.prefixString }}</td>
+        <!-- <td *ngIf="item.prefix != null">{{ item.prefix }}</td>
+        <td *ngIf="item.prefix == null">{{ 'app.all.files' | i18n }}</td> -->
         <td>{{ item.lifecycleTagPredicateString }}</td>
         <td>{{ item.expiration_DayString }}</td>
         <td>{{ item.noncurrentVersionExpiration_DayString }}</td>
@@ -259,6 +260,7 @@
         </div>
       </div>
       <label
+        *ngIf="listTag?.length == 0"
         class="text-label"
         style="margin-top: 16px"
         nz-checkbox
@@ -267,7 +269,7 @@
         formControlName="isSetAbortIncompleteMultipartUpload_Day"
         >{{ 'app.delete.multi.upload' | i18n }}</label
       >
-      <div style="display: flex; margin-top: 5px">
+      <div *ngIf="listTag?.length == 0" style="display: flex; margin-top: 5px">
         <div style="flex: 2; padding-right: 16px">
           <nz-input-number
             style="width: 100%; margin-left: 0px"
@@ -465,6 +467,7 @@
         nz-checkbox
         [(ngModel)]="lifecycleUpdate.isSetExpiration_Day"
         formControlName="isSetExpiration_Day"
+        (ngModelChange)="changeIsSetExpiration_Day()"
         [ngModelOptions]="{ standalone: true }"
         >{{ 'app.delete.file.current.version' | i18n }}</label
       >
@@ -494,6 +497,7 @@
         style="margin-top: 16px"
         nz-checkbox
         [(ngModel)]="lifecycleUpdate.isSetNoncurrentVersionExpiration_Day"
+        (ngModelChange)="changeSetNoncurrentVersionExpiration_Day()"
         formControlName="isSetNoncurrentVersionExpiration_Day"
         [ngModelOptions]="{ standalone: true }"
         >{{ 'app.delete.file.non.current.version' | i18n }}</label
@@ -524,15 +528,17 @@
         </div>
       </div>
       <label
+        *ngIf="listTag?.length == 0"
         class="text-label"
         style="margin-top: 16px"
         nz-checkbox
         [(ngModel)]="lifecycleUpdate.isSetAbortIncompleteMultipartUpload_Day"
+        (ngModelChange)="changeSetAbortIncompleteMultipartUpload_Day()"
         formControlName="isSetAbortIncompleteMultipartUpload_Day"
         [ngModelOptions]="{ standalone: true }"
         >{{ 'app.delete.multi.upload' | i18n }}</label
       >
-      <div style="display: flex; margin-top: 5px">
+      <div *ngIf="listTag?.length == 0" style="display: flex; margin-top: 5px">
         <div style="flex: 2; padding-right: 16px">
           <nz-input-number
             style="width: 100%; margin-left: 0px"

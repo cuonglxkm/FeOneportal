@@ -19,7 +19,7 @@ export class CreateL7RuleComponent implements AfterViewInit {
   @Input() l7policyId: string;
   @Output() onOk = new EventEmitter();
   @Output() onCancel = new EventEmitter();
-
+  isVisible12: boolean = false;
   isVisible: boolean = false;
   isLoading: boolean = false;
 
@@ -34,7 +34,7 @@ export class CreateL7RuleComponent implements AfterViewInit {
     type: [null as string, [Validators.required]],
     compareType: [null as string, [Validators.required]],
     key: [null as string],
-    value: [null as string, [Validators.required]]
+    value: [null as string, [Validators.required, Validators.pattern(`^[a-zA-Z0-9!@#$%^&* ()_+\\-=\\[\\]{};:"\\\\|,.<>\\/?]*$`)]]
   });
 
   nameList: string[] = [];
