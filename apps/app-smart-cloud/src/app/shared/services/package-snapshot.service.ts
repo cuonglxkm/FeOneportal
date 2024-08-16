@@ -33,7 +33,7 @@ export class PackageSnapshotService extends BaseService {
       params = params.append('regionId', formSearch.regionId)
     }
     if (formSearch.packageName != undefined || formSearch.packageName != null) {
-      params = params.append('packageName', formSearch.packageName)
+      params = params.append('packageName', formSearch.packageName.trim().toLowerCase())
     }
     if (formSearch.status != undefined || formSearch.status != null) {
         params = params.append('status', formSearch.status)
