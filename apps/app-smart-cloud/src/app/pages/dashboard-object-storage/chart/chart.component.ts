@@ -64,22 +64,27 @@ export class ChartComponent implements AfterViewInit, OnInit {
     if (bytes === 0) return '0';
     const units = ['bytes', 'KB', 'MB', 'GB', 'TB', 'PB'];
     const exponent = Math.floor(Math.log(bytes) / Math.log(1024));
-    const value = (bytes / Math.pow(1024, exponent)).toFixed(2);
+    const value = Math.round(bytes / Math.pow(1024, exponent));
     if (label) return `${value} ${units[exponent]}`;
-    return value;
+    return value.toString();
   }
 
-  private removeDuplicates(data: { timeSpan: number, value: number }[]): { [key: string]: number } {
+  private removeDuplicates(data: { timeSpan: number; value: number }[]): { [key: string]: string } {
     return data.reduce((acc, item) => {
-      // Lấy chỉ phần thời gian hh:mm
-      const date = new Date(item.timeSpan * 1000);
       const timeKey = this.transform(item.timeSpan);
-
-      // Gộp các giá trị trùng lặp
-      if (!acc[timeKey]) {
-        acc[timeKey] = 0;
+      if (!(timeKey in acc) || item.value > parseFloat(acc[timeKey])) {
+        acc[timeKey] = this.bytesConvert(item.value, true);
       }
-      acc[timeKey] = item.value;
+      return acc;
+    }, {} as { [key: string]: string });
+  }
+
+  private removeDuplicatesNumberObject(data: { timeSpan: number, value: number }[]): { [key: string]: number } {
+    return data.reduce((acc, item) => {
+      const timeKey = this.transform(item.timeSpan);
+      if (!(timeKey in acc) || item.value > acc[timeKey]) {
+        acc[timeKey] = Number(item.value);
+      }
       return acc;
     }, {} as { [key: string]: number });
   }
@@ -115,11 +120,11 @@ export class ChartComponent implements AfterViewInit, OnInit {
   }
 
   private generateTimeRange(startDate): string[] {
-    const startTimestamp = startDate; // Sử dụng startDate hoặc ngày hiện tại
-    const end = new Date(); // Ngày hiện tại
+    const startTimestamp = startDate;
+    const end = new Date();
 
     let timeLabels: string[] = [];
-    const start = new Date(startTimestamp * 1000);// Chuyển đổi từ UNIX timestamp sang Date
+    const start = new Date(startTimestamp * 1000);
 
     do {
       console.log('==', start == end)
@@ -143,7 +148,7 @@ export class ChartComponent implements AfterViewInit, OnInit {
   createChartStorageUse() {
     const data = this.summary[0]?.datas?.map((item) => ({
       timeSpan: item.timeSpan,
-      value: parseInt(item.value, 10) // Chuyển đổi value từ chuỗi sang số
+      value: parseInt(item.value, 10)
     })) || [];
     console.log('rawData:', data);
     if (!data || data.length === 0) {
@@ -156,10 +161,10 @@ export class ChartComponent implements AfterViewInit, OnInit {
     const uniqueData = this.removeDuplicates(data);
     // Chuyển đổi timestamp thành định dạng thời gian đọc được
     const labels = Object.keys(uniqueData);
-    // Trích xuất giá trị dữ liệu
-    const dataValues = Object.values(uniqueData).map(value  => (value / 1024).toFixed(2)); // Chuyển từ KB sang MB
-    console.log('dataValues', dataValues)
-    // Cấu hình Highcharts
+    const dataValues = Object.values(uniqueData).map(value => parseFloat(value));
+
+    console.log(dataValues);
+    
     this.chartStorageUse = new Chart({
       chart: {
         type: 'line'
@@ -178,35 +183,36 @@ export class ChartComponent implements AfterViewInit, OnInit {
           text: 'Dung lượng sử dụng'
         }
       },
+      tooltip: {
+        formatter: function() {
+          return `<b>${this.x}</b><br/>${this.series.name}: ${uniqueData[this.x]}`;
+        }
+      },
       series: [{
         name: this.i18n.fanyi('app.storage.usage') + ' (MB)',
-        data: dataValues  // Đảm bảo rằng data là một mảng số
-      } as any] // Ép kiểu để khắc phục lỗi TypeScript
+        data: dataValues
+      } as any],
     });
   }
 
   createNumberObject() {
     const data = this.summary[1]?.datas?.map((item) => ({
       timeSpan: item.timeSpan,
-      value: parseInt(item.value, 10) // Chuyển đổi value từ chuỗi sang số
+      value: parseInt(item.value, 10)
     })) || [];
-    console.log('rawData:', data);
     if (!data || data.length === 0) {
       console.warn('Data is null or empty, using default time range.');
 
-      // Sử dụng ChangeDetectorRef để cập nhật lại biểu đồ
       this.chartNumberObject = this.createDefaultChart(this.summary[1]?.startDate, this.i18n.fanyi('app.number.object'));
-      this.cdr.detectChanges(); // Buộc Angular cập nhật lại
+      this.cdr.detectChanges();
       return;
     }
-    const uniqueData = this.removeDuplicates(data);
-    // Chuyển đổi timestamp thành định dạng thời gian đọc được
+    const uniqueData = this.removeDuplicatesNumberObject(data);
     const labels = Object.keys(uniqueData);
 
-    // Trích xuất giá trị dữ liệu
-    const dataValues = Object.values(uniqueData).map(value => value); // Chuyển từ KB sang MB
-
-    // Cấu hình Highcharts
+    const dataValues = Object.values(uniqueData).map(value => value);
+    console.log(dataValues);
+    
     this.chartNumberObject = new Chart({
       chart: {
         type: 'line'
@@ -222,13 +228,13 @@ export class ChartComponent implements AfterViewInit, OnInit {
       },
       yAxis: {
         title: {
-          text: ''
+          text: this.i18n.fanyi('app.number.object')
         }
       },
       series: [{
         name: this.i18n.fanyi('app.number.object'),
-        data: dataValues // Đảm bảo rằng data là một mảng số
-      } as any] // Ép kiểu để khắc phục lỗi TypeScript
+        data: dataValues 
+      } as any]
     });
 
   }
@@ -236,23 +242,21 @@ export class ChartComponent implements AfterViewInit, OnInit {
   createStorageUpload() {
     const data = this.summary[2]?.datas?.map((item) => ({
       timeSpan: item.timeSpan,
-      value: parseInt(item.value, 10) // Chuyển đổi value từ chuỗi sang số
+      value: parseInt(item.value, 10)
     })) || [];
     console.log('rawData:', data);
     if (!data || data.length === 0) {
       console.warn('Data is null or empty, using default time range.');
 
-      // Sử dụng ChangeDetectorRef để cập nhật lại biểu đồ
       this.chartStorageUpload = this.createDefaultChart(this.summary[2]?.startDate, this.i18n.fanyi('app.upload.capacity') + ' (MB)');
-      this.cdr.detectChanges(); // Buộc Angular cập nhật lại
+      this.cdr.detectChanges();
       return;
     }
     const uniqueData = this.removeDuplicates(data);
     // Chuyển đổi timestamp thành định dạng thời gian đọc được
     const labels = Object.keys(uniqueData);
 
-    // Trích xuất giá trị dữ liệu
-    const dataValues = Object.values(uniqueData).map(value => (value / 1024).toFixed(2) ); // Chuyển từ KB sang MB
+    const dataValues = Object.values(uniqueData).map(value => parseFloat(value));
 
     // Cấu hình Highcharts
     this.chartStorageUpload = new Chart({
@@ -270,26 +274,29 @@ export class ChartComponent implements AfterViewInit, OnInit {
       },
       yAxis: {
         title: {
-          text: ''
+          text: this.i18n.fanyi('app.upload.capacity')
+        }
+      },
+      tooltip: {
+        formatter: function() {
+          return `<b>${this.x}</b><br/>${this.series.name}: ${uniqueData[this.x]}`;
         }
       },
       series: [{
-        name: this.i18n.fanyi('app.upload.capacity') + ' (MB)',
-        data: dataValues // Đảm bảo rằng data là một mảng số
-      } as any] // Ép kiểu để khắc phục lỗi TypeScript
+        name: this.i18n.fanyi('app.storage.usage') + ' (MB)',
+        data: dataValues
+      } as any],
     });
   }
 
   createStorageDownload() {
     const data = this.summary[3]?.datas?.map((item) => ({
       timeSpan: item.timeSpan,
-      value: parseInt(item.value, 10) // Chuyển đổi value từ chuỗi sang số
+      value: parseInt(item.value, 10)
     })) || [];
-    console.log('rawData:', data);
     if (!data || data.length === 0) {
       console.warn('Data is null or empty, using default time range.');
 
-      // Sử dụng ChangeDetectorRef để cập nhật lại biểu đồ
       this.chartStorageDownload = this.createDefaultChart(this.summary[3]?.startDate, this.i18n.fanyi('app.upload.download') + ' (MB)');
       this.cdr.detectChanges(); // Buộc Angular cập nhật lại
       return;
@@ -298,8 +305,7 @@ export class ChartComponent implements AfterViewInit, OnInit {
     // Chuyển đổi timestamp thành định dạng thời gian đọc được
     const labels = Object.keys(uniqueData);
 
-    // Trích xuất giá trị dữ liệu
-    const dataValues = Object.values(uniqueData).map(value => (value / 1024).toFixed(2)); // Chuyển từ KB sang MB
+    const dataValues = Object.values(uniqueData).map(value => parseFloat(value));
 
     // Cấu hình Highcharts
     this.chartStorageDownload = new Chart({
@@ -317,13 +323,18 @@ export class ChartComponent implements AfterViewInit, OnInit {
       },
       yAxis: {
         title: {
-          text: ''
+          text: this.i18n.fanyi('app.upload.download')
+        }
+      },
+      tooltip: {
+        formatter: function() {
+          return `<b>${this.x}</b><br/>${this.series.name}: ${uniqueData[this.x]}`;
         }
       },
       series: [{
-        name: this.i18n.fanyi('app.upload.download') + ' (MB)',
-        data: dataValues // Đảm bảo rằng data là một mảng số
-      } as any] // Ép kiểu để khắc phục lỗi TypeScript
+        name: this.i18n.fanyi('app.storage.usage') + ' (MB)',
+        data: dataValues
+      } as any],
     });
   }
 
@@ -720,6 +731,10 @@ export class ChartComponent implements AfterViewInit, OnInit {
     const year = String(date.getFullYear()).slice(-2);
     const hours = String(date.getHours()).padStart(2, '0');
     const minutes = String(date.getMinutes()).padStart(2, '0');
+    let minutesHour = Math.floor(date.getMinutes() / 10) * 10; 
+    let minutesStr = String(minutesHour).padStart(2, '0');
+    let minutes15 = Math.floor(date.getMinutes() / 3) * 3; 
+    let minutes15Str = String(minutes15).padStart(2, '0');
     const seconds = String(date.getSeconds()).padStart(2, '0');
     let returnLabel = '';
     switch (this.timeSelected) {
@@ -727,10 +742,10 @@ export class ChartComponent implements AfterViewInit, OnInit {
         returnLabel = `${hours}:${minutes}`;
         break;
       case 15:
-        returnLabel = `${hours}:${minutes}`;
+        returnLabel = `${hours}:${minutes15Str}`;
         break;
       case 60:
-        returnLabel = `${hours}:${minutes}`;
+        returnLabel = `${hours}:${minutesStr}`;
         break;
       case 1440:
         returnLabel = `${hours}:00`;
