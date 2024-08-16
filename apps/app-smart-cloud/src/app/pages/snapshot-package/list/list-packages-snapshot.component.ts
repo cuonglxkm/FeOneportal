@@ -40,6 +40,7 @@ export class ListPackagesSnapshotComponent implements OnInit {
   packageBackupModel: PackageBackupModel = new PackageBackupModel()
   response: BaseResponse<PackageSnapshotModel[]>
 
+
   isVisibleDelete: boolean = false
   isLoadingDelete: boolean = false
 
@@ -57,7 +58,7 @@ export class ListPackagesSnapshotComponent implements OnInit {
     namePackage: FormControl<string>
     description: FormControl<string>
   }> = this.fb.group({
-    namePackage: [null as string, [Validators.required, Validators.pattern(/^[a-zA-Z0-9]*$/), Validators.maxLength(50)]],
+    namePackage: [null as string, [Validators.required, Validators.pattern(/^[a-zA-Z0-9_]*$/), Validators.maxLength(50)]],
     description: ['', [Validators.maxLength(255)]]
   })
 
@@ -112,6 +113,7 @@ export class ListPackagesSnapshotComponent implements OnInit {
     this.getListPackageSnapshot(false)
   }
 
+
   navigateToCreate() {
     if (this.region === RegionID.ADVANCE) {
       this.router.navigate(['/app-smart-cloud/snapshot-advance/packages/create'])
@@ -150,8 +152,7 @@ export class ListPackagesSnapshotComponent implements OnInit {
       .pipe(debounceTime(500))
       .subscribe(data => {
       this.isLoading = false
-      console.log(data);
-      this.response = data;
+      this.response =data
       if (checkBegin) {
         if (data == undefined || data.records.length <= 0) {
           this.isBegin = true;
@@ -164,7 +165,6 @@ export class ListPackagesSnapshotComponent implements OnInit {
       this.response = null
     })
   }
-
 
   navigateToEdit(id) {
     if (this.region === RegionID.ADVANCE) {
@@ -323,5 +323,16 @@ export class ListPackagesSnapshotComponent implements OnInit {
       default:
         break;
     }
+  }
+  isProcessingStatus(status: string): boolean {
+    const processingStatuses = [
+      'DELETING',
+      'CREATING',
+      'EXTENDING',
+      'RESIZING',
+      'ERROR_DELETING',
+      'PROCESSING'
+    ];
+    return processingStatuses.includes(status);
   }
 }

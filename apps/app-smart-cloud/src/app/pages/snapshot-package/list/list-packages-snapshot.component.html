@@ -1,6 +1,5 @@
-<page-header [breadcrumb]="breadcrumb"
-             [action]="action"
-             [title]="'Danh sách gói Snapshot'" xmlns="http://www.w3.org/1999/html">
+<page-header [breadcrumb]="breadcrumb" [action]="action" [title]="'Danh sách gói Snapshot'"
+  xmlns="http://www.w3.org/1999/html">
   <ng-template #breadcrumb>
     <nz-breadcrumb [nzSeparator]="separatorTemplate">
       <nz-breadcrumb-item>
@@ -15,17 +14,16 @@
         <a routerLink="/app-smart-cloud/snapshot/packages">Gói Snapshot</a>
       </nz-breadcrumb-item>
     </nz-breadcrumb>
-    <ng-template #separatorTemplate
-      ><img src="assets/imgs/arrow-square-right.svg" alt="" />
+    <ng-template #separatorTemplate><img src="assets/imgs/arrow-square-right.svg" alt="" />
     </ng-template>
   </ng-template>
   <ng-template #action>
     <div class="alain-custom-action text-right">
       <share-users-combobox></share-users-combobox>
-      <region-select-dropdown (regionChange)="onRegionChanged($event)" (valueChanged)="regionChanged($event)"></region-select-dropdown>
-      <project-select-dropdown #projectCombobox [regionId]="region"
-      (valueChanged)="projectChange($event)"
-      (userChanged)="projectChange($event)"></project-select-dropdown>
+      <region-select-dropdown (regionChange)="onRegionChanged($event)"
+        (valueChanged)="regionChanged($event)"></region-select-dropdown>
+      <project-select-dropdown #projectCombobox [regionId]="region" (valueChanged)="projectChange($event)"
+        (userChanged)="projectChange($event)"></project-select-dropdown>
     </div>
   </ng-template>
 </page-header>
@@ -35,18 +33,11 @@
       <ng-container *ngSwitchCase="false">
         <nz-row nzJustify="space-between" style="margin-top: 20px;">
           <nz-col nzSpan="16">
-            <nz-select [nzPlaceHolder]="'Trạng thái'"
-                       [ngModel]="selected"
-                       (ngModelChange)="onChangeSelected($event)"
-                       nzSize="large"
-                       style="margin-right: 15px; width: 170px;"
-                       nzPlaceHolder="Tất cả trạng thái"
-                       nzTooltipTitle="Tìm kiếm theo trạng thái"
-                       nzTooltipPlacement="bottom"
-                       nz-tooltip>
+            <nz-select [nzPlaceHolder]="'Trạng thái'" [ngModel]="selected" (ngModelChange)="onChangeSelected($event)"
+              nzSize="large" style="margin-right: 15px; width: 170px;" nzPlaceHolder="Tất cả trạng thái"
+              nzTooltipTitle="Tìm kiếm theo trạng thái" nzTooltipPlacement="bottom" nz-tooltip>
               <nz-option nzValue="" nzLabel="Tất cả trạng thái"></nz-option>
               <nz-option nzValue="AVAILABLE" nzLabel="Đang hoạt động"></nz-option>
-              <!-- <nz-option nzValue="CREATING" nzLabel="Đang khởi tạo"></nz-option> -->
               <nz-option nzValue="SUSPEND" nzLabel="Tạm ngưng"></nz-option>
               <!-- <nz-option nzValue="DELETEING" nzLabel="Đang xóa"></nz-option> -->
               <!-- <nz-option nzValue="DELETEING" nzLabel="Lỗi"></nz-option> -->
@@ -57,101 +48,72 @@
             <!--                 (input)="onInputChange($event.target['value'])"-->
             <!--                 [placeholder]="'Tìm kiếm'"/>-->
             <!--        </nz-input-group>-->
-            <nz-input-group
-              style="width: 300px;"
-              [nzPrefix]="prefixIconSearch"
-              nzSize="large">
-              <input
-                name="name"
-                nz-input
-                placeholder="Tìm kiếm theo tên"
-                [(ngModel)]="value"
-                (keyup.enter)="onInputChange(value)"
-                (input)="onInputChange($event.target['value'])"/>
+            <nz-input-group style="width: 300px;" [nzPrefix]="prefixIconSearch" nzSize="large">
+              <input name="name" nz-input placeholder="Tìm kiếm theo tên" [(ngModel)]="value"
+                (keyup.enter)="onInputChange(value)" (input)="onInputChange($event.target['value'])" />
             </nz-input-group>
-            <ng-template #prefixIconSearch >
-              <img 
-                src="assets/imgs/search.svg"
-                alt=""
-                style="cursor: auto"
-                />
+            <ng-template #prefixIconSearch>
+              <img src="assets/imgs/search.svg" alt="" style="cursor: auto" />
             </ng-template>
           </nz-col>
           <nz-col nzSpan="8" style="flex:none;">
-            <button
-              nz-button
-              nzType="primary"
-              nzSize="large"
-              (click)="navigateToCreate()">
-              <img
-                style="padding-right: 10px; margin-top: -4px"
-                src="assets/imgs/add-circle.svg"
-                alt=""/>
+            <button nz-button nzType="primary" nzSize="large" (click)="navigateToCreate()">
+              <img style="padding-right: 10px; margin-top: -4px" src="assets/imgs/add-circle.svg" alt="" />
               <span class="button-text-primary">Tạo mới gói Snapshot</span>
             </button>
           </nz-col>
         </nz-row>
-        <nz-table #fixedTable
-                  style="margin-top: 15px;"
-                  nzShowSizeChanger
-                  nzShowPagination
-                  [nzData]="response?.records"
-                  [nzPageSize]="pageSize"
-                  (nzPageSizeChange)="onPageSizeChange($event)"
-                  [nzPageIndex]="pageIndex"
-                  (nzPageIndexChange)="onPageIndexChange($event)"
-                  [nzTotal]="response?.totalCount"
-                  [nzLoading]="isLoading">
+        <nz-table #fixedTable style="margin-top: 15px;" [nzFrontPagination]="false" nzShowPagination
+          [nzData]="response?.records" [nzPageSize]="pageSize" (nzPageSizeChange)="onPageSizeChange($event)"
+          [nzPageIndex]="pageIndex" (nzPageIndexChange)="onPageIndexChange($event)" [nzTotal]="response?.totalCount"
+          [nzLoading]="isLoading">
           <thead>
-          <tr>
-            <th nzLeft>Tên gói</th>
-            <th nzBreakWord>Dung lượng HDD (GB)</th>
-            <th nzBreakWord>Dung lượng SSD (GB)</th>
-            <th nzBreakWord>Trạng thái</th>
-            <th nzBreakWord>Ngày khởi tạo</th>
-            <th nzBreakWord>Ngày hết hạn</th>
-            <th nzBreakWord>Thao tác</th>
-          </tr>
+            <tr>
+              <th nzLeft>Tên gói</th>
+              <th nzBreakWord>Dung lượng HDD (GB)</th>
+              <th nzBreakWord>Dung lượng SSD (GB)</th>
+              <th nzBreakWord>Trạng thái</th>
+              <th nzBreakWord>Ngày khởi tạo</th>
+              <th nzBreakWord>Ngày hết hạn</th>
+              <th nzBreakWord>Thao tác</th>
+            </tr>
           </thead>
           <tbody>
-          <tr *ngFor="let data of fixedTable.data">
-            <td><a (click)="navigateToPackageDetail(data.id)">{{data.packageName}}</a></td>
-            <td class='text-right'>{{data.totalSizeHDD}}</td>
-            <td class='text-right'>{{data.totalSizeSSD}}</td>
-<!--            <ng-container *ngIf="data.status | ServiceStatusPipe as statusModel">-->
-<!--              <td nzBreakWord nzAlign="left" [ngStyle]="{ color: statusModel.color }">{{ statusModel.status }}</td>-->
-<!--            </ng-container>-->
-            <ng-container *ngIf="data.status | ServiceStatusPipe as statusModel">
-              <td *ngIf="!!data.suspendType">
-              <span [ngStyle]="{color: statusModel.color}">
-                <img src="assets/imgs/warning-message.svg" alt="" style="cursor: pointer; margin-bottom: 4px;"
-                     nzTooltipTitle="{{ data.suspendType | SuspendStatusPipe }}"
-                     nzTooltipPlacement="bottom"
-                     nz-tooltip>
-                {{ statusModel.status }}
-              </span>
+            <tr *ngFor="let data of fixedTable.data">
+              <td>
+                <a *ngIf="!isProcessingStatus(data.status)" (click)="navigateToPackageDetail(data.id)">{{data.packageName}}</a>
+                <a *ngIf="isProcessingStatus(data.status)" style="cursor: text;" >{{ data.packageName }}</a>
               </td>
-              <td *ngIf="data.suspendType == null || data.suspendType === ''">
-                <span [ngStyle]="{color: statusModel.color}">{{ statusModel.status }}</span>
+              <td class='text-right'>{{data.totalSizeHDD}}</td>
+              <td class='text-right'>{{data.totalSizeSSD}}</td>
+              <ng-container *ngIf="data.status | ServiceStatusPipe as statusModel">
+                <td *ngIf="!!data.suspendType">
+                  <span [ngStyle]="{color: statusModel.color}">
+                    <img src="assets/imgs/warning-message.svg" alt="" style="cursor: pointer; margin-bottom: 4px;"
+                      nzTooltipTitle="{{ data.suspendType | SuspendStatusPipe }}" nzTooltipPlacement="bottom"
+                      nz-tooltip>
+                    {{ statusModel.status }}
+                  </span>
+                </td>
+                <td *ngIf="data.suspendType == null || data.suspendType === ''">
+                  <span [ngStyle]="{color: statusModel.color}">{{ statusModel.status }}</span>
+                </td>
+              </ng-container>
+              <td>{{data.creationDate | date:'dd/MM/yyyy'}}</td>
+              <td>{{data.expirationDate | date:'dd/MM/yyyy'}}</td>
+              <td>
+                <div>
+                  <img
+                    *ngIf="data.status != 'CREATING' && data.status != 'RESIZING'&& data.status != 'DELETING' && data.status!='SUSPENDED' && data.status !='ERROR_DELETING'"
+                    src="assets/imgs/edit-2.svg" alt="" (click)="showUpdate(data)" nz-tooltip
+                    nzTooltipTitle="{{'app.text.edit' | i18n}}" style="cursor: pointer; width: 20px; height: 20px;" />
+                  <img src="assets/imgs/delete.svg"
+                    *ngIf="data.status != 'CREATING' && data.status != 'RESIZING'&& data.status != 'DELETING' && data.status!='SUSPENDED' "
+                    style="width: 28px;height: 28px; cursor: pointer;" nz-tooltip
+                    nzTooltipTitle="{{'app.delete' | i18n}}" nzTooltipPlacement="bottom" (click)="showDelete(data)" />
+                </div>
               </td>
-            </ng-container>
-            <td>{{data.creationDate | date:'dd/MM/yyyy'}}</td>
-            <td>{{data.expirationDate | date:'dd/MM/yyyy'}}</td>
-            <td>
-              <div>
-                <!-- *ngIf="data.suspendType == null || data.suspendType === ''" -->
-                <img 
-                *ngIf="data.status != 'CREATING' && data.status != 'RESIZING'&& data.status != 'DELETING' && data.status!='SUSPENDED' && data.status !='ERROR_DELETING'"
-                src="assets/imgs/edit-2.svg" alt="" (click)="showUpdate(data)" nz-tooltip nzTooltipTitle="{{'app.text.edit' | i18n}}"
-                     style="cursor: pointer; width: 20px; height: 20px;" />
-                <img src="assets/imgs/delete.svg"
-                *ngIf="data.status != 'CREATING' && data.status != 'RESIZING'&& data.status != 'DELETING' && data.status!='SUSPENDED' "
-                style="width: 28px;height: 28px; cursor: pointer;"
-                     nz-tooltip nzTooltipTitle="{{'app.delete' | i18n}}" nzTooltipPlacement="bottom"
-                     (click)="showDelete(data)"/>
-              </div>
-            </td>
-          </tr>
+            </tr>
           </tbody>
         </nz-table>
       </ng-container>
@@ -164,20 +126,22 @@
           </nz-row>
           <nz-row style="margin-top: 20px">
             <nz-col class="text-center" style="width: 100%">
-              <span class="text-intro-title"
-                    style="color: #0066b3">Gói Snapshot</span>
+              <span class="text-intro-title" style="color: #0066b3">Gói Snapshot</span>
             </nz-col>
           </nz-row>
           <nz-row style="margin-top: 20px">
             <nz-col class="text-center" style="width: 100%">
-              <span *ngIf="projectType != 1" class="text-intro-desc">Gói Snapshot cho phép người dùng thực hiện tạo một hoặc nhiều bản ghi Snapshot theo dung lượng đã mua</span>
-              <span *ngIf="projectType == 1" class="text-intro-desc">Gói Snapshot cho phép người dùng thực hiện tạo một hoặc nhiều bản ghi Snapshot theo dung lượng đã mua</span>
+              <span *ngIf="projectType != 1" class="text-intro-desc">Gói Snapshot cho phép người dùng thực hiện tạo một
+                hoặc nhiều bản ghi Snapshot theo dung lượng đã mua</span>
+              <span *ngIf="projectType == 1" class="text-intro-desc">Gói Snapshot cho phép người dùng thực hiện tạo một
+                hoặc nhiều bản ghi Snapshot theo dung lượng đã mua</span>
               <br>
-              <span *ngIf="projectType == 1" class="text-intro-desc">(Vui lòng chuyển sang VPC mặc định nếu quý khách muốn sử dụng gói Snapshot)</span>
+              <span *ngIf="projectType == 1" class="text-intro-desc">(Vui lòng chuyển sang VPC mặc định nếu quý khách
+                muốn sử dụng gói Snapshot)</span>
             </nz-col>
           </nz-row>
-          <button *ngIf="projectType != 1" style="margin-top: 20px" nz-button [nzType]="'primary'" (click)="navigateToCreate()"
-                  nzSize="large">
+          <button *ngIf="projectType != 1" style="margin-top: 20px" nz-button [nzType]="'primary'"
+            (click)="navigateToCreate()" nzSize="large">
             <img style="padding-right: 10px; margin-top: -4px" src="assets/imgs/cloud-plus-bold.svg" alt="" />
             Khởi tạo gói snapshot
           </button>
@@ -185,53 +149,52 @@
       </ng-container>
     </ng-container>
   </nz-card>
-<!--  modal xoa-->
+  <!--  modal xoa-->
   <nz-modal [(nzVisible)]="isVisibleDelete" nzTitle="Xoá gói Snapshot" nzTabScrollList="true"
-            (nzOnCancel)="handleDeleteCancel()" nzCentered>
+    (nzOnCancel)="handleDeleteCancel()" nzCentered>
     <div *nzModalTitle>
       <span class="text-modal-title">Xoá gói Snapshot</span>
     </div>
     <div *nzModalContent>
       <nz-alert nzBanner
-                nzMessage="Bạn đang thực hiện xoá gói Snapshot {{packageName}}.Hành động này không thể được hoàn tác"
-                nzShowIcon
-      ></nz-alert>
-      <p class="text-p" style="margin-top: 10px">Đế thực hiện xoá gói Snapshot, vui lòng nhập tên gói Snapshot để  xác nhận.</p>
-      <input placeholder="{{dataAction.packageName}}" class="input-custom" nz-input [(ngModel)]="valueDelete" (ngModelChange)="onInputChangeDelete($event)" type="text" />
-      <nz-alert nzBanner style="margin-top: 15px;"
-                [nzMessage]="'Các bản Snapshot của gói Snapshot này cũng sẽ bị xóa.'"
-                nzShowIcon
-      ></nz-alert>
-      <nz-table #fixedTable1 style="margin-top: 5px;" nzHideOnSinglePage="true" [nzLoading]="isLoadingSnapshot" [nzData]="snapshotArray">
+        nzMessage="Bạn đang thực hiện xoá gói Snapshot {{packageName}}. Hành động này không thể được hoàn tác"
+        nzShowIcon></nz-alert>
+      <p class="text-p" style="margin-top: 10px">Đế thực hiện xoá gói Snapshot, vui lòng nhập tên gói Snapshot để xác
+        nhận.</p>
+      <input placeholder="{{dataAction.packageName}}" class="input-custom" nz-input [(ngModel)]="valueDelete"
+        (ngModelChange)="onInputChangeDelete($event)" type="text" />
+      <nz-alert nzBanner style="margin-top: 15px;" [nzMessage]="'Các bản Snapshot của gói Snapshot này cũng sẽ bị xóa.'"
+        nzShowIcon></nz-alert>
+      <nz-table #fixedTable1 style="margin-top: 5px;" nzHideOnSinglePage="true" [nzLoading]="isLoadingSnapshot"
+        [nzData]="snapshotArray">
         <thead>
-        <tr>
-          <th nzLeft>Tên Snapshot</th>
-          <th nzBreakWord>Dung lượng (GB)</th>
-        </tr>
+          <tr>
+            <th nzLeft>Tên bản Snapshot</th>
+            <th nzBreakWord>Dung lượng (GB)</th>
+          </tr>
         </thead>
         <tbody>
-        <tr *ngFor="let data of fixedTable1.data">
-          <td>{{data.name}}</td>
-          <td class="text-right">{{data.sizeInGB}}</td>
-        </tr>
+          <tr *ngFor="let data of fixedTable1.data">
+            <td>{{data.name}}</td>
+            <td class="text-right">{{data.sizeInGB}}</td>
+          </tr>
         </tbody>
       </nz-table>
       <nz-alert nzBanner style="margin-top: 15px;"
-                [nzMessage]="'Các lịch Snapshot tự động được tạo từ Gói Snapshot này cũng sẽ bị xóa.'"
-                nzShowIcon
-      ></nz-alert>
-      <nz-table #fixedTable2 style="margin-top: 5px;" nzHideOnSinglePage="true" [nzData]="snapshotSchefuleArray" [nzLoading]="isLoadingSnapshotSchedule">
+        [nzMessage]="'Các lịch Snapshot tự động được tạo từ Gói Snapshot này cũng sẽ bị xóa.'" nzShowIcon></nz-alert>
+      <nz-table #fixedTable2 style="margin-top: 5px;" nzHideOnSinglePage="true" [nzData]="snapshotSchefuleArray"
+        [nzLoading]="isLoadingSnapshotSchedule">
         <thead>
-        <tr>
-          <th nzLeft>Tên lịch Snapshot</th>
-          <th nzBreakWord>Số bản lưu trữ</th>
-        </tr>
+          <tr>
+            <th nzLeft>Tên lịch Snapshot</th>
+            <th nzBreakWord>Số bản lưu trữ</th>
+          </tr>
         </thead>
         <tbody>
-        <tr *ngFor="let data of fixedTable2.data">
-          <td>{{data.name}}</td>
-          <td class="text-right">{{data.maxSnapshot}}</td>
-        </tr>
+          <tr *ngFor="let data of fixedTable2.data">
+            <td>{{data.name}}</td>
+            <td class="text-right">{{data.maxSnapshot}}</td>
+          </tr>
         </tbody>
       </nz-table>
     </div>
@@ -239,17 +202,14 @@
       <button nz-button nzType="default" (click)="handleDeleteCancel()" class="button-cancel">
         <span nz-icon nzType="close" nzTheme="outline" style="color: #0066b0;"></span>Hủy
       </button>
-      <button nz-button nzType="primary"
-              (click)="handleDeletedOk()"
-              [nzLoading]="isLoadingDelete"
-              [disabled]="valueDelete != this.dataAction.packageName"
-              class="button-ok">
+      <button nz-button nzType="primary" (click)="handleDeletedOk()" [nzLoading]="isLoadingDelete"
+        [disabled]="valueDelete != this.dataAction.packageName" class="button-ok">
         <span nz-icon nzType="check" nzTheme="outline"></span>Xác nhận</button>
     </div>
   </nz-modal>
   <!--  modal Chinh sua-->
   <nz-modal [(nzVisible)]="isVisibleUpdate" nzTitle="Chỉnh sửa thông tin gói Snapshot" nzTabScrollList="true"
-            (nzOnCancel)="handleUpdateCancel()" nzCentered>
+    (nzOnCancel)="handleUpdateCancel()" nzCentered>
     <div *nzModalTitle>
       <span class="text-modal-title">Chỉnh sửa thông tin gói Snapshot</span>
     </div>
@@ -260,18 +220,21 @@
             <div style="margin-top: 15px;">
               <span>Tên gói Snapshot</span>
               (<span style="color: rgba(252, 16, 16, 1); ">*</span>)
-              <img style="margin-left: 3px" [nz-tooltip]="'Tên chỉ có thể chứa các ký tự chữ và số (a-z, A-Z, 0-9, \'_\'). Độ dài dữ liệu đầu vào của bạn tối đa 50 ký tự.'" src="assets/imgs/pajamas_question.svg" alt="" />
+              <img style="margin-left: 3px"
+                [nz-tooltip]="'Tên chỉ có thể chứa các ký tự chữ và số (a-z, A-Z, 0-9, \'_\'). Độ dài dữ liệu đầu vào của bạn tối đa 50 ký tự.'"
+                src="assets/imgs/pajamas_question.svg" alt="" />
             </div>
           </nz-form-label>
           <nz-form-control nzDisableAutoTips [nzErrorTip]="nameErrorTpl">
-            <input nz-input
-                   formControlName="namePackage"
-                   class="input-custom"
-                   [placeholder]="'Nhập tên gói'" [maxLength]="50"/>
+            <input nz-input formControlName="namePackage" class="input-custom" [placeholder]="'Nhập tên gói'"
+              [maxLength]="50" />
             <ng-template #nameErrorTpl let-control>
-              <ng-container *ngIf="control.hasError('required')">{{'app.snapshot.schedule.enter.name' | i18n}}</ng-container>
-              <ng-container *ngIf="control.hasError('pattern')">{{'app.backup.package.name.pattern' | i18n}}</ng-container>
-              <ng-container *ngIf="control.hasError('maxLength')">{{'app.backup.package.name.maxLength' | i18n}}</ng-container>
+              <ng-container *ngIf="control.hasError('required')">{{'app.snapshot.schedule.enter.name' |
+                i18n}}</ng-container>
+              <ng-container *ngIf="control.hasError('pattern')">{{'app.backup.package.name.pattern' |
+                i18n}}</ng-container>
+              <ng-container *ngIf="control.hasError('maxLength')">{{'app.backup.package.name.maxLength' |
+                i18n}}</ng-container>
             </ng-template>
           </nz-form-control>
         </nz-form-item>
@@ -282,12 +245,8 @@
             </div>
           </nz-form-label>
           <nz-form-control nzDisableAutoTips [nzErrorTip]="descriptionErrorTpl">
-                    <textarea nz-input
-                              formControlName="description"
-                              id="description"
-                              [placeholder]="'Nhập mô tả'"
-                              [maxLength]="255"
-                              [nzAutosize]="{ minRows: 3, maxRows: 5 }"></textarea>
+            <textarea nz-input formControlName="description" id="description" [placeholder]="'Nhập mô tả'"
+              [maxLength]="255" [nzAutosize]="{ minRows: 3, maxRows: 5 }"></textarea>
             <ng-template #descriptionErrorTpl let-control>
               <ng-container *ngIf="control.hasError('maxlength')">{{'app.description.maxLength.255' | i18n}}
               </ng-container>
@@ -300,9 +259,10 @@
       <button nz-button nzType="default" (click)="handleUpdateCancel()" class="button-cancel">
         <span nz-icon nzType="close" nzTheme="outline"></span>Hủy
       </button>
-      <button nz-button nzType="primary" [disabled]="!validateForm.valid ||
+      <button nz-button nzType="primary"
+        [disabled]="!validateForm.valid ||
       (this.validateForm.controls['description'].value==this.dataAction.description && this.validateForm.controls['namePackage'].value==this.dataAction.packageName)"
-              (click)="handleUpdateOk()" [nzLoading]="isLoadingUpdate" class="button-ok">
+        (click)="handleUpdateOk()" [nzLoading]="isLoadingUpdate" class="button-ok">
         <span nz-icon nzType="check" nzTheme="outline"></span>Xác nhận
       </button>
     </div>

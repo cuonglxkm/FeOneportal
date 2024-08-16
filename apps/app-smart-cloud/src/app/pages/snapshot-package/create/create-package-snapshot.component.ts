@@ -35,7 +35,7 @@ export class CreatePackageSnapshotComponent implements OnInit {
     time: FormControl<number>
   }> = this.fb.group({
     namePackage: ['', [Validators.required,
-      Validators.pattern(/^[a-zA-Z0-9]*$/),
+      Validators.pattern(/^[a-zA-Z0-9_]*$/),
       Validators.maxLength(70)]],
     description: [null as string, [Validators.maxLength(255)]],
     time: [1, [Validators.required]]
