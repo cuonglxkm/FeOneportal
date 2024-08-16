@@ -294,6 +294,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
         break;
       case 22:
         //SNAPSHOT_PACKAGE
+        this.router.navigate(['/app-smart-cloud/snapshot/packages/extend/' + serviceInstanceId]);
         break;
       case 23:
         //MONGO_DB
