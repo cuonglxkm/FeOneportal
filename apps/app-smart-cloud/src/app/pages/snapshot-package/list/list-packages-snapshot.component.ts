@@ -58,9 +58,10 @@ export class ListPackagesSnapshotComponent implements OnInit {
     namePackage: FormControl<string>
     description: FormControl<string>
   }> = this.fb.group({
-    namePackage: [null as string, [Validators.required, Validators.pattern(/^[a-zA-Z0-9_]*$/), Validators.maxLength(50)]],
+    namePackage: ['', [Validators.required, Validators.pattern(/^[a-zA-Z0-9_]*$/), Validators.maxLength(50)]],
     description: ['', [Validators.maxLength(255)]]
   })
+
 
   valueDelete: string
   projectType = 0;
@@ -219,6 +220,7 @@ export class ListPackagesSnapshotComponent implements OnInit {
     this.isVisibleDelete = false
     this.dataAction = undefined;
     this.packageName = '';
+    this.valueDelete=''
   }
 
 
@@ -255,6 +257,7 @@ export class ListPackagesSnapshotComponent implements OnInit {
     this.dataAction = data;
     this.validateForm.controls['namePackage'].setValue(data.packageName);
     this.validateForm.controls['description'].setValue(data.description);
+   
     this.isVisibleUpdate = true;
   }
 
@@ -263,10 +266,13 @@ export class ListPackagesSnapshotComponent implements OnInit {
     let data = {
       newPackageName: this.validateForm.controls['namePackage'].value,
       id: this.dataAction.id,
-      description: this.validateForm.controls['description'].value,
+      description: this.validateForm.controls['description'].value ? this.validateForm.controls['description'].value : '',
       regionId: this.region,
+     
     }
+    console.log("dâtta name", data)
     this.packageSnapshotService.update(this.validateForm.controls['description'].value, this.validateForm.controls['namePackage'].value, this.dataAction.id, this.region, data)
+   
       .pipe(finalize(() => {
         this.handleUpdateCancel();
         this.isLoadingUpdate = false;

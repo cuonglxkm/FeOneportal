@@ -47,13 +47,13 @@
             </nz-form-label>
             <nz-form-control nzDisableAutoTips [nzErrorTip]="nameErrorTpl">
               <input nz-input class="input-custom" formControlName="namePackage" [(ngModel)]="namePackage"
-                [placeholder]="'Nhập tên gói'" [maxLength]="70" />
+                [placeholder]="'Nhập tên gói'" [maxLength]="50" />
               <ng-template #nameErrorTpl let-control>
                 <ng-container *ngIf="control.hasError('required')">{{'app.snapshot.schedule.enter.name' | i18n}}
                 </ng-container>
-                <ng-container *ngIf="control.hasError('pattern')">{{'app.backup.package.name.pattern' | i18n}}
+                <ng-container *ngIf="control.hasError('pattern')">Tên chỉ có thể chứa các ký tự chữ và số (a-z, A-Z, 0-9,'_')
                 </ng-container>
-                <ng-container *ngIf="control.hasError('maxLength')">Tối đa 70 ký tự
+                <ng-container *ngIf="control.hasError('maxLength')">Tối đa 50 ký tự
                 </ng-container>
               </ng-template>
             </nz-form-control>
@@ -254,7 +254,7 @@
           " nzGutter="16">
               <nz-col nzSpan="16">
                 <span class="text-label">{{'app.total.payment' | i18n}}</span><br />
-                <span class="text-note-italicized">{{'app.include.vat' | i18n:{"vat":"10"} }}</span>
+                <span class="text-note-italicized">({{'app.include.vat' | i18n:{"vat":"10"} }})</span>
               </nz-col>
               <nz-col class="text-right" nzSpan="8">
                 <span class="text-value" style="color: #ea3829" nzAlign="right">{{ totalPayment | number }} VND</span>
