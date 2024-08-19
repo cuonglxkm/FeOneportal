@@ -113,7 +113,10 @@ export class OrderDetailComponent {
                 item.serviceNameLink = 'VM'
               } else if(this.serviceName.includes('K8s Premium')) {
                 item.serviceNameLink = 'VPK';
-              } else{
+              } else if(this.serviceName.includes('Snapshot Package')) {
+                item.serviceNameLink = 'Gói Snapshot';
+              }
+              else{
                 item.serviceNameLink = this.serviceName
               }
             })
@@ -159,7 +162,10 @@ export class OrderDetailComponent {
                 item.serviceNameLink = 'VM'
               } else if(this.serviceName.includes('K8s Premium')) {
                 item.serviceNameLink = 'VPK';
-              } else{
+              } else if(this.serviceName.includes('Snapshot Package')) {
+                item.serviceNameLink = 'Gói Snapshot';
+              }
+              else{
                 item.serviceNameLink = this.serviceName
               }
             })
