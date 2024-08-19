@@ -41,8 +41,7 @@
             <nz-form-item>
                 <nz-form-control>
                     <nz-form-label nzFor="port">Port </nz-form-label>
-                    <input nz-input type="text" appTrim placeholder="Nhập port" formControlName="port"
-                        class="input-custom" [maxlength]="50" minlength="1" />
+                    <nz-input-number nzMax="65535" style="width: 100%; margin-left: 0;" nz-input type="text" nzPlaceHolder="Nhập port" formControlName="port" class="input-custom" />
                 </nz-form-control>
             </nz-form-item>
             <div class="d-flex justify-content-end">

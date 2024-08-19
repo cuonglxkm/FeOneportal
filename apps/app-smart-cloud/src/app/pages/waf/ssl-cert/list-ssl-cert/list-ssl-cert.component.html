@@ -53,12 +53,12 @@
       </thead>
       <tbody>
         <tr *ngFor="let data of fixedTable.data">
-          <td nzLeft><a (click)="navigateToDetail(data.id)">{{ data.name }}</a></td>
+          <td nzLeft><a (click)="navigateToDetail(data.id)" style="max-width: 250px; display: inline-block; overflow: hidden;">{{ data.name }}</a></td>
           <td nzLeft nzBreak>
             {{data?.subjectAlternativeNames?.join(", ")}}
           </td>
           <ng-container *ngIf="data.status?.toUpperCase() | ServiceStatusPipe as statusModel">
-          <td nzLeft nzBreakWord [ngStyle]="{ color: statusModel.color }">{{statusModel.status}}</td>
+          <td nzLeft nzBreakWord [ngStyle]="{ color: statusModel.color, 'text-transform': 'capitalize' }">{{data?.status}}</td>
           </ng-container>
           <td nzLeft nzBreakWord>{{data.certType}}</td>
           <td nzLeft nzBreakWord>{{data.notAfter | date: 'HH:mm:ss dd/MM/YYYY'}}</td>
