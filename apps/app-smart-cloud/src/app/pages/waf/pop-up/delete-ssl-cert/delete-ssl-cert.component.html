@@ -12,17 +12,17 @@
     <ng-template #modalContent>
         <nz-form-item>
             <div class="text-label">
-                <span>Để thực hiện xóa SSL Cert {{domainData?.domain}}, vui lòng nhập tên SSL Cert để xác nhận</span>
+                <span>Để thực hiện xóa SSL Cert {{sslCertData?.name}}, vui lòng nhập tên SSL Cert để xác nhận</span>
             </div>
             <nz-form-control style="margin-top: 10px; margin-bottom: 10px;">
-                <input class="input-custom" appTrim nz-input placeholder="Cert01" [ngModel]="inputConfirm"
+                <input class="input-custom" appTrim nz-input placeholder="Nhập tên SSL Cert" [ngModel]="inputConfirm"
                     [ngModelOptions]="{ standalone: true }" (keyup.enter)="handleOk()"
                     (ngModelChange)="onInputChange($event)" />
                 <div *ngIf="checkInputConfirm" style="color: #ff4d4f">
-                    {{ 'validation.correct.instance.name' | i18n }}
+                    {{ 'validation.waf.ssl.delete.name.invalid' | i18n }}
                 </div>
                 <div *ngIf="checkInputEmpty" style="color: #ff4d4f">
-                    {{ 'validation.instance.name.required' | i18n }}
+                    {{ 'validation.waf.ssl.delete.name.required' | i18n }}
                 </div>
             </nz-form-control>
         </nz-form-item>

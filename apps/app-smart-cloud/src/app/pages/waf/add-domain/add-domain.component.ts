@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, Inject, OnInit, ViewChild } from '@angular/core';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { InstancesService } from '../../instances/instances.service';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { CatalogService } from 'src/app/shared/services/catalog.service';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
@@ -34,7 +34,7 @@ export class AddDomainComponent implements OnInit {
     domain: ['', [Validators.required,Validators.pattern(DOMAIN_REGEX)]],
       ipPublic: ['', [Validators.required, ipValidatorMany]],
       host: ['', hostValidator],
-      port: [''],
+      port: [null as number],
       sslCert: [''],
       package:['']
   })
@@ -52,6 +52,8 @@ export class AddDomainComponent implements OnInit {
   isLoadingSubmit: boolean
 
   selectedPackage: number
+
+  fromWaf: boolean
 
   addDomainRequest = new AddDomainRequest()
  
@@ -90,18 +92,26 @@ export class AddDomainComponent implements OnInit {
     private loadingSrv: LoadingService,
     private fb: FormBuilder,
     private sanitizer: DomSanitizer,
-    private wafService: WafService
+    private wafService: WafService,
+    private activatedRoute: ActivatedRoute
   ) {
   
   }
 
   getListWaf(){
     this.isLoadingGetWaf = true
+    const wafIdParams =  this.activatedRoute.snapshot.queryParamMap.get('wafId')
+    console.log('first',wafIdParams)
     this.wafService.getWafs(9999, 1, 'ACTIVE', '', '').pipe(finalize(()=>{
       this.isLoadingGetWaf = false
     })).subscribe((data)=>{
-      console.log('data', data)
-      this.listWafs = data.records
+      if(!!wafIdParams){
+        this.listWafs = data.records?.filter(waf => waf.id.toString() === wafIdParams)
+        this.fromWaf = true
+      }else{
+        this.listWafs = data.records?.filter(waf => waf?.quotaDomain > waf?.domainTotal && waf?.status === 'ACTIVE')
+        this.fromWaf = false
+      }
       this.form.controls.nameWAF.setValue(this.listWafs?.[0]?.id)
       this.form.controls.package.setValue(this.listWafs?.[0].offerId)
     })
