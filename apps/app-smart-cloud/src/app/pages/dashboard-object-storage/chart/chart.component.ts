@@ -15,7 +15,6 @@ import { jsPDF } from 'jspdf';
 import { Chart } from 'angular-highcharts';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from '@core';
-import { debug } from 'console';
 
 @Component({
   selector: 'one-portal-chart',
@@ -70,13 +69,17 @@ export class ChartComponent implements AfterViewInit, OnInit {
   }
 
   private removeDuplicates(data: { timeSpan: number; value: number }[]): { [key: string]: string } {
-    return data.reduce((acc, item) => {
-      const timeKey = this.transform(item.timeSpan);
-      if (!(timeKey in acc) || item.value > parseFloat(acc[timeKey])) {
-        acc[timeKey] = this.bytesConvert(item.value, true);
-      }
-      return acc;
-    }, {} as { [key: string]: string });
+    if(data === null){
+      return null
+    }else{
+      return data.reduce((acc, item) => {
+        const timeKey = this.transform(item.timeSpan);
+        if (!(timeKey in acc) || item.value > parseFloat(acc[timeKey])) {
+          acc[timeKey] = this.bytesConvert(item.value, true);
+        }
+        return acc;
+      }, {} as { [key: string]: string });
+    }
   }
 
   private removeDuplicatesNumberObject(data: { timeSpan: number, value: number }[]): { [key: string]: number } {
@@ -89,82 +92,16 @@ export class ChartComponent implements AfterViewInit, OnInit {
     }, {} as { [key: string]: number });
   }
 
-  private createDefaultChart(startDate, name: string): Chart {
-    const data: any[] = null
-    const defaultTimeRange = this.generateTimeRange(startDate);
-    console.log('default time', defaultTimeRange)
-    return new Chart({
-      chart: {
-        type: 'line'
-      },
-      title: {
-        text: ''
-      },
-      xAxis: {
-        categories: defaultTimeRange,
-        title: {
-          text: ''
-        }
-      },
-      yAxis: {
-        title: {
-          text: ''
-        },
-        min: 0,
-      },
-      series: [{
-        name: name,
-        data: new Array(defaultTimeRange.length)
-      } as any]
-    });
-  }
-
-  private generateTimeRange(startDate): string[] {
-    const startTimestamp = startDate;
-    const end = new Date();
-
-    let timeLabels: string[] = [];
-    const start = new Date(startTimestamp * 1000);
-
-    do {
-      console.log('==', start == end)
-      timeLabels.push(`${start.getHours().toString().padStart(2, '0')}:${start.getMinutes().toString().padStart(2, '0')}`);
-      if(start < end) {
-        // debugger
-        start.setTime(start.getTime() + 60 * 1000);
-      }
-      if(start.getMinutes() == end.getMinutes()) {
-        // debugger
-        console.log('abc')
-        timeLabels.push(`${start.getHours().toString().padStart(2, '0')}:${start.getMinutes().toString().padStart(2, '0')}`);
-      }
-      console.log('end', end)
-    } while (start <= end)
-
-
-    return timeLabels;
-  }
-
   createChartStorageUse() {
     const data = this.summary[0]?.datas?.map((item) => ({
       timeSpan: item.timeSpan,
       value: parseInt(item.value, 10)
     })) || [];
     console.log('rawData:', data);
-    if (!data || data.length === 0) {
-      console.warn('Data is null or empty, using default time range.');
-      // Sử dụng ChangeDetectorRef để cập nhật lại biểu đồ
-      this.chartStorageUse = this.createDefaultChart(this.summary[0]?.startDate, this.i18n.fanyi('app.storage.usage') + ' (MB)');
-      this.cdr.detectChanges(); // Buộc Angular cập nhật lại
-      return;
-    }
     const uniqueData = this.removeDuplicates(data);
-    // Chuyển đổi timestamp thành định dạng thời gian đọc được
     const labels = Object.keys(uniqueData);
     const dataValues = Object.values(uniqueData).map(value => parseFloat(value));
 
-    console.log(dataValues);
-    
     this.chartStorageUse = new Chart({
       chart: {
         type: 'line'
@@ -173,7 +110,7 @@ export class ChartComponent implements AfterViewInit, OnInit {
         text: ''
       },
       xAxis: {
-        categories: labels,
+        categories: data.length === 0 ? [] : labels,
         title: {
           text: ''
         }
@@ -189,8 +126,8 @@ export class ChartComponent implements AfterViewInit, OnInit {
         }
       },
       series: [{
-        name: this.i18n.fanyi('app.storage.usage') + ' (MB)',
-        data: dataValues
+        name: this.i18n.fanyi('app.storage.usage'),
+        data: data.length === 0 ? [] : dataValues
       } as any],
     });
   }
@@ -200,18 +137,12 @@ export class ChartComponent implements AfterViewInit, OnInit {
       timeSpan: item.timeSpan,
       value: parseInt(item.value, 10)
     })) || [];
-    if (!data || data.length === 0) {
-      console.warn('Data is null or empty, using default time range.');
-
-      this.chartNumberObject = this.createDefaultChart(this.summary[1]?.startDate, this.i18n.fanyi('app.number.object'));
-      this.cdr.detectChanges();
-      return;
-    }
     const uniqueData = this.removeDuplicatesNumberObject(data);
     const labels = Object.keys(uniqueData);
 
     const dataValues = Object.values(uniqueData).map(value => value);
     console.log(dataValues);
+    console.log(labels);
     
     this.chartNumberObject = new Chart({
       chart: {
@@ -221,7 +152,7 @@ export class ChartComponent implements AfterViewInit, OnInit {
         text: ''
       },
       xAxis: {
-        categories: labels,
+        categories: data.length === 0 ? [] : labels,
         title: {
           text: ''
         }
@@ -233,7 +164,7 @@ export class ChartComponent implements AfterViewInit, OnInit {
       },
       series: [{
         name: this.i18n.fanyi('app.number.object'),
-        data: dataValues 
+        data: data.length === 0 ? [] : dataValues 
       } as any]
     });
 
@@ -245,13 +176,7 @@ export class ChartComponent implements AfterViewInit, OnInit {
       value: parseInt(item.value, 10)
     })) || [];
     console.log('rawData:', data);
-    if (!data || data.length === 0) {
-      console.warn('Data is null or empty, using default time range.');
 
-      this.chartStorageUpload = this.createDefaultChart(this.summary[2]?.startDate, this.i18n.fanyi('app.upload.capacity') + ' (MB)');
-      this.cdr.detectChanges();
-      return;
-    }
     const uniqueData = this.removeDuplicates(data);
     // Chuyển đổi timestamp thành định dạng thời gian đọc được
     const labels = Object.keys(uniqueData);
@@ -267,7 +192,7 @@ export class ChartComponent implements AfterViewInit, OnInit {
         text: ''
       },
       xAxis: {
-        categories: labels,
+        categories: data.length === 0 ? [] : labels,
         title: {
           text: ''
         }
@@ -283,8 +208,8 @@ export class ChartComponent implements AfterViewInit, OnInit {
         }
       },
       series: [{
-        name: this.i18n.fanyi('app.storage.usage') + ' (MB)',
-        data: dataValues
+        name: this.i18n.fanyi('app.upload.capacity'),
+        data: data.length === 0 ? [] : dataValues
       } as any],
     });
   }
@@ -294,19 +219,10 @@ export class ChartComponent implements AfterViewInit, OnInit {
       timeSpan: item.timeSpan,
       value: parseInt(item.value, 10)
     })) || [];
-    if (!data || data.length === 0) {
-      console.warn('Data is null or empty, using default time range.');
-
-      this.chartStorageDownload = this.createDefaultChart(this.summary[3]?.startDate, this.i18n.fanyi('app.upload.download') + ' (MB)');
-      this.cdr.detectChanges(); // Buộc Angular cập nhật lại
-      return;
-    }
     const uniqueData = this.removeDuplicates(data);
-    // Chuyển đổi timestamp thành định dạng thời gian đọc được
     const labels = Object.keys(uniqueData);
-
     const dataValues = Object.values(uniqueData).map(value => parseFloat(value));
-
+    
     // Cấu hình Highcharts
     this.chartStorageDownload = new Chart({
       chart: {
@@ -316,7 +232,7 @@ export class ChartComponent implements AfterViewInit, OnInit {
         text: ''
       },
       xAxis: {
-        categories: labels,
+        categories: data.length === 0 ? [] : labels,
         title: {
           text: ''
         }
@@ -332,8 +248,8 @@ export class ChartComponent implements AfterViewInit, OnInit {
         }
       },
       series: [{
-        name: this.i18n.fanyi('app.storage.usage') + ' (MB)',
-        data: dataValues
+        name: this.i18n.fanyi('app.upload.download'),
+        data: data.length === 0 ? [] : dataValues
       } as any],
     });
   }

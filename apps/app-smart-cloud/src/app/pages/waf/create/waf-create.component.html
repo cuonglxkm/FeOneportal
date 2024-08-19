@@ -177,10 +177,11 @@
                       <nz-form-label nzFor="ipPublic">
                         IP Public (<span style="color: rgba(252, 16, 16, 1)">*</span>)
                       </nz-form-label>
-                      <input nz-input type="text" appTrim placeholder="Nhập IP Public" formControlName="ipPublic" class="input-custom" [maxlength]="50" minlength="1" />
+                      <input nz-input type="text" appTrim placeholder="Nhập IP Public" formControlName="ipPublic" class="input-custom" />
                       <ng-template #ipErrorTpl let-control>
                         <ng-container *ngIf="control.hasError('required')">IP Public không được để trống</ng-container>
                         <ng-container *ngIf="control.hasError('invalidIP')">IP Public không hợp lệ. Vui lòng nhập lại</ng-container>
+                        <ng-container *ngIf="control.hasError('maxIPs')">Không được nhập quá 64 địa chỉ IP</ng-container>
                       </ng-template>
                     </nz-form-control>
                   </nz-form-item>
