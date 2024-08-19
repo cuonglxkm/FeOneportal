@@ -16,6 +16,7 @@
     </ng-template>
   </ng-template>
 </page-header>
+<nz-spin [nzSpinning]="isLoadingGetUser">
 <div nz-row nzGutter="16">
   <div nz-col nzSpan="16">
     <form nz-form [formGroup]="formExportInvoice">
@@ -537,7 +538,7 @@
     </nz-card>
   </div>
 </div>
-
+</nz-spin>
 <nz-modal
   [(nzVisible)]="isVisibleDiscount"
   nzTitle="Chọn Voucher"

@@ -1104,10 +1104,6 @@ const routes: Routes = [
     }
   },
   {
-    path: 'object-storage',
-    component: ObjectStorageComponent
-  },
-  {
     path: 'object-storage/create',
     component: ObjectStorageCreateComponent,
     canActivate: [PermissionGuard],

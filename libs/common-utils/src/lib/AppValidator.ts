@@ -596,19 +596,26 @@ export function hostValidator(control: AbstractControl): ValidationErrors | null
     return null;
   }
 
-  const ipPattern = /\b((1\d{0,2}|2[0-4]\d|25[0-5])\.)((1?\d{1,2}|2[0-4]\d|25[0-5])\.){2}(1?\d{1,2}|2[0-4]\d|25[0-5])\b/
+  const ipPattern = /^(?:[1-9]\d{0,2}|1\d{2}|2[0-4]\d|25[0-5])\.(?:\d{1,2}|1\d{2}|2[0-4]\d|25[0-5])\.(?:\d{1,2}|1\d{2}|2[0-4]\d|25[0-5])\.(?:\d{1,2}|1\d{2}|2[0-4]\d|25[0-5])$/;
 
-  const domainPattern = /^[a-zA-Z0-9][a-zA-Z0-9-]{1,61}[a-zA-Z0-9](?:\.[a-zA-Z]{2,})+/;
+  const domainPattern = /^[a-zA-Z0-9][a-zA-Z0-9-]{1,63}[a-zA-Z0-9](?:\.[a-zA-Z]{2,})+$/;
 
-  const isValidDomain = domainPattern.test(control.value.trim())
-  const isValidIp = ipPattern.test(control.value.trim())
+  const value = control.value.trim();
 
-  if(!isValidDomain && !isValidIp){
-    return {invalidHost: true}
+  const isValidDomain = domainPattern.test(value);
+  const isValidIp = ipPattern.test(value);
+
+  if (isValidDomain && isValidIp) {
+    return { invalidHost: true }
   }
 
-  return null;
+  if (!isValidDomain && !isValidIp) {
+    return { invalidHost: true };
+  }
+
+  return null; 
 }
+
 
 export function ipWafDomainValidatorMany(control: AbstractControl): ValidationErrors | null {
   if (!control.value) {
