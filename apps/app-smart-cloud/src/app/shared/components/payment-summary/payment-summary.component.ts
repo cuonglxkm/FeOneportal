@@ -214,11 +214,11 @@ export class PaymentSummaryComponent implements OnInit {
             serviceItem.type = this.i18n.fanyi('app.button.resize');
             break;
           case 'snapshotpackage_create':
-            serviceItem.name = `Snapshot Package - ${specificationObj.serviceName}`;
+            serviceItem.name = `Gói Snapshot  - ${specificationObj.serviceName}`;
             serviceItem.type = this.i18n.fanyi('app.label.create');
             break;
           case 'snapshotpackage_resize':
-            serviceItem.name = `Snapshot Package - ${specificationObj.serviceName}`;
+            serviceItem.name = `Gói Snapshot  - ${specificationObj.serviceName}`;
             serviceItem.type = this.i18n.fanyi('app.button.resize');
             break;
           case 'mongodb_create':
@@ -315,15 +315,15 @@ export class PaymentSummaryComponent implements OnInit {
             serviceItem.type = this.i18n.fanyi('app.restore');
             break;
           case 'snapshotpackage_create':
-            serviceItem.name = `Snapshot Package - ${specificationObj.serviceName}`;
+            serviceItem.name = `Gói Snapshot - ${specificationObj.serviceName}`;
             serviceItem.type = this.i18n.fanyi('app.label.create');
             break;
           case 'snapshotpackage_resize':
-            serviceItem.name = `Snapshot Package - ${specificationObj.serviceName}`;
+            serviceItem.name = `Gói Snapshot - ${specificationObj.serviceName}`;
             serviceItem.type = this.i18n.fanyi('app.button.resize');
             break;
           case 'snapshotpackage_extend':
-            serviceItem.name = `Snapshot Package - ${specificationObj.serviceName}`;
+            serviceItem.name = `Gói Snapshot  - ${specificationObj.serviceName}`;
             serviceItem.type = this.i18n.fanyi('app.button.extend');
             break;
           case 'restore_instancebackup':

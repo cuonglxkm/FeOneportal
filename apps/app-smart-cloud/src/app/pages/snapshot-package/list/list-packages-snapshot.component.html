@@ -161,7 +161,7 @@
         nzShowIcon></nz-alert>
       <p class="text-p" style="margin-top: 10px; font-size:16px">Đế thực hiện xoá gói Snapshot, vui lòng nhập tên gói Snapshot để xác
         nhận.</p>
-      <input placeholder="{{dataAction.packageName}}" class="input-custom" nz-input [(ngModel)]="valueDelete"
+      <input placeholder="{{dataAction?.packageName}}" class="input-custom" nz-input [(ngModel)]="valueDelete"
         (ngModelChange)="onInputChangeDelete($event)" type="text" />
       <nz-alert nzBanner style="margin-top: 15px;" [nzMessage]="'Các bản Snapshot của gói Snapshot này cũng sẽ bị xóa.'"
         nzShowIcon></nz-alert>

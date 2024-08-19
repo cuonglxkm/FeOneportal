@@ -263,10 +263,11 @@ export class ListPackagesSnapshotComponent implements OnInit {
 
   handleUpdateOk() {
     this.isLoadingUpdate = true;
+  const  description= this.validateForm.controls['description'].value ||'';
     let data = {
       newPackageName: this.validateForm.controls['namePackage'].value,
       id: this.dataAction.id,
-      description: this.validateForm.controls['description'].value ? this.validateForm.controls['description'].value : '',
+      description: description,
       regionId: this.region,
      
     }
