@@ -136,7 +136,7 @@
               <span class="text-value">Gói dịch vụ {{offerItem?.offerName}}</span><br />
               <span class="text-label" [innerHTML]="offerItem?.description"></span>
             </div>
-            <div style="margin-bottom: 10px">
+            <div style="margin-bottom: 10px; word-break: break-all">
               <span class="text-value">Tên miền</span><br />
               <span class="text-label" *ngFor="let domain of domains">
                 {{ domain }}<span *ngIf="!isLastDomain(domain)">, </span>

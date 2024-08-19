@@ -160,7 +160,7 @@
                       <nz-form-label nzFor="domain">
                         Domain (<span style="color: rgba(252, 16, 16, 1)">*</span>)
                       </nz-form-label>
-                      <input nz-input type="text" appTrim placeholder="www.example.com" formControlName="domain" class="input-custom" [maxlength]="50" minlength="1" />
+                      <input nz-input type="text" appTrim placeholder="Nhập tên Domain" formControlName="domain" class="input-custom" [maxlength]="253" />
                       <ng-template #domainErrorTpl let-control>
                         <ng-container *ngIf="control.hasError('duplicateDomain')">Domain không được trùng nhau</ng-container>
                         <ng-container *ngIf="control.hasError('pattern')">Domain không hợp lệ. Vui lòng nhập lại</ng-container>
@@ -191,7 +191,7 @@
                   <nz-form-item>
                     <nz-form-control [nzErrorTip]="hostErrorTpl">
                       <nz-form-label nzFor="host">Host </nz-form-label>
-                      <input nz-input type="text" appTrim placeholder="Nhập host" formControlName="host" class="input-custom" [maxlength]="50" />  
+                      <input nz-input type="text" appTrim placeholder="Nhập host" formControlName="host" class="input-custom" [maxlength]="253" />  
                       <ng-template #hostErrorTpl let-control>
                         <ng-container *ngIf="control.hasError('invalidHost')">Host không hợp lệ. Vui lòng nhập lại</ng-container>
                       </ng-template>                  
@@ -287,7 +287,7 @@
             <h3 class="custom-subtitle">Gói dịch vụ {{selectedNameFlavor}}</h3>
             <span [innerHTML]="selectedDescription"></span>
           </div>
-          <div class="text-label" style="margin-bottom: 12px">
+          <div class="text-label" style="margin-bottom: 12px; word-break: break-all;">
             <h3 class="custom-subtitle">Tên miền</h3>
             <span>{{getDomainValues()}}</span>
           </div>
