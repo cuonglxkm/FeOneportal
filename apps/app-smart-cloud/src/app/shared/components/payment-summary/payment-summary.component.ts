@@ -82,6 +82,7 @@ export class PaymentSummaryComponent implements OnInit {
   isExportInvoice: boolean = false;
   isCheckedExportInvoice: boolean = true;
   isLoadingUpdateInfo: boolean = false;
+  isLoadingGetUser: boolean = false;
   radioValue = 1;
   options = [
     { label: this.i18n.fanyi('app.invoice.export.customer1'), value: 1 },
@@ -373,7 +374,7 @@ export class PaymentSummaryComponent implements OnInit {
   getUser() {
     this.email = this.tokenService.get()?.email;
     const accessToken = this.tokenService.get()?.token;
-
+    this.isLoadingGetUser = true;
     let baseUrl = environment['baseUrl'];
     this.http
       .get<UserModel>(`${baseUrl}/users/${this.tokenService.get()?.email}`, {
@@ -385,6 +386,7 @@ export class PaymentSummaryComponent implements OnInit {
       .subscribe({
         next: (res) => {
           this.userModel = res;
+          this.isLoadingGetUser = false
           console.log(this.userModel);
           if (this.userModel && this.userModel.customerInvoice === null) {
             this.isVisibleCustomerInvoice = true;
@@ -415,6 +417,7 @@ export class PaymentSummaryComponent implements OnInit {
           this.cdr.detectChanges();
         },
         error: (error) => {
+          this.isLoadingGetUser = false
           console.log(error);
         },
       });
