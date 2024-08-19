@@ -455,7 +455,9 @@ export function ipValidatorMany(control: AbstractControl): ValidationErrors | nu
   const ipPattern = /^(?:[1-9]\d{0,2}|1\d{2}|2[0-4]\d|25[0-5])\.(?:\d{1,2}|1\d{2}|2[0-4]\d|25[0-5])\.(?:\d{1,2}|1\d{2}|2[0-4]\d|25[0-5])\.(?:\d{1,2}|1\d{2}|2[0-4]\d|25[0-5])$/;
   
   const ips = control.value.split(';');
-
+  if (ips.length > 64) {
+    return { maxIPs: true };
+  }
   for (const ip of ips) {
     if (!ipPattern.test(ip.trim())) {
       return { invalidIP: true };

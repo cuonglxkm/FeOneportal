@@ -8,7 +8,7 @@ import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { NguCarouselConfig } from '@ngu/carousel';
 import { getCurrentRegionAndProject } from '@shared';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
-import { finalize, Subject } from 'rxjs';
+import { debounceTime, finalize, Subject } from 'rxjs';
 import { DOMAIN_REGEX, NAME_REGEX } from 'src/app/shared/constants/constants';
 import { RegionID } from 'src/app/shared/enums/common.enum';
 import { OrderItemObject } from 'src/app/shared/models/price';
