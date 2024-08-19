@@ -53,6 +53,7 @@ export class ResizeSnapshotPackageComponent implements OnInit {
   isLoadingEdit: boolean = false;
 
   storage: number;
+  packageName:string;
 
   resizeDate: Date;
   loadingCalculate = false;
@@ -149,6 +150,8 @@ export class ResizeSnapshotPackageComponent implements OnInit {
       this.validateForm.controls['description'].setValue(data.description);
       this.numberHDD = data.totalSizeHDD;
       this.numberSSD = data.totalSizeSSD;
+      this.packageName = data.packageName;
+      console.log("hhhhoooo", data)
       this.getTotalAmount();
     },error =>{      
       if(error.status===500){
@@ -194,7 +197,7 @@ export class ResizeSnapshotPackageComponent implements OnInit {
         actionType: 4,
         serviceInstanceId: this.idSnapshotPackage,
         regionId: this.region,
-        serviceName: null,
+        serviceName: this.packageName,
         projectId: this.project,
         typeName: 'SharedKernel.IntegrationEvents.Orders.Specifications.SnapshotPackageResizeSpecification,SharedKernel.IntegrationEvents,Version=1.0.0.0,Culture=neutral,PublicKeyToken=null',
         userEmail: null,
@@ -249,7 +252,7 @@ export class ResizeSnapshotPackageComponent implements OnInit {
       actionType: 4,
       serviceInstanceId: this.idSnapshotPackage,
       regionId: this.region,
-      serviceName: null,
+      serviceName: this.packageName,
       projectId: this.project,
       typeName: 'SharedKernel.IntegrationEvents.Orders.Specifications.SnapshotPackageResizeSpecification,SharedKernel.IntegrationEvents,Version=1.0.0.0,Culture=neutral,PublicKeyToken=null',
       userEmail: null,

@@ -50,6 +50,9 @@ export class ExtendPackageSnapshotComponent implements OnInit{
   numOfMonth: any = 1;
   isVisiblePopupError: boolean = false;
   errorList: string[] = [];
+
+  packageName:string;
+
   closePopupError() {
     this.isVisiblePopupError = false;
   }
@@ -104,6 +107,7 @@ export class ExtendPackageSnapshotComponent implements OnInit{
       console.log('data', data);
       this.packageSnapshotModel = data;
       this.validateForm.controls['description'].setValue(data.description);
+      this.packageName =data.packageName;
       this.getTotalAmount();
     },error =>{      
       if(error.status===500){
@@ -133,7 +137,7 @@ export class ExtendPackageSnapshotComponent implements OnInit{
         actionType: 3,
         serviceInstanceId: this.idSnapshotPackage,
         regionId: this.region,
-        serviceName: null,
+        serviceName: this.packageName,
         projectId: this.project,
         typeName: 'SharedKernel.IntegrationEvents.Orders.Specifications.SnapshotPackageExtendSpecification,SharedKernel.IntegrationEvents,Version=1.0.0.0,Culture=neutral,PublicKeyToken=null',
         userEmail: null,
@@ -186,7 +190,7 @@ export class ExtendPackageSnapshotComponent implements OnInit{
       actionType: 3,
       serviceInstanceId: this.idSnapshotPackage,
       regionId: this.region,
-      serviceName: null,
+      serviceName: this.packageName,
       projectId: this.project,
       typeName: 'SharedKernel.IntegrationEvents.Orders.Specifications.SnapshotPackageExtendSpecification,SharedKernel.IntegrationEvents,Version=1.0.0.0,Culture=neutral,PublicKeyToken=null',
       userEmail: null,
