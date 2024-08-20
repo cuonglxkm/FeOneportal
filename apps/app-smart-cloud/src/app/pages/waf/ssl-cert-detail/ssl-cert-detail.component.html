@@ -150,7 +150,7 @@
                     <td nzLeft>{{data.domainName}}</td>
                     <td nzLeft [ngStyle]="{'color': data.domainStatus === 'inprocess' ? '#FF3355' : '#009B4E'}">{{data.domainStatus === 'inprocess' ? 'Deploying' : 'Deploying successfully'}}</td>
                     <td nzAlign="center">
-                        <one-portal-disassociate-domain-btn [sslCertData]="data"
+                        <one-portal-disassociate-domain-btn [sslCertData]="detail"
                             [domainData]="data" (onOk)="handleOk()"></one-portal-disassociate-domain-btn>
                     </td>
                 </tr>

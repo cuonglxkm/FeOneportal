@@ -43,7 +43,7 @@ export class CreateSSLCertPopupComponent {
   selectedFileSystemName: string;
   fileList: NzUploadFile[] = [];
   formCreateeSslCert: SslCertRequest = new SslCertRequest();
-
+  caCertificate: string = '';
   passwordVisible: boolean = false;
   uploadMethod: string = '1';
   uploadMethodList = [
@@ -168,8 +168,16 @@ export class CreateSSLCertPopupComponent {
 
         if (fileExtension === 'crt') {
           this.form.controls.certificate.setValue(content);
+          if(this.form.get('privateKey').value === ''){
+            this.form.controls.privateKey.removeValidators(Validators.required);
+            this.form.controls.privateKey.setValue('');
+          }
         } else if (fileExtension === 'key') {
           this.form.controls.privateKey.setValue(content);
+          if(this.form.get('certificate').value === ''){
+            this.form.controls.certificate.removeValidators(Validators.required);
+            this.form.controls.certificate.setValue('');
+          }    
         } else if (fileExtension === 'pem') {
           if(content.includes('-----BEGIN PRIVATE KEY-----') && !content.includes('-----BEGIN CERTIFICATE----')){
             const privateKey = content.substring(
@@ -212,7 +220,7 @@ export class CreateSSLCertPopupComponent {
     this.formCreateeSslCert.name = this.form.get('certName').value;
     this.formCreateeSslCert.remarks = this.form.get('remarks').value;
     if(this.uploadMethod === '2'){
-      this.formCreateeSslCert.certificate = this.form.get('certificate').value;
+      this.formCreateeSslCert.certificate = this.form.get('certificate').value + this.caCertificate;
       this.formCreateeSslCert.privateKey = this.form.get('privateKey').value;
     }else{
       this.formCreateeSslCert.certificate = this.form.get('certificate').value;

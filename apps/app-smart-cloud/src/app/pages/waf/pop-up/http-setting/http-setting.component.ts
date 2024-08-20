@@ -47,8 +47,7 @@ export class HttpSettingComponent implements OnInit, AfterViewInit{
     this.listOptionsSsl = this.listSslCert?.filter((cert) => {
       return checkProperSslWithDomain(this.domainData?.domain, cert.subjectAlternativeNames)
     })
-    this.setFormValues()
-    this.cdr.detectChanges()
+    
   }
 
   ngAfterViewInit(): void {
@@ -57,7 +56,7 @@ export class HttpSettingComponent implements OnInit, AfterViewInit{
 
   validateForm = this.fb.group({
     cert: [null as number , [Validators.required]],
-    port: [0],
+    port: [null as number, [Validators.min(1), Validators.max(65535)]],
     protocol: ['follow' ,[Validators.required]]
   })
 
@@ -124,7 +123,10 @@ export class HttpSettingComponent implements OnInit, AfterViewInit{
   }
 
   handleCancelHttpSetting(){
+    this.setFormValues()
+    this.validateForm.reset()
     this.isVisible = false
+    this.cdr.detectChanges()
   }
 
   handleSubmit(){
@@ -138,7 +140,7 @@ export class HttpSettingComponent implements OnInit, AfterViewInit{
       this.isLoading = false
     })).subscribe({
       next:()=>{
-        this.notification.success(this.i18n.fanyi("app.status.success"), "Thao tác thành công")
+        this.notification.success(this.i18n.fanyi("app.status.success"), "Tiến trình sẽ diễn ra trong 1-3 phút")
         this.isVisible = false;
         this.onOk.emit()
       },
@@ -151,11 +153,12 @@ export class HttpSettingComponent implements OnInit, AfterViewInit{
   }
 
   openModalSSlCert(){
+    this.setFormValues()
     this.isVisibleCreateSsl = true
+    this.cdr.detectChanges()
   }
 
   cancelModalSslCert(){
-    this.setFormValues()
     this.isVisibleCreateSsl = false
   }
 

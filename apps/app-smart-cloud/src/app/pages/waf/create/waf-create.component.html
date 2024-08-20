@@ -43,9 +43,13 @@
               placeholder="Nhập tên WAF"
               style="width: 100%"
               formControlName="nameWAF"
+              (ngModelChange)="changeName($event)"
               maxlength="50"
               class="custom-input"
             />
+            <!-- <div *ngIf="isExistName" style="color: #ff4d4f">
+              Tên WAF đã tồn tại
+            </div> -->
             <ng-template #nameErrorTpl let-control>
               <ng-container *ngIf="control.hasError('required')"
                 >Tên WAF không được để trống
@@ -182,6 +186,7 @@
                         <ng-container *ngIf="control.hasError('required')">IP Public không được để trống</ng-container>
                         <ng-container *ngIf="control.hasError('invalidIP')">IP Public không hợp lệ. Vui lòng nhập lại</ng-container>
                         <ng-container *ngIf="control.hasError('maxIPs')">Không được nhập quá 64 địa chỉ IP</ng-container>
+                        <ng-container *ngIf="control.hasError('duplicateIP')">IP Public không được trùng nhau</ng-container>
                       </ng-template>
                     </nz-form-control>
                   </nz-form-item>
