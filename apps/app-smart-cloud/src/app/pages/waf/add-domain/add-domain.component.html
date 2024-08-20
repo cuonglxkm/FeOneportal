@@ -68,7 +68,7 @@
               Domain (<span style="color: rgba(252, 16, 16, 1)">*</span>)
             </nz-form-label>
             <input #domainInput nz-input type="text" appTrim placeholder="www.example.com" formControlName="domain"
-              class="input-custom" [maxlength]="50" minlength="1" (input)="handleOnChangeDomain($event)" />
+              class="input-custom" minlength="1" (input)="handleOnChangeDomain($event)" />
             <ng-template #domainErrorTpl let-control>
               <!-- <ng-container *ngIf="control.hasError('duplicateDomain')">Domain không được trùng nhau</ng-container> -->
               <ng-container *ngIf="control.hasError('pattern')">Domain không đúng định dạng</ng-container>
@@ -85,7 +85,7 @@
               IP Public (<span style="color: rgba(252, 16, 16, 1)">*</span>)
             </nz-form-label>
             <input nz-input type="text" appTrim placeholder="Nhập IP Public" formControlName="ipPublic"
-              class="input-custom" [maxlength]="50" minlength="1" />
+              class="input-custom" minlength="1" />
             <ng-template #ipErrorTpl let-control>
               <ng-container *ngIf="control.hasError('required')">IP Public không được để trống</ng-container>
               <ng-container *ngIf="control.hasError('invalidIP')">Địa chỉ IP không hợp lệ</ng-container>
