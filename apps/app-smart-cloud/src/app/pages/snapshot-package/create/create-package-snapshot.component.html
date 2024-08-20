@@ -117,7 +117,7 @@
               </div>
             </nz-form-label>
             <nz-form-control nzDisableAutoTips [nzErrorTip]="descriptionErrorTpl">
-              <textarea nz-input formControlName="description" id="description" [placeholder]="'Nhập mô tả'"
+              <textarea nz-input formControlName="description" id="description"  [(ngModel)]="description" [placeholder]="'Nhập mô tả'"
                 [maxLength]="255" [nzAutosize]="{ minRows: 3, maxRows: 5 }">
               </textarea>
               <ng-template #descriptionErrorTpl let-control>
@@ -211,7 +211,7 @@
               <span class="text-card-header">{{'app.estimated.cost' | i18n}}</span>
             </div>
             <div class="text-value">Tên gói Snapshot</div>
-            <div style="margin-top: 10px" class="text-label">{{ this.validateForm.controls['namePackage'].value }}</div>
+            <div style="margin-top: 10px" class="text-label truncate" [nz-tooltip]="this.validateForm.controls['namePackage'].value ">{{ this.validateForm.controls['namePackage'].value }}</div>
             <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
             <div class="text-value">Dung lượng tổng</div>
             <div style="margin-top: 10px" class="text-label">{{ numberSSD + numberHDD }} GB</div>

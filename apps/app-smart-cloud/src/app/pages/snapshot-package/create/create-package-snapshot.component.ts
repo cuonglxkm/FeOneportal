@@ -37,11 +37,12 @@ export class CreatePackageSnapshotComponent implements OnInit {
     namePackage: ['', [Validators.required,
       Validators.pattern(/^[a-zA-Z0-9_]*$/),
       Validators.maxLength(70)]],
-    description: [null as string, [Validators.maxLength(255)]],
+    description: ['', [Validators.maxLength(255)]],
     time: [1, [Validators.required]]
   });
 
   namePackage: string = '';
+  description:string='';
   storage: number = 1;
   orderItem: any;
   unitPrice = 0;
@@ -181,6 +182,7 @@ export class CreatePackageSnapshotComponent implements OnInit {
 
   packageBackupInit() {
     this.formCreateSnapshotPackage.packageName = this.validateForm.get('namePackage').value;
+
     this.formCreateSnapshotPackage.quotaHddSizeInGB = this.numberHDD;
     this.formCreateSnapshotPackage.quotaSsdSizeInGB = this.numberSSD;
     this.formCreateSnapshotPackage.description = this.validateForm.get('description').value;
