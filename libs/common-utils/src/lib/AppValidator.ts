@@ -453,15 +453,27 @@ export function ipValidatorMany(control: AbstractControl): ValidationErrors | nu
   }
 
   const ipPattern = /^(?:[1-9]\d{0,2}|1\d{2}|2[0-4]\d|25[0-5])\.(?:\d{1,2}|1\d{2}|2[0-4]\d|25[0-5])\.(?:\d{1,2}|1\d{2}|2[0-4]\d|25[0-5])\.(?:\d{1,2}|1\d{2}|2[0-4]\d|25[0-5])$/;
-  
-  const ips = control.value.split(';');
+
+  if (/;\s/.test(control.value)) {
+    return { invalidIP: true };
+  }
+
+  const ips = control.value.trim().split(';').map(ip => ip.trim());
+
   if (ips.length > 64) {
     return { maxIPs: true };
   }
+
+  const uniqueIps = new Set<string>();
+  
   for (const ip of ips) {
-    if (!ipPattern.test(ip.trim())) {
+    if (!ipPattern.test(ip)) {
       return { invalidIP: true };
     }
+    if (uniqueIps.has(ip)) {
+      return { duplicateIP: true };
+    }
+    uniqueIps.add(ip);
   }
 
   return null;
@@ -598,7 +610,7 @@ export function hostValidator(control: AbstractControl): ValidationErrors | null
 
   const ipPattern = /^(?:[1-9]\d{0,2}|1\d{2}|2[0-4]\d|25[0-5])\.(?:\d{1,2}|1\d{2}|2[0-4]\d|25[0-5])\.(?:\d{1,2}|1\d{2}|2[0-4]\d|25[0-5])\.(?:\d{1,2}|1\d{2}|2[0-4]\d|25[0-5])$/;
 
-  const domainPattern = /^[a-zA-Z0-9][a-zA-Z0-9-]{1,63}[a-zA-Z0-9](?:\.[a-zA-Z]{2,})+$/;
+  const domainPattern = /^(?![-.])[a-zA-Z0-9-]{1,63}(?:\.[a-zA-Z0-9-]{1,63})*(?<![-.])\.[a-zA-Z]{2,63}$/;
 
   const value = control.value.trim();
 

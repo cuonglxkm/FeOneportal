@@ -134,6 +134,7 @@ export class WAFCreateComponent implements OnInit {
     }
     this.getListSslCert()
     this.initFlavors();
+    this.checkExistName()
   }
 
   get bonusServices(): FormArray {
@@ -165,6 +166,30 @@ export class WAFCreateComponent implements OnInit {
 
   areAllDomainsValid(): boolean {
     return this.bonusServices.controls.every(control => control.get('domain')?.valid);
+  }
+
+  dataSubjectName: Subject<any> = new Subject<any>();
+  changeName(value: number) {
+    this.dataSubjectName.next(value);
+  }
+
+  isExistName: boolean = false;
+  checkExistName() {
+    this.dataSubjectName
+      .pipe(
+        debounceTime(300)
+      )
+      .subscribe(() => {
+        this.wafService
+          .hasWaf()
+          .subscribe((data) => {
+            if (data == true) {
+              this.isExistName = true;
+            } else {
+              this.isExistName = false;
+            }
+          });
+      });
   }
 
   initWAF() {
