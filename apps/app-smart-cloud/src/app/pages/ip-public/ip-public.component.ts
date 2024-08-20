@@ -99,7 +99,7 @@ export class IpPublicComponent implements OnInit {
           }
         },
         error: (e) => {
-          this.listOfIp = [];
+          this.listOfIp = null;
           if(e.status == 403){
             this.notification.error(
               e.statusText,
