@@ -61,7 +61,7 @@ export class ChartComponent implements AfterViewInit, OnInit {
 
   bytesConvert(bytes: number, label: boolean): string {
     if (bytes === 0) return '0';
-    const units = ['bytes', 'KB', 'MB', 'GB', 'TB', 'PB'];
+    const units = ['bytes', 'KiB', 'MiB', 'GiB', 'TiB', 'PiB'];
     const exponent = Math.floor(Math.log(bytes) / Math.log(1024));
     const value = Math.round(bytes / Math.pow(1024, exponent));
     if (label) return `${value} ${units[exponent]}`;
@@ -398,12 +398,12 @@ export class ChartComponent implements AfterViewInit, OnInit {
       case 'storage-use':
         if (extension.includes('png')) {
           html2canvas(this.storageUse.nativeElement).then((canvas) => {
-            this.download(canvas.toDataURL('image/png'), '/png', 'storage-use');
+            this.download(canvas.toDataURL('image/png'), 'png', 'storage-use');
           });
         }
         if (extension.includes('jpg')) {
           html2canvas(this.storageUse.nativeElement).then((canvas) => {
-            this.download(canvas.toDataURL('image/png'), '/jpg', 'storage-use');
+            this.download(canvas.toDataURL('image/jpeg'), 'jpg', 'storage-use');
           });
         }
         if (extension.includes('pdf')) {
@@ -418,7 +418,7 @@ export class ChartComponent implements AfterViewInit, OnInit {
           html2canvas(this.numberObject.nativeElement).then((canvas) => {
             this.download(
               canvas.toDataURL('image/png'),
-              '/png',
+              'png',
               'number-object'
             );
           });
@@ -426,8 +426,8 @@ export class ChartComponent implements AfterViewInit, OnInit {
         if (extension.includes('jpg')) {
           html2canvas(this.numberObject.nativeElement).then((canvas) => {
             this.download(
-              canvas.toDataURL('image/png'),
-              '/jpg',
+              canvas.toDataURL('image/jpeg'),
+              'jpg',
               'number-object'
             );
           });
@@ -444,7 +444,7 @@ export class ChartComponent implements AfterViewInit, OnInit {
           html2canvas(this.storageUpload.nativeElement).then((canvas) => {
             this.download(
               canvas.toDataURL('image/png'),
-              '/png',
+              'png',
               'storage-upload'
             );
           });
@@ -452,8 +452,8 @@ export class ChartComponent implements AfterViewInit, OnInit {
         if (extension.includes('jpg')) {
           html2canvas(this.storageUpload.nativeElement).then((canvas) => {
             this.download(
-              canvas.toDataURL('image/png'),
-              '/jpg',
+              canvas.toDataURL('image/jpeg'),
+              'jpg',
               'storage-upload'
             );
           });
@@ -470,7 +470,7 @@ export class ChartComponent implements AfterViewInit, OnInit {
           html2canvas(this.storageDownload.nativeElement).then((canvas) => {
             this.download(
               canvas.toDataURL('image/png'),
-              '/png',
+              'png',
               'storage-download'
             );
           });
@@ -478,8 +478,8 @@ export class ChartComponent implements AfterViewInit, OnInit {
         if (extension.includes('jpg')) {
           html2canvas(this.storageDownload.nativeElement).then((canvas) => {
             this.download(
-              canvas.toDataURL('image/png'),
-              '/jpg',
+              canvas.toDataURL('image/jpeg'),
+              'jpg',
               'storage-download'
             );
           });
@@ -500,7 +500,7 @@ export class ChartComponent implements AfterViewInit, OnInit {
     const dataUrl = url;
     const link = document.createElement('a');
     link.href = dataUrl;
-    link.download = type + extension;
+    link.download = `${type}.${extension}`;
     link.click();
   }
 
