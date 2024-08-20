@@ -1,4 +1,4 @@
-<page-header [breadcrumb]="breadcrumb" [action]="action" title="Xem chi tiết gói Snapshot" >
+<page-header [breadcrumb]="breadcrumb" [action]="action" [title]="'Xem chi tiết gói Snapshot'" >
   <ng-template #breadcrumb>
     <nz-breadcrumb [nzSeparator]="separatorTemplate">
       <nz-breadcrumb-item><a routerLink="/app-smart-cloud"> Trang chủ</a></nz-breadcrumb-item>
@@ -60,7 +60,7 @@
       <span class="button-text-primary">Điều chỉnh</span>
     </button>
     <button nz-button nzType="primary" (click)="navigateToExtend()" nzSize="large">
-      <img style="padding-right: 10px;" src="assets/imgs/extend.png" alt="" />
+      <img style="padding-right: 10px;" src="assets/imgs/calendar.svg" alt="" />
       <span class="button-text-primary">Gia hạn</span>
     </button>
   </div>

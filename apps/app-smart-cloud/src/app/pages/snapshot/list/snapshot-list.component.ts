@@ -56,6 +56,7 @@ export class SnapshotListComponent implements OnInit{
 
   dataSelected: any;
   nameDelete = '';
+  isInput:boolean=false;
   disableDelete = true;
   loadingDelete = false;
   isVisibleEdit: boolean;
@@ -204,6 +205,7 @@ export class SnapshotListComponent implements OnInit{
     this.isVisibleEdit = false;
     this.nameDelete = '';
     this.dataSelected = null;
+    this.isInput = false;
   }
 
   enableDelete(data: any) {
@@ -227,20 +229,27 @@ export class SnapshotListComponent implements OnInit{
 
   openIpDelete() {
     this.loadingDelete = true;
-    this.service.deleteSnapshot(this.dataSelected.id)
+    if(this.nameDelete=== this.dataSelected.name){
+      this.isInput = false;
+      this.service.deleteSnapshot(this.dataSelected.id)
       .pipe(finalize(() => {
         this.loadingDelete = false;
         this.handleCancel();
       }))
       .subscribe(
       data => {
-        this.notification.success(this.i18n.fanyi('app.status.success'), 'success');
+        this.notification.success(this.i18n.fanyi('app.status.success'), 'Xóa Snapshot thành công');
         this.search(true);
       },
       error => {
-        this.notification.error(this.i18n.fanyi('app.status.fail'), 'fail');
+        this.notification.error(this.i18n.fanyi('app.status.fail'), 'Xóa Snapshot thất bại');
       }
     )
+    }else{
+      this.isInput = true;
+      this.loadingDelete = false;
+    }
+    
   }
 
   enableEdit(data: any) {
@@ -264,11 +273,11 @@ export class SnapshotListComponent implements OnInit{
       }))
       .subscribe(
         data => {
-          this.notification.success(this.i18n.fanyi('app.status.success'), 'success');
+          this.notification.success(this.i18n.fanyi('app.status.success'), 'Cập nhật Snapshot thành công');
           this.search(true);
         },
         error => {
-          this.notification.error(this.i18n.fanyi('app.status.fail'), 'fail');
+          this.notification.error(this.i18n.fanyi('app.status.fail'), error.error.message);
         }
       )
   }

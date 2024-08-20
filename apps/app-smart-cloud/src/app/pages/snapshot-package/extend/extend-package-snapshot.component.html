@@ -1,6 +1,6 @@
 <page-header [breadcrumb]="breadcrumb"
              [action]="action"
-             title="Gia hạn gói Snapshot">
+             [title]="'Gia hạn gói Snapshot'">
   <ng-template #breadcrumb>
     <nz-breadcrumb [nzSeparator]="separatorTemplate">
       <nz-breadcrumb-item>
@@ -17,7 +17,7 @@
       </nz-breadcrumb-item>
  
       <nz-breadcrumb-item>
-        <a routerLink="/app-smart-cloud/snapshot/packages/extend/{{idSnapshotPackage}}">Gia hạn gói Snapshot</a>
+        Gia hạn gói Snapshot
       </nz-breadcrumb-item>
     </nz-breadcrumb>
     <ng-template #separatorTemplate
@@ -162,7 +162,7 @@
                         [disabled]="loadingCalculate"
                         [nzLoading]="loadingCalculate">
                   <!-- <span nz-icon nzType="wallet" nzTheme="outline"></span> -->
-                   <img src="assets/extend.svg" style="padding-right: 10px;" alt="">
+                   <img src="assets/extendvpc.svg" style="padding-right: 10px;" alt="">
                   <span
                     [style.color]="loadingCalculate? 'gray' : 'white'">{{ 'app.extend' | i18n }}</span>
                 </button>

@@ -1,14 +1,14 @@
 <page-header [breadcrumb]="breadcrumb"
              [action]="action"
-             [title]="'Chi tiết Snapshot Volume'" xmlns="http://www.w3.org/1999/html">
+             [title]="'Chi tiết Snapshot'" xmlns="http://www.w3.org/1999/html">
   <ng-template #breadcrumb>
     <nz-breadcrumb [nzSeparator]="iconTemplate">
       <ng-template #iconTemplate><one-portal-svg-icon [icon]="'icon_breadcrumb'"></one-portal-svg-icon></ng-template>
       <nz-breadcrumb-item><a [routerLink]="['/']">{{ 'app.breadcrumb.home' | i18n }}</a></nz-breadcrumb-item>
       <nz-breadcrumb-item>{{'app.breadcrumb.infrastructure.service' | i18n }}</nz-breadcrumb-item>
       <nz-breadcrumb-item>Block Storage</nz-breadcrumb-item>
-      <nz-breadcrumb-item><a routerLink="/app-smart-cloud/snapshot">Snapshot Volume</a></nz-breadcrumb-item>
-      <nz-breadcrumb-item><a routerLink="/app-smart-cloud/snapshot/detail/{{id}}">Chi tiết Snapshot Volume</a></nz-breadcrumb-item>
+      <nz-breadcrumb-item><a routerLink="/app-smart-cloud/snapshot">Snapshot</a></nz-breadcrumb-item>
+      <nz-breadcrumb-item>{{data?.name}}</nz-breadcrumb-item>
     </nz-breadcrumb>
     <ng-template #separatorTemplate
     ><img src="assets/imgs/arrow-square-right.svg" alt="" />
@@ -26,14 +26,14 @@
 </page-header>
 <nz-content>
   <nz-card>
-    <span class="text-card-header">Thông tin Snapshot Volume</span>
+    <span class="text-card-header">Thông tin Snapshot</span>
     <form [formGroup]="validateForm" nz-form nzLayout="vertical">
       <div class="customRow" style="margin-top: 15px;">
         <nz-row>
           <nz-col nzSpan="12">
             <nz-row style="padding: 12px 0 12px 0">
               <span class="text-label customSpan" style="width: 35%">Tên Snapshot:</span>
-              <span class="text-value-detail customSpan">{{data?.name}}</span>
+              <p class="text-value-detail customSpan truncate" [nz-tooltip]="data?.name">{{data?.name}}</p>
             </nz-row>
           </nz-col>
           <nz-col nzSpan="12">
@@ -63,20 +63,6 @@
         <nz-row>
           <nz-col nzSpan="12">
             <nz-row style="padding: 12px 0 12px 0">
-              <span class="text-label customSpan" style="width: 35%">Gói Snapshot:</span>
-              <span *ngIf="typeProject != 1" class="text-value-detail customSpan">{{packageSnap?.packageName}}</span>
-            </nz-row>
-          </nz-col>
-          <nz-col nzSpan="12">
-            <nz-row style="padding: 12px 0 12px 0">
-              <span class="text-label customSpan" style="width: 35%">Ngày hết hạn: </span>
-              <span class="text-value-detail customSpan">{{data?.endDate | date : 'HH:mm:ss dd/MM/yyyy'}}</span>
-            </nz-row>
-          </nz-col>
-        </nz-row>
-        <nz-row style="background-color: #e2e2e9">
-          <nz-col nzSpan="12">
-            <nz-row style="padding: 12px 0 12px 0">
               <span class="text-label customSpan" style="width: 35%">Loại Snapshot:</span>
               <span class="text-value-detail customSpan">{{data?.fromRootVolume == true ? 'Snapshot VM' : 'Snapshot Volume'}}</span>
             </nz-row>
@@ -87,10 +73,36 @@
               <span class="text-value-detail customSpan">{{data?.volumeName}}</span>
             </nz-row>
             <nz-row *ngIf="data?.fromRootVolume == true" style="padding: 12px 0 12px 0">
-              <span class="text-label customSpan" style="width: 35%">{{'app.instances' | i18n}}: </span>
+              <span class="text-label customSpan" style="width: 35%">Máy ảo: </span>
               <span class="text-value-detail customSpan">{{data?.instanceName}}</span>
             </nz-row>
           </nz-col>
+          
+        </nz-row>
+        <nz-row style="background-color: #e2e2e9">
+          <nz-col nzSpan="12">
+            <nz-row style="padding: 12px 0 12px 0">
+              <span class="text-label customSpan" style="width: 35%">Gói Snapshot:</span>
+              <span *ngIf="typeProject != 1" class="text-value-detail customSpan">{{packageSnap?.packageName}}</span>
+            </nz-row>
+          </nz-col>
+          <nz-col nzSpan="12">
+            <nz-row style="padding: 12px 0 12px 0">
+              <span class="text-label customSpan" style="width: 35%">Dung lượng gói:</span>
+              <span *ngIf="typeProject != 1" class="text-value-detail customSpan">{{packageSize}} GB</span>
+            </nz-row>
+          </nz-col>
+          
+          <!-- <nz-col nzSpan="12">
+            <nz-row *ngIf="data?.fromRootVolume == false" style="padding: 12px 0 12px 0">
+              <span class="text-label customSpan" style="width: 35%">Volume: </span>
+              <span class="text-value-detail customSpan">{{data?.volumeName}}</span>
+            </nz-row>
+            <nz-row *ngIf="data?.fromRootVolume == true" style="padding: 12px 0 12px 0">
+              <span class="text-label customSpan" style="width: 35%">{{'app.instances' | i18n}}: </span>
+              <span class="text-value-detail customSpan">{{data?.instanceName}}</span>
+            </nz-row>
+          </nz-col> -->
         </nz-row>
       </div>
 
