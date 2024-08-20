@@ -161,7 +161,7 @@
               nz-button
               nzSize="large"
               nzType="primary"
-              [disabled]="!isEnable"
+              [disabled]="!isEnable || invalid"
               (click)="extend()"
               [nzLoading]="isLoadingCreate"
             >
