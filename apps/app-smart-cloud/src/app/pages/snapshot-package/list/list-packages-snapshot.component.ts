@@ -63,7 +63,8 @@ export class ListPackagesSnapshotComponent implements OnInit {
   })
 
 
-  valueDelete: string
+  valueDelete: string='';
+  isInput:boolean=false;
   projectType = 0;
   typeVPC: number
 
@@ -193,6 +194,7 @@ export class ListPackagesSnapshotComponent implements OnInit {
   handleDeletedOk() {
     this.isLoadingDelete = true
     if (this.valueDelete === this.packageName) {
+      this.isInput = false;
       this.packageSnapshotService.delete(this.dataAction.id, this.project, this.region)
         .pipe(finalize(() => {
           this.handleDeleteCancel();
@@ -211,12 +213,14 @@ export class ListPackagesSnapshotComponent implements OnInit {
         this.notification.error('Thất bại', 'Xóa gói snapshot thất bại')
       })
     } else {
+      this.isInput = true;
       this.isLoadingDelete = false
-      this.notification.error('Error', 'Vui lòng nhập đúng thông tin')
+      // this.notification.error('Error', 'Vui lòng nhập đúng thông tin')
     }
   }
 
   handleDeleteCancel() {
+    this.isInput = false;
     this.isVisibleDelete = false
     this.dataAction = undefined;
     this.packageName = '';
@@ -299,6 +303,7 @@ export class ListPackagesSnapshotComponent implements OnInit {
       .subscribe(
         data => {
           this.snapshotArray = data.records;
+          console.log("snapshotArray", this.snapshotArray)
         }
       );
   }
@@ -312,6 +317,7 @@ export class ListPackagesSnapshotComponent implements OnInit {
       .subscribe({
         next: (next) => {
           this.snapshotSchefuleArray = next.records;
+          console.log("snapshotSchefuleArray", this.snapshotSchefuleArray)
         },
         error: (error) => {
           this.notification.error(
