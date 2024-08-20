@@ -32,7 +32,6 @@ import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@ang
   selector: 'one-portal-bucket-list',
   templateUrl: './bucket-list.component.html',
   styleUrls: ['./bucket-list.component.less'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class BucketListComponent implements OnInit {
   currentRegion: RegionModel;
@@ -44,7 +43,7 @@ export class BucketListComponent implements OnInit {
   total: number;
   value: string = '';
   isInput: boolean = false;
-  loading: boolean = true;
+  loading: boolean = false;
   isLoadingDeleteOS: boolean = false;
   searchDelay = new Subject<boolean>();
   user: any;
@@ -132,7 +131,7 @@ export class BucketListComponent implements OnInit {
           } else {
             this.hasOS = false;
           }
-          this.cdr.detectChanges();
+          
         },
         error: (e) => {
           this.notification.error(
@@ -152,7 +151,7 @@ export class BucketListComponent implements OnInit {
             this.hasOS = true;
             this.user = data;
             this.getUserById(this.user.id);
-            this.cdr.detectChanges();
+            
         },
         error: (e) => {
           this.notification.error(
@@ -173,7 +172,7 @@ export class BucketListComponent implements OnInit {
           this.usage = data;
           this.totalUsage =
             (parseFloat(this.usage.usage) / parseInt(this.usage.total)) * 100;
-          this.cdr.detectChanges();
+          
         },
         // error: (e) => {
         //   this.notification.error(
@@ -215,7 +214,7 @@ export class BucketListComponent implements OnInit {
           this.hasOS = true;
           this.objectStorage = data;
           console.log(this.objectStorage);
-          this.cdr.detectChanges();
+          
           }else{
             this.notification.error(
               this.i18n.fanyi('app.status.fail'),
@@ -241,23 +240,21 @@ export class BucketListComponent implements OnInit {
         this.value.trim(),
         this.region
       )
-      .pipe(
-        finalize(() => {
-          this.loading = false;
-          this.cdr.detectChanges();
-        })
-      )
       .subscribe({
         next: (data) => {
+          this.loading = false;
           this.listBucket = data.records;
           this.total = data.totalCount;
+          
         },
         error: (e) => {
+          this.loading = false;
           this.listBucket = [];
           this.notification.error(
             this.i18n.fanyi('app.status.fail'),
             this.i18n.fanyi('app.bucket.getBucket.fail')
           );
+          
         },
       });
   }
@@ -371,7 +368,7 @@ export class BucketListComponent implements OnInit {
               this.i18n.fanyi('app.bucket.delete.bucket.success')
             );
             this.search()
-            this.cdr.detectChanges();
+            
           },
           error: (error) => {
             this.isLoadingDeleteBucket = false
@@ -379,7 +376,7 @@ export class BucketListComponent implements OnInit {
               this.i18n.fanyi('app.status.fail'),
               this.i18n.fanyi('app.bucket.delete.bucket.fail')
             );
-            this.cdr.detectChanges();
+            
           },
         });
       }else{
@@ -416,7 +413,7 @@ export class BucketListComponent implements OnInit {
         this.isVisibleDeleteOS = false;
         this.isLoadingDeleteOS = false;
         this.hasObjectStorageInfo();
-        this.cdr.detectChanges();
+        
       },
       error: (error) => {
         console.log(error.error);
@@ -425,7 +422,7 @@ export class BucketListComponent implements OnInit {
           'Xóa Object Storage không thành công'
         );
         this.isLoadingDeleteOS = false;
-        this.cdr.detectChanges();
+        
       },
     });
   }
