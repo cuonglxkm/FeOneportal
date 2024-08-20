@@ -99,6 +99,13 @@ export class WAFExtendComponent implements OnInit {
       .getDetail(id)
       .subscribe(
         (data) => {
+          if (data == undefined || data == null) {
+            this.router.navigate(['/app-smart-cloud/waf']);
+            this.notification.error(
+              this.i18n.fanyi('app.status.fail'),
+              'Bản ghi không tồn tại'
+            );
+          }
           this.isLoading = false
           this.WAFDetail = data;
           this.getOfferById(data.offerId)
