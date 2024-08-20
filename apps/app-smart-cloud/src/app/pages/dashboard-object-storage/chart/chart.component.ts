@@ -15,7 +15,7 @@ import { jsPDF } from 'jspdf';
 import { Chart } from 'angular-highcharts';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from '@core';
-
+import * as moment from 'moment';
 @Component({
   selector: 'one-portal-chart',
   templateUrl: './chart.component.html',
@@ -82,9 +82,24 @@ export class ChartComponent implements AfterViewInit, OnInit {
     }
   }
 
+  private removeDuplicatesTootip(data: { timeSpan: number; value: number }[]): { [key: string]: string } {
+    if(data === null){
+      return null
+    }else{
+      return data.reduce((acc, item) => {
+        const timeKey = this.transformTooltip(item.timeSpan);
+        if (!(timeKey in acc) || item.value > parseFloat(acc[timeKey])) {
+          acc[timeKey] = this.bytesConvert(item.value, true);
+        }
+        return acc;
+      }, {} as { [key: string]: string });
+    }
+  }
+  
+
   private removeDuplicatesNumberObject(data: { timeSpan: number, value: number }[]): { [key: string]: number } {
     return data.reduce((acc, item) => {
-      const timeKey = this.transform(item.timeSpan);
+      const timeKey = this.transformTooltip(item.timeSpan);
       if (!(timeKey in acc) || item.value > acc[timeKey]) {
         acc[timeKey] = Number(item.value);
       }
@@ -98,10 +113,10 @@ export class ChartComponent implements AfterViewInit, OnInit {
       value: parseInt(item.value, 10)
     })) || [];
     console.log('rawData:', data);
-    const uniqueData = this.removeDuplicates(data);
+    const uniqueData = this.removeDuplicatesTootip(data);
     const labels = Object.keys(uniqueData);
     const dataValues = Object.values(uniqueData).map(value => parseFloat(value));
-
+    
     this.chartStorageUse = new Chart({
       chart: {
         type: 'line'
@@ -113,6 +128,11 @@ export class ChartComponent implements AfterViewInit, OnInit {
         categories: data.length === 0 ? [] : labels,
         title: {
           text: ''
+        },
+        labels: {
+          formatter: function() {
+            return `${this.value.toString().split(' ')[1] === undefined ? this.value.toString() : this.value.toString().split(' ')[1]}`;
+          }
         }
       },
       yAxis: {
@@ -122,7 +142,7 @@ export class ChartComponent implements AfterViewInit, OnInit {
       },
       tooltip: {
         formatter: function() {
-          return `<b>${this.x}</b><br/>${this.series.name}: ${uniqueData[this.x]}`;
+          return `<b>${this.x}</b><br/>${this.series.name}: ${uniqueData[labels[this.point.index]]}`;
         }
       },
       series: [{
@@ -130,6 +150,7 @@ export class ChartComponent implements AfterViewInit, OnInit {
         data: data.length === 0 ? [] : dataValues
       } as any],
     });
+
   }
 
   createNumberObject() {
@@ -141,8 +162,6 @@ export class ChartComponent implements AfterViewInit, OnInit {
     const labels = Object.keys(uniqueData);
 
     const dataValues = Object.values(uniqueData).map(value => value);
-    console.log(dataValues);
-    console.log(labels);
     
     this.chartNumberObject = new Chart({
       chart: {
@@ -155,11 +174,21 @@ export class ChartComponent implements AfterViewInit, OnInit {
         categories: data.length === 0 ? [] : labels,
         title: {
           text: ''
+        },
+        labels: {
+          formatter: function() {
+            return `${this.value.toString().split(' ')[1] === undefined ? this.value.toString() : this.value.toString().split(' ')[1]}`;
+          }
         }
       },
       yAxis: {
         title: {
           text: this.i18n.fanyi('app.number.object')
+        }
+      },
+      tooltip: {
+        formatter: function() {
+          return `<b>${this.x}</b><br/>${this.series.name}: ${uniqueData[labels[this.point.index]]}`;
         }
       },
       series: [{
@@ -195,6 +224,11 @@ export class ChartComponent implements AfterViewInit, OnInit {
         categories: data.length === 0 ? [] : labels,
         title: {
           text: ''
+        },
+        labels: {
+          formatter: function() {
+            return `${this.value.toString().split(' ')[1] === undefined ? this.value.toString() : this.value.toString().split(' ')[1]}`;
+          }
         }
       },
       yAxis: {
@@ -235,6 +269,11 @@ export class ChartComponent implements AfterViewInit, OnInit {
         categories: data.length === 0 ? [] : labels,
         title: {
           text: ''
+        },
+        labels: {
+          formatter: function() {
+            return `${this.value.toString().split(' ')[1] === undefined ? this.value.toString() : this.value.toString().split(' ')[1]}`;
+          }
         }
       },
       yAxis: {
@@ -637,9 +676,23 @@ export class ChartComponent implements AfterViewInit, OnInit {
   }
 
   getFormattedStartDate(timestamp) {
-    return new Date(timestamp * 1000); // Convert Unix timestamp to milliseconds
+    const date = new Date(timestamp * 1000);
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const year = String(date.getFullYear()).slice(-2);
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    return `${day}/${month}/${year} ${hours}:${minutes}`
   }
 
+  getFormattedEndDate(date) {
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const year = String(date.getFullYear()).slice(-2);
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    return `${day}/${month}/${year} ${hours}:${minutes}`
+  }
   transform(timestamp: number): string {
     const date = new Date(timestamp * 1000);
     const day = String(date.getDate()).padStart(2, '0');
@@ -681,6 +734,49 @@ export class ChartComponent implements AfterViewInit, OnInit {
 
     return returnLabel;
   }
+
+  transformTooltip(timestamp: number): string {
+    const date = new Date(timestamp * 1000);
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const year = String(date.getFullYear()).slice(-2);
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    let minutesHour = Math.floor(date.getMinutes() / 10) * 10; 
+    let minutesStr = String(minutesHour).padStart(2, '0');
+    let minutes15 = Math.floor(date.getMinutes() / 3) * 3; 
+    let minutes15Str = String(minutes15).padStart(2, '0');
+    const seconds = String(date.getSeconds()).padStart(2, '0');
+    let returnLabel = `${day}/${month}/${year} ${hours}:${minutes}`;
+    switch (this.timeSelected) {
+      case 5:
+        returnLabel = `${day}/${month}/${year} ${hours}:${minutes}`;
+        break;
+      case 15:
+        returnLabel = `${day}/${month}/${year} ${hours}:${minutes15Str}`;
+        break;
+      case 60:
+        returnLabel = `${day}/${month}/${year} ${hours}:${minutesStr}`;
+        break;
+      case 1440:
+        returnLabel = `${day}/${month}/${year} ${hours}:00`;
+        break;
+      case 10080:
+        returnLabel = `${day}/${month}/${year}`;
+        break;
+      case 43200:
+        returnLabel = `${day}/${month}/${year}`;
+        break;
+      case 129600:
+        returnLabel = `${day}/${month}/${year}`;
+        break;
+      default:
+        returnLabel = `${hours}:${minutes}:${seconds}`;
+    }
+
+    return returnLabel;
+  }
+
 
   ngAfterViewInit(): void {
     // this.createChartStorageUse();
