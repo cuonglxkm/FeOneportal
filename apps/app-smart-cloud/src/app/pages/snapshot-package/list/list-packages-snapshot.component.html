@@ -152,16 +152,16 @@
     </ng-container>
   </nz-card>
   <!--  modal xoa-->
-  <nz-modal [(nzVisible)]="isVisibleDelete" nzTitle="Xoá gói Snapshot" nzTabScrollList="true"
+  <nz-modal [(nzVisible)]="isVisibleDelete" nzTitle="Xóa gói Snapshot" nzTabScrollList="true"
     (nzOnCancel)="handleDeleteCancel()" nzCentered>
     <div *nzModalTitle>
-      <span class="text-modal-title">Xoá gói Snapshot</span>
+      <span class="text-modal-title">Xóa gói Snapshot</span>
     </div>
     <div *nzModalContent>
       <nz-alert nzBanner
-        nzMessage="Bạn đang thực hiện xoá gói Snapshot {{packageName}}. Hành động này không thể được hoàn tác"
+        nzMessage="Bạn đang thực hiện xóa gói Snapshot {{packageName}}. Hành động này không thể được hoàn tác"
         nzShowIcon></nz-alert>
-      <p class="text-p" style="margin-top: 10px; font-size:16px">Đế thực hiện xoá gói Snapshot, vui lòng nhập tên gói
+      <p class="text-p" style="margin-top: 10px; font-size:16px">Đế thực hiện xóa gói Snapshot, vui lòng nhập tên gói
         Snapshot để xác
         nhận.</p>
 

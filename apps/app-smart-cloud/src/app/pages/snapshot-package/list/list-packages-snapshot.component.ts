@@ -28,7 +28,7 @@ export class ListPackagesSnapshotComponent implements OnInit {
   region = JSON.parse(localStorage.getItem('regionId'));
   project = JSON.parse(localStorage.getItem('projectId'));
 
-  pageSize: number = 10
+  pageSize: number = 1
   pageIndex: number = 1
 
   isLoading: boolean = false
@@ -203,7 +203,7 @@ export class ListPackagesSnapshotComponent implements OnInit {
         .subscribe(data => {
         this.isLoadingDelete = false
         this.isVisibleDelete = false
-        this.notification.success('Thành công', 'Xóa gói snapshot thành công')
+        this.notification.success('Thành công', 'Xóa gói Snapshot thành công')
         this.valueDelete = ''
         this.getListPackageSnapshot(true)
       }, error => {
