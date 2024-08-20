@@ -280,6 +280,7 @@ export class ListPackagesSnapshotComponent implements OnInit {
       }))
       .subscribe(
         data => {
+          console.log("daaaaa", data)
           this.notification.success(this.i18n.fanyi('app.status.success'),'Cập nhật gói snapshot thành công')
           this.getListPackageSnapshot(true);
         },
