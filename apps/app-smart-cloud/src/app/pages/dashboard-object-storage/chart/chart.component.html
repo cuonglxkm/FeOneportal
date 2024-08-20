@@ -18,8 +18,8 @@
     <div #storageUse>
       <div class="title">
         <span class="text-card-header">{{ 'app.storage.usage' | i18n }}</span> <br>
-        <span>{{ getFormattedStartDate(summary[0]?.startDate) | date: 'dd/MM/yyyy hh:mm' }}
-          {{ 'app.to' | i18n }} {{ newDate | date: 'dd/MM/yyyy hh:mm' }}</span>
+        <span>{{ getFormattedStartDate(summary[0]?.startDate) }}
+          {{ 'app.to' | i18n }} {{ getFormattedEndDate(newDate) }}</span>
       </div>
 <!--      <div #chartStorageUse style="padding-bottom: 20px; padding-left: 10px; "></div>-->
       <div [chart]="chartStorageUse"></div>
@@ -41,8 +41,8 @@
     <div #numberObject>
       <div class="title">
         <span class="text-card-header">{{ 'app.number.object' | i18n }}</span> <br>
-        <span>{{ getFormattedStartDate(summary[1]?.startDate) | date: 'dd/MM/yyyy hh:mm' }}
-          {{ 'app.to' | i18n }} {{ newDate | date: 'dd/MM/yyyy hh:mm' }}</span>
+        <span>{{ getFormattedStartDate(summary[1]?.startDate) }}
+          {{ 'app.to' | i18n }} {{ getFormattedEndDate(newDate) }}</span>
       </div>
 <!--      <div #chartNumberObject style="padding-bottom: 20px; padding-left: 10px; "></div>-->
       <div [chart]="chartNumberObject"></div>
@@ -64,8 +64,8 @@
     <div #storageUpload>
       <div class="title">
         <span class="text-card-header">{{ 'app.upload.capacity' | i18n }}</span> <br>
-        <span>{{ getFormattedStartDate(summary[2]?.startDate) | date: 'dd/MM/yyyy hh:mm' }}
-          {{ 'app.to' | i18n }} {{ newDate | date: 'dd/MM/yyyy hh:mm' }}</span>
+        <span>{{ getFormattedStartDate(summary[2]?.startDate) }}
+          {{ 'app.to' | i18n }} {{ getFormattedEndDate(newDate) }}</span>
       </div>
 <!--      <div #chartStorageUpload style="padding-bottom: 20px; padding-left: 10px; "></div>-->
       <div [chart]="chartStorageUpload"></div>
@@ -87,7 +87,8 @@
     <div #storageDownload>
       <div class="title">
         <span class="text-card-header">{{ 'app.upload.download' | i18n }}</span> <br>
-        <span>{{ getFormattedStartDate(summary[3]?.startDate) | date: 'dd/MM/yyyy hh:mm' }} {{ 'app.to' | i18n }} {{ newDate | date: 'dd/MM/yyyy hh:mm' }}</span>
+        <span>{{ getFormattedStartDate(summary[3]?.startDate) }}
+          {{ 'app.to' | i18n }} {{ getFormattedEndDate(newDate) }}</span>
       </div>
 <!--      <div #chartStorageDownload style="padding-bottom: 20px; padding-left: 10px; "></div>-->
       <div [chart]="chartStorageDownload"></div>
