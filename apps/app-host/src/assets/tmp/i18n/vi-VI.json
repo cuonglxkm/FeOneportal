@@ -3608,6 +3608,9 @@
   "app.non.vietnamese": "Không được nhập tiếng việt",
 
   "app.non.permission": "Người dùng không có quyền truy cập dịch vụ này",
-  "validation.waf.domain.delete.name.invalid": "Vui lòng nhập đúng tên máy domain",
-  "validation.waf.domain.delete.name.required": "Vui lòng nhập tên domain"
+  "validation.waf.domain.delete.name.invalid": "Vui lòng nhập đúng tên domain",
+  "validation.waf.domain.delete.name.required": "Vui lòng nhập tên domain",
+   "validation.waf.ssl.delete.name.invalid": "Vui lòng nhập đúng tên SSL Cert",
+  "validation.waf.ssl.delete.name.required": "Vui lòng nhập tên SSL Cert",
+  "app.create-policy.name":"Tên Policy"
 }

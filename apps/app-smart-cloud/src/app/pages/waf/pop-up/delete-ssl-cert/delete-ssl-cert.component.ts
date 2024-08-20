@@ -50,7 +50,7 @@ export class DeleteSslCertComponent {
         this.isLoading = false
       })).subscribe({
         next:()=>{
-          this.notification.success(this.i18n.fanyi("app.status.success"), "Thao tác thành công")
+          this.notification.success(this.i18n.fanyi("app.status.success"), "Xóa SSL Cert thành công")
           this.isVisible = false;
           this.onOk.emit()
         },
