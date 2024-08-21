@@ -64,8 +64,9 @@
           </thead>
           <tbody>
             <tr *ngFor="let data of fixedTable.data">
-              <td><a (click)="navigateToDetail(data.id)">{{data.name}}</a></td>
-              <td><a (click)="navigateToPackageDetail(data.snapshotPackageId)">{{data.packageName}}</a></td>
+              <td style="max-width:200px"><a (click)="navigateToDetail(data.id)">{{data.name}}</a></td>
+              <td style="max-width:200px"><a
+                  (click)="navigateToPackageDetail(data.snapshotPackageId)">{{data.packageName}}</a></td>
               <td style="text-align: right">{{data.sizeInGB}}</td>
               <td>{{data.fromRootVolume == true ? data.instanceName : data.volumeName}}</td>
               <td>{{data.fromRootVolume == true ? 'Snapshot máy ảo' : 'Snapshot Volume'}}</td>
@@ -170,22 +171,30 @@
   <nz-modal [(nzVisible)]="isVisibleEdit" nzTitle="Chỉnh sửa Snapshot " [nzStyle]="modalStyle"
     (nzOnCancel)="handleCancel()">
     <ng-container *nzModalContent>
-      <div class="text-label" style="margin-bottom: 10px">
-        Tên Snapshot (<span class="text-red">*</span>)<img style="margin-left: 5px;"
-          nz-tooltip="Cho phép chứa ký tự số, chữ, dấu gạch dưới, tối đa 50 ký tự, không chứa ký tự đặc biệt, không chứa dấu tiếng việt, không chứa dấu cách"
-          src="assets/imgs/pajamas_question.svg" alt="" />
-        <nz-form-control  [nzErrorTip]="nameErrorTpl">
-          <input class="input-custom" nz-input placeholder="Nhập tên Snapshot" style="width: 100%" ([ngModel])="name" [maxLength]="50"
-            formControlName="name">
-          <ng-template #nameErrorTpl let-control>
-            <ng-container *ngIf="control.hasError('required')">{{ 'validation.info.required' | i18n }}</ng-container>
-            <ng-container *ngIf="control.hasError('pattern')">{{ 'validation.name.pattern' | i18n }}
-            </ng-container>
-            <ng-container *ngIf="control.hasError('maxLength')">{{ 'volume.notification.input.name.maxLength' | i18n
-              }}</ng-container>
-          </ng-template>
-        </nz-form-control>
-      </div>
+      <form nz-form [formGroup]="validateForm" nzLayout="vertical">
+        <nz-form-item>
+          <div class="text-label" style="margin-bottom: 10px">
+            Tên Snapshot (<span class="text-red">*</span>)<img style="margin-left: 5px;"
+              nz-tooltip="Cho phép chứa ký tự số, chữ, dấu gạch dưới, tối đa 50 ký tự, không chứa ký tự đặc biệt, không chứa dấu tiếng việt, không chứa dấu cách"
+              src="assets/imgs/pajamas_question.svg" alt="" />
+            <nz-form-control [nzErrorTip]="nameErrorTpl1">
+              <input class="input-custom" nz-input placeholder="Nhập tên Snapshot" style="width: 100%"
+                ([ngModel])="name" [maxLength]="50" formControlName="name">
+
+              <ng-template #nameErrorTpl1 let-control>
+                <ng-container *ngIf="control.hasError('required')">Vui lòng nhập tên Snapshot</ng-container>
+                <ng-container *ngIf="control.hasError('pattern')">Tên chỉ có thể chứa các ký tự chữ và số (a-z, A-Z,
+                  0-9,
+                  '_')
+                </ng-container>
+                <ng-container *ngIf="control.hasError('maxLength')">{{ 'volume.notification.input.name.maxLength' | i18n
+                  }}</ng-container>
+              </ng-template>
+            </nz-form-control>
+
+          </div>
+        </nz-form-item>
+      </form>
       <div class="text-label mt-5">
         {{ 'volume.table.title.description' | i18n }}
         <textarea maxlength="255" nz-input [nzAutosize]="{ minRows: 3 }"
