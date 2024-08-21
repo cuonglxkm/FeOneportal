@@ -138,7 +138,6 @@ export class VpnS2sCreateComponent implements OnInit {
         let listTr = element.parentNode.parentNode.children;
         for (let elementTr of listTr) {
           this.renderer.removeClass(elementTr, 'tr-selected');
-  
         }
         this.renderer.addClass(element.parentNode, 'tr-selected');
         this.totalAmount = 0
@@ -148,6 +147,12 @@ export class VpnS2sCreateComponent implements OnInit {
       }
     }
     
+  }
+
+  onKeydown(event: KeyboardEvent, data: any): void {
+    if (event.key === 'Enter' || event.key === ' ') {
+      this.selectOffer(event, data);
+    }
   }
 
   caculator(event) {
