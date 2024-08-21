@@ -18,7 +18,6 @@ import { ProjectSelectDropdownComponent } from 'src/app/shared/components/projec
   styleUrls: ['./vpn-s2s-extend.component.less'],
 })
 export class VpnS2sExtendComponent implements OnInit{
-  vpcId = 0;
   region = JSON.parse(localStorage.getItem('regionId'));
   project = JSON.parse(localStorage.getItem('projectId'));
   numberMonth: number = 1;
@@ -62,7 +61,6 @@ export class VpnS2sExtendComponent implements OnInit{
     this.unitOfMeasure = environment.unitOfMeasureVpn;
   }
   ngOnInit(): void {
-    this.vpcId = Number(this.activatedRoute.snapshot.paramMap.get('vpcId'));
     this.numberMonth = 1;
   }
 
@@ -120,11 +118,21 @@ export class VpnS2sExtendComponent implements OnInit{
     this.expiredDate = addDays(this.dateString, 30 * this.validateForm.controls.time.value);
   }
 
+  invalid: boolean = false;
   onChangeTime(value) {
-    this.timeSelected = value;
-    this.validateForm.controls.time.setValue(this.timeSelected);
-    console.log(this.timeSelected);
-    this.priceChange();
+    if (value == undefined) {
+      this.invalid = true;
+      this.totalAmount = 0;
+      this.totalincludesVAT = 0;
+      this.vatDisplay = 0
+    }else{
+      this.invalid = false;
+      this.timeSelected = value;
+      this.validateForm.controls.time.setValue(this.timeSelected);
+      console.log(this.timeSelected);
+      this.priceChange();
+    }
+
   }
 
   extend() {
@@ -137,7 +145,7 @@ export class VpnS2sExtendComponent implements OnInit{
           orderItemQuantity: 1,
           specification: JSON.stringify(this.spec),
           specificationType: "vpnsitetosite_extend",
-          price: this.offer['Price'],
+          price: this.totalAmount,
           serviceDuration: this.validateForm.controls.time.value
         }
       ]
@@ -188,7 +196,7 @@ export class VpnS2sExtendComponent implements OnInit{
 
   getOffer(){
     this.loading = true;
-    this.vpnSiteToSiteService.getVpnSiteToSite(this.vpcId).pipe().subscribe(data => {
+    this.vpnSiteToSiteService.getVpnSiteToSite(0).pipe().subscribe(data => {
       this.loading = false;
       if(data){; 
         this.vpn = data.body;    

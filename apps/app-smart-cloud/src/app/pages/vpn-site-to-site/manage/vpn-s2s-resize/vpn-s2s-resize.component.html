@@ -30,7 +30,8 @@
         (regionChange)="onRegionChanged($event)"
         (valueChanged)="regionChanged($event)"
       ></region-select-dropdown>
-      <project-select-dropdown #projectCombobox
+      <project-select-dropdown
+        #projectCombobox
         [isDetail]="true"
         (valueChanged)="projectChanged($event)"
         (userChanged)="userChangeProject($event)"
@@ -202,8 +203,11 @@
               [disabled]="!isEnable"
               (click)="extend()"
             >
-              <span nz-icon nzType="wallet" nzTheme="outline"></span>
-              {{ 'app.button.create' | i18n }}
+              <img
+                src="assets/imgs/wallet.svg"
+                style="margin-right: 5px; padding-bottom: 5px"
+              />
+              {{ 'app.button.resize' | i18n }}  
             </button>
           </nz-col>
         </nz-row>

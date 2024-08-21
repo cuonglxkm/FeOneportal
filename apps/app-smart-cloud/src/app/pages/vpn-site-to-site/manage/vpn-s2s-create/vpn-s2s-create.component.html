@@ -1,75 +1,95 @@
 <page-header
-[breadcrumb]="breadcrumb" [title]="'app.vpns2s-create' | i18n"
-[action]="action"
-
+  [breadcrumb]="breadcrumb"
+  [title]="'app.vpns2s-create' | i18n"
+  [action]="action"
 >
-<ng-template #breadcrumb>
-  <nz-breadcrumb [nzSeparator]="separatorTemplate">
-    <nz-breadcrumb-item>
-      <a [routerLink]="['/']">{{ 'app.breadcrumb.home' | i18n }}</a>
-    </nz-breadcrumb-item>
-    <nz-breadcrumb-item> {{ 'app.breadcrumb.infrastructure.service' | i18n }} </nz-breadcrumb-item>
-    <nz-breadcrumb-item>
-        <a [routerLink]="['/app-smart-cloud/vpn-site-to-site']">VPN site to site</a>
-    </nz-breadcrumb-item>
-    <nz-breadcrumb-item>{{'app.vpns2s-create' | i18n}}</nz-breadcrumb-item>
-  </nz-breadcrumb>
+  <ng-template #breadcrumb>
+    <nz-breadcrumb [nzSeparator]="separatorTemplate">
+      <nz-breadcrumb-item>
+        <a [routerLink]="['/']">{{ 'app.breadcrumb.home' | i18n }}</a>
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item>
+        {{ 'app.breadcrumb.infrastructure.service' | i18n }}
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item>
+        <a [routerLink]="['/app-smart-cloud/vpn-site-to-site']"
+          >VPN site to site</a
+        >
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item>{{ 'app.vpns2s-create' | i18n }}</nz-breadcrumb-item>
+    </nz-breadcrumb>
     <ng-template #separatorTemplate
       ><img src="assets/imgs/arrow-square-right.svg" alt="" />
     </ng-template>
-</ng-template>
-<ng-template #action>
-  <div class="alain-custom-action text-right">
-    <share-users-combobox></share-users-combobox>
-    <region-select-dropdown
-    (regionChange)="onRegionChanged($event)"
-      (valueChanged)="regionChanged($event)"
-    ></region-select-dropdown>
-    <project-select-dropdown #projectCombobox
-      (valueChanged)="projectChanged($event)"
-      (userChanged)="userChangeProject($event)"
-      [regionId]="region"
-    ></project-select-dropdown>
-  </div>
-</ng-template>
+  </ng-template>
+  <ng-template #action>
+    <div class="alain-custom-action text-right">
+      <share-users-combobox></share-users-combobox>
+      <region-select-dropdown
+        (regionChange)="onRegionChanged($event)"
+        (valueChanged)="regionChanged($event)"
+      ></region-select-dropdown>
+      <project-select-dropdown
+        #projectCombobox
+        (valueChanged)="projectChanged($event)"
+        (userChanged)="userChangeProject($event)"
+        [regionId]="region"
+      ></project-select-dropdown>
+    </div>
+  </ng-template>
 </page-header>
 <form nz-form [formGroup]="validateForm">
-<nz-row nzGutter="24" class="body-form">
-  <nz-col nzSpan="16" class="left-content">
-    <nz-card class="left-content-card">
-      <span class="text-card-header">{{ 'app.vpns2s-create.choose.package' | i18n }}</span>
-      <div class="header-content">{{'app.vpns2s-extend.header' | i18n}}</div>
-      <nz-table
-        #ajaxTable3
-        nzShowSizeChanger
-        [nzFrontPagination]="false"
-        [nzData]="offerDatas"
-        [nzLoading]="loading"
-        (nzQueryParams)="getOffers()"
-      >
-        <thead>
-          <tr>
-            <th nzLeft>{{'app.manage.site.to.site.name.package' | i18n}}</th>
-            <th>Bandwidth (MB/S)</th>
-            <th>{{'app.vpns2s-extend.price' | i18n}}</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let data of ajaxTable3.data" (click)="selectOffer($event, data)">
-            <td nzLeft id="offer-title-{{data.Id}}" offer-id="{{data.Id}}">
-              {{ data.OfferName }}
-            </td>
-            <td nzLeft>
-              {{ data.Bandwidth }}
-            </td>
-            <td nzRight nzAlign="right">
-              {{ data.Price | number }}
-            </td>
-          </tr>
-        </tbody>
-      </nz-table>
+  <nz-row nzGutter="24" class="body-form">
+    <nz-col nzSpan="16" class="left-content">
+      <nz-card class="left-content-card">
+        <span class="text-card-header">{{
+          'app.vpns2s-create.choose.package' | i18n
+        }}</span>
+        <div class="header-content">
+          {{ 'app.vpns2s-extend.header' | i18n }}
+        </div>
+        <nz-table
+          #ajaxTable3
+          nzShowSizeChanger
+          [nzFrontPagination]="false"
+          [nzData]="offerDatas"
+          [nzLoading]="loading"
+          (nzQueryParams)="getOffers()"
+        >
+          <thead>
+            <tr>
+              <th nzLeft>
+                {{ 'app.manage.site.to.site.name.package' | i18n }}
+              </th>
+              <th>Bandwidth (MB/S)</th>
+              <th>{{ 'app.vpns2s-extend.price' | i18n }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr
+              *ngFor="let data of ajaxTable3.data"
+              tabindex="0"
+              (click)="selectOffer($event, data)"
+              (keydown)="onKeydown($event, data)"
+            >
+              <td
+                nzLeft
+                id="offer-title-{{ data.Id }}"
+                offer-id="{{ data.Id }}"
+              >
+                {{ data.OfferName }}
+              </td>
+              <td nzLeft>
+                {{ data.Bandwidth }}
+              </td>
+              <td nzRight nzAlign="right">
+                {{ data.Price | number }}
+              </td>
+            </tr>
+          </tbody>
+        </nz-table>
 
-      <!-- <div nz-row class="mb-md pt-5">
+        <!-- <div nz-row class="mb-md pt-5">
         <div nz-col nzSpan="11">
           <nz-form-label nzRequired>Thời gian sử dụng (Tháng)</nz-form-label>
           <nz-form-item>
@@ -94,88 +114,100 @@
           <p  style="margin-top: 39px;">Thời gian bắt đầu sử dụng: {{dateString | date:'dd/MM/yyyy'}}</p>
         </div>
       </div> -->
-      <!-- <div nz-col>
+        <!-- <div nz-col>
         <p class="red-text">Ngày hết hạn: {{ expiredDate | date : 'dd/MM/yyyy' }}</p>
       </div> -->
-    </nz-card>
-    <one-portal-service-usage-period [nameService]="'vpns2s'" (valueChanged)="onChangeTime($event)"/>
-  </nz-col>
-  <nz-col nzSpan="8" class="right-content">
-     <nz-affix [nzOffsetTop]="72">
-      <nz-card class="right-form">
-        <div class="right-title">
-              <span class="text-card-header">{{'app.estimated.cost' | i18n}}</span>
-        </div>
-        
-        <nz-row class="right-form-content-month" nzGutter="16">
-          <nz-col nzSpan="16">
-            <span class="text-value">
-              {{'app.cost.n.month' | i18n: {numberMonth: validateForm.controls.time.value} }}
-            </span>
-          </nz-col>
-          <nz-col class="text-right" nzSpan="8">
-            <span class="text-value month-money" nzAlign="right">
-              {{ totalAmount | number }} VND
-            </span>
-          </nz-col>
-        </nz-row>
-        <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
-        <nz-row style="margin-bottom: 10px" nzGutter="16">
-          <nz-col nzSpan="16">
-            <span class="text-value">{{ 'app.cost.vat' | i18n }}</span>
-          </nz-col>
-          <nz-col class="text-right" nzSpan="8">
-            <span
-              class="text-value"
-              style="color: #0066b3"
-              nzAlign="right"
-              *ngIf="vatDisplay == null"
-              >0 VND</span
-            >
-            <span
-              class="text-value"
-              style="color: #0066b3"
-              nzAlign="right"
-              *ngIf="vatDisplay != undefined"
-            >
-              {{ vatDisplay | number }} VND
-            </span>
-          </nz-col>
-        </nz-row>
-        <nz-row class="right-form-content-total" nzGutter="16" >
-          <nz-col nzSpan="16">
-            <span class="text-label">{{ 'app.total.payment' | i18n }}</span><br />
-            <span class="text-note-italicized">({{ 'app.include.vat' | i18n : {vat: vatPer} }})</span>
-          </nz-col>
-          <nz-col class="text-right" nzSpan="8">
-            <span class="text-value vat-money" nzAlign="right">
-              {{ totalincludesVAT | number }}
-              VND
-            </span>
-          </nz-col>
-        </nz-row>
-        <nz-row>
-          <nz-col style="width: 100%" class="text-right">
-            <button
-              style="width: 100%"
-              nz-button
-              nzSize="large"
-              nzType="primary"
-              [disabled]="!isEnable || invalid"
-              (click)="extend()"
-              [nzLoading]="isLoadingCreate"
-            >
-              <span nz-icon nzType="wallet" nzTheme="outline"></span>
-              {{ 'app.button.create' | i18n }}
-            </button>
-          </nz-col>
-        </nz-row>
       </nz-card>
-     </nz-affix>
-  </nz-col>
-</nz-row>
+      <one-portal-service-usage-period
+        [nameService]="'vpns2s'"
+        (valueChanged)="onChangeTime($event)"
+      />
+    </nz-col>
+    <nz-col nzSpan="8" class="right-content">
+      <nz-affix [nzOffsetTop]="72">
+        <nz-card class="right-form">
+          <div class="right-title">
+            <span class="text-card-header">{{
+              'app.estimated.cost' | i18n
+            }}</span>
+          </div>
+
+          <nz-row class="right-form-content-month" nzGutter="16">
+            <nz-col nzSpan="16">
+              <span class="text-value">
+                {{
+                  'app.cost.n.month'
+                    | i18n : { numberMonth: validateForm.controls.time.value }
+                }}
+              </span>
+            </nz-col>
+            <nz-col class="text-right" nzSpan="8">
+              <span class="text-value month-money" nzAlign="right">
+                {{ totalAmount | number }} VND
+              </span>
+            </nz-col>
+          </nz-row>
+          <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
+          <nz-row style="margin-bottom: 10px" nzGutter="16">
+            <nz-col nzSpan="16">
+              <span class="text-value">{{ 'app.cost.vat' | i18n }}</span>
+            </nz-col>
+            <nz-col class="text-right" nzSpan="8">
+              <span
+                class="text-value"
+                style="color: #0066b3"
+                nzAlign="right"
+                *ngIf="vatDisplay == null"
+                >0 VND</span
+              >
+              <span
+                class="text-value"
+                style="color: #0066b3"
+                nzAlign="right"
+                *ngIf="vatDisplay != undefined"
+              >
+                {{ vatDisplay | number }} VND
+              </span>
+            </nz-col>
+          </nz-row>
+          <nz-row class="right-form-content-total" nzGutter="16">
+            <nz-col nzSpan="16">
+              <span class="text-label">{{ 'app.total.payment' | i18n }}</span
+              ><br />
+              <span class="text-note-italicized"
+                >({{ 'app.include.vat' | i18n : { vat: vatPer } }})</span
+              >
+            </nz-col>
+            <nz-col class="text-right" nzSpan="8">
+              <span class="text-value vat-money" nzAlign="right">
+                {{ totalincludesVAT | number }}
+                VND
+              </span>
+            </nz-col>
+          </nz-row>
+          <nz-row>
+            <nz-col style="width: 100%" class="text-right">
+              <button
+                style="width: 100%"
+                nz-button
+                nzSize="large"
+                nzType="primary"
+                [disabled]="!isEnable || invalid"
+                (click)="extend()"
+                [nzLoading]="isLoadingCreate"
+              >
+                <span nz-icon nzType="wallet" nzTheme="outline"></span>
+                {{ 'app.button.create' | i18n }}
+              </button>
+            </nz-col>
+          </nz-row>
+        </nz-card>
+      </nz-affix>
+    </nz-col>
+  </nz-row>
 </form>
 <one-portal-popup-list-error
-    [isVisible]="isVisiblePopupError"
-    [errorList]="errorList"
-    (onCancel)="closePopupError()" />
+  [isVisible]="isVisiblePopupError"
+  [errorList]="errorList"
+  (onCancel)="closePopupError()"
+/>

@@ -17,7 +17,6 @@ import { ProjectSelectDropdownComponent } from 'src/app/shared/components/projec
   styleUrls: ['./vpn-s2s-resize.component.less'],
 })
 export class VpnS2sResizeComponent implements OnInit{
-  vpcId = 0;
   region = JSON.parse(localStorage.getItem('regionId'));
   project = JSON.parse(localStorage.getItem('projectId'));
   numberMonth: number = 1;
@@ -54,7 +53,6 @@ export class VpnS2sResizeComponent implements OnInit{
     this.unitOfMeasure = environment.unitOfMeasureVpn;
   }
   ngOnInit(): void {
-    this.vpcId = Number(this.activatedRoute.snapshot.paramMap.get('vpcId'));
     this.numberMonth = 1;
   }
 
@@ -179,7 +177,7 @@ export class VpnS2sResizeComponent implements OnInit{
 
   getOffer(){
     this.loading = true;
-    this.vpnSiteToSiteService.getVpnSiteToSite(this.vpcId).pipe().subscribe(data => {
+    this.vpnSiteToSiteService.getVpnSiteToSite(0).pipe().subscribe(data => {
       this.loading = false;
       if(data){
         this.vpn = data.body;
