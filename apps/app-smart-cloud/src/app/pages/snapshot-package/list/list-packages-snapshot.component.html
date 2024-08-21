@@ -80,9 +80,9 @@
           </thead>
           <tbody>
             <tr *ngFor="let data of fixedTable.data">
-              <td>
+              <td style="max-width: 300px;">
                 <a *ngIf="!isProcessingStatus(data.status)"
-                  (click)="navigateToPackageDetail(data.id)">{{data.packageName}}</a>
+                  (click)="navigateToPackageDetail(data.id)" >{{data.packageName}}</a>
                 <a *ngIf="isProcessingStatus(data.status)" style="cursor: text;">{{ data.packageName }}</a>
               </td>
               <td class='text-right'>{{data.totalSizeHDD}}</td>
@@ -187,9 +187,7 @@
           </thead>
           <tbody>
             <tr *ngFor="let data of fixedTable1.data">
-              <td  >
-                <p class=""  > {{data.name}}</p>
-               </td>
+              <td style="max-width:250px"> {{data.name}}</td>
               <td   class="text-right">{{data.sizeInGB}}</td>
             </tr>
           </tbody>
@@ -209,7 +207,7 @@
           </thead>
           <tbody>
             <tr *ngFor="let data of fixedTable2.data">
-              <td>{{data.name}}</td>
+              <td style="max-width:250px"> {{data.name}}</td>
               <td class="text-right">{{data.maxSnapshot}}</td>
             </tr>
           </tbody>
@@ -229,10 +227,10 @@
     </div>
   </nz-modal>
   <!--  modal Chinh sua-->
-  <nz-modal [(nzVisible)]="isVisibleUpdate" nzTitle="Chỉnh sửa thông tin gói Snapshot" nzTabScrollList="true"
+  <nz-modal [(nzVisible)]="isVisibleUpdate" nzTitle="Chỉnh sửa gói Snapshot" nzTabScrollList="true"
     (nzOnCancel)="handleUpdateCancel()" nzCentered>
     <div *nzModalTitle>
-      <span class="text-modal-title">Chỉnh sửa thông tin gói Snapshot</span>
+      <span class="text-modal-title">Chỉnh sửa gói Snapshot</span>
     </div>
     <div *nzModalContent style="padding-top: 0; padding-bottom: 0">
       <form nz-form [formGroup]="validateForm" nzLayout="vertical">

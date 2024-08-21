@@ -36,11 +36,11 @@ export class SnapshotCreateComponent implements OnInit, OnChanges {
       Validators.pattern(/^[a-zA-Z0-9_]*$/),
       Validators.maxLength(50)]],
     description: ['', Validators.maxLength(255)],
-    quota: ['0GB', []]
+    quota: ['0 GB', []]
   });
-
+// quota:number=0;
   snapShotArray = [
-    { label: 'Snapshot Volume', value: 0 },
+    { label: 'Snapshot volume', value: 0 },
     { label: 'Snapshot máy ảo', value: 1 }
   ];
   vmArray: any;
@@ -67,6 +67,11 @@ export class SnapshotCreateComponent implements OnInit, OnChanges {
   quotaUsed: any;
   quotaRemain: any;
   selectedVolumeRoot: any;
+  isNotEnoughQuota:boolean=false;
+  isQuota:boolean=false;
+  namePackage:string;
+  packageType:string;
+  idSnapshotPackage:number;
   @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
 
   constructor(private router: Router,
@@ -181,7 +186,7 @@ export class SnapshotCreateComponent implements OnInit, OnChanges {
 
   formSearchPackageSnapshot: FormSearchPackageSnapshot = new FormSearchPackageSnapshot();
   disableCreate = true;
-  quota: string = '1GB';
+  // quota: string = '0 GB';
 
   private loadSnapshotPackage() {
     this.formSearchPackageSnapshot.projectId = this.project;
@@ -196,7 +201,10 @@ export class SnapshotCreateComponent implements OnInit, OnChanges {
       }))
       .subscribe(
         data => {
-          this.snapshotPackageArray = data.records;
+          console.log("data.records",data.records)
+          this.snapshotPackageArray = data.records.filter(item=>item.status=='AVAILABLE');
+          console.log("this.snapshotPackageArray",this.snapshotPackageArray)
+         
         }
       );
   }
@@ -265,11 +273,11 @@ export class SnapshotCreateComponent implements OnInit, OnChanges {
     }
 
     if ((this.navigateType == 0 || (this.selectedSnapshotType == 0 && this.navigateType == 2)) && this.selectedVolume != undefined) {
-      this.validateForm.controls['quota'].setValue(this.selectedVolume?.sizeInGB == undefined ? '0GB' : this.selectedVolume?.sizeInGB + 'GB');
+      this.validateForm.controls['quota'].setValue(this.selectedVolume?.sizeInGB == undefined ? '0 GB' : this.selectedVolume?.sizeInGB + 'GB');
     } else if ((this.navigateType == 1 || (this.selectedSnapshotType == 1 && this.navigateType == 2)) && this.selectedVolumeRoot != undefined) {
-      this.validateForm.controls['quota'].setValue(this.selectedVolumeRoot?.sizeInGB == undefined ? '0GB' : this.selectedVolumeRoot?.sizeInGB + 'GB');
+      this.validateForm.controls['quota'].setValue(this.selectedVolumeRoot?.sizeInGB == undefined ? '0 GB' : this.selectedVolumeRoot?.sizeInGB + 'GB');
     } else {
-      this.validateForm.controls['quota'].setValue('0GB');
+      this.validateForm.controls['quota'].setValue('0 GB');
     }
     this.checkDisableByQuota();
   }
@@ -315,10 +323,27 @@ export class SnapshotCreateComponent implements OnInit, OnChanges {
           this.checkDisable();
         }))
         .subscribe(data => {
+          let quota =Number(this.validateForm.controls['quota'].value.replace('GB', '')) 
+          console.log("quota123",typeof(quota))
+          if( data.totalSizeHDD < quota  &&  (this.quotaType=='hdd' || this.quotaType=='ssd')){
+            this.isNotEnoughQuota = true
+            this.isQuota = false
+          }
+          // else if()
+          else{
+            this.isNotEnoughQuota = false
+            if(this.selectedVolume){
+              this.isQuota = true
+            }
+           
+          }
+          console.log("selectedSnapshotPackage", data)
           this.quotaHDDTotal = data.totalSizeHDD;
           this.quotaHDDUsed = data.usedSizeHDD;
           this.quotaSSDTotal = data.totalSizeSSD;
           this.quotaSSDUsed = data.usedSizeSSD;
+          this.namePackage = data.packageName;
+          this.idSnapshotPackage = data.id;
         });
     }
     if (this.selectedSnapshotPackage == undefined) {
@@ -342,6 +367,8 @@ export class SnapshotCreateComponent implements OnInit, OnChanges {
           }))
           .subscribe(
           data => {
+            // let quota =Number(this.validateForm.controls['quota'].value.replace('GB', '')) 
+            // if(this.selectedSnapshotPackage && quota >this. )
             this.quotaType = data.volumeType;
             this.selectedVolumeRoot = data;
           }
