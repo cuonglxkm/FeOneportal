@@ -86,11 +86,11 @@ export class VpnSiteToSiteManage {
   }
 
   extendVpn() {
-    this.router.navigate([`/app-smart-cloud/vpn-site-to-site/extend/${this.project}`]);
+    this.router.navigate([`/app-smart-cloud/vpn-site-to-site/extend`]);
   }
 
   resizeVpn() {
-    this.router.navigate([`/app-smart-cloud/vpn-site-to-site/resize/${this.project}`]);
+    this.router.navigate([`/app-smart-cloud/vpn-site-to-site/resize`]);
   }
 
   modalDelete() {

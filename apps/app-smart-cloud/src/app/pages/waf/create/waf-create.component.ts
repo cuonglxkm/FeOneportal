@@ -179,9 +179,9 @@ export class WAFCreateComponent implements OnInit {
       .pipe(
         debounceTime(300)
       )
-      .subscribe(() => {
+      .subscribe((res) => {
         this.wafService
-          .hasWaf()
+          .checkNameWAFExist(res)
           .subscribe((data) => {
             if (data == true) {
               this.isExistName = true;

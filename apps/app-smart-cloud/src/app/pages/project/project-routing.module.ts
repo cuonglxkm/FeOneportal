@@ -23,14 +23,29 @@ const routes: Routes = [
     data: { title: 'Project Detail', key: 'policy-detail' },
   },
   {
+    path: 'detail-advance/:id',
+    component: ProjectDetailComponent,
+    data: { title: 'Project Detail Advance', key: 'policy-detail' },
+  },
+  {
     path: 'update/:id',
     component: ProjectUpdateComponent,
     data: { title: 'Project Update', key: 'policy-update' },
   },
   {
+    path: 'update-advance/:id',
+    component: ProjectUpdateComponent,
+    data: { title: 'Project Update Advance', key: 'policy-update' },
+  },
+  {
     path: 'extend/:id',
     component: ProjectExtendComponent,
     data: { title: 'Project Extend', key: 'policy-update' },
+  },
+  {
+    path: 'extend-advance/:id',
+    component: ProjectExtendComponent,
+    data: { title: 'Project Extend Advance', key: 'policy-update' },
   }
 
 ];

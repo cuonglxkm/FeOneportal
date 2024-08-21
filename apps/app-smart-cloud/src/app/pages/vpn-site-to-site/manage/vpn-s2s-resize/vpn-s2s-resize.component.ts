@@ -10,6 +10,9 @@ import { OrderService } from 'src/app/shared/services/order.service';
 import { VpnSiteToSiteService } from 'src/app/shared/services/vpn-site-to-site.service';
 import { RegionModel, ProjectModel } from '../../../../../../../../libs/common-utils/src';
 import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
+import { I18NService } from '@core';
+import { NzNotificationService } from 'ng-zorro-antd/notification';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
 
 @Component({
   selector: 'one-portal-vpn-s2s-resize',
@@ -17,7 +20,6 @@ import { ProjectSelectDropdownComponent } from 'src/app/shared/components/projec
   styleUrls: ['./vpn-s2s-resize.component.less'],
 })
 export class VpnS2sResizeComponent implements OnInit{
-  vpcId = 0;
   region = JSON.parse(localStorage.getItem('regionId'));
   project = JSON.parse(localStorage.getItem('projectId'));
   numberMonth: number = 1;
@@ -37,6 +39,8 @@ export class VpnS2sResizeComponent implements OnInit{
   oldOfferId = 0;
   vatDisplay;
   today: Date = new Date();
+  isVisiblePopupError: boolean = false;
+  errorList: string[] = [];
   @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
   /**
    *
@@ -50,11 +54,12 @@ export class VpnS2sResizeComponent implements OnInit{
     private activatedRoute: ActivatedRoute,
     private orderService: OrderService,
     private vpnSiteToSiteService: VpnSiteToSiteService,
+    private notification: NzNotificationService,
+    @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService
   ) {
     this.unitOfMeasure = environment.unitOfMeasureVpn;
   }
   ngOnInit(): void {
-    this.vpcId = Number(this.activatedRoute.snapshot.paramMap.get('vpcId'));
     this.numberMonth = 1;
   }
 
@@ -112,6 +117,10 @@ export class VpnS2sResizeComponent implements OnInit{
     this.expiredDate = addDays(this.dateString, 30 * this.numberMonth);
   }
 
+  closePopupError() {
+    this.isVisiblePopupError = false;
+  }
+
   extend() {
     
     const request = {
@@ -129,8 +138,25 @@ export class VpnS2sResizeComponent implements OnInit{
       ]
     }
 
-    var returnPath: string = window.location.pathname;
-    this.router.navigate(['/app-smart-cloud/order/cart'], {state: {data: request, path: returnPath}});
+    this.orderService.validaterOrder(request).subscribe({
+      next: (data) => {
+        if (data.success) {
+          var returnPath: string = window.location.pathname;
+          this.router.navigate(['/app-smart-cloud/order/cart'], {
+            state: { data: request, path: returnPath },
+          });
+        } else {
+          this.isVisiblePopupError = true;
+          this.errorList = data.data;
+        }
+      },
+      error: (e) => {
+        this.notification.error(
+          this.i18n.fanyi('app.status.fail'),
+          e.error.detail
+        );
+      },
+    });
   }
 
   priceChange(){
@@ -179,7 +205,7 @@ export class VpnS2sResizeComponent implements OnInit{
 
   getOffer(){
     this.loading = true;
-    this.vpnSiteToSiteService.getVpnSiteToSite(this.vpcId).pipe().subscribe(data => {
+    this.vpnSiteToSiteService.getVpnSiteToSite(0).pipe().subscribe(data => {
       this.loading = false;
       if(data){
         this.vpn = data.body;

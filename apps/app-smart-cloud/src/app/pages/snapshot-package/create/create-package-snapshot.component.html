@@ -78,7 +78,7 @@
                 <tr>
                   <td>HDD</td>
                   <td class='text-right'>
-                    <nz-input-number style="width: 20%; margin-left: -1px" [nzMin]="0" [nzStep]="1"
+                    <nz-input-number style="min-width: 30%; margin-left: -1px" [nzMin]="0" [nzStep]="1"
                       (keydown)="checkPossiblePress($event)" [(ngModel)]="numberHDD" (ngModelChange)="changeQuota(true)"
                       [ngModelOptions]="{ standalone: true }" nzSize="large"></nz-input-number>
                   </td>
@@ -93,7 +93,7 @@
                 <tr>
                   <td>SSD</td>
                   <td class='text-right'>
-                    <nz-input-number style="width: 20%; margin-left: -1px" [nzMin]="0" [nzStep]="1"
+                    <nz-input-number style="min-width: 30%; margin-left: -1px" [nzMin]="0" [nzStep]="1"
                       (keydown)="checkPossiblePress($event)" [(ngModel)]="numberSSD"
                       (ngModelChange)="changeQuota(false)" [ngModelOptions]="{ standalone: true }"
                       nzSize="large"></nz-input-number>

@@ -149,6 +149,12 @@ export class VpnS2sCreateComponent implements OnInit {
     
   }
 
+  onKeydown(event: KeyboardEvent, data: any): void {
+    if (event.key === 'Enter' || event.key === ' ') {
+      this.selectOffer(event, data);
+    }
+  }
+
   caculator(event) {
     if(this.offer){
       this.totalAmount = this.offer['Price'] * this.validateForm.controls.time.value

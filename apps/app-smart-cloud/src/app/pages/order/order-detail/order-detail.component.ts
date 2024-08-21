@@ -110,7 +110,7 @@ export class OrderDetailComponent {
             data?.orderItems?.forEach((item) => {
 
               this.serviceName = item.serviceName.split('-')[0].trim()
-              let serviceName1 = item.serviceName.split('-')[1].trim()
+              let serviceName1 = item.serviceName.split('-')[1]
               if(this.serviceName.includes('Snapshot Package')) {
                 item.serviceName = `Gói Snapshot - ${serviceName1}`;
               }
@@ -161,7 +161,7 @@ export class OrderDetailComponent {
             }
             data?.orderItems?.forEach((item) => {
               this.serviceName = item.serviceName.split('-')[0].trim()
-              let serviceName1 = item.serviceName.split('-')[1].trim()
+              let serviceName1 = item.serviceName.split('-')[1]
               if(this.serviceName.includes('Snapshot Package')) {
                 item.serviceName = `Gói Snapshot - ${serviceName1}`;
               }
