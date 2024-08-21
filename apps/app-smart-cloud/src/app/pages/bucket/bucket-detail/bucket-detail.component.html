@@ -760,7 +760,7 @@
 <nz-modal
 *ngIf="dataAction != undefined"
   [(nzVisible)]="isVisibleCopy"
-  [nzTitle]="'Sao chép Object : ' + dataAction.key"
+  [nzTitle]="'Sao chép Object : ' + bucket.bucketName + '/' + dataAction.key"
   (nzOnCancel)="handleCancel()"
   [nzStyle]="modalStyle"
 >

@@ -30,11 +30,11 @@ const routes: Routes = [
     component: VpnS2sCreateComponent,
   },
   {
-    path: 'extend/:vpcId',
+    path: 'extend',
     component: VpnS2sExtendComponent,
   },
   {
-    path: 'resize/:vpcId',
+    path: 'resize',
     component: VpnS2sResizeComponent,
   },
   {
