@@ -390,7 +390,7 @@
           <nz-tab
             *ngIf="isVmFlavor"
             [nzTitle]="'app.Preconfigured.Package' | i18n"
-            (nzClick)="onClickConfigPackage()"
+            (nzClick)="onClickConfigPackage(); selectDefaultSnapshotPackage()"
           >
             <ngu-carousel
               *ngIf="activeBlockHDD"

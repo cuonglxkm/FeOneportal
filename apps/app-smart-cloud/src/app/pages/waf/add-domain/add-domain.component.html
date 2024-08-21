@@ -68,7 +68,7 @@
               Domain (<span style="color: rgba(252, 16, 16, 1)">*</span>)
             </nz-form-label>
             <input #domainInput nz-input type="text" appTrim placeholder="www.example.com" formControlName="domain"
-              class="input-custom" minlength="1" (input)="handleOnChangeDomain($event)" />
+              class="input-custom" minlength="1" maxlength="253" (input)="handleOnChangeDomain($event)" />
             <ng-template #domainErrorTpl let-control>
               <!-- <ng-container *ngIf="control.hasError('duplicateDomain')">Domain không được trùng nhau</ng-container> -->
               <ng-container *ngIf="control.hasError('pattern')">Domain không đúng định dạng</ng-container>
@@ -97,7 +97,7 @@
         <nz-form-item>
           <nz-form-control [nzErrorTip]="hostErrTpl">
             <nz-form-label nzFor="host">Host </nz-form-label>
-            <input nz-input type="text" appTrim placeholder="Nhập host" formControlName="host" class="input-custom"/>
+            <input nz-input type="text" appTrim placeholder="Nhập host" formControlName="host" class="input-custom" maxlength="253"/>
               <ng-template #hostErrTpl let-control>
                 <ng-container *ngIf="control.hasError('invalidHost')">Vui lòng nhập đúng định dạng Host</ng-container>
               </ng-template>
