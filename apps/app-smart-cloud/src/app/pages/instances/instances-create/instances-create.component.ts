@@ -701,6 +701,7 @@ export class InstancesCreateComponent implements OnInit {
     this.isGpuConfig = false;
     this.resetData();
     this.disableHDD = false;
+    // this.selectDefaultSnapshotPackage()
   }
 
   onClickCustomConfig() {
@@ -926,16 +927,17 @@ export class InstancesCreateComponent implements OnInit {
             }
           });
         });
+        this.listOfferFlavors = this.listOfferFlavors.sort(
+          (a, b) => a.price.fixedPrice.amount - b.price.fixedPrice.amount
+        );
         if (this.isSnapshot) {
           this.listOfferFlavors = this.listOfferFlavors.filter(
             (e) =>
               Number.parseInt(e.description.split(' ')[7]) >=
               this.sizeSnapshotVL
           );
+          this.selectDefaultSnapshotPackage()
         }
-        this.listOfferFlavors = this.listOfferFlavors.sort(
-          (a, b) => a.price.fixedPrice.amount - b.price.fixedPrice.amount
-        );
         this.offerFlavor = this.listOfferFlavors.find(
           (flavor) => flavor.id === this.packageId
         );
@@ -2433,5 +2435,11 @@ export class InstancesCreateComponent implements OnInit {
 
   navigateToSecurity(): void {
     this.router.navigate(['/app-smart-cloud/security-group/list']);
+  }
+
+  selectDefaultSnapshotPackage(){
+    const firstOfferFlavor = this.listOfferFlavors?.[0]
+    this.selectElementInputFlavors('flavor_' + firstOfferFlavor.id);
+    this.onInputFlavors(firstOfferFlavor.id)
   }
 }
