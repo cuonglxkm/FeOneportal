@@ -2544,7 +2544,7 @@
   "wan.nofitacation.ip.wan.add.fail": "Cấp phát IP WAN thất bại",
   "wan.label.ip.wan.attach": "Gắn IP WAN",
   "wan.alert.ip.wan.attach": "Bạn đang thực hiện gắn IP WAN vào máy ảo",
-  "wan.label.instance.select": "Chọn Máy ảo",
+  "wan.label.instance.select": "Chọn máy ảo",
   "wan.nofitacation.instance.attach.sucess": "Gán máy ảo thành công",
   "wan.nofitacation.instance.attach.fail": "Gán máy ảo thất bại",
   "wan.label.ip.wan.remove": "Xóa IP WAN",

@@ -34,6 +34,7 @@ import { RegionID } from 'src/app/shared/enums/common.enum';
 
 
 export class ProjectCreateComponent implements OnInit {
+  region = JSON.parse(localStorage.getItem('regionId'));
   public carouselTileConfig: NguCarouselConfig = {
     grid: { xs: 1, sm: 1, md: 2, lg: 3, all: 0 },
     speed: 250,
@@ -412,21 +413,7 @@ export class ProjectCreateComponent implements OnInit {
     this.searchSubject.next('');
 
   }
-  // calculate(number: any,max: number, inputName: string) {
-  //   if (this[inputName] > max) {
-  //     this[inputName] = max;
-  //   }
-  //   if (this.vpcType === '0') {
-  //     this.activeVpc = false;
-  //     this.activeNoneVpc = true;
-  //   } else {
-  //     this.activeVpc = true;
-  //     this.activeNoneVpc = false;
-
-  //   }
-  //   this.searchSubject.next('');
-
-  // }
+ 
   getStepBlock(name: string) {
     this.vpc.getStepBlock(name).subscribe((res: any) => {
       const valuestring: any = res.valueString;
@@ -468,25 +455,7 @@ export class ProjectCreateComponent implements OnInit {
     this._ssd = Math.min(Math.max(value, this.minBlock), this.maxBlock);
   }
 
-  // _hhd: number = this.maxBlock;
 
-  // get hhd(): number {
-  //     return this._hhd;
-  // }
-
-  // set hhd(value: number) {
-  //     this._hhd = Math.min(Math.max(value, this.minBlock), this.maxBlock);
-  // }
-
-  // _ssd: number = this.maxBlock;
-
-  // get ssd(): number {
-  //     return this._ssd;
-  // }
-
-  // set ssd(value: number) {
-  //     this._ssd = Math.min(Math.max(value, this.minBlock), this.maxBlock);
-  // }
 
   checkNumberInput(value: number, name: string): void {
     const messageStepNotification = `Số lượng phải chia hết cho  ${this.stepBlock} `;
@@ -774,7 +743,8 @@ export class ProjectCreateComponent implements OnInit {
               this.vpc.createIpPublic(request).subscribe(
                 data => {
                   this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('project.action.creating'));
-                  this.router.navigate(['/app-smart-cloud/project']);
+                  // this.router.navigate(['/app-smart-cloud/project']);
+                  this.navigateToVPC();
                 },
                 error => {
                   this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('project.note51'));
@@ -824,7 +794,8 @@ export class ProjectCreateComponent implements OnInit {
                 this.vpc.createIpPublic(request).subscribe(
                   data => {
                     this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('project.action.creating'));
-                    this.router.navigate(['/app-smart-cloud/project']);
+                    // this.router.navigate(['/app-smart-cloud/project']);
+                    this.navigateToVPC()
                   },
                   error => {
                     this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('project.note51'));
@@ -849,6 +820,14 @@ export class ProjectCreateComponent implements OnInit {
         });
       // var returnPath: string = window.location.pathname;
       // this.router.navigate(['/app-smart-cloud/order/cart'], { state: { data: request, path: returnPath } });
+    }
+  }
+
+  navigateToVPC(){
+    if (this.region === RegionID.ADVANCE) {
+      this.router.navigate(['/app-smart-cloud/project-advance'])
+    } else {
+      this.router.navigate(['/app-smart-cloud/project'])
     }
   }
   toggleBonusService() {
