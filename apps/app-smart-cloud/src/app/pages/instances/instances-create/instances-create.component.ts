@@ -60,6 +60,7 @@ import { ConfigurationsService } from 'src/app/shared/services/configurations.se
 import { OrderService } from 'src/app/shared/services/order.service';
 import { VolumeService } from 'src/app/shared/services/volume.service';
 import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
+import { RegionID } from 'src/app/shared/enums/common.enum';
 
 class ConfigCustom {
   //cấu hình tùy chỉnh
@@ -251,7 +252,7 @@ export class InstancesCreateComponent implements OnInit {
       event.preventDefault(); // Hủy sự kiện để ngăn người dùng nhập ký tự đó
     }
   }
-
+  url = window.location.pathname;
   packageId: number;
   hasRoleSI: boolean;
   ngOnInit(): void {
@@ -282,6 +283,15 @@ export class InstancesCreateComponent implements OnInit {
       let regionAndProject = getCurrentRegionAndProject();
       this.region = regionAndProject.regionId;
       this.projectId = regionAndProject.projectId;
+      if (!this.url.includes('advance')) {
+        if (Number(localStorage.getItem('regionId')) === RegionID.ADVANCE) {
+          this.region = RegionID.NORMAL;
+        } else {
+          this.region = Number(localStorage.getItem('regionId'));
+        }
+      } else {
+        this.region = RegionID.ADVANCE;
+      }
     }
     if (this.activatedRoute.snapshot.paramMap.get('idSnapshot')) {
       this.isSnapshot = true;

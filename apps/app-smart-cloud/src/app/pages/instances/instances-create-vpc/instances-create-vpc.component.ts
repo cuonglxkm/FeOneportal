@@ -53,6 +53,7 @@ import { ConfigurationsService } from 'src/app/shared/services/configurations.se
 import { OrderService } from 'src/app/shared/services/order.service';
 import { CatalogService } from 'src/app/shared/services/catalog.service';
 import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
+import { RegionID } from 'src/app/shared/enums/common.enum';
 
 @Component({
   selector: 'one-portal-instances-create-vpc',
@@ -116,6 +117,7 @@ export class InstancesCreateVpcComponent implements OnInit {
   remainingVCPU: number = 0;
   remainingGpu: number = 0;
   volumeRootCapacity: number = 0;
+  url = window.location.pathname;
   @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
   onKeyDown(event: KeyboardEvent) {
     // Lấy giá trị của phím được nhấn
@@ -208,6 +210,15 @@ export class InstancesCreateVpcComponent implements OnInit {
     let regionAndProject = getCurrentRegionAndProject();
     this.region = regionAndProject.regionId;
     this.projectId = regionAndProject.projectId;
+    if (!this.url.includes('advance')) {
+      if (Number(localStorage.getItem('regionId')) === RegionID.ADVANCE) {
+        this.region = RegionID.NORMAL;
+      } else {
+        this.region = Number(localStorage.getItem('regionId'));
+      }
+    } else {
+      this.region = RegionID.ADVANCE;
+    }
     if (this.activatedRoute.snapshot.paramMap.get('idSnapshot')) {
       this.isSnapshot = true;
       this.initSnapshot();
