@@ -196,7 +196,7 @@
                 (click)="extend()"
                 [nzLoading]="isLoadingCreate"
               >
-                <span nz-icon nzType="wallet" nzTheme="outline"></span>
+                <span *ngIf="isLoadingCreate === false" nz-icon nzType="wallet" nzTheme="outline"></span>
                 {{ 'app.button.create' | i18n }}
               </button>
             </nz-col>

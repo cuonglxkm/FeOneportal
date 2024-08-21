@@ -225,6 +225,15 @@ export class WafService extends BaseService {
     return this.http.put(this.baseUrl + this.ENDPOINT.provisions + `/waf/policies/${domainId}`, data, {headers: this.getHeaders().headers})
   }
 
+  checkNameWAFExist(name: string) {
+    return this.http.get<any>(
+      this.baseUrl + this.ENDPOINT.provisions + `/waf/checknameexist?name=${name}`,
+      {
+        headers: this.getHeaders().headers,
+      }
+    );
+  }
+
   hasWaf(){
     return this.http.get(this.baseUrl + this.ENDPOINT.provisions + `/waf/has-waf`, this.getHeaders())
   }

@@ -198,13 +198,15 @@
               nzSize="large"
               nzType="primary"
               [disabled]="!isEnable || invalid"
+              [nzLoading]="isLoadingAction"
               (click)="extend()"
             >
               <img
+                *ngIf="isLoadingAction === false"
                 src="assets/imgs/wallet.svg"
                 style="margin-right: 5px; padding-bottom: 5px"
               />
-              {{ 'app.button.extend' | i18n }}
+              <span>{{ 'app.button.extend' | i18n }}</span>
             </button>
           </nz-col>
         </nz-row>
@@ -212,3 +214,7 @@
     </nz-affix>
   </nz-col>
 </nz-row>
+<one-portal-popup-list-error
+    [isVisible]="isVisiblePopupError"
+    [errorList]="errorList"
+    (onCancel)="closePopupError()" />

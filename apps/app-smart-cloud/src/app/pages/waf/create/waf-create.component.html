@@ -41,15 +41,16 @@
             <input
               nz-input
               placeholder="Nhập tên WAF"
-              style="width: 100%"
+              [ngStyle]="isExistName ? { borderColor: '#ff4d4f' } : {}"
+              style="width: 100%;"
               formControlName="nameWAF"
               (ngModelChange)="changeName($event)"
               maxlength="50"
               class="custom-input"
             />
-            <!-- <div *ngIf="isExistName" style="color: #ff4d4f">
+            <div *ngIf="isExistName" style="color: #ff4d4f">
               Tên WAF đã tồn tại
-            </div> -->
+            </div>
             <ng-template #nameErrorTpl let-control>
               <ng-container *ngIf="control.hasError('required')"
                 >Tên WAF không được để trống

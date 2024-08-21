@@ -11,6 +11,9 @@ import { VpnSiteToSiteService } from 'src/app/shared/services/vpn-site-to-site.s
 import { RegionModel, ProjectModel } from '../../../../../../../../libs/common-utils/src';
 import { FormControl, FormGroup, NonNullableFormBuilder } from '@angular/forms';
 import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
+import { NzNotificationService } from 'ng-zorro-antd/notification';
+import { I18NService } from '@core';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
 
 @Component({
   selector: 'one-portal-vpn-s2s-extend',
@@ -35,8 +38,11 @@ export class VpnS2sExtendComponent implements OnInit{
   vatNumber = 0;
   vatPer = 10;
   vpn: any;
+  isLoadingAction: boolean = false;
   vatDisplay;
   timeSelected: any;
+  isVisiblePopupError: boolean = false;
+  errorList: string[] = [];
   /**
    *
    */
@@ -56,7 +62,9 @@ export class VpnS2sExtendComponent implements OnInit{
     private activatedRoute: ActivatedRoute,
     private orderService: OrderService,
     private vpnSiteToSiteService: VpnSiteToSiteService,
-    private fb: NonNullableFormBuilder
+    private fb: NonNullableFormBuilder,
+    private notification: NzNotificationService,
+    @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService
   ) {
     this.unitOfMeasure = environment.unitOfMeasureVpn;
   }
@@ -83,6 +91,10 @@ export class VpnS2sExtendComponent implements OnInit{
 
   userChangeProject(){
     this.router.navigate(['/app-smart-cloud/vpn-site-to-site']);
+  }
+  
+  closePopupError() {
+    this.isVisiblePopupError = false;
   }
 
   getOffers(){
@@ -150,12 +162,30 @@ export class VpnS2sExtendComponent implements OnInit{
         }
       ]
     }
-
-    var returnPath: string = window.location.pathname;
-    this.router.navigate(['/app-smart-cloud/order/cart'], {state: {data: request, path: returnPath}});
+    
+    this.orderService.validaterOrder(request).subscribe({
+      next: (data) => {
+        if (data.success) {
+          var returnPath: string = window.location.pathname;
+          this.router.navigate(['/app-smart-cloud/order/cart'], {
+            state: { data: request, path: returnPath },
+          });
+        } else {
+          this.isVisiblePopupError = true;
+          this.errorList = data.data;
+        }
+      },
+      error: (e) => {
+        this.notification.error(
+          this.i18n.fanyi('app.status.fail'),
+          e.error.detail
+        );
+      },
+    });
   }
 
   priceChange(){
+    this.isLoadingAction = true;
     let itemPayment: ItemPayment = new ItemPayment();
     itemPayment.orderItemQuantity = 1;
     itemPayment.specificationString = JSON.stringify(this.spec);
@@ -166,6 +196,7 @@ export class VpnS2sExtendComponent implements OnInit{
     dataPayment.orderItems = [itemPayment];
     dataPayment.projectId = 0;
       this.orderService.getTotalAmount(dataPayment).subscribe((result) => {
+        this.isLoadingAction = false;
         if(result && result.data && result.data.currentVAT){
           this.vatNumber = result.data.currentVAT;
           this.vatPer = this.vatNumber * 100;
