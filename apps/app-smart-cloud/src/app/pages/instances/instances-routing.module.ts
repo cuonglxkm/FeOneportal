@@ -56,7 +56,7 @@ const routes: Routes = [
     path: 'instances-extend/:id',
     component: InstancesExtendComponent,
     data: { title: 'Gia hạn máy ảo', key: 'instances-extend' },
-  },
+  }
 ];
 
 @NgModule({

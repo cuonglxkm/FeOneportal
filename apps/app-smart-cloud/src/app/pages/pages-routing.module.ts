@@ -250,7 +250,7 @@ const routes: Routes = [
       ),
   },
   {
-    path: 'instanceadvance',
+    path: 'instances-advance',
     loadChildren: () =>
       import('../pages/instances/instances.module').then(
         (m) => m.InstancesModule

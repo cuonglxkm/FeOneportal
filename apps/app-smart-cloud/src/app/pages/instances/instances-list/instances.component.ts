@@ -42,6 +42,7 @@ import {
   FormSearchScheduleBackup,
 } from '../../../shared/models/schedule.model';
 import { ScheduleService } from '../../../shared/services/schedule.service';
+import { RegionID } from 'src/app/shared/enums/common.enum';
 
 class SearchParam {
   status: string = '';
@@ -92,11 +93,21 @@ export class InstancesComponent implements OnInit {
     private vlanService: VlanService,
     private backupScheduleService: ScheduleService
   ) {}
+  url = window.location.pathname;
 
   ngOnInit() {
     let regionAndProject = getCurrentRegionAndProject();
     this.region = regionAndProject.regionId;
     this.projectId = regionAndProject.projectId;
+    if (!this.url.includes('advance')) {
+      if (Number(localStorage.getItem('regionId')) === RegionID.ADVANCE) {
+        this.region = RegionID.NORMAL;
+      } else {
+        this.region = Number(localStorage.getItem('regionId'));
+      }
+    } else {
+      this.region = RegionID.ADVANCE;
+    }
     this.userId = this.tokenService.get()?.userId;
     this.getActiveServiceByRegion();
     this.notificationService.connection.on('UpdateInstance', (data) => {

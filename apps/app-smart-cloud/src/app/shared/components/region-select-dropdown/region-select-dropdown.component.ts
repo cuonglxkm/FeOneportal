@@ -113,7 +113,7 @@ export class RegionSelectDropdownComponent implements OnInit {
     const snapshotPackageAdvancePath = '/app-smart-cloud/snapshot-advance/packages';
 
     const instancesPath = '/app-smart-cloud/instances';
-    const instancesAdvancePath = '/app-smart-cloud/instanceadvance';
+    const instancesAdvancePath = '/app-smart-cloud/instances-advance';
     
     if (this.url === bucketAdvancePath && regionId !== RegionID.ADVANCE) {
       this.router.navigate([bucketPath]);
