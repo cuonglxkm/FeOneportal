@@ -115,20 +115,36 @@ export class VpnS2sCreateComponent implements OnInit {
   }
 
   selectOffer(e, data){
-    if(!this.offer || data['Id'] != this.offer['Id']){
-      this.offer = data;
-      let element = this.el.nativeElement.querySelector(`#offer-title-${this.offer['Id']}`);
-      let listTr = element.parentNode.parentNode.children;
-      for (let elementTr of listTr) {
-        this.renderer.removeClass(elementTr, 'tr-selected');
-
+    if(!this.invalid){
+      if(!this.offer || data['Id'] != this.offer['Id']){
+        this.offer = data;
+        let element = this.el.nativeElement.querySelector(`#offer-title-${this.offer['Id']}`);
+        let listTr = element.parentNode.parentNode.children;
+        for (let elementTr of listTr) {
+          this.renderer.removeClass(elementTr, 'tr-selected');
+  
+        }
+        this.renderer.addClass(element.parentNode, 'tr-selected');
+        this.totalAmount = this.offer['Price'] * this.validateForm.controls.time.value
+        this.totalincludesVAT = this.totalAmount * ((this.vatNumber ? this.vatNumber : 0.1) + 1);
+        this.isEnable = true;
+        this.specChange();
+        this.priceChange();
       }
-      this.renderer.addClass(element.parentNode, 'tr-selected');
-      this.totalAmount = this.offer['Price'] * this.validateForm.controls.time.value
-      this.totalincludesVAT = this.totalAmount * ((this.vatNumber ? this.vatNumber : 0.1) + 1);
-      this.isEnable = true;
-      this.specChange();
-      this.priceChange();
+    }else{
+      if(!this.offer || data['Id'] != this.offer['Id']){
+        this.offer = data;
+        let element = this.el.nativeElement.querySelector(`#offer-title-${this.offer['Id']}`);
+        let listTr = element.parentNode.parentNode.children;
+        for (let elementTr of listTr) {
+          this.renderer.removeClass(elementTr, 'tr-selected');
+        }
+        this.renderer.addClass(element.parentNode, 'tr-selected');
+        this.totalAmount = 0
+        this.totalincludesVAT = 0
+        this.isEnable = true;
+        this.specChange();
+      }
     }
     
   }
@@ -182,12 +198,21 @@ export class VpnS2sCreateComponent implements OnInit {
 
     
   }
-
+  invalid: boolean = false;
   onChangeTime(value) {
-    this.timeSelected = value;
-    this.validateForm.controls.time.setValue(this.timeSelected);
-    console.log(this.timeSelected);
-    this.priceChange();
+    if (value == undefined) {
+      this.invalid = true;
+      this.totalAmount = 0;
+      this.totalincludesVAT = 0;
+      this.vatDisplay = 0
+    }else{
+      this.invalid = false;
+      this.timeSelected = value;
+      this.validateForm.controls.time.setValue(this.timeSelected);
+      console.log(this.timeSelected);
+      this.priceChange();
+    }
+
   }
 
   priceChange(){

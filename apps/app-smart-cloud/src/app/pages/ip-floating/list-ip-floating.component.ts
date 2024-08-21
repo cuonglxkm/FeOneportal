@@ -10,6 +10,8 @@ import { ProjectSelectDropdownComponent } from 'src/app/shared/components/projec
 import { da } from 'date-fns/locale';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from '@core';
+import { NzNotificationService } from 'ng-zorro-antd/notification';
+import { PolicyService } from 'src/app/shared/services/policy.service';
 
 @Component({
   selector: 'one-portal-list-ip-floating',
@@ -33,10 +35,13 @@ export class ListIpFloatingComponent implements OnInit {
 
   isBegin: boolean = false
   searchDelay = new Subject<boolean>();
+  isCreateOrder: boolean = false;
   @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
   constructor(private ipFloatingService: IpFloatingService,
               @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
-              @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService) {
+              @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
+              private notification: NzNotificationService,
+              private policyService: PolicyService) {
   }
 
   refreshParams() {
@@ -62,6 +67,7 @@ export class ListIpFloatingComponent implements OnInit {
     console.log(this.projectType);
     this.value = '';
     this.getData(true);
+    this.isCreateOrder = this.policyService.hasPermission("order:Create");
   }
 
   onPageSizeChange(event) {
@@ -106,6 +112,17 @@ export class ListIpFloatingComponent implements OnInit {
           this.isBegin = this.response?.records === null || this.response?.records.length < 1 ? true : false;
         }
     }, error => {
+        if(error.status == 403){
+          this.notification.error(
+            error.statusText,
+            this.i18n.fanyi('app.non.permission')
+          );
+        } else {
+          this.notification.error(
+            error.statusText,
+            this.i18n.fanyi('app.notify.get.list.ip.floating')
+          );
+        }
         this.isLoading = false
         this.response = null
       })

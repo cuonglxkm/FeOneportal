@@ -1,9 +1,11 @@
 <page-header [breadcrumb]="breadcrumb"
              [action]="action"
-             [title]="title">
+             [title]="'Gia hạn gói Snapshot'">
   <ng-template #breadcrumb>
     <nz-breadcrumb [nzSeparator]="separatorTemplate">
-      <nz-breadcrumb-item>Trang chủ</nz-breadcrumb-item>
+      <nz-breadcrumb-item>
+        <a routerLink="/app-smart-cloud"> Trang chủ</a>
+       </nz-breadcrumb-item>
       <nz-breadcrumb-item>
         Dịch vụ hạ tầng
       </nz-breadcrumb-item>
@@ -13,11 +15,9 @@
       <nz-breadcrumb-item>
         <a routerLink="/app-smart-cloud/snapshot/packages">Gói Snapshot</a>
       </nz-breadcrumb-item>
+ 
       <nz-breadcrumb-item>
-        <a routerLink="/app-smart-cloud/snapshot/packages/detail/{{idSnapshotPackage}}">Thông tin gói Snapshot</a>
-      </nz-breadcrumb-item>
-      <nz-breadcrumb-item>
-        <a routerLink="/app-smart-cloud/snapshot/packages/extend/{{idSnapshotPackage}}">Gia hạn gói Snapshot</a>
+        Gia hạn gói Snapshot
       </nz-breadcrumb-item>
     </nz-breadcrumb>
     <ng-template #separatorTemplate
@@ -32,22 +32,14 @@
                                [regionId]="region"></project-select-dropdown>
     </div>
   </ng-template>
-  <ng-template #title>
-    <div nz-row nzJustify="space-between">
-      <nz-row>
-        <nz-col>
-          <div>Gia hạn gói Snapshot</div>
-        </nz-col>
-      </nz-row>
-    </div>
-  </ng-template>
+  
 </page-header>
 <nz-content>
   <form nz-form [formGroup]="validateForm" nzLayout="vertical">
     <nz-row nzGutter="24">
       <nz-col nzSpan="16">
         <nz-card>
-          <div class="text-card-header">Thông tin của gói Snapshot</div>
+          <div class="text-card-header">Thông tin gói Snapshot</div>
           <div class="customRow" style="margin-top: 15px;">
             <nz-row style="background-color: #e2e2e9">
               <nz-col nzSpan="12">
@@ -157,7 +149,7 @@
           " nzGutter="16">
               <nz-col nzSpan="16">
                 <span class="text-label">{{ 'app.total.payment' | i18n }}</span><br />
-                <span class="text-note-italicized">{{ 'app.include.vat' | i18n:{ "vat": "10" } }}</span>
+                <span class="text-note-italicized">({{ 'app.include.vat' | i18n:{ "vat": "10" } }})</span>
               </nz-col>
               <nz-col class="text-right" nzSpan="8">
                 <span class="text-value" style="color: #ea3829" nzAlign="right">{{ totalPayment | number }} VND</span>
@@ -165,11 +157,12 @@
             </nz-row>
             <nz-row>
               <nz-col style="width: 100%">
-                <button style="width: 100%" nz-button nzSize="large" nzType="primary"
+                <button style="width: 100%" nz-button nzSize="large" nzType="primary" class="flex items-center justify-center"
                         (click)="navigateToPaymentSummary()"
                         [disabled]="loadingCalculate"
                         [nzLoading]="loadingCalculate">
-                  <span nz-icon nzType="wallet" nzTheme="outline"></span>
+                  <!-- <span nz-icon nzType="wallet" nzTheme="outline"></span> -->
+                   <img src="assets/extendvpc.svg" style="padding-right: 10px;" alt="">
                   <span
                     [style.color]="loadingCalculate? 'gray' : 'white'">{{ 'app.extend' | i18n }}</span>
                 </button>

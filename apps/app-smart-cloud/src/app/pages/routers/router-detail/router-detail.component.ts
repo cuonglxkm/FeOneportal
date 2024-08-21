@@ -288,6 +288,12 @@ export class RouterDetailComponent implements OnInit {
               this.i18n.fanyi('app.status.fail'),
               this.i18n.fanyi('router.alert.wrong.format')
             );
+          }else if (error.error.detail.includes('must be different from')) {
+            this.notification.error(
+              this.i18n.fanyi('app.status.fail'),
+              'Địa chỉ IP của Router Interface trong VPN Site to Site phải khác với default gateway (x.x.x.1)'
+            );
+            this.ipAdress.nativeElement.focus();
           } else {
             this.notification.error(
               this.i18n.fanyi('app.status.fail'),

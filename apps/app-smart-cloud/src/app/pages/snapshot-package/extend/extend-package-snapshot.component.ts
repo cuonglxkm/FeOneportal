@@ -21,6 +21,8 @@ import { getCurrentRegionAndProject } from '@shared';
 import { OrderService } from '../../../shared/services/order.service';
 import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
 import { RegionID } from 'src/app/shared/enums/common.enum';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
+import { I18NService } from '@core';
 
 @Component({
   selector: 'one-portal-extend-package-snapshot',
@@ -48,6 +50,9 @@ export class ExtendPackageSnapshotComponent implements OnInit{
   numOfMonth: any = 1;
   isVisiblePopupError: boolean = false;
   errorList: string[] = [];
+
+  packageName:string;
+
   closePopupError() {
     this.isVisiblePopupError = false;
   }
@@ -60,7 +65,7 @@ export class ExtendPackageSnapshotComponent implements OnInit{
               private route: ActivatedRoute,
               private fb: NonNullableFormBuilder,
               private orderService: OrderService,
-              private projectService: ProjectService) {
+              private projectService: ProjectService,  @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,) {
   }
 
   regionChanged(region: RegionModel) {
@@ -102,7 +107,14 @@ export class ExtendPackageSnapshotComponent implements OnInit{
       console.log('data', data);
       this.packageSnapshotModel = data;
       this.validateForm.controls['description'].setValue(data.description);
+      this.packageName =data.packageName;
       this.getTotalAmount();
+    },error =>{      
+      if(error.status===500){
+        this.router.navigate(['/app-smart-cloud/snapshot/packages']);
+        this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi(error.error.detail));
+      }
+      
     });
   }
 
@@ -125,7 +137,7 @@ export class ExtendPackageSnapshotComponent implements OnInit{
         actionType: 3,
         serviceInstanceId: this.idSnapshotPackage,
         regionId: this.region,
-        serviceName: null,
+        serviceName: this.packageName,
         projectId: this.project,
         typeName: 'SharedKernel.IntegrationEvents.Orders.Specifications.SnapshotPackageExtendSpecification,SharedKernel.IntegrationEvents,Version=1.0.0.0,Culture=neutral,PublicKeyToken=null',
         userEmail: null,
@@ -178,7 +190,7 @@ export class ExtendPackageSnapshotComponent implements OnInit{
       actionType: 3,
       serviceInstanceId: this.idSnapshotPackage,
       regionId: this.region,
-      serviceName: null,
+      serviceName: this.packageName,
       projectId: this.project,
       typeName: 'SharedKernel.IntegrationEvents.Orders.Specifications.SnapshotPackageExtendSpecification,SharedKernel.IntegrationEvents,Version=1.0.0.0,Culture=neutral,PublicKeyToken=null',
       userEmail: null,

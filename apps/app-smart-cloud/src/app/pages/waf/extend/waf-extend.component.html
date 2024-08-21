@@ -50,26 +50,26 @@
                          [ngClass]="{'row-white-bg': i % 2 !== 0, 'row-gray-bg': i % 2 === 0}" 
                          class="content-items-center">
                       <div nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="12">
-                        <span class="label-fontsize" [nzPopoverOverlayStyle]="{'width': '280px'}" nz-popover [nzPopoverTitle]="domain" [nzPopoverContent]="domainContent">Domain ({{i + 1}}):</span>
-                      </div>
-                      <ng-template #domainContent>
-                        <div nz-row [nzGutter]="24" class="mb-3">
-                          <div nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="12" class="text-fontsize">IP Public:</div>
-                          <div nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="12" class="text-fontsize">{{ipPublics[i]}}</div>
-                        </div>
-                        <div nz-row [nzGutter]="24" class="mb-3">
-                          <div nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="12" class="text-fontsize">Host:</div>
-                          <div nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="12" class="text-fontsize">{{WAFDetail.wafDomains[i].host }}</div>
-                        </div>
-                        <div nz-row [nzGutter]="24" class="mb-3">
-                            <div nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="12" class="text-fontsize">Port:</div>
-                            <div nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="12" class="text-fontsize">{{ WAFDetail.wafDomains[i].port }}</div>
-                        </div>
-                      </ng-template>
-                      <div nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="12">
-                        <span class="label-fontsize font-bold">
+                        <span class="label-fontsize">Domain ({{i + 1}}):</span>
+                      </div>                   
+                      <div  nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="12">
+                        <span class="label-fontsize font-bold" [nzPopoverOverlayStyle]="{'width': '280px'}" nz-popover [nzPopoverTitle]="domain" [nzPopoverContent]="domainContent">
                           {{ domain }} 
                         </span>
+                        <ng-template #domainContent>
+                          <div nz-row [nzGutter]="24" class="mb-3">
+                            <div nz-col nzXs="24" nzSm="14" nzMd="14" nzLg="14" class="text-fontsize">IP Public:</div>
+                            <div nz-col nzXs="24" nzSm="10" nzMd="10" nzLg="10" class="text-fontsize">{{ipPublics[i]}}</div>
+                          </div>
+                          <div nz-row [nzGutter]="24" class="mb-3">
+                            <div nz-col nzXs="24" nzSm="14" nzMd="14" nzLg="14" class="text-fontsize">Host:</div>
+                            <div nz-col nzXs="24" nzSm="10" nzMd="10" nzLg="10" class="text-fontsize">{{WAFDetail.wafDomains[i].host }}</div>
+                          </div>
+                          <div nz-row [nzGutter]="24" class="mb-3">
+                              <div nz-col nzXs="24" nzSm="14" nzMd="14" nzLg="14" class="text-fontsize">Port:</div>
+                              <div nz-col nzXs="24" nzSm="10" nzMd="10" nzLg="10" class="text-fontsize">{{ WAFDetail.wafDomains[i].port }}</div>
+                          </div>
+                        </ng-template>
                       </div>
                     </div>
                   </ng-container>
@@ -136,7 +136,7 @@
               <span class="text-value">Gói dịch vụ {{offerItem?.offerName}}</span><br />
               <span class="text-label" [innerHTML]="offerItem?.description"></span>
             </div>
-            <div style="margin-bottom: 10px">
+            <div style="margin-bottom: 10px; word-break: break-all">
               <span class="text-value">Tên miền</span><br />
               <span class="text-label" *ngFor="let domain of domains">
                 {{ domain }}<span *ngIf="!isLastDomain(domain)">, </span>

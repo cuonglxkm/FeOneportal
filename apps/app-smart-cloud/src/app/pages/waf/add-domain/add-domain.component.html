@@ -28,7 +28,7 @@
               Tên WAF (<span style="color: rgba(252, 16, 16, 1)">*</span>)
             </nz-form-label>
             <nz-select nzSize="medium" formControlName="nameWAF" nzAllowClear [nzShowSearch]="false"
-              (ngModelChange)="onChangeWaf($event)">
+              (ngModelChange)="onChangeWaf($event)" [nzDisabled]="fromWaf">
               <nz-option *ngFor="let item of listWafs" [nzLabel]="item.name" [nzValue]="item.id"></nz-option>
               <!-- <nz-option [nzLabel]="'item.name'" [nzValue]="1"></nz-option> -->
             </nz-select>
@@ -48,8 +48,8 @@
             <nz-form-label nzFor="package">
               <span>{{ 'app.text.package' | i18n }} (<span style="color: red;">*</span>)</span>
             </nz-form-label>
-            <nz-select [ngModel]="1" [nzDisabled]="true" class="input-select-custom" formControlName="package">
-              <nz-option *ngFor="let item of listWafs" [nzLabel]="item.offerName + '(' + item.quotaDomain + ')'"
+            <nz-select [ngModel]="selectedPackage" [nzDisabled]="true" class="input-select-custom" formControlName="package">
+              <nz-option *ngFor="let item of listWafs" [nzLabel]="item.offerName"
                 [nzValue]="item.offerId"></nz-option>
             </nz-select>
             <!-- <input nz-input type="text" appTrim placeholder="www.example.com" formControlName="domain" class="input-custom" [maxlength]="50" minlength="1" /> -->
@@ -67,8 +67,8 @@
             <nz-form-label nzFor="domain">
               Domain (<span style="color: rgba(252, 16, 16, 1)">*</span>)
             </nz-form-label>
-            <input nz-input type="text" appTrim placeholder="www.example.com" formControlName="domain"
-              class="input-custom" [maxlength]="50" minlength="1" />
+            <input #domainInput nz-input type="text" appTrim placeholder="www.example.com" formControlName="domain"
+              class="input-custom" minlength="1" (input)="handleOnChangeDomain($event)" />
             <ng-template #domainErrorTpl let-control>
               <!-- <ng-container *ngIf="control.hasError('duplicateDomain')">Domain không được trùng nhau</ng-container> -->
               <ng-container *ngIf="control.hasError('pattern')">Domain không đúng định dạng</ng-container>
@@ -85,7 +85,7 @@
               IP Public (<span style="color: rgba(252, 16, 16, 1)">*</span>)
             </nz-form-label>
             <input nz-input type="text" appTrim placeholder="Nhập IP Public" formControlName="ipPublic"
-              class="input-custom" [maxlength]="50" minlength="1" />
+              class="input-custom" minlength="1" />
             <ng-template #ipErrorTpl let-control>
               <ng-container *ngIf="control.hasError('required')">IP Public không được để trống</ng-container>
               <ng-container *ngIf="control.hasError('invalidIP')">Địa chỉ IP không hợp lệ</ng-container>
@@ -95,10 +95,12 @@
       </div>
       <div nz-col [nzSpan]="12" class="gutter-row">
         <nz-form-item>
-          <nz-form-control>
+          <nz-form-control [nzErrorTip]="hostErrTpl">
             <nz-form-label nzFor="host">Host </nz-form-label>
-            <input nz-input type="text" appTrim placeholder="Nhập host" formControlName="host" class="input-custom"
-              [maxlength]="50" minlength="1" />
+            <input nz-input type="text" appTrim placeholder="Nhập host" formControlName="host" class="input-custom"/>
+              <ng-template #hostErrTpl let-control>
+                <ng-container *ngIf="control.hasError('invalidHost')">Vui lòng nhập đúng định dạng Host</ng-container>
+              </ng-template>
           </nz-form-control>
         </nz-form-item>
       </div>
@@ -107,8 +109,7 @@
         <nz-form-item>
           <nz-form-control>
             <nz-form-label nzFor="port">Port </nz-form-label>
-            <input nz-input type="text" appTrim placeholder="Nhập port" formControlName="port" class="input-custom"
-              [maxlength]="50" minlength="1" />
+            <nz-input-number nzMax="65535" style="width: 100%; margin-left: 0;" nz-input type="text" nzPlaceHolder="Nhập port" formControlName="port" class="input-custom" />
           </nz-form-control>
         </nz-form-item>
       </div>
@@ -119,7 +120,7 @@
             <nz-form-label nzFor="sslCert">Chọn SSL Cert (Chọn Cert hoặc <a (click)="openModalSSlCert()">Tạo
                 mới</a>)</nz-form-label>
             <nz-select class="input-select-custom" nzPlaceHolder="Chọn SSL Cert" formControlName="sslCert">
-              <nz-option *ngFor="let data of listSslCert" [nzLabel]="data.name" [nzValue]="data.id"></nz-option>
+              <nz-option *ngFor="let data of listSslCertOptions" [nzLabel]="data.name" [nzValue]="data.id"></nz-option>
             </nz-select>
           </nz-form-control>
         </nz-form-item>

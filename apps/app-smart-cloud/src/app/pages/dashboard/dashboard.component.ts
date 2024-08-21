@@ -90,6 +90,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.dashboardService.getSubscriptionsDashboard().subscribe(data => {
       this.isLoading = false;
       this.subscriptionsDashboard = data;
+      console.log("123",this.subscriptionsDashboard)
       this.subscriptionsDashboard.forEach(item => {
         if (item.type == 'total') {
           this.subscriptionDashboardService = item;
@@ -139,6 +140,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.loadingNearExpire = true;
     this.dashboardService.getSubscriptionsNearExpire(this.pageSize, this.pageIndex, this.value).subscribe(data => {
       this.listSubscriptionsNearExpire = data;
+      console.log("listSubscriptionsNearExpire", this.listSubscriptionsNearExpire)
       this.loadingNearExpire = false;
     }, error => {
       this.loadingNearExpire = false;
@@ -260,7 +262,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
         break;
       case 13:
         //OBJECT STORAGE
-        this.router.navigate(['/app-smart-cloud/object-storage/extend/' + serviceInstanceId]);
+        this.router.navigate(['/app-smart-cloud/object-storage/extend/']);
         break;
       case 14:
         this.router.navigate(['/app-smart-cloud/backup/packages/extend/', serviceInstanceId]);
@@ -292,6 +294,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
         break;
       case 22:
         //SNAPSHOT_PACKAGE
+        this.router.navigate(['/app-smart-cloud/snapshot/packages/extend/' + serviceInstanceId]);
         break;
       case 23:
         //MONGO_DB
@@ -300,6 +303,10 @@ export class DashboardComponent implements OnInit, OnDestroy {
         //FILE SYSTEM SNAPSHOT
         this.router.navigate(['/app-smart-cloud/file-system-snapshot/extend/' + serviceInstanceId]);
         break;
+      case 27:
+          //WAF
+          this.router.navigate(['/app-smart-cloud/waf/extend/' + serviceInstanceId]);
+          break;
       case 100:
         //OTHER
         break;
@@ -383,6 +390,11 @@ export class DashboardComponent implements OnInit, OnDestroy {
       case 24:
         //FILE SYSTEM SNAPSHOT
         return this.i18n.fanyi('app.file-system-snapshot');
+
+      case 27:
+          //WAF
+          return this.i18n.fanyi('app.WAF');
+          break;
       case 100:
         //OTHER
         return this.i18n.fanyi('app.other');

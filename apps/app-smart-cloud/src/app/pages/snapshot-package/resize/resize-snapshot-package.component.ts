@@ -53,6 +53,7 @@ export class ResizeSnapshotPackageComponent implements OnInit {
   isLoadingEdit: boolean = false;
 
   storage: number;
+  packageName:string;
 
   resizeDate: Date;
   loadingCalculate = false;
@@ -149,7 +150,15 @@ export class ResizeSnapshotPackageComponent implements OnInit {
       this.validateForm.controls['description'].setValue(data.description);
       this.numberHDD = data.totalSizeHDD;
       this.numberSSD = data.totalSizeSSD;
+      this.packageName = data.packageName;
+      console.log("hhhhoooo", data)
       this.getTotalAmount();
+    },error =>{      
+      if(error.status===500){
+        this.router.navigate(['/app-smart-cloud/snapshot/packages']);
+        this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi(error.error.detail));
+      }
+      
     });
   }
 
@@ -188,7 +197,7 @@ export class ResizeSnapshotPackageComponent implements OnInit {
         actionType: 4,
         serviceInstanceId: this.idSnapshotPackage,
         regionId: this.region,
-        serviceName: null,
+        serviceName: this.packageName,
         projectId: this.project,
         typeName: 'SharedKernel.IntegrationEvents.Orders.Specifications.SnapshotPackageResizeSpecification,SharedKernel.IntegrationEvents,Version=1.0.0.0,Culture=neutral,PublicKeyToken=null',
         userEmail: null,
@@ -220,9 +229,11 @@ export class ResizeSnapshotPackageComponent implements OnInit {
           if (detailArray != null && detailArray.length > 0) {
             for (let item of detailArray) {
               if (item.typeName == 'volume-snapshot-hdd') {
-                this.hddPrice = item.unitPrice.amount;
+                this.hddPrice = item.totalAmount.amount;
+                this.hddUnitPrice = item.unitPrice.amount;
               } else if (item.typeName == 'volume-snapshot-ssd') {
-                this.ssdPrice = item.unitPrice.amount;
+                this.ssdPrice = item.totalAmount.amount;
+                this.ssdUnitPrice = item.unitPrice.amount;
               }
             }
           }
@@ -241,7 +252,7 @@ export class ResizeSnapshotPackageComponent implements OnInit {
       actionType: 4,
       serviceInstanceId: this.idSnapshotPackage,
       regionId: this.region,
-      serviceName: null,
+      serviceName: this.packageName,
       projectId: this.project,
       typeName: 'SharedKernel.IntegrationEvents.Orders.Specifications.SnapshotPackageResizeSpecification,SharedKernel.IntegrationEvents,Version=1.0.0.0,Culture=neutral,PublicKeyToken=null',
       userEmail: null,
@@ -292,7 +303,9 @@ export class ResizeSnapshotPackageComponent implements OnInit {
   totalPayment: number;
   totalVat: number;
   hddPrice = 0;
+  hddUnitPrice=0;
   ssdPrice = 0;
+  ssdUnitPrice=0;
   today = new Date();
 
   loadProjects() {

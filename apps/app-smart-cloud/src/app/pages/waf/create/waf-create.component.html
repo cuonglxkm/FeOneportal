@@ -43,9 +43,13 @@
               placeholder="Nhập tên WAF"
               style="width: 100%"
               formControlName="nameWAF"
+              (ngModelChange)="changeName($event)"
               maxlength="50"
               class="custom-input"
             />
+            <!-- <div *ngIf="isExistName" style="color: #ff4d4f">
+              Tên WAF đã tồn tại
+            </div> -->
             <ng-template #nameErrorTpl let-control>
               <ng-container *ngIf="control.hasError('required')"
                 >Tên WAF không được để trống
@@ -160,7 +164,7 @@
                       <nz-form-label nzFor="domain">
                         Domain (<span style="color: rgba(252, 16, 16, 1)">*</span>)
                       </nz-form-label>
-                      <input nz-input type="text" appTrim placeholder="www.example.com" formControlName="domain" class="input-custom" [maxlength]="50" minlength="1" />
+                      <input nz-input type="text" appTrim placeholder="Nhập tên Domain" formControlName="domain" class="input-custom" [maxlength]="253" />
                       <ng-template #domainErrorTpl let-control>
                         <ng-container *ngIf="control.hasError('duplicateDomain')">Domain không được trùng nhau</ng-container>
                         <ng-container *ngIf="control.hasError('pattern')">Domain không hợp lệ. Vui lòng nhập lại</ng-container>
@@ -177,10 +181,12 @@
                       <nz-form-label nzFor="ipPublic">
                         IP Public (<span style="color: rgba(252, 16, 16, 1)">*</span>)
                       </nz-form-label>
-                      <input nz-input type="text" appTrim placeholder="Nhập IP Public" formControlName="ipPublic" class="input-custom" [maxlength]="50" minlength="1" />
+                      <input nz-input type="text" appTrim placeholder="Nhập IP Public" formControlName="ipPublic" class="input-custom" />
                       <ng-template #ipErrorTpl let-control>
                         <ng-container *ngIf="control.hasError('required')">IP Public không được để trống</ng-container>
                         <ng-container *ngIf="control.hasError('invalidIP')">IP Public không hợp lệ. Vui lòng nhập lại</ng-container>
+                        <ng-container *ngIf="control.hasError('maxIPs')">Không được nhập quá 64 địa chỉ IP</ng-container>
+                        <ng-container *ngIf="control.hasError('duplicateIP')">IP Public không được trùng nhau</ng-container>
                       </ng-template>
                     </nz-form-control>
                   </nz-form-item>
@@ -190,9 +196,9 @@
                   <nz-form-item>
                     <nz-form-control [nzErrorTip]="hostErrorTpl">
                       <nz-form-label nzFor="host">Host </nz-form-label>
-                      <input nz-input type="text" appTrim placeholder="Nhập host" formControlName="host" class="input-custom" [maxlength]="50" />  
+                      <input nz-input type="text" appTrim placeholder="Nhập host" formControlName="host" class="input-custom" [maxlength]="253" />  
                       <ng-template #hostErrorTpl let-control>
-                        <ng-container *ngIf="control.hasError('pattern')">Host không hợp lệ. Vui lòng nhập lại</ng-container>
+                        <ng-container *ngIf="control.hasError('invalidHost')">Host không hợp lệ. Vui lòng nhập lại</ng-container>
                       </ng-template>                  
                     </nz-form-control>
                   </nz-form-item>
@@ -286,7 +292,7 @@
             <h3 class="custom-subtitle">Gói dịch vụ {{selectedNameFlavor}}</h3>
             <span [innerHTML]="selectedDescription"></span>
           </div>
-          <div class="text-label" style="margin-bottom: 12px">
+          <div class="text-label" style="margin-bottom: 12px; word-break: break-all;">
             <h3 class="custom-subtitle">Tên miền</h3>
             <span>{{getDomainValues()}}</span>
           </div>
@@ -372,7 +378,7 @@
           <nz-row>
             <nz-col style="width: 100%" class="text-right">
               <button
-                [disabled]="form.get('nameWAF').invalid || selectedOfferId == 0 || !areAllDomainsValid() || bonusServices.at(0).get('ipPublic')?.invalid"
+                [disabled]="form.get('nameWAF').invalid || selectedOfferId == 0 || !areAllDomainsValid() || bonusServices.at(0).get('ipPublic')?.invalid || isInvalid"
                 style="width: 100%"
                 nz-button
                 nzSize="large"

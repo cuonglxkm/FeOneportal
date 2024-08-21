@@ -58,6 +58,8 @@ export class WafDetailDTO{
   serviceStatus: string
   suspendType: string
   suspendReason: string
+  quotaDomain: number
+  domainTotal: number
   wafDomains: [
     {
       id: number
@@ -105,6 +107,7 @@ export interface WafDomain {
   sysDomainInfoVO : SysDomainInfoVO;
   packagePolicies: PackagePolicies;
   someSwitchesOn : boolean;
+  sslCertName: string
 }
 
 export interface SysDomainInfoVO{

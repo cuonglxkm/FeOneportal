@@ -215,7 +215,7 @@ export class WafService extends BaseService {
   }
 
   disAssociateCertificate(certId: number, domainId: number){
-    return this.http.put(this.baseUrl + this.ENDPOINT.provisions + `/waf/associate-domain?domainId=${domainId}&certId=${certId}`, {}, this.getHeaders())
+    return this.http.put(this.baseUrl + this.ENDPOINT.provisions + `/waf/disassociate-domain?domainId=${domainId}&certId=${certId}`, {} , this.getHeaders())
   }
 
   getSslCertDetail(id: number){

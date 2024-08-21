@@ -118,7 +118,6 @@ export class CreateAccessRuleComponent implements AfterViewInit{
 
   showModalCreate() {
     this.isVisible = true;
-    this.getListAccessRule()
     setTimeout(() => {this.accessToInput?.nativeElement.focus()}, 1000)
   }
 
@@ -152,16 +151,17 @@ export class CreateAccessRuleComponent implements AfterViewInit{
       formCreate.vpcId = this.project;
       formCreate.regionId = this.region;
       formCreate.customerId = this.tokenService.get()?.userId;
-      this.isVisible = false;
       this.accessRuleService.createAccessRule(formCreate).subscribe(data => {
         // this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('app.file.system.access.to.create.success'));
+        this.isVisible = false;
         this.isLoading = false;
+        this.validateForm.reset();
+        this.onOk.emit();
       }, error => {
         this.notification.error(this.i18n.fanyi('app.status.fail'),  error.error.detail);
         this.isLoading = false;
       });
-      this.validateForm.reset();
+
     }
-    this.onOk.emit();
   }
 }

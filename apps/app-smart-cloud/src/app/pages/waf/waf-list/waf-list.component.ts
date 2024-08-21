@@ -129,8 +129,10 @@ export class WafListComponent implements OnInit, OnDestroy {
   }
   
   
-  navigateToAddDomain() {
-    this.router.navigate(['/app-smart-cloud/waf/add-domain']);
+  navigateToAddDomain(data: WafDetailDTO) {
+    if(data.status === 'ACTIVE' && data.quotaDomain > data.domainTotal) {
+      return this.router.navigate([`/app-smart-cloud/waf/add-domain`], {queryParams: {wafId: data.id}});
+    }
   }
 
   //delete

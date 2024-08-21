@@ -25,6 +25,7 @@ export class SnapshotDetailComponent implements OnInit{
   id: any
   typeProject: any;
   packageSnap: any;
+  packageSize:number;
 
   validateForm: FormGroup<{
     description: FormControl<string>
@@ -84,6 +85,11 @@ export class SnapshotDetailComponent implements OnInit{
       .subscribe(
       data => {
         this.data = data;
+        this.loadPackageSnapshot(this.data.snapshotPackageId);
+        console.log("aaa", this.data)
+        console.log("volumeType", this.data.volumeType)
+       
+       
         this.validateForm.controls['description'].setValue(data.description);
       }
     )
@@ -107,8 +113,16 @@ export class SnapshotDetailComponent implements OnInit{
 
   private loadPackageSnapshot(snapshotPackageId) {
     this.packageSnapshotService.detail(snapshotPackageId, this.project).subscribe(data => {
-      console.log('data', data);
+    
       this.packageSnap = data;
+      console.log('packageSnap', this.packageSnap);
+      if(this.data.volumeType ==='hdd'){
+        this.packageSize = this.packageSnap.sizeHddInGB
+       }
+       else if(this.data.volumeType ==='ssd'){
+        this.packageSize = this.packageSnap.sizeSsdInGb
+       }
+       console.log("object packageSnap", this.packageSize)
     });
   }
 }

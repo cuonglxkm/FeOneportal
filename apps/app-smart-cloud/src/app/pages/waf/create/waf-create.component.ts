@@ -8,14 +8,14 @@ import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { NguCarouselConfig } from '@ngu/carousel';
 import { getCurrentRegionAndProject } from '@shared';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
-import { finalize, Subject } from 'rxjs';
+import { debounceTime, finalize, Subject } from 'rxjs';
 import { DOMAIN_REGEX, NAME_REGEX } from 'src/app/shared/constants/constants';
 import { RegionID } from 'src/app/shared/enums/common.enum';
 import { OrderItemObject } from 'src/app/shared/models/price';
 import { ObjectStorageService } from 'src/app/shared/services/object-storage.service';
 import { OrderService } from 'src/app/shared/services/order.service';
 import { WafService } from 'src/app/shared/services/waf.service';
-import { duplicateDomainValidator, ipValidatorMany, slider } from '../../../../../../../libs/common-utils/src';
+import { duplicateDomainValidator, hostValidator, ipValidatorMany, slider } from '../../../../../../../libs/common-utils/src';
 import { WAFCreate } from '../../../shared/models/waf-init';
 import { DataPayment, ItemPayment, OfferItem, Order, OrderItem } from '../../instances/instances.model';
 import { InstancesService } from '../../instances/instances.service';
@@ -134,6 +134,7 @@ export class WAFCreateComponent implements OnInit {
     }
     this.getListSslCert()
     this.initFlavors();
+    this.checkExistName()
   }
 
   get bonusServices(): FormArray {
@@ -144,7 +145,7 @@ export class WAFCreateComponent implements OnInit {
     return this.fb.group({
       domain: ['', [Validators.required,Validators.pattern(DOMAIN_REGEX) ,duplicateDomainValidator]],
       ipPublic: ['', [Validators.required, ipValidatorMany]],
-      host: ['',Validators.pattern(DOMAIN_REGEX)],
+      host: ['',hostValidator],
       port: [null],
       sslCert: ['']
     });
@@ -165,6 +166,30 @@ export class WAFCreateComponent implements OnInit {
 
   areAllDomainsValid(): boolean {
     return this.bonusServices.controls.every(control => control.get('domain')?.valid);
+  }
+
+  dataSubjectName: Subject<any> = new Subject<any>();
+  changeName(value: number) {
+    this.dataSubjectName.next(value);
+  }
+
+  isExistName: boolean = false;
+  checkExistName() {
+    this.dataSubjectName
+      .pipe(
+        debounceTime(300)
+      )
+      .subscribe(() => {
+        this.wafService
+          .hasWaf()
+          .subscribe((data) => {
+            if (data == true) {
+              this.isExistName = true;
+            } else {
+              this.isExistName = false;
+            }
+          });
+      });
   }
 
   initWAF() {
@@ -207,10 +232,17 @@ export class WAFCreateComponent implements OnInit {
       .join(', ');
   }
 
+  isInvalid: boolean = false
+
   onChangeTime(numberMonth: number) {
-    this.timeSelected = numberMonth;
-    this.form.controls.time.setValue(this.timeSelected);
-    this.getTotalAmount();
+    if(numberMonth === undefined){
+      this.isInvalid = true
+    }else{
+      this.isInvalid = false
+      this.timeSelected = numberMonth;
+      this.form.controls.time.setValue(this.timeSelected);
+      this.getTotalAmount();
+    }
   }
 
 

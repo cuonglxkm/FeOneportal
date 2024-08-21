@@ -131,7 +131,7 @@ export class ListSubUserComponent implements OnInit {
 
   onPageSizeChange(value) {
     this.pageSize = value;
-
+    this.pageIndex = 1;
     this.getListSubUsers(false);
   }
 

@@ -368,7 +368,7 @@
   "app.delete.alow.address.pair": "Xóa Allow Address Pair",
   "app.instances": "Máy ảo",
   "app.ip-public": "IP Public",
-  "app.snapshot-package": "Package snapshot",
+  "app.snapshot-package": "gói Snapshot",
   "app.ip-loating": "IP Floating",
   "app.load-balancer": "Load Balancer",
   "app.load-balancer.f5": "Load Balancer F5",
@@ -489,6 +489,7 @@
 
   "app.notify.get.list.port": "Lấy danh sách Port không thành công",
   "app.notify.get.list.ip.public": "Lấy danh sách IP Public không thành công",
+  "app.notify.get.list.ip.floating": "Lấy danh sách IP Floating không thành công",
   "app.notify.get.list.instance": "Lấy danh sách máy ảo không thành công",
   "app.notify.get.list.allow.address.pair": "Lấy danh sách Allow Address Pair không thành công",
   "app.notify.create.allow.address.pair.success": "Tạo Allow Address Pair thành công",
@@ -816,7 +817,7 @@
   "validation.bucket.name.more63": "Vui lòng không nhập quá 63 ký tự",
   "validation.bucket.name1": "Tên Bucket chỉ được phép dùng các ký tự chữ thường a-z các ký tự số 0-9 dấu gạch ngang (-) và dấu chấm (.), tối thiểu 3 ký tự và tối đa 63 ký tự",
   "validation.bucket.name.invalid": "Tên Bucket không hợp lệ",
-  "validation.sub.user.name": "Tên người dùng nên sử dụng các ký tự chữ cái thường, chữ hoa, chữ số và dấu gạch ngang",
+  "validation.sub.user.name": "Tên Sub User chỉ chứa các kí tự chữ thường a-z, chữ hoa A-Z, các ký tự chữ số 0-9, dấu gạch ngang và dấu gạch dưới (_) tối thiểu 3 ký tự và tối đa 50 ký tự",
   "validation.sub.user.name.required": "Tên Sub User không được để trống",
   "validation.sub.user.name.duplicate": "Tên Sub User đã tồn tại, vui lòng nhập tên khác",
   "validation.sub.user.name.input": "Vui lòng nhập đúng tên Sub User",
@@ -2812,7 +2813,7 @@
   "project.note43": "Tìm hiểu thêm về IP Floating và IP Public",
   "project.note44": "Dịch vụ File Storage giúp đảm bảo an toàn dữ liệu, tiện ích trong việc chia sẻ thông tin và nâng cao khả năng quản lý tệp tin",
   "project.note45": "Chọn gói VPN site to site",
-  "project.note46": "VPN site to site cung cấp một kênh kết nối an toàn giữ các vị trí vật lý hoặc mạng máy tính khác nhau. Cho phép các vị trí đia lý khác nhau truy cập vào tài nguyên nội bộ",
+  "project.note46": "VPN site to site cung cấp một kênh kết nối an toàn giữa các vị trí vật lý hoặc mạng máy tính khác nhau. Cho phép các vị trí địa lý khác nhau truy cập vào tài nguyên nội bộ",
   "project.note47": "Với các ứng dụng cần bảo vệ dữ liệu và duy trì hiệu suất hệ thống, nên sử dụng Backup - sao lưu định kỹ để đảm bảo an toàn và khả năng khôi phục nhanh chóng khi cần thiết",
   "project.note48": "Load Balancer giúp nhân phối tải hiệu quả, nâng cao khả năng chịu tải của hệ thống và tăng trải nghiệm người dùng",
   "project.note49": "Chọn gói Load Balancer",
@@ -3335,9 +3336,9 @@
   "app.manage.site.to.site.delete":"Xóa",
   "app.manage.site.to.site.name.package":"Tên gói",
   "app.manage.site.to.site.present.title":"Cho phép các mạng tại các vị trí khác nhau giao tiếp với nhau",
-  "app.manage.site.to.site.present.des1":"VPN site to site cung cấp một kênh kết nối an toàn giữ các vị trí vật lý hoặc mạng máy tính khác nhau",
-  "app.manage.site.to.site.present.des2":"Cho phép các vị trí đia lý khác nhau truy cập vào tài nguyên nội bộ",
-  "app.manage.site.to.site.present.create":"Tạo mới VPN site to site",
+  "app.manage.site.to.site.present.des1":"VPN site to site cung cấp một kênh kết nối an toàn giữa các vị trí vật lý hoặc mạng máy tính khác nhau",
+  "app.manage.site.to.site.present.des2":"Cho phép các vị trí địa lý khác nhau truy cập vào tài nguyên nội bộ",
+  "app.manage.site.to.site.present.create":"Khởi tạo VPN site to site",
   "app.manage.site.to.site.delete.title":"Xóa VPN site to site",
   "app.manage.site.to.site.delete.des":"Thao tác này sẽ xóa vĩnh viễn dữ liệu trên hệ thống và <b>KHÔNG THỂ KHÔI PHỤC LẠI<b>",
   "app.manage.site.to.site.delete.confirm":"Quý khách có chắc chắn muốn xóa VPN site to site không?",
@@ -3449,7 +3450,7 @@
   "app.vpns2s-resize.duration": "Thời gian sử dụng (Tháng)",
   "app.vpns2s-resize.use-date": "Ngày cấp dịch vụ",
 
-  "app.vpns2s-create": "Tạo mới VPN site to site",
+  "app.vpns2s-create": "Khởi tạo VPN site to site",
   "app.vpns2s-create.choose.package": "Chọn gói VPN site to site",
 
   "app.ike.policy-create.success": "Tạo mới IKE Policy thành công",
@@ -3599,7 +3600,7 @@
   "waf.domain.table.title.status.cdn":"Trạng thái tác vụ",
   "waf.domain.table.title.action":"Thao tác",
   "notification.input.name": "Vui lòng nhập đúng tên",
-  "notification.input.name.ip": "Vui lòng nhập đúng địa chỉ ip",
+  "notification.input.name.ip": "Vui lòng nhập đúng địa chỉ IP",
   "ip.floating.attach.message": "Port đã được sử dụng, vui lòng chọn Port khác để thực hiện gắn IP Floating.",
   "listner.create.duplicate.pool.name" : "Tên pool đã được sử dụng",
   "waf.intro.title1":"Web Application Firewall",
@@ -3607,5 +3608,10 @@
   "waf.intro.subtitle":"Phương thức hiệu quả chống lại các mối đe dọa và lỗ hổng đối với Web Application. Nhận diện và chống lại các botnet xấu. Che giấy địa chỉ IP gốc, ngặn chặn các truy cập không hợp lệ",
   "app.non.vietnamese": "Không được nhập tiếng việt",
 
-  "app.non.permission": "Người dùng không có quyền truy cập dịch vụ này"
+  "app.non.permission": "Người dùng không có quyền truy cập dịch vụ này",
+  "validation.waf.domain.delete.name.invalid": "Vui lòng nhập đúng tên domain",
+  "validation.waf.domain.delete.name.required": "Vui lòng nhập tên domain",
+   "validation.waf.ssl.delete.name.invalid": "Vui lòng nhập đúng tên SSL Cert",
+  "validation.waf.ssl.delete.name.required": "Vui lòng nhập tên SSL Cert",
+  "app.create-policy.name":"Tên Policy"
 }

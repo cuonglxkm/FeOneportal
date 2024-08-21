@@ -41,7 +41,7 @@ export class EditSslCertWAFComponent implements OnInit {
     { label: 'Paste certificate content', value: '2' },
   ];
   id: number
-
+  caCertificate: string = '';
   form: FormGroup<{
     privateKey: FormControl<string>;
     certificate: FormControl<string>;
@@ -172,8 +172,16 @@ export class EditSslCertWAFComponent implements OnInit {
 
         if (fileExtension === 'crt') {
           this.form.controls.certificate.setValue(content);
+          if(this.form.get('privateKey').value === ''){
+            this.form.controls.privateKey.removeValidators(Validators.required);
+            this.form.controls.privateKey.setValue('');
+          }
         } else if (fileExtension === 'key') {
           this.form.controls.privateKey.setValue(content);
+          if(this.form.get('certificate').value === ''){
+            this.form.controls.certificate.removeValidators(Validators.required);
+            this.form.controls.certificate.setValue('');
+          }    
         }else if (fileExtension === 'pem') {
           if(content.includes('-----BEGIN PRIVATE KEY-----') && !content.includes('-----BEGIN CERTIFICATE----')){
             const privateKey = content.substring(
@@ -181,14 +189,20 @@ export class EditSslCertWAFComponent implements OnInit {
               content.indexOf('-----END PRIVATE KEY-----') + '-----END PRIVATE KEY-----'.length
             );
             this.form.controls.privateKey.setValue(privateKey);
-            this.form.controls.certificate.setValue('a');
+            if(this.form.get('certificate').value === ''){
+              this.form.controls.certificate.removeValidators(Validators.required);
+              this.form.controls.certificate.setValue('');
+            }  
           }else if(content.includes('-----BEGIN CERTIFICATE----') && !content.includes('-----BEGIN PRIVATE KEY-----')){
             const certificate = content.substring(
               content.indexOf('-----BEGIN CERTIFICATE-----'),
               content.indexOf('-----END CERTIFICATE-----') + '-----END CERTIFICATE-----'.length
             );          
             this.form.controls.certificate.setValue(certificate);
-            this.form.controls.privateKey.setValue('a');
+            if(this.form.get('privateKey').value === ''){
+              this.form.controls.privateKey.removeValidators(Validators.required);
+              this.form.controls.privateKey.setValue('');
+            }
           }else if(content.includes('-----BEGIN CERTIFICATE----') && content.includes('-----BEGIN PRIVATE KEY-----')){
             const privateKey = content.substring(
               content.indexOf('-----BEGIN PRIVATE KEY-----'),
@@ -209,7 +223,7 @@ export class EditSslCertWAFComponent implements OnInit {
     this.formEditSslCert.name = this.form.get('certName').value;
     this.formEditSslCert.name = this.form.get('remarks').value;
     if(this.uploadMethod === '2'){
-      this.formEditSslCert.certificate = this.form.get('certificate').value;
+      this.formEditSslCert.certificate = this.form.get('certificate').value + this.caCertificate;
       this.formEditSslCert.privateKey = this.form.get('privateKey').value;
     }else{
       this.formEditSslCert.certificate = this.form.get('certificate').value;
@@ -244,12 +258,12 @@ export class EditSslCertWAFComponent implements OnInit {
       },
       (error) => {
         this.isLoading = false;
-         if (this.form.get('privateKey').value === 'a') {
+         if (this.form.get('privateKey').value === '') {
           this.notification.error(
             this.i18n.fanyi('app.status.fail'),
             this.i18n.fanyi('Private Key không hợp lệ')
           );
-        }else if (this.form.get('certificate').value === 'a') {
+        }else if (this.form.get('certificate').value === '') {
           this.notification.error(
             this.i18n.fanyi('app.status.fail'),
             this.i18n.fanyi('Certificate không hợp lệ')

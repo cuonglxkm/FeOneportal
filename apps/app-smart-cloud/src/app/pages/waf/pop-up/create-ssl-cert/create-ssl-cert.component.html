@@ -20,6 +20,7 @@
         >
         <img
           nz-popover
+          nzPopoverContent="Chọn phương thức tải SSL Cert"
           nzPopoverPlacement="bottom"
           style="margin-left: 5px"
           src="assets/imgs/pajamas_question.svg"
@@ -56,6 +57,7 @@
         <img
           nz-popover
           nzPopoverPlacement="bottom"
+          nzPopoverContent="Chứa các ký tự chữ cái (a-z, A-Z), chữ số (0-9) và dấu gạch ngang ( - ), tối đa 128 ký tự"
           style="margin-left: 5px"
           src="assets/imgs/pajamas_question.svg"
           alt=""
@@ -166,6 +168,8 @@
       >
       <textarea
       [placeholder]="'Nhập CA Content (Chỉ hỗ trợ mã pem). Lưu ý: Nếu không có CA, có thể có nguy cơ máy khách không được tin cậy'"
+      [(ngModel)]="caCertificate"
+      [ngModelOptions]="{ standalone: true }"
       rows="4"
       nz-input
     ></textarea>

@@ -28,7 +28,7 @@ export class ListPackagesSnapshotComponent implements OnInit {
   region = JSON.parse(localStorage.getItem('regionId'));
   project = JSON.parse(localStorage.getItem('projectId'));
 
-  pageSize: number = 10
+  pageSize: number = 1
   pageIndex: number = 1
 
   isLoading: boolean = false
@@ -39,6 +39,7 @@ export class ListPackagesSnapshotComponent implements OnInit {
 
   packageBackupModel: PackageBackupModel = new PackageBackupModel()
   response: BaseResponse<PackageSnapshotModel[]>
+
 
   isVisibleDelete: boolean = false
   isLoadingDelete: boolean = false
@@ -57,11 +58,13 @@ export class ListPackagesSnapshotComponent implements OnInit {
     namePackage: FormControl<string>
     description: FormControl<string>
   }> = this.fb.group({
-    namePackage: [null as string, [Validators.required, Validators.pattern(/^[a-zA-Z0-9]*$/), Validators.maxLength(50)]],
+    namePackage: ['', [Validators.required, Validators.pattern(/^[a-zA-Z0-9_]*$/), Validators.maxLength(50)]],
     description: ['', [Validators.maxLength(255)]]
   })
 
-  valueDelete: string
+
+  valueDelete: string='';
+  isInput:boolean=false;
   projectType = 0;
   typeVPC: number
 
@@ -112,6 +115,7 @@ export class ListPackagesSnapshotComponent implements OnInit {
     this.getListPackageSnapshot(false)
   }
 
+
   navigateToCreate() {
     if (this.region === RegionID.ADVANCE) {
       this.router.navigate(['/app-smart-cloud/snapshot-advance/packages/create'])
@@ -150,8 +154,7 @@ export class ListPackagesSnapshotComponent implements OnInit {
       .pipe(debounceTime(500))
       .subscribe(data => {
       this.isLoading = false
-      console.log(data);
-      this.response = data;
+      this.response =data
       if (checkBegin) {
         if (data == undefined || data.records.length <= 0) {
           this.isBegin = true;
@@ -164,7 +167,6 @@ export class ListPackagesSnapshotComponent implements OnInit {
       this.response = null
     })
   }
-
 
   navigateToEdit(id) {
     if (this.region === RegionID.ADVANCE) {
@@ -192,6 +194,7 @@ export class ListPackagesSnapshotComponent implements OnInit {
   handleDeletedOk() {
     this.isLoadingDelete = true
     if (this.valueDelete === this.packageName) {
+      this.isInput = false;
       this.packageSnapshotService.delete(this.dataAction.id, this.project, this.region)
         .pipe(finalize(() => {
           this.handleDeleteCancel();
@@ -200,7 +203,7 @@ export class ListPackagesSnapshotComponent implements OnInit {
         .subscribe(data => {
         this.isLoadingDelete = false
         this.isVisibleDelete = false
-        this.notification.success('Thành công', 'Xóa gói snapshot thành công')
+        this.notification.success('Thành công', 'Xóa gói Snapshot thành công')
         this.valueDelete = ''
         this.getListPackageSnapshot(true)
       }, error => {
@@ -210,15 +213,18 @@ export class ListPackagesSnapshotComponent implements OnInit {
         this.notification.error('Thất bại', 'Xóa gói snapshot thất bại')
       })
     } else {
+      this.isInput = true;
       this.isLoadingDelete = false
-      this.notification.error('Error', 'Vui lòng nhập đúng thông tin')
+      // this.notification.error('Error', 'Vui lòng nhập đúng thông tin')
     }
   }
 
   handleDeleteCancel() {
+    this.isInput = false;
     this.isVisibleDelete = false
     this.dataAction = undefined;
     this.packageName = '';
+    this.valueDelete=''
   }
 
 
@@ -255,24 +261,30 @@ export class ListPackagesSnapshotComponent implements OnInit {
     this.dataAction = data;
     this.validateForm.controls['namePackage'].setValue(data.packageName);
     this.validateForm.controls['description'].setValue(data.description);
+   
     this.isVisibleUpdate = true;
   }
 
   handleUpdateOk() {
     this.isLoadingUpdate = true;
+  const  description= this.validateForm.controls['description'].value ||'';
     let data = {
       newPackageName: this.validateForm.controls['namePackage'].value,
       id: this.dataAction.id,
-      description: this.validateForm.controls['description'].value,
+      description: description,
       regionId: this.region,
+     
     }
+    console.log("dâtta name", data)
     this.packageSnapshotService.update(this.validateForm.controls['description'].value, this.validateForm.controls['namePackage'].value, this.dataAction.id, this.region, data)
+   
       .pipe(finalize(() => {
         this.handleUpdateCancel();
         this.isLoadingUpdate = false;
       }))
       .subscribe(
         data => {
+          console.log("daaaaa", data)
           this.notification.success(this.i18n.fanyi('app.status.success'),'Cập nhật gói snapshot thành công')
           this.getListPackageSnapshot(true);
         },
@@ -291,6 +303,7 @@ export class ListPackagesSnapshotComponent implements OnInit {
       .subscribe(
         data => {
           this.snapshotArray = data.records;
+          console.log("snapshotArray", this.snapshotArray)
         }
       );
   }
@@ -304,6 +317,7 @@ export class ListPackagesSnapshotComponent implements OnInit {
       .subscribe({
         next: (next) => {
           this.snapshotSchefuleArray = next.records;
+          console.log("snapshotSchefuleArray", this.snapshotSchefuleArray)
         },
         error: (error) => {
           this.notification.error(
@@ -323,5 +337,16 @@ export class ListPackagesSnapshotComponent implements OnInit {
       default:
         break;
     }
+  }
+  isProcessingStatus(status: string): boolean {
+    const processingStatuses = [
+      'DELETING',
+      'CREATING',
+      'EXTENDING',
+      'RESIZING',
+      'ERROR_DELETING',
+      'PROCESSING'
+    ];
+    return processingStatuses.includes(status);
   }
 }

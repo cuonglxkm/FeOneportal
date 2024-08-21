@@ -108,12 +108,18 @@ export class OrderDetailComponent {
               this.isLoadingTotalAmount = false
             }
             data?.orderItems?.forEach((item) => {
+
               this.serviceName = item.serviceName.split('-')[0].trim()
+              let serviceName1 = item.serviceName.split('-')[1].trim()
+              if(this.serviceName.includes('Snapshot Package')) {
+                item.serviceName = `Gói Snapshot - ${serviceName1}`;
+              }
               if(this.serviceName.includes('Máy ảo')){
                 item.serviceNameLink = 'VM'
               } else if(this.serviceName.includes('K8s Premium')) {
                 item.serviceNameLink = 'VPK';
-              } else{
+              }
+              else{
                 item.serviceNameLink = this.serviceName
               }
             })
@@ -155,11 +161,16 @@ export class OrderDetailComponent {
             }
             data?.orderItems?.forEach((item) => {
               this.serviceName = item.serviceName.split('-')[0].trim()
+              let serviceName1 = item.serviceName.split('-')[1].trim()
+              if(this.serviceName.includes('Snapshot Package')) {
+                item.serviceName = `Gói Snapshot - ${serviceName1}`;
+              }
               if(this.serviceName.includes('Máy ảo')){
                 item.serviceNameLink = 'VM'
               } else if(this.serviceName.includes('K8s Premium')) {
                 item.serviceNameLink = 'VPK';
-              } else{
+              } 
+              else{
                 item.serviceNameLink = this.serviceName
               }
             })

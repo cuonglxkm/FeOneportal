@@ -35,13 +35,14 @@ export class CreatePackageSnapshotComponent implements OnInit {
     time: FormControl<number>
   }> = this.fb.group({
     namePackage: ['', [Validators.required,
-      Validators.pattern(/^[a-zA-Z0-9]*$/),
+      Validators.pattern(/^[a-zA-Z0-9_]*$/),
       Validators.maxLength(70)]],
-    description: [null as string, [Validators.maxLength(255)]],
+    description: ['', [Validators.maxLength(255)]],
     time: [1, [Validators.required]]
   });
 
   namePackage: string = '';
+  description:string='';
   storage: number = 1;
   orderItem: any;
   unitPrice = 0;
@@ -70,6 +71,7 @@ export class CreatePackageSnapshotComponent implements OnInit {
               @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
               private fb: NonNullableFormBuilder,
               private instanceService: InstancesService) {
+                this.getTotalAmount();
     this.validateForm.get('time').valueChanges.subscribe(data => {
       this.getTotalAmount();
     });
@@ -171,13 +173,16 @@ export class CreatePackageSnapshotComponent implements OnInit {
 
   formCreateSnapshotPackage: FormCreateSnapshotPackage = new FormCreateSnapshotPackage();
   hddPrice = 0;
+  hddUnitPrice=0
   ssdPrice = 0;
+  ssdUnitPrice =0;
   numberHDD = 0;
   numberSSD = 0;
   loadingCalculate = false;
 
   packageBackupInit() {
     this.formCreateSnapshotPackage.packageName = this.validateForm.get('namePackage').value;
+
     this.formCreateSnapshotPackage.quotaHddSizeInGB = this.numberHDD;
     this.formCreateSnapshotPackage.quotaSsdSizeInGB = this.numberSSD;
     this.formCreateSnapshotPackage.description = this.validateForm.get('description').value;
@@ -244,9 +249,11 @@ export class CreatePackageSnapshotComponent implements OnInit {
           if (detailArray != null && detailArray.length > 0) {
             for (let item of detailArray) {
               if (item.typeName == 'volume-snapshot-hdd') {
-                this.hddPrice = item.unitPrice.amount;
+                this.hddPrice = item.totalAmount.amount;
+                this.hddUnitPrice = item.unitPrice.amount;
               } else if (item.typeName == 'volume-snapshot-ssd') {
-                this.ssdPrice = item.unitPrice.amount;
+                this.ssdPrice = item.totalAmount.amount;
+                this.ssdUnitPrice = item.unitPrice.amount;
               }
             }
           }
@@ -259,6 +266,7 @@ export class CreatePackageSnapshotComponent implements OnInit {
     let regionAndProject = getCurrentRegionAndProject();
     this.region = regionAndProject.regionId;
     this.project = regionAndProject.projectId;
+   
     if (!this.url.includes('advance')) {
       if (Number(localStorage.getItem('regionId')) === RegionID.ADVANCE) {
         this.region = RegionID.NORMAL;
@@ -269,9 +277,11 @@ export class CreatePackageSnapshotComponent implements OnInit {
       this.region = RegionID.ADVANCE;
     }
     // this.customerId = this.tokenService.get()?.userId
-    this.getTotalAmount();
+    // this.getTotalAmount();
     console.log(this.tokenService.get());
     this.getConfiguration();
+    console.log("hddUnitPrice", this.hddUnitPrice)
+    
   }
 
   onChangeTime($event: any) {

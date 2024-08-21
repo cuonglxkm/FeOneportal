@@ -1355,17 +1355,21 @@ export class BucketDetailComponent extends BaseService implements OnInit {
     this.emptyFileUpload = true;
   }
 
+  isLoadingZipFile: boolean = false;
   downloadZipFile() {
+    // Start loading
+    this.isLoadingZipFile = true;
+  
     var today = new Date();
     var dd = String(today.getDate()).padStart(2, '0');
     var mm = String(today.getMonth() + 1).padStart(2, '0');
     var yyyy = today.getFullYear();
-
+  
     let date = mm + '_' + dd + '_' + yyyy;
-
+  
     let zipFile = new JSZip();
     let downloadObservables = [];
-
+  
     this.setOfCheckedId.forEach((item: any) => {
       if (item.objectType === 'folder') {
         return;
@@ -1377,9 +1381,9 @@ export class BucketDetailComponent extends BaseService implements OnInit {
               map((fileData: any) => {
                 const fileName = item.key;
                 const fileContent = fileData.body;
-
+  
                 console.log(fileData.body);
-
+  
                 if (fileData.body !== undefined) {
                   zipFile.file(fileName, fileContent);
                 }
@@ -1392,26 +1396,35 @@ export class BucketDetailComponent extends BaseService implements OnInit {
         );
       }
     });
-
-    forkJoin(downloadObservables).subscribe(() => {
-      zipFile.generateAsync({ type: 'blob' }).then((content) => {
-        if (content.size > 104857600) {
-          this.notification.error(
-            this.i18n.fanyi('app.status.fail'),
-            this.i18n.fanyi('app.alert.bucket.oversize')
-          );
-        } else {
-          let anchor = document.createElement('a');
-          let objectUrl = window.URL.createObjectURL(content);
-
-          anchor.href = objectUrl;
-          anchor.download = `${this.bucket.bucketName}_${date}`;
-          anchor.click();
-          window.URL.revokeObjectURL(objectUrl);
-        }
-      });
-    });
+  
+    forkJoin(downloadObservables).subscribe(
+      () => {
+        zipFile.generateAsync({ type: 'blob' }).then((content) => {
+          if (content.size > 104857600) {
+            this.notification.error(
+              this.i18n.fanyi('app.status.fail'),
+              this.i18n.fanyi('app.alert.bucket.oversize')
+            );
+          } else {
+            let anchor = document.createElement('a');
+            let objectUrl = window.URL.createObjectURL(content);
+  
+            anchor.href = objectUrl;
+            anchor.download = `${this.bucket.bucketName}_${date}`;
+            anchor.click();
+            window.URL.revokeObjectURL(objectUrl);
+          }
+        }).finally(() => {     
+          this.isLoadingZipFile = false;
+        });
+      },
+      (error) => {
+        this.isLoadingZipFile = false;
+        console.error('Error during file downloads:', error);
+      }
+    );
   }
+  
 
   showModalDeleteObject() {
     this.isVisibleDeleteObject = true;

@@ -1,7 +1,7 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Inject, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, Inject, OnInit, ViewChild } from '@angular/core';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { InstancesService } from '../../instances/instances.service';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { CatalogService } from 'src/app/shared/services/catalog.service';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
@@ -13,10 +13,11 @@ import { LoadingService } from '@delon/abc/loading';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { DomSanitizer } from '@angular/platform-browser';
 import { DOMAIN_REGEX } from 'src/app/shared/constants/constants';
-import { duplicateDomainValidator, ipValidatorMany, ipWafDomainValidatorMany } from '../../../../../../../libs/common-utils/src';
-import { AddDomainRequest, WafDetailDTO } from '../waf.model';
+import { duplicateDomainValidator, hostValidator, ipValidatorMany, ipWafDomainValidatorMany } from '../../../../../../../libs/common-utils/src';
+import { AddDomainRequest, WafDetailDTO, SslCertDTO } from '../waf.model';
 import { WafService } from 'src/app/shared/services/waf.service';
-import { finalize } from 'rxjs';
+import { debounceTime, finalize, fromEvent, map } from 'rxjs';
+import { checkProperSslWithDomain } from 'src/app/shared/utils/common';
 
 @Component({
   selector: 'one-portal-add-domain',
@@ -26,19 +27,23 @@ import { finalize } from 'rxjs';
 })
 export class AddDomainComponent implements OnInit {
 
+  @ViewChild('domainInput') domainInput: ElementRef;
+
   form: FormGroup = this.fb.group({
     nameWAF: ['', [Validators.required]],
     domain: ['', [Validators.required,Validators.pattern(DOMAIN_REGEX)]],
-      ipPublic: ['', [Validators.required, ipWafDomainValidatorMany]],
-      host: [''],
-      port: [''],
+      ipPublic: ['', [Validators.required, ipValidatorMany]],
+      host: ['', hostValidator],
+      port: [null as number],
       sslCert: [''],
       package:['']
   })
 
   listWafs: WafDetailDTO[]
 
-  listSslCert: any
+  listSslCert: SslCertDTO[]
+
+  listSslCertOptions: SslCertDTO[]
 
   isVisibleCreateSSLCert = false;
 
@@ -47,6 +52,8 @@ export class AddDomainComponent implements OnInit {
   isLoadingSubmit: boolean
 
   selectedPackage: number
+
+  fromWaf: boolean
 
   addDomainRequest = new AddDomainRequest()
  
@@ -63,6 +70,15 @@ export class AddDomainComponent implements OnInit {
       this.getListSslCert()
   }
 
+  ngAfterViewInit() {
+    fromEvent(this.domainInput.nativeElement, 'input').pipe(
+      map((event: any) => event.target.value),
+      debounceTime(700)
+    ).subscribe((value: string) => {
+      this.getListSslOptions(value);
+    });
+  }
+
   constructor(@Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
     private instancesService: InstancesService,
     private cdr: ChangeDetectorRef,
@@ -76,19 +92,27 @@ export class AddDomainComponent implements OnInit {
     private loadingSrv: LoadingService,
     private fb: FormBuilder,
     private sanitizer: DomSanitizer,
-    private wafService: WafService
+    private wafService: WafService,
+    private activatedRoute: ActivatedRoute
   ) {
   
   }
 
   getListWaf(){
     this.isLoadingGetWaf = true
+    const wafIdParams =  this.activatedRoute.snapshot.queryParamMap.get('wafId')
+    console.log('first',wafIdParams)
     this.wafService.getWafs(9999, 1, 'ACTIVE', '', '').pipe(finalize(()=>{
       this.isLoadingGetWaf = false
     })).subscribe((data)=>{
-      console.log('data', data)
-      this.listWafs = data.records
-      this.form.controls.nameWAF.setValue(this.listWafs[0].id)
+      if(!!wafIdParams){
+        this.listWafs = data.records?.filter(waf => waf.id.toString() === wafIdParams)
+        this.fromWaf = true
+      }else{
+        this.listWafs = data.records?.filter(waf => waf?.quotaDomain > waf?.domainTotal && waf?.status === 'ACTIVE')
+        this.fromWaf = false
+      }
+      this.form.controls.nameWAF.setValue(this.listWafs?.[0]?.id)
       this.form.controls.package.setValue(this.listWafs?.[0].offerId)
     })
   }
@@ -96,6 +120,7 @@ export class AddDomainComponent implements OnInit {
   getListSslCert(){
     this.wafService.getListSslCert('', 999, 1).subscribe((res) => {
       this.listSslCert = res?.records
+      this.listSslCertOptions = this.listSslCert
     }, (error) => {
       console.log(error);     
     })
@@ -142,5 +167,13 @@ export class AddDomainComponent implements OnInit {
   onOkCreateSsl(){
     this.isVisibleCreateSSLCert = false;
     this.getListSslCert()
+  }
+
+  getListSslOptions(domainName: string){
+    this.listSslCertOptions = this.listSslCert.filter((cert) => checkProperSslWithDomain(domainName, cert.subjectAlternativeNames))
+  }
+
+  handleOnChangeDomain(event: any){
+    this.getListSslOptions(event.target.value)
   }
 }
