@@ -21,10 +21,12 @@
                         IP Public (<span style="color: rgba(252, 16, 16, 1)">*</span>)
                     </nz-form-label>
                     <input nz-input type="text" appTrim placeholder="Nhập IP Public" formControlName="ipPublic"
-                        class="input-custom" [maxlength]="50" minlength="1">
+                        class="input-custom" minlength="1">
                     <ng-template #ipErrorTpl let-control>
                         <ng-container *ngIf="control.hasError('required')">IP Public không được để trống</ng-container>
                         <ng-container *ngIf="control.hasError('invalidIP')">Địa chỉ IP không hợp lệ</ng-container>
+                        <ng-container *ngIf="control.hasError('maxIPs')">Không được nhập quá 64 địa chỉ IP</ng-container>
+                        <ng-container *ngIf="control.hasError('duplicateIP')">IP Public không được trùng nhau</ng-container>
                     </ng-template>
                 </nz-form-control>
             </nz-form-item>
@@ -32,16 +34,19 @@
                 <nz-form-control [nzErrorTip]="hostErrorTpl">
                     <nz-form-label nzFor="host">Host </nz-form-label>
                     <input nz-input type="text" appTrim placeholder="Nhập host" formControlName="host"
-                        class="input-custom" [maxlength]="50" minlength="1" />
+                        class="input-custom" minlength="1" />
                         <ng-template #hostErrorTpl let-control>
                             <ng-container *ngIf="control.hasError('invalidHost')">Host không đúng định dạng</ng-container>
                           </ng-template>
                 </nz-form-control>
             </nz-form-item>
             <nz-form-item>
-                <nz-form-control>
+                <nz-form-control [nzErrorTip]="portErrTpl">
                     <nz-form-label nzFor="port">Port </nz-form-label>
-                    <nz-input-number nzMax="65535" style="width: 100%; margin-left: 0;" nz-input type="text" nzPlaceHolder="Nhập port" formControlName="port" class="input-custom" />
+                    <nz-input-number [nzMin]="0" [nzStep]="1" [nzMax]="65535" style="width: 100%; margin-left: 0;" nz-input type="text" nzPlaceHolder="Nhập port" formControlName="port" class="input-custom" />
+                    <ng-template #portErrTpl let-control>
+                        <ng-container *ngIf="control.hasError('min') || control.hasError('max')">Port có giá trị từ 1 đến 65535</ng-container>
+                      </ng-template>
                 </nz-form-control>
             </nz-form-item>
             <div class="d-flex justify-content-end">

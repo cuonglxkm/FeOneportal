@@ -90,6 +90,7 @@
               <ng-container *ngIf="control.hasError('required')">IP Public không được để trống</ng-container>
               <ng-container *ngIf="control.hasError('invalidIP')">Địa chỉ IP không hợp lệ</ng-container>
               <ng-container *ngIf="control.hasError('maxIPs')">Không được nhập quá 64 địa chỉ IP</ng-container>
+              <ng-container *ngIf="control.hasError('duplicateIP')">IP Public không được trùng nhau</ng-container>
             </ng-template>
           </nz-form-control>
         </nz-form-item>
