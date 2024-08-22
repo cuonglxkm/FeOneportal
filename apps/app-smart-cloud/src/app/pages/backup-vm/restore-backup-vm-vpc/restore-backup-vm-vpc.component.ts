@@ -56,6 +56,7 @@ import { CatalogService } from 'src/app/shared/services/catalog.service';
 import { LoadingService } from '@delon/abc/loading';
 import { OrderService } from 'src/app/shared/services/order.service';
 import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
+import { CommonService } from 'src/app/shared/services/common.service';
 
 class BlockStorage {
   id: number = 0;
@@ -156,6 +157,7 @@ export class RestoreBackupVmVpcComponent implements OnInit {
     private configurationService: ConfigurationsService,
     private loadingSrv: LoadingService,
     private orderService: OrderService,
+    private commonService: CommonService,
     @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService
   ) {
@@ -898,7 +900,8 @@ export class RestoreBackupVmVpcComponent implements OnInit {
                           'app.notify.success.new.instances.restore'
                         )
                       );
-                      this.router.navigate(['/app-smart-cloud/instances']);
+                      this.commonService.navigateAdvance('/app-smart-cloud/instances', '/app-smart-cloud/instances-advance')
+                      // this.router.navigate(['/app-smart-cloud/instances']);
                     },
                     error: (e) => {
                       this.notification.error(

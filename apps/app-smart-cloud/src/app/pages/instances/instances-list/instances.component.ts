@@ -44,6 +44,7 @@ import {
 import { ScheduleService } from '../../../shared/services/schedule.service';
 import { PolicyService } from 'src/app/shared/services/policy.service';
 import { RegionID } from 'src/app/shared/enums/common.enum';
+import { CommonService } from 'src/app/shared/services/common.service';
 
 class SearchParam {
   status: string = '';
@@ -94,6 +95,7 @@ export class InstancesComponent implements OnInit {
     private notificationService: NotificationService,
     private vlanService: VlanService,
     private backupScheduleService: ScheduleService,
+    private commonSrv: CommonService,
     private policyService: PolicyService
   ) {}
   url = window.location.pathname;
@@ -913,21 +915,34 @@ export class InstancesComponent implements OnInit {
   //#endregion
 
   openConsole(id: number): void {
-    this.router.navigateByUrl(
-      '/app-smart-cloud/instances/instances-console/' + id,
-      {
-        state: {
-          vmId: id,
-        },
-      }
-    );
+    if(this.region === RegionID.ADVANCE){
+      this.router.navigateByUrl(
+        '/app-smart-cloud/instances-advance/instances-console/' + id,
+        {
+          state: {
+            vmId: id,
+          },
+        }
+      );
+    }else{
+      this.router.navigateByUrl(
+        '/app-smart-cloud/instances/instances-console/' + id,
+        {
+          state: {
+            vmId: id,
+          },
+        }
+      );
+    }
   }
 
   navigateToCreate() {
     if (this.project.type == 1) {
-      this.router.navigate(['/app-smart-cloud/instances/instances-create-vpc']);
+      // this.router.navigate(['/app-smart-cloud/instances/instances-create-vpc']);
+      this.commonSrv.navigateAdvance('/app-smart-cloud/instances/instances-create-vpc','/app-smart-cloud/instances-advance/instances-create-vpc')
     } else {
-      this.router.navigate(['/app-smart-cloud/instances/instances-create']);
+      // this.router.navigate(['/app-smart-cloud/instances/instances-create']);
+      this.commonSrv.navigateAdvance('/app-smart-cloud/instances/instances-create','/app-smart-cloud/instances-advance/instances-create')
     }
   }
 
@@ -1061,5 +1076,13 @@ export class InstancesComponent implements OnInit {
       ['/app-smart-cloud/schedule/snapshot/create', { instanceId: id }],
       { queryParams: { snapshotTypeCreate: 1 } }
     );
+  }
+
+  navigateToInstanceList(){
+    this.commonSrv.navigateAdvance('/app-smart-cloud/instances', '/app-smart-cloud/instances-advance')
+  }
+
+  navigateToInstanceDetail(id){
+    this.commonSrv.navigateAdvance('/app-smart-cloud/instances/instances-detail/' + id, '/app-smart-cloud/instances-advance/instances-detail/' + id)
   }
 }

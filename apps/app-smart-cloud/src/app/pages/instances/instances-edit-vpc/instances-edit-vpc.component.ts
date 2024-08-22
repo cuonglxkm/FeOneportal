@@ -37,6 +37,7 @@ import { OrderService } from 'src/app/shared/services/order.service';
 import { CatalogService } from 'src/app/shared/services/catalog.service';
 import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
 import { RegionID } from 'src/app/shared/enums/common.enum';
+import { CommonService } from 'src/app/shared/services/common.service';
 
 @Component({
   selector: 'one-portal-instances-edit-vpc',
@@ -106,7 +107,8 @@ export class InstancesEditVpcComponent implements OnInit {
     private router: Router,
     private notification: NzNotificationService,
     private configurationService: ConfigurationsService,
-    private orderService: OrderService
+    private orderService: OrderService,
+    private commonService: CommonService
   ) {}
   url = window.location.pathname;
 
@@ -480,7 +482,8 @@ export class InstancesEditVpcComponent implements OnInit {
                   '',
                   this.i18n.fanyi('app.notify.update.instances.success')
                 );
-                this.router.navigate(['/app-smart-cloud/instances']);
+                // this.router.navigate(['/app-smart-cloud/instances']);
+                this.commonService.navigateAdvance('/app-smart-cloud/instances', '/app-smart-cloud/instances-advance')
               },
               error: (e) => {
                 this.notification.error(
@@ -572,28 +575,48 @@ export class InstancesEditVpcComponent implements OnInit {
     if (this.projectCombobox) {
       this.projectCombobox.loadProjects(true, region.regionId);
     }
-    this.router.navigate(['/app-smart-cloud/instances']);
+    // this.router.navigate(['/app-smart-cloud/instances']);
+    this.commonService.navigateAdvance('/app-smart-cloud/instances', '/app-smart-cloud/instances-advance')
+
   }
 
   onProjectChange(project: ProjectModel) {
-    this.router.navigate(['/app-smart-cloud/instances']);
+    // this.router.navigate(['/app-smart-cloud/instances']);
+    this.commonService.navigateAdvance('/app-smart-cloud/instances', '/app-smart-cloud/instances-advance')
+
   }
 
   cancel() {
-    this.router.navigate(['/app-smart-cloud/instances']);
+    // this.router.navigate(['/app-smart-cloud/instances']);
+    this.commonService.navigateAdvance('/app-smart-cloud/instances', '/app-smart-cloud/instances-advance')
+
   }
 
   navigateToCreate() {
-    this.router.navigate(['/app-smart-cloud/instances/instances-create-vpc']);
+    // this.router.navigate(['/app-smart-cloud/instances/instances-create-vpc']);
+    this.commonService.navigateAdvance('/app-smart-cloud/instances/instances-create-vpc', '/app-smart-cloud/instances-advance/instances-create-vpc')
+
   }
 
   navigateToChangeImage() {
-    this.router.navigate([
-      '/app-smart-cloud/instances/instances-edit-info/' + this.id,
-    ]);
+    // this.router.navigate([
+    //   '/app-smart-cloud/instances/instances-edit-info/' + this.id,
+    // ]);
+    this.commonService.navigateAdvance('/app-smart-cloud/instances/instances-edit-info/' + this.id, '/app-smart-cloud/instances-advance/instances-edit-info/' + this.id)
+
   }
 
   returnPage(): void {
-    this.router.navigate(['/app-smart-cloud/instances']);
+    // this.router.navigate(['/app-smart-cloud/instances']);
+    this.commonService.navigateAdvance('/app-smart-cloud/instances', '/app-smart-cloud/instances-advance')
+
+  }
+
+  navigateToInstanceList(){
+    this.commonService.navigateAdvance('/app-smart-cloud/instances', '/app-smart-cloud/instances-advance')
+  }
+
+  navigateToInstanceDetail(){
+    this.commonService.navigateAdvance('/app-smart-cloud/instances/instances-detail/' + this.id, '/app-smart-cloud/instances-advance/instances-detail/' + this.id)
   }
 }
