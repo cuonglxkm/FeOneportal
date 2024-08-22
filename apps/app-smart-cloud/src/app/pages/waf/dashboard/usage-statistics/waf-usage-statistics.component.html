@@ -2,30 +2,30 @@
   <nz-content>
     <nz-card>
       <div nz-row>
-        <nz-range-picker [(ngModel)]="selectedDate" (ngModelChange)="onChange($event)"></nz-range-picker>
-        <nz-select [(ngModel)]="selectedValue"
+        <nz-range-picker [(ngModel)]="selectedDate" nzAllowClear="false" (ngModelChange)="onDateChange($event)" [nzDisabledDate]="disabledDate"></nz-range-picker>
+        <nz-select [(ngModel)]="selectedDomain"
+                    (ngModelChange)="onChangeDomain()"
                      [nzMaxTagCount]="0"
                      [nzMaxTagPlaceholder]="tagPlaceHolder"
                      nzSize="default"
                      style="margin-left: 10px; width: 200px;"
-                     (ngModelChange)="onChange($event)"
                      nzPlaceHolder="Chọn domain"
-                     nzTooltipTitle="{{ 'volume.tooltip.title.filter.status' | i18n }}"
                      nzTooltipPlacement="bottom"
                      nz-tooltip
                      nzMode="multiple"
-                     nzAllowClear="true">
-          <nz-option *ngFor="let item of selectOptions" [nzValue]="item.value" [nzLabel]="item.label"></nz-option>
+                     nzAllowClear="true"
+                     [nzStatus]="!isValid?'error':''" >
+          <nz-option *ngFor="let item of selectDomainOptions" [nzValue]="item.value" [nzLabel]="item.label"></nz-option>
         </nz-select>
         <ng-template #tagPlaceHolder let-selectedList>{{ selectedList.length }} domain selected</ng-template>
+        <button style="margin-left: 10px" nz-button nzType="primary" (click)="queryDomain()">Query</button>
       </div>
       <div nz-row class="pt-5">
-        <button  nz-button nzType="primary">Primary Button</button>
-        <button  nz-button nzType="default">Default Button</button>
+        <button nz-button [nzType]="this.currentTab=='bandwidth'? 'primary':'default'" (click)="changeTab('bandwidth')">Bandwidth/Traffic</button>
+        <button nz-button [nzType]="this.currentTab=='requests'? 'primary':'default'" (click)="changeTab('requests')">Requests</button>
         <nz-select [(ngModel)]="selectedTypeDate"
                      nzSize="default"
                      style="margin-left: 10px; width: 200px;"
-                     (ngModelChange)="onChange($event)"
                      disabled="true">
           <nz-option nzLabel="Hourly" nzValue="hourly"></nz-option>
           <nz-option nzLabel="5 minutes" nzValue="fiveminutes"></nz-option>
@@ -48,7 +48,7 @@
           <span class="ml-5">Total Traffic: <span style="color: #512DA8; font-weight: bold">0.00 GB</span></span>
         </p>
         <p>
-          <span style="color: #009B4E;">Bandwidth Saving Ratio &nbsp;&nbsp;</span>
+          <span style="color: #009B4E;">{{this.currentTab=='bandwidth'?'Bandwidth Saving Ratio':'Hit Ratio'}} &nbsp;&nbsp;</span>
           <span class="peak">Peak Value : <span style="color: #512DA8; font-weight: bold">99.99% </span>(00:05:00 16/07/2024) </span>
           <span class="ml-5">Average: <span style="color: #512DA8; font-weight: bold">99.99%</span></span>
         </p>
@@ -60,10 +60,10 @@
   
       <div nz-row class="pt-5 pb-5">
         <span class="border-left-text">Daily Data</span>
-        <nz-select [(ngModel)]="selectedValue"
+        <nz-select [(ngModel)]="selectedTypeRequest"
                      nzSize="default"
                      style="margin-left: 10px; width: 200px;"
-                     (ngModelChange)="onChange($event)"
+                     
         >
           <nz-option nzLabel="Edge" nzValue="EDGE"></nz-option>
           <nz-option nzLabel="Back-to-Origin" nzValue="BTO"></nz-option>

@@ -256,4 +256,8 @@ export class WafService extends BaseService {
       this.getHeaders()
     );
   }
+
+  getDomainOfUser(): Observable<WafDomain[]> {
+    return this.http.get<WafDomain[]>(`${this.baseUrl+this.ENDPOINT.provisions}/waf/domain-of-user`);
+  }
 }
