@@ -743,8 +743,13 @@ export class ProjectCreateComponent implements OnInit {
               this.vpc.createIpPublic(request).subscribe(
                 data => {
                   this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('project.action.creating'));
-                  // this.router.navigate(['/app-smart-cloud/project']);
-                  this.navigateToVPC();
+                  console.log("region aaa",this.region )
+                  // this.region = JSON.parse(localStorage.getItem('regionId'));
+                  const currentRegion =JSON.parse(localStorage.getItem('regionId'));
+                  // localStorage.setItem('regionId', JSON.stringify(currentRegion));
+                  this.region = currentRegion;
+                  this.router.navigate(['/app-smart-cloud/project']);
+                  // this.navigateToVPC();
                 },
                 error => {
                   this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('project.note51'));
@@ -794,8 +799,8 @@ export class ProjectCreateComponent implements OnInit {
                 this.vpc.createIpPublic(request).subscribe(
                   data => {
                     this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('project.action.creating'));
-                    // this.router.navigate(['/app-smart-cloud/project']);
-                    this.navigateToVPC()
+                    this.router.navigate(['/app-smart-cloud/project']);
+                    // this.navigateToVPC()
                   },
                   error => {
                     this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('project.note51'));
