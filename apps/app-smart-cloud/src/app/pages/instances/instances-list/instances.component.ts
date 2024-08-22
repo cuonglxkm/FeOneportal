@@ -42,6 +42,7 @@ import {
   FormSearchScheduleBackup,
 } from '../../../shared/models/schedule.model';
 import { ScheduleService } from '../../../shared/services/schedule.service';
+import { PolicyService } from 'src/app/shared/services/policy.service';
 import { RegionID } from 'src/app/shared/enums/common.enum';
 
 class SearchParam {
@@ -78,6 +79,7 @@ export class InstancesComponent implements OnInit {
   activeCreate: boolean = false;
   isVisibleGanVLAN: boolean = false;
   isVisibleGoKhoiVLAN: boolean = false;
+  isCreateOrder: boolean = false;
   @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
   typeVpc: number;
 
@@ -91,7 +93,8 @@ export class InstancesComponent implements OnInit {
     private notification: NzNotificationService,
     private notificationService: NotificationService,
     private vlanService: VlanService,
-    private backupScheduleService: ScheduleService
+    private backupScheduleService: ScheduleService,
+    private policyService: PolicyService
   ) {}
   url = window.location.pathname;
 
@@ -267,6 +270,7 @@ export class InstancesComponent implements OnInit {
     this.projectId = project?.id;
     this.typeVpc = project?.type;
     this.getDataList();
+    this.isCreateOrder = this.policyService.hasPermission("order:Create");
   }
 
   doSearch() {
@@ -296,10 +300,17 @@ export class InstancesComponent implements OnInit {
             this.total = next.totalCount;
           },
           error: (e) => {
-            this.notification.error(
-              e.statusText,
-              this.i18n.fanyi('app.notify.get.list.instance')
-            );
+            if(e.status == 403){
+              this.notification.error(
+                e.statusText,
+                this.i18n.fanyi('app.non.permission')
+              );
+            } else {
+              this.notification.error(
+                e.statusText,
+                this.i18n.fanyi('app.notify.get.list.instance')
+              );
+            }
           },
         });
     }
@@ -340,10 +351,17 @@ export class InstancesComponent implements OnInit {
           error: (e) => {
             this.dataList = [];
             this.activeCreate = true;
-            this.notification.error(
-              e.statusText,
-              this.i18n.fanyi('app.notify.get.list.instance')
-            );
+            if(e.status == 403){
+              this.notification.error(
+                e.statusText,
+                this.i18n.fanyi('app.non.permission')
+              );
+            } else {
+              this.notification.error(
+                e.statusText,
+                this.i18n.fanyi('app.notify.get.list.instance')
+              );
+            }
           },
         });
     }

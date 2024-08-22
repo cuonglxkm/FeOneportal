@@ -1370,6 +1370,7 @@
   "app.iam-dashboard.conceptPolicy": "Khái niệm về Policy?",
   "app.iam-dashboard.createGroup": "Cách khởi tạo Group?",
   "app.iam-dashboard.home":"Trang chủ",
+  "app.iam-policy.create.error": "Tên Policy trùng với tên Policy mặc định của hệ thống, vui lòng thử lại.",
 
   "app.user.group.join":"Các Groups mà User đang tham gia",
   "app.user.group.maximum.groups":"Một người dùng có thể là thành viên của tối đa 10 nhóm cùng một lúc",
