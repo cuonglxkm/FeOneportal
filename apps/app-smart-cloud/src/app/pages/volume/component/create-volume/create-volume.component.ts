@@ -101,6 +101,9 @@ export class CreateVolumeComponent implements OnInit {
 
   isStorageZero = false;
 
+  isVolumeHdd: boolean;
+  isVolumeSsd: boolean
+
   // snapshot: any;
 
   serviceActiveByRegion: SupportService[] = [];
@@ -161,7 +164,7 @@ export class CreateVolumeComponent implements OnInit {
   getActiveServiceByRegion() {
     this.isLoading = true;
     this.catalogService.getActiveServiceByRegion(
-      ['volume-ssd', 'volume-hdd', 'MultiAttachment', 'Encryption', 'volume-snapshot-ssd', 'volume-snapshot-hdd'], this.region)
+      ['volume-ssd', 'volume-hdd', 'MultiAttachment', 'Encryption', 'volume-snapshot-ssd', 'volume-snapshot-hdd', 'volume-hdd', 'volume-ssd'], this.region)
       .subscribe(data => {
         this.isLoading = false;
         this.serviceActiveByRegion = data;
@@ -174,6 +177,12 @@ export class CreateVolumeComponent implements OnInit {
           }
           if (['Encryption'].includes(item.productName)) {
             this.typeEncrypt = item.isActive;
+          }
+          if(['volume-hdd'].includes(item.productName)){
+            this.isVolumeHdd = item.isActive
+          }
+          if(['volume-ssd'].includes(item.productName)){
+            this.isVolumeSsd = item.isActive
           }
         });
       }, error => {

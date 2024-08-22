@@ -943,6 +943,11 @@ export class InstancesComponent implements OnInit {
     } else {
       // this.router.navigate(['/app-smart-cloud/instances/instances-create']);
       this.commonSrv.navigateAdvance('/app-smart-cloud/instances/instances-create','/app-smart-cloud/instances-advance/instances-create')
+    //   if(this.region === RegionID.ADVANCE){
+    //     this.router.navigate(['/app-smart-cloud/instances-advance/instances-create'])
+    // }else{
+    //     this.router.navigate(['/app-smart-cloud/instances/instances-create'])
+    // }
     }
   }
 
