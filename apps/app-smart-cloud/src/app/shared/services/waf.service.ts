@@ -234,6 +234,15 @@ export class WafService extends BaseService {
     );
   }
 
+  checkDomainExist(name: string) {
+    return this.http.get<any>(
+      this.baseUrl + this.ENDPOINT.provisions + `/waf/domain/checkexist?name=${name}`,
+      {
+        headers: this.getHeaders().headers,
+      }
+    );
+  }
+
   hasWaf(){
     return this.http.get(this.baseUrl + this.ENDPOINT.provisions + `/waf/has-waf`, this.getHeaders())
   }
