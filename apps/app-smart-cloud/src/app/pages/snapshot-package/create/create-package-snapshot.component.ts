@@ -58,6 +58,11 @@ export class CreatePackageSnapshotComponent implements OnInit {
   totalVat: number;
   isVisiblePopupError: boolean = false;
   errorList: string[] = [];
+
+  minBlock:number=0;
+  stepBlock:number=0;
+  maxBlock:number=0;
+  private inputChangeBlock = new Subject<{ value: number, name: string }>();
   closePopupError() {
     this.isVisiblePopupError = false;
   }
@@ -71,38 +76,80 @@ export class CreatePackageSnapshotComponent implements OnInit {
               @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
               private fb: NonNullableFormBuilder,
               private instanceService: InstancesService) {
-                this.getTotalAmount();
     this.validateForm.get('time').valueChanges.subscribe(data => {
       this.getTotalAmount();
     });
-    this.searchSubjectHdd.pipe(debounceTime(this.debounceTimeMs)).subscribe((searchValue) => {
-      if ((this.numberHDD % this.stepStorage) > 0) {
-        this.notification.warning('', this.i18n.fanyi('app.notify.amount.capacity', { number: this.stepStorage }));
-        this.numberHDD = this.numberHDD - (this.numberHDD % this.stepStorage);
+    this.inputChangeBlock.pipe(
+      debounceTime(800)
+    ).subscribe(data => this.checkNumberBlock(data.value, data.name));
+  }
+  ngOnInit() {
+    let regionAndProject = getCurrentRegionAndProject();
+    this.region = regionAndProject.regionId;
+    this.project = regionAndProject.projectId;
+   
+    if (!this.url.includes('advance')) {
+      if (Number(localStorage.getItem('regionId')) === RegionID.ADVANCE) {
+        this.region = RegionID.NORMAL;
+      } else {
+        this.region = Number(localStorage.getItem('regionId'));
       }
-      this.getTotalAmount();
-    });
-    this.searchSubjectSsd.pipe(debounceTime(this.debounceTimeMs)).subscribe((searchValue) => {
-      if ((this.numberSSD % this.stepStorage) > 0) {
-        this.notification.warning('', this.i18n.fanyi('app.notify.amount.capacity', { number: this.stepStorage }));
-        this.numberSSD = this.numberSSD - (this.numberSSD % this.stepStorage);
-      }
-      this.getTotalAmount();
-    });
+    } else {
+      this.region = RegionID.ADVANCE;
+    }
+    // this.customerId = this.tokenService.get()?.userId
+    console.log(this.tokenService.get());
+    this.getStepBlock('BLOCKSTORAGE');
+    
   }
 
-  minStorage: number = 0;
-  stepStorage: number = 0;
-  valueString: string;
-  maxStorage: number = 0;
+  // call api get step block 
+  getStepBlock(name: string) {
+    this.configurationsService.getConfigurations(name).subscribe((res: any) => {
+      const valuestring: any = res.valueString;
+      const parts = valuestring.split("#")
+      this.minBlock = parseInt(parts[0]);
+      this.stepBlock = parseInt(parts[1]);
+      this.maxBlock = parseInt(parts[2]);
+    })
+  }
+  onInputChange(value: number, name: string): void {
+    this.inputChangeBlock.next({ value, name });
+   
+  }
+  // function check number input block
+  checkNumberBlock(value:number,name:string):void{
+    const messageStepNotification = `Số lượng phải chia hết cho  ${this.stepBlock} `;
+    const numericValue = Number(value);
+    if (isNaN(numericValue)) {
+      this.notification.warning('', messageStepNotification);
+      return;
+    }
+    let adjustedValue = Math.floor(numericValue / this.stepBlock) * this.stepBlock;
+    if (adjustedValue > this.maxBlock) {
+      adjustedValue = Math.floor(this.maxBlock / this.stepBlock) * this.stepBlock;
+    } else if (adjustedValue < this.minBlock) {
+      this.notification.warning('', messageStepNotification);
+      adjustedValue = this.minBlock;
+      
+    }
+    if (numericValue !== adjustedValue) {
+      this.notification.warning('', messageStepNotification);
+    }
+    switch (name) {
+      case "hhd":
+        this.numberHDD = adjustedValue;
+        break;
+      case "ssd":
+        this.numberSSD = adjustedValue;
+        break;
+      
+    }
+    if (numericValue !== adjustedValue) {
+      this[name] = adjustedValue;
+    }
+    this.getTotalAmount();
 
-  getConfiguration() {
-    this.configurationsService.getConfigurations('BLOCKSTORAGE').subscribe(data => {
-      this.valueString = data.valueString;
-      this.minStorage = Number.parseInt(this.valueString?.split('#')[0]);
-      this.stepStorage = Number.parseInt(this.valueString?.split('#')[1]);
-      this.maxStorage = Number.parseInt(this.valueString?.split('#')[2]);
-    });
   }
 
   regionChanged(region: RegionModel) {
@@ -222,7 +269,6 @@ export class CreatePackageSnapshotComponent implements OnInit {
 
 
   getTotalAmount() {
-    if (this.numberSSD + this.numberHDD > 0) {
       this.loadingCalculate = true;
       this.packageBackupInit();
       let itemPayment: ItemPayment = new ItemPayment();
@@ -258,31 +304,10 @@ export class CreatePackageSnapshotComponent implements OnInit {
             }
           }
         });
-    }
   }
 
   url = window.location.pathname;
-  ngOnInit() {
-    let regionAndProject = getCurrentRegionAndProject();
-    this.region = regionAndProject.regionId;
-    this.project = regionAndProject.projectId;
-   
-    if (!this.url.includes('advance')) {
-      if (Number(localStorage.getItem('regionId')) === RegionID.ADVANCE) {
-        this.region = RegionID.NORMAL;
-      } else {
-        this.region = Number(localStorage.getItem('regionId'));
-      }
-    } else {
-      this.region = RegionID.ADVANCE;
-    }
-    // this.customerId = this.tokenService.get()?.userId
-    // this.getTotalAmount();
-    console.log(this.tokenService.get());
-    this.getConfiguration();
-    console.log("hddUnitPrice", this.hddUnitPrice)
-    
-  }
+  
 
   onChangeTime($event: any) {
 
@@ -290,18 +315,12 @@ export class CreatePackageSnapshotComponent implements OnInit {
 
   checkPossiblePress(event: KeyboardEvent) {
     const key = event.key;
-    if (isNaN(Number(key)) && key !== 'Backspace' && key !== 'Delete' && key !== 'ArrowLeft' && key !== 'ArrowRight') {
+    if (isNaN(Number(key)) && key !== 'Backspace' && key !== 'Delete' && key !== 'ArrowLeft' && key !== 'ArrowRight' &&   key !== 'Tab') {
       event.preventDefault();
     }
   }
 
-  changeQuota(isHdd) {
-    if (isHdd) {
-      this.searchSubjectHdd.next('');
-    } else {
-      this.searchSubjectSsd.next('');
-    }
-  }
+
 }
 
 

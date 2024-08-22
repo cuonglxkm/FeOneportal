@@ -254,7 +254,7 @@
                   (click)="navigateToPaymentSummary()"
                   [disabled]="this.loadingCalculate || (numberHDDBonus + numberSSDBonus)==0"
                   [nzLoading]="loadingCalculate">
-                  <span nz-icon nzType="wallet" nzTheme="outline"></span>
+                  <img src="assets/extendvpc.svg" style="padding-right: 10px;" alt="">
                   <span
                     [style.color]="this.loadingCalculate || (numberHDDBonus + numberSSDBonus)==0 ? 'gray' : 'white'">{{'app.button.resize'
                     | i18n}}</span>
