@@ -12,7 +12,6 @@ import { RegionID } from '../enums/common.enum';
   providedIn: 'root',
 })
 export class CommonService extends BaseService {
-  region = JSON.parse(localStorage.getItem('regionId'));
 
   constructor(
     private http: HttpClient,
@@ -23,7 +22,11 @@ export class CommonService extends BaseService {
   }
 
   navigateAdvance(route: string, advanceRoute: string){
-    if(this.region === RegionID.ADVANCE){
+    // debugger
+    // console.log('first', this.region)
+    const region = JSON.parse(localStorage.getItem('regionId'));
+
+    if(region === RegionID.ADVANCE){
         this.router.navigate([advanceRoute])
     }else{
         this.router.navigate([route])
@@ -31,7 +34,9 @@ export class CommonService extends BaseService {
   }
 
   navigateAdvanceWithId(route: string, advanceRoute: string, id: string | number){
-    if(this.region === RegionID.ADVANCE){
+    const region = JSON.parse(localStorage.getItem('regionId'));
+
+    if(region === RegionID.ADVANCE){
         this.router.navigate([advanceRoute, id])
     }else{
         this.router.navigate([route, id])
