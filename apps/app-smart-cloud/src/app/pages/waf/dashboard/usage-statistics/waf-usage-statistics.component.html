@@ -1,0 +1,127 @@
+<nz-spin [nzSpinning]="isSpinning">
+  <nz-content>
+    <nz-card>
+      <div nz-row>
+        <nz-range-picker [(ngModel)]="date" (ngModelChange)="onChange($event)"></nz-range-picker>
+        <nz-select [(ngModel)]="selectedValue"
+                     nzSize="default"
+                     style="margin-left: 10px; width: 200px;"
+                     (ngModelChange)="onChange($event)"
+                     nzPlaceHolder="{{ 'volume.placeholder.filter.status' | i18n }}"
+                     nzTooltipTitle="{{ 'volume.tooltip.title.filter.status' | i18n }}"
+                     nzTooltipPlacement="bottom"
+                     nz-tooltip>
+          <nz-option *ngFor="let item of selectOptions" [nzValue]="item.value" [nzLabel]="item.label"></nz-option>
+        </nz-select>
+      </div>
+      <div nz-row class="pt-5">
+        <button  nz-button nzType="primary" >Primary Button</button>
+        <button  nz-button nzType="default">Default Button</button>
+        <nz-select [(ngModel)]="selectedValue"
+                     nzSize="default"
+                     style="margin-left: 10px; width: 200px;"
+                     (ngModelChange)="onChange($event)"
+                     disabled="true">
+          <nz-option nzLabel="Hourly" nzValue="Hourly"></nz-option>
+          <nz-option nzLabel="5 minutes" nzValue="minutes"></nz-option>
+        </nz-select>
+      </div>
+  
+      <div nz-row class="pt-5 pb-5">
+        <span class="border-left-text">Trend</span>
+      </div>
+  
+      <nz-card>
+        <p>
+          <span style="color: #4168FF;">Edge &nbsp;&nbsp;</span>
+          <span class="peak">Peak Bandwidth : <span style="color: #512DA8; font-weight: bold">0.00 Mbps </span>(00:05:00 16/07/2024) </span>
+          <span class="ml-5">Total Traffic: <span style="color: #512DA8; font-weight: bold">0.00 GB</span></span>
+        </p>
+        <p>
+          <span style="color: #47CBFF;">Back- to - Origin &nbsp;&nbsp;</span>
+          <span class="peak">Peak Bandwidth : <span style="color: #512DA8; font-weight: bold">0.00 Mbps </span>(00:05:00 16/07/2024) </span>
+          <span class="ml-5">Total Traffic: <span style="color: #512DA8; font-weight: bold">0.00 GB</span></span>
+        </p>
+        <p>
+          <span style="color: #009B4E;">Bandwidth Saving Ratio &nbsp;&nbsp;</span>
+          <span class="peak">Peak Value : <span style="color: #512DA8; font-weight: bold">99.99% </span>(00:05:00 16/07/2024) </span>
+          <span class="ml-5">Average: <span style="color: #512DA8; font-weight: bold">99.99%</span></span>
+        </p>
+      </nz-card>
+  
+      <div echarts [options]="options" class="demo-chart" style="height: 500px"></div>
+  
+      <nz-alert nzType="warning" nzMessage="Mô tả chức năng: Độ chi tiết của biểu đồ là 5 phút khi phạm vi tìm kiểm nhỏ hơn 1 ngày, biểu đồ sẽ thay đổi thành độ chi tiết theo giờ khi phạm vi tìm kiếm trên 1 ngày" nzShowIcon></nz-alert>
+  
+      <div nz-row class="pt-5 pb-5">
+        <span class="border-left-text">Daily Data</span>
+        <nz-select [(ngModel)]="selectedValue"
+                     nzSize="default"
+                     style="margin-left: 10px; width: 200px;"
+                     (ngModelChange)="onChange($event)"
+        >
+          <nz-option nzLabel="Edge" nzValue="EDGE"></nz-option>
+          <nz-option nzLabel="Back-to-Origin" nzValue="BTO"></nz-option>
+          <nz-option nzLabel="Bandwidth Saving Ratio" nzValue="BSR"></nz-option>
+        </nz-select>
+      </div>
+  
+      <nz-table #fixedTable
+                style="margin-top: 20px;"
+                nzShowSizeChanger
+                [nzData]="[]"
+                [nzLoading]="dailyTableLoading">
+        <thead>
+        <tr>
+          <th nzLeft>Date</th>
+          <th nzBreakWord>Bandwidth Peak Time</th>
+          <th nzBreakWord>Peak Bandwidth (Mbps)</th>
+          <th nzBreakWord>Total Traffic (GB)</th>
+        </tr>
+        </thead>
+        <tbody>
+          <ng-container *ngFor="let data of fixedTable.data">
+            <tr>
+              <td nzLeft>{{ data.domain }}</td>
+              <td nzBreakWord nzAlign="left">{{ data.ipPublic }}</td>
+              <td nzBreakWord nzAlign="left">{{ data.cName }} </td>
+              <td nzBreakWord nzAlign="left">{{ data.sslCertId ? 'ENABLE' : 'DISABLE' }}</td>
+            </tr>
+          </ng-container>
+        </tbody>
+      </nz-table>
+  
+  
+      <div nz-row class="pt-5 pb-5">
+        <span class="border-left-text">Bandwidth Saving Ratio TOP 10 domain</span>
+      </div>
+      <nz-table #fixedTable
+                style="margin-top: 20px;"
+                nzShowSizeChanger
+                [nzData]="[]"
+                [nzLoading]="dailyTableLoading">
+        <thead>
+        <tr>
+          <th nzLeft>Rank</th>
+          <th nzBreakWord>Domain</th>
+          <th nzBreakWord>Peak Value (%)</th>
+          <th nzBreakWord>Average (%)</th>
+        </tr>
+        </thead>
+        <tbody>
+          <ng-container *ngFor="let data of fixedTable.data">
+            <tr>
+              <td nzLeft>{{ data.domain }}</td>
+              <td nzBreakWord nzAlign="left">{{ data.ipPublic }}</td>
+              <td nzBreakWord nzAlign="left">{{ data.cName }} </td>
+              <td nzBreakWord nzAlign="left">{{ data.sslCertId ? 'ENABLE' : 'DISABLE' }}</td>
+            </tr>
+          </ng-container>
+        </tbody>
+      </nz-table>
+    </nz-card>
+  </nz-content>
+</nz-spin>
+
+
+ 
