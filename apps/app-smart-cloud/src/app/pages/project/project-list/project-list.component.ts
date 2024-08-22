@@ -144,7 +144,7 @@ export class ProjectListComponent implements OnInit {
   onRegionChange(region: RegionModel) {
     this.regionId = region.regionId;
     if (this.regionId === RegionID.ADVANCE) {
-      this.router.navigate(['/app-smart-cloud/project-advance']);
+      this.router.navigate(['/app-smart-cloud/project']);
     } else {
       this.router.navigate(['/app-smart-cloud/project']);
     }

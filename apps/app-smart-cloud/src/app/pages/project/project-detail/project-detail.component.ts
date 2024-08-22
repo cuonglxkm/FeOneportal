@@ -179,7 +179,7 @@ export class ProjectDetailComponent implements OnInit {
   edit() {
     if (this.region === RegionID.ADVANCE) {
       this.router.navigate(['/app-smart-cloud/project/update-advance/' + this.activatedRoute.snapshot.paramMap.get('id')])
-      this.router.navigate(['/app-smart-cloud/project-advance'])
+      // this.router.navigate(['/app-smart-cloud/project-advance'])
     } else {
       this.router.navigate(['/app-smart-cloud/project/update/' + this.activatedRoute.snapshot.paramMap.get('id')])
     }

@@ -93,12 +93,12 @@
                 <!--          VL selectedSnapshotType==0-->
                 <nz-form-item *ngIf="selectedSnapshotType == 0">
                   <nz-form-label>
-                    <span>{{'schedule.backup.volume.select' | i18n}} (<span style="color: red;">*</span>)
+                    <span>Chọn volume (<span style="color: red;">*</span>)
                       <img style="margin-left: 5px;" [nz-tooltip]="'Chọn Volume cần Snapshot'"
                         src="assets/imgs/pajamas_question.svg" alt="" /></span>
                   </nz-form-label>
                   <nz-form-control nzDisableAutoTips>
-                    <nz-select nzPlaceHolder="{{'schedule.backup.volume.select' | i18n}}" nzAllowClear
+                    <nz-select nzPlaceHolder="Chọn volume" nzAllowClear
                       [(ngModel)]="selectedVolume" [disabled]="volumeLoading" [nzLoading]="volumeLoading"
                       (ngModelChange)="changeVmVolume()" [ngModelOptions]="{ standalone: true }" nzSize="large">
                       <nz-option *ngFor="let index of volumeArray" [nzValue]="index"
@@ -109,12 +109,12 @@
                 <!--          VM selectedSnapshotType==1-->
                 <nz-form-item *ngIf="selectedSnapshotType == 1">
                   <nz-form-label>
-                    <span>{{'wan.label.instance.select' | i18n}} (<span style="color: red;">*</span>)
+                    <span>Chọn máy ảo (<span style="color: red;">*</span>)
                       <img [nz-tooltip]="'Chọn máy ảo cần Snapshot'" style="margin-left: 5px;"
                         src="assets/imgs/pajamas_question.svg" alt="" /></span>
                   </nz-form-label>
                   <nz-form-control nzDisableAutoTips>
-                    <nz-select nzPlaceHolder="{{'wan.label.instance.select' | i18n}}" nzAllowClear
+                    <nz-select nzPlaceHolder="Chọn máy ảo" nzAllowClear
                       [(ngModel)]="selectedVM" [disabled]="vmLoading" [nzLoading]="vmLoading"
                       (ngModelChange)="changeVmVolume()" [ngModelOptions]="{ standalone: true }" nzSize="large">
                       <nz-option *ngFor="let index of vmArray" [nzValue]="index" [nzLabel]="index.name"></nz-option>
@@ -179,12 +179,12 @@
               <div nz-col nzSpan="12">
                 <nz-form-item>
                   <nz-form-label>
-                    <span>{{'wan.label.instance.select' | i18n}} (<span style="color: red;">*</span>)
+                    <span>Chọn máy ảo (<span style="color: red;">*</span>)
                       <img nz-popover [nzPopoverContent]="'Chọn máy ảo cần Snapshot'" nzPopoverPlacement="bottom"
                         style="margin-left: 5px;" src="assets/imgs/pajamas_question.svg" alt="" /></span>
                   </nz-form-label>
                   <nz-form-control nzDisableAutoTips>
-                    <nz-select nzPlaceHolder="{{'wan.label.instance.select' | i18n}}" nzAllowClear style="width: 95%"
+                    <nz-select nzPlaceHolder="Chọn máy ảo" nzAllowClear style="width: 95%"
                       [(ngModel)]="selectedVM" [disabled]="vmLoading" [nzLoading]="vmLoading"
                       (ngModelChange)="changeVmVolume()" [ngModelOptions]="{ standalone: true }" nzSize="large">
                       <nz-option *ngFor="let index of vmArray" [nzValue]="index" [nzLabel]="index.name"></nz-option>
@@ -232,13 +232,13 @@
               <div nz-col nzSpan="12">
                 <nz-form-item>
                   <nz-form-label>
-                    <span>{{'schedule.backup.volume.select' | i18n}} (<span style="color: red;">*</span>)
+                    <span>Chọn volume (<span style="color: red;">*</span>)
                       <img nz-popover [nzPopoverContent]="'{{\'app.snapshot.schedule.select.volume\' | i18n}}'"
                         nzPopoverPlacement="bottom" style="margin-left: 5px;" src="assets/imgs/pajamas_question.svg"
                         alt="" /></span>
                   </nz-form-label>
                   <nz-form-control nzDisableAutoTips>
-                    <nz-select nzPlaceHolder="{{'schedule.backup.volume.select' | i18n}}" nzAllowClear
+                    <nz-select nzPlaceHolder="Chọn volume" nzAllowClear
                       style="width: 95%" [(ngModel)]="selectedVolume" [disabled]="volumeLoading"
                       [nzLoading]="volumeLoading" (ngModelChange)="changeVmVolume()"
                       [ngModelOptions]="{ standalone: true }" nzSize="large">
