@@ -28,7 +28,7 @@ export class ListPackagesSnapshotComponent implements OnInit {
   region = JSON.parse(localStorage.getItem('regionId'));
   project = JSON.parse(localStorage.getItem('projectId'));
 
-  pageSize: number = 1
+  pageSize: number = 10
   pageIndex: number = 1
 
   isLoading: boolean = false
