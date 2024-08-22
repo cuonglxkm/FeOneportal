@@ -11,4 +11,8 @@ export class VpnSiteToSiteDTO {
   networkId: string;
   routerId: string;
   expiredDate: Date
+  status: string
+  serviceStatus: string
+  suspendType: string
+  suspendReason: string
   }

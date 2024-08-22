@@ -38,8 +38,10 @@ export class VpnS2sResizeComponent implements OnInit{
   vpn: any;
   oldOfferId = 0;
   vatDisplay;
+  currentOffer: any;
   today: Date = new Date();
   isVisiblePopupError: boolean = false;
+  isLoadingAction: boolean = false;
   errorList: string[] = [];
   @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
   /**
@@ -61,6 +63,7 @@ export class VpnS2sResizeComponent implements OnInit{
   }
   ngOnInit(): void {
     this.numberMonth = 1;
+    this.getVpnAndOffers();
   }
 
   regionChanged(region: RegionModel) {
@@ -84,28 +87,78 @@ export class VpnS2sResizeComponent implements OnInit{
     this.router.navigate(['/app-smart-cloud/vpn-site-to-site']);
   }
 
-  getOffers(){
-    // this.offerDatas = [];
+  getVpnAndOffers() {
     this.loading = true;
-    this.catalogService
-      .getCatalogOffer(null, this.region, this.unitOfMeasure, null).pipe()
-      .subscribe((data) => {
-        if (data && data.length > 0) {
-          this.offerDatas = [];
-          data.forEach(item => {
-            let bandwidth = item['characteristicValues'].find(x => x['charName'] == 'Bandwidth');
-            this.offerDatas.push({
-              'Id': item['id'],
-              'OfferName': item['offerName'],
-              'Bandwidth': bandwidth['charOptionValues'][0],
-              'Price': item['price']['fixedPrice']['amount'],
-            });
-          });
-          this.getOffer();
+    
+    this.vpnSiteToSiteService.getVpnSiteToSite(0).pipe().subscribe(data => {
+      this.loading = false;  
+      if (data) {
+        if(data.body.status === 'TAMNGUNG' || data.body.serviceStatus === 'TAMNGUNG'){
+          this.notification.error(
+            this.i18n.fanyi('app.status.fail'),
+            'VPN Site To Site đã hết hạn, vui lòng gia hạn thêm'
+          );
+            this.router.navigateByUrl('/app-smart-cloud/vpn-site-to-site/extend');
+        }else{
+          this.vpn = data.body;
+          this.dateString = new Date(this.vpn['createdDate']);
+          this.expiredDate = new Date(this.vpn['expiredDate']);
+          this.numberMonth = Math.round((this.expiredDate.getTime() - this.dateString.getTime()) / 86400000 / 30);
+          this.getOffers(); 
         }
-        this.loading = false;
-      });
+      }
+    }, error => {
+      this.loading = false;
+    });
   }
+  
+  getOffers() {
+    this.loading = true;
+  
+    if (this.vpn) {
+      this.catalogService.getCatalogOffer(null, this.region, this.unitOfMeasure, null).pipe()
+        .subscribe((data) => {
+          if (data && data.length > 0) {
+            this.offerDatas = [];
+            this.currentOffer = data.find(
+              (e) => e.offerName === this.vpn.offerName
+            );
+  
+            if (this.currentOffer) {
+              const currentOfferPrice = this.currentOffer.price.fixedPrice.amount;
+              const filterOffers = data.filter(
+                (e) => e.price.fixedPrice.amount > currentOfferPrice
+              );
+  
+              filterOffers.forEach(item => {
+                let bandwidth = item['characteristicValues'].find(x => x['charName'] === 'Bandwidth');
+                this.offerDatas.push({
+                  'Id': item['id'],
+                  'OfferName': item['offerName'],
+                  'Bandwidth': bandwidth['charOptionValues'][0],
+                  'Price': item['price']['fixedPrice']['amount'],
+                });
+              });
+              this.offer = this.offerDatas.find(x => x['OfferName'] === this.vpn.offerName && x['Bandwidth'] === this.vpn.bandwidth);
+              if (this.offer) {
+                this.oldOfferId = this.offer['Id'];
+                let element = this.el.nativeElement.querySelector(`#offer-title-${this.offer['Id']}`);
+                this.renderer.addClass(element.parentNode, 'tr-selected');
+                this.specChange();
+                this.priceChange();
+              }
+            }
+          }
+          this.loading = false;
+        }, error => {
+          this.loading = false;
+        });
+    } else {
+      this.loading = false;
+    }
+  }
+  
+  
 
   caculator(event) {
     if(this.offer){
@@ -160,6 +213,7 @@ export class VpnS2sResizeComponent implements OnInit{
   }
 
   priceChange(){
+    this.isLoadingAction = true;
     let itemPayment: ItemPayment = new ItemPayment();
     itemPayment.orderItemQuantity = 1;
     itemPayment.specificationString = JSON.stringify(this.spec);
@@ -170,6 +224,7 @@ export class VpnS2sResizeComponent implements OnInit{
     dataPayment.projectId = 0;
     this.orderService.getTotalAmount(dataPayment).subscribe((result) => {
       if(result && result.data && result.data.totalAmount && result.data.totalPayment){
+        this.isLoadingAction = false
         this.vatNumber = result.data.currentVAT;
         this.vatPer = this.vatNumber * 100;
         this.vatDisplay = result.data.totalVAT.amount;
@@ -181,6 +236,8 @@ export class VpnS2sResizeComponent implements OnInit{
           this.isEnable = false;
         }
       }
+    }, error => {
+      this.isLoadingAction = false
     });
   }
 
@@ -203,28 +260,6 @@ export class VpnS2sResizeComponent implements OnInit{
     };
   }
 
-  getOffer(){
-    this.loading = true;
-    this.vpnSiteToSiteService.getVpnSiteToSite(0).pipe().subscribe(data => {
-      this.loading = false;
-      if(data){
-        this.vpn = data.body;
-        this.dateString = new Date(this.vpn['createdDate']);
-        this.expiredDate = new Date(this.vpn['expiredDate']);
-        this.numberMonth = Math.round((this.expiredDate.getTime() - this.dateString.getTime())/86400000/30);
-        this.offer = this.offerDatas.find(x => x['OfferName'] == data.body['offerName'] && x['Bandwidth'] == data.body['bandwidth']);
-        if(this.offer){
-          this.oldOfferId = this.offer['Id'];
-          let element = this.el.nativeElement.querySelector(`#offer-title-${this.offer['Id']}`);
-          this.renderer.addClass(element.parentNode, 'tr-selected');
-          this.specChange();
-          this.priceChange();
-        }
-      }
-    }, error => {
-      this.loading = false;
-    })
-  }
 
   selectOffer(e, data){
     if(!this.offer || data['Id'] != this.offer['Id']){

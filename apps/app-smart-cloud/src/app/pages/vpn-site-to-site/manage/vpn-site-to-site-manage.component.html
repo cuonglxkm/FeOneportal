@@ -102,7 +102,7 @@
         {{'app.service.expiration-date' |i18n}}: <span class="text-bold">{{response?.expiredDate | date: 'dd/MM/YYYY'}}</span>
       </div>
       <div *ngIf="response?.serviceStatus === 'TAMNGUNG'" style="margin-bottom: 15px" class="text-label label-fontsize">
-        {{'app.payment.status' |i18n}}: <span class="text-bold">{{ 'app.suspend' | i18n }} ({{response?.suspendReason | SuspendStatusPipe}})</span>
+        {{'app.payment.status' |i18n}}: <span class="text-bold">{{ 'app.suspend' | i18n }} {{response?.suspendReason !== '' ? '(' : ''}} {{response?.suspendReason | SuspendStatusPipe}} {{response?.suspendReason !== '' ? ')' : ''}}</span>
       </div>
     </nz-card>
     <nz-card *ngIf="response?.serviceStatus !== 'TAMNGUNG'" class="custom-tab" style="border-radius: 8px">
