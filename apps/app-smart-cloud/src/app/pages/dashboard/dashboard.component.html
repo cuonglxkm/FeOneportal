@@ -279,6 +279,7 @@
         <tbody>
         <tr *ngFor="let data of fixTableNearExpire.data">
           <td>{{ data.serviceName }}</td>
+        
           <td>{{ getServiceName(data.serviceType) }}</td>
           <td nzAlign="center">{{ data.createDate | date: 'dd/MM/yyyy' }}</td>
           <td nzAlign="center">{{ data.expireDate | date: 'dd/MM/yyyy' }}</td>
@@ -287,7 +288,7 @@
             <img style="padding-right: 10px; cursor: pointer;" src="assets/imgs/calendar-tick.svg"
                  nz-popover [nzPopoverContent]="'app.dashboard.service.near.expire.extend'|i18n"
                  nzPopoverPlacement="bottom" alt=""
-                 (click)="navigateToExtend(data.serviceInstanceId, data.serviceType)" />
+                 (click)="navigateToExtend(data.serviceInstanceId, data.serviceType, data.regionId)" />
           </td>
         </tr>
         </tbody>
