@@ -165,7 +165,10 @@
                       <nz-form-label nzFor="domain">
                         Domain (<span style="color: rgba(252, 16, 16, 1)">*</span>)
                       </nz-form-label>
-                      <input nz-input type="text" appTrim placeholder="Nhập tên Domain" formControlName="domain" class="input-custom" [maxlength]="253" />
+                      <input (ngModelChange)="changeDomain($event, i)"  [ngStyle]="bonusService.get('domain').hasError('isExistDomain') ? { borderColor: '#ff4d4f' } : {}"  nz-input type="text" appTrim placeholder="Nhập tên Domain" formControlName="domain" class="input-custom" [maxlength]="253" />
+                      <div *ngIf="bonusService.get('domain').hasError('isExistDomain')" style="color: #ff4d4f">
+                        Tên Domain đã tồn tại
+                      </div>
                       <ng-template #domainErrorTpl let-control>
                         <ng-container *ngIf="control.hasError('duplicateDomain')">Domain không được trùng nhau</ng-container>
                         <ng-container *ngIf="control.hasError('pattern')">Domain không hợp lệ. Vui lòng nhập lại</ng-container>
@@ -379,7 +382,7 @@
           <nz-row>
             <nz-col style="width: 100%" class="text-right">
               <button
-                [disabled]="form.get('nameWAF').invalid || selectedOfferId == 0 || !areAllDomainsValid() || bonusServices.at(0).get('ipPublic')?.invalid || isInvalid"
+                [disabled]="form.get('nameWAF').invalid || selectedOfferId == 0 || !areAllDomainsValid() || bonusServices.at(0).get('ipPublic')?.invalid || isInvalid || areAnyDomainsInvalid()"
                 style="width: 100%"
                 nz-button
                 nzSize="large"
