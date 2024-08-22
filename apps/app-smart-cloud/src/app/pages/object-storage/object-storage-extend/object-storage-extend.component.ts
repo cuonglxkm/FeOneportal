@@ -64,10 +64,19 @@ export class ObjectStorageExtendComponent implements OnInit {
     private orderService: OrderService,
     private configurationsService: ConfigurationsService
   ) {}
-
+  url = window.location.pathname;
   ngOnInit(): void {
     let regionAndProject = getCurrentRegionAndProject();
     this.region = regionAndProject.regionId;
+    if (!this.url.includes('advance')) {
+      if(Number(localStorage.getItem('regionId')) === RegionID.ADVANCE) {
+        this.region = RegionID.NORMAL
+      }else{
+        this.region = Number(localStorage.getItem('regionId'));
+      }
+    } else {
+      this.region = RegionID.ADVANCE;
+    }
     this.getObjectStorage();
     this.getTotalAmount();
     this.cdr.detectChanges();
