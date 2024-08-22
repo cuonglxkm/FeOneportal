@@ -367,6 +367,8 @@ export class InstancesCreateComponent implements OnInit {
   isVmGpu: boolean = false;
   isVolumeSnapshotHdd: boolean = false;
   isVolumeSnapshotSsd: boolean = false;
+  isVolumeHdd: boolean = false;
+  isVolumeSsd: boolean = false;
   getActiveServiceByRegion() {
     this.catalogService
       .getActiveServiceByRegion(
@@ -378,6 +380,8 @@ export class InstancesCreateComponent implements OnInit {
           'vm-gpu',
           'volume-snapshot-hdd',
           'volume-snapshot-ssd',
+          'volume-hdd',
+          'volume-ssd'
         ],
         this.region
       )
@@ -406,6 +410,12 @@ export class InstancesCreateComponent implements OnInit {
         )[0].isActive;
         this.isVolumeSnapshotSsd = data.filter(
           (e) => e.productName == 'volume-snapshot-ssd'
+        )[0].isActive;
+        this.isVolumeHdd = data.filter(
+          (e) => e.productName == 'volume-hdd'
+        )[0].isActive;
+        this.isVolumeSsd = data.filter(
+          (e) => e.productName == 'volume-ssd'
         )[0].isActive;
         this.cdr.detectChanges();
       });
