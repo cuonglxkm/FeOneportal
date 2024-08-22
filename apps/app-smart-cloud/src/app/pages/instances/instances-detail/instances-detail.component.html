@@ -56,7 +56,8 @@
           instancesModel &&
           instancesModel.status.toUpperCase() == 'KHOITAO' &&
           instancesModel.taskState.toUpperCase() != 'REBUILDING' &&
-          !instancesModel.taskState.toUpperCase().includes('RESIZING')
+          !instancesModel.taskState.toUpperCase().includes('RESIZING') &&
+          ('instance:InstanceGetMonitor' | IsPermissionPipe)
         "
       >
         <i nz-icon nzType="eye"></i> <span>{{ 'app.monitor' | i18n }}</span>
@@ -67,7 +68,8 @@
           instancesModel &&
           instancesModel.status.toUpperCase() == 'KHOITAO' &&
           !instancesModel.taskState.toUpperCase().includes('ING') &&
-          instancesModel.taskState.toUpperCase() != 'REBOOT_STARTED'
+          instancesModel.taskState.toUpperCase() != 'REBOOT_STARTED' &&
+          ('order:Create' | IsPermissionPipe)
         "
         nz-button
         [nzType]="'primary'"

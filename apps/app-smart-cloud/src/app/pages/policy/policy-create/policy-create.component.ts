@@ -323,7 +323,11 @@ export class PolicyCreateComponent implements OnInit{
           this.router.navigate(['/app-smart-cloud/policy']);
         },
         error: e => {
-          this.notification.error(this.i18n.fanyi("app.status.fail"), this.i18n.fanyi("app.create-policy.noti.fail1"))
+          if(e && e.error && e.error == "DupllicateNameDefault"){
+            this.notification.error(this.i18n.fanyi("app.status.fail"), this.i18n.fanyi("app.iam-policy.create.error"));
+          } else {
+            this.notification.error(this.i18n.fanyi("app.status.fail"), this.i18n.fanyi("app.create-policy.noti.fail1"))
+          }
         },
       });
     this.isVisibleCreate = false;

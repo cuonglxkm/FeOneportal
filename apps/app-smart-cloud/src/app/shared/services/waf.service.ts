@@ -237,4 +237,14 @@ export class WafService extends BaseService {
   hasWaf(){
     return this.http.get(this.baseUrl + this.ENDPOINT.provisions + `/waf/has-waf`, this.getHeaders())
   }
+
+  bandwidthForMultiDomain(fromDate:Date, toDate:Date, type: string, domains: string[]): Observable<any> {
+    var url = `fromDate=${fromDate.toISOString()}&toDate=${toDate.toISOString()}&type=${type}`;
+    var encodedUrl = url.replace(/\+/g, "%2B").replace(/:/g, "%3A");
+    return this.http.post<any>(
+      this.baseUrl + this.ENDPOINT.provisions + '/waf/report/domainbandwidth/dwa?'+encodedUrl,
+      domains,
+      this.getHeaders()
+    );
+  }
 }
