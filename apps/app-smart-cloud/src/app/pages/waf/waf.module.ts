@@ -33,6 +33,9 @@ import { AssociateSslBtnComponent } from './ssl-cert/list-ssl-cert/list-ssl-cert
 import { DeleteSslBtnComponent } from './ssl-cert/list-ssl-cert/list-ssl-cert-action-btn/delete-ssl-btn/delete-ssl-btn.component';
 import { DisassociateDomainBtnComponent } from './ssl-cert-detail/disassociate-domain-btn/disassociate-domain-btn.component';
 import { EditSslCertWAFComponent } from './ssl-cert/edit/edit-ssl-cert.component';
+import { NgxEchartsDirective, NgxEchartsModule } from 'ngx-echarts';
+import { WafDash } from './dashboard/waf-dash.component';
+import { WafUsageStatistics } from './dashboard/usage-statistics/waf-usage-statistics.component';
 
 @NgModule({
   declarations: [
@@ -61,6 +64,8 @@ import { EditSslCertWAFComponent } from './ssl-cert/edit/edit-ssl-cert.component
     DeleteSslBtnComponent,
     DisassociateDomainBtnComponent,
     EditSslCertWAFComponent,
+    WafDash,
+    WafUsageStatistics
   ],
   imports: [
     CommonModule,
@@ -70,6 +75,9 @@ import { EditSslCertWAFComponent } from './ssl-cert/edit/edit-ssl-cert.component
     NguTileComponent,
     WAFRoutingModule,
     TrimDirective,
+    NgxEchartsModule.forRoot({
+      echarts: () => import('echarts')
+    })
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })

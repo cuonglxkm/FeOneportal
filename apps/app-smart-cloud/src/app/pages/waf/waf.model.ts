@@ -197,3 +197,14 @@ export interface PackagePolicies {
   whiteList: boolean;
   threatIntelligence: boolean;
 }
+
+export class QueryBandwidthForMultiDomainResponse2  {
+    bandwidthReport: QueryBandwidthForMultiDomainResponseBandwidthReport[];
+    code: string;
+    message: string;
+}
+
+export class QueryBandwidthForMultiDomainResponseBandwidthReport {
+    timestamp: string;
+    bandwidth: number | null;
+}
