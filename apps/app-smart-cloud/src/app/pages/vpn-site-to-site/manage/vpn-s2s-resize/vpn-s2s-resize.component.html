@@ -52,13 +52,13 @@
           <span class="text-label"
             >{{ 'app.manage.site.to.site.name.package' | i18n }}:
           </span>
-          <span class="text-label">{{ vpn?.offerName }}</span>
+          <span class="text-value">{{ vpn?.offerName }}</span>
         </nz-col>
         <nz-col nzSpan="12">
           <span class="text-label"
-            >{{ 'app.service.expiration-date' | i18n }}:
+            >Bandwidth:
           </span>
-          <span class="text-label">{{ vpn?.bandwidth }}</span>
+          <span class="text-value">{{ vpn?.bandwidth }}</span>
         </nz-col>
       </nz-row>
 
@@ -72,14 +72,17 @@
     </nz-card>
     <nz-card class="left-content-card">
       <span class="text-card-header">{{ 'app.adjust.info' | i18n }}</span>
-      <div class="header-content">{{ 'app.vpns2s-extend.header' | i18n }}</div>
+      <nz-alert
+        nzBanner
+        [nzMessage]="'app.vpns2s-extend.header' | i18n"
+        class="my-3"
+      ></nz-alert>
       <nz-table
         #ajaxTable3
         nzShowSizeChanger
         [nzFrontPagination]="false"
         [nzData]="offerDatas"
         [nzLoading]="loading"
-        (nzQueryParams)="getOffers()"
       >
         <thead>
           <tr>
@@ -200,10 +203,12 @@
               nz-button
               nzSize="large"
               nzType="primary"
-              [disabled]="!isEnable"
+              [disabled]="!isEnable || totalincludesVAT === 0"
+              [nzLoading]="isLoadingAction"
               (click)="extend()"
             >
               <img
+                *ngIf="isLoadingAction === false"
                 src="assets/imgs/wallet.svg"
                 style="margin-right: 5px; padding-bottom: 5px"
               />

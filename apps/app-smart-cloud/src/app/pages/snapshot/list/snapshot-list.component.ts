@@ -143,6 +143,7 @@ export class SnapshotListComponent implements OnInit{
       }))
       .subscribe(
       data => {
+        this.index=1
         this.response = data
         if (isBegin) {
           if (this.response.records.length <= 0) {
@@ -154,6 +155,7 @@ export class SnapshotListComponent implements OnInit{
       }
     );
   }
+
 
   onPageIndexChange($event: number) {
     this.index = $event;

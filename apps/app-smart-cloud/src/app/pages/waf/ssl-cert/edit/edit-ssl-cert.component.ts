@@ -278,7 +278,7 @@ export class EditSslCertWAFComponent implements OnInit {
             this.i18n.fanyi('app.status.fail'),
             this.i18n.fanyi('Certificate không hợp lệ')
           );
-        }else if (error.error.detail.includes('Error parameter')) {
+        }else if (error.error.detail.includes('Error parameter') || error.error.detail.includes('invalid sslCertificate')) {
           this.notification.error(
             this.i18n.fanyi('app.status.fail'),
             this.i18n.fanyi('File không hợp lệ')

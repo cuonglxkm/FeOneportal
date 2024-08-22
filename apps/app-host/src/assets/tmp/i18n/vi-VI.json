@@ -1370,6 +1370,7 @@
   "app.iam-dashboard.conceptPolicy": "Khái niệm về Policy?",
   "app.iam-dashboard.createGroup": "Cách khởi tạo Group?",
   "app.iam-dashboard.home":"Trang chủ",
+  "app.iam-policy.create.error": "Tên Policy trùng với tên Policy mặc định của hệ thống, vui lòng thử lại.",
 
   "app.user.group.join":"Các Groups mà User đang tham gia",
   "app.user.group.maximum.groups":"Một người dùng có thể là thành viên của tối đa 10 nhóm cùng một lúc",
@@ -3444,7 +3445,7 @@
   "app.vpn-connection-delete.input": "Nhập tên VPN Connection",
   "app.vpn-connection-delete.alert1": "Tên VPN Connection không được để trống",
   "app.vpns2s-extend": "Gia hạn VPN site to site",
-  "app.vpns2s-extend.header": "Giá thuê bao gói VPN theo tháng (Chưa VAT)",
+  "app.vpns2s-extend.header": "Khi thực hiện điều chỉnh thông tin, chi phí mới sẽ được tính từ ngày điều chỉnh tới ngày hết hạn",
   "app.vpns2s-extend.price": "Giá (VND/tháng)",
   "app.vpns2s-resize": "Điều chỉnh VPN site to site",
   "app.vpns2s-resize.duration": "Thời gian sử dụng (Tháng)",

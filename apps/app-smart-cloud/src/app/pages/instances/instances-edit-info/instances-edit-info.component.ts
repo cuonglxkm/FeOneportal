@@ -28,6 +28,7 @@ import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from '@core';
 import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
 import { RegionID } from 'src/app/shared/enums/common.enum';
+import { CommonService } from 'src/app/shared/services/common.service';
 
 @Component({
   selector: 'one-portal-instances-edit-info',
@@ -108,7 +109,8 @@ export class InstancesEditInfoComponent implements OnInit {
     private router: ActivatedRoute,
     private route: Router,
     private notification: NzNotificationService,
-    private loadingSrv: LoadingService
+    private loadingSrv: LoadingService,
+    private commonSrv: CommonService
   ) {}
 
   @ViewChild('myCarouselImage') myCarouselImage: NguCarousel<any>;
@@ -239,10 +241,12 @@ export class InstancesEditInfoComponent implements OnInit {
     if (this.projectCombobox) {
       this.projectCombobox.loadProjects(true, region.regionId);
     }
-    this.route.navigate(['/app-smart-cloud/instances']);
+    // this.route.navigate(['/app-smart-cloud/instances']);
+    this.commonSrv.navigateAdvance('/app-smart-cloud/instances', '/app-smart-cloud/instances-advance')
   }
   onProjectChange(project: any) {
-    this.route.navigate(['/app-smart-cloud/instances']);
+    this.commonSrv.navigateAdvance('/app-smart-cloud/instances', '/app-smart-cloud/instances-advance')
+    // this.route.navigate(['/app-smart-cloud/instances']);
   }
 
   isVisibleUpdate: boolean = false;
@@ -310,12 +314,20 @@ export class InstancesEditInfoComponent implements OnInit {
   }
 
   navigateToEdit() {
-    this.route.navigate([
-      '/app-smart-cloud/instances/instances-edit/' + this.id,
-    ]);
+  //   this.route.navigate([
+  //     '/app-smart-cloud/instances/instances-edit/' + this.id,
+  // ]);
+  this.commonSrv.navigateAdvance('/app-smart-cloud/instances/instances-edit/' + this.id, '/app-smart-cloud/instances/instances-edit/' + this.id)
+
   }
 
   returnPage(): void {
-    this.route.navigate(['/app-smart-cloud/instances']);
+    // this.route.navigate(['/app-smart-cloud/instances']);
+    this.commonSrv.navigateAdvance('/app-smart-cloud/instances', '/app-smart-cloud/instances-advance')
   }
+
+  navigateToInstanceList(){
+    this.commonSrv.navigateAdvance('/app-smart-cloud/instances', '/app-smart-cloud/instances-advance')
+  }
+
 }

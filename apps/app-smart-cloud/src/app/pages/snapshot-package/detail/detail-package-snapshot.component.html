@@ -1,4 +1,4 @@
-<page-header [breadcrumb]="breadcrumb" [action]="action" [title]="'Xem chi tiết gói Snapshot'" >
+<page-header [breadcrumb]="breadcrumb" [action]="action" [title]="'Chi tiết gói Snapshot'" >
   <ng-template #breadcrumb>
     <nz-breadcrumb [nzSeparator]="separatorTemplate">
       <nz-breadcrumb-item><a routerLink="/app-smart-cloud"> Trang chủ</a></nz-breadcrumb-item>
@@ -12,7 +12,8 @@
         <a routerLink="/app-smart-cloud/snapshot/packages">Gói Snapshot</a>
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>
-        <a routerLink="/app-smart-cloud/snapshot/packages/detail/{{idPackageBackup}}">{{packageSnapshotModel.packageName}}</a>
+        Chi tiết gói Snapshot
+      
       </nz-breadcrumb-item>
     </nz-breadcrumb>
     <ng-template #separatorTemplate

@@ -5,6 +5,7 @@ import {LoadingService, LoadingType} from "@delon/abc/loading";
 import {finalize} from "rxjs/operators";
 import {ActivatedRoute, Router} from "@angular/router";
 import {InstancesService} from "../instances.service";
+import { CommonService } from 'src/app/shared/services/common.service';
 
 @Component({
   selector: 'one-portal-instances-console',
@@ -24,7 +25,9 @@ export class InstancesConsoleComponent implements OnInit, AfterViewInit, OnDestr
     private http: HttpClient,
     private loadingSrv: LoadingService,
     private route: ActivatedRoute,
-    private service: InstancesService) {
+    private service: InstancesService,
+    private commonService: CommonService
+  ) {
   }
 
   ngOnDestroy(): void {
@@ -68,5 +71,10 @@ export class InstancesConsoleComponent implements OnInit, AfterViewInit, OnDestr
     this.isLoaded = true;
     event.target.contentWindow.focus()
   }
+
+  navigateToInstanceList(){
+    this.commonService.navigateAdvance('/app-smart-cloud/instances', '/app-smart-cloud/instances-advance')
+  }
+
 
 }

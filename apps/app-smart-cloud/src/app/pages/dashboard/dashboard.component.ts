@@ -15,6 +15,7 @@ import { PaymentService } from '../../shared/services/payment.service';
 import { debounceTime, Subject, Subscription } from 'rxjs';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
+import { CommonService } from 'src/app/shared/services/common.service';
 
 @Component({
   selector: 'one-portal-dashboard',
@@ -22,6 +23,7 @@ import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
   styleUrls: ['./dashboard.component.less']
 })
 export class DashboardComponent implements OnInit, OnDestroy {
+  region = JSON.parse(localStorage.getItem('regionId'));
   subscriptionsDashboard: SubscriptionsDashboard[];
   subscriptionDashboardService = new SubscriptionsDashboard();
   subscriptionDashboardActive = new SubscriptionsDashboard();
@@ -54,6 +56,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
               private router: Router,
               private paymentService: PaymentService,
               private notification: NzNotificationService,
+              private commonService: CommonService,
               @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
               @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService) {
   }
@@ -218,11 +221,12 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   //Dẫn sang trang gia hạn
-  navigateToExtend(serviceInstanceId: number, serviceType: number) {
+  navigateToExtend(serviceInstanceId: number, serviceType: number, regionId:number) {
     switch (serviceType) {
       case 1:
         //VM
-        this.router.navigate(['/app-smart-cloud/instances/instances-extend/' + serviceInstanceId]);
+        // this.router.navigate(['/app-smart-cloud/instances/instances-extend/' + serviceInstanceId]);
+        this.commonService.navigateAdvance('/app-smart-cloud/instances/instances-extend/' + serviceInstanceId, '/app-smart-cloud/instances-advance/instances-extend/' + serviceInstanceId)
         break;
       case 2:
         //VOLUME
@@ -262,8 +266,20 @@ export class DashboardComponent implements OnInit, OnDestroy {
         break;
       case 13:
         //OBJECT STORAGE
+        console.log("regionnnn", regionId)
+        // this.router.navigate(['/app-smart-cloud/object-storage/extend/']);
+        // break;
+       if(regionId===7){
+
+       
+        this.router.navigate(['/app-smart-cloud/object-storage-advance/extend/']);
+        
+       }else if(regionId===5){
         this.router.navigate(['/app-smart-cloud/object-storage/extend/']);
-        break;
+        
+       }
+       break;
+      
       case 14:
         this.router.navigate(['/app-smart-cloud/backup/packages/extend/', serviceInstanceId]);
         //BACKUP_PACKET

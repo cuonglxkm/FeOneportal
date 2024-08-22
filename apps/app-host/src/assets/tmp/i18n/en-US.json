@@ -1394,6 +1394,7 @@
   "app.iam-dashboard.conceptPolicy": "Concept of Policy?",
   "app.iam-dashboard.createGroup": "How to create Group?",
   "app.iam-dashboard.home":"Home",
+  "app.iam-policy.create.error": "The Policy name matches the system's default Policy name, please try again.",
 
   "app.user.group.join":"The Groups that the User is participating in",
   "app.user.group.maximum.groups":"A user can be a member of up to 10 groups at the same time",
