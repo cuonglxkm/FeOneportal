@@ -258,7 +258,17 @@ export class EditSslCertWAFComponent implements OnInit {
       },
       (error) => {
         this.isLoading = false;
-         if (this.form.get('privateKey').value === '') {
+        if (error.error.detail.includes('SSL name you provided is already')) {
+          this.notification.error(
+            this.i18n.fanyi('app.status.fail'),
+            this.i18n.fanyi('Tên chứng chỉ đã tồn tại')
+          );
+        }else if (error.error.detail.includes('SSL content you provided is already')) {
+          this.notification.error(
+            this.i18n.fanyi('app.status.fail'),
+            this.i18n.fanyi('Nội dung chứng chỉ đã tồn tại')
+          );
+        }else if (this.form.get('privateKey').value === '') {
           this.notification.error(
             this.i18n.fanyi('app.status.fail'),
             this.i18n.fanyi('Private Key không hợp lệ')
@@ -267,6 +277,11 @@ export class EditSslCertWAFComponent implements OnInit {
           this.notification.error(
             this.i18n.fanyi('app.status.fail'),
             this.i18n.fanyi('Certificate không hợp lệ')
+          );
+        }else if (error.error.detail.includes('Error parameter')) {
+          this.notification.error(
+            this.i18n.fanyi('app.status.fail'),
+            this.i18n.fanyi('File không hợp lệ')
           );
         }else{
           this.notification.error(

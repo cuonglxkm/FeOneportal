@@ -49,7 +49,8 @@ export class EditDomainComponent implements OnInit {
   }> = this.fb.group({
     ipPublic: ['', [Validators.required, ipValidatorMany]],
     host: ['', [hostValidator]],
-    port: [null as number],
+    port: [null as number, [Validators.min(1), Validators.max(65535)]],
+    // port: [null as number],
   });
 
   constructor(

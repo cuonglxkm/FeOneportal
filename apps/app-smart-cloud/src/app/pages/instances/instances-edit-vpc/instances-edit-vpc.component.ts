@@ -36,6 +36,7 @@ import { ConfigurationsService } from 'src/app/shared/services/configurations.se
 import { OrderService } from 'src/app/shared/services/order.service';
 import { CatalogService } from 'src/app/shared/services/catalog.service';
 import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
+import { RegionID } from 'src/app/shared/enums/common.enum';
 
 @Component({
   selector: 'one-portal-instances-edit-vpc',
@@ -107,6 +108,7 @@ export class InstancesEditVpcComponent implements OnInit {
     private configurationService: ConfigurationsService,
     private orderService: OrderService
   ) {}
+  url = window.location.pathname;
 
   checkPermission: boolean = false;
   ngOnInit(): void {
@@ -116,6 +118,15 @@ export class InstancesEditVpcComponent implements OnInit {
     let regionAndProject = getCurrentRegionAndProject();
     this.region = regionAndProject.regionId;
     this.projectId = regionAndProject.projectId;
+    if (!this.url.includes('advance')) {
+      if (Number(localStorage.getItem('regionId')) === RegionID.ADVANCE) {
+        this.region = RegionID.NORMAL;
+      } else {
+        this.region = Number(localStorage.getItem('regionId'));
+      }
+    } else {
+      this.region = RegionID.ADVANCE;
+    }
     this.getActiveServiceByRegion();
     this.getInfoVPC();
     this.onChangeCapacity();
