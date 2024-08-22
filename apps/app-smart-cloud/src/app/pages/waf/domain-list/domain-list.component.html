@@ -51,7 +51,7 @@
               style="margin-top: 20px;"
               nzShowSizeChanger
               [nzData]="response?.records"
-              [nzPageSize]="response?.pageSize"
+              [nzPageSize]="response?.pageSize" 
               (nzPageSizeChange)="onPageSizeChange($event)"
               [nzPageIndex]="response?.currentPage"
               (nzPageIndexChange)="onPageIndexChange($event)"
@@ -81,15 +81,15 @@
         <ng-container *ngFor="let data of fixedTable.data">
           <tr>
             <td [nzExpand]="expandSet.has(data.id)" (nzExpandChange)="onExpandChange(data.id, $event)" ></td>
-            <td nzLeft>{{ data.domain }}</td>
-            <td nzBreakWord nzAlign="left">{{ data.ipPublic }}</td>
-            <td nzBreakWord nzAlign="left">{{ data.cName }} 
+            <td style="max-width: 300px;"  nzLeft>{{ data.domain }}</td>
+            <td style="max-width: 200px;"  nzBreakWord nzAlign="left">{{ data.ipPublic }}</td>
+            <td style="max-width: 200px;"  nzBreakWord nzAlign="left">{{ data.cName }} 
               <img *ngIf="data.cName" nz-popover src="assets/imgs/copy1.svg" alt="" nzPopoverPlacement="bottom" (click)="copy(data.cName)"
                 style="cursor: pointer; margin-right: 5px; margin-top: 2px;" [nzPopoverContent]="copySuccess ? ('app.bucket.detail.copied' | i18n) : ('app.bucket.detail.copy' | i18n)" />
             </td>
             <td nzBreakWord nzAlign="left">{{ data.sslCertId ? 'ENABLE' : 'DISABLE' }}</td>
-            <td nzBreakWord nzAlign="left">{{ data.offerName }}</td>
-            <td nzBreakWord nzAlign="left">{{ data.wafPackageName }}</td>
+            <td style="max-width: 200px;"  nzBreakWord nzAlign="left">{{ data.offerName }}</td>
+            <td style="max-width: 200px;"  nzBreakWord nzAlign="left">{{ data.wafPackageName }}</td>
             <ng-container  *ngIf="data.status | ServiceStatusPipe as statusModel">
               <td
                   nzBreakWord
