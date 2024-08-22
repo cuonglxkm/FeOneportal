@@ -21,6 +21,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { LoadingService } from '@delon/abc/loading';
 import { I18NService } from '@core';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
+import { CommonService } from 'src/app/shared/services/common.service';
 
 @Component({
   selector: 'one-portal-network-detail',
@@ -48,7 +49,8 @@ export class NetworkDetailComponent implements OnInit {
     private cdr: ChangeDetectorRef,
     private route: Router,
     private notification: NzNotificationService,
-    private loadingSrv: LoadingService
+    private loadingSrv: LoadingService,
+    private commonService: CommonService
   ) {}
 
   ngOnInit(): void {
@@ -162,20 +164,26 @@ export class NetworkDetailComponent implements OnInit {
   }
 
   navigateToCreate() {
-    this.route.navigate(['/app-smart-cloud/instances/instances-create']);
+    this.commonService.navigateAdvance('/app-smart-cloud/instances/instances-create', '/app-smart-cloud/instances-advance/instances-create')
+
+    // this.route.navigate(['/app-smart-cloud/instances/instances-create']);
   }
   navigateToChangeImage() {
-    this.route.navigate([
-      '/app-smart-cloud/instances/instances-edit-info/' + this.instancesId,
-    ]);
+    this.commonService.navigateAdvance('/app-smart-cloud/instances/instances-edit-info/' + this.instancesId, '/app-smart-cloud/instances-advance/instances-edit-info/' + this.instancesId)
+
+    // this.route.navigate([
+    //   '/app-smart-cloud/instances/instances-edit-info/' + this.instancesId,
+    // ]);
   }
   navigateToEdit() {
-    this.route.navigate([
-      '/app-smart-cloud/instances/instances-edit/' + this.instancesId,
-    ]);
+    this.commonService.navigateAdvance('/app-smart-cloud/instances/instances-edit/' + this.instancesId, '/app-smart-cloud/instances-advance/instances-edit/' + this.instancesId)
+    // this.route.navigate([
+    //   '/app-smart-cloud/instances/instances-edit/' + this.instancesId,
+    // ]);
   }
   returnPage(): void {
-    this.route.navigate(['/app-smart-cloud/instances']);
+    this.commonService.navigateAdvance('/app-smart-cloud/instances', '/app-smart-cloud/instances-advance')
+    // this.route.navigate(['/app-smart-cloud/instances']);
   }
 
   navigateToAllowAddressPair() {

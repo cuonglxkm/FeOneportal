@@ -16,6 +16,7 @@ import { finalize } from 'rxjs';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { I18NService } from '@core';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
+import { RegionID } from 'src/app/shared/enums/common.enum';
 
 @Component({
   selector: 'one-portal-instances-btn',
@@ -29,6 +30,7 @@ export class InstancesBtnComponent implements OnInit {
 
   instancesModel: InstancesModel;
   isVisibleDelete: boolean = false;
+  region = JSON.parse(localStorage.getItem('regionId'));
   inputConfirm: string = '';
 
   constructor(
@@ -50,14 +52,26 @@ export class InstancesBtnComponent implements OnInit {
   }
 
   openConsole(): void {
-    this.route.navigateByUrl(
-      '/app-smart-cloud/instances/instances-console/' + this.instancesId,
-      {
-        state: {
-          vmId: this.instancesId,
-        },
-      }
-    );
+    if(this.region === RegionID.ADVANCE){
+      this.route.navigateByUrl(
+        '/app-smart-cloud/instances/instances-console/' + this.instancesId,
+        {
+          state: {
+            vmId: this.instancesId,
+          },
+        }
+      );
+    }else{
+      this.route.navigateByUrl(
+        '/app-smart-cloud/instances-advance/instances-console/' + this.instancesId,
+        {
+          state: {
+            vmId: this.instancesId,
+          },
+        }
+      );
+    }
+    
   }
 
   //#region Xóa máy ảo
@@ -123,9 +137,16 @@ export class InstancesBtnComponent implements OnInit {
 
   //#region Gia hạn máy ảo
   continue(): void {
-    this.route.navigate([
-      '/app-smart-cloud/instances/instances-extend/' + this.instancesId,
-    ]);
+    if(this.region === RegionID.ADVANCE){
+      this.route.navigate([
+        '/app-smart-cloud/instances/instances-extend/' + this.instancesId,
+      ]);
+    }
+    else{
+      this.route.navigate([
+        '/app-smart-cloud/instances-advance/instances-extend/' + this.instancesId,
+      ]);
+    }
   }
   //#endregion
 

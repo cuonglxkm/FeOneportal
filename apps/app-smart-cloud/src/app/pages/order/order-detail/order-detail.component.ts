@@ -15,6 +15,7 @@ import { LoadingService } from '@delon/abc/loading';
 import { DataPayment, ItemPayment } from '../../instances/instances.model';
 import { InstancesService } from '../../instances/instances.service';
 import { OrderItem } from 'src/app/shared/models/price';
+import { CommonService } from 'src/app/shared/services/common.service';
 
 @Component({
   selector: 'one-portal-order-detail',
@@ -50,7 +51,8 @@ export class OrderDetailComponent {
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
     private http: HttpClient,
     private loadingSrv: LoadingService,
-    private instanceService: InstancesService
+    private instanceService: InstancesService,
+    private commonService: CommonService
   ) {}
 
   ngOnInit() {
@@ -417,5 +419,9 @@ export class OrderDetailComponent {
     }, (error) => {
       this.notification.error(this.i18n.fanyi("app.status.fail"), 'Lấy tiền thất bại');
     });
+  }
+
+  navigateToInstanceList(){
+    this.commonService.navigateAdvance('/app-smart-cloud/instances', '/app-smart-cloud/instances-advance')
   }
 }

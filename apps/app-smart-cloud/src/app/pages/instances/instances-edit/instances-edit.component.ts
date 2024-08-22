@@ -42,6 +42,7 @@ import { LoadingService } from '@delon/abc/loading';
 import { CatalogService } from 'src/app/shared/services/catalog.service';
 import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
 import { RegionID } from 'src/app/shared/enums/common.enum';
+import { CommonService } from 'src/app/shared/services/common.service';
 
 class ConfigCustom {
   //cấu hình tùy chỉnh
@@ -117,7 +118,8 @@ export class InstancesEditComponent implements OnInit {
     private breakpointObserver: BreakpointObserver,
     private configurationService: ConfigurationsService,
     private orderService: OrderService,
-    private loadingSrv: LoadingService
+    private loadingSrv: LoadingService,
+    private commonService: CommonService
   ) {}
 
   @ViewChild('myCarouselFlavor') myCarouselFlavor: NguCarousel<any>;
@@ -397,11 +399,13 @@ export class InstancesEditComponent implements OnInit {
     if (this.projectCombobox) {
       this.projectCombobox.loadProjects(true, region.regionId);
     }
-    this.router.navigate(['/app-smart-cloud/instances']);
+    // this.router.navigate(['/app-smart-cloud/instances']);
+    this.commonService.navigateAdvance('/app-smart-cloud/instances','/app-smart-cloud/instances-advance')
   }
 
   onProjectChange(project: ProjectModel) {
-    this.router.navigate(['/app-smart-cloud/instances']);
+    // this.router.navigate(['/app-smart-cloud/instances']);
+    this.commonService.navigateAdvance('/app-smart-cloud/instances','/app-smart-cloud/instances-advance')
   }
 
   checkPermission: boolean = false;
@@ -461,7 +465,8 @@ export class InstancesEditComponent implements OnInit {
   }
 
   onReloadInstanceDetail() {
-    this.router.navigate(['/app-smart-cloud/instances']);
+    // this.router.navigate(['/app-smart-cloud/instances']);
+    this.commonService.navigateAdvance('/app-smart-cloud/instances','/app-smart-cloud/instances-advance')
   }
 
   volumeUnitPrice = '0';
@@ -836,19 +841,23 @@ export class InstancesEditComponent implements OnInit {
 
   navigateToCreate() {
     this.router.navigate(['/app-smart-cloud/instances/instances-create']);
+    this.commonService.navigateAdvance('/app-smart-cloud/instances/instances-create','/app-smart-cloud/instances-advance/instances-create')
   }
   navigateToChangeImage() {
-    this.router.navigate([
-      '/app-smart-cloud/instances/instances-edit-info/' + this.id,
-    ]);
+    // this.router.navigate([
+    //   '/app-smart-cloud/instances/instances-edit-info/' + this.id,
+    // ]);
+    this.commonService.navigateAdvance('/app-smart-cloud/instances/instances-edit-info/' + this.id, '/app-smart-cloud/instances-advance/instances-edit-info/' + this.id)
   }
   navigateToEdit() {
-    this.router.navigate([
-      '/app-smart-cloud/instances/instances-edit/' + this.id,
-    ]);
+    // this.router.navigate([
+    //   '/app-smart-cloud/instances/instances-edit/' + this.id,
+    // ]);
+    this.commonService.navigateAdvance('/app-smart-cloud/instances/instances-edit/' + this.id, '/app-smart-cloud/instances-advance/instances-edit/' + this.id)
   }
   returnPage(): void {
-    this.router.navigate(['/app-smart-cloud/instances']);
+    // this.router.navigate(['/app-smart-cloud/instances']);
+    this.commonService.navigateAdvance('/app-smart-cloud/instances','/app-smart-cloud/instances-advance')
   }
 
   instanceResizeInit() {
@@ -1030,6 +1039,15 @@ export class InstancesEditComponent implements OnInit {
   }
 
   cancel(): void {
-    this.router.navigate(['/app-smart-cloud/instances']);
+    // this.router.navigate(['/app-smart-cloud/instances']);
+    this.commonService.navigateAdvance('/app-smart-cloud/instances','/app-smart-cloud/instances-advance')
+  }
+
+  navigateToInstanceList(){
+    this.commonService.navigateAdvance('/app-smart-cloud/instances', '/app-smart-cloud/instances-advance')
+  }
+
+  navigateToInstanceDetail(){
+    this.commonService.navigateAdvance('/app-smart-cloud/instances/instances-detail/' + this.id, '/app-smart-cloud/instances-advance/instances-detail/' + this.id)
   }
 }

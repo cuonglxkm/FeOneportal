@@ -12,12 +12,12 @@
         {{ 'app.breadcrumb.infrastructure.service' | i18n }}
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>
-        <a [routerLink]="['/app-smart-cloud/instances']">{{
+        <a (click)="navigateToInstanceList()">{{
           'app.instances' | i18n
         }}</a>
       </nz-breadcrumb-item>
       <nz-breadcrumb-item
-        ><a [routerLink]="['/app-smart-cloud/instances/instances-create']">{{
+        ><a (click)="navigateToInstanceCreate()">{{
           'app.instances.create' | i18n
         }}</a></nz-breadcrumb-item
       >

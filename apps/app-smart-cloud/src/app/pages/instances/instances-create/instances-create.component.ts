@@ -61,6 +61,7 @@ import { OrderService } from 'src/app/shared/services/order.service';
 import { VolumeService } from 'src/app/shared/services/volume.service';
 import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
 import { RegionID } from 'src/app/shared/enums/common.enum';
+import { CommonService } from 'src/app/shared/services/common.service';
 
 class ConfigCustom {
   //cấu hình tùy chỉnh
@@ -177,7 +178,8 @@ export class InstancesCreateComponent implements OnInit {
     private configurationService: ConfigurationsService,
     private orderService: OrderService,
     private regionService: RegionCoreService,
-    private volumeService: VolumeService
+    private volumeService: VolumeService,
+    private commonService: CommonService,
   ) {}
 
   @ViewChild('nameInput') firstInput: ElementRef;
@@ -1621,11 +1623,13 @@ export class InstancesCreateComponent implements OnInit {
     if (this.projectCombobox) {
       this.projectCombobox.loadProjects(true, region.regionId);
     }
-    this.router.navigate(['/app-smart-cloud/instances']);
+    this.commonService.navigateAdvance('/app-smart-cloud/instances','/app-smart-cloud/instances-advance')
+    // this.router.navigate(['/app-smart-cloud/instances']);
   }
 
   userChangeProject() {
-    this.router.navigate(['/app-smart-cloud/instances']);
+    this.commonService.navigateAdvance('/app-smart-cloud/instances','/app-smart-cloud/instances-advance')
+    // this.router.navigate(['/app-smart-cloud/instances']);
   }
 
   valueChangeProject(project: ProjectModel) {
@@ -1962,7 +1966,9 @@ export class InstancesCreateComponent implements OnInit {
                               }
                             )
                           );
-                          this.router.navigate(['/app-smart-cloud/instances']);
+                          this.commonService.navigateAdvance('/app-smart-cloud/instances','/app-smart-cloud/instances-advance')
+
+                          // this.router.navigate(['/app-smart-cloud/instances']);
                         },
                         error: (e) => {
                           this.notification.error(
@@ -2105,7 +2111,9 @@ export class InstancesCreateComponent implements OnInit {
                         name: this.instanceCreate.serviceName,
                       })
                     );
-                    this.router.navigate(['/app-smart-cloud/instances']);
+                    // this.router.navigate(['/app-smart-cloud/instances']);
+                    this.commonService.navigateAdvance('/app-smart-cloud/instances','/app-smart-cloud/instances-advance')
+
                   },
                   error: (e) => {
                     this.notification.error(
@@ -2451,5 +2459,13 @@ export class InstancesCreateComponent implements OnInit {
     const firstOfferFlavor = this.listOfferFlavors?.[0]
     this.selectElementInputFlavors('flavor_' + firstOfferFlavor.id);
     this.onInputFlavors(firstOfferFlavor.id)
+  }
+
+  navigateToInstanceList(){
+    this.commonService.navigateAdvance('/app-smart-cloud/instances', '/app-smart-cloud/instances-advance')
+  }
+
+  navigateToInstanceCreate(){
+    this.commonService.navigateAdvance('/app-smart-cloud/instances/instances-create/', '/app-smart-cloud/instances-advance/instances-create')
   }
 }
