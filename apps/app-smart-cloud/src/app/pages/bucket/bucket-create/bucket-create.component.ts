@@ -34,7 +34,7 @@ export class BucketCreateComponent implements OnInit {
       nonNullable: true,
       validators: [
         Validators.required,
-        Validators.pattern(/^(?!-)(?!.*-$)(?!\.)(?!.*\.$)[a-z0-9]+(?:[-.][a-z0-9]+)*$/),
+        Validators.pattern(/^(?!-)(?!.*-$)(?!\.)(?!.*\.$)[a-z0-9-.]*$/),
         this.checkErrorName.bind(this)
       ],
     }),
@@ -159,14 +159,20 @@ export class BucketCreateComponent implements OnInit {
     }
   }
 
-  checkErrorName(control) {
+  checkErrorName(control: FormControl): { [key: string]: boolean } | null {
     const value = control.value;
+  
     if (value.length <= 2) {
       return { lessTwo: true };
-    } else  if (value.length > 63){
+    } else if (value.length > 63) {
       return { more63: true };
-    } else {
-      return null;
     }
+  
+    const invalidPatterns = /(\.-|-\.)/;
+    if (invalidPatterns.test(value)) {
+      return { invalidPattern: true };
+    }
+  
+    return null;
   }
 }

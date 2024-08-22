@@ -15,6 +15,7 @@ import { PaymentService } from '../../shared/services/payment.service';
 import { debounceTime, Subject, Subscription } from 'rxjs';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
+import { CommonService } from 'src/app/shared/services/common.service';
 
 @Component({
   selector: 'one-portal-dashboard',
@@ -55,6 +56,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
               private router: Router,
               private paymentService: PaymentService,
               private notification: NzNotificationService,
+              private commonService: CommonService,
               @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
               @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService) {
   }
@@ -223,7 +225,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
     switch (serviceType) {
       case 1:
         //VM
-        this.router.navigate(['/app-smart-cloud/instances/instances-extend/' + serviceInstanceId]);
+        // this.router.navigate(['/app-smart-cloud/instances/instances-extend/' + serviceInstanceId]);
+        this.commonService.navigateAdvance('/app-smart-cloud/instances/instances-extend/' + serviceInstanceId, '/app-smart-cloud/instances-advance/instances-extend/' + serviceInstanceId)
         break;
       case 2:
         //VOLUME

@@ -27,6 +27,7 @@ import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { RegionModel } from '../../../../../../../libs/common-utils/src';
 import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
 import { I18NService } from '@core';
+import { CommonService } from 'src/app/shared/services/common.service';
 
 @Component({
   selector: 'one-portal-instances-extend',
@@ -57,7 +58,8 @@ export class InstancesExtendComponent implements OnInit {
     private activatedRoute: ActivatedRoute,
     private loadingSrv: LoadingService,
     private notification: NzNotificationService,
-    private orderService: OrderService
+    private orderService: OrderService,
+    private commonSrv: CommonService
   ) {}
 
   onKeyDown(event: KeyboardEvent) {
@@ -106,7 +108,8 @@ export class InstancesExtendComponent implements OnInit {
       },
       error: (e) => {
         this.notification.error(e.error.message, '');
-        this.router.navigate(['/app-smart-cloud/instances']);
+        // this.router.navigate(['/app-smart-cloud/instances']);
+        this.commonSrv.navigateAdvance('/app-smart-cloud/instances','/app-smart-cloud/instances-advance')
       },
     });
   }
@@ -253,29 +256,42 @@ export class InstancesExtendComponent implements OnInit {
     if(this.projectCombobox){
       this.projectCombobox.loadProjects(true, region.regionId);
     }
-    this.router.navigate(['/app-smart-cloud/instances']);
+    // this.router.navigate(['/app-smart-cloud/instances']);
+    this.commonSrv.navigateAdvance('/app-smart-cloud/instances','/app-smart-cloud/instances-advance')
   }
 
   onProjectChange(project: any) {
-    this.router.navigate(['/app-smart-cloud/instances']);
+    // this.router.navigate(['/app-smart-cloud/instances']);
+    this.commonSrv.navigateAdvance('/app-smart-cloud/instances','/app-smart-cloud/instances-advance')
   }
 
   navigateToEdit() {
-    this.router.navigate([
-      '/app-smart-cloud/instances/instances-edit/' + this.id,
-    ]);
+    // this.router.navigate([
+    //   '/app-smart-cloud/instances/instances-edit/' + this.id,
+    // ]);
+    this.commonSrv.navigateAdvance('/app-smart-cloud/instances/instances-edit/' + this.id,'/app-smart-cloud/instances-advance/instances-edit/' + this.id)
   }
 
   navigateToChangeImage() {
-    this.router.navigate([
-      '/app-smart-cloud/instances/instances-edit-info/' + this.id,
-    ]);
+    // this.router.navigate([
+    //   '/app-smart-cloud/instances/instances-edit-info/' + this.id,
+    // ]);
+    this.commonSrv.navigateAdvance( '/app-smart-cloud/instances/instances-edit-info/' + this.id, '/app-smart-cloud/instances-advance/instances-edit-info/' + this.id)
   }
 
   cancel() {
-    this.router.navigate([
-      '/app-smart-cloud/instances/instances-detail/' + this.id,
-    ]);
+    // this.router.navigate([
+    //   '/app-smart-cloud/instances/instances-detail/' + this.id,
+    // ]);
+    this.commonSrv.navigateAdvance('/app-smart-cloud/instances/instances-detail/' + this.id,'/app-smart-cloud/instances-advance/instances-detail/' + this.id)
+  }
+
+  navigateToInstanceList(){
+    this.commonSrv.navigateAdvance('/app-smart-cloud/instances', '/app-smart-cloud/instances-advance')
+  }
+
+  navigateToInstanceDetail(){
+    this.commonSrv.navigateAdvance('/app-smart-cloud/instances/instances-detail/' + this.id, '/app-smart-cloud/instances-advance/instances-detail/' + this.id)
   }
 
   protected readonly asapScheduler = asapScheduler;

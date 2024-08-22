@@ -70,6 +70,7 @@
                   <ng-container *ngIf="control.hasError('more63')">{{
                       'validation.bucket.name.more63' | i18n
                     }}</ng-container>
+                    <ng-container *ngIf="control.hasError('invalidPattern')">Không cho phép nhập - và . liền nhau</ng-container>
                 </ng-template>
               </nz-form-control>
             </nz-form-item>

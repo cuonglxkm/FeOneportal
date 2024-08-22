@@ -12,7 +12,7 @@
         {{ 'app.breadcrumb.infrastructure.service' | i18n }}
       </nz-breadcrumb-item>
       <nz-breadcrumb-item
-        ><a [routerLink]="['/app-smart-cloud/instances']">{{
+        ><a (click)="navigateToInstanceList()">{{
           'app.instances' | i18n
         }}</a></nz-breadcrumb-item
       >
@@ -93,7 +93,7 @@
       [nzXs]="24"
       [nzXXl]="12"
     >
-      <button
+      <button *ngIf="isCreateOrder"
         nz-button
         nzType="primary"
         (click)="navigateToCreate()"
@@ -138,9 +138,7 @@
             nz-tooltip
             [nzTooltipTitle]="'app.view.detail' | i18n"
             nzTooltipPlacement="bottom"
-            [routerLink]="
-              '/app-smart-cloud/instances/instances-detail/' + data.id
-            "
+            (click)="navigateToInstanceDetail(data.id)"
             >{{ data.name }}</a
           >
         </td>
@@ -267,7 +265,7 @@
               data.taskState.toUpperCase() != 'REBOOT_STARTED' &&
               data.taskState.toUpperCase() != 'ERROR' &&
               data.taskState.toUpperCase() != 'DELETED' &&
-              isBackupVm
+              isBackupVm && isCreateOrder
             "
             src="assets/imgs/create-backup.svg"
             alt=""
@@ -281,7 +279,8 @@
               !data.taskState.toUpperCase().includes('ING') &&
               data.taskState.toUpperCase() != 'REBOOT_STARTED' &&
               data.taskState.toUpperCase() != 'ERROR' &&
-              data.taskState.toUpperCase() != 'DELETED'
+              data.taskState.toUpperCase() != 'DELETED' &&
+              ('instance:Update' | IsPermissionPipe)
             "
             src="assets/imgs/edit-2.svg"
             alt=""
@@ -296,7 +295,8 @@
               data.taskState.toUpperCase() != 'REBOOT_STARTED' &&
               data.taskState.toUpperCase() != 'ERROR' &&
               data.taskState.toUpperCase() != 'DELETED' &&
-              isBackupVm
+              isBackupVm && 
+              ('backupschedule:Create' | IsPermissionPipe)
             "
             src="assets/imgs/calendar-tick.svg"
             alt=""
@@ -326,7 +326,8 @@
                   data.taskState.toUpperCase() != 'REBOOT_STARTED' &&
                   data.taskState.toUpperCase() != 'ERROR' &&
                   data.taskState.toUpperCase() != 'DELETED' &&
-                  (isVolumeSnapshotHdd || isVolumeSnapshotSsd)
+                  (isVolumeSnapshotHdd || isVolumeSnapshotSsd) && 
+                  ('volumesnapshot:Create' | IsPermissionPipe)
                 "
                 nz-menu-item
                 (click)="createSnapshot(data.id)"
@@ -340,7 +341,8 @@
                   data.taskState.toUpperCase() != 'REBOOT_STARTED' &&
                   data.taskState.toUpperCase() != 'ERROR' &&
                   data.taskState.toUpperCase() != 'DELETED' &&
-                  (isVolumeSnapshotHdd || isVolumeSnapshotSsd)
+                  (isVolumeSnapshotHdd || isVolumeSnapshotSsd) &&
+                  ('volumesnapshotschedule:Create' | IsPermissionPipe)
                 "
                 nz-menu-item
                 (click)="navigateToCreateScheduleSnapshot(data.id)"
@@ -354,7 +356,8 @@
                   data.taskState.toUpperCase() != 'REBOOT_STARTED' &&
                   data.taskState.toUpperCase() != 'ERROR' &&
                   data.taskState.toUpperCase() != 'SHUTOFF' &&
-                  data.taskState.toUpperCase() != 'DELETED'
+                  data.taskState.toUpperCase() != 'DELETED' &&
+                  ('instance:InstanceAction' | IsPermissionPipe)
                 "
                 nz-menu-item
                 (click)="showHandleGanVLAN(data.id)"
@@ -368,7 +371,8 @@
                   data.taskState.toUpperCase() != 'REBOOT_STARTED' &&
                   data.taskState.toUpperCase() != 'ERROR' &&
                   data.taskState.toUpperCase() != 'SHUTOFF' &&
-                  data.taskState.toUpperCase() != 'DELETED'
+                  data.taskState.toUpperCase() != 'DELETED' &&
+                  ('instance:InstanceAction' | IsPermissionPipe)
                 "
                 nz-menu-item
                 (click)="showHandleGoKhoiVLAN(data.id)"
@@ -382,7 +386,8 @@
                   data.taskState.toUpperCase() != 'REBOOT_STARTED' &&
                   data.taskState.toUpperCase() != 'ERROR' &&
                   data.taskState.toUpperCase() != 'SHUTOFF' &&
-                  data.taskState.toUpperCase() != 'DELETED'
+                  data.taskState.toUpperCase() != 'DELETED' &&
+                  ('instance:InstanceAction' | IsPermissionPipe)
                 "
                 nz-menu-item
                 (click)="showModalRestart(data.id)"
@@ -396,7 +401,8 @@
                   data.taskState.toUpperCase() != 'REBOOT_STARTED' &&
                   data.taskState.toUpperCase() != 'ERROR' &&
                   data.taskState.toUpperCase() != 'SHUTOFF' &&
-                  data.taskState.toUpperCase() != 'DELETED'
+                  data.taskState.toUpperCase() != 'DELETED' &&
+                  ('instance:InstanceAction' | IsPermissionPipe)
                 "
                 nz-menu-item
                 (click)="showModalShutdown(data.id)"
@@ -406,7 +412,8 @@
               <li
                 *ngIf="
                   data.status.toUpperCase() == 'KHOITAO' &&
-                  data.taskState.toUpperCase() == 'SHUTOFF'
+                  data.taskState.toUpperCase() == 'SHUTOFF' &&
+                  ('instance:InstanceAction' | IsPermissionPipe)
                 "
                 nz-menu-item
                 (click)="showModalStart(data.id)"
@@ -421,7 +428,8 @@
                   data.taskState.toUpperCase() != 'ERROR' &&
                   data.taskState.toUpperCase() != 'SHUTOFF' &&
                   data.taskState.toUpperCase() != 'RESCUE' &&
-                  data.taskState.toUpperCase() != 'DELETED'
+                  data.taskState.toUpperCase() != 'DELETED' &&
+                  ('instance:InstanceAction' | IsPermissionPipe)
                 "
                 nz-menu-item
                 (click)="showModalRescue(data.id)"
@@ -431,7 +439,8 @@
               <li
                 *ngIf="
                   data.status.toUpperCase() == 'KHOITAO' &&
-                  data.taskState.toUpperCase() == 'RESCUE'
+                  data.taskState.toUpperCase() == 'RESCUE' &&
+                  ('instance:InstanceAction' | IsPermissionPipe)
                 "
                 nz-menu-item
                 (click)="showModalUnRescue(data.id)"
@@ -487,7 +496,7 @@
           ></span
         ></nz-col>
       </nz-row>
-      <button
+      <button *ngIf="isCreateOrder"
         style="margin-top: 20px"
         nz-button
         [nzType]="'primary'"

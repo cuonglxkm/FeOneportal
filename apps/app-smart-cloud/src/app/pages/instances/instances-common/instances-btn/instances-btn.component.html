@@ -10,7 +10,8 @@
         instancesModel.taskState.toUpperCase() != 'REBUILDING' &&
         !instancesModel.taskState.toUpperCase().includes('RESIZING') &&
         instancesModel.taskState.toUpperCase() != 'ERROR' &&
-        instancesModel.taskState.toUpperCase() != 'DELETED'
+        instancesModel.taskState.toUpperCase() != 'DELETED' &&
+        ('order:Create' | IsPermissionPipe)
       "
       nz-menu-item
       (click)="continue()"
@@ -39,7 +40,8 @@
         instancesModel.taskState.toUpperCase() != 'REBOOT_STARTED' &&
         instancesModel.taskState.toUpperCase() != 'ERROR' &&
         instancesModel.taskState.toUpperCase() != 'SHUTOFF' &&
-        instancesModel.taskState.toUpperCase() != 'DELETED'
+        instancesModel.taskState.toUpperCase() != 'DELETED' &&
+        ('instance:InstanceAction' | IsPermissionPipe)
       "
       nz-menu-item
       (click)="showModalRestart()"
@@ -53,7 +55,8 @@
         instancesModel.taskState.toUpperCase() != 'REBOOT_STARTED' &&
         instancesModel.taskState.toUpperCase() != 'ERROR' &&
         instancesModel.taskState.toUpperCase() != 'SHUTOFF' &&
-        instancesModel.taskState.toUpperCase() != 'DELETED'
+        instancesModel.taskState.toUpperCase() != 'DELETED' &&
+        ('instance:InstanceAction' | IsPermissionPipe)
       "
       nz-menu-item
       (click)="showModalShutdown()"
@@ -63,7 +66,8 @@
     <li
       *ngIf="
         instancesModel.status.toUpperCase() == 'KHOITAO' &&
-        instancesModel.taskState.toUpperCase() == 'SHUTOFF'
+        instancesModel.taskState.toUpperCase() == 'SHUTOFF' &&
+        ('instance:InstanceAction' | IsPermissionPipe)
       "
       nz-menu-item
       (click)="showModalStart()"
@@ -78,7 +82,8 @@
         instancesModel.taskState.toUpperCase() != 'ERROR' &&
         instancesModel.taskState.toUpperCase() != 'SHUTOFF' &&
         instancesModel.imageName.toUpperCase().includes('CIRROS') &&
-        instancesModel.taskState.toUpperCase() != 'DELETED'
+        instancesModel.taskState.toUpperCase() != 'DELETED' &&
+        ('instance:InstanceResetPassword' | IsPermissionPipe)
       "
       nz-menu-item
       [nzDisabled]="true"
@@ -93,7 +98,8 @@
         instancesModel.taskState.toUpperCase() != 'ERROR' &&
         instancesModel.taskState.toUpperCase() != 'SHUTOFF' &&
         !instancesModel.imageName.toUpperCase().includes('CIRROS') &&
-        instancesModel.taskState.toUpperCase() != 'DELETED'
+        instancesModel.taskState.toUpperCase() != 'DELETED' &&
+        ('instance:InstanceResetPassword' | IsPermissionPipe)
       "
       nz-menu-item
       (click)="modalResetPassword()"

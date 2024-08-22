@@ -42,7 +42,9 @@ import {
   FormSearchScheduleBackup,
 } from '../../../shared/models/schedule.model';
 import { ScheduleService } from '../../../shared/services/schedule.service';
+import { PolicyService } from 'src/app/shared/services/policy.service';
 import { RegionID } from 'src/app/shared/enums/common.enum';
+import { CommonService } from 'src/app/shared/services/common.service';
 
 class SearchParam {
   status: string = '';
@@ -78,6 +80,7 @@ export class InstancesComponent implements OnInit {
   activeCreate: boolean = false;
   isVisibleGanVLAN: boolean = false;
   isVisibleGoKhoiVLAN: boolean = false;
+  isCreateOrder: boolean = false;
   @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
   typeVpc: number;
 
@@ -91,7 +94,9 @@ export class InstancesComponent implements OnInit {
     private notification: NzNotificationService,
     private notificationService: NotificationService,
     private vlanService: VlanService,
-    private backupScheduleService: ScheduleService
+    private backupScheduleService: ScheduleService,
+    private commonSrv: CommonService,
+    private policyService: PolicyService
   ) {}
   url = window.location.pathname;
 
@@ -267,6 +272,7 @@ export class InstancesComponent implements OnInit {
     this.projectId = project?.id;
     this.typeVpc = project?.type;
     this.getDataList();
+    this.isCreateOrder = this.policyService.hasPermission("order:Create");
   }
 
   doSearch() {
@@ -296,10 +302,17 @@ export class InstancesComponent implements OnInit {
             this.total = next.totalCount;
           },
           error: (e) => {
-            this.notification.error(
-              e.statusText,
-              this.i18n.fanyi('app.notify.get.list.instance')
-            );
+            if(e.status == 403){
+              this.notification.error(
+                e.statusText,
+                this.i18n.fanyi('app.non.permission')
+              );
+            } else {
+              this.notification.error(
+                e.statusText,
+                this.i18n.fanyi('app.notify.get.list.instance')
+              );
+            }
           },
         });
     }
@@ -340,10 +353,17 @@ export class InstancesComponent implements OnInit {
           error: (e) => {
             this.dataList = [];
             this.activeCreate = true;
-            this.notification.error(
-              e.statusText,
-              this.i18n.fanyi('app.notify.get.list.instance')
-            );
+            if(e.status == 403){
+              this.notification.error(
+                e.statusText,
+                this.i18n.fanyi('app.non.permission')
+              );
+            } else {
+              this.notification.error(
+                e.statusText,
+                this.i18n.fanyi('app.notify.get.list.instance')
+              );
+            }
           },
         });
     }
@@ -895,21 +915,34 @@ export class InstancesComponent implements OnInit {
   //#endregion
 
   openConsole(id: number): void {
-    this.router.navigateByUrl(
-      '/app-smart-cloud/instances/instances-console/' + id,
-      {
-        state: {
-          vmId: id,
-        },
-      }
-    );
+    if(this.region === RegionID.ADVANCE){
+      this.router.navigateByUrl(
+        '/app-smart-cloud/instances-advance/instances-console/' + id,
+        {
+          state: {
+            vmId: id,
+          },
+        }
+      );
+    }else{
+      this.router.navigateByUrl(
+        '/app-smart-cloud/instances/instances-console/' + id,
+        {
+          state: {
+            vmId: id,
+          },
+        }
+      );
+    }
   }
 
   navigateToCreate() {
     if (this.project.type == 1) {
-      this.router.navigate(['/app-smart-cloud/instances/instances-create-vpc']);
+      // this.router.navigate(['/app-smart-cloud/instances/instances-create-vpc']);
+      this.commonSrv.navigateAdvance('/app-smart-cloud/instances/instances-create-vpc','/app-smart-cloud/instances-advance/instances-create-vpc')
     } else {
-      this.router.navigate(['/app-smart-cloud/instances/instances-create']);
+      // this.router.navigate(['/app-smart-cloud/instances/instances-create']);
+      this.commonSrv.navigateAdvance('/app-smart-cloud/instances/instances-create','/app-smart-cloud/instances-advance/instances-create')
     }
   }
 
@@ -1043,5 +1076,13 @@ export class InstancesComponent implements OnInit {
       ['/app-smart-cloud/schedule/snapshot/create', { instanceId: id }],
       { queryParams: { snapshotTypeCreate: 1 } }
     );
+  }
+
+  navigateToInstanceList(){
+    this.commonSrv.navigateAdvance('/app-smart-cloud/instances', '/app-smart-cloud/instances-advance')
+  }
+
+  navigateToInstanceDetail(id){
+    this.commonSrv.navigateAdvance('/app-smart-cloud/instances/instances-detail/' + id, '/app-smart-cloud/instances-advance/instances-detail/' + id)
   }
 }

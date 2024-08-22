@@ -43,7 +43,7 @@
             <nz-form-item>
                 <nz-form-control [nzErrorTip]="portErrTpl">
                     <nz-form-label nzFor="port">Port </nz-form-label>
-                    <nz-input-number [nzMin]="0" [nzStep]="1" [nzMax]="65535" style="width: 100%; margin-left: 0;" nz-input type="text" nzPlaceHolder="Nhập port" formControlName="port" class="input-custom" />
+                    <nz-input-number  (keydown)="onKeyDown($event)" [nzMin]="0" [nzStep]="1" [nzMax]="65535" style="width: 100%; margin-left: 0;" nz-input type="text" nzPlaceHolder="Nhập port" formControlName="port" class="input-custom" />
                     <ng-template #portErrTpl let-control>
                         <ng-container *ngIf="control.hasError('min') || control.hasError('max')">Port có giá trị từ 1 đến 65535</ng-container>
                       </ng-template>

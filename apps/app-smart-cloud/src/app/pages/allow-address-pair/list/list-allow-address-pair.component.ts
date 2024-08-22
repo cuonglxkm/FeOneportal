@@ -19,6 +19,7 @@ import { debounceTime, Subject, Subscription } from 'rxjs';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
 import { I18NService } from '@core';
+import { CommonService } from 'src/app/shared/services/common.service';
 
 @Component({
   selector: 'list-allow-address-pair',
@@ -32,7 +33,8 @@ export class ListAllowAddressPairComponent implements OnInit {
     private allowAddressPairService: AllowAddressPairService,
     private notification: NzNotificationService,
     private activatedRoute: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private commonService: CommonService
   ) {}
 
   portId: string;
@@ -80,7 +82,8 @@ export class ListAllowAddressPairComponent implements OnInit {
   }
 
   userChangeProject(project: ProjectModel) {
-    this.router.navigate(['/app-smart-cloud/instances']);
+    this.commonService.navigateAdvance('/app-smart-cloud/instances', '/app-smart-cloud/instances-advance')
+    // this.router.navigate(['/app-smart-cloud/instances']);
   }
 
   onProjectChange(project: ProjectModel) {
@@ -221,5 +224,13 @@ export class ListAllowAddressPairComponent implements OnInit {
 
   onRegionChanged(region: RegionModel) {
     this.region = region.regionId;
+  }
+
+  navigateToInstanceList(){
+    this.commonService.navigateAdvance('/app-smart-cloud/instances', '/app-smart-cloud/instances-advance')
+  }
+
+  navigateToInstanceDetail(){
+    this.commonService.navigateAdvance('/app-smart-cloud/instances/instances-detail/' + this.instanceId, '/app-smart-cloud/instances-advance/instances-detail/' + this.instanceId)
   }
 }
