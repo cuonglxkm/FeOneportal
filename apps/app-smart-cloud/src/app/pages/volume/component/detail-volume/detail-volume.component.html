@@ -29,7 +29,7 @@
   </ng-template>
   <div *ngIf="!volumeInfo?.bootable">
     <div *ngIf="typeVPC != 1" style="display: flex">
-      <div style="margin-right: 8px;" *ngIf="!['CREATING', 'ATTACHING', 'DELETING', 'ERROR_DELETING', 'ERROR'].includes(volumeInfo?.serviceStatus)">
+      <div style="margin-right: 8px;" *ngIf="!['CREATING', 'ATTACHING', 'DELETING', 'ERROR_DELETING', 'ERROR'].includes(volumeInfo?.serviceStatus) && ('order:Create' | IsPermissionPipe)">
         <div nz-col nzSpan="4" *ngIf="!['SUSPENDED'].includes(volumeInfo?.status) && !['ERROR'].includes(volumeInfo?.status)">
           <button class="button-fee"
                   nz-button
@@ -40,7 +40,7 @@
           </button>
         </div>
       </div>
-      <div nz-col nzSpan="4" *ngIf="!['CREATING', 'ATTACHING', 'DELETING', 'ERROR_DELETING', 'ERROR'].includes(volumeInfo?.serviceStatus) && !['ERROR'].includes(volumeInfo?.status)">
+      <div nz-col nzSpan="4" *ngIf="!['CREATING', 'ATTACHING', 'DELETING', 'ERROR_DELETING', 'ERROR'].includes(volumeInfo?.serviceStatus) && !['ERROR'].includes(volumeInfo?.status) && ('order:Create' | IsPermissionPipe)">
         <button class="button-cancel"
                 nzType="primary"
                 (click)="navigateToRenew(volumeInfo.id)"
