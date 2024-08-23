@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import type { EChartsOption } from 'echarts';
 import { WafService } from 'src/app/shared/services/waf.service';
-import { QueryBandwidthForMultiDomainResponse2 } from '../../waf.model';
+import { QueryBandwidthForMultiDomainResponse2, QueryRequesBandwidthtSavingRatioResponse, QueryTrafficForMultiDomainResponse } from '../../waf.model';
 import { differenceInCalendarDays, setHours } from 'date-fns';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { el } from 'date-fns/locale';
@@ -26,10 +26,21 @@ export class WafUsageStatistics implements OnInit {
   toDate = new Date();
   domains: string[];
   dataBandwidth: QueryBandwidthForMultiDomainResponse2;
+  dataTraffic: QueryTrafficForMultiDomainResponse;
+  totalTraffic: number;
+  dataBandwidthSaving: QueryRequesBandwidthtSavingRatioResponse;
+  averageBandwidthSaving: number;
   edgePeakTime: [];
   isValid = true;
   isDateValid = true;
   currentTab = 'bandwidth'
+  peakEdge: any;
+  peakSaving: any;
+  
+  bandWidthData: number[];
+  timeStampData: string[];
+  bandWidthSavingData: number[];
+  timeStampSavingData: string[];
   constructor(
     private wafService: WafService,
     private notification: NzNotificationService) {
@@ -52,6 +63,8 @@ export class WafUsageStatistics implements OnInit {
         this.domains = res.map(x=>x.domain);
         this.isValid=this.selectedDomain.length>0;
         this.getDataBandwidth();
+        this.getDataTraffic();
+        this.getBandwidthSaving();
       },
       error: (error) => {
         console.log(error);
@@ -184,11 +197,15 @@ export class WafUsageStatistics implements OnInit {
       ]
     };
   }
-  caculate(){
-    //this.timeStampData
+  caculateEdge(){
+    if(this.selectedTypeDate=='fiveminutes'){
+      var max= Math.max(...this.bandWidthData);
+      this.peakEdge ={
+        bandwidth: max,
+        timestamp: this.timeStampData[this.bandWidthData.indexOf(max)]
+      };
+    }
   }
-  bandWidthData: number[];
-  timeStampData: string[];
   getDataBandwidth(){
     this.isSpinning=true;
     this.wafService.bandwidthForMultiDomain(this.fromDate,this.toDate,this.selectedTypeDate,this.domains).subscribe({
@@ -197,9 +214,52 @@ export class WafUsageStatistics implements OnInit {
         this.dataBandwidth = res;
         this.bandWidthData = this.dataBandwidth.bandwidthReport.map(x=>x.bandwidth);
         this.timeStampData = this.dataBandwidth.bandwidthReport.map(x=>x.timestamp);
+        
         this.fillData();
         this.draw();
-        this.caculate()
+        this.caculateEdge()
+      },
+      error: (error) => {
+        this.isSpinning=false;
+        console.log(error);
+      }
+    })
+  }
+
+  getDataTraffic(){
+    this.wafService.trafficForMultiDomain(this.fromDate,this.toDate,this.selectedTypeDate,this.domains).subscribe({
+      next: (res) => {
+        this.dataTraffic = res;
+        this.totalTraffic = Math.ceil(this.dataTraffic.flowSummary / 1024 * 100) / 100; 
+      },
+      error: (error) => {
+        this.isSpinning=false;
+        console.log(error);
+      }
+    })
+  }
+
+  caculateBandwidthSaving(){
+    if(this.selectedTypeDate=='fiveminutes'){
+      var max= Math.max(...this.bandWidthData);
+      this.peakSaving ={
+        bandwidth: max,
+        timestamp: this.timeStampData[this.bandWidthData.indexOf(max)]
+      };
+    }
+  }
+  getBandwidthSaving(){
+    if(this.selectedTypeDate =='fiveminutes'){
+      var dataInterval = '5m';
+    }else{
+      var dataInterval = '1h';
+    }
+    this.wafService.getBandWidthSaving({dateFrom:this.fromDate,dateTo:this.toDate,dataInterval:dataInterval,domain:this.domains}).subscribe({
+      next: (res) => {
+        this.dataBandwidthSaving = res;
+        this.averageBandwidthSaving = this.dataBandwidthSaving.data[0].totalAvg*100;
+        this.bandWidthSavingData = this.dataBandwidthSaving.data[0].savingBandwidthDatas.map(x=>parseFloat(x.savingBandwidth));
+        this.timeStampSavingData = this.dataBandwidthSaving.data[0].savingBandwidthDatas.map(x=>x.timestamp);
       },
       error: (error) => {
         this.isSpinning=false;
@@ -251,6 +311,7 @@ export class WafUsageStatistics implements OnInit {
       return;
     }
     this.getDataBandwidth();
+    this.getDataTraffic();
   }
 
   onChangeDomain(){
@@ -268,6 +329,7 @@ export class WafUsageStatistics implements OnInit {
       return;
     }
     this.getDataBandwidth();
+    this.getDataTraffic();
   }
 
   isSameDay(date1: Date, date2: Date): boolean {

@@ -208,3 +208,39 @@ export class QueryBandwidthForMultiDomainResponseBandwidthReport {
     timestamp: string;
     bandwidth: number | null;
 }
+
+export class QueryTrafficForMultiDomainResponse  {
+  flowSummary: number;
+  flowData: QueryTrafficForMultiDomainResponseFlowData[];
+  code: string;
+  message: string;
+}
+
+export class QueryTrafficForMultiDomainResponseFlowData {
+  timestamp: string;
+  flow: number | null;
+}
+
+export class QueryRequesBandwidthtSavingRatioRequestDto {
+  dateFrom : Date;
+  dateTo : Date
+  domain : string[];
+  dataInterval : string
+}
+
+export class QueryRequesBandwidthtSavingRatioResponse {
+  code: string;
+  message: string;
+  data: QueryRequesBandwidthtSavingRatioResponseData[];
+}
+
+export class QueryRequesBandwidthtSavingRatioResponseData {
+  realDate: string;
+  totalAvg: number | null;
+  savingBandwidthDatas: QueryRequesBandwidthtSavingRatioResponseDataSavingBandwidthDatas[];
+}
+
+export class QueryRequesBandwidthtSavingRatioResponseDataSavingBandwidthDatas {
+  timestamp: string;
+  savingBandwidth: string;
+}

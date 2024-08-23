@@ -39,18 +39,18 @@
       <nz-card>
         <p>
           <span style="color: #4168FF;">Edge &nbsp;&nbsp;</span>
-          <span class="peak">Peak Bandwidth : <span style="color: #512DA8; font-weight: bold">0.00 Mbps </span>(00:05:00 16/07/2024) </span>
-          <span class="ml-5">Total Traffic: <span style="color: #512DA8; font-weight: bold">0.00 GB</span></span>
+          <span *ngIf="this.selectedTypeDate=='fiveminutes'" class="peak">Peak Bandwidth : <span style="color: #512DA8; font-weight: bold">{{this.peakEdge?.bandwidth}} Mbps </span>({{this.peakEdge?.timestamp}}) </span>
+          <span class="ml-5">Total Traffic: <span style="color: #512DA8; font-weight: bold">{{this.currentTab=='bandwidth'?this.totalTraffic:0.00}} GB</span></span>
         </p>
         <p>
           <span style="color: #47CBFF;">Back- to - Origin &nbsp;&nbsp;</span>
-          <span class="peak">Peak Bandwidth : <span style="color: #512DA8; font-weight: bold">0.00 Mbps </span>(00:05:00 16/07/2024) </span>
+          <span *ngIf="this.selectedTypeDate=='fiveminutes'" class="peak">Peak Bandwidth : <span style="color: #512DA8; font-weight: bold">0.00 Mbps </span>(00:05:00 16/07/2024) </span>
           <span class="ml-5">Total Traffic: <span style="color: #512DA8; font-weight: bold">0.00 GB</span></span>
         </p>
         <p>
           <span style="color: #009B4E;">{{this.currentTab=='bandwidth'?'Bandwidth Saving Ratio':'Hit Ratio'}} &nbsp;&nbsp;</span>
-          <span class="peak">Peak Value : <span style="color: #512DA8; font-weight: bold">99.99% </span>(00:05:00 16/07/2024) </span>
-          <span class="ml-5">Average: <span style="color: #512DA8; font-weight: bold">99.99%</span></span>
+          <span *ngIf="this.selectedTypeDate=='fiveminutes'" class="peak">Peak Value : <span style="color: #512DA8; font-weight: bold">99.99% </span>(00:05:00 16/07/2024) </span>
+          <span class="ml-5">Average: <span style="color: #512DA8; font-weight: bold">{{this.dataBandwidthSaving}}%</span></span>
         </p>
       </nz-card>
   
