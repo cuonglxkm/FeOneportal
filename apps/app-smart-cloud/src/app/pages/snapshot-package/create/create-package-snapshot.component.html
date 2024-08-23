@@ -66,7 +66,7 @@
                 [nz-tooltip]="'Người dùng có thể mua một hoặc đồng thời cả hai loại dung lượng HDD và SSD cho gói Snapshot'"
                 src="assets/imgs/pajamas_question.svg" alt="" />
             </nz-form-label>
-            <nz-table nzData="null" nzHideOnSinglePage='true'>
+            <nz-table nzData="null" nzHideOnSinglePage='true' *ngIf="typeSnapshotHdd || typeSnapshotSsd">
               <thead>
                 <tr>
                   <th>Loại gói</th>
@@ -75,7 +75,7 @@
                 </tr>
               </thead>
               <tbody>
-                <tr>
+                <tr *ngIf="typeSnapshotHdd">
                   <td>HDD</td>
                   <td  class='text-right'>
                       <nz-input-number  style="min-width: 30%; margin-left: -1px" [nzMin]="minBlock" [nzStep]="stepBlock" [nzMax]="maxBlock"
@@ -89,7 +89,7 @@
                     </div>
                   </td>
                 </tr>
-                <tr>
+                <tr  *ngIf="typeSnapshotSsd">
                   <td>SSD</td>
                   <td  class='text-right'>
                    
@@ -143,11 +143,17 @@
             <div class="text-value">Dung lượng tổng</div>
             <div style="margin-top: 10px" class="text-label">{{ numberSSD + numberHDD }} GB</div>
             <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
-            <div class="text-value">Dung lượng HDD</div>
-            <div style="margin-top: 10px" class="text-label">{{ numberHDD }} GB</div>
+            <div *ngIf="typeSnapshotHdd">
+              <div class="text-value">Dung lượng HDD</div>
+              <div style="margin-top: 10px" class="text-label">{{ numberHDD }} GB</div>
+            </div>
+            
             <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
-            <div class="text-value">Dung lượng SSD</div>
-            <div style="margin-top: 10px" class="text-label">{{ numberSSD }} GB</div>
+            <div *ngIf="typeSnapshotSsd">
+              <div class="text-value">Dung lượng SSD</div>
+              <div style="margin-top: 10px" class="text-label">{{ numberSSD }} GB</div>
+            </div>
+           
             <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
             <nz-row style="margin-bottom: 10px" nzGutter="16">
               <nz-col nzSpan="16">
