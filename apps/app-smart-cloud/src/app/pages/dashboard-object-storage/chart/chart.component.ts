@@ -116,14 +116,18 @@ export class ChartComponent implements AfterViewInit, OnInit {
         timeSpan: item.timeSpan,
         value: parseInt(item.value, 10),
       })) || [];
+
     console.log('rawData:', data);
+
     const uniqueData = this.removeDuplicatesTootip(data);
     const labels = Object.keys(uniqueData);
-    const dataValues = Object.values(uniqueData).map((value) =>
-      parseFloat(value)
-    );
-    console.log(dataValues);
+    console.log('labels:', labels);
     
+    const dataValues = Object.values(uniqueData).map((value) => {
+      const [numericValue, unit] = value.split(' ');
+      const exponent = this.getExponent(value);
+      return parseFloat(numericValue) * Math.pow(1024, exponent);
+    });
     this.chartStorageUse = new Chart({
       chart: {
         type: 'line',
@@ -132,7 +136,7 @@ export class ChartComponent implements AfterViewInit, OnInit {
         text: '',
       },
       xAxis: {
-        categories: data.length === 0 ? [] : labels,
+        categories: labels,
         title: {
           text: '',
         },
@@ -151,10 +155,21 @@ export class ChartComponent implements AfterViewInit, OnInit {
           text: 'Dung lượng sử dụng',
         },
         labels: {
-          formatter: function () { 
-            return `${this.value}`;
+          formatter: function () {
+            const valueInBytes = parseFloat(this.value.toString());
+            if (valueInBytes >= Math.pow(1024, 5)) {
+              return (valueInBytes / Math.pow(1024, 5)).toFixed(2) + ' PiB';
+            } else if (valueInBytes >= Math.pow(1024, 4)) {
+              return (valueInBytes / Math.pow(1024, 4)).toFixed(2) + ' TiB';
+            } else if (valueInBytes >= Math.pow(1024, 3)) {
+              return (valueInBytes / Math.pow(1024, 3)).toFixed(2) + ' GiB';
+            } else if (valueInBytes >= Math.pow(1024, 2)) {
+              return (valueInBytes / Math.pow(1024, 2)).toFixed(2) + ' MiB';
+            } else {
+              return (valueInBytes / 1024).toFixed(2) + ' KiB';
+            }
           },
-        }
+        },
       },
       tooltip: {
         formatter: function () {
@@ -170,7 +185,6 @@ export class ChartComponent implements AfterViewInit, OnInit {
         } as any,
       ],
     });
-
   }
 
   createNumberObject() {
@@ -239,9 +253,11 @@ export class ChartComponent implements AfterViewInit, OnInit {
     // Chuyển đổi timestamp thành định dạng thời gian đọc được
     const labels = Object.keys(uniqueData);
 
-    const dataValues = Object.values(uniqueData).map((value) =>
-      parseFloat(value)
-    );
+    const dataValues = Object.values(uniqueData).map((value) => {
+      const [numericValue, unit] = value.split(' ');
+      const exponent = this.getExponent(value);
+      return parseFloat(numericValue) * Math.pow(1024, exponent);
+    });
 
     // Cấu hình Highcharts
     this.chartStorageUpload = new Chart({
@@ -270,6 +286,22 @@ export class ChartComponent implements AfterViewInit, OnInit {
         title: {
           text: this.i18n.fanyi('app.upload.capacity'),
         },
+        labels: {
+          formatter: function () {
+            const valueInBytes = parseFloat(this.value.toString());
+            if (valueInBytes >= Math.pow(1024, 5)) {
+              return (valueInBytes / Math.pow(1024, 5)).toFixed(2) + ' PiB';
+            } else if (valueInBytes >= Math.pow(1024, 4)) {
+              return (valueInBytes / Math.pow(1024, 4)).toFixed(2) + ' TiB';
+            } else if (valueInBytes >= Math.pow(1024, 3)) {
+              return (valueInBytes / Math.pow(1024, 3)).toFixed(2) + ' GiB';
+            } else if (valueInBytes >= Math.pow(1024, 2)) {
+              return (valueInBytes / Math.pow(1024, 2)).toFixed(2) + ' MiB';
+            } else {
+              return (valueInBytes / 1024).toFixed(2) + ' KiB';
+            }
+          },
+        }
       },
       tooltip: {
         formatter: function () {
@@ -295,9 +327,11 @@ export class ChartComponent implements AfterViewInit, OnInit {
       })) || [];
     const uniqueData = this.removeDuplicatesTootip(data);
     const labels = Object.keys(uniqueData);
-    const dataValues = Object.values(uniqueData).map((value) =>
-      parseFloat(value)
-    );
+    const dataValues = Object.values(uniqueData).map((value) => {
+      const [numericValue, unit] = value.split(' ');
+      const exponent = this.getExponent(value);
+      return parseFloat(numericValue) * Math.pow(1024, exponent);
+    });
 
     // Cấu hình Highcharts
     this.chartStorageDownload = new Chart({
@@ -326,6 +360,22 @@ export class ChartComponent implements AfterViewInit, OnInit {
         title: {
           text: this.i18n.fanyi('app.upload.download'),
         },
+        labels: {
+          formatter: function () {
+            const valueInBytes = parseFloat(this.value.toString());
+            if (valueInBytes >= Math.pow(1024, 5)) {
+              return (valueInBytes / Math.pow(1024, 5)).toFixed(2) + ' PiB';
+            } else if (valueInBytes >= Math.pow(1024, 4)) {
+              return (valueInBytes / Math.pow(1024, 4)).toFixed(2) + ' TiB';
+            } else if (valueInBytes >= Math.pow(1024, 3)) {
+              return (valueInBytes / Math.pow(1024, 3)).toFixed(2) + ' GiB';
+            } else if (valueInBytes >= Math.pow(1024, 2)) {
+              return (valueInBytes / Math.pow(1024, 2)).toFixed(2) + ' MiB';
+            } else {
+              return (valueInBytes / 1024).toFixed(2) + ' KiB';
+            }
+          },
+        }
       },
       tooltip: {
         formatter: function () {
@@ -803,7 +853,7 @@ export class ChartComponent implements AfterViewInit, OnInit {
         returnLabel = `${day}/${month}/${year} ${hours}:${minutes}`;
         break;
       case 15:
-        returnLabel = `${day}/${month}/${year} ${hours}:${minutes15Str}`;
+        returnLabel = `${day}/${month}/${year} ${hours}:${minutes}`;
         break;
       case 60:
         returnLabel = `${day}/${month}/${year} ${hours}:${minutesStr}`;

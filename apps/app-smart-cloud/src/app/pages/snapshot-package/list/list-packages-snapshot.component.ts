@@ -268,32 +268,38 @@ export class ListPackagesSnapshotComponent implements OnInit {
   }
 
   handleUpdateOk() {
-    this.isLoadingUpdate = true;
-    const description = this.validateForm.controls['description'].value || '';
-    let data = {
-      newPackageName: this.validateForm.controls['namePackage'].value,
-      id: this.dataAction.id,
-      description: description,
-      regionId: this.region,
+    if (this.validateForm.valid) {
+      this.isLoadingUpdate = true;
+      const description = this.validateForm.controls['description'].value || '';
+      let data = {
+        newPackageName: this.validateForm.controls['namePackage'].value,
+        id: this.dataAction.id,
+        description: description,
+        regionId: this.region,
 
+      }
+      if (this.validateForm.valid) { }
+      this.packageSnapshotService.update(description, this.validateForm.controls['namePackage'].value, this.dataAction.id, this.region, data)
+
+        .pipe(finalize(() => {
+          this.handleUpdateCancel();
+          this.isLoadingUpdate = false;
+        }))
+        .subscribe(
+          data => {
+
+            this.notification.success(this.i18n.fanyi('app.status.success'), 'Cập nhật gói snapshot thành công')
+            this.getListPackageSnapshot(true);
+          },
+          error => {
+            this.notification.error(this.i18n.fanyi('app.status.fail'), error.error.message)
+          }
+        )
     }
-    console.log("dâtta name", data)
-    this.packageSnapshotService.update(this.validateForm.controls['description'].value, this.validateForm.controls['namePackage'].value, this.dataAction.id, this.region, data)
+    else {
+      this.validateForm.markAllAsTouched();
+    }
 
-      .pipe(finalize(() => {
-        this.handleUpdateCancel();
-        this.isLoadingUpdate = false;
-      }))
-      .subscribe(
-        data => {
-          console.log("daaaaa", data)
-          this.notification.success(this.i18n.fanyi('app.status.success'), 'Cập nhật gói snapshot thành công')
-          this.getListPackageSnapshot(true);
-        },
-        error => {
-          this.notification.error(this.i18n.fanyi('app.status.fail'), error.error.message)
-        }
-      )
   }
 
   private loadingSnapshot() {

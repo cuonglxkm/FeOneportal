@@ -62,7 +62,7 @@
             </ng-template>
           </nz-col>
           <nz-col nzSpan="8" style="flex:none;">
-            <button nz-button
+            <button nz-button *ngIf="isCreateOrder"
                     nzType="primary"
                     nzSize="large"
                     (click)="navigateToCreateVolume()">
@@ -144,14 +144,14 @@
                 *ngIf="!(['CREATING', 'ERROR', 'ATTACHING', 'DELETING','ERROR_DELETING','RESIZING'].includes(data.serviceStatus))
                 && !['DELETING', 'CREATING', 'ERROR_DELETING','RESIZING', 'SUSPENDED'].includes(data.status)">
                 <!-----Gắn---------->
-                <one-portal-attach-volume [region]="region"
+                <one-portal-attach-volume [region]="region" *ngIf="'volume:VolumeAttach' | IsPermissionPipe"
                                           [project]="project"
                                           [volumeId]="data.id"
                                           [multiple]="data.isMultiAttach"
                                           [instanceInVolume]="data.attachedInstances"
                                           (onOk)="handleOkAttachVm()" />
                 <!----Gỡ---------->
-                <one-portal-detach-volume [region]="region"
+                <one-portal-detach-volume [region]="region" *ngIf="'volume:VolumeDetach' | IsPermissionPipe"
                                           [project]="project"
                                           [volumeId]="data.id"
                                           [isMultiple]="data.isMultiAttach"
@@ -163,9 +163,9 @@
                      nz-popover
                      [nzPopoverContent]="'volume.tooltip.content.create.backup' | i18n"
                      nzPopoverPlacement="bottom"
-                     (click)="navigateToCreateBackup(data.id)" *ngIf="isBackupVolume"/>
+                     (click)="navigateToCreateBackup(data.id)" *ngIf="isBackupVolume && ('order:Create' | IsPermissionPipe)"/>
                 <!-----Xóa volume---------->
-                <one-portal-delete-volume [region]="region"
+                <one-portal-delete-volume [region]="region" *ngIf="'volume:Delete' | IsPermissionPipe"
                                           [project]="project"
                                           [volumeId]="data.id"
                                           [volumeName]="data.name"
@@ -177,21 +177,21 @@
                 <nz-dropdown-menu #opMenu="nzDropdownMenu">
                   <ul nz-menu>
                     <!----TẠO LỊCH BACKUP---------->
-                    <li nz-menu-item
+                    <li nz-menu-item *ngIf="'backupschedule:Create' | IsPermissionPipe"
                         (click)="navigateToCreateScheduleBackup(data.id)">{{ 'volume.menu.create.schedule.backup' | i18n }}
                     </li>
                     <!-----TẠO SNAPSHOT---------->
-                    <li *ngIf="(isVolumeSnapshotHdd || isVolumeSnapshotSsd)" nz-menu-item (click)="navigateToSnapshot(data.id)">{{ 'app.snapshot.create' | i18n }}</li>
+                    <li *ngIf="(isVolumeSnapshotHdd || isVolumeSnapshotSsd) && ('volumesnapshot:Create' | IsPermissionPipe)" nz-menu-item (click)="navigateToSnapshot(data.id)">{{ 'app.snapshot.create' | i18n }}</li>
                     <!-----TẠO LỊCH SNAPSHOT--------->
-                    <li *ngIf="(isVolumeSnapshotHdd || isVolumeSnapshotSsd)" nz-menu-item (click)="navigateToCreateScheduleSnapshot(data.id)">{{ 'volume.menu.create.schedule.snapshot' | i18n }}</li>
+                    <li *ngIf="(isVolumeSnapshotHdd || isVolumeSnapshotSsd) && ('volumesnapshotschedule:Create' | IsPermissionPipe)" nz-menu-item (click)="navigateToCreateScheduleSnapshot(data.id)">{{ 'volume.menu.create.schedule.snapshot' | i18n }}</li>
                     <!-----CHỈNH SỬA--------->
-                    <one-portal-update-volume [region]="region" [project]="project" [volume]="data"
+                    <one-portal-update-volume *ngIf="'backupschedule:Update' | IsPermissionPipe" [region]="region" [project]="project" [volume]="data"
                                               (onOk)="handleOkUpdate()" />
                   </ul>
                 </nz-dropdown-menu>
               </div>
               <!-----Trạng thái = ERROR || SUSPENDED thì chỉ cho phép xóa---------->
-              <div *ngIf="data.serviceStatus == 'ERROR' || data.status == 'SUSPENDED'">
+              <div *ngIf="(data.serviceStatus == 'ERROR' || data.status == 'SUSPENDED') && ('volume:Delete' | IsPermissionPipe)">
                 <one-portal-delete-volume [region]="region"
                                           [project]="project"
                                           [volumeId]="data.id"
@@ -222,7 +222,7 @@
               <span class="text-intro-desc">{{ 'volume.intro.subtitle' | i18n }}</span>
             </nz-col>
           </nz-row>
-          <button style="margin-top: 20px" nz-button [nzType]="'primary'" (click)="navigateToCreateVolume()"
+          <button *ngIf="isCreateOrder" style="margin-top: 20px" nz-button [nzType]="'primary'" (click)="navigateToCreateVolume()"
                   nzSize="large">
             <img style="padding-right: 10px; margin-top: -4px" src="assets/imgs/cloud-plus-bold.svg" alt="" />
             {{ 'volume.button.create' | i18n }}

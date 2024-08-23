@@ -198,10 +198,10 @@
           }}</span>
           <br />
         </nz-row>
-        <nz-table [nzData]="data?.orderItems" nzHideOnSinglePage="true">
+        <nz-table [nzData]="data?.orderItems" nzHideOnSinglePage="true" nzTableLayout="fixed">
           <thead>
             <tr>
-              <th>{{ 'app.payment-detail.serviceName' | i18n }}</th>
+              <th style="width: 200px;">{{ 'app.payment-detail.serviceName' | i18n }}</th>
               <th>{{ 'app.payment.service.type' | i18n }}</th>
               <th>{{ 'app.payment-detail.price' | i18n }}</th>
               <th>{{ 'app.payment-detail.remain' | i18n }}</th>
@@ -211,7 +211,7 @@
           </thead>
           <tbody>
             <tr *ngFor="let item of data?.orderItems">
-              <td class="text-left">{{ item.serviceName }}</td>
+              <td class="text-left text-hidden" title="{{ item?.serviceName }}">{{ item.serviceName }}</td>
               <td class="text-left">{{ item.serviceType }}</td>
               <td class="text-right">
                 {{ item.unitPrice.amount | number : '1.0-0' }}

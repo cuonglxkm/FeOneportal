@@ -22,6 +22,7 @@ import { RegionID } from 'src/app/shared/enums/common.enum';
 import { ScheduleService } from '../../../../shared/services/schedule.service';
 import { BackupSchedule, FormSearchScheduleBackup } from '../../../../shared/models/schedule.model';
 import { CatalogService } from '../../../../shared/services/catalog.service';
+import { PolicyService } from 'src/app/shared/services/policy.service';
 
 @Component({
   selector: 'app-volume',
@@ -73,6 +74,7 @@ export class VolumeComponent implements OnInit, OnDestroy {
   dataSubjectInputSearch: Subject<any> = new Subject<any>();
   private searchSubscription: Subscription;
   private enterPressed: boolean = false;
+  isCreateOrder: boolean = false;
   @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
 
   constructor(@Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
@@ -84,7 +86,8 @@ export class VolumeComponent implements OnInit, OnDestroy {
               private notification: NzNotificationService,
               private scheduleBackupService: ScheduleService,
               private catalogService: CatalogService,
-              @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService) {
+              @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
+              private policyService: PolicyService) {
   }
 
 
@@ -110,6 +113,7 @@ export class VolumeComponent implements OnInit, OnDestroy {
     this.typeVPC = project?.type;
     this.isLoading = true;
     this.getListVolume(true);
+    this.isCreateOrder = this.policyService.hasPermission("order:Create");
   }
 
   ngOnDestroy(): void {
