@@ -47,7 +47,7 @@ export class HttpSettingComponent implements OnInit, AfterViewInit{
     this.listOptionsSsl = this.listSslCert?.filter((cert) => {
       return checkProperSslWithDomain(this.domainData?.domain, cert.subjectAlternativeNames)
     })
-    
+    console.log('first', this.listOptionsSsl, this.listSslCert)
   }
 
   ngAfterViewInit(): void {
@@ -85,6 +85,7 @@ export class HttpSettingComponent implements OnInit, AfterViewInit{
 
   setFormValues(){
     this.validateForm.controls.cert.setValue(this.domainData.sslCertId)
+    console.log('second',this.domainData.sslCertId, this.validateForm.controls.cert.getRawValue())
     this.validateForm.controls.port.setValue(this.domainData.portRewriting)
     !!this.domainData.protocol && this.validateForm.controls.protocol.setValue(this.domainData.protocol)
     !this.domainData.protocol && this.validateForm.controls.protocol.setValue('follow')
@@ -119,6 +120,7 @@ export class HttpSettingComponent implements OnInit, AfterViewInit{
   }
 
   openModal(){
+    this.setFormValues()
     this.isVisible = true
   }
 
@@ -153,7 +155,6 @@ export class HttpSettingComponent implements OnInit, AfterViewInit{
   }
 
   openModalSSlCert(){
-    this.setFormValues()
     this.isVisibleCreateSsl = true
     this.cdr.detectChanges()
   }
