@@ -5,7 +5,7 @@ COPY package.json .
 RUN yarn install
 
 # stage 2 build image
-FROM node:lts-alpine3.18 as node
+FROM node:lts-alpine3.18 AS node
 WORKDIR /app
 COPY --from=installer /app /app
 #COPY package*.json .
