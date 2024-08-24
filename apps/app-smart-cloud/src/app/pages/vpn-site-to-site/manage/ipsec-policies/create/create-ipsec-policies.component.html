@@ -50,11 +50,9 @@
             <nz-form-item>
               <nz-form-control [nzErrorTip]="nameErrorTpl">
                 <nz-form-label nzFor="name">
-                  <div style="margin-top: 15px">
-                    <span>{{ 'form.account.name' | i18n }}</span>
-                    (<span style="color: rgba(252, 16, 16, 1)">*</span>)
+                    Name (<span style="color: rgba(252, 16, 16, 1)">*</span>)
                     <img
-                      nz-popover
+                      nz-popover [nzPopoverOverlayStyle]="{ maxWidth: '400px' }"
                       [nzPopoverContent]="
                         'app.ipsec.policy-create.name.alert2' | i18n
                       "
@@ -63,12 +61,12 @@
                       src="assets/imgs/pajamas_question.svg"
                       alt=""
                     />
-                  </div>
                 </nz-form-label>
                 <input
                   nz-input
                   type="text"
                   required
+                  appAutoFocus
                   [placeholder]="'app.input.name' | i18n"
                   formControlName="name"
                   class="input-custom"
@@ -90,11 +88,10 @@
             <nz-form-item>
               <nz-form-control>
                 <nz-form-label nzFor="name">
-                  <div style="margin-top: 15px">
-                    <span>Authorization Algorithm</span>
+                    <span>Authorization Algorithm&nbsp;</span>
                     (<span style="color: rgba(252, 16, 16, 1)">*</span>)
                     <img
-                      nz-popover
+                      nz-popover [nzPopoverOverlayStyle]="{ maxWidth: '400px' }"
                       [nzPopoverContent]="
                         'app.ipsec.policy-create.Authorization.tooltip' | i18n
                       "
@@ -103,7 +100,6 @@
                       src="assets/imgs/pajamas_question.svg"
                       alt=""
                     />
-                  </div>
                 </nz-form-label>
                 <nz-select
                   [(ngModel)]="selectedAuthorizationAlgorithm"
@@ -123,11 +119,10 @@
             <nz-form-item>
               <nz-form-control>
                 <nz-form-label nzFor="name">
-                  <div>
-                    <span>Encryption Mode</span>
+                    <span>Encryption Mode&nbsp;</span>
                     (<span style="color: rgba(252, 16, 16, 1)">*</span>)
                     <img
-                      nz-popover
+                      nz-popover [nzPopoverOverlayStyle]="{ maxWidth: '400px' }"
                       [nzPopoverContent]="
                         'app.ipsec.policy-create.Encryption.tooltip' | i18n
                       "
@@ -136,7 +131,6 @@
                       src="assets/imgs/pajamas_question.svg"
                       alt=""
                     />
-                  </div>
                 </nz-form-label>
                 <nz-select
                   [(ngModel)]="selectedEncryptionMode"
@@ -156,11 +150,10 @@
             <nz-form-item>
               <nz-form-control>
                 <nz-form-label nzFor="name">
-                  <div>
-                    <span>Encryption Algorithm</span>
+                    <span>Encryption Algorithm&nbsp;</span>
                     (<span style="color: rgba(252, 16, 16, 1)">*</span>)
                     <img
-                      nz-popover
+                      nz-popover [nzPopoverOverlayStyle]="{ maxWidth: '400px' }"
                       [nzPopoverContent]="
                         'app.ipsec.policy-create.Encryption.Al.tooltip' | i18n
                       "
@@ -169,7 +162,6 @@
                       src="assets/imgs/pajamas_question.svg"
                       alt=""
                     />
-                  </div>
                 </nz-form-label>
                 <nz-select
                   [(ngModel)]="selectedEncryptionAlgorithm"
@@ -189,11 +181,10 @@
             <nz-form-item>
               <nz-form-control>
                 <nz-form-label nzFor="name">
-                  <div>
-                    <span>Lifetime Units</span>
+                    <span>Lifetime Units&nbsp;</span>
                     (<span style="color: rgba(252, 16, 16, 1)">*</span>)
                     <img
-                      nz-popover
+                      nz-popover [nzPopoverOverlayStyle]="{ maxWidth: '400px' }"
                       [nzPopoverContent]="
                         'app.ipsec.policy-create.Lifetime.tooltip' | i18n
                       "
@@ -202,7 +193,6 @@
                       src="assets/imgs/pajamas_question.svg"
                       alt=""
                     />
-                  </div>
                 </nz-form-label>
                 <nz-select
                   [(ngModel)]="selectedLifetimeUnits"
@@ -220,13 +210,12 @@
           </div>
           <div nz-col [nzSpan]="12" class="gutter-row">
             <nz-form-item>
-              <nz-form-control>
+              <nz-form-control [nzErrorTip]="'app.vpns2s.name.error.tooltip' | i18n">
                 <nz-form-label nzFor="name">
-                  <div>
-                    <span>Lifetime Value</span>
+                    <span>Lifetime Value&nbsp;</span>
                     (<span style="color: rgba(252, 16, 16, 1)">*</span>)
                     <img
-                      nz-popover
+                      nz-popover [nzPopoverOverlayStyle]="{ maxWidth: '400px' }"
                       [nzPopoverContent]="
                         'app.ipsec.policy-create.Lifetime.value.tooltip' | i18n
                       "
@@ -235,14 +224,17 @@
                       src="assets/imgs/pajamas_question.svg"
                       alt=""
                     />
-                  </div>
                 </nz-form-label>
                 <nz-input-number
                   formControlName="lifeTimeValue"
                   style="width: 100%; margin-left: 0px"
                   class="input-custom"
                   [nzMin]="60"
+                  [nzMax]="1000000000"
                   [nzStep]="1"
+                  [(ngModel)]="lifeTimeValue"
+                  [ngModelOptions]="{ standalone: true }"
+                  (keydown)="onKeyDown($event)"
                 />
               </nz-form-control>
             </nz-form-item>
@@ -251,11 +243,10 @@
             <nz-form-item>
               <nz-form-control>
                 <nz-form-label nzFor="name">
-                  <div>
-                    <span>Perfect Forward Secrecy</span>
+                    <span>Perfect Forward Secrecy&nbsp;</span>
                     (<span style="color: rgba(252, 16, 16, 1)">*</span>)
                     <img
-                      nz-popover
+                      nz-popover [nzPopoverOverlayStyle]="{ maxWidth: '400px' }"
                       [nzPopoverContent]="
                         'app.ipsec.policy-create.pfs.tooltip' | i18n
                       "
@@ -264,7 +255,6 @@
                       src="assets/imgs/pajamas_question.svg"
                       alt=""
                     />
-                  </div>
                 </nz-form-label>
                 <nz-select
                   [(ngModel)]="selectedPerfectForwardSecrecy"
@@ -284,11 +274,10 @@
             <nz-form-item>
               <nz-form-control>
                 <nz-form-label nzFor="name">
-                  <div>
-                    <span>Transform Protocol</span>
+                    <span>Transform Protocol&nbsp;</span>
                     (<span style="color: rgba(252, 16, 16, 1)">*</span>)
                     <img
-                      nz-popover
+                      nz-popover [nzPopoverOverlayStyle]="{ maxWidth: '400px' }"
                       [nzPopoverContent]="
                         'app.ipsec.policy-create.transform.tooltip' | i18n
                       "
@@ -297,7 +286,6 @@
                       src="assets/imgs/pajamas_question.svg"
                       alt=""
                     />
-                  </div>
                 </nz-form-label>
                 <nz-select
                   [(ngModel)]="selectedTransformProtocol"
@@ -322,36 +310,36 @@
       <h2 class="custom-title">{{ 'app.config.parameters' | i18n }}</h2>
       <div style="overflow: auto; height: 358px; margin-bottom: 16px">
         <div style="margin-bottom: 12px">
-          <h3 class="custom-subtitle">{{ 'form.account.name' | i18n }}</h3>
-          <span class="text-break">{{ form.value.name }}</span>
+          <h3 class="custom-subtitle">Name</h3>
+          <span class="text-break text-label">{{ form.value.name }}</span>
         </div>
         <div style="margin-bottom: 20px">
           <h3 class="custom-subtitle">Authorization Algorithm</h3>
-          <span>{{ selectedAuthorizationAlgorithm }}</span>
+          <span class="text-label">{{ selectedAuthorizationAlgorithm }}</span>
         </div>
         <div style="margin-bottom: 20px">
           <h3 class="custom-subtitle">Encryption Mode</h3>
-          <span>{{ selectedEncryptionMode }}</span>
+          <span class="text-label">{{ selectedEncryptionMode }}</span>
         </div>
         <div style="margin-bottom: 20px">
           <h3 class="custom-subtitle">Encryption Algorithm</h3>
-          <span>{{ selectedEncryptionAlgorithm }}</span>
+          <span class="text-label">{{ selectedEncryptionAlgorithm }}</span>
         </div>
         <div style="margin-bottom: 20px">
           <h3 class="custom-subtitle">Lifetime Units</h3>
-          <span>{{ selectedLifetimeUnits }}</span>
+          <span class="text-label">{{ selectedLifetimeUnits }}</span>
         </div>
         <div style="margin-bottom: 20px">
           <h3 class="custom-subtitle">Lifetime Value</h3>
-          <span>{{ form.value.lifeTimeValue }}</span>
+          <span class="text-label">{{ form.value.lifeTimeValue }}</span>
         </div>
         <div style="margin-bottom: 20px">
           <h3 class="custom-subtitle">Perfect Forward Secrecy</h3>
-          <span>{{ selectedPerfectForwardSecrecy }}</span>
+          <span class="text-label">{{ selectedPerfectForwardSecrecy }}</span>
         </div>
         <div style="margin-bottom: 20px">
           <h3 class="custom-subtitle">Transform Protocol</h3>
-          <span>{{ selectedTransformProtocol }}</span>
+          <span class="text-label">{{ selectedTransformProtocol }}</span>
         </div>
       </div>
       <button

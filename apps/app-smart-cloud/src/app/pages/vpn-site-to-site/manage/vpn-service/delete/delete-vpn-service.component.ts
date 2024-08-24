@@ -40,8 +40,11 @@ export class DeleteVpnServiceComponent{
 
   nameVpnServiceValidator(control: FormControl): { [key: string]: any } | null {
     const name = control.value;
+    if (!name) {
+      return null;
+    }
     if (name !== this.vpnServiceName) {
-      return { 'nameMismatch': true };
+      return { nameMismatch: true };
     }
     return null;
   }

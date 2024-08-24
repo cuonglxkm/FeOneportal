@@ -582,7 +582,7 @@ export class CreateVolumeComponent implements OnInit {
       this.onChangeStatusMultiAttach(data.isMultiAttach);
       console.log('instance', data?.attachedInstances[0]?.instanceId);
       this.instanceSelectedChange(data?.attachedInstances[0]?.instanceId);
-      this.validateForm.controls.instanceId.setValue(data?.attachedInstances[0]?.instanceId);
+      // this.validateForm.controls.instanceId.setValue(data?.attachedInstances[0]?.instanceId);
     });
   }
 

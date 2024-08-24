@@ -50,12 +50,12 @@
             <nz-form-item>
               <nz-form-control>
                 <nz-form-label nzFor="name">
-                  <span>{{ 'form.account.name' | i18n }}</span> (<span
+                  <span>Name</span> (<span
                     style="color: rgba(252, 16, 16, 1)"
                     >*</span
                   >)
                   <img
-                    nz-popover
+                    nz-popover [nzPopoverOverlayStyle]="{ maxWidth: '400px' }"
                     [nzPopoverContent]="
                       'app.ipsec.policy-create.name.alert2' | i18n
                     "
@@ -84,7 +84,7 @@
                     >*</span
                   >)
                   <img
-                    nz-popover
+                    nz-popover [nzPopoverOverlayStyle]="{ maxWidth: '400px' }"
                     [nzPopoverContent]="
                       'app.ipsecolicy-create.Authorization.tooltip' | i18n
                     "
@@ -113,7 +113,7 @@
                     >*</span
                   >)
                   <img
-                    nz-popover
+                    nz-popover [nzPopoverOverlayStyle]="{ maxWidth: '400px' }"
                     [nzPopoverContent]="
                       'app.ipsec.policy-create.Encryption.tooltip' | i18n
                     "
@@ -142,7 +142,7 @@
                     >*</span
                   >)
                   <img
-                    nz-popover
+                    nz-popover [nzPopoverOverlayStyle]="{ maxWidth: '400px' }"
                     [nzPopoverContent]="
                       'app.ipsec.policy-create.Encryption.Al.tooltip' | i18n
                     "
@@ -171,7 +171,7 @@
                     >*</span
                   >)
                   <img
-                    nz-popover
+                    nz-popover [nzPopoverOverlayStyle]="{ maxWidth: '400px' }"
                     [nzPopoverContent]="
                       'app.ipsec.policy-create.Lifetime.tooltip' | i18n
                     "
@@ -200,7 +200,7 @@
                     >*</span
                   >)
                   <img
-                    nz-popover
+                    nz-popover [nzPopoverOverlayStyle]="{ maxWidth: '400px' }"
                     [nzPopoverContent]="
                       'app.ipsec.policy-create.Lifetime.value.tooltip' | i18n
                     "
@@ -229,7 +229,7 @@
                     >*</span
                   >)
                   <img
-                    nz-popover
+                    nz-popover [nzPopoverOverlayStyle]="{ maxWidth: '400px' }"
                     [nzPopoverContent]="
                       'app.ipsec.policy-create.pfs.tooltip' | i18n
                     "
@@ -258,7 +258,7 @@
                     >*</span
                   >)
                   <img
-                    nz-popover
+                    nz-popover [nzPopoverOverlayStyle]="{ maxWidth: '400px' }"
                     [nzPopoverContent]="
                       'app.ipsec.policy-create.transform.tooltip' | i18n
                     "

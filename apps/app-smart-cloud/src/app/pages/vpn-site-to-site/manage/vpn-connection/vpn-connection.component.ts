@@ -19,7 +19,7 @@ export class VpnConnection {
 
   pageSize: number = 5
   pageIndex: number = 1
-
+  pageSizeFixed = 5
   value: string = ''
 
   response: BaseResponse<VpnConnectionDTO>
@@ -42,6 +42,7 @@ export class VpnConnection {
   
   search(search: string) {  
     this.value = search.trim();
+    this.refreshParams()
     this.getData();
   }
 
@@ -106,7 +107,8 @@ export class VpnConnection {
 
   ngOnInit() {
     this.getData();
-    this.searchDelay.pipe(debounceTime(TimeCommon.timeOutSearch)).subscribe(() => {     
+    this.searchDelay.pipe(debounceTime(TimeCommon.timeOutSearch)).subscribe(() => {    
+      this.refreshParams() 
       this.getData();
     });
 }

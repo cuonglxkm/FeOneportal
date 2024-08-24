@@ -19,13 +19,14 @@
     </nz-col>
   </nz-row>
 </div>
-<nz-table #fixedTable style="margin-top: 20px;" style="margin-top: 20px" [nzData]="response?.records"
+<nz-table #fixedTable nzShowSizeChanger
+[nzPageSizeOptions]="[pageSizeFixed, 10, 20, 30, 40, 50]" style="margin-top: 20px;" style="margin-top: 20px" [nzData]="response?.records"
   [nzPageSize]="response?.pageSize" (nzPageSizeChange)="onPageSizeChange($event)" [nzPageIndex]="response?.currentPage"
   (nzPageIndexChange)="onPageIndexChange($event)" [nzTotal]="response?.totalCount" [nzFrontPagination]="false"
   [nzLoading]="isLoading">
   <thead>
     <tr>
-      <th>{{'form.account.name' |i18n}}</th>
+      <th>Name</th>
       <!-- <th>VPN Connection</th> -->
       <th>{{'app.bucket.detail.type' |i18n}}</th>
       <th>Enpoints</th>

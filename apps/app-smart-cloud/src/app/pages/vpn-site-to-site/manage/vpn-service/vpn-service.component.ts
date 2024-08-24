@@ -21,7 +21,7 @@ export class VpnService {
   pageIndex: number = 1
 
   value: string = ''
-
+  pageSizeFixed = 5
   response: BaseResponse<VpnServiceDTO>
 
   isLoading: boolean = false
@@ -42,6 +42,7 @@ export class VpnService {
   
   search(search: string) {  
     this.value = search.trim();
+    this.refreshParams()
     this.getData();
   }
 
@@ -95,6 +96,7 @@ export class VpnService {
   ngOnInit() {
       this.getData();
       this.searchDelay.pipe(debounceTime(TimeCommon.timeOutSearch)).subscribe(() => {     
+        this.refreshParams()
         this.getData();
       });
   }

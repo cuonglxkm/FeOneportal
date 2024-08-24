@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, Inject, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { getCurrentRegionAndProject } from '@shared';
@@ -7,6 +7,9 @@ import { IKEPolicyModel } from 'src/app/shared/models/vpns2s.model';
 import { RegionModel, ProjectModel } from '../../../../../../../../../libs/common-utils/src';
 import { IkePolicyService } from 'src/app/shared/services/ike-policy.service';
 import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
+import { I18NService } from '@core';
+import { NzNotificationService } from 'ng-zorro-antd/notification';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
 
 
 @Component({
@@ -25,7 +28,9 @@ export class DetailIkePoliciesComponent implements OnInit{
 
   constructor(private ikePolicyService: IkePolicyService,
               private router: Router,
-              private activatedRoute: ActivatedRoute
+              private activatedRoute: ActivatedRoute,
+              private notification: NzNotificationService,
+              @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService
               ) {
   }
 
@@ -59,6 +64,13 @@ export class DetailIkePoliciesComponent implements OnInit{
     }, error => {
       this.ikePolicy = null
       this.isLoading = false
+      if (error.error.detail.includes('could not be found')) {
+        this.notification.error(
+          this.i18n.fanyi('app.status.fail'),
+          'Bản ghi không tồn tại'
+        );
+        this.router.navigateByUrl('/app-smart-cloud/vpn-site-to-site')
+      }
     })
   }
 
