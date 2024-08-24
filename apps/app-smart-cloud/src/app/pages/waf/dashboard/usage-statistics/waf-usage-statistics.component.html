@@ -40,17 +40,17 @@
         <p>
           <span style="color: #4168FF;">Edge &nbsp;&nbsp;</span>
           <span *ngIf="this.selectedTypeDate=='fiveminutes'" class="peak">Peak Bandwidth : <span style="color: #512DA8; font-weight: bold">{{this.peakEdge?.bandwidth}} Mbps </span>({{this.peakEdge?.timestamp}}) </span>
-          <span class="ml-5">Total Traffic: <span style="color: #512DA8; font-weight: bold">{{this.currentTab=='bandwidth'?this.totalTraffic:0.00}} GB</span></span>
+          <span class="ml-5">Total Traffic: <span style="color: #512DA8; font-weight: bold">{{this.currentTab=='bandwidth'?this.totalEdgeTraffic:0.00}} GB</span></span>
         </p>
         <p>
           <span style="color: #47CBFF;">Back- to - Origin &nbsp;&nbsp;</span>
-          <span *ngIf="this.selectedTypeDate=='fiveminutes'" class="peak">Peak Bandwidth : <span style="color: #512DA8; font-weight: bold">0.00 Mbps </span>(00:05:00 16/07/2024) </span>
-          <span class="ml-5">Total Traffic: <span style="color: #512DA8; font-weight: bold">0.00 GB</span></span>
+          <span *ngIf="this.selectedTypeDate=='fiveminutes'" class="peak">Peak Bandwidth : <span style="color: #512DA8; font-weight: bold">{{this.peakB2O?.bandwidth}} Mbps </span>({{this.peakB2O?.timestamp}}) </span>
+          <span class="ml-5">Total Traffic: <span style="color: #512DA8; font-weight: bold">{{this.currentTab=='bandwidth'?this.totalB2OTraffic:0.00}} GB</span></span>
         </p>
         <p>
           <span style="color: #009B4E;">{{this.currentTab=='bandwidth'?'Bandwidth Saving Ratio':'Hit Ratio'}} &nbsp;&nbsp;</span>
-          <span *ngIf="this.selectedTypeDate=='fiveminutes'" class="peak">Peak Value : <span style="color: #512DA8; font-weight: bold">99.99% </span>(00:05:00 16/07/2024) </span>
-          <span class="ml-5">Average: <span style="color: #512DA8; font-weight: bold">{{this.dataBandwidthSaving}}%</span></span>
+          <span *ngIf="this.selectedTypeDate=='fiveminutes'" class="peak">Peak Value : <span style="color: #512DA8; font-weight: bold">{{this.peakSaving?.savingBandwidth}}% </span>({{this.peakSaving?.timestamp}}) </span>
+          <span class="ml-5">Average: <span style="color: #512DA8; font-weight: bold">{{this.averageBandwidthSaving}}%</span></span>
         </p>
       </nz-card>
   

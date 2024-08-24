@@ -244,3 +244,36 @@ export class QueryRequesBandwidthtSavingRatioResponseDataSavingBandwidthDatas {
   timestamp: string;
   savingBandwidth: string;
 }
+
+export class QueryBacktoOriginTrafficAndRequestRequestDto {
+  dateFrom : Date;
+  dateTo : Date;
+  dataInterval : string;
+  domain : string[];
+  groupBy : string[];
+  backsrcOnly : number | null;
+}
+
+export class QueryBacktoOriginTrafficAndRequestResponse {
+  code: string;
+  message: string;
+  result: QueryBacktoOriginTrafficAndRequestResponseResult[];
+}
+
+export class QueryBacktoOriginTrafficAndRequestResponseResult {
+  domain: string;
+  totalFlow: string;
+  totalRequest: string;
+  peakRequest: string;
+  peakRequestTime: string;
+  peakBandwidth: string;
+  peakBandwidthTime: string;
+  flowRequestOriginData: QueryBacktoOriginTrafficAndRequestResponseResultFlowRequestOriginData[];
+}
+
+export class QueryBacktoOriginTrafficAndRequestResponseResultFlowRequestOriginData {
+  timestamp: string;
+  flow: string;
+  bandwidth: string;
+  request: string;
+}
