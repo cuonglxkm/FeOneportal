@@ -1,7 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import type { EChartsOption } from 'echarts';
 import { WafService } from 'src/app/shared/services/waf.service';
-import { QueryBandwidthForMultiDomainResponse2 } from '../../waf.model';
+import { QueryBandwidthForMultiDomainResponse2, QueryRequesBandwidthtSavingRatioResponse, QueryTrafficForMultiDomainResponse } from '../../waf.model';
+import { differenceInCalendarDays, setHours } from 'date-fns';
+import { NzNotificationService } from 'ng-zorro-antd/notification';
+import { el } from 'date-fns/locale';
 @Component({
   selector: 'app-waf-usage-statistics',
   styleUrls: ['./waf-usage-statistics.component.less'],
@@ -9,25 +12,38 @@ import { QueryBandwidthForMultiDomainResponse2 } from '../../waf.model';
 })
 
 export class WafUsageStatistics implements OnInit {
+  today = new Date();
   options: EChartsOption;
-
-  private oneDay = 24 * 3600 * 1000;
-  private now: Date;
-  private value: number;
-  private timer: any;
   selectedDate:Date[];
   selectedTypeDate: string = 'fiveminutes';
-  selectOptions = [];
-  selectedValue: any;
+  selectDomainOptions = [];
+  selectedDomain: any;
+  selectedTypeRequest:string="EDGE";
   isSpinning = false;
   dailyTableLoading = false;
   top10TableLoading = false;
   fromDate = new Date();
   toDate = new Date();
-  domains: string[] = ["cuong.tokyo"];
+  domains: string[];
   dataBandwidth: QueryBandwidthForMultiDomainResponse2;
+  dataTraffic: QueryTrafficForMultiDomainResponse;
+  totalTraffic: number;
+  dataBandwidthSaving: QueryRequesBandwidthtSavingRatioResponse;
+  averageBandwidthSaving: number;
+  edgePeakTime: [];
+  isValid = true;
+  isDateValid = true;
+  currentTab = 'bandwidth'
+  peakEdge: any;
+  peakSaving: any;
+  
+  bandWidthData: number[];
+  timeStampData: string[];
+  bandWidthSavingData: number[];
+  timeStampSavingData: string[];
   constructor(
-    private wafService: WafService) {
+    private wafService: WafService,
+    private notification: NzNotificationService) {
     
   }
   ngOnInit() {
@@ -37,20 +53,24 @@ export class WafUsageStatistics implements OnInit {
     this.fromDate.setHours(0, 0, 0, 0);
     this.toDate.setHours(24, 0, 0, 0);
     this.getData();
-    this.getDataBandwidth();
   }
 
   getData(){
-    this.wafService.getWafDomains(1000,1,null,null).subscribe({
+    this.wafService.getDomainOfUser().subscribe({
       next: (res) => {
-        this.selectOptions = res.records.map(x=>({label:x.domain,value:x.id}));
-        this.selectedValue = res.records.map(x=>x.id);
+        this.selectDomainOptions = res.map(x=>({label:x.domain,value:x.id}));
+        this.selectedDomain = res.map(x=>x.id);
+        this.domains = res.map(x=>x.domain);
+        this.isValid=this.selectedDomain.length>0;
+        this.getDataBandwidth();
+        this.getDataTraffic();
+        this.getBandwidthSaving();
       },
       error: (error) => {
         console.log(error);
       }
     })
-  }
+  };
   draw(){
     this.options = {
       legend: {
@@ -177,9 +197,15 @@ export class WafUsageStatistics implements OnInit {
       ]
     };
   }
-
-  bandWidthData: number[];
-  timeStampData: string[];
+  caculateEdge(){
+    if(this.selectedTypeDate=='fiveminutes'){
+      var max= Math.max(...this.bandWidthData);
+      this.peakEdge ={
+        bandwidth: max,
+        timestamp: this.timeStampData[this.bandWidthData.indexOf(max)]
+      };
+    }
+  }
   getDataBandwidth(){
     this.isSpinning=true;
     this.wafService.bandwidthForMultiDomain(this.fromDate,this.toDate,this.selectedTypeDate,this.domains).subscribe({
@@ -188,8 +214,52 @@ export class WafUsageStatistics implements OnInit {
         this.dataBandwidth = res;
         this.bandWidthData = this.dataBandwidth.bandwidthReport.map(x=>x.bandwidth);
         this.timeStampData = this.dataBandwidth.bandwidthReport.map(x=>x.timestamp);
+        
         this.fillData();
         this.draw();
+        this.caculateEdge()
+      },
+      error: (error) => {
+        this.isSpinning=false;
+        console.log(error);
+      }
+    })
+  }
+
+  getDataTraffic(){
+    this.wafService.trafficForMultiDomain(this.fromDate,this.toDate,this.selectedTypeDate,this.domains).subscribe({
+      next: (res) => {
+        this.dataTraffic = res;
+        this.totalTraffic = Math.ceil(this.dataTraffic.flowSummary / 1024 * 100) / 100; 
+      },
+      error: (error) => {
+        this.isSpinning=false;
+        console.log(error);
+      }
+    })
+  }
+
+  caculateBandwidthSaving(){
+    if(this.selectedTypeDate=='fiveminutes'){
+      var max= Math.max(...this.bandWidthData);
+      this.peakSaving ={
+        bandwidth: max,
+        timestamp: this.timeStampData[this.bandWidthData.indexOf(max)]
+      };
+    }
+  }
+  getBandwidthSaving(){
+    if(this.selectedTypeDate =='fiveminutes'){
+      var dataInterval = '5m';
+    }else{
+      var dataInterval = '1h';
+    }
+    this.wafService.getBandWidthSaving({dateFrom:this.fromDate,dateTo:this.toDate,dataInterval:dataInterval,domain:this.domains}).subscribe({
+      next: (res) => {
+        this.dataBandwidthSaving = res;
+        this.averageBandwidthSaving = this.dataBandwidthSaving.data[0].totalAvg*100;
+        this.bandWidthSavingData = this.dataBandwidthSaving.data[0].savingBandwidthDatas.map(x=>parseFloat(x.savingBandwidth));
+        this.timeStampSavingData = this.dataBandwidthSaving.data[0].savingBandwidthDatas.map(x=>x.timestamp);
       },
       error: (error) => {
         this.isSpinning=false;
@@ -218,9 +288,12 @@ export class WafUsageStatistics implements OnInit {
       }
     }
   }
-  onChange(result: Date[]): void {
-    var from = result[0];
-    var to = result[1];
+  onDateChange(result: Date[]): void {
+    debugger;
+    this.isValid = this.selectedDomain.length>0;
+    this.isDateValid = differenceInCalendarDays(result[1], result[0]) <= 31;
+    var from = new Date(result[0]);
+    var to = new Date(result[1]);
     from.setHours(0,0,0,0); 
     to.setHours(24,0,0,0);
     this.fromDate = from;
@@ -230,7 +303,33 @@ export class WafUsageStatistics implements OnInit {
     }else{
       this.selectedTypeDate = 'hourly';
     }
+    if(!this.isDateValid){
+      this.notification.warning('',"Khoảng thời gian không lớn hơn 31 ngày");
+      return;
+    }
+    if(!this.isValid){
+      return;
+    }
     this.getDataBandwidth();
+    this.getDataTraffic();
+  }
+
+  onChangeDomain(){
+    this.isValid = this.selectedDomain.length>0;
+    this.domains = this.selectDomainOptions.filter(x=>this.selectedDomain.includes(x.value)).map(x=>x.label);
+  }
+
+  queryDomain(){
+    if(!this.isDateValid){
+      this.notification.warning('',"Khoảng thời gian không lớn hơn 31 ngày");
+      return;
+    }
+    if(!this.isValid){
+      this.notification.warning('',"Vui lòng chọn domains");
+      return;
+    }
+    this.getDataBandwidth();
+    this.getDataTraffic();
   }
 
   isSameDay(date1: Date, date2: Date): boolean {
@@ -265,5 +364,12 @@ export class WafUsageStatistics implements OnInit {
     }
 
     return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
-}
+  }
+  disabledDate = (current: Date): boolean =>
+    // Can not select days before today and today
+    differenceInCalendarDays(current, this.today) > 0;
+
+  changeTab(tabName){
+    this.currentTab = tabName;
+  }
 }
