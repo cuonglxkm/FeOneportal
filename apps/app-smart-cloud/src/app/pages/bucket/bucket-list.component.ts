@@ -48,7 +48,7 @@ export class BucketListComponent implements OnInit {
   searchDelay = new Subject<boolean>();
   user: any;
   usage: any;
-  totalUsage: number;
+  userinfo: any
   url = window.location.pathname;
   isLoadingDeleteBucket: boolean = false;
   constructor(
@@ -125,6 +125,7 @@ export class BucketListComponent implements OnInit {
       .subscribe({
         next: (data) => {
           if (data) {
+            this.userinfo = data
             this.hasObjectStorage();
             this.getUsageOfUser();
             this.search();
@@ -170,8 +171,6 @@ export class BucketListComponent implements OnInit {
       .subscribe({
         next: (data) => {
           this.usage = data;
-          this.totalUsage =
-            (parseFloat(this.usage.usage) / parseInt(this.usage.total)) * 100;
           
         },
         // error: (e) => {

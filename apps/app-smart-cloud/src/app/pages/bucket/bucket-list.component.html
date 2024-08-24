@@ -75,16 +75,25 @@
     </div>
   </nz-row>
   <div
+  style="margin-bottom: 10px"
+  class="text-label"
+>
+  UserId:
+  <span class="text-value"
+    >{{userinfo.user_id}}</span
+  >
+</div>
+  <div
     style="margin-bottom: 10px"
     class="text-label"
   >
     {{ 'app.capacity1' | i18n }}:
     <span class="text-value"
-      >{{ usage?.usage }} GB / {{ usage?.total }} GB ({{
-        totalUsage | number : '1.0-2'
-      }}%)</span
+      >{{ usage?.usage }}/{{ usage?.total }} GB ({{
+        usage?.percentUsage
+      }})</span
     >
-    <i>Dung lượng Object Storage sẽ được cập nhật sau khoảng 2 phút</i>
+    <i> Dung lượng Object Storage sẽ được cập nhật sau khoảng 2 phút</i>
   </div>
   <div style="margin-bottom: 10px" class="text-label">
     {{ 'app.service.creation-date' | i18n }}:
