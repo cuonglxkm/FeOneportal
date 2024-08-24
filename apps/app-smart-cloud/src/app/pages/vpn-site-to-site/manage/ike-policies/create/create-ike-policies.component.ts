@@ -73,9 +73,11 @@ export class CreateIkePoliciesComponent implements OnInit{
   form: FormGroup<{
     name: FormControl<string>
     description: FormControl<string>
+    lifetimeValue: FormControl<number>
   }> = this.fb.group({
     name: ['', [Validators.required, Validators.pattern(NAME_SPECIAL_REGEX)]],
     description: [''],
+    lifetimeValue: [3600, Validators.required],
   });
 
   @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
@@ -86,6 +88,37 @@ export class CreateIkePoliciesComponent implements OnInit{
     this.project = regionAndProject.projectId
     console.log(this.region);
   }
+
+  
+onKeyDown(event: KeyboardEvent) {
+  const inputElement = event.target as HTMLInputElement;
+  const key = event.key;
+  const currentValue = inputElement.value;
+
+  // Cho phép các phím đặc biệt
+  const allowedKeys = [
+    'Backspace',
+    'Delete',
+    'ArrowLeft',
+    'ArrowRight',
+    'Tab',
+  ];
+
+  // Kiểm tra nếu phím không phải là số, không phải các phím đặc biệt, hoặc là số 0 ở đầu
+  if (
+    (!allowedKeys.includes(key) && isNaN(Number(key))) ||
+    (key === '0' && currentValue.length === 0)
+  ) {
+    event.preventDefault();
+    // Hủy sự kiện để ngăn người dùng nhập ký tự đó
+  }
+
+  const target = event.target as HTMLInputElement;
+  const value = parseInt(target.value + event.key);
+  if (value < 1 && event.key !== 'Backspace' && event.key !== 'Delete') {
+    event.preventDefault();
+  }
+}
 
 
   constructor(

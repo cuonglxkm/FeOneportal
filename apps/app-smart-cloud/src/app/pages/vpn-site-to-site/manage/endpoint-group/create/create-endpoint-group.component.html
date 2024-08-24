@@ -46,11 +46,10 @@
         <nz-form-item>
           <nz-form-control [nzErrorTip]="nameErrorTpl">
             <nz-form-label nzFor="name">
-              <div>
-                <span>{{'form.account.name' |i18n}}</span>
+                <span>Name&nbsp;</span>
                 (<span style="color: rgba(252, 16, 16, 1)">*</span>)
                 <img
-                  nz-popover
+                  nz-popover [nzPopoverOverlayStyle]="{ maxWidth: '400px' }"
                   [nzPopoverContent]="
                     'app.endpoint-create.name.tooltip' |i18n
                   "
@@ -59,12 +58,12 @@
                   src="assets/imgs/pajamas_question.svg"
                   alt=""
                 />
-              </div>
             </nz-form-label>
             <input
               class="input-custom"
               [maxlength]="50"
               appTrim
+              appAutoFocus
               nz-input
               type="text"
               required
@@ -85,11 +84,10 @@
         <nz-form-item>
           <nz-form-control>
             <nz-form-label nzFor="name">
-              <div>
-                <span>Type</span>
+                <span>Type&nbsp;</span>
                 (<span style="color: rgba(252, 16, 16, 1)">*</span>)
                 <img
-                  nz-popover
+                  nz-popover [nzPopoverOverlayStyle]="{ maxWidth: '400px' }"
                   [nzPopoverContent]="
                     'app.endpoint-create.type.tooltip' |i18n
                   "
@@ -98,7 +96,6 @@
                   src="assets/imgs/pajamas_question.svg"
                   alt=""
                 />
-              </div>
             </nz-form-label>
             <nz-select
               class="input-select-custom"
@@ -119,10 +116,9 @@
             [nzErrorTip]="selectedType == 'cidr' && cidrErrorTpl"
           >
             <nz-form-label *ngIf="selectedType == 'subnet'">
-              <div>
                 <span nzFor="name">Local Systems Subnets </span>
                 <img
-                  nz-popover
+                  nz-popover [nzPopoverOverlayStyle]="{ maxWidth: '400px' }"
                   [nzPopoverContent]="
                   'app.endpoint-create.local.tooltip' |i18n
                       "
@@ -131,7 +127,6 @@
                   src="assets/imgs/pajamas_question.svg"
                   alt=""
                 />
-              </div>
             </nz-form-label>
             <nz-checkbox-wrapper
               *ngIf="selectedType == 'subnet' && listSubnets && listSubnets.length !== 0"
@@ -153,17 +148,16 @@
               <a
                 style="display: block"
                 [routerLink]="[
-                  '/app-smart-cloud/network/router/detail/' + routerId
+                  '/app-smart-cloud/network/router/detail/' + routerName + '/' + routerId
                 ]"
                 >{{'app.endpoint-create.add.router' |i18n}}</a
               >
             </ng-container>
 
             <nz-form-label *ngIf="selectedType == 'cidr'">
-              <div *ngIf="selectedType == 'cidr'">
                 <span nzFor="name">External Systems CIDRs </span>
                 <img
-                  nz-popover
+                  nz-popover [nzPopoverOverlayStyle]="{ maxWidth: '400px' }"
                   [nzPopoverContent]="
                   'app.endpoint-create.cidr.tooltip' |i18n
                   "
@@ -172,7 +166,6 @@
                   src="assets/imgs/pajamas_question.svg"
                   alt=""
                 />
-              </div>
             </nz-form-label>
             <input
               formControlName="endpointsCidr"
@@ -201,14 +194,14 @@
       <div style="overflow: auto; height: 235px; margin-bottom: 16px">
         <div style="margin-bottom: 12px">
           <h3 class="custom-subtitle">Name</h3>
-          <span class="text-break">{{ form.value.name }}</span>
+          <span class="text-break text-label">{{ form.value.name }}</span>
         </div>
         <div style="margin-bottom: 20px">
           <h3 class="custom-subtitle">Type</h3>
-          <span *ngIf="selectedType == 'subnet'"
+          <span class="text-label" *ngIf="selectedType == 'subnet'"
             >Subnet(for local systems)</span
           >
-          <span *ngIf="selectedType == 'cidr'">Cidr(for external systems)</span>
+          <span class="text-label" *ngIf="selectedType == 'cidr'">Cidr(for external systems)</span>
         </div>
 
         <div style="margin-bottom: 20px">
@@ -218,11 +211,11 @@
           <h3 *ngIf="selectedType == 'cidr'" class="custom-subtitle">
             External Systems CIDRs
           </h3>
-          <span *ngIf="selectedType == 'cidr'">{{
+          <span class="text-label" *ngIf="selectedType == 'cidr'">{{
             form.value.endpointsCidr
           }}</span>
           <div *ngIf="selectedType == 'subnet'">
-            <label>{{ listCidrInfo }}</label>
+            <label class="text-label">{{ listCidrInfo }}</label>
           </div>
         </div>
       </div>

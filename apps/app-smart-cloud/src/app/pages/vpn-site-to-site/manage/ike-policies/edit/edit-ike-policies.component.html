@@ -49,26 +49,22 @@
           <div nz-col [nzSpan]="12" class="gutter-row">
             <nz-form-item>
               <nz-form-control [nzErrorTip]="nameErrorTpl">
-                <nz-form-label nzFor="name">
-                  <div style="margin-top: 15px">
-                    <span>{{ 'form.account.name' | i18n }}</span>
-                    (<span style="color: rgba(252, 16, 16, 1)">*</span>)
-                    <img
-                      nz-popover
-                      [nzPopoverContent]="
-                        'app.ike.policy-create.name.tooltip' | i18n
-                      "
-                      nzPopoverPlacement="bottom"
-                      style="margin-left: 5px"
-                      src="assets/imgs/pajamas_question.svg"
-                      alt=""
-                    />
-                  </div>
-                </nz-form-label>
+                <nz-form-label nzFor="name">Name (<span style="color: rgba(252, 16, 16, 1)">*</span>)
+                  <img
+                    nz-popover [nzPopoverOverlayStyle]="{ maxWidth: '400px' }"
+                    [nzPopoverContent]="
+                      'app.ike.policy-create.name.tooltip' | i18n
+                    "
+                    nzPopoverPlacement="bottom"
+                    style="margin-left: 5px"
+                    src="assets/imgs/pajamas_question.svg"
+                    alt=""
+                  /></nz-form-label>
                 <input
                   nz-input
                   type="text"
                   required
+                  appAutoFocus
                   appTrim
                   maxlength="50"
                   placeholder="Nhập tên"
@@ -77,7 +73,7 @@
                 />
                 <ng-template #nameErrorTpl let-control>
                   <ng-container *ngIf="control.hasError('required')">{{
-                    'app.ike.policy-create.name.alert1' | i18n
+                    'app.vpns2s.name.error.tooltip' | i18n
                   }}</ng-container>
                   <ng-container *ngIf="control.hasError('pattern')">{{
                     'app.ike.policy-create.name.alert2' | i18n
@@ -89,22 +85,17 @@
           <div nz-col [nzSpan]="12" class="gutter-row">
             <nz-form-item>
               <nz-form-control>
-                <nz-form-label nzFor="name">
-                  <div style="margin-top: 15px">
-                    <span>Authorization Algorithm</span>
-                    (<span style="color: rgba(252, 16, 16, 1)">*</span>)
-                    <img
-                      nz-popover
-                      [nzPopoverContent]="
-                        'app.ike.policy-create.Authorization.tooltip' | i18n
-                      "
-                      nzPopoverPlacement="bottom"
-                      style="margin-left: 5px"
-                      src="assets/imgs/pajamas_question.svg"
-                      alt=""
-                    />
-                  </div>
-                </nz-form-label>
+                <nz-form-label>Authorization Algorithm (<span style="color: rgba(252, 16, 16, 1)">*</span>)
+                  <img
+                    nz-popover [nzPopoverOverlayStyle]="{ maxWidth: '400px' }"
+                    [nzPopoverContent]="
+                      'app.ike.policy-create.Authorization.tooltip' | i18n
+                    "
+                    nzPopoverPlacement="bottom"
+                    style="margin-left: 5px"
+                    src="assets/imgs/pajamas_question.svg"
+                    alt=""
+                  /></nz-form-label>
                 <nz-select
                   [(ngModel)]="selectedAuthorizationAlgorithm"
                   [ngModelOptions]="{ standalone: true }"
@@ -122,55 +113,17 @@
           <div nz-col [nzSpan]="12" class="gutter-row">
             <nz-form-item>
               <nz-form-control>
-                <nz-form-label nzFor="name">
-                  <div>
-                    <span>IKE version</span>
-                    (<span style="color: rgba(252, 16, 16, 1)">*</span>)
-                    <img
-                      nz-popover
-                      [nzPopoverContent]="
-                        'app.ike.policy-create.version.tooltip' | i18n
-                      "
-                      nzPopoverPlacement="bottom"
-                      style="margin-left: 5px"
-                      src="assets/imgs/pajamas_question.svg"
-                      alt=""
-                    />
-                  </div>
-                </nz-form-label>
-                <nz-select
-                  [(ngModel)]="selectedIKEVersion"
-                  [ngModelOptions]="{ standalone: true }"
-                  class="input-select-custom"
-                >
-                  <nz-option
-                    *ngFor="let data of ikeVersion"
-                    [nzLabel]="data.label"
-                    [nzValue]="data.value"
-                  ></nz-option>
-                </nz-select>
-              </nz-form-control>
-            </nz-form-item>
-          </div>
-          <div nz-col [nzSpan]="12" class="gutter-row">
-            <nz-form-item>
-              <nz-form-control>
-                <nz-form-label nzFor="name">
-                  <div>
-                    <span>Encryption Algorithm</span>
-                    (<span style="color: rgba(252, 16, 16, 1)">*</span>)
-                    <img
-                      nz-popover
-                      [nzPopoverContent]="
-                        'app.ike.policy-create.Encryption.tooltip' | i18n
-                      "
-                      nzPopoverPlacement="bottom"
-                      style="margin-left: 5px"
-                      src="assets/imgs/pajamas_question.svg"
-                      alt=""
-                    />
-                  </div>
-                </nz-form-label>
+                <nz-form-label nzFor="name">Encryption Algorithm (<span style="color: rgba(252, 16, 16, 1)">*</span>)
+                  <img
+                    nz-popover [nzPopoverOverlayStyle]="{ maxWidth: '400px' }"
+                    [nzPopoverContent]="
+                      'app.ike.policy-create.Encryption.tooltip' | i18n
+                    "
+                    nzPopoverPlacement="bottom"
+                    style="margin-left: 5px"
+                    src="assets/imgs/pajamas_question.svg"
+                    alt=""
+                  /></nz-form-label>
                 <nz-select
                   [(ngModel)]="selectedEncryptionAlgorithm"
                   [ngModelOptions]="{ standalone: true }"
@@ -188,22 +141,45 @@
           <div nz-col [nzSpan]="12" class="gutter-row">
             <nz-form-item>
               <nz-form-control>
-                <nz-form-label nzFor="name">
-                  <div>
-                    <span>Lifetime Units</span>
-                    (<span style="color: rgba(252, 16, 16, 1)">*</span>)
-                    <img
-                      nz-popover
-                      [nzPopoverContent]="
-                        'app.ike.policy-create.lifetime.tooltip' | i18n
-                      "
-                      nzPopoverPlacement="bottom"
-                      style="margin-left: 5px"
-                      src="assets/imgs/pajamas_question.svg"
-                      alt=""
-                    />
-                  </div>
-                </nz-form-label>
+                <nz-form-label nzFor="name">IKE version (<span style="color: rgba(252, 16, 16, 1)">*</span>)
+                  <img
+                    nz-popover [nzPopoverOverlayStyle]="{ maxWidth: '400px' }"
+                    [nzPopoverContent]="
+                      'app.ike.policy-create.version.tooltip' | i18n
+                    "
+                    nzPopoverPlacement="bottom"
+                    style="margin-left: 5px"
+                    src="assets/imgs/pajamas_question.svg"
+                    alt=""
+                  /></nz-form-label>
+                <nz-select
+                  [(ngModel)]="selectedIKEVersion"
+                  [ngModelOptions]="{ standalone: true }"
+                  class="input-select-custom"
+                >
+                  <nz-option
+                    *ngFor="let data of ikeVersion"
+                    [nzLabel]="data.label"
+                    [nzValue]="data.value"
+                  ></nz-option>
+                </nz-select>
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+          <div nz-col [nzSpan]="12" class="gutter-row">
+            <nz-form-item>
+              <nz-form-control>
+                <nz-form-label nzFor="name">Lifetime Units (<span style="color: rgba(252, 16, 16, 1)">*</span>)
+                  <img
+                    nz-popover [nzPopoverOverlayStyle]="{ maxWidth: '400px' }"
+                    [nzPopoverContent]="
+                      'app.ike.policy-create.lifetime.tooltip' | i18n
+                    "
+                    nzPopoverPlacement="bottom"
+                    style="margin-left: 5px"
+                    src="assets/imgs/pajamas_question.svg"
+                    alt=""
+                  /></nz-form-label>
                 <nz-select
                   [(ngModel)]="selectedLifetimeUnits"
                   [ngModelOptions]="{ standalone: true }"
@@ -221,29 +197,28 @@
           </div>
           <div nz-col [nzSpan]="12" class="gutter-row">
             <nz-form-item>
-              <nz-form-control>
-                <nz-form-label nzFor="name">
-                  <div>
-                    <span>Lifetime Value</span>
-                    (<span style="color: rgba(252, 16, 16, 1)">*</span>)
-                    <img
-                      nz-popover
-                      [nzPopoverContent]="
-                        'app.ike.policy-create.lifetime.value.tooltip' | i18n
-                      "
-                      nzPopoverPlacement="bottom"
-                      style="margin-left: 5px"
-                      src="assets/imgs/pajamas_question.svg"
-                      alt=""
-                    />
-                  </div>
-                </nz-form-label>
-                <input
-                  nz-input
-                  type="number"
-                  formControlName="lifeTimeValue"
-                  required
+              <nz-form-control [nzErrorTip]="'app.vpns2s.name.error.tooltip' | i18n">
+                <nz-form-label nzFor="name">Lifetime Value (<span style="color: rgba(252, 16, 16, 1)">*</span>)
+                  <img
+                    nz-popover [nzPopoverOverlayStyle]="{ maxWidth: '400px' }"
+                    [nzPopoverContent]="
+                      'app.ike.policy-create.lifetime.value.tooltip' | i18n
+                    "
+                    nzPopoverPlacement="bottom"
+                    style="margin-left: 5px"
+                    src="assets/imgs/pajamas_question.svg"
+                    alt=""
+                  /></nz-form-label>
+                  <nz-input-number
+                  style="width: 100%; margin-left: 0px"
                   class="input-custom"
+                  formControlName="lifeTimeValue"
+                  [nzMin]="60"
+                  [nzMax]="1000000000"
+                  [nzStep]="1"
+                  [(ngModel)]="lifeTimeValue"
+                  [ngModelOptions]="{ standalone: true }"
+                  (keydown)="onKeyDown($event)"
                 />
               </nz-form-control>
             </nz-form-item>
@@ -251,22 +226,19 @@
           <div nz-col [nzSpan]="12" class="gutter-row">
             <nz-form-item>
               <nz-form-control>
-                <nz-form-label nzFor="name">
-                  <div>
-                    <span>Perfect Forward Secrecy</span>
-                    (<span style="color: rgba(252, 16, 16, 1)">*</span>)
-                    <img
-                      nz-popover
-                      [nzPopoverContent]="
-                        'app.ike.policy-create.pfs.tooltip' | i18n
-                      "
-                      nzPopoverPlacement="bottom"
-                      style="margin-left: 5px"
-                      src="assets/imgs/pajamas_question.svg"
-                      alt=""
-                    />
-                  </div>
-                </nz-form-label>
+                <nz-form-label nzFor="name"
+                >Perfect Forward Secrecy (<span style="color: rgba(252, 16, 16, 1)">*</span>)
+                <img
+                  nz-popover [nzPopoverOverlayStyle]="{ maxWidth: '400px' }"
+                  [nzPopoverContent]="
+                    'app.ike.policy-create.pfs.tooltip' | i18n
+                  "
+                  nzPopoverPlacement="bottom"
+                  style="margin-left: 5px"
+                  src="assets/imgs/pajamas_question.svg"
+                  alt=""
+                /></nz-form-label
+              >
                 <nz-select
                   [(ngModel)]="selectedPerfectForwardSecrecy"
                   [ngModelOptions]="{ standalone: true }"
@@ -285,20 +257,17 @@
             <nz-form-item>
               <nz-form-control>
                 <nz-form-label nzFor="name">
-                  <div>
-                    <span> IKE Phase1 Negotiation Mode </span>
-                    (<span style="color: rgba(252, 16, 16, 1)">*</span>)
-                    <img
-                      nz-popover
-                      [nzPopoverContent]="
-                        'app.ike.policy-create.Negotiation.tooltip' | i18n
-                      "
-                      nzPopoverPlacement="bottom"
-                      style="margin-left: 5px"
-                      src="assets/imgs/pajamas_question.svg"
-                      alt=""
-                    />
-                  </div>
+                  IKE Phase1 Negotiation Mode (<span style="color: rgba(252, 16, 16, 1)">*</span>)
+                  <img
+                    nz-popover [nzPopoverOverlayStyle]="{ maxWidth: '400px' }"
+                    [nzPopoverContent]="
+                      'app.ike.policy-create.Negotiation.tooltip' | i18n
+                    "
+                    nzPopoverPlacement="bottom"
+                    style="margin-left: 5px"
+                    src="assets/imgs/pajamas_question.svg"
+                    alt=""
+                  />
                 </nz-form-label>
                 <nz-select
                   [(ngModel)]="selectedPhaseMode"
@@ -323,36 +292,36 @@
       <h2 class="custom-title">{{ 'app.config.parameters' | i18n }}</h2>
       <div style="overflow: auto; height: 358px; margin-bottom: 16px">
         <div style="margin-bottom: 12px">
-          <h3 class="custom-subtitle">{{ 'form.account.name' | i18n }}</h3>
-          <span class="text-break">{{ form.value.name }}</span>
+          <h3 class="custom-subtitle">Name</h3>
+          <span class="text-break text-label">{{ form.value.name }}</span>
         </div>
         <div style="margin-bottom: 20px">
           <h3 class="custom-subtitle">Authorization Algorithm</h3>
-          <span>{{ selectedAuthorizationAlgorithm }}</span>
+          <span class="text-label">{{ selectedAuthorizationAlgorithm }}</span>
         </div>
         <div style="margin-bottom: 20px">
           <h3 class="custom-subtitle">IKE version</h3>
-          <span>{{ selectedIKEVersion }}</span>
+          <span class="text-label">{{ selectedIKEVersion }}</span>
         </div>
         <div style="margin-bottom: 20px">
           <h3 class="custom-subtitle">Encryption Algorithm</h3>
-          <span>{{ selectedEncryptionAlgorithm }}</span>
+          <span class="text-label">{{ selectedEncryptionAlgorithm }}</span>
         </div>
         <div style="margin-bottom: 20px">
           <h3 class="custom-subtitle">Lifetime Units</h3>
-          <span>{{ selectedLifetimeUnits }}</span>
+          <span class="text-label">{{ selectedLifetimeUnits }}</span>
         </div>
         <div style="margin-bottom: 20px">
           <h3 class="custom-subtitle">Lifetime Value</h3>
-          <span>{{ form.value.lifeTimeValue }}</span>
+          <span class="text-label">{{ form.value.lifeTimeValue }}</span>
         </div>
         <div style="margin-bottom: 20px">
           <h3 class="custom-subtitle">Perfect Forward Secrecy</h3>
-          <span>{{ selectedPerfectForwardSecrecy }}</span>
+          <span class="text-label">{{ selectedPerfectForwardSecrecy }}</span>
         </div>
         <div style="margin-bottom: 20px">
           <h3 class="custom-subtitle">IKE Phase1 Negotiation Mode</h3>
-          <span>{{ selectedPhaseMode }}</span>
+          <span class="text-label">{{ selectedPhaseMode }}</span>
         </div>
       </div>
       <button

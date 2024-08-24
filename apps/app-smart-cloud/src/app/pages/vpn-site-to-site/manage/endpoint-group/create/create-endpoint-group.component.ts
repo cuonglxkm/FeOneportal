@@ -41,6 +41,7 @@ export class CreateEndpointGroupComponent implements OnInit {
   selectedType = 'cidr';
   isLoading: boolean = false;
   routerId: string
+  routerName: string
   @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
   formCreateEndpointGroup: FormCreateEndpointGroup =
     new FormCreateEndpointGroup();
@@ -88,6 +89,7 @@ export class CreateEndpointGroupComponent implements OnInit {
       .subscribe(data => {
         if(data){   
           this.routerId = data.body.routerId      
+          this.routerName = data.body.routerName      
         }
      
     }, error => {

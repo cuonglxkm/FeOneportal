@@ -48,11 +48,10 @@
             <nz-form-item>
               <nz-form-control [nzErrorTip]="nameErrorTpl">
                 <nz-form-label nzFor="name">
-                  <div style="margin-top: 15px">
-                    <span>{{'form.account.name' |i18n}}</span>
+                    <span>Name&nbsp;</span>
                     (<span style="color: rgba(252, 16, 16, 1)">*</span>)
                     <img
-                      nz-popover
+                      nz-popover [nzPopoverOverlayStyle]="{ maxWidth: '400px' }"
                       [nzPopoverContent]="
                          'app.vpn.service-create.name.tooltip' |i18n
                       "
@@ -61,13 +60,13 @@
                       src="assets/imgs/pajamas_question.svg"
                       alt=""
                     />
-                  </div>
                 </nz-form-label>
                 <input
                   nz-input
                   type="text"
                   required
                   appTrim
+                  appAutoFocus
                   [maxlength]="50"
                   placeholder="Nhập tên"
                   formControlName="name"
@@ -88,11 +87,10 @@
             <nz-form-item>
               <nz-form-control>
                 <nz-form-label nzFor="name">
-                  <div style="margin-top: 15px">
-                    <span>Router</span>
+                    <span>Router&nbsp;</span>
                     (<span style="color: rgba(252, 16, 16, 1)">*</span>)
                     <img
-                      nz-popover
+                      nz-popover [nzPopoverOverlayStyle]="{ maxWidth: '400px' }"
                       [nzPopoverContent]="
                         'app.vpn.service-create.router.tooltip' |i18n
                       "
@@ -101,7 +99,6 @@
                       src="assets/imgs/pajamas_question.svg"
                       alt=""
                     />
-                  </div>
                 </nz-form-label>
                 <input
                   nz-input
@@ -133,12 +130,12 @@
       <h2 class="custom-title">{{'app.config.parameters' |i18n}}</h2>
       <div style="overflow: auto; margin-bottom: 16px">
         <div style="margin-bottom: 12px">
-          <h3 class="custom-subtitle">{{'form.account.name' |i18n}}</h3>
-          <span class="text-break">{{ form.value.name }}</span>
+          <h3 class="custom-subtitle">Name</h3>
+          <span class="text-break text-label">{{ form.value.name }}</span>
         </div>
         <div style="margin-bottom: 12px">
           <h3 class="custom-subtitle">Router</h3>
-          <span>{{ routerName }}</span>
+          <span class="text-label">{{ routerName }}</span>
         </div>
       </div>
       <button

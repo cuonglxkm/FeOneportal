@@ -44,10 +44,11 @@ export class DeleteEndpointGroupComponent {
     @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService
   ) {}
 
-  nameEndpointGroupValidator(
-    control: FormControl
-  ): { [key: string]: any } | null {
+  nameEndpointGroupValidator(control: FormControl): { [key: string]: any } | null {
     const name = control.value;
+    if (!name) {
+      return null;
+    }
     if (name !== this.name) {
       return { nameMismatch: true };
     }

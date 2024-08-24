@@ -44,6 +44,9 @@ export class DeleteIkePoliciesComponent {
 
   nameIkePolicyValidator(control: FormControl): { [key: string]: any } | null {
     const name = control.value;
+    if (!name) {
+      return null;
+    }
     if (name !== this.nameIkePolicy) {
       return { nameMismatch: true };
     }

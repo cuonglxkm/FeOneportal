@@ -45,12 +45,14 @@
   [nzPageIndex]="response?.currentPage"
   (nzPageIndexChange)="onPageIndexChange($event)"
   [nzTotal]="response?.totalCount"
+  nzShowSizeChanger
+  [nzPageSizeOptions]="[pageSizeFixed, 10, 20, 30, 40, 50]"
   [nzFrontPagination]="false"
   [nzLoading]="isLoading"
 >
   <thead>
     <tr>
-      <th>{{'form.account.name' |i18n}}</th>
+      <th>Name</th>
       <th>IP VPN Gateway</th>
       <th>Router</th>
       <th>{{'app.payment.status' |i18n}}</th>
