@@ -52,6 +52,7 @@ export class EditIkePoliciesComponent implements OnInit {
 
   perfectForwardSecrecy = [
     { label: 'group5', value: 'group5' },
+    { label: 'group2', value: 'group2' },
     { label: 'group14 ', value: 'group14' },
   ];
 
@@ -69,14 +70,14 @@ export class EditIkePoliciesComponent implements OnInit {
   selectedLifetimeUnits: string;
   selectedLifetimeValue: number;
   isLoading: boolean = false;
-
+  lifeTimeValue: number = 3600;
   formEditIkePolicy: IKEPolicyModel = new IKEPolicyModel();
   form: FormGroup<{
     name: FormControl<string>;
     lifeTimeValue: FormControl<number>;
   }> = this.fb.group({
     name: ['', [Validators.required, Validators.pattern(NAME_SPECIAL_REGEX)]],
-    lifeTimeValue: [3600, [Validators.required, Validators.min(60)]]
+    lifeTimeValue: [3600, [Validators.required]]
   });
 
   ngOnInit(): void {
@@ -147,6 +148,36 @@ export class EditIkePoliciesComponent implements OnInit {
 
   userChangeProject(){
     this.router.navigate(['/app-smart-cloud/vpn-site-to-site']);
+  }
+
+  onKeyDown(event: KeyboardEvent) {
+    const inputElement = event.target as HTMLInputElement;
+    const key = event.key;
+    const currentValue = inputElement.value;
+  
+    // Cho phép các phím đặc biệt
+    const allowedKeys = [
+      'Backspace',
+      'Delete',
+      'ArrowLeft',
+      'ArrowRight',
+      'Tab',
+    ];
+  
+    // Kiểm tra nếu phím không phải là số, không phải các phím đặc biệt, hoặc là số 0 ở đầu
+    if (
+      (!allowedKeys.includes(key) && isNaN(Number(key))) ||
+      (key === '0' && currentValue.length === 0)
+    ) {
+      event.preventDefault();
+      // Hủy sự kiện để ngăn người dùng nhập ký tự đó
+    }
+  
+    const target = event.target as HTMLInputElement;
+    const value = parseInt(target.value + event.key);
+    if (value < 1 && event.key !== 'Backspace' && event.key !== 'Delete') {
+      event.preventDefault();
+    }
   }
 
   getData(): any {

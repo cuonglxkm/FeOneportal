@@ -109,6 +109,7 @@ export class VpnS2sCreateComponent implements OnInit {
               'Price': item['price']['fixedPrice']['amount'],
             });
           });
+          this.offerDatas.sort((a, b) => a.Price - b.Price);
         }
         this.loading = false;
       });

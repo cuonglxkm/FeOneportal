@@ -46,10 +46,10 @@
           <nz-form-item >
             <nz-form-control>
             <nz-form-label nzFor="name" >
-              {{'form.account.name' |i18n}}
+              Name
               (<span style="color: rgba(252, 16, 16, 1)">*</span>)
               <img
-                nz-popover
+                nz-popover [nzPopoverOverlayStyle]="{ maxWidth: '400px' }"
                 [nzPopoverContent]="
                   'app.vpn.service-create.name.tooltip' |i18n
                 "
@@ -76,7 +76,7 @@
               Router
               (<span style="color: rgba(252, 16, 16, 1)">*</span>)
               <img
-                nz-popover
+                nz-popover [nzPopoverOverlayStyle]="{ maxWidth: '400px' }"
                 [nzPopoverContent]="
                  'app.vpn.service-create.router.tooltip' |i18n
                 "
@@ -103,7 +103,7 @@
               {{'app.vpn.service.policy-detail.status' |i18n}}
               (<span style="color: rgba(252, 16, 16, 1)">*</span>)
               <img
-                nz-popover
+                nz-popover [nzPopoverOverlayStyle]="{ maxWidth: '400px' }"
                 [nzPopoverContent]="
                   'app.vpn.service.policy-detail.status.tooltip' |i18n
                 "
@@ -131,7 +131,7 @@
               IP VPN Gateway
               (<span style="color: rgba(252, 16, 16, 1)">*</span>)
               <img
-                nz-popover
+                nz-popover [nzPopoverOverlayStyle]="{ maxWidth: '400px' }"
                 [nzPopoverContent]="
                   ''
                 "
@@ -146,7 +146,7 @@
             nz-input
             type="text"
             value="{{vpnService?.
-              vpnGatway}}"  [disabled]="true"
+              vpnGatway?.split(':')[1]}}"  [disabled]="true"
           />
           </nz-form-control>
           </nz-form-item>

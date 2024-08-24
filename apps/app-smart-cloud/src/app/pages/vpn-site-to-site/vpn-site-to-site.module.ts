@@ -39,6 +39,7 @@ import { DetailEndpointGroupComponent } from './manage/endpoint-group/detail/det
 import { DeleteEndpointGroupComponent } from './manage/endpoint-group/delete/delete-endpoint-group.component';
 import { EditEndpointGroupComponent } from './manage/endpoint-group/edit/edit-endpoint-group.component';
 import { TrimDirective } from '../file-storage/TrimDirective';
+import { AutoFocusDirective } from 'src/app/shared/directive/AutoFocusDirective';
 
 @NgModule({
   declarations: [
@@ -73,7 +74,8 @@ import { TrimDirective } from '../file-storage/TrimDirective';
     CreateEndpointGroupComponent,
     DetailEndpointGroupComponent,
     DeleteEndpointGroupComponent,
-    EditEndpointGroupComponent
+    EditEndpointGroupComponent,
+    AutoFocusDirective
   ],
   imports: [
     VpnSiteToSiteRoutingModule,

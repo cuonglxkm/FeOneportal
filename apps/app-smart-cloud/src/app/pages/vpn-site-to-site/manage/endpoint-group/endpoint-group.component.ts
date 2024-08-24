@@ -26,7 +26,7 @@ export class EndpointGroupComponent {
 
   pageSize: number = 5;
   pageIndex: number = 1;
-
+  pageSizeFixed = 5
   value: string = '';
 
   response: BaseResponse<EndpointGroupDTO>;
@@ -50,6 +50,7 @@ export class EndpointGroupComponent {
 
   search(search: string) {
     this.value = search.trim();
+    this.refreshParams()
     this.getData();
   }
 
@@ -100,6 +101,7 @@ export class EndpointGroupComponent {
   ngOnInit() {
     this.getData();
     this.searchDelay.pipe(debounceTime(1200)).subscribe(() => {
+      this.refreshParams()
       this.getData();
     });
   }

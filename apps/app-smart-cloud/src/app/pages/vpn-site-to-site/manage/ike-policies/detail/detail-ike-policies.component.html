@@ -50,12 +50,12 @@
             <nz-form-item>
               <nz-form-control>
                 <nz-form-label nzFor="name">
-                  <span>{{ 'form.account.name' | i18n }}</span> (<span
+                  Name (<span
                     style="color: rgba(252, 16, 16, 1)"
                     >*</span
                   >)
                   <img
-                    nz-popover
+                    nz-popover [nzPopoverOverlayStyle]="{ maxWidth: '400px' }"
                     [nzPopoverContent]="
                       'app.ike.policy-create.name.tooltip' | i18n
                     "
@@ -79,12 +79,12 @@
             <nz-form-item>
               <nz-form-control>
                 <nz-form-label nzFor="name">
-                  <span>Authorization Algorithm</span> (<span
+                  Authorization Algorithm (<span
                     style="color: rgba(252, 16, 16, 1)"
                     >*</span
                   >)
                   <img
-                    nz-popover
+                    nz-popover [nzPopoverOverlayStyle]="{ maxWidth: '400px' }"
                     [nzPopoverContent]="
                       'app.ike.policy-create.Authorization.tooltip' | i18n
                     "
@@ -108,41 +108,12 @@
             <nz-form-item>
               <nz-form-control>
                 <nz-form-label nzFor="name">
-                  <span>IKE version</span> (<span
+                  Encryption Algorithm (<span
                     style="color: rgba(252, 16, 16, 1)"
                     >*</span
                   >)
                   <img
-                    nz-popover
-                    [nzPopoverContent]="
-                      'app.ike.policy-create.version.tooltip' | i18n
-                    "
-                    nzPopoverPlacement="bottom"
-                    style="margin-left: 5px"
-                    src="assets/imgs/pajamas_question.svg"
-                    alt=""
-                  />
-                </nz-form-label>
-                <input
-                  nz-input
-                  type="text"
-                  value="{{ ikePolicy?.ikeVersion }}"
-                  [disabled]="true"
-                  class="input-custom"
-                />
-              </nz-form-control>
-            </nz-form-item>
-          </div>
-          <div nz-col [nzSpan]="12" class="gutter-row">
-            <nz-form-item>
-              <nz-form-control>
-                <nz-form-label nzFor="name">
-                  <span>Encryption Algorithm</span> (<span
-                    style="color: rgba(252, 16, 16, 1)"
-                    >*</span
-                  >)
-                  <img
-                    nz-popover
+                    nz-popover [nzPopoverOverlayStyle]="{ maxWidth: '400px' }"
                     [nzPopoverContent]="
                       'app.ike.policy-create.Encryption.tooltip' | i18n
                     "
@@ -166,12 +137,42 @@
             <nz-form-item>
               <nz-form-control>
                 <nz-form-label nzFor="name">
-                  <span>Lifetime Units</span> (<span
+                  IKE version (<span
                     style="color: rgba(252, 16, 16, 1)"
                     >*</span
                   >)
                   <img
-                    nz-popover
+                    nz-popover [nzPopoverOverlayStyle]="{ maxWidth: '400px' }"
+                    [nzPopoverContent]="
+                      'app.ike.policy-create.version.tooltip' | i18n
+                    "
+                    nzPopoverPlacement="bottom"
+                    style="margin-left: 5px"
+                    src="assets/imgs/pajamas_question.svg"
+                    alt=""
+                  />
+                </nz-form-label>
+                <input
+                  nz-input
+                  type="text"
+                  value="{{ ikePolicy?.ikeVersion }}"
+                  [disabled]="true"
+                  class="input-custom"
+                />
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+
+          <div nz-col [nzSpan]="12" class="gutter-row">
+            <nz-form-item>
+              <nz-form-control>
+                <nz-form-label nzFor="name">
+                  Lifetime Units (<span
+                    style="color: rgba(252, 16, 16, 1)"
+                    >*</span
+                  >)
+                  <img
+                    nz-popover [nzPopoverOverlayStyle]="{ maxWidth: '400px' }"
                     [nzPopoverContent]="
                       'app.ike.policy-create.lifetime.tooltip' | i18n
                     "
@@ -195,12 +196,12 @@
             <nz-form-item>
               <nz-form-control>
                 <nz-form-label nzFor="name">
-                  <span>Lifetime Value</span> (<span
+                  Lifetime Value (<span
                     style="color: rgba(252, 16, 16, 1)"
                     >*</span
                   >)
                   <img
-                    nz-popover
+                    nz-popover [nzPopoverOverlayStyle]="{ maxWidth: '400px' }"
                     [nzPopoverContent]="
                       'app.ike.policy-create.lifetime.value.tooltip' | i18n
                     "
@@ -224,12 +225,12 @@
             <nz-form-item>
               <nz-form-control>
                 <nz-form-label nzFor="name">
-                  <span>Perfect Forward Secrecy</span> (<span
+                  Perfect Forward Secrecy> (<span
                     style="color: rgba(252, 16, 16, 1)"
                     >*</span
                   >)
                   <img
-                    nz-popover
+                    nz-popover [nzPopoverOverlayStyle]="{ maxWidth: '400px' }"
                     [nzPopoverContent]="
                       'app.ike.policy-create.pfs.tooltip' | i18n
                     "
@@ -253,12 +254,12 @@
             <nz-form-item>
               <nz-form-control>
                 <nz-form-label nzFor="name">
-                  <span>IKE Phase1 Negotiation Mode</span> (<span
+                  IKE Phase1 Negotiation Mode (<span
                     style="color: rgba(252, 16, 16, 1)"
                     >*</span
                   >)
                   <img
-                    nz-popover
+                    nz-popover [nzPopoverOverlayStyle]="{ maxWidth: '400px' }"
                     [nzPopoverContent]="
                       'app.ike.policy-create.Negotiation.tooltip' | i18n
                     "

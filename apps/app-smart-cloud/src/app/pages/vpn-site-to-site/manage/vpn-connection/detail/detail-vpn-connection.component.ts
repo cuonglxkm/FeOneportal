@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, Inject, OnInit, ViewChild } from '@angular/core';
 import { NonNullableFormBuilder } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { getCurrentRegionAndProject } from '@shared';
@@ -6,6 +6,9 @@ import { RegionModel, ProjectModel } from '../../../../../../../../../libs/commo
 import { VpnConnectionDetail } from 'src/app/shared/models/vpn-connection';
 import { VpnConnectionService } from 'src/app/shared/services/vpn-connection.service';
 import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
+import { I18NService } from '@core';
+import { NzNotificationService } from 'ng-zorro-antd/notification';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
 
 @Component({
   selector: 'one-portal-detail-vpn-connection',
@@ -30,7 +33,9 @@ export class DetailVpnConnectionComponent implements OnInit {
   constructor(
     private vpnConnectionService: VpnConnectionService,
     private router: Router,
-    private activatedRoute: ActivatedRoute
+    private activatedRoute: ActivatedRoute,
+    private notification: NzNotificationService,
+    @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService
   ) {}
 
   onRegionChange(region: RegionModel) {
@@ -67,6 +72,13 @@ export class DetailVpnConnectionComponent implements OnInit {
         (error) => {
           this.vpnConnection = null;
           this.isLoading = false;
+          if (error.error.detail.includes('could not be found')) {
+            this.notification.error(
+              this.i18n.fanyi('app.status.fail'),
+              'Bản ghi không tồn tại'
+            );
+            this.router.navigateByUrl('/app-smart-cloud/vpn-site-to-site')
+          }
         }
       );
   }

@@ -15,4 +15,5 @@ export class VpnSiteToSiteDTO {
   serviceStatus: string
   suspendType: string
   suspendReason: string
+  routerName: string
   }

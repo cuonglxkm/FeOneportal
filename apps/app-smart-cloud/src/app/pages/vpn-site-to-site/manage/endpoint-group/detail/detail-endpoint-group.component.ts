@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, Inject, OnInit, ViewChild } from '@angular/core';
 import {
   FormControl,
   FormGroup,
@@ -11,6 +11,9 @@ import { EndpointGroupService } from 'src/app/shared/services/endpoint-group.ser
 import { ActivatedRoute, Router } from '@angular/router';
 import { RegionModel, ProjectModel } from '../../../../../../../../../libs/common-utils/src';
 import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
+import { I18NService } from '@core';
+import { NzNotificationService } from 'ng-zorro-antd/notification';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
 
 @Component({
   selector: 'one-portal-detail-endpoint-group',
@@ -28,7 +31,9 @@ export class DetailEndpointGroupComponent implements OnInit {
   constructor(
     private endpointGroupService: EndpointGroupService,
     private router: Router,
-    private activatedRoute: ActivatedRoute
+    private activatedRoute: ActivatedRoute,
+    private notification: NzNotificationService,
+    @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService
   ) {}
 
   onRegionChange(region: RegionModel) {
@@ -65,6 +70,13 @@ export class DetailEndpointGroupComponent implements OnInit {
         (error) => {
           this.endpointGroup = null;
           this.isLoading = false;
+          if (error.error.detail.includes('could not be found')) {
+            this.notification.error(
+              this.i18n.fanyi('app.status.fail'),
+              'Bản ghi không tồn tại'
+            );
+            this.router.navigateByUrl('/app-smart-cloud/vpn-site-to-site')
+          }
         }
       );
   }

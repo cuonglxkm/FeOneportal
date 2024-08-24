@@ -48,11 +48,11 @@
             <nz-form-item>
               <nz-form-control>
                 <nz-form-label nzFor="name">
-                  <span>{{'form.account.name' |i18n}}</span> (<span style="color: rgba(252, 16, 16, 1)"
+                  <span>Name</span> (<span style="color: rgba(252, 16, 16, 1)"
                     >*</span
                   >)
                   <img
-                    nz-popover
+                    nz-popover [nzPopoverOverlayStyle]="{ maxWidth: '400px' }"
                     [nzPopoverContent]="
                       'app.vpn.connection-create.name.tooltip' |i18n
                     "
@@ -81,7 +81,7 @@
                     >*</span
                   >)
                   <img
-                    nz-popover
+                    nz-popover [nzPopoverOverlayStyle]="{ maxWidth: '400px' }"
                     [nzPopoverContent]="
                       'app.vpn.connection-create.ipsec.tooltip' |i18n
                     "
@@ -110,7 +110,7 @@
                     >*</span
                   >)
                   <img
-                    nz-popover
+                    nz-popover [nzPopoverOverlayStyle]="{ maxWidth: '400px' }"
                     [nzPopoverContent]="
                       'app.vpn.connection-create.vpnservice.tooltip' |i18n
                     "
@@ -139,7 +139,7 @@
                     >*</span
                   >)
                   <img
-                    nz-popover
+                    nz-popover [nzPopoverOverlayStyle]="{ maxWidth: '400px' }"
                     [nzPopoverContent]="
                       'app.vpn.connection-create.peerIP.tooltip' |i18n
                     "
@@ -168,7 +168,7 @@
                     >*</span
                   >)
                   <img
-                    nz-popover
+                    nz-popover [nzPopoverOverlayStyle]="{ maxWidth: '400px' }"
                     [nzPopoverContent]="
                       'app.vpn.connection-create.local.tooltip' |i18n
                     "
@@ -197,7 +197,7 @@
                     >*</span
                   >)
                   <img
-                    nz-popover
+                    nz-popover [nzPopoverOverlayStyle]="{ maxWidth: '400px' }"
                     [nzPopoverContent]="
                       'app.vpn.connection-create.peerId.tooltip' |i18n
                     "
@@ -226,7 +226,7 @@
                     >*</span
                   >)
                   <img
-                    nz-popover
+                    nz-popover [nzPopoverOverlayStyle]="{ maxWidth: '400px' }"
                     [nzPopoverContent]="
                       'app.vpn.connection-create.ike.tooltip' |i18n
                     "
@@ -255,7 +255,7 @@
                     >*</span
                   >)
                   <img
-                    nz-popover
+                    nz-popover [nzPopoverOverlayStyle]="{ maxWidth: '400px' }"
                     [nzPopoverContent]="
                       'app.vpn.connection-create.remote.tooltip' |i18n
                     "
@@ -285,7 +285,7 @@
                     >*</span
                   >)
                   <img
-                    nz-popover
+                    nz-popover [nzPopoverOverlayStyle]="{ maxWidth: '400px' }"
                     [nzPopoverContent]="
                       'app.vpn.connection-create.prekey.tooltip' |i18n
                     "
