@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import type { EChartsOption } from 'echarts';
 import { WafService } from 'src/app/shared/services/waf.service';
-import { QueryBacktoOriginTrafficAndRequestResponse, QueryBandwidthForMultiDomainResponse2, QueryRequesBandwidthtSavingRatioResponse, QueryTrafficForMultiDomainResponse } from '../../waf.model';
+import { QueryBacktoOriginTrafficAndRequestResponse, QueryBandwidthForMultiDomainResponse2, QueryRequesBandwidthtSavingRatioResponse, QueryTrafficForMultiDomainResponse, QueryTrafficRequestInTotalAndPeakValueResponse } from '../../waf.model';
 import { differenceInCalendarDays, setHours } from 'date-fns';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { el } from 'date-fns/locale';
@@ -30,9 +30,14 @@ export class WafUsageStatistics implements OnInit {
   dataTraffic: QueryTrafficForMultiDomainResponse;
   totalEdgeTraffic: number;
   totalB2OTraffic: number;
+  totalEdgeNumberRequest: number;
+  peakEdgeNumberRequest: number;
+  totalB20NumberRequest: number;
+  peakB20NumberRequest: number;
   dataBandwidthSaving: QueryRequesBandwidthtSavingRatioResponse;
   averageBandwidthSaving: number;
   dataBack2Origin: QueryBacktoOriginTrafficAndRequestResponse;
+  dataRequestNumber: QueryTrafficRequestInTotalAndPeakValueResponse;
   edgePeakTime: [];
   isValid = true;
   isDateValid = true;
@@ -42,10 +47,13 @@ export class WafUsageStatistics implements OnInit {
   peakSaving: any;
   bandWidthData: number[];
   timeStampData: string[];
-  back2OriginData: number[];
+  back2OriginBandwidthData: number[];
+  back2OriginRequestData: number[];
   bandWidthSavingData: number[];
   timeStampSavingData: string[];
+  requestNumberData: number[];
   apiCallProcessing=[false,false,false];
+  apiRequestCallProcessing=[false,false,false];
   xAxis=[];
   peakTable:any[]=[]
   peakEdgeTable: any[]=[];
@@ -87,7 +95,10 @@ export class WafUsageStatistics implements OnInit {
     
   };
   draw(){
-    if(this.apiCallProcessing.some(x=>x==true)){
+    if(this.apiCallProcessing.some(x=>x==true) && this.currentTab=='bandwidth'){
+      return;
+    }
+    if(this.apiRequestCallProcessing.some(x=>x==true) && this.currentTab=='requests'){
       return;
     }
     this.options = {
@@ -132,7 +143,7 @@ export class WafUsageStatistics implements OnInit {
       yAxis: [
         {
           type: 'value',
-          name: 'Unit: Mbps',
+          name: this.currentTab=='bandwidth' ? 'Unit: Mbps':'Unit: Times',
           position: 'left',
           axisLine: {
             lineStyle: {
@@ -154,12 +165,11 @@ export class WafUsageStatistics implements OnInit {
           },
         },
       ],
-      
       series: [
         {
           name: 'EDGE',
           type: 'line',
-          data: this.bandWidthData,
+          data: this.currentTab=='bandwidth' ? this.bandWidthData : this.requestNumberData,
           lineStyle: {
             width: 1,
             color: '#4168FF'
@@ -175,7 +185,7 @@ export class WafUsageStatistics implements OnInit {
           }
         },
         {
-          data: this.back2OriginData,
+          data: this.back2OriginBandwidthData,
           name: 'Back-to-Origin',
           type: 'line',
           lineStyle: {
@@ -229,8 +239,7 @@ export class WafUsageStatistics implements OnInit {
       time:x.dateTime.split(' ')[1],
       bandwidth:x.max
     }));
-    debugger;
-    var maxB2O= this.groupByDateAndGetMax(this.xAxis,this.back2OriginData);
+    var maxB2O= this.groupByDateAndGetMax(this.xAxis,this.back2OriginBandwidthData);
     this.peakB2OTable=maxB2O.map(x=>({
       date:x.dateTime.split(' ')[0],
       time:x.dateTime.split(' ')[1],
@@ -310,7 +319,7 @@ export class WafUsageStatistics implements OnInit {
     })
   }
 
-  fillBack2OriginData(){
+  fillBack2OriginBanwidthData(){
     var temp = [];
     var back2OriginDatas = this.dataBack2Origin.result;
     back2OriginDatas.forEach(x=>x.flowRequestOriginData[0].timestamp+=':00');
@@ -323,19 +332,40 @@ export class WafUsageStatistics implements OnInit {
         temp[i]= parseFloat(back2OriginDatas[index].flowRequestOriginData[0].bandwidth);
       }
     }
-    this.back2OriginData = temp;
+    this.back2OriginBandwidthData = temp;
   }
-  caculateBack2Origin(){
+  fillBack2OriginRequestData(){
+    var temp = [];
+    var back2OriginDatas = this.dataBack2Origin.result;
+    back2OriginDatas.forEach(x=>x.flowRequestOriginData[0].timestamp+=':00');
+    for(var i=0; i<this.xAxis.length; i++){
+      var timestamp = this.xAxis[i];
+      var index = back2OriginDatas.findIndex(x=>x.flowRequestOriginData[0].timestamp==timestamp);
+      if(index==-1){
+        temp[i]=null;
+      }else{
+        temp[i]= parseInt(back2OriginDatas[index].flowRequestOriginData[0].request);
+      }
+    }
+    this.back2OriginRequestData = temp;
+  }
+  
+  caculateBack2OriginBandwidth(){
     if(this.selectedTypeDate=='fiveminutes'){
-      var max= Math.max(...this.back2OriginData);
+      var max= Math.max(...this.back2OriginBandwidthData);
       this.peakB2O ={
         bandwidth: max,
-        timestamp: this.xAxis[this.back2OriginData.indexOf(max)]
+        timestamp: this.xAxis[this.back2OriginBandwidthData.indexOf(max)]
       };
     }
     var sumTraffic = this.dataBack2Origin.result.reduce((a, b) => a + parseFloat(b.totalFlow), 0);
     this.totalB2OTraffic = Math.ceil(sumTraffic / 1024 * 100) / 100; 
   }
+  caculateBack2OriginRequest(){
+    this.totalB20NumberRequest = this.dataBack2Origin.result.reduce((a, b) => a + parseFloat(b.totalRequest), 0);
+    this.peakB20NumberRequest = Math.max(...this.dataBack2Origin.result.map(x=>parseInt(x.peakRequest)));
+  }
+  
   getDataBack2Origin(){
     this.apiCallProcessing[2]=true;
     if(this.selectedTypeDate =='fiveminutes'){
@@ -347,9 +377,12 @@ export class WafUsageStatistics implements OnInit {
       next: (res) => {
         this.apiCallProcessing[2]=false;
         this.dataBack2Origin = res;
-        this.back2OriginData = this.dataBack2Origin.result.map(x=>parseFloat(x.flowRequestOriginData[0].bandwidth));
-        this.fillBack2OriginData();
-        this.caculateBack2Origin()
+        if(this.currentTab=='bandwidth'){
+          this.fillBack2OriginBanwidthData();
+        }else{
+          this.fillBack2OriginRequestData();
+        }
+        this.caculateBack2OriginBandwidth()
         this.draw();
         this.createPeakTableData();
       },
@@ -425,6 +458,41 @@ export class WafUsageStatistics implements OnInit {
       this.bandWidthSavingData = temp1;
     }
   }
+  fillRequestNumber(){
+    var temp = [];
+    var requestNumberDatas = this.dataRequestNumber.result[0].flowRequestData;
+    requestNumberDatas.forEach(x=>x.timestamp+=':00');
+    for(var i=0; i<this.xAxis.length; i++){
+      var timestamp = this.xAxis[i];
+      var index = requestNumberDatas.findIndex(x=>x.timestamp==timestamp);
+      if(index==-1){
+        temp[i]=null;
+      }else{
+        temp[i]= parseInt(requestNumberDatas[index].request);
+      }
+    }
+    this.requestNumberData = temp;
+  }
+  caculateRequestNumber(){
+    this.totalEdgeNumberRequest = parseFloat(this.dataRequestNumber.result[0].totalRequest);
+    this.peakEdgeNumberRequest = parseFloat(this.dataRequestNumber.result[0].peakRequest);
+  }
+  getEdgeRequestNumber(){
+    this.apiRequestCallProcessing[0]=true;
+    this.wafService.queryTrafficRequestInTotalAndPeakValue({dateFrom:this.fromDate,dateTo:this.toDate,domain:this.domains,groupBy:[],dataPadding:null}).subscribe({
+      next: (res) => {
+        this.dataRequestNumber = res;
+        this.apiRequestCallProcessing[0]=false;
+        this.fillRequestNumber();
+        this.caculateRequestNumber();
+        this.draw();
+      },
+      error: (error) => {
+        this.apiRequestCallProcessing[0]=false;
+        console.log(error);
+      }
+    })
+  }
 
   renderxAxis(){
     this.xAxis = this.generateTimeArray(this.fromDate, this.toDate);
@@ -470,10 +538,15 @@ export class WafUsageStatistics implements OnInit {
     if(!this.isValid){
       return;
     }
-    this.getDataBandwidth();
-    this.getDataTraffic();
-    this.getDataBack2Origin();
-    this.getBandwidthSaving();
+    
+    if(this.currentTab=='bandwidth'){
+      this.getDataBandwidth();
+      this.getDataTraffic();
+      this.getDataBack2Origin();
+      this.getBandwidthSaving();
+    }else{
+      this.getEdgeRequestNumber();
+    }
   }
 
   onChangeDomain(){
@@ -490,10 +563,15 @@ export class WafUsageStatistics implements OnInit {
       this.notification.warning('',"Vui lòng chọn domains");
       return;
     }
-    this.getDataBandwidth();
-    this.getDataTraffic();
-    this.getDataBack2Origin();
-    this.getBandwidthSaving();
+
+    if(this.currentTab=='bandwidth'){
+      this.getDataBandwidth();
+      this.getDataTraffic();
+      this.getDataBack2Origin();
+      this.getBandwidthSaving();
+    }else{
+      this.getEdgeRequestNumber();
+    }
   }
 
   isSameDay(date1: Date, date2: Date): boolean {
@@ -536,9 +614,17 @@ export class WafUsageStatistics implements OnInit {
 
   changeTab(tabName){
     this.currentTab = tabName;
+    if(tabName=="bandwidth"){
+      this.getDataBandwidth();
+      this.getDataTraffic();
+      this.getDataBack2Origin();
+      this.getBandwidthSaving();
+    }
+    if(tabName=="requests"){
+      this.getEdgeRequestNumber();
+    }
   }
   changeTypeRequest(){
-    debugger;
     this.renderPeakTable();
   }
   getDatesInRange(startDate: Date, endDate: Date): string[] {

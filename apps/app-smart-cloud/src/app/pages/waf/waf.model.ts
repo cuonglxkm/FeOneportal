@@ -277,3 +277,35 @@ export class QueryBacktoOriginTrafficAndRequestResponseResultFlowRequestOriginDa
   bandwidth: string;
   request: string;
 }
+
+export class QueryTrafficRequestInTotalAndPeakValueRequestDto {
+  dateFrom: Date;
+  dateTo: Date;
+  domain: string[];
+  groupBy: string[];
+  dataPadding: boolean | null;
+}
+
+export class QueryTrafficRequestInTotalAndPeakValueResponse {
+  code: string;
+  message: string;
+  result: QueryTrafficRequestInTotalAndPeakValueResponseResult[];
+}
+
+export class QueryTrafficRequestInTotalAndPeakValueResponseResult {
+  domain: string;
+  totalFlow: string;
+  totalRequest: string;
+  peakBandwidth: string;
+  peakTime: string;
+  peakRequest: string;
+  peakRequestTime: string;
+  flowRequestData: QueryTrafficRequestInTotalAndPeakValueResponseResultFlowRequestData[];
+}
+
+export class QueryTrafficRequestInTotalAndPeakValueResponseResultFlowRequestData {
+  timestamp: string;
+  flow: string;
+  bandwidth: string;
+  request: string;
+}
