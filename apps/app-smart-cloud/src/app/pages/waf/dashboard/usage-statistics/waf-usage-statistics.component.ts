@@ -47,6 +47,10 @@ export class WafUsageStatistics implements OnInit {
   timeStampSavingData: string[];
   apiCallProcessing=[false,false,false];
   xAxis=[];
+  peakTable:any[]=[]
+  peakEdgeTable: any[]=[];
+  peakB2OTable: any[]=[];
+  peakSavingTable: any[]=[];
   constructor(
     private wafService: WafService,
     private notification: NzNotificationService) {
@@ -65,6 +69,8 @@ export class WafUsageStatistics implements OnInit {
   getData(){
     this.wafService.getDomainOfUser().subscribe({
       next: (res) => {
+        var any:any = [{domain:'cloud.vnpt.vn',id:1},{domain:'cuong.tokyo',id:2}];
+        res = any;
         this.selectDomainOptions = res.map(x=>({label:x.domain,value:x.id}));
         this.selectedDomain = res.map(x=>x.id);
         this.domains = res.map(x=>x.domain);
@@ -78,6 +84,7 @@ export class WafUsageStatistics implements OnInit {
         console.log(error);
       }
     })
+    
   };
   draw(){
     if(this.apiCallProcessing.some(x=>x==true)){
@@ -211,6 +218,47 @@ export class WafUsageStatistics implements OnInit {
       ]
     };
   }
+
+  createPeakTableData(){
+    if(this.apiCallProcessing.some(x=>x==true)){
+      return;
+    }
+    var maxEdges= this.groupByDateAndGetMax(this.xAxis,this.bandWidthData);
+    this.peakEdgeTable=maxEdges.map(x=>({
+      date:x.dateTime.split(' ')[0],
+      time:x.dateTime.split(' ')[1],
+      bandwidth:x.max
+    }));
+    debugger;
+    var maxB2O= this.groupByDateAndGetMax(this.xAxis,this.back2OriginData);
+    this.peakB2OTable=maxB2O.map(x=>({
+      date:x.dateTime.split(' ')[0],
+      time:x.dateTime.split(' ')[1],
+      bandwidth:x.max
+    }));
+
+    var maxSaving= this.groupByDateAndGetMax(this.xAxis,this.bandWidthSavingData);
+    this.peakSavingTable=maxSaving.map(x=>({
+      date:x.dateTime.split(' ')[0],
+      time:x.dateTime.split(' ')[1],
+      bandwidth:x.max
+    }));
+    this.renderPeakTable();
+  }
+
+  renderPeakTable(){
+    if(this.selectedTypeRequest=='EDGE'){
+      this.peakTable=this.peakEdgeTable;
+    }
+    if(this.selectedTypeRequest=='B2O'){
+      this.peakTable=this.peakB2OTable;
+    }
+    if(this.selectedTypeRequest=='BSR'){
+      this.peakTable=this.peakSavingTable;
+    }
+  }
+
+
   caculateEdge(){
     if(this.selectedTypeDate=='fiveminutes'){
       var max= Math.max(...this.bandWidthData);
@@ -239,6 +287,7 @@ export class WafUsageStatistics implements OnInit {
         this.fillBandwidthData();
         this.caculateEdge()
         this.draw();
+        this.createPeakTableData();
       },
       error: (error) => {
         this.isSpinning=false;
@@ -302,6 +351,7 @@ export class WafUsageStatistics implements OnInit {
         this.fillBack2OriginData();
         this.caculateBack2Origin()
         this.draw();
+        this.createPeakTableData();
       },
       error: (error) => {
         this.apiCallProcessing[2]=false;
@@ -336,6 +386,7 @@ export class WafUsageStatistics implements OnInit {
         this.fillBandwidthSavingData();
         this.caculateBandwidthSaving();
         this.draw();
+        this.createPeakTableData();
       },
       error: (error) => {
         this.apiCallProcessing[1]=false;
@@ -485,5 +536,40 @@ export class WafUsageStatistics implements OnInit {
 
   changeTab(tabName){
     this.currentTab = tabName;
+  }
+  changeTypeRequest(){
+    debugger;
+    this.renderPeakTable();
+  }
+  getDatesInRange(startDate: Date, endDate: Date): string[] {
+    const dateArray: string[] = [];
+    let currentDate: Date = new Date(startDate);
+
+    while (currentDate <= endDate) {
+        dateArray.push(currentDate.toISOString().split('T')[0]);
+        currentDate.setDate(currentDate.getDate() + 1);
+    }
+    return dateArray;
+  }
+  groupByDateAndGetMax(x: string[], y: number[]): Array<{ dateTime: string, max: number }> {
+    const dateMaxMap: { [key: string]: { dateTime: string, max: number } } = {};
+
+    for (let i = 0; i < x.length; i++) {
+        const dateTime = x[i];
+        const date = dateTime.split(' ')[0]; // Lấy phần ngày 'YYYY-MM-DD'
+        const value = y[i];
+
+        if (!dateMaxMap[date] || value > dateMaxMap[date].max) {
+            dateMaxMap[date] = { dateTime: dateTime, max: value };
+        }
+    }
+
+    // Chuyển đổi từ đối tượng dateMaxMap thành mảng
+    const resultArray = Object.keys(dateMaxMap).map(date => ({
+        dateTime: dateMaxMap[date].dateTime,
+        max: dateMaxMap[date].max
+    }));
+
+    return resultArray;
   }
 }

@@ -63,10 +63,10 @@
         <nz-select [(ngModel)]="selectedTypeRequest"
                      nzSize="default"
                      style="margin-left: 10px; width: 200px;"
-                     
+                     (ngModelChange)="changeTypeRequest()"
         >
           <nz-option nzLabel="Edge" nzValue="EDGE"></nz-option>
-          <nz-option nzLabel="Back-to-Origin" nzValue="BTO"></nz-option>
+          <nz-option nzLabel="Back-to-Origin" nzValue="B2O"></nz-option>
           <nz-option nzLabel="Bandwidth Saving Ratio" nzValue="BSR"></nz-option>
         </nz-select>
       </div>
@@ -74,7 +74,7 @@
       <nz-table #fixedTable
                 style="margin-top: 20px;"
                 nzShowSizeChanger
-                [nzData]="[]"
+                [nzData]="peakTable"
                 [nzLoading]="dailyTableLoading">
         <thead>
         <tr>
@@ -87,9 +87,9 @@
         <tbody>
           <ng-container *ngFor="let data of fixedTable.data">
             <tr>
-              <td nzLeft>{{ data.domain }}</td>
-              <td nzBreakWord nzAlign="left">{{ data.ipPublic }}</td>
-              <td nzBreakWord nzAlign="left">{{ data.cName }} </td>
+              <td nzLeft>{{ data.date }}</td>
+              <td nzBreakWord nzAlign="left">{{ data.time }}</td>
+              <td nzBreakWord nzAlign="left">{{ data.bandwidth }} </td>
               <td nzBreakWord nzAlign="left">{{ data.sslCertId ? 'ENABLE' : 'DISABLE' }}</td>
             </tr>
           </ng-container>
