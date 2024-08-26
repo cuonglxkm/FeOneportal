@@ -78,6 +78,7 @@
                   <ng-container *ngIf="control.hasError('pattern')">{{
                     'app.ike.policy-create.name.alert2' | i18n
                   }}</ng-container>
+                  <ng-container *ngIf="control.hasError('duplicateName')">Tên IKE Policy đã tồn tại. Vui lòng nhập tên khác</ng-container>
                 </ng-template>
               </nz-form-control>
             </nz-form-item>

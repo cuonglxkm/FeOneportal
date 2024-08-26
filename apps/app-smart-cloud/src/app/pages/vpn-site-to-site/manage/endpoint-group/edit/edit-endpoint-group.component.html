@@ -50,7 +50,7 @@
             class="input-custom"
           />
           <ng-template #nameErrorTpl let-control>
-            <ng-container *ngIf="control.hasError('required')">{{'app.endpoint-create.name.alert' |i18n}}</ng-container>
+            <ng-container *ngIf="control.hasError('required')">{{'app.vpns2s.name.error.tooltip' |i18n}}</ng-container>
             <ng-container *ngIf="control.hasError('pattern')"
               >{{'app.endpoint-create.name.tooltip' |i18n}}</ng-container
             >

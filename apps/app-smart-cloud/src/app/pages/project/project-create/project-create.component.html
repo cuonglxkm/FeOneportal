@@ -268,7 +268,7 @@
                           <div class="text-right" style="opacity: 0.5;">{{ price.ramPerUnit | formatPrice }} </div>
                         </td>
                       </tr>
-                      <tr>
+                      <tr *ngIf="typeHdd">
                         <td width="50%">
                           <div class="d-flex">
                             {{ "volume.table.title.storage" | i18n }} HDD (GB)
@@ -292,7 +292,7 @@
                           <div class="text-right" style="opacity: 0.5;">{{ price.hhdPerUnit | formatPrice}} </div>
                         </td>
                       </tr>
-                      <tr>
+                      <tr *ngIf="typeSsd">
                         <td width="50%">
                           <div class="d-flex">
                             {{ "volume.table.title.storage" | i18n }} SSD (GB)

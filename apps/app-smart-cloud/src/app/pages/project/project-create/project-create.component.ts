@@ -193,7 +193,8 @@ export class ProjectCreateComponent implements OnInit {
   }
   productByRegion: any
   // catalogStatus: { [key: string]: boolean } = {};
-
+  typeHdd:boolean;
+  typeSsd:boolean;
   typeIp: boolean;
   typeIpv6: boolean;
   typeVolume_snapshot_hdd: boolean;
@@ -252,15 +253,6 @@ export class ProjectCreateComponent implements OnInit {
   ngOnInit() {
     let regionAndProject = getCurrentRegionAndProject();
     this.regionId = regionAndProject.regionId;
-    if (!this.url.includes('advance')) {
-      if (Number(localStorage.getItem('regionId')) === RegionID.ADVANCE) {
-        this.regionId = RegionID.NORMAL;
-      } else {
-        this.regionId = Number(localStorage.getItem('regionId'));
-      }
-    } else {
-      this.regionId = RegionID.ADVANCE;
-    }
     this.initFlavors();
     this.initVpnSiteToSiteData();
     this.initLoadBalancerData();
@@ -1274,10 +1266,16 @@ export class ProjectCreateComponent implements OnInit {
   //   })
   // }
   getProductActivebyregion() {
-    const catalogs = ['ip', 'ipv6', 'volume-snapshot-hdd', 'volume-snapshot-ssd', 'backup-volume', 'loadbalancer-sdn', 'file-storage', 'file-storage-snapshot', 'vpns2s', 'vm-gpu']
+    const catalogs = ['volume-hdd','volume-ssd','ip', 'ipv6', 'volume-snapshot-hdd', 'volume-snapshot-ssd', 'backup-volume', 'loadbalancer-sdn', 'file-storage', 'file-storage-snapshot', 'vpns2s', 'vm-gpu']
     this.catalogService.getActiveServiceByRegion(catalogs, this.regionId).subscribe(data => {
       this.serviceActiveByRegion = data;
       this.serviceActiveByRegion.forEach((item: any) => {
+        if (['volume-hdd'].includes(item.productName)) {
+          this.typeHdd = item.isActive;
+        }
+        if (['volume-ssd'].includes(item.productName)) {
+          this.typeSsd = item.isActive;
+        }
         if (['ip'].includes(item.productName)) {
           this.typeIp = item.isActive;
         }

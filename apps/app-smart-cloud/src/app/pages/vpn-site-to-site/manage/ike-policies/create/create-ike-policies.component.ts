@@ -2,7 +2,7 @@ import { Component, Inject, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { getCurrentRegionAndProject } from '@shared';
-import { IKEPolicyModel} from 'src/app/shared/models/vpns2s.model';
+import { FormSearchIKEPolicy, IKEPolicyModel} from 'src/app/shared/models/vpns2s.model';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { IkePolicyService } from 'src/app/shared/services/ike-policy.service';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
@@ -33,7 +33,9 @@ export class CreateIkePoliciesComponent implements OnInit{
     regionId: 0,
     customerId: 0,
     projectId: 0
-  }; ;
+  };
+  formSearchIkePolicy: FormSearchIKEPolicy = new FormSearchIKEPolicy()
+  nameList: string[] = [];
   authorizationAlgorithm = [
     { label: 'sha1', value: 'sha1' },
     { label: 'sha256', value: 'sha256' },
@@ -75,7 +77,7 @@ export class CreateIkePoliciesComponent implements OnInit{
     description: FormControl<string>
     lifetimeValue: FormControl<number>
   }> = this.fb.group({
-    name: ['', [Validators.required, Validators.pattern(NAME_SPECIAL_REGEX)]],
+    name: ['', [Validators.required, Validators.pattern(NAME_SPECIAL_REGEX), this.duplicateNameValidator.bind(this)]],
     description: [''],
     lifetimeValue: [3600, Validators.required],
   });
@@ -87,6 +89,7 @@ export class CreateIkePoliciesComponent implements OnInit{
     this.region = regionAndProject.regionId
     this.project = regionAndProject.projectId
     console.log(this.region);
+    this.getListIKEPolicies()
   }
 
   
@@ -118,6 +121,40 @@ onKeyDown(event: KeyboardEvent) {
   if (value < 1 && event.key !== 'Backspace' && event.key !== 'Delete') {
     event.preventDefault();
   }
+}
+
+duplicateNameValidator(control) {
+  const value = control.value;
+  // Check if the input name is already in the list
+  if (this.nameList && this.nameList.includes(value)) {
+    return { duplicateName: true }; // Duplicate name found
+  } else {
+    return null; // Name is unique
+  }
+}
+
+getListIKEPolicies() {
+    this.formSearchIkePolicy.projectId = this.project
+    this.formSearchIkePolicy.regionId = this.region
+    this.formSearchIkePolicy.searchValue = ''
+    console.log("get data");
+    console.log(this.formSearchIkePolicy);
+    this.formSearchIkePolicy.pageSize = 99999
+    this.formSearchIkePolicy.pageNumber = 1
+  this.ikePolicyService.getIKEpolicy(this.formSearchIkePolicy)
+    .subscribe((data) => {
+        data.records.forEach((item) => {
+          if (this.nameList.length > 0) {
+            this.nameList.push(item.name);
+          } else {
+            this.nameList = [item.name];
+          }
+        });
+      },
+      (error) => {
+        this.nameList = null;
+      }
+    );
 }
 
 

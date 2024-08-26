@@ -17,6 +17,7 @@ import { time } from 'echarts';
 import { DatePipe } from '@angular/common';
 import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
 import { RegionID } from 'src/app/shared/enums/common.enum';
+import { PolicyService } from 'src/app/shared/services/policy.service';
 
 @Component({
   selector: 'one-portal-list-schedule-snapshot',
@@ -69,6 +70,7 @@ export class SnapshotScheduleListComponent implements OnInit {
   loadingDelete = false;
   isVisibleRestart = false;
   loadingRestart: any;
+  isCreateOrder: boolean = false;
   @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
   searchSnapshotScheduleList(checkBegin: any) {
     this.doGetSnapSchedules(this.pageSize, this.pageNumber, this.region, this.project, this.searchName, '', checkBegin);
@@ -93,10 +95,17 @@ export class SnapshotScheduleListComponent implements OnInit {
           }
         },
         error: (error) => {
-          this.notification.error(
-            'Có lỗi xảy ra',
-            'Lấy danh sách lịch Snapshot thất bại'
-          );
+          if(error.status == 403) {
+            this.notification.error(
+              error.statusText,
+              this.i18n.fanyi('app.non.permission')
+            );
+          } else {
+            this.notification.error(
+              'Có lỗi xảy ra',
+              'Lấy danh sách lịch Snapshot thất bại'
+            );
+          }
           this.isLoadingEntities = false;
         }
       });
@@ -111,7 +120,8 @@ export class SnapshotScheduleListComponent implements OnInit {
     private snapshotVolumeService: SnapshotVolumeService,
     @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
     private fb: NonNullableFormBuilder,
-    private notification: NzNotificationService
+    private notification: NzNotificationService,
+    private policyService: PolicyService
   ) {
   }
   url = window.location.pathname;
@@ -326,6 +336,11 @@ export class SnapshotScheduleListComponent implements OnInit {
   onProjectChange(project: ProjectModel) {
     this.project = project?.id;
     this.searchSnapshotScheduleList(true);
+    this.isCreateOrder = this.policyService.hasPermission("snapshotpackage:ListSnapshotPackage") && 
+      this.policyService.hasPermission("volumesnapshotschedule:Get") &&
+      this.policyService.hasPermission("volume:List") && 
+      this.policyService.hasPermission("instance:List") && 
+      this.policyService.hasPermission("volumesnapshotschedule:Create");
   }
 
   onPageSizeChange($event: number) {

@@ -40,7 +40,7 @@
             </ng-template>
           </nz-col>
           <nz-col nzSpan="12" style="flex:none;">
-            <button nz-button nzType="primary" nzSize="large" (click)="navigateToCreate()">
+            <button *ngIf="isCreateOrder" nz-button nzType="primary" nzSize="large" (click)="navigateToCreate()">
               <img style="padding-right: 10px; margin-top: -4px" src="assets/imgs/add-circle.svg" alt="" />
               <span class="button-text-primary">Tạo mới Snapshot</span>
             </button>
@@ -64,17 +64,16 @@
           </thead>
           <tbody>
             <tr *ngFor="let data of fixedTable.data">
-              <td style="max-width:200px"><a (click)="navigateToDetail(data.id)">{{data.name}}</a></td>
-              <td style="max-width:200px"><a
+              <td style="max-width:180px">
+                <a *ngIf="!isProcessingStatus(data.status)" (click)="navigateToDetail(data.id)">{{data.name}}</a>
+                <a *ngIf="isProcessingStatus(data.status)" style="cursor: text;">{{data.name}}</a>
+              </td>
+              <td style="max-width:180px"><a
                   (click)="navigateToPackageDetail(data.snapshotPackageId)">{{data.packageName}}</a></td>
               <td style="text-align: right">{{data.sizeInGB}}</td>
-              <td>{{data.fromRootVolume == true ? data.instanceName : data.volumeName}}</td>
+              <td style="max-width:180px">{{data.fromRootVolume == true ? data.instanceName : data.volumeName}}</td>
               <td>{{data.fromRootVolume == true ? 'Snapshot máy ảo' : 'Snapshot Volume'}}</td>
-              <!--            <ng-container *ngIf="data.serviceStatus | ServiceStatusPipe as statusModel">-->
-              <!--              <td nzBreakWord nzAlign="left" [ngStyle]="{ color: statusModel.color }" [nzTooltipTitle]="data.warningMessage">-->
-              <!--                <img *ngIf="data.serviceStatus == 'DISABLED'" src="assets/imgs/warning-message2.svg" style="margin-bottom: 5px">-->
-              <!--                {{ statusModel.status }}</td>-->
-              <!--            </ng-container>-->
+
               <ng-container *ngIf="data.resourceStatus | ServiceStatusPipe as statusModel">
                 <td *ngIf="!!data.suspendReason">
                   <span [ngStyle]="{color: statusModel.color}">
@@ -90,21 +89,26 @@
               </ng-container>
               <td>{{data.startDate | date: 'HH:mm:ss dd/MM/yyyy'}}</td>
               <td>
-                <img *ngIf="data.suspendReason == null || data.suspendReason === ''" (click)="enableEdit(data)"
-                  src="assets/imgs/edit-2.svg" alt="" nzTooltipTitle="{{'app.text.edit' | i18n}}"
+                <img
+                  *ngIf="data.status != 'CREATING' && data.status != 'RESIZING'&& data.status != 'DELETING' && data.status!='SUSPENDED' && data.status !='ERROR_DELETING' && ('volumesnapshot:Update' | IsPermissionPipe)"
+                  (click)="enableEdit(data)" src="assets/imgs/edit-2.svg" alt=""
+                  nzTooltipTitle="{{'app.text.edit' | i18n}}"
                   style="cursor: pointer; width: 20px; height: 20px; margin-bottom: 3px;" />
                 <img nz-dropdown [nzDropdownMenu]="opMenu" src="assets/imgs/more1.svg" alt=""
                   style="margin-left: 5px; cursor:pointer;" />
                 <nz-dropdown-menu #opMenu="nzDropdownMenu">
                   <ul nz-menu>
                     <li
-                      *ngIf="data.fromRootVolume == false && (data.suspendReason == null || data.suspendReason === '')"
+                      *ngIf="data.fromRootVolume == false && (data.suspendReason == null || data.suspendReason === '') && ('order:Create' | IsPermissionPipe)"
                       nz-menu-item (click)="navigateToCreateVolumeVM(data.id,0)">{{ 'volume.notification.request.create'
                       | i18n}}</li>
-                    <li *ngIf="data.fromRootVolume == true && (data.suspendReason == null || data.suspendReason === '')"
+                    <li
+                      *ngIf="data.fromRootVolume == true && (data.suspendReason == null || data.suspendReason === '') && ('order:Create' | IsPermissionPipe)"
                       nz-menu-item (click)="navigateToCreateVolumeVM(data.id,1)">{{ 'app.instances.create1' | i18n}}
                     </li>
-                    <li nz-menu-item (click)="enableDelete(data)" style="color: red">{{ 'app.delete' | i18n}}</li>
+                    <li nz-menu-item
+                      *ngIf="data.status != 'CREATING' && data.status != 'RESIZING'&& data.status != 'DELETING' && data.status!='SUSPENDED' && ('volumesnapshot:Delete' | IsPermissionPipe)"
+                      (click)="enableDelete(data)" style="color: red">{{ 'app.delete' | i18n}}</li>
                   </ul>
                 </nz-dropdown-menu>
               </td>
@@ -130,7 +134,7 @@
                 thể sử dụng để sao lưu volume trước khi thực hiện 1 thao tác rủi ro đến dữ liệu trên VM.</span>
             </nz-col>
           </nz-row>
-          <button style="margin-top: 20px" nz-button [nzType]="'primary'" (click)="navigateToCreate()" nzSize="large">
+          <button *ngIf="isCreateOrder" style="margin-top: 20px" nz-button [nzType]="'primary'" (click)="navigateToCreate()" nzSize="large">
             <img style="padding-right: 10px; margin-top: -4px" src="assets/imgs/cloud-plus-bold.svg" alt="" />
             Khởi tạo snapshot
           </button>
@@ -207,8 +211,7 @@
         <img style="padding-right: 10px; margin-top: -4px" src="assets/imgs/cancel.svg" alt="" />{{ 'app.button.cancel'
         | i18n }}
       </button>
-      <button [nzLoading]="loadingDelete" nz-button nzType="primary" (click)="updateSnapshot()"
-        [disabled]="validateForm.invalid">
+      <button [nzLoading]="loadingDelete" nz-button nzType="primary" (click)="updateSnapshot()">
         <img style="padding-right: 10px; margin-top: -4px" src="assets/imgs/confirm.svg" alt="" />{{
         'app.button.confirm' | i18n }}
       </button>
