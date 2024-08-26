@@ -46,11 +46,10 @@
           <nz-form-item >
             <nz-form-control [nzErrorTip]="nameErrorTpl">
             <nz-form-label nzFor="name">
-              <div style="margin-top: 15px;">
-                <span>{{'form.account.name' |i18n}}</span>
+                <span>Name</span>
                 (<span style="color: rgba(252, 16, 16, 1); ">*</span>)
                 <img
-                nz-popover
+                nz-popover [nzPopoverOverlayStyle]="{ maxWidth: '400px' }"
                 [nzPopoverContent]="
                   'app.vpn.connection-create.name.tooltip' |i18n
                 "
@@ -59,7 +58,6 @@
                 src="assets/imgs/pajamas_question.svg"
                 alt=""
               />
-              </div>
             </nz-form-label>
             <input
               nz-input
@@ -67,6 +65,7 @@
               [value]="vpnConnection.name"
               [disabled]="true"
               appTrim
+              appAutoFocus
               maxlength="50"
               formControlName="name"
               class="input-custom"
@@ -86,11 +85,10 @@
           <nz-form-item >
             <nz-form-control>
             <nz-form-label nzFor="name">
-              <div style="margin-top: 15px;">
                 <span>IPsec Policy</span>
                 (<span style="color: rgba(252, 16, 16, 1); ">*</span>)
                 <img
-                nz-popover
+                nz-popover [nzPopoverOverlayStyle]="{ maxWidth: '400px' }"
                 [nzPopoverContent]="
                   'app.vpn.connection-create.ipsec.tooltip' |i18n
                 "
@@ -99,7 +97,6 @@
                 src="assets/imgs/pajamas_question.svg"
                 alt=""
               />
-              </div>
             </nz-form-label>
             <input
               nz-input
@@ -115,11 +112,10 @@
           <nz-form-item >
             <nz-form-control>
             <nz-form-label nzFor="name">
-              <div>
                 <span>VPN Service</span>
                 (<span style="color: rgba(252, 16, 16, 1); ">*</span>)
                 <img
-                      nz-popover
+                      nz-popover [nzPopoverOverlayStyle]="{ maxWidth: '400px' }"
                       [nzPopoverContent]="
                         'app.vpn.connection-create.vpnservice.tooltip' |i18n
                       "
@@ -128,7 +124,6 @@
                       src="assets/imgs/pajamas_question.svg"
                       alt=""
                     />
-              </div>
             </nz-form-label>
             <input
               nz-input
@@ -145,11 +140,10 @@
           <nz-form-item >
             <nz-form-control [nzErrorTip]="peerRemoteIdErrorTpl">
             <nz-form-label nzFor="name">
-              <div>
                 <span>Peer Remote IP VPN Gateway</span>
                 (<span style="color: rgba(252, 16, 16, 1); ">*</span>)
                 <img
-                      nz-popover
+                      nz-popover [nzPopoverOverlayStyle]="{ maxWidth: '400px' }"
                       [nzPopoverContent]="
                         'app.vpn.connection-create.peerIP.tooltip' |i18n
                       "
@@ -158,7 +152,6 @@
                       src="assets/imgs/pajamas_question.svg"
                       alt=""
                     />
-              </div>
             </nz-form-label>
             <input
               nz-input
@@ -179,11 +172,10 @@
           <nz-form-item >
             <nz-form-control>
             <nz-form-label nzFor="name">
-              <div>
                 <span>Local System Subnet</span>
                 (<span style="color: rgba(252, 16, 16, 1); ">*</span>)
                 <img
-                      nz-popover
+                      nz-popover [nzPopoverOverlayStyle]="{ maxWidth: '400px' }"
                       [nzPopoverContent]="
                         'app.vpn.connection-create.local.tooltip' |i18n
                       "
@@ -192,7 +184,6 @@
                       src="assets/imgs/pajamas_question.svg"
                       alt=""
                     />
-              </div>
             </nz-form-label>
             <input
               nz-input
@@ -209,11 +200,10 @@
           <nz-form-item >
             <nz-form-control  [nzErrorTip]="peerIdErrorTpl">
             <nz-form-label nzFor="name">
-              <div>
                 <span>Peer ID VPN Connections</span>
                 (<span style="color: rgba(252, 16, 16, 1); ">*</span>)
                 <img
-                      nz-popover
+                      nz-popover [nzPopoverOverlayStyle]="{ maxWidth: '400px' }"
                       [nzPopoverContent]="
                         'app.vpn.connection-create.peerId.tooltip' |i18n
                       "
@@ -222,7 +212,6 @@
                       src="assets/imgs/pajamas_question.svg"
                       alt=""
                     />
-              </div>
             </nz-form-label>
             <input
               nz-input
@@ -243,11 +232,10 @@
           <nz-form-item >
             <nz-form-control>
             <nz-form-label nzFor="name">
-              <div>
                 <span>IKE Policy</span>
                 (<span style="color: rgba(252, 16, 16, 1); ">*</span>)
                 <img
-                      nz-popover
+                      nz-popover [nzPopoverOverlayStyle]="{ maxWidth: '400px' }"
                       [nzPopoverContent]="
                         'app.vpn.connection-create.ike.tooltip' |i18n
                       "
@@ -256,7 +244,6 @@
                       src="assets/imgs/pajamas_question.svg"
                       alt=""
                     />
-              </div>
             </nz-form-label>
             <input
               nz-input
@@ -273,11 +260,10 @@
           <nz-form-item >
             <nz-form-control>
             <nz-form-label nzFor="name">
-              <div>
                 <span>Remote Local Subnet</span>
                 (<span style="color: rgba(252, 16, 16, 1); ">*</span>)
                 <img
-                      nz-popover
+                      nz-popover [nzPopoverOverlayStyle]="{ maxWidth: '400px' }"
                       [nzPopoverContent]="
                         'app.vpn.connection-create.remote.tooltip' |i18n
                       "
@@ -286,7 +272,6 @@
                       src="assets/imgs/pajamas_question.svg"
                       alt=""
                     />
-              </div>
             </nz-form-label>
             <input
               nz-input
@@ -302,11 +287,10 @@
           <nz-form-item>
             <nz-form-control [nzErrorTip]="preShareKeyErrorTpl">
             <nz-form-label nzFor="name">
-              <div>
                 <span>Pre - Shared Key (PSK) string</span>
                 (<span style="color: rgba(252, 16, 16, 1); ">*</span>)
                 <img
-                nz-popover
+                nz-popover [nzPopoverOverlayStyle]="{ maxWidth: '400px' }"
                 [nzPopoverContent]="
                    'app.vpn.connection-create.prekey.tooltip' |i18n
                 "
@@ -315,7 +299,6 @@
                 src="assets/imgs/pajamas_question.svg"
                 alt=""
               />
-              </div>
             </nz-form-label>
             <nz-input-group style="width: 100%; border-radius: 4px;" nzSearch [nzSuffix]="suffixTemplate">
               <input
@@ -352,40 +335,40 @@
       <h2 class="custom-title">{{'app.config.parameters' |i18n}}</h2>
       <div>
         <div style="margin-bottom: 12px">
-          <h3 class="custom-subtitle">{{'form.account.name' |i18n}}</h3>
-          <span class="text-break">{{vpnConnection.name}}</span>
+          <h3 class="custom-subtitle">Name</h3>
+          <span class="text-break text-label">{{vpnConnection.name}}</span>
         </div>
         <div style="margin-bottom: 20px">
           <h3 class="custom-subtitle">IKE Policy</h3>
-          <span class="text-break">{{vpnConnection.ikepolicy}}</span>
+          <span class="text-break text-label">{{vpnConnection.ikepolicy}}</span>
         </div>
         <div style="margin-bottom: 20px">
           <h3 class="custom-subtitle">IPsec Policy</h3>
-          <span class="text-break">{{vpnConnection.ipSecPolicy}}</span>
+          <span class="text-break text-label">{{vpnConnection.ipSecPolicy}}</span>
         </div>
         <div style="margin-bottom: 20px">
           <h3 class="custom-subtitle">VPN Service</h3>
-          <span class="text-break">{{vpnConnection.vpnService}}</span>
+          <span class="text-break text-label">{{vpnConnection.vpnService}}</span>
         </div>
         <div style="margin-bottom: 20px">
           <h3 class="custom-subtitle">Peer Remote IP VPN Gateway</h3>
-          <span>{{form.value.peerRemoteIp}}</span>
+          <span class="text-label">{{form.value.peerRemoteIp}}</span>
         </div>
         <div style="margin-bottom: 20px">
           <h3 class="custom-subtitle">Peer ID VPN Connections</h3>
-          <span>{{form.value.peerId}}</span>
+          <span class="text-label">{{form.value.peerId}}</span>
         </div>
         <div style="margin-bottom: 20px">
           <h3 class="custom-subtitle">Local System Subnet</h3>
-          <span>{{vpnConnection.localEndpointGroup}}</span>
+          <span class="text-label">{{vpnConnection.localEndpointGroup}}</span>
         </div>
         <div style="margin-bottom: 20px">
           <h3 class="custom-subtitle">Remote Local Subnet</h3>
-          <span>{{vpnConnection.remoteEnpointGroup}}</span>
+          <span class="text-label">{{vpnConnection.remoteEnpointGroup}}</span>
         </div>
         <div style="margin-bottom: 20px">
           <h3 class="custom-subtitle">Pre - Shared Key (PSK) string</h3>
-          <span class="text-break">{{form.value.preSharedKey}}</span>
+          <span class="text-break text-label">{{form.value.preSharedKey}}</span>
         </div>
       </div>
       <button

@@ -21,7 +21,7 @@ export class IkePoliciesComponent {
 
   pageSize: number = 5
   pageIndex: number = 1
-
+  pageSizeFixed = 5
   value: string = ''
 
   response: BaseResponse<IKEPolicyModel>
@@ -44,6 +44,7 @@ export class IkePoliciesComponent {
   
   search(search: string) {
     this.value = search.trim();
+    this.refreshParams()
     this.getData();
   }
 
@@ -106,6 +107,7 @@ export class IkePoliciesComponent {
     this.project = regionAndProject.projectId
       this.getData();
     this.searchDelay.pipe(debounceTime(1200)).subscribe(() => {
+      this.refreshParams()
       this.getData();
     });
   }

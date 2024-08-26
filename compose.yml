@@ -15,7 +15,7 @@ services:
     image: repo.onsmartcloud.com/cloudportal-dev/app-smartcloud
     build:
       context: ./
-      dockerfile: apps/app-smart-cloud/Dockerfile_dev
+      dockerfile: apps/app-smart-cloud/Dockerfile_test-dbp
     container_name: app-smartcloud
     restart: on-failure
     expose:

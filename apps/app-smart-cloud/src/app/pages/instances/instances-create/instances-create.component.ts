@@ -367,8 +367,8 @@ export class InstancesCreateComponent implements OnInit {
   isVmGpu: boolean = false;
   isVolumeSnapshotHdd: boolean = false;
   isVolumeSnapshotSsd: boolean = false;
-  isVolumeHdd: boolean = false;
-  isVolumeSsd: boolean = false;
+  isVolumeHdd: boolean
+  isVolumeSsd: boolean
   getActiveServiceByRegion() {
     this.catalogService
       .getActiveServiceByRegion(
@@ -417,6 +417,12 @@ export class InstancesCreateComponent implements OnInit {
         this.isVolumeSsd = data.filter(
           (e) => e.productName == 'volume-ssd'
         )[0].isActive;
+        this.activeBlockHDD = data.filter(
+          (e) => e.productName == 'volume-hdd'
+        )[0].isActive;
+        this.activeBlockSSD =
+          !data.filter((e) => e.productName == 'volume-hdd')[0].isActive &&
+          data.filter((e) => e.productName == 'volume-ssd')[0].isActive;
         this.cdr.detectChanges();
       });
   }
@@ -682,8 +688,8 @@ export class InstancesCreateComponent implements OnInit {
   //#endregion
 
   //#region HDD hay SDD
-  activeBlockHDD: boolean = true;
-  activeBlockSSD: boolean = false;
+  activeBlockHDD: boolean
+  activeBlockSSD: boolean
 
   initHDD(): void {
     if (!this.disableHDD) {

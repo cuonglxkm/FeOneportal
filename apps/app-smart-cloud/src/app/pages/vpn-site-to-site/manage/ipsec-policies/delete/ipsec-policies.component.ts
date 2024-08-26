@@ -42,10 +42,11 @@ export class DeleteIpsecPoliciesComponent {
     @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService
   ) {}
 
-  nameIpsecPolicyValidator(
-    control: FormControl
-  ): { [key: string]: any } | null {
+  nameIpsecPolicyValidator(control: FormControl): { [key: string]: any } | null {
     const name = control.value;
+    if (!name) {
+      return null;
+    }
     if (name !== this.nameIpsecPolicy) {
       return { nameMismatch: true };
     }

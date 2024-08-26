@@ -50,6 +50,8 @@ export class CreateIpsecPoliciesComponent implements OnInit{
     { label: 'group14 ', value: 'group14' },
   ];
 
+  lifeTimeValue: number = 3600;
+
   transformProtocol = [
     { label: 'esp', value: 'esp' },
     { label: 'ah', value: 'ah' },
@@ -69,7 +71,7 @@ export class CreateIpsecPoliciesComponent implements OnInit{
     lifeTimeValue: FormControl<number>
   }> = this.fb.group({
     name: ['', [Validators.required, Validators.pattern(NAME_SPECIAL_REGEX)]],
-    lifeTimeValue: [3600, [Validators.required, Validators.min(60)]]
+    lifeTimeValue: [3600, [Validators.required]]
   });
 
   @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
@@ -135,6 +137,36 @@ export class CreateIpsecPoliciesComponent implements OnInit{
         );
     }
     
+  }
+
+  onKeyDown(event: KeyboardEvent) {
+    const inputElement = event.target as HTMLInputElement;
+    const key = event.key;
+    const currentValue = inputElement.value;
+  
+    // Cho phép các phím đặc biệt
+    const allowedKeys = [
+      'Backspace',
+      'Delete',
+      'ArrowLeft',
+      'ArrowRight',
+      'Tab',
+    ];
+  
+    // Kiểm tra nếu phím không phải là số, không phải các phím đặc biệt, hoặc là số 0 ở đầu
+    if (
+      (!allowedKeys.includes(key) && isNaN(Number(key))) ||
+      (key === '0' && currentValue.length === 0)
+    ) {
+      event.preventDefault();
+      // Hủy sự kiện để ngăn người dùng nhập ký tự đó
+    }
+  
+    const target = event.target as HTMLInputElement;
+    const value = parseInt(target.value + event.key);
+    if (value < 1 && event.key !== 'Backspace' && event.key !== 'Delete') {
+      event.preventDefault();
+    }
   }
 
   onRegionChange(region: RegionModel) {

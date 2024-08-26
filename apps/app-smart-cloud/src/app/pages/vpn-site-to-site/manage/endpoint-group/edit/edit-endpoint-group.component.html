@@ -20,11 +20,16 @@
   <ng-template #modalContent>
     <form nz-form nzLayout="vertical" [formGroup]="validateForm">
       <nz-form-item>
-        <div>
-          <span>Name</span>
+        <nz-form-control
+        nzDisableAutoTips
+        [nzErrorTip]="nameErrorTpl"
+        style="margin-top: 10px"
+      >
+        <nz-form-label nzFor="name">
+          <span>Name&nbsp;</span>
           (<span style="color: rgba(252, 16, 16, 1)">*</span>)
           <img
-            nz-popover
+            nz-popover [nzPopoverOverlayStyle]="{ maxWidth: '400px' }"
             [nzPopoverContent]="
               'app.endpoint-create.name.tooltip' |i18n
             "
@@ -33,18 +38,14 @@
             src="assets/imgs/pajamas_question.svg"
             alt=""
           />
-        </div>
-        <nz-form-control
-          nzDisableAutoTips
-          [nzErrorTip]="nameErrorTpl"
-          style="margin-top: 10px"
-        >
+        </nz-form-label>   
           <input
             nz-input
             formControlName="nameEndpointGroup"
             id="nameEndpointGroup"
             placeholder="{{ 'validation.info.required' | i18n }}"
             appTrim
+            appAutoFocus
             [maxlength]="50"
             class="input-custom"
           />
@@ -58,12 +59,11 @@
       </nz-form-item>
 
       <nz-form-item>
-        <nz-form-label nzFor="nameFileSystem">
-          <div>
-            <span>Type</span>
+        <nz-form-label>
+            <span>Type&nbsp;</span>
             (<span style="color: rgba(252, 16, 16, 1)">*</span>)
             <img
-              nz-popover
+              nz-popover [nzPopoverOverlayStyle]="{ maxWidth: '400px' }"
               [nzPopoverContent]="
                 'app.endpoint-create.type.tooltip' |i18n
               "
@@ -72,7 +72,6 @@
               src="assets/imgs/pajamas_question.svg"
               alt=""
             />
-          </div>
         </nz-form-label>
         <input
           nz-input

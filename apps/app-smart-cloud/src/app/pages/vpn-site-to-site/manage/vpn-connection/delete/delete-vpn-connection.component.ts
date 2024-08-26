@@ -32,8 +32,11 @@ export class DeleteVpnConnectionComponent{
 
   nameVpnConnectionValidator(control: FormControl): { [key: string]: any } | null {
     const name = control.value;
+    if (!name) {
+      return null;
+    }
     if (name !== this.nameVpnconnection) {
-      return { 'nameMismatch': true };
+      return { nameMismatch: true };
     }
     return null;
   }
