@@ -3421,6 +3421,7 @@
   "app.ike.policy-create": "Create new IKE Policy",
   "app.information": "Information of",
   "app.ike.policy-create.name.tooltip": "Ike Policy names include lowercase characters a-z, uppercase A-Z, numbers 0-9, hyphens (-) and underscores (_), can have spaces, minimum 1 character and maximum 50 characters.",
+  "app.vpns2s.name.error.tooltip": "Please enter required information fields",
   "app.ike.policy-create.Authorization.tooltip": "The identity authentication algorithm for Ike Policy includes options: sha1, sha256, sha384, sha512 (based on bit-based cryptographic hash algorithm) default sha1.",
   "app.ike.policy-create.Encryption.tooltip": "The symmetric encryption algorithm used for Ike Policy includes the following options: 3des, aes-128, aes-192, aes-256 (based on the symmetric encryption algorithm with key length equivalent to the number of bits). define aes-128.",
   "app.ike.policy-create.version.tooltip": "Is a protocol used to establish secure communication between two devices over the internet. There are 2 options v1 and v2, v2 will include more authentication and encryption methods ensuring more security and data integrity. default is v1.",

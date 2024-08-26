@@ -42,11 +42,11 @@
               <nz-form-control>
                 <nz-form-label nzFor="name">
                   <div>
-                    <span>{{'form.account.name' |i18n}}</span>
+                    <span>Name</span>
                     (<span style="color: rgba(252, 16, 16, 1); ">*</span>)
                       <img
                       nz-popover
-                      [nzPopoverContent]="
+ [nzPopoverOverlayStyle]="{ maxWidth: '400px' }"                      [nzPopoverContent]="
                         'app.endpoint-create.name.tooltip' |i18n
                       "
                       nzPopoverPlacement="bottom"
@@ -69,7 +69,7 @@
                     <span>Type</span>
                     (<span style="color: rgba(252, 16, 16, 1); ">*</span>)
                       <img
-                      nz-popover
+                      nz-popover [nzPopoverOverlayStyle]="{ maxWidth: '400px' }"
                       [nzPopoverContent]="
                         'app.endpoint-create.type.tooltip' |i18n
                       "

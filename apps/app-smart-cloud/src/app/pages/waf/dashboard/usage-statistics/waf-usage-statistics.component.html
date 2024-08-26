@@ -2,30 +2,30 @@
   <nz-content>
     <nz-card>
       <div nz-row>
-        <nz-range-picker [(ngModel)]="selectedDate" (ngModelChange)="onChange($event)"></nz-range-picker>
-        <nz-select [(ngModel)]="selectedValue"
+        <nz-range-picker [(ngModel)]="selectedDate" nzAllowClear="false" (ngModelChange)="onDateChange($event)" [nzDisabledDate]="disabledDate"></nz-range-picker>
+        <nz-select [(ngModel)]="selectedDomain"
+                    (ngModelChange)="onChangeDomain()"
                      [nzMaxTagCount]="0"
                      [nzMaxTagPlaceholder]="tagPlaceHolder"
                      nzSize="default"
                      style="margin-left: 10px; width: 200px;"
-                     (ngModelChange)="onChange($event)"
                      nzPlaceHolder="Chọn domain"
-                     nzTooltipTitle="{{ 'volume.tooltip.title.filter.status' | i18n }}"
                      nzTooltipPlacement="bottom"
                      nz-tooltip
                      nzMode="multiple"
-                     nzAllowClear="true">
-          <nz-option *ngFor="let item of selectOptions" [nzValue]="item.value" [nzLabel]="item.label"></nz-option>
+                     nzAllowClear="true"
+                     [nzStatus]="!isValid?'error':''" >
+          <nz-option *ngFor="let item of selectDomainOptions" [nzValue]="item.value" [nzLabel]="item.label"></nz-option>
         </nz-select>
         <ng-template #tagPlaceHolder let-selectedList>{{ selectedList.length }} domain selected</ng-template>
+        <button style="margin-left: 10px" nz-button nzType="primary" (click)="queryDomain()">Query</button>
       </div>
       <div nz-row class="pt-5">
-        <button  nz-button nzType="primary">Primary Button</button>
-        <button  nz-button nzType="default">Default Button</button>
+        <button nz-button [nzType]="this.currentTab=='bandwidth'? 'primary':'default'" (click)="changeTab('bandwidth')">Bandwidth/Traffic</button>
+        <button nz-button [nzType]="this.currentTab=='requests'? 'primary':'default'" (click)="changeTab('requests')">Requests</button>
         <nz-select [(ngModel)]="selectedTypeDate"
                      nzSize="default"
                      style="margin-left: 10px; width: 200px;"
-                     (ngModelChange)="onChange($event)"
                      disabled="true">
           <nz-option nzLabel="Hourly" nzValue="hourly"></nz-option>
           <nz-option nzLabel="5 minutes" nzValue="fiveminutes"></nz-option>
@@ -39,18 +39,18 @@
       <nz-card>
         <p>
           <span style="color: #4168FF;">Edge &nbsp;&nbsp;</span>
-          <span class="peak">Peak Bandwidth : <span style="color: #512DA8; font-weight: bold">0.00 Mbps </span>(00:05:00 16/07/2024) </span>
-          <span class="ml-5">Total Traffic: <span style="color: #512DA8; font-weight: bold">0.00 GB</span></span>
+          <span *ngIf="this.selectedTypeDate=='fiveminutes'" class="peak">Peak Bandwidth : <span style="color: #512DA8; font-weight: bold">{{this.peakEdge?.bandwidth}} Mbps </span>({{this.peakEdge?.timestamp}}) </span>
+          <span class="ml-5">Total Traffic: <span style="color: #512DA8; font-weight: bold">{{this.currentTab=='bandwidth'?this.totalEdgeTraffic:0.00}} GB</span></span>
         </p>
         <p>
           <span style="color: #47CBFF;">Back- to - Origin &nbsp;&nbsp;</span>
-          <span class="peak">Peak Bandwidth : <span style="color: #512DA8; font-weight: bold">0.00 Mbps </span>(00:05:00 16/07/2024) </span>
-          <span class="ml-5">Total Traffic: <span style="color: #512DA8; font-weight: bold">0.00 GB</span></span>
+          <span *ngIf="this.selectedTypeDate=='fiveminutes'" class="peak">Peak Bandwidth : <span style="color: #512DA8; font-weight: bold">{{this.peakB2O?.bandwidth}} Mbps </span>({{this.peakB2O?.timestamp}}) </span>
+          <span class="ml-5">Total Traffic: <span style="color: #512DA8; font-weight: bold">{{this.currentTab=='bandwidth'?this.totalB2OTraffic:0.00}} GB</span></span>
         </p>
         <p>
-          <span style="color: #009B4E;">Bandwidth Saving Ratio &nbsp;&nbsp;</span>
-          <span class="peak">Peak Value : <span style="color: #512DA8; font-weight: bold">99.99% </span>(00:05:00 16/07/2024) </span>
-          <span class="ml-5">Average: <span style="color: #512DA8; font-weight: bold">99.99%</span></span>
+          <span style="color: #009B4E;">{{this.currentTab=='bandwidth'?'Bandwidth Saving Ratio':'Hit Ratio'}} &nbsp;&nbsp;</span>
+          <span *ngIf="this.selectedTypeDate=='fiveminutes'" class="peak">Peak Value : <span style="color: #512DA8; font-weight: bold">{{this.peakSaving?.savingBandwidth}}% </span>({{this.peakSaving?.timestamp}}) </span>
+          <span class="ml-5">Average: <span style="color: #512DA8; font-weight: bold">{{this.averageBandwidthSaving}}%</span></span>
         </p>
       </nz-card>
   
@@ -60,13 +60,13 @@
   
       <div nz-row class="pt-5 pb-5">
         <span class="border-left-text">Daily Data</span>
-        <nz-select [(ngModel)]="selectedValue"
+        <nz-select [(ngModel)]="selectedTypeRequest"
                      nzSize="default"
                      style="margin-left: 10px; width: 200px;"
-                     (ngModelChange)="onChange($event)"
+                     (ngModelChange)="changeTypeRequest()"
         >
           <nz-option nzLabel="Edge" nzValue="EDGE"></nz-option>
-          <nz-option nzLabel="Back-to-Origin" nzValue="BTO"></nz-option>
+          <nz-option nzLabel="Back-to-Origin" nzValue="B2O"></nz-option>
           <nz-option nzLabel="Bandwidth Saving Ratio" nzValue="BSR"></nz-option>
         </nz-select>
       </div>
@@ -74,7 +74,7 @@
       <nz-table #fixedTable
                 style="margin-top: 20px;"
                 nzShowSizeChanger
-                [nzData]="[]"
+                [nzData]="peakTable"
                 [nzLoading]="dailyTableLoading">
         <thead>
         <tr>
@@ -87,9 +87,9 @@
         <tbody>
           <ng-container *ngFor="let data of fixedTable.data">
             <tr>
-              <td nzLeft>{{ data.domain }}</td>
-              <td nzBreakWord nzAlign="left">{{ data.ipPublic }}</td>
-              <td nzBreakWord nzAlign="left">{{ data.cName }} </td>
+              <td nzLeft>{{ data.date }}</td>
+              <td nzBreakWord nzAlign="left">{{ data.time }}</td>
+              <td nzBreakWord nzAlign="left">{{ data.bandwidth }} </td>
               <td nzBreakWord nzAlign="left">{{ data.sslCertId ? 'ENABLE' : 'DISABLE' }}</td>
             </tr>
           </ng-container>
