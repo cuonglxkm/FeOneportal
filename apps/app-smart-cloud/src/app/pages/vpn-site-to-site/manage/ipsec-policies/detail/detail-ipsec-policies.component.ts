@@ -58,13 +58,13 @@ export class DetailIpsecPoliciesComponent implements OnInit{
     this.isLoading = true
     this.ipsecPolicyService.getIpsecPoliciesById(id,this.project,this.region).subscribe(data => {
       this.ipsecPolicy = data
-      
-      
       this.isLoading = false
     }, error => {
+      console.log(error);
+      
       this.ipsecPolicy = null
       this.isLoading = false
-      if (error.error.detail.includes('could not be found')) {
+      if (error.error.detail.includes('made requires authentication') || error.error.message.includes('could not be found')) {
         this.notification.error(
           this.i18n.fanyi('app.status.fail'),
           'Bản ghi không tồn tại'

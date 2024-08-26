@@ -116,6 +116,13 @@ export class EditIkePoliciesComponent implements OnInit {
         (error) => {
           this.ikePolicy = null;
           this.isLoading = false;
+          if (error.error.message.includes('made requires authentication') || error.error.message.includes('could not be found')) {
+            this.notification.error(
+              this.i18n.fanyi('app.status.fail'),
+              'Bản ghi không tồn tại'
+            );
+            this.router.navigateByUrl('/app-smart-cloud/vpn-site-to-site')
+          }
         }
       );
   }
