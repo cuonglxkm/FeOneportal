@@ -11,6 +11,7 @@ import { getCurrentRegionAndProject } from '@shared';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import {
   FormEditIpsecPolicy,
+  FormSearchIpsecPolicy,
   IpsecPolicyDetail
 } from 'src/app/shared/models/ipsec-policy';
 import { RegionModel, ProjectModel } from '../../../../../../../../../libs/common-utils/src';
@@ -28,7 +29,8 @@ import { ProjectSelectDropdownComponent } from 'src/app/shared/components/projec
 export class EditIpsecPoliciesComponent implements OnInit {
   region = JSON.parse(localStorage.getItem('regionId'));
   project = JSON.parse(localStorage.getItem('projectId'));
-
+  formSearchIpsecPolicy: FormSearchIpsecPolicy = new FormSearchIpsecPolicy()
+  nameList: string[] = [];
 
   authorizationAlgorithm = [
     { label: 'sha1', value: 'sha1' },
@@ -89,7 +91,42 @@ export class EditIpsecPoliciesComponent implements OnInit {
     this.project = regionAndProject.projectId;
 
     this.getIpsecPolicyById(this.activatedRoute.snapshot.paramMap.get('id'));
+    this.getListIPsecPolicies()
   }
+
+  duplicateNameValidator(control) {
+    const value = control.value;
+    // Check if the input name is already in the list
+    if (this.nameList && this.nameList.includes(value)) {
+      return { duplicateName: true }; // Duplicate name found
+    } else {
+      return null; // Name is unique
+    }
+  }
+
+  getListIPsecPolicies() {
+    this.formSearchIpsecPolicy.vpcId = this.project
+    this.formSearchIpsecPolicy.regionId = this.region
+    this.formSearchIpsecPolicy.name = ''
+    console.log("get data");
+    console.log(this.formSearchIpsecPolicy);
+    this.formSearchIpsecPolicy.pageSize = 99999
+    this.formSearchIpsecPolicy.currentPage = 1
+  this.ipsecPolicyService.getIpsecpolicy(this.formSearchIpsecPolicy)
+    .subscribe((data) => {
+        data.records.forEach((item) => {
+          if (this.nameList.length > 0) {
+            this.nameList.push(item.name);
+          } else {
+            this.nameList = [item.name];
+          }
+        });
+      },
+      (error) => {
+        this.nameList = null;
+      }
+    );
+}
 
   getIpsecPolicyById(id) {
     this.isLoading = true;

@@ -382,7 +382,7 @@
           <nz-row>
             <nz-col style="width: 100%" class="text-right">
               <button
-                [disabled]="form.get('nameWAF').invalid || selectedOfferId == 0 || !areAllDomainsValid() || bonusServices.at(0).get('ipPublic')?.invalid || isInvalid || areAnyDomainsInvalid()"
+                [disabled]="form.get('nameWAF').invalid || selectedOfferId == 0 || !areAllDomainsValid() || bonusServices.at(0).get('ipPublic')?.invalid || isInvalid || areAnyDomainsInvalid() || isExistName"
                 style="width: 100%"
                 nz-button
                 nzSize="large"

@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { getCurrentRegionAndProject } from '@shared';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
-import { FormCreateIpsecPolicy } from 'src/app/shared/models/ipsec-policy';
+import { FormCreateIpsecPolicy, FormSearchIpsecPolicy } from 'src/app/shared/models/ipsec-policy';
 import { RegionModel, ProjectModel } from '../../../../../../../../../libs/common-utils/src';
 import { IpsecPolicyService } from 'src/app/shared/services/ipsec-policy.service';
 import { I18NService } from '@core';
@@ -66,11 +66,13 @@ export class CreateIpsecPoliciesComponent implements OnInit{
   selectedLifetimeUnits = 'seconds'
   isLoading: boolean = false
   formCreateIpsecPolicy: FormCreateIpsecPolicy =new FormCreateIpsecPolicy();
+  formSearchIpsecPolicy: FormSearchIpsecPolicy = new FormSearchIpsecPolicy()
+  nameList: string[] = [];
   form: FormGroup<{
     name: FormControl<string>;
     lifeTimeValue: FormControl<number>
   }> = this.fb.group({
-    name: ['', [Validators.required, Validators.pattern(NAME_SPECIAL_REGEX)]],
+    name: ['', [Validators.required, Validators.pattern(NAME_SPECIAL_REGEX), this.duplicateNameValidator.bind(this)]],
     lifeTimeValue: [3600, [Validators.required]]
   });
 
@@ -98,6 +100,7 @@ export class CreateIpsecPoliciesComponent implements OnInit{
     let regionAndProject = getCurrentRegionAndProject()
     this.region = regionAndProject.regionId
     this.project = regionAndProject.projectId
+    this.getListIPsecPolicies()
   }
 
 
@@ -109,6 +112,40 @@ export class CreateIpsecPoliciesComponent implements OnInit{
     private ipsecPolicyService: IpsecPolicyService,
     @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService
   ) {}
+
+  duplicateNameValidator(control) {
+    const value = control.value;
+    // Check if the input name is already in the list
+    if (this.nameList && this.nameList.includes(value)) {
+      return { duplicateName: true }; // Duplicate name found
+    } else {
+      return null; // Name is unique
+    }
+  }
+
+  getListIPsecPolicies() {
+    this.formSearchIpsecPolicy.vpcId = this.project
+    this.formSearchIpsecPolicy.regionId = this.region
+    this.formSearchIpsecPolicy.name = ''
+    console.log("get data");
+    console.log(this.formSearchIpsecPolicy);
+    this.formSearchIpsecPolicy.pageSize = 99999
+    this.formSearchIpsecPolicy.currentPage = 1
+  this.ipsecPolicyService.getIpsecpolicy(this.formSearchIpsecPolicy)
+    .subscribe((data) => {
+        data.records.forEach((item) => {
+          if (this.nameList.length > 0) {
+            this.nameList.push(item.name);
+          } else {
+            this.nameList = [item.name];
+          }
+        });
+      },
+      (error) => {
+        this.nameList = null;
+      }
+    );
+}
 
   handleCreate() {
     this.isLoading = true;
