@@ -72,8 +72,7 @@ export class EditVpnConnectionComponent implements OnInit {
           this.form.controls.preSharedKey.setValue(data.preSharedKey);
         },
         (error) => {
-          this.vpnConnection = null;
-          if (error.error.detail.includes('could not be found')) {
+          if (error.error.message.includes('made requires authentication') || error.error.message.includes('could not be found')) {
             this.notification.error(
               this.i18n.fanyi('app.status.fail'),
               'Bản ghi không tồn tại'

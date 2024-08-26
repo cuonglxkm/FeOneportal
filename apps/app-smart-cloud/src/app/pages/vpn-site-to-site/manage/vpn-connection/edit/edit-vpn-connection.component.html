@@ -72,7 +72,7 @@
             />
             <ng-template #nameErrorTpl let-control>
               <ng-container *ngIf="control.hasError('required')"
-                >{{'app.vpn.connection-create.name.alert' |i18n}}</ng-container
+                >{{'app.vpns2s.name.error.tooltip' |i18n}}</ng-container
               >
               <ng-container *ngIf="control.hasError('pattern')"
                 >{{'app.vpn.connection-create.name.alert1' |i18n}}</ng-container
@@ -162,7 +162,7 @@
               class="input-custom"
             />
             <ng-template #peerRemoteIdErrorTpl let-control>
-              <ng-container *ngIf="control.hasError('required')">{{'app.vpn.connection-create.peerIP.alert1' |i18n}}</ng-container>
+              <ng-container *ngIf="control.hasError('required')">{{'app.vpns2s.name.error.tooltip' |i18n}}</ng-container>
               <ng-container *ngIf="control.hasError('pattern')">{{'app.vpn.connection-create.peerIP.alert2' |i18n}}</ng-container>
             </ng-template> 
           </nz-form-control>
@@ -222,7 +222,7 @@
               formControlName="peerId"
             />
             <ng-template #peerIdErrorTpl let-control>
-              <ng-container *ngIf="control.hasError('required')">{{'app.vpn.connection-create.peerId.alert1' |i18n}}</ng-container>
+              <ng-container *ngIf="control.hasError('required')">{{'app.vpns2s.name.error.tooltip' |i18n}}</ng-container>
               <ng-container *ngIf="control.hasError('pattern')">{{'app.vpn.connection-create.peerId.alert2' |i18n}}</ng-container>
             </ng-template> 
           </nz-form-control>
@@ -321,7 +321,7 @@
               ></span>
             </ng-template>
             <ng-template #preShareKeyErrorTpl let-control>
-              <ng-container *ngIf="control.hasError('required')">{{'app.vpn.connection-create.prekey.alert' |i18n}}</ng-container>
+              <ng-container *ngIf="control.hasError('required')">{{'app.vpns2s.name.error.tooltip' |i18n}}</ng-container>
             </ng-template>
           </nz-form-control>
           </nz-form-item>

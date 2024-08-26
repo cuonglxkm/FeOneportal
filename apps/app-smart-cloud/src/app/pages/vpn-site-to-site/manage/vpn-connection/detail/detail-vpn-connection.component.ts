@@ -70,9 +70,8 @@ export class DetailVpnConnectionComponent implements OnInit {
           this.isLoading = false;
         },
         (error) => {
-          this.vpnConnection = null;
           this.isLoading = false;
-          if (error.error.detail.includes('could not be found')) {
+          if (error.error.message.includes('made requires authentication') || error.error.message.includes('could not be found')) {
             this.notification.error(
               this.i18n.fanyi('app.status.fail'),
               'Bản ghi không tồn tại'

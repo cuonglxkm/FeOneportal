@@ -3384,6 +3384,7 @@
   "app.endpoint-create.cidr.alert2": "CIDR phải có dạng x.x.x.0/24",
   "app.vpn.connection-create": "Tạo mới VPN Connection",
   "app.vpn.connection-create.name.tooltip": "Name: Tên, các ký tự chữ thường a-z, chữ hoa A-Z, số 0-9, dấu gạch ngang (-) và dấu gạch dưới (_), có thể có khoảng trắng, tối thiểu 1 ký tự và tối đa 50 ký tự.",
+  "app.vpn.connection-create.name.alert1": "Tên VPN Connection chỉ chứa các ký tự chữ thường a-z, chữ hoa A-Z, số 0-9, dấu gạch ngang (-) và dấu gạch dưới (_), có thể có khoảng trắng, tối thiểu 1 ký tự và tối đa 50 ký tự.",
   "app.vpn.connection-create.name.alert": "Tên VPN Connection không được để trống",
   "app.vpn.connection-create.ipsec.tooltip": "IPsec Policy: Khách hàng chọn IPsec Policy đã tạo thành công ở mục IPsec Policies trước đó ( lựa chọn theo tên).",
   "app.vpn.connection-create.ike.tooltip": "IKE Policy: Khách hàng chọn IKE Policy đã tạo thành công ở mục IKE Policies trước đó ( lựa chọn theo tên).",
