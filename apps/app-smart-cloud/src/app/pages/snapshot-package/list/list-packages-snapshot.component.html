@@ -57,7 +57,7 @@
             </ng-template>
           </nz-col>
           <nz-col nzSpan="8" style="flex:none;">
-            <button nz-button nzType="primary" nzSize="large" (click)="navigateToCreate()">
+            <button *ngIf="isCreateOrder" nz-button nzType="primary" nzSize="large" (click)="navigateToCreate()">
               <img style="padding-right: 10px; margin-top: -4px" src="assets/imgs/add-circle.svg" alt="" />
               <span class="button-text-primary">Tạo mới gói Snapshot</span>
             </button>
@@ -105,11 +105,11 @@
               <td>
                 <div>
                   <img
-                    *ngIf="data.status != 'CREATING' && data.status != 'RESIZING'&& data.status != 'DELETING' && data.status!='SUSPENDED' && data.status !='ERROR_DELETING'"
+                    *ngIf="data.status != 'CREATING' && data.status != 'RESIZING'&& data.status != 'DELETING' && data.status!='SUSPENDED' && data.status !='ERROR_DELETING' && ('snapshotpackage:UpdateSnapshotPackage' | IsPermissionPipe)"
                     src="assets/imgs/edit-2.svg" alt="" (click)="showUpdate(data)" nz-tooltip
                     nzTooltipTitle="{{'app.text.edit' | i18n}}" style="cursor: pointer; width: 20px; height: 20px;" />
                   <img src="assets/imgs/delete.svg"
-                    *ngIf="data.status != 'CREATING' && data.status != 'RESIZING'&& data.status != 'DELETING' && data.status!='SUSPENDED' "
+                    *ngIf="data.status != 'CREATING' && data.status != 'RESIZING'&& data.status != 'DELETING' && data.status!='SUSPENDED' && ('snapshotpackage:DeleteSnapshotPackage' | IsPermissionPipe)"
                     style="width: 28px;height: 28px; cursor: pointer;" nz-tooltip
                     nzTooltipTitle="{{'app.delete' | i18n}}" nzTooltipPlacement="bottom" (click)="showDelete(data)" />
 
@@ -142,7 +142,7 @@
                 muốn sử dụng gói Snapshot)</span>
             </nz-col>
           </nz-row>
-          <button *ngIf="projectType != 1" style="margin-top: 20px" nz-button [nzType]="'primary'"
+          <button *ngIf="projectType != 1 && isCreateOrder" style="margin-top: 20px" nz-button [nzType]="'primary'"
             (click)="navigateToCreate()" nzSize="large">
             <img style="padding-right: 10px; margin-top: -4px" src="assets/imgs/cloud-plus-bold.svg" alt="" />
             Khởi tạo gói snapshot

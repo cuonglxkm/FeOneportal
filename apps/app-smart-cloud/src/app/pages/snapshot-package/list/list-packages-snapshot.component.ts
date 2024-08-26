@@ -17,6 +17,7 @@ import { VolumeService } from '../../../shared/services/volume.service';
 import { SnapshotVolumeService } from '../../../shared/services/snapshot-volume.service';
 import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
 import { RegionID } from 'src/app/shared/enums/common.enum';
+import { PolicyService } from 'src/app/shared/services/policy.service';
 
 
 @Component({
@@ -78,6 +79,7 @@ export class ListPackagesSnapshotComponent implements OnInit {
   snapshotSchefuleArray: any[];
   isLoadingSnapshotSchedule = false;
   isUpdateName: boolean = false;
+  isCreateOrder: boolean = false;
   @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
   constructor(private router: Router,
     private packageSnapshotService: PackageSnapshotService,
@@ -87,7 +89,8 @@ export class ListPackagesSnapshotComponent implements OnInit {
     private fb: NonNullableFormBuilder,
     private vlService: VolumeService,
     private snapshotVolumeService: SnapshotVolumeService,
-    private projectService: ProjectService) {
+    private projectService: ProjectService,
+    private policyService: PolicyService) {
   }
 
   regionChanged(region: RegionModel) {
@@ -108,6 +111,9 @@ export class ListPackagesSnapshotComponent implements OnInit {
     if (project?.type == 1) {
       this.isBegin = true;
     }
+    this.isCreateOrder = this.policyService.hasPermission("configuration:Get") && 
+      this.policyService.hasPermission("order:GetOrderAmount") &&
+      this.policyService.hasPermission("order:Create");
   }
 
 
@@ -165,6 +171,12 @@ export class ListPackagesSnapshotComponent implements OnInit {
           }
         }
       }, error => {
+        if(error.status == 403) {
+          this.notification.error(
+            error.statusText,
+            this.i18n.fanyi('app.non.permission')
+          );
+        }
         this.isLoading = false
         this.response = null
       })

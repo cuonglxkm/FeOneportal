@@ -32,12 +32,12 @@
 </page-header>
 <nz-content>
   <div class="text-left" style="margin-bottom: 1.5rem;">
-    <button *ngIf=" packageSnapshotModel.status !='SUSPENDED' " nz-button nzType="primary" (click)="navigateToEdit()"
+    <button *ngIf=" packageSnapshotModel.status !='SUSPENDED' && ('order:Create' | IsPermissionPipe) && ('configuration:Get' | IsPermissionPipe) && ('order:GetOrderAmount' | IsPermissionPipe)" nz-button nzType="primary" (click)="navigateToEdit()"
       nzSize="large">
       <img style="padding-right: 10px;" src="assets/imgs/edit-1.svg" alt="" />
       <span class="button-text-primary">Điều chỉnh</span>
     </button>
-    <button nz-button nzType="primary" (click)="navigateToExtend()" nzSize="large">
+    <button *ngIf="('order:Create' | IsPermissionPipe) && ('order:GetOrderAmount' | IsPermissionPipe)" nz-button nzType="primary" (click)="navigateToExtend()" nzSize="large">
       <img style="padding-right: 10px;" src="assets/imgs/calendar.svg" alt="" />
       <span class="button-text-primary">Gia hạn</span>
     </button>
