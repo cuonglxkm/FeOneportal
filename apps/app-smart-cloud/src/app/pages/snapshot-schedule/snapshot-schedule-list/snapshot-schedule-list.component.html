@@ -46,7 +46,7 @@
             </ng-template>
           </nz-col>
           <nz-col nzSpan="12" style="flex:none;">
-            <button nz-button nzType="primary" nzSize="large" (click)="navigateToCreate()">
+            <button *ngIf="isCreateOrder" nz-button nzType="primary" nzSize="large" (click)="navigateToCreate()">
               <img style="padding-right: 10px; margin-top: -4px" src="assets/imgs/add-circle.svg" alt="" />
               <span class="button-text-primary">{{'app.snapshot.schedule.label.create' | i18n}}</span>
             </button>
@@ -91,15 +91,15 @@
                 {{ statusModel.status }}</td>
             </ng-container>
             <td>
-              <img *ngIf="data.status == 'ACTIVE'" (click)="enableEdit(data)" src="assets/imgs/edit-2.svg" alt="" nzTooltipTitle="{{'app.text.edit' | i18n}}"
+              <img *ngIf="data.status == 'ACTIVE' && ('volumesnapshotschedule:Update' | IsPermissionPipe)" (click)="enableEdit(data)" src="assets/imgs/edit-2.svg" alt="" nzTooltipTitle="{{'app.text.edit' | i18n}}"
                    style="cursor: pointer; width: 20px; height: 20px; margin-bottom: 3px;" />
               <img nz-dropdown [nzDropdownMenu]="opMenu" src="assets/imgs/more1.svg" alt="" style="margin-left: 5px; cursor:pointer;" />
               <nz-dropdown-menu #opMenu="nzDropdownMenu">
                 <ul nz-menu>
-                  <li *ngIf="data.status == 'DISABLED' || data.status == 'SUSPENDED'" nz-menu-item (click)="enableRestart(data)">
+                  <li *ngIf="(data.status == 'DISABLED' || data.status == 'SUSPENDED') && ('volumesnapshotschedule:VolumeSnapshotScheduleAction' | IsPermissionPipe)" nz-menu-item (click)="enableRestart(data)">
                     {{'app.restore' | i18n}}
                   </li>
-                  <li nz-menu-item (click)="enableDelete(data)" style="color: red">{{ 'app.delete' | i18n}}</li>
+                  <li *ngIf="('volumesnapshotschedule:Delete' | IsPermissionPipe)" nz-menu-item (click)="enableDelete(data)" style="color: red">{{ 'app.delete' | i18n}}</li>
                 </ul>
               </nz-dropdown-menu>
             </td>
@@ -125,7 +125,7 @@
               <span class="text-intro-desc">{{'app.snapshot.schedule.description' | i18n}}</span>
             </nz-col>
           </nz-row>
-          <button style="margin-top: 20px" nz-button [nzType]="'primary'" (click)="navigateToCreate()"
+          <button *ngIf="isCreateOrder" style="margin-top: 20px" nz-button [nzType]="'primary'" (click)="navigateToCreate()"
                   nzSize="large">
             <img style="padding-right: 10px; margin-top: -4px" src="assets/imgs/cloud-plus-bold.svg" alt="" />
             {{'app.snapshot.schedule.init' | i18n}}
