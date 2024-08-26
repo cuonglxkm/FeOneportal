@@ -311,10 +311,11 @@ export class CreateNetworkComponent implements OnInit {
 
 
   ngOnInit() {
-
     let regionAndProject = getCurrentRegionAndProject();
     this.region = regionAndProject.regionId;
     this.project = regionAndProject.projectId;  
+    console.log(this.region);
+    
     this.getListNetwork();
     this.onInputCheckPool();
     this.onCheckGateway();

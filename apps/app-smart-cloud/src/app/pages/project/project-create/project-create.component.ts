@@ -253,15 +253,6 @@ export class ProjectCreateComponent implements OnInit {
   ngOnInit() {
     let regionAndProject = getCurrentRegionAndProject();
     this.regionId = regionAndProject.regionId;
-    if (!this.url.includes('advance')) {
-      if (Number(localStorage.getItem('regionId')) === RegionID.ADVANCE) {
-        this.regionId = RegionID.NORMAL;
-      } else {
-        this.regionId = Number(localStorage.getItem('regionId'));
-      }
-    } else {
-      this.regionId = RegionID.ADVANCE;
-    }
     this.initFlavors();
     this.initVpnSiteToSiteData();
     this.initLoadBalancerData();
