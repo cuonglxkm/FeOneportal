@@ -50,8 +50,12 @@ export class SnapshotCreateComponent implements OnInit, OnChanges {
   volumeLoading = true;
   snapshotPackageLoading = true;
   selectedSnapshotType = 0;
-  packageSnapshotHdd:number;
-  packageSnapshotSsd:number;
+  packageSnapshotHdd: number;
+  packageSnapshotSsd: number;
+  packageUsedHdd: number;
+  packageUsedSsd: number;
+  availableSizeSSD: number;
+  availableSizeHDD: number;
 
   selectedVolume: any;
   selectedVM: any;
@@ -59,12 +63,20 @@ export class SnapshotCreateComponent implements OnInit, OnChanges {
   projectType = 0;
   projectName: string;
   projectId: number;
-  projetQuotaHdd: number;
-  projectQuotaSsd: number;
+  projectRemainingHdd: number;
+  projectRemainingSsd: number;
   quotaSelected: number = 0;
   quotaTypeSelected: string;
+  projectTotalHdd: number;
+  projectTotalSsd: number;
+  projectUsedHdd: number;
+  projectUsedSsd: number;
 
   @Input() navigateType: any = 2; // navigate form(VM:1 Volume:0 none:2)
+  navigateTypeSelected: number;
+  idVolume: number;
+  instanceId: number;
+
   loadingCreate: boolean;
   disableByQuota = false;
 
@@ -113,12 +125,12 @@ export class SnapshotCreateComponent implements OnInit, OnChanges {
     } else {
       this.region = RegionID.ADVANCE;
     }
-    // this.projectType = regionAndProject.type;
     this.loadSnapshotPackage();
     this.loadVolumeList();
     this.loadVmList();
     this.validateForm.controls['quota'].disable();
     console.log("this.quotaType1123", this.quotaType)
+    console.log("select vomueeeee", this.selectedVolume)
   }
 
   regionChanged(region: RegionModel) {
@@ -141,12 +153,18 @@ export class SnapshotCreateComponent implements OnInit, OnChanges {
     if (project?.type == 1) {
       this.vpcService.getTotalResouce(project?.id).subscribe(
         data => {
-          let total = data.cloudProject;
-          let used = data.cloudProjectResourceUsed;
-          this.quotaHDDUsed = used.volumeSnapshotHddInGb;
-          this.quotaHDDTotal = total.quotaVolumeSnapshotHddInGb;
-          this.quotaSSDUsed = used.volumeSnapshotSsdInGb;
-          this.quotaSSDTotal = total.quotaVolumeSnapshotSsdInGb;
+
+          this.projectTotalHdd = data.cloudProject.quotaVolumeSnapshotHddInGb;
+          this.projectTotalSsd = data.cloudProject.quotaVolumeSnapshotSsdInGb;
+          this.projectUsedHdd = data.cloudProjectResourceUsed.volumeSnapshotHddInGb;
+          this.projectUsedSsd = data.cloudProjectResourceUsed.volumeSnapshotSsdInGb;
+
+          this.projectRemainingHdd = this.projectTotalHdd - this.projectUsedHdd;
+          this.projectRemainingSsd = this.projectTotalSsd - this.projectUsedSsd
+          // this.quotaHDDUsed = used.volumeSnapshotHddInGb;
+          // this.quotaHDDTotal = total.quotaVolumeSnapshotHddInGb;
+          // this.quotaSSDUsed = used.volumeSnapshotSsdInGb;
+          // this.quotaSSDTotal = total.quotaVolumeSnapshotSsdInGb;
         });
     }
 
@@ -205,6 +223,7 @@ export class SnapshotCreateComponent implements OnInit, OnChanges {
   disableCreate = true;
   // quota: string = '0 GB';
 
+  // load ds package snapshot đang hoạt động
   private loadSnapshotPackage() {
     this.formSearchPackageSnapshot.projectId = this.project;
     this.formSearchPackageSnapshot.regionId = this.region;
@@ -218,16 +237,13 @@ export class SnapshotCreateComponent implements OnInit, OnChanges {
       }))
       .subscribe(
         data => {
-          console.log("data.records", data.records)
           this.snapshotPackageArray = data.records.filter(item => item.status == 'AVAILABLE');
-          console.log("this.snapshotPackageArray", this.snapshotPackageArray)
-
         }
       );
   }
 
-  idVolume: number;
 
+  // load ds volume
   private loadVolumeList() {
     this.loadingSrv.open({ type: 'spin', text: 'Loading...' });
     this.volumeService.getVolumes(this.tokenService.get()?.userId, this.project, this.region, 9999, 1, 'KHOITAO', '')
@@ -236,33 +252,26 @@ export class SnapshotCreateComponent implements OnInit, OnChanges {
       }))
       .subscribe(
         data => {
-          console.log("volume list", data)
-          // this.volumeArray = data?.records.filter(item => {
-          //   return ['AVAILABLE', 'IN-USE'].includes(item?.serviceStatus);
-          // });
           this.volumeArray = data?.records.filter(item =>
             item?.serviceStatus == 'AVAILABLE'
           );
+          // check id volume được chọn khi tạo từ ds volume
+          this.activatedRoute.queryParams.subscribe(params => {
+            this.idVolume = params['volumeId'];
+            let navigateType = params['navigateType'];
+            if (this.idVolume && navigateType == 0) {
+              this.selectedSnapshotType == 0
+              this.selectedVolume = this.volumeArray?.find(e => e.id == this.idVolume);
+              this.changeVmVolumeSelected();
 
-          console.log("ffff", this.volumeArray)
-          if (this.activatedRoute.snapshot.paramMap.get('volumeId') != undefined) {
-            this.idVolume = Number.parseInt(this.activatedRoute.snapshot.paramMap.get('volumeId'));
-            console.log('id volume', this.idVolume);
-            // this.selectedSnapshotType = 0;
-            console.log('volume array', this.volumeArray);
-            this.selectedVolume = this.volumeArray?.filter(e => e.id == this.idVolume)[0];
-            console.log('selected volume', this.selectedVolume);
-            // this.changeVmVolume();
-          } else {
-            this.selectedVolume = null;
-            // this.selectedSnapshotType = 1;
-          }
-          // this.volumeArray = data.records;
+            } else {
+              this.selectedVolume = null;
+            }
+          });
         }
       );
   }
 
- 
   private loadVmList() {
     this.loadingSrv.open({ type: 'spin', text: 'Loading...' });
     this.instancesService.search(1, 9999, this.region, this.project, '', '', true, this.tokenService.get()?.userId)
@@ -272,39 +281,70 @@ export class SnapshotCreateComponent implements OnInit, OnChanges {
       }))
       .subscribe(
         data => {
-          const rs1 = data.records.filter(item => {
+          // const rs1 = data.records.filter(item => {
+          //   return item.taskState === 'ACTIVE';
+          // });
+          // this.vmArray = rs1;
+          // if (this.activatedRoute.snapshot.paramMap.get('instanceId') != undefined || this.activatedRoute.snapshot.paramMap.get('instanceId') != null) {
+          //   // this.selectedSnapshotType = 1;
+          //   this.selectedVM = this.vmArray.filter(e => e.id == Number.parseInt(this.activatedRoute.snapshot.paramMap.get('instanceId')))[0];
+          //   // this.changeVmVolume();
+          // } else {
+          //   this.selectedVM = null;
+          //   // this.selectedSnapshotType = 0;
+          // }
+          this.vmArray = data.records.filter(item => {
             return item.taskState === 'ACTIVE';
           });
-          this.vmArray = rs1;
-          if (this.activatedRoute.snapshot.paramMap.get('instanceId') != undefined || this.activatedRoute.snapshot.paramMap.get('instanceId') != null) {
-            // this.selectedSnapshotType = 1;
-            this.selectedVM = this.vmArray.filter(e => e.id == Number.parseInt(this.activatedRoute.snapshot.paramMap.get('instanceId')))[0];
-            // this.changeVmVolume();
-          } else {
-            this.selectedVM = null;
-            // this.selectedSnapshotType = 0;
-          }
+          console.log("this.vmArray 22", this.vmArray)
+          // check id máy ảo được chọn khi tạo từ ds máy ảo
+          this.activatedRoute.queryParams.subscribe(params => {
+            this.instanceId = params['instanceId'];
+            this.navigateTypeSelected = params['navigateType'];
+
+            if (this.instanceId && this.navigateTypeSelected == 1) {
+              this.selectedVM = this.vmArray?.find(e => e?.id == this.instanceId);
+              this.instancesService.getById(this.instanceId, false).subscribe(data => {
+                let volumeRootId = data.volumeRootId;
+                this.vlService.getVolumeById(volumeRootId, this.project)
+                  .pipe(finalize(() => {
+                    // this.checkDisable();
+                    this.loadingCreate = false;
+                  }))
+                  .subscribe(
+                    data => {
+                      this.quotaSelected = data.sizeInGB
+                      this.quotaTypeSelected = data.volumeType;
+                    })
+                this.changeVmVolumeSelected();
+              })
+            } else {
+              this.selectedVM = null;
+            }
+          });
+
         }
       );
   }
 
-  checkDisable() {
-    this.disableCreate = false;
-    if ((this.selectedSnapshotPackage == undefined && this.projectType != 1) ||
-      (((this.navigateType == 0 || (this.selectedSnapshotType == 0 && this.navigateType == 2)) && this.selectedVolume == undefined) ||
-        (((this.navigateType == 1 || (this.selectedSnapshotType == 1 && this.navigateType == 2)) && this.selectedVM == undefined)))) {
-      this.disableCreate = true;
-    }
+  // checkDisable() {
+  //   this.disableCreate = false;
+  //   if ((this.selectedSnapshotPackage == undefined && this.projectType != 1) ||
+  //     (((this.navigateType == 0 || (this.selectedSnapshotType == 0 && this.navigateType == 2)) && this.selectedVolume == undefined) ||
+  //       (((this.navigateType == 1 || (this.selectedSnapshotType == 1 && this.navigateType == 2)) && this.selectedVM == undefined)))) {
+  //     this.disableCreate = true;
+  //   }
 
-    if ((this.navigateType == 0 || (this.selectedSnapshotType == 0 && this.navigateType == 2)) && this.selectedVolume != undefined) {
-      this.validateForm.controls['quota'].setValue(this.selectedVolume?.sizeInGB == undefined ? '0 GB' : this.selectedVolume?.sizeInGB + 'GB');
-    } else if ((this.navigateType == 1 || (this.selectedSnapshotType == 1 && this.navigateType == 2)) && this.selectedVolumeRoot != undefined) {
-      this.validateForm.controls['quota'].setValue(this.selectedVolumeRoot?.sizeInGB == undefined ? '0 GB' : this.selectedVolumeRoot?.sizeInGB + 'GB');
-    } else {
-      this.validateForm.controls['quota'].setValue('0 GB');
-    }
-    this.checkDisableByQuota();
-  }
+  //   if ((this.navigateType == 0 || (this.selectedSnapshotType == 0 && this.navigateType == 2)) && this.selectedVolume != undefined) {
+  //     this.validateForm.controls['quota'].setValue(this.selectedVolume?.sizeInGB == undefined ? '0 GB' : this.selectedVolume?.sizeInGB + 'GB');
+  //   } else if ((this.navigateType == 1 || (this.selectedSnapshotType == 1 && this.navigateType == 2)) && this.selectedVolumeRoot != undefined) {
+  //     this.validateForm.controls['quota'].setValue(this.selectedVolumeRoot?.sizeInGB == undefined ? '0 GB' : this.selectedVolumeRoot?.sizeInGB + 'GB');
+  //   } else {
+  //     this.validateForm.controls['quota'].setValue('0 GB');
+  //   }
+  //   this.checkDisableByQuota();
+  // }
+
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes.snapshotTypeCreate && changes.snapshotTypeCreate.previousValue == undefined) {
@@ -320,7 +360,9 @@ export class SnapshotCreateComponent implements OnInit, OnChanges {
     this.selectedVM = null;
     this.quotaSelected = 0;
     this.quotaTypeSelected = '';
-    this.checkDisable();
+    this.isNotEnoughQuota = false;
+    this.isQuota = false;
+    // this.checkDisable();
   }
 
   private checkDisableByQuota() {
@@ -375,57 +417,57 @@ export class SnapshotCreateComponent implements OnInit, OnChanges {
 
       this.packageSnapshotService.detail(this.selectedSnapshotPackage.id, this.project)
         .pipe(finalize(() => {
-          this.checkDisable();
+          // this.checkDisable();
         }))
         .subscribe(data => {
-          // let quota = Number(this.validateForm.controls['quota'].value.replace('GB', ''))
-          // console.log("quota123", quota)
 
-
-          console.log("selectedSnapshotPackage", data)
 
           this.packageSnapshotHdd = data.totalSizeHDD;
           this.packageSnapshotSsd = data.totalSizeSSD;
+          this.packageUsedHdd = data.usedSizeHDD;
+          this.packageUsedSsd = data.usedSizeSSD;
+          this.availableSizeSSD = data.availableSizeSSD;
+          this.availableSizeHDD = data.availableSizeHDD;
 
-          this.quotaHDDTotal = data.totalSizeHDD;
-          this.quotaHDDUsed = data.usedSizeHDD;
-          this.quotaSSDTotal = data.totalSizeSSD;
-          this.quotaSSDUsed = data.usedSizeSSD;
-          this.namePackage = data.packageName;
-          this.idSnapshotPackage = data.id;
+          // this.quotaHDDTotal = data.totalSizeHDD;
+          // this.quotaHDDUsed = data.usedSizeHDD;
+          // this.quotaSSDTotal = data.totalSizeSSD;
+          // this.quotaSSDUsed = data.usedSizeSSD;
+          // this.namePackage = data.packageName;
+          // this.idSnapshotPackage = data.id;
 
-          if(this.selectedVM || this.selectedVolume){
-            if( this.quotaTypeSelected =='hdd'){
-              if(this.packageSnapshotHdd>= this.quotaSelected){
-               
-                this.isQuota=true;
-                this.isNotEnoughQuota=false;
-                this.messageQuota =  `Dung lượng Snapshot volume HDD  đã dùng: ${this.packageSnapshotHdd} GB / ${this.quotaSelected} GB. Quý khách còn lại ${this.quotaSelected -this.packageSnapshotHdd} GB dung lượng Snapshot HDD`;
-                this.messageNotEnoughtQuota ='';
+          if (this.selectedVM || this.selectedVolume) {
+            if (this.quotaTypeSelected == 'hdd') {
+              if (this.packageSnapshotHdd >= this.quotaSelected) {
+
+                this.isQuota = true;
+                this.isNotEnoughQuota = false;
+                this.messageQuota = `Dung lượng Snapshot volume HDD  đã dùng: ${this.packageUsedHdd} GB / ${this.packageSnapshotHdd} GB. Quý khách còn lại ${this.availableSizeHDD} GB dung lượng Snapshot HDD`;
+                this.messageNotEnoughtQuota = '';
               }
-              else{
-                this.isQuota=false;
-                this.isNotEnoughQuota=true;
-                this.messageQuota =  '';
-                this.messageNotEnoughtQuota ='';
+              else {
+                this.isQuota = false;
+                this.isNotEnoughQuota = true;
+                this.messageQuota = '';
+                this.messageNotEnoughtQuota = '';
               }
 
             }
-            else if(this.quotaTypeSelected =='ssd'){
-              if(this.packageSnapshotSsd>= this.quotaSelected){
-                 this.messageQuota =  `Dung lượng Snapshot volume SSD  đã dùng: ${this.packageSnapshotHdd} GB / ${this.quotaSelected} GB. Quý khách còn lại ${this.quotaSelected -this.packageSnapshotHdd} GB dung lượng Snapshot SSD`;
-                this.isQuota=true;
-                this.isNotEnoughQuota=false;
+            else if (this.quotaTypeSelected == 'ssd') {
+              if (this.packageSnapshotSsd >= this.quotaSelected) {
+                this.messageQuota = `Dung lượng Snapshot volume SSD  đã dùng: ${this.packageUsedSsd} GB / ${this.packageSnapshotSsd} GB. Quý khách còn lại ${this.availableSizeSSD} GB dung lượng Snapshot SSD`;
+                this.isQuota = true;
+                this.isNotEnoughQuota = false;
               }
-              else{
-                this.isQuota=false;
-                this.isNotEnoughQuota=true;
+              else {
+                this.isQuota = false;
+                this.isNotEnoughQuota = true;
               }
             }
           }
-          else{
-            this.isQuota=false;
-            this.isNotEnoughQuota=false;
+          else {
+            this.isQuota = false;
+            this.isNotEnoughQuota = false;
           }
 
         });
@@ -470,11 +512,12 @@ export class SnapshotCreateComponent implements OnInit, OnChanges {
   //     this.disableCreate = true;
   //   }
   // }
-  
+
 
   private checkNullQuota() {
     return this.quotaSSDUsed != undefined && this.quotaHDDUsed == undefined && this.quotaSSDTotal == undefined && this.quotaHDDTotal == undefined;
   }
+  // format tên package snapahot
   formatLabel(index: any): string {
     let label = index.packageName;
 
@@ -495,110 +538,158 @@ export class SnapshotCreateComponent implements OnInit, OnChanges {
     return label;
   }
   // call api change item volume/vm selected
-messageQuota:string;
-messageNotEnoughtQuota:string;
+  messageQuota: string;
+  messageNotEnoughtQuota: string;
 
-  changeVmVolumeSelected(){
-    if(this.selectedSnapshotType==0){
+  changeVmVolumeSelected() {
+    if (this.selectedSnapshotType == 0 || this.navigateTypeSelected == 0) {
       this.vlService.getVolumeById(this.selectedVolume.id, this.project)
-      .pipe(finalize(() => {
-        this.checkDisable();
-        this.loadingCreate = false;
-      }))
-      .subscribe(
-        data => {
-          console.log("kkk")
-          console.log("change volume", data)
-          this.quotaSelected=data.sizeInGB
-          this.quotaTypeSelected = data.volumeType;
-          this.selectedVolumeRoot = data;
-          if(this.selectedSnapshotPackage){
-            if( this.quotaTypeSelected =='hdd'){
-              if(this.packageSnapshotHdd>= this.quotaSelected){
-               
-                this.isQuota=true;
-                this.isNotEnoughQuota=false;
-                this.messageQuota =  `Dung lượng Snapshot volume HDD  đã dùng: ${this.packageSnapshotHdd} GB / ${this.quotaSelected} GB. Quý khách còn lại ${this.quotaSelected -this.packageSnapshotHdd} GB dung lượng Snapshot HDD`;
-                this.messageNotEnoughtQuota ='';
+        .pipe(finalize(() => {
+          // this.checkDisable();
+          this.loadingCreate = false;
+        }))
+        .subscribe(
+          data => {
+            this.quotaSelected = data.sizeInGB
+            this.quotaTypeSelected = data.volumeType;
+            this.selectedVolumeRoot = data;
+            // check thông báo cho  với dự án thường khi tạo snapshot loại volume
+            if (this.projectType == 2) {
+              if (this.selectedSnapshotPackage) {
+                if (this.quotaTypeSelected == 'hdd') {
+                  if (this.packageSnapshotHdd >= this.quotaSelected) {
+                    this.isQuota = true;
+                    this.isNotEnoughQuota = false;
+                    this.messageQuota = `Dung lượng Snapshot volume HDD  đã dùng: ${this.packageUsedHdd} GB / ${this.packageSnapshotHdd} GB. Quý khách còn lại ${this.availableSizeHDD} GB dung lượng Snapshot HDD`;
+                    this.messageNotEnoughtQuota = '';
+                  }
+                  else {
+                    this.isQuota = false;
+                    this.isNotEnoughQuota = true;
+                    this.messageQuota = '';
+                    this.messageNotEnoughtQuota = '';
+                  }
+                }
+                else if (this.quotaTypeSelected == 'ssd') {
+                  if (this.packageSnapshotSsd >= this.quotaSelected) {
+                    this.messageQuota = `Dung lượng Snapshot volume SSD  đã dùng: ${this.packageUsedSsd} GB / ${this.packageSnapshotSsd} GB. Quý khách còn lại ${this.availableSizeSSD} GB dung lượng Snapshot SSD`;
+                    this.isQuota = true;
+                    this.isNotEnoughQuota = false;
+                  }
+                  else {
+                    this.isQuota = false;
+                    this.isNotEnoughQuota = true;
+                  }
+                }
               }
-              else{
-                this.isQuota=false;
-                this.isNotEnoughQuota=true;
-                this.messageQuota =  '';
-                this.messageNotEnoughtQuota ='';
+              else {
+                this.isQuota = false;
+                this.isNotEnoughQuota = false;
               }
-
             }
-            else if(this.quotaTypeSelected =='ssd'){
-              if(this.packageSnapshotSsd>= this.quotaSelected){
-                 this.messageQuota =  `Dung lượng Snapshot volume SSD  đã dùng: ${this.packageSnapshotHdd} GB / ${this.quotaSelected} GB. Quý khách còn lại ${this.quotaSelected -this.packageSnapshotHdd} GB dung lượng Snapshot SSD`;
-                this.isQuota=true;
-                this.isNotEnoughQuota=false;
+            // check thông báo cho  với dự án VPC khi tạo snapshot loại volume
+            else if (this.projectType == 1) {
+              if (this.quotaTypeSelected == 'hdd') {
+                if (this.projectRemainingHdd >= this.quotaSelected) {
+                  this.isQuota = true;
+                  this.isNotEnoughQuota = false;
+                  this.messageQuota = `Dung lượng Snapshot volume HDD  đã dùng: ${this.projectUsedHdd} GB / ${this.projectTotalHdd} GB. Quý khách còn lại ${this.projectRemainingHdd} GB dung lượng Snapshot HDD`;
+                }
+                else {
+                  this.isQuota = false;
+                  this.isNotEnoughQuota = false;
+                }
               }
-              else{
-                this.isQuota=false;
-                this.isNotEnoughQuota=true;
+              else if (this.quotaTypeSelected == 'ssd') {
+                if (this.projectRemainingSsd >= this.quotaSelected) {
+                  this.isQuota = true;
+                  this.isNotEnoughQuota = false;
+                  this.messageQuota = `Dung lượng Snapshot volume SSD  đã dùng: ${this.projectUsedSsd} GB / ${this.projectTotalSsd} GB. Quý khách còn lại ${this.projectRemainingSsd} GB dung lượng Snapshot SSD`;
+                }
+                else {
+                  this.isQuota = false;
+                  this.isNotEnoughQuota = false;
+                }
               }
             }
           }
-          else{
-            this.isQuota=false;
-            this.isNotEnoughQuota=false;
-          }
-
-        }
-      );
+        );
     }
-    else if(this.selectedSnapshotType==1){
+    else if (this.selectedSnapshotType == 1 || this.navigateTypeSelected == 0) {
       this.vlService.getVolumeById(this.selectedVM.volumeRootId, this.project)
-      .pipe(finalize(() => {
-        this.checkDisable();
-        this.loadingCreate = false;
-      }))
-      .subscribe(
-        data => {
-          console.log("kkk")
-          console.log("change volume", data)
-          this.quotaSelected=data.sizeInGB
-          this.quotaTypeSelected = data.volumeType;
-          this.selectedVolumeRoot = data;
+        .pipe(finalize(() => {
+          // this.checkDisable();
+          this.loadingCreate = false;
+        }))
+        .subscribe(
+          data => {
+            console.log("kkk")
+            console.log("change volume", data)
+            this.quotaSelected = data.sizeInGB
+            this.quotaTypeSelected = data.volumeType;
+            this.selectedVolumeRoot = data;
 
-          if(this.selectedSnapshotPackage){
-            if( this.quotaTypeSelected =='hdd'){
-              if(this.packageSnapshotHdd>= this.quotaSelected){
-               
-                this.isQuota=true;
-                this.isNotEnoughQuota=false;
-                this.messageQuota =  `Dung lượng Snapshot volume HDD  đã dùng: ${this.packageSnapshotHdd} GB / ${this.quotaSelected} GB. Quý khách còn lại ${this.quotaSelected -this.packageSnapshotHdd} GB dung lượng Snapshot HDD`;
-                this.messageNotEnoughtQuota ='';
+            // check thông báo cho  với dự án thường khi tạo snapshot loại máy ảo
+            if (this.projectType == 2) {
+              if (this.selectedSnapshotPackage) {
+                if (this.quotaTypeSelected == 'hdd') {
+                  if (this.packageSnapshotHdd >= this.quotaSelected) {
+                    this.isQuota = true;
+                    this.isNotEnoughQuota = false;
+                    this.messageQuota = `Dung lượng Snapshot máy ảo HDD  đã dùng: ${this.packageUsedHdd} GB / ${this.packageSnapshotHdd} GB. Quý khách còn lại ${this.availableSizeHDD} GB dung lượng Snapshot HDD`;
+                    this.messageNotEnoughtQuota = '';
+                  }
+                  else {
+                    this.isQuota = false;
+                    this.isNotEnoughQuota = true;
+                    this.messageQuota = '';
+                    this.messageNotEnoughtQuota = '';
+                  }
+                }
+                else if (this.quotaTypeSelected == 'ssd') {
+                  if (this.packageSnapshotSsd >= this.quotaSelected) {
+                    this.messageQuota = `Dung lượng Snapshot máy ảo SSD  đã dùng: ${this.packageUsedSsd} GB / ${this.packageSnapshotSsd} GB. Quý khách còn lại ${this.availableSizeSSD} GB dung lượng Snapshot SSD`;
+                    this.isQuota = true;
+                    this.isNotEnoughQuota = false;
+                  }
+                  else {
+                    this.isQuota = false;
+                    this.isNotEnoughQuota = true;
+                  }
+                }
               }
-              else{
-                this.isQuota=false;
-                this.isNotEnoughQuota=true;
-                this.messageQuota =  '';
-                this.messageNotEnoughtQuota ='';
+              else {
+                this.isQuota = false;
+                this.isNotEnoughQuota = false;
               }
-
             }
-            else if(this.quotaTypeSelected =='ssd'){
-              if(this.packageSnapshotSsd>= this.quotaSelected){
-                 this.messageQuota =  `Dung lượng Snapshot volume SSD  đã dùng: ${this.packageSnapshotHdd} GB / ${this.quotaSelected} GB. Quý khách còn lại ${this.quotaSelected -this.packageSnapshotHdd} GB dung lượng Snapshot SSD`;
-                this.isQuota=true;
-                this.isNotEnoughQuota=false;
+            // check thông báo cho  với dự án VPC khi tạo snapshot loại máy ảo
+            else if (this.projectType == 1) {
+              if (this.quotaTypeSelected == 'hdd') {
+                if (this.projectRemainingHdd >= this.quotaSelected) {
+                  this.isQuota = true;
+                  this.isNotEnoughQuota = false;
+                  this.messageQuota = `Dung lượng Snapshot máy ảo HDD  đã dùng: ${this.projectUsedHdd} GB / ${this.projectTotalHdd} GB. Quý khách còn lại ${this.projectRemainingHdd} GB dung lượng Snapshot HDD`;
+                }
+                else {
+                  this.isQuota = false;
+                  this.isNotEnoughQuota = false;
+                }
               }
-              else{
-                this.isQuota=false;
-                this.isNotEnoughQuota=true;
+              else if (this.quotaTypeSelected == 'ssd') {
+                if (this.projectRemainingSsd >= this.quotaSelected) {
+                  this.isQuota = true;
+                  this.isNotEnoughQuota = false;
+                  this.messageQuota = `Dung lượng Snapshot máy ảo SSD  đã dùng: ${this.projectUsedSsd} GB / ${this.projectTotalSsd} GB. Quý khách còn lại ${this.projectRemainingSsd} GB dung lượng Snapshot SSD`;
+                }
+                else {
+                  this.isQuota = false;
+                  this.isNotEnoughQuota = false;
+                }
               }
             }
           }
-          else{
-            this.isQuota=false;
-            this.isNotEnoughQuota=false;
-          }
-
-        }
-      );
+        );
     }
   }
 }
