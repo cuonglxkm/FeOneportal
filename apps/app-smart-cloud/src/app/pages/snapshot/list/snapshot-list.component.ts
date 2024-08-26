@@ -18,7 +18,7 @@ import { RegionID } from 'src/app/shared/enums/common.enum';
   templateUrl: './snapshot-list.component.html',
   styleUrls: ['./snapshot-list.component.less'],
 })
-export class SnapshotListComponent implements OnInit{
+export class SnapshotListComponent implements OnInit {
   region = JSON.parse(localStorage.getItem('regionId'));
   project = JSON.parse(localStorage.getItem('projectId'));
   isBegin = false;
@@ -30,11 +30,10 @@ export class SnapshotListComponent implements OnInit{
   response: any;
   status: any = '';
   listStatus = [
-    {label : this.i18n.fanyi('app.status.all'), value : ''},
-    {label : this.i18n.fanyi('service.status.active'), value : 'KHOITAO'},
-    {label : this.i18n.fanyi('service.status.init'), value : 'DANGKHOITAO'},
-    {label : this.i18n.fanyi('app.suspend'), value : 'TAMNGUNG'},
-    {label : this.i18n.fanyi('app.button.cancel'), value : 'HUY'},
+    { label: this.i18n.fanyi('app.status.all'), value: '' },
+    { label: this.i18n.fanyi('service.status.active'), value: 'KHOITAO' },
+    { label: this.i18n.fanyi('app.suspend'), value: 'TAMNGUNG' },
+
   ];
   isVisibleDelete = false;
   modalStyle = {
@@ -47,8 +46,8 @@ export class SnapshotListComponent implements OnInit{
     description: FormControl<string>
   }> = this.fb.group({
     name: ['', [Validators.required,
-      Validators.pattern(/^[a-zA-Z0-9_]*$/),
-      Validators.maxLength(50)]],
+    Validators.pattern(/^[a-zA-Z0-9_]*$/),
+    Validators.maxLength(50)]],
     description: ['', Validators.maxLength(255)],
   });
 
@@ -56,16 +55,16 @@ export class SnapshotListComponent implements OnInit{
 
   dataSelected: any;
   nameDelete = '';
-  isInput:boolean=false;
+  isInput: boolean = false;
   disableDelete = true;
   loadingDelete = false;
   isVisibleEdit: boolean;
   @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
   constructor(private router: Router,
-              private fb: NonNullableFormBuilder,
-              @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
-              private notification: NzNotificationService,
-              private service: VolumeService) {
+    private fb: NonNullableFormBuilder,
+    @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
+    private notification: NzNotificationService,
+    private service: VolumeService) {
     let regionAndProject = getCurrentRegionAndProject();
     this.region = regionAndProject.regionId;
     this.project = regionAndProject.projectId;
@@ -91,7 +90,7 @@ export class SnapshotListComponent implements OnInit{
   }
 
   regionChanged(region: RegionModel) {
-    if(this.projectCombobox){
+    if (this.projectCombobox) {
       this.projectCombobox.loadProjects(true, region.regionId);
     }
     this.region = region.regionId;
@@ -109,17 +108,22 @@ export class SnapshotListComponent implements OnInit{
 
   navigateToCreate() {
     if (this.region === RegionID.ADVANCE) {
-      this.router.navigate(['/app-smart-cloud/snapshot-advance/create',  {
-        navigateType: 2
-      }])
+      this.router.navigate(['/app-smart-cloud/snapshot-advance/create'], {
+        queryParams: {
+          navigateType: 2
+        }
+      })
     } else {
-      this.router.navigate(['/app-smart-cloud/snapshot/create',  {
-        navigateType: 2
-      }])
+     
+      this.router.navigate(['/app-smart-cloud/snapshot/create'], {
+        queryParams: {
+          navigateType: 2
+        }
+      })
     }
   }
 
-  navigateToDetail(id){
+  navigateToDetail(id) {
     if (this.region === RegionID.ADVANCE) {
       this.router.navigate([`/app-smart-cloud/snapshot-advance/detail`, id])
     } else {
@@ -127,7 +131,7 @@ export class SnapshotListComponent implements OnInit{
     }
   }
 
-  navigateToPackageDetail(id){
+  navigateToPackageDetail(id) {
     if (this.region === RegionID.ADVANCE) {
       this.router.navigate([`/app-smart-cloud/snapshot-advance/packages/detail/`, id])
     } else {
@@ -142,18 +146,18 @@ export class SnapshotListComponent implements OnInit{
         this.isLoading = false;
       }))
       .subscribe(
-      data => {
-        this.index=1
-        this.response = data
-        if (isBegin) {
-          if (this.response.records.length <= 0) {
-            this.isBegin = true;
-          } else {
-            this.isBegin = false;
+        data => {
+          this.index = 1
+          this.response = data
+          if (isBegin) {
+            if (this.response.records.length <= 0) {
+              this.isBegin = true;
+            } else {
+              this.isBegin = false;
+            }
           }
         }
-      }
-    );
+      );
   }
 
 
@@ -171,33 +175,33 @@ export class SnapshotListComponent implements OnInit{
 
   navigateToCreateVolumeVM(idSnapshot, type: any) {
     if (type == 0) {
-      if(this.typeVpc == 1) {
+      if (this.typeVpc == 1) {
         if (this.region === RegionID.ADVANCE) {
-          this.router.navigate(['/app-smart-cloud/volume-advance/vpc/create', {idSnapshot: idSnapshot}])
+          this.router.navigate(['/app-smart-cloud/volume-advance/vpc/create', { idSnapshot: idSnapshot }])
         } else {
-          this.router.navigate(['/app-smart-cloud/volume/vpc/create', {idSnapshot: idSnapshot}])
-        } 
+          this.router.navigate(['/app-smart-cloud/volume/vpc/create', { idSnapshot: idSnapshot }])
+        }
       } else {
         if (this.region === RegionID.ADVANCE) {
-          this.router.navigate(['/app-smart-cloud/volume-advance/create', {idSnapshot: idSnapshot}])
+          this.router.navigate(['/app-smart-cloud/volume-advance/create', { idSnapshot: idSnapshot }])
         } else {
-          this.router.navigate(['/app-smart-cloud/volume/create', {idSnapshot: idSnapshot}])
-        } 
+          this.router.navigate(['/app-smart-cloud/volume/create', { idSnapshot: idSnapshot }])
+        }
       }
     } else if (type == 1) {
-      if(this.typeVpc == 1) {
+      if (this.typeVpc == 1) {
         if (this.region === RegionID.ADVANCE) {
-          this.router.navigate(['/app-smart-cloud/instances-advance/instances-create-vpc', {idSnapshot: idSnapshot}])
+          this.router.navigate(['/app-smart-cloud/instances-advance/instances-create-vpc', { idSnapshot: idSnapshot }])
         } else {
-          this.router.navigate(['/app-smart-cloud/instances/instances-create-vpc', {idSnapshot: idSnapshot}])
-        } 
-        
+          this.router.navigate(['/app-smart-cloud/instances/instances-create-vpc', { idSnapshot: idSnapshot }])
+        }
+
       } else {
         if (this.region === RegionID.ADVANCE) {
-          this.router.navigate(['/app-smart-cloud/instances-advance/instances-create', {idSnapshot: idSnapshot}])
+          this.router.navigate(['/app-smart-cloud/instances-advance/instances-create', { idSnapshot: idSnapshot }])
         } else {
-          this.router.navigate(['/app-smart-cloud/instances/instances-create', {idSnapshot: idSnapshot}])
-        } 
+          this.router.navigate(['/app-smart-cloud/instances/instances-create', { idSnapshot: idSnapshot }])
+        }
       }
     }
   }
@@ -231,27 +235,27 @@ export class SnapshotListComponent implements OnInit{
 
   openIpDelete() {
     this.loadingDelete = true;
-    if(this.nameDelete=== this.dataSelected.name){
+    if (this.nameDelete === this.dataSelected.name) {
       this.isInput = false;
       this.service.deleteSnapshot(this.dataSelected.id)
-      .pipe(finalize(() => {
-        this.loadingDelete = false;
-        this.handleCancel();
-      }))
-      .subscribe(
-      data => {
-        this.notification.success(this.i18n.fanyi('app.status.success'), 'Xóa Snapshot thành công');
-        this.search(true);
-      },
-      error => {
-        this.notification.error(this.i18n.fanyi('app.status.fail'), 'Xóa Snapshot thất bại');
-      }
-    )
-    }else{
+        .pipe(finalize(() => {
+          this.loadingDelete = false;
+          this.handleCancel();
+        }))
+        .subscribe(
+          data => {
+            this.notification.success(this.i18n.fanyi('app.status.success'), 'Xóa Snapshot thành công');
+            this.search(true);
+          },
+          error => {
+            this.notification.error(this.i18n.fanyi('app.status.fail'), 'Xóa Snapshot thất bại');
+          }
+        )
+    } else {
       this.isInput = true;
       this.loadingDelete = false;
     }
-    
+
   }
 
   enableEdit(data: any) {
@@ -262,26 +266,32 @@ export class SnapshotListComponent implements OnInit{
   }
 
   updateSnapshot() {
-    this.loadingDelete = true;
-    const data = {
-      id : this.dataSelected.id,
-      name : this.validateForm.controls['name'].value,
-      description : this.validateForm.controls['description'].value,
+    if (this.validateForm.valid) {
+      this.loadingDelete = true;
+      const data = {
+        id: this.dataSelected.id,
+        name: this.validateForm.controls['name'].value,
+        description: this.validateForm.controls['description'].value,
+      }
+      this.service.updateSnapshot(data)
+        .pipe(finalize(() => {
+          this.loadingDelete = false;
+          this.handleCancel();
+        }))
+        .subscribe(
+          data => {
+            this.notification.success(this.i18n.fanyi('app.status.success'), 'Cập nhật Snapshot thành công');
+            this.search(true);
+          },
+          error => {
+            this.notification.error(this.i18n.fanyi('app.status.fail'), error.error.message);
+          }
+        )
     }
-    this.service.updateSnapshot(data)
-      .pipe(finalize(() => {
-        this.loadingDelete = false;
-        this.handleCancel();
-      }))
-      .subscribe(
-        data => {
-          this.notification.success(this.i18n.fanyi('app.status.success'), 'Cập nhật Snapshot thành công');
-          this.search(true);
-        },
-        error => {
-          this.notification.error(this.i18n.fanyi('app.status.fail'), error.error.message);
-        }
-      )
+    else {
+      this.validateForm.markAllAsTouched();
+    }
+
   }
 
   navigateCreateVl() {
@@ -290,7 +300,7 @@ export class SnapshotListComponent implements OnInit{
     } else {
       this.router.navigate(['/app-smart-cloud/volume/create'])
     }
-    
+
   }
 
   getSuspendedReason(suspendedReason: any) {
@@ -302,5 +312,16 @@ export class SnapshotListComponent implements OnInit{
       default:
         break;
     }
+  }
+  isProcessingStatus(status: string): boolean {
+    const processingStatuses = [
+      'DELETING',
+      'CREATING',
+      'EXTENDING',
+      'RESIZING',
+      'ERROR_DELETING',
+      'PROCESSING'
+    ];
+    return processingStatuses.includes(status);
   }
 }

@@ -70,11 +70,11 @@
           <nz-col nzSpan="12">
             <nz-row *ngIf="data?.fromRootVolume == false" style="padding: 12px 0 12px 0">
               <span class="text-label customSpan" style="width: 35%">Volume: </span>
-              <span class="text-value-detail customSpan">{{data?.volumeName}}</span>
+              <span class="text-value-detail customSpan truncate" [nz-tooltip]="data?.volumeName">{{data?.volumeName}}</span>
             </nz-row>
             <nz-row *ngIf="data?.fromRootVolume == true" style="padding: 12px 0 12px 0">
               <span class="text-label customSpan" style="width: 35%">Máy ảo: </span>
-              <span class="text-value-detail customSpan">{{data?.instanceName}}</span>
+              <span class="text-value-detail customSpan truncate" [nz-tooltip]="data?.instanceName">{{data?.instanceName}}</span>
             </nz-row>
           </nz-col>
           
@@ -83,7 +83,7 @@
           <nz-col nzSpan="12">
             <nz-row style="padding: 12px 0 12px 0">
               <span class="text-label customSpan" style="width: 35%">Gói Snapshot:</span>
-              <span *ngIf="typeProject != 1" class="text-value-detail customSpan">{{packageSnap?.packageName}}</span>
+              <span *ngIf="typeProject != 1" class="text-value-detail customSpan truncate " [nz-tooltip]="packageSnap?.packageName">{{packageSnap?.packageName}}</span>
             </nz-row>
           </nz-col>
           <nz-col nzSpan="12">
