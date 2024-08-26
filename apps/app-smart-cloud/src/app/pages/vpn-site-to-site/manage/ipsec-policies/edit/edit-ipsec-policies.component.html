@@ -31,7 +31,8 @@
         (valueChanged)="onRegionChange($event)"
         (regionChange)="onRegionChanged($event)"
       ></region-select-dropdown>
-      <project-select-dropdown #projectCombobox
+      <project-select-dropdown
+        #projectCombobox
         [regionId]="region"
         (valueChanged)="onProjectChange($event)"
         (userChanged)="userChangeProject($event)"
@@ -50,18 +51,19 @@
             <nz-form-item>
               <nz-form-control [nzErrorTip]="nameErrorTpl">
                 <nz-form-label nzFor="name">
-                    <span>Name&nbsp;</span>
-                    (<span style="color: rgba(252, 16, 16, 1)">*</span>)
-                    <img
-                      nz-popover [nzPopoverOverlayStyle]="{ maxWidth: '400px' }"
-                      [nzPopoverContent]="
-                        'app.ipsec.policy-create.name.alert2' | i18n
-                      "
-                      nzPopoverPlacement="bottom"
-                      style="margin-left: 5px"
-                      src="assets/imgs/pajamas_question.svg"
-                      alt=""
-                    />
+                  <span>Name&nbsp;</span>
+                  (<span style="color: rgba(252, 16, 16, 1)">*</span>)
+                  <img
+                    nz-popover
+                    [nzPopoverOverlayStyle]="{ maxWidth: '400px' }"
+                    [nzPopoverContent]="
+                      'app.ipsec.policy-create.name.alert2' | i18n
+                    "
+                    nzPopoverPlacement="bottom"
+                    style="margin-left: 5px"
+                    src="assets/imgs/pajamas_question.svg"
+                    alt=""
+                  />
                 </nz-form-label>
                 <input
                   nz-input
@@ -81,6 +83,10 @@
                   <ng-container *ngIf="control.hasError('pattern')">{{
                     'app.ipsec.policy-create.name.alert2' | i18n
                   }}</ng-container>
+                  <ng-container *ngIf="control.hasError('duplicateName')"
+                    >Tên IPsec Policy đã tồn tại. Vui lòng nhập tên
+                    khác</ng-container
+                  >
                 </ng-template>
               </nz-form-control>
             </nz-form-item>
@@ -89,18 +95,19 @@
             <nz-form-item>
               <nz-form-control>
                 <nz-form-label nzFor="name">
-                    <span>Authorization Algorithm&nbsp;</span>
-                    (<span style="color: rgba(252, 16, 16, 1)">*</span>)
-                    <img
-                      nz-popover [nzPopoverOverlayStyle]="{ maxWidth: '400px' }"
-                      [nzPopoverContent]="
-                        'app.ipsec.policy-create.Authorization.tooltip' | i18n
-                      "
-                      nzPopoverPlacement="bottom"
-                      style="margin-left: 5px"
-                      src="assets/imgs/pajamas_question.svg"
-                      alt=""
-                    />
+                  <span>Authorization Algorithm&nbsp;</span>
+                  (<span style="color: rgba(252, 16, 16, 1)">*</span>)
+                  <img
+                    nz-popover
+                    [nzPopoverOverlayStyle]="{ maxWidth: '400px' }"
+                    [nzPopoverContent]="
+                      'app.ipsec.policy-create.Authorization.tooltip' | i18n
+                    "
+                    nzPopoverPlacement="bottom"
+                    style="margin-left: 5px"
+                    src="assets/imgs/pajamas_question.svg"
+                    alt=""
+                  />
                 </nz-form-label>
                 <nz-select
                   [(ngModel)]="selectedAuthorizationAlgorithm"
@@ -120,18 +127,19 @@
             <nz-form-item>
               <nz-form-control>
                 <nz-form-label nzFor="name">
-                    <span>Encryption Mode&nbsp;</span>
-                    (<span style="color: rgba(252, 16, 16, 1)">*</span>)
-                    <img
-                      nz-popover [nzPopoverOverlayStyle]="{ maxWidth: '400px' }"
-                      [nzPopoverContent]="
-                        'app.ipsec.policy-create.Encryption.tooltip' | i18n
-                      "
-                      nzPopoverPlacement="bottom"
-                      style="margin-left: 5px"
-                      src="assets/imgs/pajamas_question.svg"
-                      alt=""
-                    />
+                  <span>Encryption Mode&nbsp;</span>
+                  (<span style="color: rgba(252, 16, 16, 1)">*</span>)
+                  <img
+                    nz-popover
+                    [nzPopoverOverlayStyle]="{ maxWidth: '400px' }"
+                    [nzPopoverContent]="
+                      'app.ipsec.policy-create.Encryption.tooltip' | i18n
+                    "
+                    nzPopoverPlacement="bottom"
+                    style="margin-left: 5px"
+                    src="assets/imgs/pajamas_question.svg"
+                    alt=""
+                  />
                 </nz-form-label>
                 <nz-select
                   [(ngModel)]="selectedEncryptionMode"
@@ -151,18 +159,19 @@
             <nz-form-item>
               <nz-form-control>
                 <nz-form-label nzFor="name">
-                    <span>Encryption Algorithm&nbsp;</span>
-                    (<span style="color: rgba(252, 16, 16, 1)">*</span>)
-                    <img
-                      nz-popover [nzPopoverOverlayStyle]="{ maxWidth: '400px' }"
-                      [nzPopoverContent]="
-                        'app.ipsec.policy-create.Encryption.Al.tooltip' | i18n
-                      "
-                      nzPopoverPlacement="bottom"
-                      style="margin-left: 5px"
-                      src="assets/imgs/pajamas_question.svg"
-                      alt=""
-                    />
+                  <span>Encryption Algorithm&nbsp;</span>
+                  (<span style="color: rgba(252, 16, 16, 1)">*</span>)
+                  <img
+                    nz-popover
+                    [nzPopoverOverlayStyle]="{ maxWidth: '400px' }"
+                    [nzPopoverContent]="
+                      'app.ipsec.policy-create.Encryption.Al.tooltip' | i18n
+                    "
+                    nzPopoverPlacement="bottom"
+                    style="margin-left: 5px"
+                    src="assets/imgs/pajamas_question.svg"
+                    alt=""
+                  />
                 </nz-form-label>
                 <nz-select
                   [(ngModel)]="selectedEncryptionAlgorithm"
@@ -182,18 +191,19 @@
             <nz-form-item>
               <nz-form-control>
                 <nz-form-label nzFor="name">
-                    <span>Lifetime Units&nbsp;</span>
-                    (<span style="color: rgba(252, 16, 16, 1)">*</span>)
-                    <img
-                      nz-popover [nzPopoverOverlayStyle]="{ maxWidth: '400px' }"
-                      [nzPopoverContent]="
-                        'app.ipsec.policy-create.Lifetime.tooltip' | i18n
-                      "
-                      nzPopoverPlacement="bottom"
-                      style="margin-left: 5px"
-                      src="assets/imgs/pajamas_question.svg"
-                      alt=""
-                    />
+                  <span>Lifetime Units&nbsp;</span>
+                  (<span style="color: rgba(252, 16, 16, 1)">*</span>)
+                  <img
+                    nz-popover
+                    [nzPopoverOverlayStyle]="{ maxWidth: '400px' }"
+                    [nzPopoverContent]="
+                      'app.ipsec.policy-create.Lifetime.tooltip' | i18n
+                    "
+                    nzPopoverPlacement="bottom"
+                    style="margin-left: 5px"
+                    src="assets/imgs/pajamas_question.svg"
+                    alt=""
+                  />
                 </nz-form-label>
                 <nz-select
                   [(ngModel)]="selectedLifetimeUnits"
@@ -212,20 +222,23 @@
           </div>
           <div nz-col [nzSpan]="12" class="gutter-row">
             <nz-form-item>
-              <nz-form-control [nzErrorTip]="'app.vpns2s.name.error.tooltip' | i18n">
+              <nz-form-control
+                [nzErrorTip]="'app.vpns2s.name.error.tooltip' | i18n"
+              >
                 <nz-form-label nzFor="name">
-                    <span>Lifetime Value&nbsp;</span>
-                    (<span style="color: rgba(252, 16, 16, 1)">*</span>)
-                    <img
-                      nz-popover [nzPopoverOverlayStyle]="{ maxWidth: '400px' }"
-                      [nzPopoverContent]="
-                        'app.ipsec.policy-create.Lifetime.value.tooltip' | i18n
-                      "
-                      nzPopoverPlacement="bottom"
-                      style="margin-left: 5px"
-                      src="assets/imgs/pajamas_question.svg"
-                      alt=""
-                    />
+                  <span>Lifetime Value&nbsp;</span>
+                  (<span style="color: rgba(252, 16, 16, 1)">*</span>)
+                  <img
+                    nz-popover
+                    [nzPopoverOverlayStyle]="{ maxWidth: '400px' }"
+                    [nzPopoverContent]="
+                      'app.ipsec.policy-create.Lifetime.value.tooltip' | i18n
+                    "
+                    nzPopoverPlacement="bottom"
+                    style="margin-left: 5px"
+                    src="assets/imgs/pajamas_question.svg"
+                    alt=""
+                  />
                 </nz-form-label>
                 <nz-input-number
                   formControlName="lifeTimeValue"
@@ -245,18 +258,19 @@
             <nz-form-item>
               <nz-form-control>
                 <nz-form-label nzFor="name">
-                    <span>Perfect Forward Secrecy&nbsp;</span>
-                    (<span style="color: rgba(252, 16, 16, 1)">*</span>)
-                    <img
-                      nz-popover [nzPopoverOverlayStyle]="{ maxWidth: '400px' }"
-                      [nzPopoverContent]="
-                        'app.ipsec.policy-create.pfs.tooltip' | i18n
-                      "
-                      nzPopoverPlacement="bottom"
-                      style="margin-left: 5px"
-                      src="assets/imgs/pajamas_question.svg"
-                      alt=""
-                    />
+                  <span>Perfect Forward Secrecy&nbsp;</span>
+                  (<span style="color: rgba(252, 16, 16, 1)">*</span>)
+                  <img
+                    nz-popover
+                    [nzPopoverOverlayStyle]="{ maxWidth: '400px' }"
+                    [nzPopoverContent]="
+                      'app.ipsec.policy-create.pfs.tooltip' | i18n
+                    "
+                    nzPopoverPlacement="bottom"
+                    style="margin-left: 5px"
+                    src="assets/imgs/pajamas_question.svg"
+                    alt=""
+                  />
                 </nz-form-label>
                 <nz-select
                   [(ngModel)]="selectedPerfectForwardSecrecy"
@@ -276,18 +290,19 @@
             <nz-form-item>
               <nz-form-control>
                 <nz-form-label nzFor="name">
-                    <span>Transform Protocol&nbsp;</span>
-                    (<span style="color: rgba(252, 16, 16, 1)">*</span>)
-                    <img
-                      nz-popover [nzPopoverOverlayStyle]="{ maxWidth: '400px' }"
-                      [nzPopoverContent]="
-                        'app.ipsec.policy-create.transform.tooltip' | i18n
-                      "
-                      nzPopoverPlacement="bottom"
-                      style="margin-left: 5px"
-                      src="assets/imgs/pajamas_question.svg"
-                      alt=""
-                    />
+                  <span>Transform Protocol&nbsp;</span>
+                  (<span style="color: rgba(252, 16, 16, 1)">*</span>)
+                  <img
+                    nz-popover
+                    [nzPopoverOverlayStyle]="{ maxWidth: '400px' }"
+                    [nzPopoverContent]="
+                      'app.ipsec.policy-create.transform.tooltip' | i18n
+                    "
+                    nzPopoverPlacement="bottom"
+                    style="margin-left: 5px"
+                    src="assets/imgs/pajamas_question.svg"
+                    alt=""
+                  />
                 </nz-form-label>
                 <nz-select
                   [(ngModel)]="selectedTransformProtocol"

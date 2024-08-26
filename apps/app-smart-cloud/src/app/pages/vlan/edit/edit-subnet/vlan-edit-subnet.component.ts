@@ -234,10 +234,10 @@ export class VlanEditSubnetComponent implements OnInit {
   }
 
   regionChanged(region: RegionModel) {
+    this.region = region.regionId;
     if(this.projectCombobox){
       this.projectCombobox.loadProjects(true, region.regionId);
     }
-    this.router.navigate(['/app-smart-cloud/vlan/network/list']);
   }
 
   onRegionChanged(region: RegionModel) {

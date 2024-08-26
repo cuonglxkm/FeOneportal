@@ -117,7 +117,7 @@ export class CreateUpdateIpPublicComponent implements OnInit {
     if(this.projectCombobox){
       this.projectCombobox.loadProjects(true, region.regionId);
     }
-    this.router.navigate(['/app-smart-cloud/ip-public']);
+    // this.router.navigate(['/app-smart-cloud/ip-public']);
   }
 
   onRegionChanged(region: RegionModel) {

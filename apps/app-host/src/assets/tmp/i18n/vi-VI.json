@@ -3394,7 +3394,7 @@
   "app.vpn.connection-create.peerIP.alert1": "Peer Remote IP không được để trống",
   "app.vpn.connection-create.peerIP.alert2": "Peer Remote IP không đúng định dạng",
   "app.vpn.connection-create.local.tooltip": "Local Endpoint Group (System Subnet) : Local subnet của người dùng",
-  "app.vpn.connection-create.peerId.tooltip": "Peer ID VPN Connection là ID của thiết bị đầu xa đang thực hiện kết nối. Nó có thể là các định dạng theo địa chỉ IP, tên miền, địa chỉ email hoặc distinguished name. Trong khi thiết lập kết thì cần đảm bảo đúng định dạng giữa 2 đầu VPN.",
+  "app.vpn.connection-create.peerId.tooltip": "Peer ID VPN Connection là ID của thiết bị đầu xa đang thực hiện kết nối. Nó có thể là các định dạng theo địa chỉ IP, tên miền, địa chỉ email hoặc distinguished name. Trong khi thiết lập kết nối thì cần đảm bảo đúng định dạng giữa 2 đầu VPN.",
   "app.vpn.connection-create.peerId.alert1": "Peer ID không được để trống",
   "app.vpn.connection-create.peerId.alert2": "Peer Id không đúng định dạng",
   "app.vpn.connection-create.remote.tooltip": "Khách hàng lựa chọn remote Endpoint Group đã tạo.",
