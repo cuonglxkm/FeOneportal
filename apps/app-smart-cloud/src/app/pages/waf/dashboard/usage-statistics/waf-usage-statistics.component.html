@@ -40,17 +40,17 @@
         <p>
           <span style="color: #4168FF;">Edge &nbsp;&nbsp;</span>
           <span *ngIf="this.selectedTypeDate=='fiveminutes'" class="peak">Peak Bandwidth : <span style="color: #512DA8; font-weight: bold">{{this.peakEdge?.bandwidth}} Mbps </span>({{this.peakEdge?.timestamp}}) </span>
-          <span class="ml-5">Total Traffic: <span style="color: #512DA8; font-weight: bold">{{this.currentTab=='bandwidth'?this.totalTraffic:0.00}} GB</span></span>
+          <span class="ml-5">Total Traffic: <span style="color: #512DA8; font-weight: bold">{{this.currentTab=='bandwidth'?this.totalEdgeTraffic:0.00}} GB</span></span>
         </p>
         <p>
           <span style="color: #47CBFF;">Back- to - Origin &nbsp;&nbsp;</span>
-          <span *ngIf="this.selectedTypeDate=='fiveminutes'" class="peak">Peak Bandwidth : <span style="color: #512DA8; font-weight: bold">0.00 Mbps </span>(00:05:00 16/07/2024) </span>
-          <span class="ml-5">Total Traffic: <span style="color: #512DA8; font-weight: bold">0.00 GB</span></span>
+          <span *ngIf="this.selectedTypeDate=='fiveminutes'" class="peak">Peak Bandwidth : <span style="color: #512DA8; font-weight: bold">{{this.peakB2O?.bandwidth}} Mbps </span>({{this.peakB2O?.timestamp}}) </span>
+          <span class="ml-5">Total Traffic: <span style="color: #512DA8; font-weight: bold">{{this.currentTab=='bandwidth'?this.totalB2OTraffic:0.00}} GB</span></span>
         </p>
         <p>
           <span style="color: #009B4E;">{{this.currentTab=='bandwidth'?'Bandwidth Saving Ratio':'Hit Ratio'}} &nbsp;&nbsp;</span>
-          <span *ngIf="this.selectedTypeDate=='fiveminutes'" class="peak">Peak Value : <span style="color: #512DA8; font-weight: bold">99.99% </span>(00:05:00 16/07/2024) </span>
-          <span class="ml-5">Average: <span style="color: #512DA8; font-weight: bold">{{this.dataBandwidthSaving}}%</span></span>
+          <span *ngIf="this.selectedTypeDate=='fiveminutes'" class="peak">Peak Value : <span style="color: #512DA8; font-weight: bold">{{this.peakSaving?.savingBandwidth}}% </span>({{this.peakSaving?.timestamp}}) </span>
+          <span class="ml-5">Average: <span style="color: #512DA8; font-weight: bold">{{this.averageBandwidthSaving}}%</span></span>
         </p>
       </nz-card>
   
@@ -63,10 +63,10 @@
         <nz-select [(ngModel)]="selectedTypeRequest"
                      nzSize="default"
                      style="margin-left: 10px; width: 200px;"
-                     
+                     (ngModelChange)="changeTypeRequest()"
         >
           <nz-option nzLabel="Edge" nzValue="EDGE"></nz-option>
-          <nz-option nzLabel="Back-to-Origin" nzValue="BTO"></nz-option>
+          <nz-option nzLabel="Back-to-Origin" nzValue="B2O"></nz-option>
           <nz-option nzLabel="Bandwidth Saving Ratio" nzValue="BSR"></nz-option>
         </nz-select>
       </div>
@@ -74,7 +74,7 @@
       <nz-table #fixedTable
                 style="margin-top: 20px;"
                 nzShowSizeChanger
-                [nzData]="[]"
+                [nzData]="peakTable"
                 [nzLoading]="dailyTableLoading">
         <thead>
         <tr>
@@ -87,9 +87,9 @@
         <tbody>
           <ng-container *ngFor="let data of fixedTable.data">
             <tr>
-              <td nzLeft>{{ data.domain }}</td>
-              <td nzBreakWord nzAlign="left">{{ data.ipPublic }}</td>
-              <td nzBreakWord nzAlign="left">{{ data.cName }} </td>
+              <td nzLeft>{{ data.date }}</td>
+              <td nzBreakWord nzAlign="left">{{ data.time }}</td>
+              <td nzBreakWord nzAlign="left">{{ data.bandwidth }} </td>
               <td nzBreakWord nzAlign="left">{{ data.sslCertId ? 'ENABLE' : 'DISABLE' }}</td>
             </tr>
           </ng-container>

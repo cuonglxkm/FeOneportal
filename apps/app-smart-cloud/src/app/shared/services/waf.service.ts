@@ -9,7 +9,7 @@ import {
 import { BaseService } from './base.service';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { BaseResponse } from '../../../../../../libs/common-utils/src';
-import { AddDomainRequest, HttpsSettingRequest, SslCertDTO, SslCertRequest, WafDetailDTO, WafDomain, WafDTO, UpdatePolicies, QueryRequesBandwidthtSavingRatioRequestDto } from 'src/app/pages/waf/waf.model';
+import { AddDomainRequest, HttpsSettingRequest, SslCertDTO, SslCertRequest, WafDetailDTO, WafDomain, WafDTO, UpdatePolicies, QueryRequesBandwidthtSavingRatioRequestDto, QueryBacktoOriginTrafficAndRequestRequestDto, QueryTrafficRequestInTotalAndPeakValueRequestDto } from 'src/app/pages/waf/waf.model';
 import { OfferItem } from 'src/app/pages/instances/instances.model';
 
 @Injectable({
@@ -274,6 +274,22 @@ export class WafService extends BaseService {
   getBandWidthSaving(dto: QueryRequesBandwidthtSavingRatioRequestDto): Observable<any> {
     return this.http.post<any>(
       this.baseUrl + this.ENDPOINT.provisions + '/waf/report/request/saving-bandwidth/total',
+      dto,
+      this.getHeaders()
+    );
+  }
+
+  getBacktoOriginTrafficAndRequest(dto: QueryBacktoOriginTrafficAndRequestRequestDto): Observable<any> {
+    return this.http.post<any>(
+      this.baseUrl + this.ENDPOINT.provisions + '/waf/report/flow-request/origin',
+      dto,
+      this.getHeaders()
+    );
+  }
+
+  queryTrafficRequestInTotalAndPeakValue(dto: QueryTrafficRequestInTotalAndPeakValueRequestDto){
+    return this.http.post<any>(
+      this.baseUrl + this.ENDPOINT.provisions + '/waf/report/flow-request',
       dto,
       this.getHeaders()
     );
