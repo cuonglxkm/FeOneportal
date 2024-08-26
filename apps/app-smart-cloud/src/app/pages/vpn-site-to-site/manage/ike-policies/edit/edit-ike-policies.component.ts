@@ -10,6 +10,7 @@ import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { getCurrentRegionAndProject } from '@shared';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import {
+  FormSearchIKEPolicy,
   IKEPolicyModel
 } from 'src/app/shared/models/vpns2s.model';
 import { RegionModel, ProjectModel } from '../../../../../../../../../libs/common-utils/src';
@@ -28,6 +29,8 @@ export class EditIkePoliciesComponent implements OnInit {
   region = JSON.parse(localStorage.getItem('regionId'));
   project = JSON.parse(localStorage.getItem('projectId'));
   ikePolicy: IKEPolicyModel = new IKEPolicyModel();
+  formSearchIkePolicy: FormSearchIKEPolicy = new FormSearchIKEPolicy()
+  nameList: string[] = [];
   authorizationAlgorithm = [
     { label: 'sha1', value: 'sha1' },
     { label: 'sha256', value: 'sha256' },
@@ -76,7 +79,7 @@ export class EditIkePoliciesComponent implements OnInit {
     name: FormControl<string>;
     lifeTimeValue: FormControl<number>;
   }> = this.fb.group({
-    name: ['', [Validators.required, Validators.pattern(NAME_SPECIAL_REGEX)]],
+    name: ['', [Validators.required, Validators.pattern(NAME_SPECIAL_REGEX), this.duplicateNameValidator.bind(this)]],
     lifeTimeValue: [3600, [Validators.required]]
   });
 
@@ -86,6 +89,7 @@ export class EditIkePoliciesComponent implements OnInit {
     this.project = regionAndProject.projectId;
 
     this.getIkePolicyById(this.activatedRoute.snapshot.paramMap.get('id'));
+    this.getListIKEPolicies()
   }
 
   getIkePolicyById(id) {
@@ -112,6 +116,13 @@ export class EditIkePoliciesComponent implements OnInit {
         (error) => {
           this.ikePolicy = null;
           this.isLoading = false;
+          if (error.error.message.includes('made requires authentication') || error.error.message.includes('could not be found')) {
+            this.notification.error(
+              this.i18n.fanyi('app.status.fail'),
+              'Bản ghi không tồn tại'
+            );
+            this.router.navigateByUrl('/app-smart-cloud/vpn-site-to-site')
+          }
         }
       );
   }
@@ -179,6 +190,40 @@ export class EditIkePoliciesComponent implements OnInit {
       event.preventDefault();
     }
   }
+
+  duplicateNameValidator(control) {
+    const value = control.value;
+    // Check if the input name is already in the list
+    if (this.nameList && this.nameList.includes(value)) {
+      return { duplicateName: true }; // Duplicate name found
+    } else {
+      return null; // Name is unique
+    }
+  }
+
+  getListIKEPolicies() {
+    this.formSearchIkePolicy.projectId = this.project
+    this.formSearchIkePolicy.regionId = this.region
+    this.formSearchIkePolicy.searchValue = ''
+    console.log("get data");
+    console.log(this.formSearchIkePolicy);
+    this.formSearchIkePolicy.pageSize = 99999
+    this.formSearchIkePolicy.pageNumber = 1
+  this.ikePolicyService.getIKEpolicy(this.formSearchIkePolicy)
+    .subscribe((data) => {
+        data.records.forEach((item) => {
+          if (this.nameList.length > 0) {
+            this.nameList.push(item.name);
+          } else {
+            this.nameList = [item.name];
+          }
+        });
+      },
+      (error) => {
+        this.nameList = null;
+      }
+    );
+}
 
   getData(): any {
     this.formEditIkePolicy.customerId = this.tokenService.get()?.userId;

@@ -300,6 +300,18 @@ export class InstancesCreateComponent implements OnInit {
       this.selectedSnapshot = Number.parseInt(
         this.activatedRoute.snapshot.paramMap.get('idSnapshot')
       );
+      this.snapshotVLService
+      .getSnapshotVolumes(9999, 1, this.region, this.projectId, '', '', '')
+      .pipe(finalize(() => this.loadingSrv.close()))
+      .subscribe((data: any) => {
+        this.listSnapshot = data.records.filter(
+          (e: any) =>
+            e.fromRootVolume == true &&
+            (e.resourceStatus.toUpperCase() == 'AVAILABLE' ||
+              e.resourceStatus.toUpperCase() == 'IN-USE')
+        );
+        this.changeSelectedSnapshot();
+      });
       this.changeSelectedSnapshot();
     }
 
@@ -421,8 +433,8 @@ export class InstancesCreateComponent implements OnInit {
           (e) => e.productName == 'volume-hdd'
         )[0].isActive;
         this.activeBlockSSD =
-          !data.filter((e) => e.productName == 'volume-hdd')[0].isActive &&
-          data.filter((e) => e.productName == 'volume-ssd')[0].isActive;
+          !data.filter((e) => e.productName == 'volume-hdd')[0]?.isActive &&
+          data.filter((e) => e.productName == 'volume-ssd')[0]?.isActive;
         this.cdr.detectChanges();
       });
   }

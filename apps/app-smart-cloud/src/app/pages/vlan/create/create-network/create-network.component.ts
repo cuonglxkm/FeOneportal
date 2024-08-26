@@ -176,10 +176,10 @@ export class CreateNetworkComponent implements OnInit {
   }
 
   regionChanged(region: RegionModel) {
+    this.region = region.regionId;
     if (this.projectCombobox) {
       this.projectCombobox.loadProjects(true, region.regionId);
     }
-    this.router.navigate(['/app-smart-cloud/vlan/network/list']);
   }
 
   onRegionChanged(region: RegionModel) {
@@ -311,10 +311,11 @@ export class CreateNetworkComponent implements OnInit {
 
 
   ngOnInit() {
-
     let regionAndProject = getCurrentRegionAndProject();
     this.region = regionAndProject.regionId;
-    this.project = regionAndProject.projectId;
+    this.project = regionAndProject.projectId;  
+    console.log(this.region);
+    
     this.getListNetwork();
     this.onInputCheckPool();
     this.onCheckGateway();

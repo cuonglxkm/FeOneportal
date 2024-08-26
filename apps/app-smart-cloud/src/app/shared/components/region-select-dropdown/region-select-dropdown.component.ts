@@ -1,10 +1,4 @@
-import {
-  Component,
-  EventEmitter,
-  Input,
-  OnInit,
-  Output
-} from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Router } from '@angular/router';
 import { environment } from '@env/environment';
 import {
@@ -30,10 +24,19 @@ export class RegionSelectDropdownComponent implements OnInit {
   constructor(
     private regionService: RegionCoreService,
     private coreDataService: CoreDataService,
-    private router: Router,
+    private router: Router
   ) {}
 
   ngOnInit() {
+    const bucketPath = '/app-smart-cloud/object-storage/bucket';
+    const subUserPath = '/app-smart-cloud/object-storage/sub-user/list';
+    const s3KeyPath = '/app-smart-cloud/object-storage/s3-key';
+    const dashboardPath = '/app-smart-cloud/object-storage/dashboard';
+    const volumesPath = '/app-smart-cloud/volumes';
+    const snapshotPath = '/app-smart-cloud/snapshot';
+    const snapshotSchedulePath = '/app-smart-cloud/schedule/snapshot';
+    const snapshotPackagePath = '/app-smart-cloud/snapshot/packages';
+    const instancesPath = '/app-smart-cloud/instances';
     if (localStorage.getItem('regions')) {
       this.listRegion = JSON.parse(localStorage.getItem('regions'));
       if (
@@ -45,17 +48,19 @@ export class RegionSelectDropdownComponent implements OnInit {
             item.regionId == JSON.parse(localStorage.getItem('regionId'))
         );
         if (this.selectedRegion.regionId === RegionID.ADVANCE) {
-          this.selectedRegion = this.listRegion[0];
-          this.setSelectedRegionFromLocalStorage();
+          if (this.url === bucketPath || this.url === subUserPath || this.url === s3KeyPath || this.url === dashboardPath || this.url === volumesPath || this.url === snapshotPath || this.url === snapshotSchedulePath || this.url === snapshotPackagePath || this.url === instancesPath) {
+            this.setRegionNormal()
+          } else {
+            this.setRegionAdvance()
+          }
         } else {
-          return;
+          this.setRegionNormal()
         }
       } else if (
         localStorage.getItem('regionId') != null &&
         this.url.includes('advance')
       ) {
-        this.selectedRegion = this.listRegion[1];
-        this.setSelectedRegionFromLocalStorage();
+        this.setRegionAdvance()
       }
     } else {
       this.regionService.getAll(environment['baseUrl']).subscribe({
@@ -73,90 +78,124 @@ export class RegionSelectDropdownComponent implements OnInit {
 
   setSelectedRegionFromLocalStorage() {
     if (this.url.includes('advance')) {
-      this.selectedRegion = this.listRegion[1];
-      localStorage.setItem(
-        'regionId',
-        JSON.stringify(this.listRegion[1].regionId)
-      );
-      this.regionChange.emit(this.listRegion[1]);
+      this.setRegionAdvance()
     } else {
-      this.selectedRegion = this.listRegion[0];
-      localStorage.setItem(
-        'regionId',
-        JSON.stringify(this.listRegion[0].regionId)
-      );
-      this.regionChange.emit(this.listRegion[0]);
+      this.setRegionNormal()
     }
   }
 
+  setRegionNormal() {
+    this.selectedRegion = this.listRegion[0];
+    localStorage.setItem(
+      'regionId',
+      JSON.stringify(this.listRegion[0].regionId)
+    );
+    this.regionChange.emit(this.listRegion[0]);
+  }
+
+  setRegionAdvance() {
+    this.selectedRegion = this.listRegion[1];
+    localStorage.setItem(
+      'regionId',
+      JSON.stringify(this.listRegion[1].regionId)
+    );
+    this.regionChange.emit(this.listRegion[1]);
+  }
+
   regionChanged(region: RegionModel) {
-    let baseUrl = environment['baseUrl'];
     const regionId = region.regionId;
 
     const bucketPath = '/app-smart-cloud/object-storage/bucket';
     const bucketAdvancePath = '/app-smart-cloud/object-storage-advance/bucket';
     const subUserPath = '/app-smart-cloud/object-storage/sub-user/list';
-    const subUserAdvancePath = '/app-smart-cloud/object-storage-advance/sub-user/list';
+    const subUserAdvancePath =
+      '/app-smart-cloud/object-storage-advance/sub-user/list';
     const s3KeyPath = '/app-smart-cloud/object-storage/s3-key';
     const s3KeyAdvancePath = '/app-smart-cloud/object-storage-advance/s3-key';
     const dashboardPath = '/app-smart-cloud/object-storage/dashboard';
-    const dashboardAdvancePath = '/app-smart-cloud/object-storage-advance/dashboard';
-
+    const dashboardAdvancePath =
+      '/app-smart-cloud/object-storage-advance/dashboard';
 
     const volumesPath = '/app-smart-cloud/volumes';
     const volumesAdvancePath = '/app-smart-cloud/volumes-advance';
     const snapshotPath = '/app-smart-cloud/snapshot';
     const snapshotAdvancePath = '/app-smart-cloud/snapshot-advance';
     const snapshotSchedulePath = '/app-smart-cloud/schedule/snapshot';
-    const snapshotScheduleAdvancePath = '/app-smart-cloud/schedule/snapshot-advance';
+    const snapshotScheduleAdvancePath =
+      '/app-smart-cloud/schedule/snapshot-advance';
     const snapshotPackagePath = '/app-smart-cloud/snapshot/packages';
-    const snapshotPackageAdvancePath = '/app-smart-cloud/snapshot-advance/packages';
+    const snapshotPackageAdvancePath =
+      '/app-smart-cloud/snapshot-advance/packages';
 
     const instancesPath = '/app-smart-cloud/instances';
     const instancesAdvancePath = '/app-smart-cloud/instances-advance';
-    
+
     if (this.url === bucketAdvancePath && regionId !== RegionID.ADVANCE) {
       this.router.navigate([bucketPath]);
     } else if (this.url === bucketPath && regionId === RegionID.ADVANCE) {
       this.router.navigate([bucketAdvancePath]);
-    } if (this.url === subUserAdvancePath && regionId !== RegionID.ADVANCE) {
+    }
+    if (this.url === subUserAdvancePath && regionId !== RegionID.ADVANCE) {
       this.router.navigate([subUserPath]);
     } else if (this.url === subUserPath && regionId === RegionID.ADVANCE) {
       this.router.navigate([subUserAdvancePath]);
-    } if (this.url === s3KeyAdvancePath && regionId !== RegionID.ADVANCE) {
+    }
+    if (this.url === s3KeyAdvancePath && regionId !== RegionID.ADVANCE) {
       this.router.navigate([s3KeyPath]);
     } else if (this.url === s3KeyPath && regionId === RegionID.ADVANCE) {
       this.router.navigate([s3KeyAdvancePath]);
-    } if (this.url === dashboardAdvancePath && regionId !== RegionID.ADVANCE) {
+    }
+    if (this.url === dashboardAdvancePath && regionId !== RegionID.ADVANCE) {
       this.router.navigate([dashboardPath]);
     } else if (this.url === dashboardPath && regionId === RegionID.ADVANCE) {
       this.router.navigate([dashboardAdvancePath]);
-    } else if (this.url === volumesAdvancePath && regionId !== RegionID.ADVANCE) {
+    } else if (
+      this.url === volumesAdvancePath &&
+      regionId !== RegionID.ADVANCE
+    ) {
       this.router.navigate([volumesPath]);
     } else if (this.url === volumesPath && regionId === RegionID.ADVANCE) {
       this.router.navigate([volumesAdvancePath]);
-    }else if (this.url === snapshotAdvancePath && regionId !== RegionID.ADVANCE) {
+    } else if (
+      this.url === snapshotAdvancePath &&
+      regionId !== RegionID.ADVANCE
+    ) {
       this.router.navigate([snapshotPath]);
     } else if (this.url === snapshotPath && regionId === RegionID.ADVANCE) {
       this.router.navigate([snapshotAdvancePath]);
-    }else if (this.url === snapshotScheduleAdvancePath && regionId !== RegionID.ADVANCE) {
+    } else if (
+      this.url === snapshotScheduleAdvancePath &&
+      regionId !== RegionID.ADVANCE
+    ) {
       this.router.navigate([snapshotSchedulePath]);
-    } else if (this.url === snapshotSchedulePath && regionId === RegionID.ADVANCE) {
+    } else if (
+      this.url === snapshotSchedulePath &&
+      regionId === RegionID.ADVANCE
+    ) {
       this.router.navigate([snapshotScheduleAdvancePath]);
-    }else if (this.url === snapshotPackageAdvancePath && regionId !== RegionID.ADVANCE) {
+    } else if (
+      this.url === snapshotPackageAdvancePath &&
+      regionId !== RegionID.ADVANCE
+    ) {
       this.router.navigate([snapshotPackagePath]);
-    } else if (this.url === snapshotPackagePath && regionId === RegionID.ADVANCE) {
+    } else if (
+      this.url === snapshotPackagePath &&
+      regionId === RegionID.ADVANCE
+    ) {
       this.router.navigate([snapshotPackageAdvancePath]);
-    }else if (this.url === instancesAdvancePath && regionId !== RegionID.ADVANCE) {
+    } else if (
+      this.url === instancesAdvancePath &&
+      regionId !== RegionID.ADVANCE
+    ) {
       this.router.navigate([instancesPath]);
     } else if (this.url === instancesPath && regionId === RegionID.ADVANCE) {
       this.router.navigate([instancesAdvancePath]);
     }
-    
+
     localStorage.setItem('regionId', JSON.stringify(regionId));
     // this.coreDataService.getProjects(baseUrl, regionId);
-    localStorage.removeItem("projects");
-    localStorage.removeItem("projectId");
+    localStorage.removeItem('projects');
+    localStorage.removeItem('projectId');
     this.valueChanged.emit(region);
   }
 }

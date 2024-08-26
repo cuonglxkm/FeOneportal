@@ -40,7 +40,7 @@
             </ng-template>
           </nz-col>
           <nz-col nzSpan="12" style="flex:none;">
-            <button nz-button nzType="primary" nzSize="large" (click)="navigateToCreate()">
+            <button *ngIf="isCreateOrder" nz-button nzType="primary" nzSize="large" (click)="navigateToCreate()">
               <img style="padding-right: 10px; margin-top: -4px" src="assets/imgs/add-circle.svg" alt="" />
               <span class="button-text-primary">Tạo mới Snapshot</span>
             </button>
@@ -99,7 +99,7 @@
                 <nz-dropdown-menu #opMenu="nzDropdownMenu">
                   <ul nz-menu>
                     <li
-                      *ngIf="data.fromRootVolume == false && (data.suspendReason == null || data.suspendReason === '')"
+                      *ngIf="data.fromRootVolume == false && (data.suspendReason == null || data.suspendReason === '') && ('order:Create' | IsPermissionPipe)"
                       nz-menu-item (click)="navigateToCreateVolumeVM(data.id,0)">{{ 'volume.notification.request.create'
                       | i18n}}</li>
                     <li
@@ -134,7 +134,7 @@
                 thể sử dụng để sao lưu volume trước khi thực hiện 1 thao tác rủi ro đến dữ liệu trên VM.</span>
             </nz-col>
           </nz-row>
-          <button style="margin-top: 20px" nz-button [nzType]="'primary'" (click)="navigateToCreate()" nzSize="large">
+          <button *ngIf="isCreateOrder" style="margin-top: 20px" nz-button [nzType]="'primary'" (click)="navigateToCreate()" nzSize="large">
             <img style="padding-right: 10px; margin-top: -4px" src="assets/imgs/cloud-plus-bold.svg" alt="" />
             Khởi tạo snapshot
           </button>

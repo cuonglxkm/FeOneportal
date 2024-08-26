@@ -184,12 +184,20 @@ export class CreateVolumeComponent implements OnInit {
           if(['volume-ssd'].includes(item.productName)){
             this.isVolumeSsd = item.isActive
           }
+          this.selectedValueHDD = this.serviceActiveByRegion.filter(
+            (e) => e.productName == 'volume-hdd'
+          )[0].isActive;
+          this.selectedValueSSD =
+            !this.serviceActiveByRegion.filter((e) => e.productName == 'volume-hdd')[0]?.isActive &&
+            this.serviceActiveByRegion.filter((e) => e.productName == 'volume-ssd')[0]?.isActive;
         });
       }, error => {
         this.isLoading = false;
         this.typeEncrypt = false;
         this.typeMultiple = false;
         this.typeSnapshot = false;
+        this.isVolumeHdd = false;
+        this.isVolumeSsd = false
         this.serviceActiveByRegion = [];
       });
   }

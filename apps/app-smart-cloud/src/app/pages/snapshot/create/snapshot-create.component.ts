@@ -272,7 +272,6 @@ export class SnapshotCreateComponent implements OnInit, OnChanges {
       );
   }
 
-
   private loadVmList() {
     this.loadingSrv.open({ type: 'spin', text: 'Loading...' });
     this.instancesService.search(1, 9999, this.region, this.project, '', '', true, this.tokenService.get()?.userId)

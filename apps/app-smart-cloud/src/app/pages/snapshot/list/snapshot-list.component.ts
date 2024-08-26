@@ -12,6 +12,7 @@ import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
 import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
 import { RegionID } from 'src/app/shared/enums/common.enum';
+import { PolicyService } from 'src/app/shared/services/policy.service';
 
 @Component({
   selector: 'one-portal-snapshot-list',
@@ -59,12 +60,14 @@ export class SnapshotListComponent implements OnInit {
   disableDelete = true;
   loadingDelete = false;
   isVisibleEdit: boolean;
+  isCreateOrder: boolean = false;
   @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
   constructor(private router: Router,
     private fb: NonNullableFormBuilder,
     @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
     private notification: NzNotificationService,
-    private service: VolumeService) {
+    private service: VolumeService,
+    private policyService: PolicyService) {
     let regionAndProject = getCurrentRegionAndProject();
     this.region = regionAndProject.regionId;
     this.project = regionAndProject.projectId;
@@ -102,8 +105,12 @@ export class SnapshotListComponent implements OnInit {
 
   projectChanged(project: ProjectModel) {
     this.project = project?.id;
-    this.search(true)
-    this.typeVpc = project?.type
+    this.search(true);
+    this.typeVpc = project?.type;
+    this.isCreateOrder = this.policyService.hasPermission("snapshotpackage:ListSnapshotPackage") && 
+      this.policyService.hasPermission("volume:List") && 
+      this.policyService.hasPermission("instance:List") && 
+      this.policyService.hasPermission("volumesnapshot:Create");
   }
 
   navigateToCreate() {
@@ -114,7 +121,6 @@ export class SnapshotListComponent implements OnInit {
         }
       })
     } else {
-
       this.router.navigate(['/app-smart-cloud/snapshot/create'], {
         queryParams: {
           navigateType: 2
@@ -155,6 +161,13 @@ export class SnapshotListComponent implements OnInit {
             } else {
               this.isBegin = false;
             }
+          }
+        }, error => {
+          if(error.status == 403) {
+            this.notification.error(
+              error.statusText,
+              this.i18n.fanyi('app.non.permission')
+            );
           }
         }
       );

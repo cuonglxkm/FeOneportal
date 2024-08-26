@@ -74,15 +74,6 @@ export class ProjectListComponent implements OnInit {
   ngOnInit(): void {
     let regionAndProject = getCurrentRegionAndProject();
     this.regionId = regionAndProject.regionId;
-    if (!this.url.includes('advance')) {
-      if (Number(localStorage.getItem('regionId')) === RegionID.ADVANCE) {
-        this.regionId = RegionID.NORMAL;
-      } else {
-        this.regionId = Number(localStorage.getItem('regionId'));
-      }
-    } else {
-      this.regionId = RegionID.ADVANCE;
-    }
     this.getData(true);
 
     this.notificationService.connection.on('UpdateProject', (data) => {
@@ -289,11 +280,7 @@ export class ProjectListComponent implements OnInit {
   }
 
   createProject() {
-    if (this.regionId === RegionID.ADVANCE) {
-      this.router.navigate(['/app-smart-cloud/project-advance/create']);
-    } else {
-      this.router.navigate(['/app-smart-cloud/project/create']);
-    }
+    this.router.navigate(['/app-smart-cloud/project/create']);
   }
 
   viewDetail(id: number) {

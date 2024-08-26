@@ -32,6 +32,10 @@
           <nz-alert nzBanner *ngIf="isQuota " style="margin-bottom: 10px;margin-top: 15px" [nzMessage]="nzMessage"
             nzShowIcon></nz-alert>
           <ng-template #nzMessage>
+            <!-- <div>
+              Dung lượng Snapshot {{navigateType == 0 || (selectedSnapshotType==0 && navigateType==2) ? 'Volume' : 'Máy ảo'}} {{quotaType=='hdd' ? 'HDD':'SSD'}} đã dùng: {{quotaUsed}} GB / {{quotaTotal}} GB. Quý khách còn
+              lại{{quotaRemain}} GB dung lượng Snapshot {{quotaType=='hdd' ? 'HDD':'SSD'}}
+            </div> -->
             <div>
              {{messageQuota}}
             </div>
