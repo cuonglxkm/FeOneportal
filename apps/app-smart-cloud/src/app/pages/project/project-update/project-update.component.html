@@ -226,7 +226,7 @@
                         <div class="text-right" style="opacity: 0.5;">{{ price.ramPerUnit |formatPrice}} </div>
                       </td>
                     </tr>
-                    <tr>
+                    <tr *ngIf="typeHdd">
                       <td width="60%">
                         {{ "volume.table.title.storage" | i18n }} HDD (GB)
                         <nz-slider [nzMin]="minBlock" [nzStep]="stepBlock" [nzMax]="maxBlock" [(ngModel)]="hhd"
@@ -244,7 +244,7 @@
                         <div class="text-right" style="opacity: 0.5;">{{ price.hhdPerUnit |formatPrice}} </div>
                       </td>
                     </tr>
-                    <tr>
+                    <tr *ngIf="typeSsd">
                       <td width="60%">
                         {{ "volume.table.title.storage" | i18n }} SSD (GB)
                         <nz-slider [nzMin]="minBlock" [nzStep]="stepBlock" [nzMax]="maxBlock" [(ngModel)]="ssd"

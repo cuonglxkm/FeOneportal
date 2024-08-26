@@ -212,6 +212,8 @@ export class ProjectUpdateComponent implements OnInit {
   }
 
   serviceActiveByRegion: SupportService[] = [];
+  typeHdd:boolean;
+  typeSsd:boolean;
   typeIp: boolean;
   typeIpv6: boolean;
   typeVolume_snapshot_hdd: boolean;
@@ -1137,10 +1139,16 @@ export class ProjectUpdateComponent implements OnInit {
 
   }
   getProductActivebyregion() {
-    const catalogs = ['ip', 'ipv6', 'volume-snapshot-hdd', 'volume-snapshot-ssd', 'backup-volume', 'loadbalancer-sdn', 'file-storage', 'file-storage-snapshot', 'vpns2s', 'vm-gpu']
+    const catalogs = ['volume-hdd','volume-ssd','ip', 'ipv6', 'volume-snapshot-hdd', 'volume-snapshot-ssd', 'backup-volume', 'loadbalancer-sdn', 'file-storage', 'file-storage-snapshot', 'vpns2s', 'vm-gpu']
     this.catalogService.getActiveServiceByRegion(catalogs, this.regionId).subscribe(data => {
       this.serviceActiveByRegion = data;
       this.serviceActiveByRegion.forEach((item: any) => {
+        if (['volume-hdd'].includes(item.productName)) {
+          this.typeHdd = item.isActive;
+        }
+        if (['volume-ssd'].includes(item.productName)) {
+          this.typeSsd = item.isActive;
+        }
         if (['ip'].includes(item.productName)) {
           this.typeIp = item.isActive;
         }

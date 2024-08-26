@@ -14,6 +14,8 @@ import { ProjectSelectDropdownComponent } from 'src/app/shared/components/projec
 import { RegionID } from 'src/app/shared/enums/common.enum';
 import { I18NService } from '@core';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
+import { SupportService } from 'src/app/shared/models/catalog.model';
+import { CatalogService } from 'src/app/shared/services/catalog.service';
 
 @Component({
   selector: 'one-portal-detail-package-snapshot',
@@ -29,6 +31,9 @@ export class DetailSnapshotComponent implements OnInit{
   idPackageBackup: number
 
   typeVPC: number
+  serviceActiveByRegion: SupportService[] = [];
+  typeSnapshotHdd:boolean;
+  typeSnapshotSsd:boolean;
   @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
   constructor(private router: Router,
               private packageBackupService: PackageBackupService,
@@ -38,6 +43,7 @@ export class DetailSnapshotComponent implements OnInit{
               private route: ActivatedRoute,
               private fb: NonNullableFormBuilder,
               private projectService: ProjectService,
+              private catalogService: CatalogService,
               @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService) {
   }
 
@@ -137,6 +143,22 @@ export class DetailSnapshotComponent implements OnInit{
       // this.getDetailPackageBackup(this.idPackageBackup);
       this.getDetailPackageSnapshot(this.idPackageBackup);
     }
+    this.getProductActivebyregion();
+  }
+   // check các dịch vụ theo region
+   getProductActivebyregion() {
+    const catalogs = ['ip', 'ipv6', 'volume-snapshot-hdd', 'volume-snapshot-ssd', 'backup-volume', 'loadbalancer-sdn', 'file-storage', 'file-storage-snapshot', 'vpns2s', 'vm-gpu']
+    this.catalogService.getActiveServiceByRegion(catalogs, this.region).subscribe(data => {
+      this.serviceActiveByRegion = data;
+      this.serviceActiveByRegion.forEach((item: any) => {
+        if (['volume-snapshot-hdd'].includes(item.productName)) {
+          this.typeSnapshotHdd = item.isActive;
+        }
+        if (['volume-snapshot-ssd'].includes(item.productName)) {
+          this.typeSnapshotSsd = item.isActive;
+        }
+      });
+    });
   }
 }
 

@@ -21,10 +21,12 @@ export class RegionSelectDropdownComponent implements OnInit {
     this.regionService.getAll().subscribe(data => {
       //console.log(data);
       this.listRegion = data;
+      // console.log("this.listRegion",this.listRegion)
       if (this.listRegion.length > 0) {
         if (localStorage.getItem('regionId') != null) {
           this.selectedRegion = this.listRegion.find(item =>
             item.regionId == JSON.parse(localStorage.getItem('regionId')));
+       
           this.valueChanged.emit(this.selectedRegion)
         } else {
           this.selectedRegion = this.listRegion[0];
@@ -35,6 +37,7 @@ export class RegionSelectDropdownComponent implements OnInit {
     }, error => {
       this.listRegion = []
     });
+    
   }
 
   regionChanged(region: RegionModel) {

@@ -53,12 +53,12 @@ export class DashboardComponent implements OnInit, OnDestroy {
   breadcrumb: boolean = true;
 
   constructor(private dashboardService: DashboardService,
-              private router: Router,
-              private paymentService: PaymentService,
-              private notification: NzNotificationService,
-              private commonService: CommonService,
-              @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
-              @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService) {
+    private router: Router,
+    private paymentService: PaymentService,
+    private notification: NzNotificationService,
+    private commonService: CommonService,
+    @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
+    @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService) {
   }
 
   ngOnDestroy() {
@@ -93,7 +93,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.dashboardService.getSubscriptionsDashboard().subscribe(data => {
       this.isLoading = false;
       this.subscriptionsDashboard = data;
-      console.log("123",this.subscriptionsDashboard)
+      console.log("123", this.subscriptionsDashboard)
       this.subscriptionsDashboard.forEach(item => {
         if (item.type == 'total') {
           this.subscriptionDashboardService = item;
@@ -171,12 +171,13 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.dashboardService.paymentCostUseTotal().subscribe(data => {
       this.isLoading = false;
       this.dataPaymentCost = data;
-
       const dataChart = this.dataPaymentCost.map(item => ({
+       
         type: this.getServiceName(item.serviceType),
         value: item.totalAmount,
         formattedValue: new Intl.NumberFormat('de-DE').format(item.totalAmount)
       }));
+     
       const piePlot = new Pie(this.pieChart.nativeElement, {
         appendPadding: 10,
         data: dataChart,
@@ -221,7 +222,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   //Dẫn sang trang gia hạn
-  navigateToExtend(serviceInstanceId: number, serviceType: number, regionId:number) {
+  navigateToExtend(serviceInstanceId: number, serviceType: number, regionId: number) {
     switch (serviceType) {
       case 1:
         //VM
@@ -266,20 +267,12 @@ export class DashboardComponent implements OnInit, OnDestroy {
         break;
       case 13:
         //OBJECT STORAGE
-        console.log("regionnnn", regionId)
-        // this.router.navigate(['/app-smart-cloud/object-storage/extend/']);
-        // break;
-       if(regionId===7){
-
-       
-        this.router.navigate(['/app-smart-cloud/object-storage-advance/extend/']);
-        
-       }else if(regionId===5){
-        this.router.navigate(['/app-smart-cloud/object-storage/extend/']);
-        
-       }
-       break;
-      
+        if (regionId === 7) {
+          this.router.navigate(['/app-smart-cloud/object-storage-advance/extend/']);
+        } else if (regionId === 5) {
+          this.router.navigate(['/app-smart-cloud/object-storage/extend/']);
+        }
+        break;
       case 14:
         this.router.navigate(['/app-smart-cloud/backup/packages/extend/', serviceInstanceId]);
         //BACKUP_PACKET
@@ -320,9 +313,9 @@ export class DashboardComponent implements OnInit, OnDestroy {
         this.router.navigate(['/app-smart-cloud/file-system-snapshot/extend/' + serviceInstanceId]);
         break;
       case 27:
-          //WAF
-          this.router.navigate(['/app-smart-cloud/waf/extend/' + serviceInstanceId]);
-          break;
+        //WAF
+        this.router.navigate(['/app-smart-cloud/waf/extend/' + serviceInstanceId]);
+        break;
       case 100:
         //OTHER
         break;
@@ -408,9 +401,9 @@ export class DashboardComponent implements OnInit, OnDestroy {
         return this.i18n.fanyi('app.file-system-snapshot');
 
       case 27:
-          //WAF
-          return this.i18n.fanyi('app.WAF');
-          break;
+        //WAF
+        return this.i18n.fanyi('app.WAF');
+        break;
       case 100:
         //OTHER
         return this.i18n.fanyi('app.other');

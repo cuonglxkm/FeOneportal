@@ -27,6 +27,8 @@ import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { OrderService } from '../../../shared/services/order.service';
 import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
 import { I18NService } from '@core';
+import { CatalogService } from 'src/app/shared/services/catalog.service';
+import { SupportService } from 'src/app/shared/models/catalog.model';
 
 @Component({
   selector: 'one-portal-resize-snapshot-package',
@@ -53,7 +55,7 @@ export class ResizeSnapshotPackageComponent implements OnInit {
   isLoadingEdit: boolean = false;
 
   storage: number;
-  packageName:string;
+  packageName: string;
 
   resizeDate: Date;
   loadingCalculate = false;
@@ -62,53 +64,86 @@ export class ResizeSnapshotPackageComponent implements OnInit {
   private readonly debounceTimeMs = 500;
   isVisiblePopupError: boolean = false;
   errorList: string[] = [];
+  minBlock: number = 0;
+  stepBlock: number = 0;
+  maxBlock: number = 0;
+  private inputChangeBlock = new Subject<{ value: number, name: string }>();
+  serviceActiveByRegion: SupportService[] = [];
+  typeSnapshotHdd:boolean;
+  typeSnapshotSsd:boolean;
   closePopupError() {
     this.isVisiblePopupError = false;
   }
   @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
   constructor(private router: Router,
-              private orderService: OrderService,
-              private packageBackupService: PackageBackupService,
-              private packageSnapshotService: PackageSnapshotService,
-              @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
-              private notification: NzNotificationService,
-              private instanceService: InstancesService,
-              private route: ActivatedRoute,
-              @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
-              private fb: NonNullableFormBuilder,
-              private configurationsService: ConfigurationsService,
-              private projectService: ProjectService) {
-    this.searchSubjectHdd.pipe(debounceTime(this.debounceTimeMs)).subscribe((searchValue) => {
-      if ((this.numberHDDBonus % this.stepStorage) > 0) {
-        this.notification.warning('', this.i18n.fanyi('app.notify.amount.capacity', { number: this.stepStorage }));
-        this.numberHDDBonus = this.numberHDDBonus - (this.numberHDDBonus % this.stepStorage);
-      }
-      this.getTotalAmount();
-    });
-    this.searchSubjectSsd.pipe(debounceTime(this.debounceTimeMs)).subscribe((searchValue) => {
-      if ((this.numberSSDBonus % this.stepStorage) > 0) {
-        this.notification.warning('', this.i18n.fanyi('app.notify.amount.capacity', { number: this.stepStorage }));
-        this.numberSSDBonus = this.numberSSDBonus - (this.numberSSDBonus % this.stepStorage);
-      }
-      this.getTotalAmount();
-    });
+    private orderService: OrderService,
+    private catalogService: CatalogService,
+    private packageBackupService: PackageBackupService,
+    private packageSnapshotService: PackageSnapshotService,
+    @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
+    private notification: NzNotificationService,
+    private instanceService: InstancesService,
+    private route: ActivatedRoute,
+    @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
+    private fb: NonNullableFormBuilder,
+    private configurationsService: ConfigurationsService,
+    private projectService: ProjectService) {
+    this.inputChangeBlock.pipe(
+      debounceTime(800)
+    ).subscribe(data => this.checkNumberBlock(data.value, data.name));
+
   }
 
-  minStorage: number = 0;
-  stepStorage: number = 0;
-  valueString: string;
-  maxStorage: number = 0;
+  // call api get step block 
+  getStepBlock(name: string) {
+    this.configurationsService.getConfigurations(name).subscribe((res: any) => {
+      const valuestring: any = res.valueString;
+      const parts = valuestring.split("#")
+      this.minBlock = parseInt(parts[0]);
+      this.stepBlock = parseInt(parts[1]);
+      this.maxBlock = parseInt(parts[2]);
+    })
+  }
+  onInputChange(value: number, name: string): void {
+    this.inputChangeBlock.next({ value, name });
 
-  getConfiguration() {
-    this.configurationsService.getConfigurations('BLOCKSTORAGE').subscribe(data => {
-      this.valueString = data.valueString;
-      this.minStorage = Number.parseInt(this.valueString?.split('#')[0]);
-      this.stepStorage = Number.parseInt(this.valueString?.split('#')[1]);
-      this.maxStorage = Number.parseInt(this.valueString?.split('#')[2]);
-    });
+  }
+  // function check number input block
+  checkNumberBlock(value: number, name: string): void {
+    const messageStepNotification = `Số lượng phải chia hết cho  ${this.stepBlock} `;
+    const numericValue = Number(value);
+    if (isNaN(numericValue)) {
+      this.notification.warning('', messageStepNotification);
+      return;
+    }
+    let adjustedValue = Math.floor(numericValue / this.stepBlock) * this.stepBlock;
+    if (adjustedValue > this.maxBlock) {
+      adjustedValue = Math.floor(this.maxBlock / this.stepBlock) * this.stepBlock;
+    } else if (adjustedValue < this.minBlock) {
+      this.notification.warning('', messageStepNotification);
+      adjustedValue = this.minBlock;
+
+    }
+    if (numericValue !== adjustedValue) {
+      this.notification.warning('', messageStepNotification);
+    }
+    switch (name) {
+      case "hhd":
+        this.numberHDDBonus = adjustedValue;
+        break;
+      case "ssd":
+        this.numberSSDBonus = adjustedValue;
+        break;
+
+    }
+    if (numericValue !== adjustedValue) {
+      this[name] = adjustedValue;
+    }
+    this.getTotalAmount();
+
   }
 
-  navigateToSnapshotPackage(){
+  navigateToSnapshotPackage() {
     if (this.region === RegionID.ADVANCE) {
       this.router.navigate(['/app-smart-cloud/snapshot-advance/packages']);
     } else {
@@ -118,7 +153,7 @@ export class ResizeSnapshotPackageComponent implements OnInit {
 
   regionChanged(region: RegionModel) {
     this.region = region.regionId;
-    if(this.projectCombobox){
+    if (this.projectCombobox) {
       this.projectCombobox.loadProjects(true, region.regionId);
     }
     this.projectService.getByRegion(this.region).subscribe(data => {
@@ -144,22 +179,22 @@ export class ResizeSnapshotPackageComponent implements OnInit {
         this.loadingCalculate = false;
       }))
       .subscribe(data => {
-      console.log('data', data);
-      this.packageSnapshotModel = data;
-      this.storage = this.packageSnapshotModel.sizeInGB;
-      this.validateForm.controls['description'].setValue(data.description);
-      this.numberHDD = data.totalSizeHDD;
-      this.numberSSD = data.totalSizeSSD;
-      this.packageName = data.packageName;
-      console.log("hhhhoooo", data)
-      this.getTotalAmount();
-    },error =>{      
-      if(error.status===500){
-        this.router.navigate(['/app-smart-cloud/snapshot/packages']);
-        this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi(error.error.detail));
-      }
-      
-    });
+        console.log('data', data);
+        this.packageSnapshotModel = data;
+        this.storage = this.packageSnapshotModel.sizeInGB;
+        this.validateForm.controls['description'].setValue(data.description);
+        this.numberHDD = data.totalSizeHDD;
+        this.numberSSD = data.totalSizeSSD;
+        this.packageName = data.packageName;
+        console.log("hhhhoooo", data)
+        this.getTotalAmount();
+      }, error => {
+        if (error.status === 500) {
+          this.router.navigate(['/app-smart-cloud/snapshot/packages']);
+          this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi(error.error.detail));
+        }
+
+      });
   }
 
   changeValueInput() {
@@ -187,58 +222,57 @@ export class ResizeSnapshotPackageComponent implements OnInit {
   unitPrice = 0;
 
   getTotalAmount() {
-    if (this.numberSSDBonus + this.numberHDDBonus != 0) {
-      this.loadingCalculate = true;
-      let data = {
-        sizeSsdInGB: this.numberSSD + this.numberSSDBonus,
-        sizeHddInGB: this.numberHDD + this.numberHDDBonus,
-        newOfferId: 0,
-        serviceType: 22,
-        actionType: 4,
-        serviceInstanceId: this.idSnapshotPackage,
-        regionId: this.region,
-        serviceName: this.packageName,
-        projectId: this.project,
-        typeName: 'SharedKernel.IntegrationEvents.Orders.Specifications.SnapshotPackageResizeSpecification,SharedKernel.IntegrationEvents,Version=1.0.0.0,Culture=neutral,PublicKeyToken=null',
-        userEmail: null,
-        actorEmail: null
-      };
-      let itemPayment: ItemPayment = new ItemPayment();
-      itemPayment.orderItemQuantity = 1;
-      itemPayment.specificationString = JSON.stringify(data);
-      itemPayment.specificationType = 'snapshotpackage_resize';
-      itemPayment.sortItem = 0;
-      let dataPayment: DataPayment = new DataPayment();
-      dataPayment.orderItems = [itemPayment];
-      dataPayment.projectId = this.project;
-      this.instanceService.getTotalAmount(dataPayment)
-        .pipe(finalize(() => {
-          this.loadingCalculate = false;
-        }))
-        .subscribe((result) => {
-          console.log('thanh tien snapshot package', result.data);
-          this.orderItem = result.data;
-          this.unitPrice = this.orderItem?.orderItemPrices[0].unitPrice.amount;
+    this.loadingCalculate = true;
+    let data = {
+      sizeSsdInGB: this.numberSSD + this.numberSSDBonus,
+      sizeHddInGB: this.numberHDD + this.numberHDDBonus,
+      newOfferId: 0,
+      serviceType: 22,
+      actionType: 4,
+      serviceInstanceId: this.idSnapshotPackage,
+      regionId: this.region,
+      serviceName: this.packageName,
+      projectId: this.project,
+      typeName: 'SharedKernel.IntegrationEvents.Orders.Specifications.SnapshotPackageResizeSpecification,SharedKernel.IntegrationEvents,Version=1.0.0.0,Culture=neutral,PublicKeyToken=null',
+      userEmail: null,
+      actorEmail: null
+    };
+    let itemPayment: ItemPayment = new ItemPayment();
+    itemPayment.orderItemQuantity = 1;
+    itemPayment.specificationString = JSON.stringify(data);
+    itemPayment.specificationType = 'snapshotpackage_resize';
+    itemPayment.sortItem = 0;
+    let dataPayment: DataPayment = new DataPayment();
+    dataPayment.orderItems = [itemPayment];
+    dataPayment.projectId = this.project;
+    this.instanceService.getTotalAmount(dataPayment)
+      .pipe(finalize(() => {
+        this.loadingCalculate = false;
+      }))
+      .subscribe((result) => {
+        console.log('thanh tien snapshot package', result.data);
+        this.orderItem = result.data;
+        this.unitPrice = this.orderItem?.orderItemPrices[0].unitPrice.amount;
 
-          this.totalAmount = Math.round(result?.data?.totalAmount?.amount);
-          this.totalPayment = Math.round(result?.data?.totalPayment?.amount);
-          this.totalVat = Math.round(result?.data?.totalVAT?.amount);
+        this.totalAmount = Math.round(result?.data?.totalAmount?.amount);
+        this.totalPayment = Math.round(result?.data?.totalPayment?.amount);
+        this.totalVat = Math.round(result?.data?.totalVAT?.amount);
 
-          this.unitPrice = this.orderItem?.orderItemPrices[0]?.unitPrice.amount;
-          const detailArray = this.ssdPrice = this.orderItem?.orderItemPrices[0]?.details;
-          if (detailArray != null && detailArray.length > 0) {
-            for (let item of detailArray) {
-              if (item.typeName == 'volume-snapshot-hdd') {
-                this.hddPrice = item.totalAmount.amount;
-                this.hddUnitPrice = item.unitPrice.amount;
-              } else if (item.typeName == 'volume-snapshot-ssd') {
-                this.ssdPrice = item.totalAmount.amount;
-                this.ssdUnitPrice = item.unitPrice.amount;
-              }
+        this.unitPrice = this.orderItem?.orderItemPrices[0]?.unitPrice.amount;
+        const detailArray = this.ssdPrice = this.orderItem?.orderItemPrices[0]?.details;
+        if (detailArray != null && detailArray.length > 0) {
+          for (let item of detailArray) {
+            if (item.typeName == 'volume-snapshot-hdd') {
+              this.hddPrice = item.totalAmount.amount;
+              this.hddUnitPrice = item.unitPrice.amount;
+            } else if (item.typeName == 'volume-snapshot-ssd') {
+              this.ssdPrice = item.totalAmount.amount;
+              this.ssdUnitPrice = item.unitPrice.amount;
             }
           }
-        });
-    }
+        }
+      });
+
   }
 
 
@@ -258,19 +292,19 @@ export class ResizeSnapshotPackageComponent implements OnInit {
       userEmail: null,
       actorEmail: null
     };
-      let request: SnapshotPackageRequestModel = new SnapshotPackageRequestModel();
-      request.customerId = this.formUpdateSnapshotPackageModel.customerId;
-      request.createdByUserId = this.formUpdateSnapshotPackageModel.customerId;
-      request.note = 'resize snapshot package';
-      request.orderItems = [
-        {
-          orderItemQuantity: 1,
-          specification: JSON.stringify(data),
-          specificationType: 'snapshotpackage_resize',
-          price: 0,
-          serviceDuration: 0
-        }
-      ];
+    let request: SnapshotPackageRequestModel = new SnapshotPackageRequestModel();
+    request.customerId = this.formUpdateSnapshotPackageModel.customerId;
+    request.createdByUserId = this.formUpdateSnapshotPackageModel.customerId;
+    request.note = 'resize snapshot package';
+    request.orderItems = [
+      {
+        orderItemQuantity: 1,
+        specification: JSON.stringify(data),
+        specificationType: 'snapshotpackage_resize',
+        price: 0,
+        serviceDuration: 0
+      }
+    ];
     this.orderService.validaterOrder(request).subscribe(
       data => {
         if (data.success) {
@@ -279,7 +313,7 @@ export class ResizeSnapshotPackageComponent implements OnInit {
           } else {
             var returnPath: string = `/app-smart-cloud/snapshot/packages/edit/${this.idSnapshotPackage}`;
           }
-          
+
           console.log('request', request);
           this.router.navigate(['/app-smart-cloud/order/cart'], { state: { data: request, path: returnPath } });
         } else {
@@ -303,9 +337,9 @@ export class ResizeSnapshotPackageComponent implements OnInit {
   totalPayment: number;
   totalVat: number;
   hddPrice = 0;
-  hddUnitPrice=0;
+  hddUnitPrice = 0;
   ssdPrice = 0;
-  ssdUnitPrice=0;
+  ssdUnitPrice = 0;
   today = new Date();
 
   loadProjects() {
@@ -319,7 +353,6 @@ export class ResizeSnapshotPackageComponent implements OnInit {
   url = window.location.pathname;
   ngOnInit() {
     this.validateForm.controls['description'].disable();
-    this.getConfiguration();
     this.idSnapshotPackage = Number.parseInt(this.route.snapshot.paramMap.get('id'));
     let regionAndProject = getCurrentRegionAndProject();
     this.region = regionAndProject.regionId;
@@ -342,20 +375,31 @@ export class ResizeSnapshotPackageComponent implements OnInit {
 
       this.resizeDate = new Date();
     }
+    this.getStepBlock('BLOCKSTORAGE');
+    this.getProductActivebyregion();
   }
 
   checkPossiblePress($event: KeyboardEvent) {
     const key = $event.key;
-    if (isNaN(Number(key)) && key !== 'Backspace' && key !== 'Delete' && key !== 'ArrowLeft' && key !== 'ArrowRight') {
+    if (isNaN(Number(key)) && key !== 'Backspace' && key !== 'Delete' && key !== 'ArrowLeft' && key !== 'ArrowRight' && key != 'Tab') {
       $event.preventDefault();
     }
   }
-
-  changeQuota(isHdd: boolean) {
-    if (isHdd) {
-      this.searchSubjectHdd.next('');
-    } else {
-      this.searchSubjectSsd.next('');
-    }
+  // check các dịch vụ theo region
+  getProductActivebyregion() {
+    const catalogs = ['ip', 'ipv6', 'volume-snapshot-hdd', 'volume-snapshot-ssd', 'backup-volume', 'loadbalancer-sdn', 'file-storage', 'file-storage-snapshot', 'vpns2s', 'vm-gpu']
+    this.catalogService.getActiveServiceByRegion(catalogs, this.region).subscribe(data => {
+      this.serviceActiveByRegion = data;
+      this.serviceActiveByRegion.forEach((item: any) => {
+        if (['volume-snapshot-hdd'].includes(item.productName)) {
+          this.typeSnapshotHdd = item.isActive;
+        }
+        if (['volume-snapshot-ssd'].includes(item.productName)) {
+          this.typeSnapshotSsd = item.isActive;
+        }
+      });
+    });
   }
+
+
 }
