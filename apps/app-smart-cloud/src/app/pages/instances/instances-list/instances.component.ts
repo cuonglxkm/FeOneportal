@@ -1043,9 +1043,13 @@ export class InstancesComponent implements OnInit {
   }
 
   createSnapshot(id: number) {
+    // this.router.navigate(
+    //   ['/app-smart-cloud/snapshot/create', { instanceId: id }],
+    //   { queryParams: { navigateType: 1 } }
+    // );
     this.router.navigate(
-      ['/app-smart-cloud/snapshot/create', { instanceId: id }],
-      { queryParams: { navigateType: 1 } }
+      ['/app-smart-cloud/snapshot/create'],
+      { queryParams:{ instanceId: id ,  navigateType: 1 } }
     );
   }
 

@@ -91,7 +91,7 @@
         </nz-card>
         <nz-card>
           <div class="text-card-header" style="margin-bottom: 10px">Thông tin tài nguyên</div>
-          <nz-table nzData="null" nzHideOnSinglePage='true'>
+          <nz-table nzData="null" nzHideOnSinglePage='true' *ngIf="typeSnapshotHdd || typeSnapshotSsd">
             <thead>
               <tr>
                 <th>Tên tài nguyên</th>
@@ -101,13 +101,13 @@
               </tr>
             </thead>
             <tbody>
-              <tr>
+              <tr *ngIf="typeSnapshotHdd">
                 <td>Dung lượng HDD (GB)</td>
                 <td class="text-right">{{ packageSnapshotModel.totalSizeHDD }}</td>
                 <td class="text-right">{{ packageSnapshotModel.usedSizeHDD }}</td>
                 <td class="text-right">{{ packageSnapshotModel.availableSizeHDD }}</td>
               </tr>
-              <tr>
+              <tr *ngIf="typeSnapshotSsd"> 
                 <td>Dung lượng SSD (GB)</td>
                 <td class="text-right">{{ packageSnapshotModel.totalSizeSSD }}</td>
                 <td class="text-right">{{ packageSnapshotModel.usedSizeSSD }}</td>
@@ -129,7 +129,7 @@
                 [nz-tooltip]="'Người dùng có thể mua một hoặc đồng thời cả hai loại dung lượng HDD và SSD cho gói Snapshot'"
                 src="assets/imgs/pajamas_question.svg" alt="" />
             </nz-form-label>
-            <nz-table nzData="null" nzHideOnSinglePage='true'>
+            <nz-table nzData="null" nzHideOnSinglePage='true' *ngIf="typeSnapshotHdd || typeSnapshotSsd">
               <thead>
                 <tr>
                   <th>Loại gói</th>
@@ -138,12 +138,12 @@
                 </tr>
               </thead>
               <tbody>
-                <tr>
+                <tr *ngIf="typeSnapshotHdd ">
                   <td>HDD</td>
                   <td  class="text-right">
-                    <nz-input-number style="min-width: 30%; margin-left: -1px" [nzMin]="0" [nzStep]="1"
+                    <nz-input-number style="min-width: 30%; margin-left: -1px" [nzMin]="minBlock" [nzStep]="stepBlock" [maxBlock]="maxBlock"
                       (keydown)="checkPossiblePress($event)" [(ngModel)]="numberHDDBonus"
-                      (ngModelChange)="changeQuota(true)" [ngModelOptions]="{ standalone: true }"
+                      (ngModelChange)="onInputChange($event, 'hhd')" [ngModelOptions]="{ standalone: true }"
                       nzSize="large"></nz-input-number>
                   </td>
 
@@ -155,12 +155,12 @@
                     </div>
                   </td>
                 </tr>
-                <tr>
+                <tr *ngIf="typeSnapshotSsd ">
                   <td>SSD</td>
                   <td  class="text-right">
-                    <nz-input-number style="min-width: 30%; margin-left: -1px" [nzMin]="0" [nzStep]="1"
+                    <nz-input-number style="min-width: 30%; margin-left: -1px" [nzMin]="minBlock" [nzStep]="stepBlock" [maxBlock]="maxBlock"
                       (keydown)="checkPossiblePress($event)" [(ngModel)]="numberSSDBonus"
-                      (ngModelChange)="changeQuota(false)" [ngModelOptions]="{ standalone: true }"
+                      (ngModelChange)="onInputChange($event, 'ssd')" [ngModelOptions]="{ standalone: true }"
                       nzSize="large"></nz-input-number>
                   </td>
                   <td class="text-right">
@@ -194,24 +194,19 @@
             <div style="margin-top: 10px" class="text-label">{{ numberSSD + numberHDD + numberHDDBonus + numberSSDBonus
               }} GB</div>
             <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
-            <div class="text-value">Dung lượng HDD</div>
-            <div style="margin-top: 10px" class="text-label">{{ numberHDD + numberHDDBonus }} GB</div>
+            <div  *ngIf="typeSnapshotHdd">
+              <div class="text-value">Dung lượng HDD</div>
+              <div style="margin-top: 10px" class="text-label">{{ numberHDD + numberHDDBonus }} GB</div>
+            </div>
+            
             <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
-            <div class="text-value">Dung lượng SSD</div>
-            <div style="margin-top: 10px" class="text-label">{{ numberSSD + numberSSDBonus }} GB</div>
+            <div *ngIf="typeSnapshotSsd">
+              <div class="text-value">Dung lượng SSD</div>
+              <div style="margin-top: 10px" class="text-label">{{ numberSSD + numberSSDBonus }} GB</div>
+            </div>
+           
             <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
-            <!--            <nz-row style="margin-bottom: 10px" nzGutter="16">-->
-            <!--              <nz-col nzSpan="16">-->
-            <!--                <span class="text-value"> {{'app.service.cost' | i18n}} {{ this.validateForm.controls['time'].value || 0 }} {{'app.month' | i18n}} </span>-->
-            <!--              </nz-col>-->
-            <!--              <nz-col class="text-right" nzSpan="8">-->
-            <!--            <span class="text-value" style="color: #0066b3" nzAlign="right">-->
-            <!--              {{ totalAmount |number }}-->
-            <!--              VND-->
-            <!--            </span>-->
-            <!--              </nz-col>-->
-            <!--            </nz-row>-->
-            <!--            <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>-->
+
             <nz-row style="margin-bottom: 10px" nzGutter="16">
               <nz-col nzSpan="16">
                 <span class="text-value"> {{'app.fee.resize' | i18n}}</span>
