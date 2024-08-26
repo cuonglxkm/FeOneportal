@@ -32,7 +32,7 @@
 </page-header>
 <nz-content>
   <div class="text-left" style="margin-bottom: 1.5rem;">
-    <button *ngIf=" packageSnapshotModel.status !='SUSPENDED' && ('order:Create' | IsPermissionPipe) && ('configuration:Get' | IsPermissionPipe) && ('order:GetOrderAmount' | IsPermissionPipe)" nz-button nzType="primary" (click)="navigateToEdit()"
+    <button *ngIf=" packageSnapshotModel.status !='SUSPENDED' " nz-button nzType="primary" (click)="navigateToEdit()"
       nzSize="large">
       <img style="padding-right: 10px;" src="assets/imgs/edit-1.svg" alt="" />
       <span class="button-text-primary">Điều chỉnh</span>
@@ -79,8 +79,7 @@
           <nz-col nzSpan="12">
             <nz-row style="padding: 12px 0 12px 0">
               <span class="text-label customSpan" style="width: 35%">Ngày hết hạn:</span>
-              <span class="text-value-detail customSpan">{{packageSnapshotModel?.expirationDate | date: 'HH:mm:ss
-                dd/MM/yyyy'}}</span>
+              <span class="text-value-detail customSpan">{{packageSnapshotModel?.expirationDate | date: 'HH:mm:ss dd/MM/yyyy'}}</span>
             </nz-row>
           </nz-col>
         </nz-row>

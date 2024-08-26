@@ -28,6 +28,7 @@
       <nz-col nzSpan="16">
         <nz-card style="border-radius: 8px;">
           <span class="text-card-header">Thông tin Snapshot</span>
+          <!-- đủ quota -->
           <nz-alert nzBanner *ngIf="isQuota " style="margin-bottom: 10px;margin-top: 15px" [nzMessage]="nzMessage"
             nzShowIcon></nz-alert>
           <ng-template #nzMessage>
@@ -39,33 +40,57 @@
              {{messageQuota}}
             </div>
           </ng-template>
+          <!-- không đủ quota gói cho dự án thường -->
           <nz-alert nzBanner *ngIf="isNotEnoughQuota" style="margin-bottom: 10px;margin-top: 15px"
             [nzMessage]="nzMessageNotSize" nzShowIcon></nz-alert>
           <ng-template #nzMessageNotSize>
             <div>
-              Gói Snapshot không đủ dung lượng còn lại so với Dung lượng VM muốn Snapshot: “Dung lượng còn lại của gói
-              Snapshot {{namePackage}} {{quotaType=='hdd' ? 'HDD':'SSD'}} là {{quotaRemain}} GB. Vui lòng thực hiện
-              điều chỉnh Gói Snapshot
+          Dung lượng còn lại của gói Snapshot {{namePackage}} ({{quotaTypeSelected=='hdd' ? 'HDD':'SSD'}}) là {{quotaTypeSelected=='hdd'? availableSizeHDD :availableSizeSSD}} GB. Vui lòng thực hiện điều chỉnh Gói Snapshot
               <a [href]="'/app-smart-cloud/snapshot/packages/edit/'+idSnapshotPackage">{{namePackage}} </a>
-              ({{quotaType=='hdd' ? 'HDD':'SSD'}}) để có thể tiếp tục sử dụng dịch vụ
+              ({{quotaTypeSelected=='hdd' ? 'HDD':'SSD'}}) để có thể tiếp tục sử dụng dịch vụ.
             </div>
           </ng-template>
           <!-- VPC chưa mua snapshot -->
-          <!-- <nz-alert nzBanner *ngIf="projectType==1"  style="margin-bottom: 10px;margin-top: 15px" [nzMessage]="isVPCNotQuota"
+          <nz-alert nzBanner *ngIf="projectType==1 && projectTotalHdd==0 && projectTotalSsd==0"  style="margin-bottom: 10px;margin-top: 15px" [nzMessage]="isVPCNotQuota"
             nzShowIcon></nz-alert>
           <ng-template #isVPCNotQuota>
             <div>
               Quý khách chưa mua dung lượng Snapshot, vui lòng truy cập điều chỉnh VPC  <a style="font-size:16px" [href]="'/app-smart-cloud/project/update/'+ projectId">{{projectName}} </a> tại đây để thực hiện bổ sung dung lượng.
             </div>
-          </ng-template> -->
+          </ng-template>
           <!-- VPC chưa mua snapshot theo loại của volume/máy ảo -->
-          <nz-alert nzBanner *ngIf="projectType==1"  style="margin-bottom: 10px;margin-top: 15px" [nzMessage]="isVPCNotQuota"
+          <nz-alert nzBanner *ngIf="projectType==1 && quotaTypeSelected=='hdd' && projectTotalHdd==0 "  style="margin-bottom: 10px;margin-top: 15px" [nzMessage]="isVPCNotQuotaTypeHdd"
             nzShowIcon></nz-alert>
-          <ng-template #isVPCNotQuota>
+          <ng-template #isVPCNotQuotaTypeHdd>
             <div>
-              Quý khách chưa mua dung lượng Snapshot {{quotaType=='hdd' ? 'HDD':'SSD'}}, vui lòng truy cập điều chỉnh VPC tại đây để thực hiện bổ sung
+              Quý khách chưa mua dung lượng Snapshot HDD, vui lòng truy cập điều chỉnh VPC <a style="font-size:16px" [href]="'/app-smart-cloud/project/update/'+ projectId">{{projectName}} </a> tại đây để thực hiện bổ sung.
             </div>
           </ng-template>
+          <!-- VPC chưa mua snapshot theo loại của volume/máy ảo -->
+          <nz-alert nzBanner *ngIf="projectType==1 && quotaTypeSelected=='ssd' && projectTotalSsd==0 "  style="margin-bottom: 10px;margin-top: 15px" [nzMessage]="isVPCNotQuotaTypeSsd"
+            nzShowIcon></nz-alert>
+          <ng-template #isVPCNotQuotaTypeSsd>
+            <div>
+              Quý khách chưa mua dung lượng Snapshot SSD, vui lòng truy cập điều chỉnh VPC <a style="font-size:16px" [href]="'/app-smart-cloud/project/update/'+ projectId">{{projectName}} </a> tại đây để thực hiện bổ sung.
+            </div>
+          </ng-template>
+          <!-- VPC không đủ quota SSD-->
+          <nz-alert nzBanner *ngIf="projectType==1 && quotaTypeSelected=='ssd'&& projectTotalSsd > 0  && projectRemainingSsd< quotaSelected  "  style="margin-bottom: 10px;margin-top: 15px" [nzMessage]="isVPCNoQuotaSsd"
+            nzShowIcon></nz-alert>
+          <ng-template #isVPCNoQuotaSsd>
+            <div>
+              Quý khách đã sử dụng hết quota Snapshot (SSD). Vui lòng bấm vào đây ( <a style="font-size:16px" [href]="'/app-smart-cloud/project/update/'+ projectId">{{projectName}} </a>) để mở rộng quota.
+            </div>
+          </ng-template>
+          <!-- VPC không đủ quota HDD-->
+          <nz-alert nzBanner *ngIf="projectType==1 && quotaTypeSelected=='hdd' && projectTotalHdd > 0 && projectRemainingHdd< quotaSelected  "  style="margin-bottom: 10px;margin-top: 15px" [nzMessage]="isVPCNoQuotaHdd"
+            nzShowIcon></nz-alert>
+          <ng-template #isVPCNoQuotaHdd>
+            <div>
+              Quý khách đã sử dụng hết quota Snapshot (HDD). Vui lòng bấm vào đây ( <a style="font-size:16px" [href]="'/app-smart-cloud/project/update/'+ projectId">{{projectName}} </a>) để mở rộng quota.
+            </div>
+          </ng-template>
+
 
           <nz-form-item style="margin-top: 15px;">
             <nz-form-label>
@@ -341,7 +366,7 @@
                         src="assets/imgs/pajamas_question.svg" alt="" /></span>
                   </nz-form-label>
                   <nz-form-control nzDisableAutoTips>
-                    <nz-select nzPlaceHolder="Chọn volume" nzAllowClear [(ngModel)]="selectedVolume"
+                    <nz-select nzPlaceHolder="Chọn volume"  [(ngModel)]="selectedVolume"
                       [disabled]="volumeLoading" [nzLoading]="volumeLoading" (ngModelChange)="changeVmVolumeSelected()"
                       [ngModelOptions]="{ standalone: true }" nzSize="large">
                       <nz-option *ngFor="let index of volumeArray" [nzValue]="index" [nzLabel]="index.name"></nz-option>
@@ -355,7 +380,7 @@
                         src="assets/imgs/pajamas_question.svg" alt="" /></span>
                   </nz-form-label>
                   <nz-form-control nzDisableAutoTips>
-                    <nz-select nzPlaceHolder="Chọn máy ảo" nzAllowClear [(ngModel)]="selectedVM" [disabled]="vmLoading"
+                    <nz-select nzPlaceHolder="Chọn máy ảo"  [(ngModel)]="selectedVM" [disabled]="vmLoading"
                       [nzLoading]="vmLoading" (ngModelChange)="changeVmVolumeSelected()" [ngModelOptions]="{ standalone: true }"
                       nzSize="large">
                       <nz-option *ngFor="let index of vmArray" [nzValue]="index" [nzLabel]="index.name"></nz-option>
@@ -364,14 +389,14 @@
                 </nz-form-item>
               </nz-col>
               <nz-col [nzXs]="24" [nzSm]="24" [nzMd]="12" [nzLg]="12" [nzXl]="12"  *ngIf="(projectType==1 || projectType==2) && navigateType==1">
-                <nz-form-item >
+                <nz-form-item style="margin-right:1rem">
                   <nz-form-label>
                     <span>Chọn máy ảo (<span style="color: red;">*</span>)
                       <img [nz-tooltip]="'Chọn máy ảo cần Snapshot'" style="margin-left: 5px;"
                         src="assets/imgs/pajamas_question.svg" alt="" /></span>
                   </nz-form-label>
                   <nz-form-control nzDisableAutoTips>
-                    <nz-select nzPlaceHolder="Chọn máy ảo" nzAllowClear [(ngModel)]="selectedVM" [disabled]="vmLoading"
+                    <nz-select nzPlaceHolder="Chọn máy ảo"  [(ngModel)]="selectedVM" [disabled]="vmLoading"
                       [nzLoading]="vmLoading" (ngModelChange)="changeVmVolumeSelected()" [ngModelOptions]="{ standalone: true }"
                       nzSize="large">
                       <nz-option *ngFor="let index of vmArray" [nzValue]="index" [nzLabel]="index.name"></nz-option>
@@ -380,14 +405,14 @@
                 </nz-form-item>
               </nz-col>
               <nz-col [nzXs]="24" [nzSm]="24" [nzMd]="12" [nzLg]="12" [nzXl]="12"  *ngIf="(projectType==1 || projectType==2) && navigateType==0">
-                <nz-form-item >
+                <nz-form-item style="margin-right:1rem">
                   <nz-form-label>
                     <span>Chọn volume (<span style="color: red;">*</span>)
                       <img style="margin-left: 5px;" [nz-tooltip]="'Chọn Volume cần Snapshot'"
                         src="assets/imgs/pajamas_question.svg" alt="" /></span>
                   </nz-form-label>
                   <nz-form-control nzDisableAutoTips>
-                    <nz-select nzPlaceHolder="Chọn volume" nzAllowClear [(ngModel)]="selectedVolume"
+                    <nz-select nzPlaceHolder="Chọn volume"  [(ngModel)]="selectedVolume"
                       [disabled]="volumeLoading" [nzLoading]="volumeLoading" (ngModelChange)="changeVmVolumeSelected()"
                       [ngModelOptions]="{ standalone: true }" nzSize="large">
                       <nz-option *ngFor="let index of volumeArray" [nzValue]="index" [nzLabel]="index.name"></nz-option>
@@ -396,23 +421,23 @@
                 </nz-form-item>
               </nz-col>
               <nz-col [nzXs]="24" [nzSm]="24" [nzMd]="12" [nzLg]="12" [nzXl]="12" *ngIf="(projectType==1 || projectType==2) ">
-                <nz-form-item>
+                <nz-form-item >
                   <nz-form-label>
                     <span>Dung lượng Snapshot (<span style="color: red;">*</span>)</span>
                     <img [nz-tooltip]="'Dung lượng Snapshot bằng với dung lượng của Volume/máy ảo đã chọn'"
                       style="margin-left: 5px;" src="assets/imgs/pajamas_question.svg" alt="" />
                   </nz-form-label>
                   <nz-form-control nzDisableAutoTips>
-                    <div class="quotaType">
-                      <!-- <p>{{validateForm.controls['quota'].value}} {{ quotaType ? (quotaType=='hdd'? '- HDD':'- SSD') :''}} </p> -->
+                    <div class="quotaType" [ngStyle]="navigateType ==2 ? {'width': '95%'} : {'width': '100%'}">
+                      
                         <p>{{quotaSelected}} GB {{ quotaTypeSelected ? (quotaTypeSelected=='hdd'? '- HDD':'- SSD')
                         :''}} </p>
                     </div>
                   </nz-form-control>
                 </nz-form-item>
               </nz-col>
-              <nz-col [nzXs]="24" [nzSm]="24" [nzMd]="12" [nzLg]="12" [nzXl]="12" *ngIf="(projectType==2) ">
-                <nz-form-item>
+              <nz-col [nzXs]="24" [nzSm]="24"   [nzMd]="(navigateType == 1|| navigateType == 0) ? 24 : 12" [nzLg]="(navigateType == 1|| navigateType == 0) ? 24 : 12"  [nzXl]="(navigateType == 1|| navigateType == 0) ? 24 : 12"  *ngIf="(projectType==2) ">
+                <nz-form-item >
                   <nz-form-label>
                     <span>Chọn gói Snapshot (<span style="color: red;">*</span>)</span>
                     <img
@@ -421,7 +446,7 @@
                   </nz-form-label>
 
                   <nz-form-control nzDisableAutoTips>
-                    <nz-select [nzPlaceHolder]="'Chọn gói Snapshot'" nzAllowClear [disabled]="snapshotPackageLoading"
+                    <nz-select [nzPlaceHolder]="'Chọn gói Snapshot'"  [disabled]="snapshotPackageLoading"
                       [nzLoading]="snapshotPackageLoading" [(ngModel)]="selectedSnapshotPackage"
                       (ngModelChange)="changePackageSnapshot()" [ngModelOptions]="{ standalone: true }" nzSize="large">
 
@@ -471,7 +496,7 @@
               class="text-label truncate" [nz-tooltip]="selectedVM?.name">{{selectedVM?.name}}</div>
             <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
             <div style="margin-top: 10px" class="text-value">{{'app.capacity' | i18n}}</div>
-            <div style="margin-top: 10px" class="text-label">{{validateForm.controls['quota'].value}}</div>
+            <div style="margin-top: 10px" class="text-label">{{quotaSelected}}</div>
             <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
 
             <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
@@ -483,12 +508,20 @@
             </div>
             <nz-row>
               <nz-col style="width: 100%">
-                <button style="width: 100%" nz-button nzSize="large" nzType="primary"
+                <!-- <button style="width: 100%" nz-button nzSize="large" nzType="primary"
                   (click)="navigateToPaymentSummary()" [nzLoading]="loadingCreate"
                   [disabled]="validateForm.invalid || disableCreate || loadingCreate || disableByQuota">
                   <img src="assets/imgs/wallet.svg" style="margin-right: 5px; padding-bottom: 5px;" />
                   <span
                     [style.color]="validateForm.invalid || disableCreate || loadingCreate || disableByQuota? 'gray' : 'white'">{{
+                    'app.button.create' | i18n }}</span>
+                </button> -->
+                <button style="width: 100%" nz-button nzSize="large" nzType="primary"
+                  (click)="navigateToPaymentSummary()" [nzLoading]="loadingCreate"
+                  [disabled]="validateForm.invalid || (projectType !=1 && !selectedSnapshotPackage ||( this.selectedVolume==undefined ) && (this.selectedVM==undefined) ) || (projectType==1 && ( this.selectedVolume==undefined ) && ( this.selectedVM==undefined ))">
+                  <img src="assets/imgs/wallet.svg" style="margin-right: 5px; padding-bottom: 5px;" />
+                  <span
+                    [style.color]="validateForm.invalid || (projectType !=1 && !selectedSnapshotPackage || this.selectedVolume==undefined  && this.selectedVM==undefined ) || (projectType==1 &&  this.selectedVolume==undefined  &&  this.selectedVM==undefined )? 'gray' : 'white'">{{
                     'app.button.create' | i18n }}</span>
                 </button>
               </nz-col>
