@@ -244,3 +244,68 @@ export class QueryRequesBandwidthtSavingRatioResponseDataSavingBandwidthDatas {
   timestamp: string;
   savingBandwidth: string;
 }
+
+export class QueryBacktoOriginTrafficAndRequestRequestDto {
+  dateFrom : Date;
+  dateTo : Date;
+  dataInterval : string;
+  domain : string[];
+  groupBy : string[];
+  backsrcOnly : number | null;
+}
+
+export class QueryBacktoOriginTrafficAndRequestResponse {
+  code: string;
+  message: string;
+  result: QueryBacktoOriginTrafficAndRequestResponseResult[];
+}
+
+export class QueryBacktoOriginTrafficAndRequestResponseResult {
+  domain: string;
+  totalFlow: string;
+  totalRequest: string;
+  peakRequest: string;
+  peakRequestTime: string;
+  peakBandwidth: string;
+  peakBandwidthTime: string;
+  flowRequestOriginData: QueryBacktoOriginTrafficAndRequestResponseResultFlowRequestOriginData[];
+}
+
+export class QueryBacktoOriginTrafficAndRequestResponseResultFlowRequestOriginData {
+  timestamp: string;
+  flow: string;
+  bandwidth: string;
+  request: string;
+}
+
+export class QueryTrafficRequestInTotalAndPeakValueRequestDto {
+  dateFrom: Date;
+  dateTo: Date;
+  domain: string[];
+  groupBy: string[];
+  dataPadding: boolean | null;
+}
+
+export class QueryTrafficRequestInTotalAndPeakValueResponse {
+  code: string;
+  message: string;
+  result: QueryTrafficRequestInTotalAndPeakValueResponseResult[];
+}
+
+export class QueryTrafficRequestInTotalAndPeakValueResponseResult {
+  domain: string;
+  totalFlow: string;
+  totalRequest: string;
+  peakBandwidth: string;
+  peakTime: string;
+  peakRequest: string;
+  peakRequestTime: string;
+  flowRequestData: QueryTrafficRequestInTotalAndPeakValueResponseResultFlowRequestData[];
+}
+
+export class QueryTrafficRequestInTotalAndPeakValueResponseResultFlowRequestData {
+  timestamp: string;
+  flow: string;
+  bandwidth: string;
+  request: string;
+}
