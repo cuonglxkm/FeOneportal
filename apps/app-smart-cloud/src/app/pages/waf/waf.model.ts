@@ -309,3 +309,27 @@ export class QueryTrafficRequestInTotalAndPeakValueResponseResultFlowRequestData
   bandwidth: string;
   request: string;
 }
+
+export class QueryRequestHitRatioRequestDto {
+  dateFrom: Date;
+  dateTo: Date;
+  domain: string[];
+  dataInterval: string;
+}
+
+export interface QueryRequestHitRatioResponse {
+  code: string;
+  message: string;
+  data: QueryRequestHitRatioResponseData[];
+}
+
+export interface QueryRequestHitRatioResponseData {
+  realDate: string;
+  totalAvg: number | null;
+  hitRatioDatas: QueryRequestHitRatioResponseDataHitRatioDatas[];
+}
+
+export interface QueryRequestHitRatioResponseDataHitRatioDatas {
+  timestamp: string;
+  hitRatio: string;
+}
