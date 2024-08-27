@@ -68,7 +68,7 @@
           >{{ data.name }}</a
         >
       </td>
-      <td>{{ data.authorizationAlgorithm }}</td>
+      <td>{{ data.vpnConnection === null ? '' : data.vpnConnection }}</td>
       <td>{{ data.authorizationAlgorithm }}</td>
       <td>{{ data.encryptionAlgorithm }}</td>
       <td>{{ data.perfectForwardSecrecy }}</td>
