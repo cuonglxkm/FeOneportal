@@ -186,7 +186,7 @@ export class EditVolumeComponent implements OnInit {
             if (this.region === RegionID.ADVANCE) {
               var returnPath: string = '/app-smart-cloud/volume-advance/edit/' + this.volumeId;
             } else {
-              var returnPath: string = '/app-smart-cloud/volume/edit/' + this.volumeId;
+              var returnPath: string = '/app-smart-cloud/volumes/edit/' + this.volumeId;
             }
             console.log('request', request);
             this.router.navigate(['/app-smart-cloud/order/cart'], { state: { data: request, path: returnPath } });
@@ -468,7 +468,7 @@ export class EditVolumeComponent implements OnInit {
   //   if (this.region === RegionID.ADVANCE) {
   //     var returnPath: string = '/app-smart-cloud/volume-advance/detail/' + this.volumeId;
   //   } else {
-  //     var returnPath: string = '/app-smart-cloud/volume/detail/' + this.volumeId;
+  //     var returnPath: string = '/app-smart-cloud/volumes/detail/' + this.volumeId;
   //   }
   //
   //   this.router.navigate(['/app-smart-cloud/order/cart'], {
