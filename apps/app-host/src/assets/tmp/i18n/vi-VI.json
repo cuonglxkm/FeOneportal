@@ -347,6 +347,7 @@
   "app.breadcrumb.infrastructure.service": "Dịch vụ hạ tầng",
   "app.breadscrumb.advanced.service": "Dịch vụ nâng cao",
   "app.breadcrumb.block.storage": "Block Storage",
+  "app.breadcrumb.block.storage.advance": "Block Storage nâng cao",
 
   "validation.ip.address.cidr": "IP Address / CIDR không được để trống.",
   "validation.ip.address.cidr.pattern": " IP Address / CIDR không đúng định dạng. Vui lòng nhập địa chỉ IP có định dạng x.x.x.x hoặc CIDR có định dạng x.x.0.0/16 hoặc x.x.0.0/24.",

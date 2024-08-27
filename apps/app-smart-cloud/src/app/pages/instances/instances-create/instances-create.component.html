@@ -9,7 +9,7 @@
         <a [routerLink]="['/']">{{ 'app.breadcrumb.home' | i18n }}</a>
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>
-        {{ 'app.breadcrumb.infrastructure.service' | i18n }}
+        {{ isAdvance ? ('app.breadscrumb.advanced.service' | i18n) : 'app.breadcrumb.infrastructure.service' | i18n }}
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>
         <a (click)="navigateToInstanceList()">{{

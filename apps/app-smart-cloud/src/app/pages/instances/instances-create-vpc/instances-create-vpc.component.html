@@ -247,6 +247,7 @@
             [nzGutter]="{ xs: 24, sm: 24, md: 24, lg: 24 }"
             style="margin-top: 10px"
             ><nz-col
+              *ngIf="isVolumeHdd"
               [nzLg]="12"
               [nzMd]="12"
               [nzSm]="24"
@@ -314,7 +315,9 @@
                 </nz-row>
               </nz-card>
             </nz-col>
-            <nz-col [nzLg]="12" [nzMd]="12" [nzSm]="24" [nzXl]="12" [nzXs]="24">
+            <nz-col
+              *ngIf="isVolumeSsd" 
+             [nzLg]="12" [nzMd]="12" [nzSm]="24" [nzXl]="12" [nzXs]="24">
               <nz-card
                 style="border-radius: 4px"
                 [nzAlign]="'middle'"

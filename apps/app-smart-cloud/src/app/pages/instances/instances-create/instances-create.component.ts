@@ -257,6 +257,7 @@ export class InstancesCreateComponent implements OnInit {
   url = window.location.pathname;
   packageId: number;
   hasRoleSI: boolean;
+  isAdvance: boolean
   ngOnInit(): void {
     this.userId = this.tokenService.get()?.userId;
     if (this.activatedRoute.snapshot.paramMap.get('type')) {
@@ -286,12 +287,14 @@ export class InstancesCreateComponent implements OnInit {
       this.region = regionAndProject.regionId;
       this.projectId = regionAndProject.projectId;
       if (!this.url.includes('advance')) {
+        this.isAdvance = false
         if (Number(localStorage.getItem('regionId')) === RegionID.ADVANCE) {
           this.region = RegionID.NORMAL;
         } else {
           this.region = Number(localStorage.getItem('regionId'));
         }
       } else {
+        this.isAdvance = true
         this.region = RegionID.ADVANCE;
       }
     }
