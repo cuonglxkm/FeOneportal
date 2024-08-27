@@ -308,6 +308,7 @@ export class QueryTrafficRequestInTotalAndPeakValueResponseResultFlowRequestData
   flow: string;
   bandwidth: string;
   request: string;
+  totalRequestInHour:number;
 }
 
 export class QueryRequestHitRatioRequestDto {
