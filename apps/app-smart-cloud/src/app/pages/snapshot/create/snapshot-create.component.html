@@ -49,7 +49,7 @@
             </div>
           </ng-template>
           <!-- Chưa có gói nào -->
-          <nz-alert *ngIf=" this.snapshotPackageArray?.length == 0 " nzBanner style="margin-bottom: 10px;"
+          <nz-alert *ngIf=" this.snapshotPackageArray?.length == 0  && projectType !=1" nzBanner style="margin-bottom: 10px;margin-top: 15px"
             [nzMessage]="nzMessageNoData" nzShowIcon></nz-alert>
           <ng-template #nzMessageNoData>
             <div>
@@ -439,7 +439,7 @@
                   </nz-form-control>
                 </nz-form-item>
               </nz-col>
-              <nz-col [nzXs]="24" [nzSm]="24" [nzMd]="12" [nzLg]="12" [nzXl]="12">
+              <nz-col [nzXs]="24" [nzSm]="24" [nzMd]="(projectType == 1 && navigateType == 2) ? 24 : 12" [nzLg]="(projectType == 1 && navigateType == 2) ? 24 : 12"  [nzXl]="(projectType == 1 && navigateType == 2) ? 24 : 12">
                 <nz-form-item>
                   <nz-form-label>
                     <span>Dung lượng Snapshot (<span style="color: red;">*</span>)</span>
@@ -447,10 +447,9 @@
                       style="margin-left: 5px;" src="assets/imgs/pajamas_question.svg" alt="" />
                   </nz-form-label>
                   <nz-form-control nzDisableAutoTips>
-                    <div class="quotaType" [ngStyle]="navigateType ==2 ? {'width': '95%'} : {'width': '100%'}">
+                    <div class="quotaType" [ngStyle]="(projectType!= 1 &&navigateType ==2) ? {'width': '95%'} : {'width': '100%'}">
 
-                      <p>{{quotaSelected}} GB {{ quotaTypeSelected ? (quotaTypeSelected=='hdd'? '- HDD':'- SSD')
-                        :''}} </p>
+                      <p>{{quotaSelected}} GB {{ quotaTypeSelected ? (quotaTypeSelected=='hdd'? '- HDD':'- SSD') :''}} </p>
                     </div>
                   </nz-form-control>
                 </nz-form-item>
