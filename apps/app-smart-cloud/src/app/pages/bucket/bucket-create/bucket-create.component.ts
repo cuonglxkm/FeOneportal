@@ -134,12 +134,21 @@ export class BucketCreateComponent implements OnInit {
         this.isLoading = false
 
         console.log(e);
-
+        debugger;
         if(e.status === 500){
+          const errorObject = JSON.parse(e.error);
+          if(errorObject.type=="Exception"){
           this.notification.error(
             this.i18n.fanyi('app.status.fail'),
-            this.i18n.fanyi('app.bucket.create.exist')
+            this.i18n.fanyi(e.message)
           );
+        }
+        if(errorObject.type=="BucketAlreadyExistsException"){
+          this.notification.error(
+          this.i18n.fanyi('app.status.fail'),
+          this.i18n.fanyi('Tên Bucket đã được sử dụng bởi Object Storage khác, Vui lòng sử dụng tên khác.')
+          )
+        }
         }else{
           this.notification.error(
             this.i18n.fanyi('app.status.fail'),
