@@ -184,12 +184,18 @@ export class CreateVolumeComponent implements OnInit {
           if(['volume-ssd'].includes(item.productName)){
             this.isVolumeSsd = item.isActive
           }
-          this.selectedValueHDD = this.serviceActiveByRegion.filter(
-            (e) => e.productName == 'volume-hdd'
-          )[0].isActive;
-          this.selectedValueSSD =
-            !this.serviceActiveByRegion.filter((e) => e.productName == 'volume-hdd')[0]?.isActive &&
-            this.serviceActiveByRegion.filter((e) => e.productName == 'volume-ssd')[0]?.isActive;
+
+          const isHasHddOption = this.serviceActiveByRegion.filter((e)=> e.productName === 'volume-hdd')?.[0]?.isActive ?? false
+          const isHasSddOption = this.serviceActiveByRegion.filter((e)=> e.productName === 'volume-ssd')?.[0]?.isActive ?? false
+
+          if(isHasHddOption){
+            this.selectedValueHDD = true
+            this.onChangeStatusHDD()
+          }
+          else if(isHasSddOption && !isHasHddOption){
+            this.selectedValueSSD = true
+            this.onChangeStatusSSD()
+          }
         });
       }, error => {
         this.isLoading = false;
@@ -299,6 +305,7 @@ export class CreateVolumeComponent implements OnInit {
 
 
   onChangeStatusSSD() {
+    if(this.disableSSD) return
     this.selectedValueSSD = true;
     this.selectedValueHDD = false;
 
@@ -318,6 +325,7 @@ export class CreateVolumeComponent implements OnInit {
   }
 
   onChangeStatusHDD() {
+    if(this.disableHDD) return
     this.selectedValueHDD = true;
     this.selectedValueSSD = false;
     console.log('Selected option changed hdd:', this.selectedValueHDD);
@@ -517,7 +525,7 @@ export class CreateVolumeComponent implements OnInit {
           if (this.region === RegionID.ADVANCE) {
             var returnPath: string = '/app-smart-cloud/volume-advance/create';
             }else{
-              var returnPath: string = '/app-smart-cloud/volume/create';
+              var returnPath: string = '/app-smart-cloud/volumes/create';
             }
 
           console.log('request', request);
@@ -608,12 +616,14 @@ export class CreateVolumeComponent implements OnInit {
       if (data.volumeType == 'hdd') {
         this.selectedValueHDD = true;
         this.selectedValueSSD = false;
-        this.disableHDD = true
+        this.disableSSD = true
+        this.disableHDD = false
       }
       if (data.volumeType == 'ssd') {
         this.selectedValueSSD = true;
         this.selectedValueHDD = false;
-        this.disableSSD = true
+        this.disableHDD = true
+        this.disableSSD = false
       }
     });
   }
@@ -633,17 +643,20 @@ export class CreateVolumeComponent implements OnInit {
 
   hasRoleSI: boolean;
   url = window.location.pathname;
+  isAdvance: boolean
   ngOnInit() {
     let regionAndProject = getCurrentRegionAndProject();
     this.region = regionAndProject.regionId;
     this.project = regionAndProject.projectId;
     if (!this.url.includes('advance')) {
+      this.isAdvance = false
       if (Number(localStorage.getItem('regionId')) === RegionID.ADVANCE) {
         this.region = RegionID.NORMAL;
       } else {
         this.region = Number(localStorage.getItem('regionId'));
       }
     } else {
+      this.isAdvance = true
       this.region = RegionID.ADVANCE;
     }
     this.getListSnapshot();

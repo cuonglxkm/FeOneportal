@@ -5,10 +5,10 @@
     <nz-breadcrumb [nzSeparator]="iconTemplate">
       <nz-breadcrumb-item>{{ 'app.breadcrumb.home' | i18n }}</nz-breadcrumb-item>
       <nz-breadcrumb-item>
-        {{ 'app.breadcrumb.infrastructure.service' | i18n }}
+        {{ isAdvance ? ('app.breadscrumb.advanced.service' | i18n) :'app.breadcrumb.infrastructure.service' | i18n }}
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>
-        {{ 'app.breadcrumb.block.storage' | i18n }}
+        {{isAdvance ? ('app.breadcrumb.block.storage.advance' | i18n) : 'app.breadcrumb.block.storage' | i18n }}
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>
         <a (click)="navigateToVolume()">Volume</a>
@@ -120,7 +120,7 @@
                               [nzDisabled]="isInitSnapshot">
                 <nz-row [nzGutter]="{ xs: 24, sm: 24, md: 24, lg: 24 }"
                         style="margin-top: 10px">
-                  <nz-col [nzLg]="12" [nzMd]="12" [nzSm]="24" [nzXl]="12" [nzXs]="24">
+                  <nz-col *ngIf="isVolumeHdd" [nzLg]="12" [nzMd]="12" [nzSm]="24" [nzXl]="12" [nzXs]="24">
                     <nz-card style="border-radius: 4px">
                       <nz-row nzGutter="16">
                         <nz-col nzSpan="20">
@@ -145,7 +145,7 @@
                       </nz-row>
                     </nz-card>
                   </nz-col>
-                  <nz-col [nzLg]="12" [nzMd]="12" [nzSm]="24" [nzXl]="12" [nzXs]="24">
+                  <nz-col *ngIf="isVolumeSsd" [nzLg]="12" [nzMd]="12" [nzSm]="24" [nzXl]="12" [nzXs]="24">
                     <nz-card style="border-radius: 4px">
                       <nz-row nzGutter="16">
                         <nz-col nzSpan="20">

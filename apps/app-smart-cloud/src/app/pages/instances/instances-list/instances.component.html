@@ -326,6 +326,7 @@
                   data.taskState.toUpperCase() != 'REBOOT_STARTED' &&
                   data.taskState.toUpperCase() != 'ERROR' &&
                   data.taskState.toUpperCase() != 'DELETED' &&
+                  (data.taskState.toUpperCase() == 'ACTIVE' || data.taskState.toUpperCase() == 'SHUTOFF') &&
                   (isVolumeSnapshotHdd || isVolumeSnapshotSsd) && 
                   ('volumesnapshot:Create' | IsPermissionPipe)
                 "
@@ -337,6 +338,7 @@
               <li
                 *ngIf="
                   data.status.toUpperCase() == 'KHOITAO' &&
+                  (data.taskState.toUpperCase() == 'ACTIVE' || data.taskState.toUpperCase() == 'SHUTOFF') &&
                   !data.taskState.toUpperCase().includes('ING') &&
                   data.taskState.toUpperCase() != 'REBOOT_STARTED' &&
                   data.taskState.toUpperCase() != 'ERROR' &&

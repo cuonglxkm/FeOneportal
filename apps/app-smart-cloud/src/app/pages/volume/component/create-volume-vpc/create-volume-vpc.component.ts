@@ -103,6 +103,9 @@ export class CreateVolumeVpcComponent implements OnInit {
   typeEncrypt: boolean;
 
   snapshotList = [];
+
+  isVolumeHdd: boolean;
+  isVolumeSsd: boolean
   @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
   constructor(
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
@@ -230,6 +233,9 @@ export class CreateVolumeVpcComponent implements OnInit {
     });
   }
 
+  disableHDD: boolean
+  disableSSD: boolean
+
   getDetailSnapshotVolume(id) {
     this.snapshotvlService.getSnapshotVolumeById(id).subscribe(data => {
       console.log('data', data);
@@ -242,10 +248,14 @@ export class CreateVolumeVpcComponent implements OnInit {
       if (data.volumeType == 'hdd') {
         this.selectedValueHDD = true;
         this.selectedValueSSD = false;
+        this.disableHDD = false;
+        this.disableSSD = true
       }
       if (data.volumeType == 'ssd') {
         this.selectedValueSSD = true;
         this.selectedValueHDD = false;
+        this.disableHDD = true;
+        this.disableSSD = false
       }
     });
   }
@@ -254,7 +264,7 @@ export class CreateVolumeVpcComponent implements OnInit {
   getActiveServiceByRegion() {
     this.isLoading = true;
     this.catalogService.getActiveServiceByRegion(
-      ['volume-ssd', 'volume-hdd', 'MultiAttachment', 'Encryption', 'volume-snapshot-ssd', 'volume-snapshot-hdd'], this.region)
+      ['volume-ssd', 'volume-hdd', 'MultiAttachment', 'Encryption', 'volume-snapshot-ssd', 'volume-snapshot-hdd', 'volume-hdd', 'volume-ssd'], this.region)
       .subscribe(data => {
         this.isLoading = false;
         this.serviceActiveByRegion = data;
@@ -267,6 +277,24 @@ export class CreateVolumeVpcComponent implements OnInit {
           }
           if (['Encryption'].includes(item.productName)) {
             this.typeEncrypt = item.isActive;
+          }
+          if(['volume-hdd'].includes(item.productName)){
+            this.isVolumeHdd = item.isActive
+          }
+          if(['volume-ssd'].includes(item.productName)){
+            this.isVolumeSsd = item.isActive
+          }
+
+          const isHasHddOption = this.serviceActiveByRegion.filter((e)=> e.productName === 'volume-hdd')?.[0]?.isActive ?? false
+          const isHasSddOption = this.serviceActiveByRegion.filter((e)=> e.productName === 'volume-ssd')?.[0]?.isActive ?? false
+
+          if(isHasHddOption){
+            this.selectedValueHDD = true
+            this.onChangeStatusHDD()
+          }
+          else if(isHasSddOption && !isHasHddOption){
+            this.selectedValueSSD = true
+            this.onChangeStatusSSD()
           }
         });
       }, error => {
@@ -300,6 +328,7 @@ export class CreateVolumeVpcComponent implements OnInit {
   }
 
   onChangeStatusSSD() {
+    if(this.disableSSD) return
     this.selectedValueSSD = true;
     this.selectedValueHDD = false;
 
@@ -325,6 +354,7 @@ export class CreateVolumeVpcComponent implements OnInit {
   }
 
   onChangeStatusHDD() {
+    if(this.disableHDD) return
     this.selectedValueHDD = true;
     this.selectedValueSSD = false;
     console.log('Selected option changed hdd:', this.selectedValueHDD);
@@ -375,17 +405,20 @@ export class CreateVolumeVpcComponent implements OnInit {
   }
 
   url = window.location.pathname;
+  isAdvance: boolean
   ngOnInit() {
     let regionAndProject = getCurrentRegionAndProject();
     this.region = regionAndProject.regionId;
     this.project = regionAndProject.projectId;
     if (!this.url.includes('advance')) {
+      this.isAdvance = false
       if (Number(localStorage.getItem('regionId')) === RegionID.ADVANCE) {
         this.region = RegionID.NORMAL;
       } else {
         this.region = Number(localStorage.getItem('regionId'));
       }
     } else {
+      this.isAdvance = true
       this.region = RegionID.ADVANCE;
     }
     this.getActiveServiceByRegion();
@@ -456,8 +489,12 @@ export class CreateVolumeVpcComponent implements OnInit {
     this.isInitSnapshot = value;
     console.log('snap shot', this.isInitSnapshot);
     if (this.isInitSnapshot) {
+      this.disableHDD = true;
+      this.disableSSD = true
       this.validateForm.controls.snapshot.setValidators(Validators.required);
     } else {
+      this.disableHDD = false;
+      this.disableSSD = false
       this.validateForm.controls.snapshot.clearValidators();
       this.validateForm.controls.snapshot.updateValueAndValidity();
 

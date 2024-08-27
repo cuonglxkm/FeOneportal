@@ -13,6 +13,7 @@ import { I18NService } from '@core';
 import { ProjectService } from 'src/app/shared/services/project.service';
 import { debounceTime, Subject, Subscription } from 'rxjs';
 import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
+import { PolicyService } from 'src/app/shared/services/policy.service';
 
 @Component({
   selector: 'one-portal-list-backup-vm',
@@ -67,6 +68,7 @@ export class ListBackupVmComponent implements OnInit, OnDestroy {
   dataSubjectInputSearch: Subject<any> = new Subject<any>();
   private searchSubscription: Subscription;
   private enterPressed: boolean = false;
+  isCreateOrder: boolean = false;
   @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
   constructor(private backupVmService: BackupVmService,
               @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
@@ -74,7 +76,8 @@ export class ListBackupVmComponent implements OnInit, OnDestroy {
               private notification: NzNotificationService,
               private projectService: ProjectService,
               @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
-              private notificationService: NotificationService) {
+              private notificationService: NotificationService,
+              private policyService: PolicyService) {
   }
 
   regionChanged(region: RegionModel) {
@@ -90,10 +93,20 @@ export class ListBackupVmComponent implements OnInit, OnDestroy {
   }
 
   projectChanged(project: ProjectModel) {
-    this.project = project?.id
-    this.formSearch.projectId = this.project
-    this.typeVPC = project?.type
-    this.getListBackupVM(true)
+    this.project = project?.id;
+    this.formSearch.projectId = this.project;
+    this.typeVPC = project?.type;
+    this.getListBackupVM(true);
+    this.isCreateOrder = this.policyService.hasPermission("backup:List") && 
+      this.policyService.hasPermission("backup:ListBackupPacket") &&
+      this.policyService.hasPermission("offer:Search") && 
+      this.policyService.hasPermission("instance:List") && 
+      this.policyService.hasPermission("backup:GetBackupPacket") &&
+      this.policyService.hasPermission("offer:Get") && 
+      this.policyService.hasPermission("instance:Get") && 
+      this.policyService.hasPermission("securitygroup:GetSecurityGroupByInstance") && 
+      this.policyService.hasPermission("instance:InstanceListVolume") && 
+      this.policyService.hasPermission("order:Create");
   }
 
   ngOnDestroy(): void {
@@ -158,9 +171,16 @@ export class ListBackupVmComponent implements OnInit, OnDestroy {
         this.isBegin = this.collection?.records.length < 1 || this.collection?.records === null ? true : false;
       }
     }, error => {
-      this.isLoading = true
-      this.collection = null
-      this.notification.error(error.statusText, this.i18n.fanyi('app.failData'));
+      this.isLoading = true;
+      this.collection = null;
+      if(error.status == 403) {
+        this.notification.error(
+          error.statusText,
+          this.i18n.fanyi('app.non.permission')
+        );
+      } else {
+        this.notification.error(error.statusText, this.i18n.fanyi('app.failData'));
+      }
     })
 
   }

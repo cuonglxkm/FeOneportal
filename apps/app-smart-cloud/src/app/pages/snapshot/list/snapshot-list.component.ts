@@ -190,30 +190,30 @@ export class SnapshotListComponent implements OnInit {
     if (type == 0) {
       if (this.typeVpc == 1) {
         if (this.region === RegionID.ADVANCE) {
-          this.router.navigate(['/app-smart-cloud/volume-advance/vpc/create'], { queryParams: { idSnapshot: idSnapshot } })
+          this.router.navigate(['/app-smart-cloud/volume-advance/vpc/create',{ idSnapshot: idSnapshot }])
         } else {
-          this.router.navigate(['/app-smart-cloud/volume/vpc/create'], { queryParams: { idSnapshot: idSnapshot } })
+          this.router.navigate(['/app-smart-cloud/volume/vpc/create',{ idSnapshot: idSnapshot }])
         }
       } else {
         if (this.region === RegionID.ADVANCE) {
-          this.router.navigate(['/app-smart-cloud/volume-advance/create'], { queryParams: { idSnapshot: idSnapshot } })
+          this.router.navigate(['/app-smart-cloud/volume-advance/create',{ idSnapshot: idSnapshot }])
         } else {
-          this.router.navigate(['/app-smart-cloud/volume/create'], { queryParams: { idSnapshot: idSnapshot } })
+          this.router.navigate(['/app-smart-cloud/volumes/create',{ idSnapshot: idSnapshot }])
         }
       }
     } else if (type == 1) {
       if (this.typeVpc == 1) {
         if (this.region === RegionID.ADVANCE) {
-          this.router.navigate(['/app-smart-cloud/instances-advance/instances-create-vpc'], { queryParams: { idSnapshot: idSnapshot } })
+          this.router.navigate(['/app-smart-cloud/instances-advance/instances-create-vpc',{ idSnapshot: idSnapshot }])
         } else {
-          this.router.navigate(['/app-smart-cloud/instances/instances-create-vpc'], { queryParams: { idSnapshot: idSnapshot } })
+          this.router.navigate(['/app-smart-cloud/instances/instances-create-vpc',{ idSnapshot: idSnapshot }])
         }
 
       } else {
         if (this.region === RegionID.ADVANCE) {
-          this.router.navigate(['/app-smart-cloud/instances-advance/instances-create'], { queryParams: { idSnapshot: idSnapshot } })
+          this.router.navigate(['/app-smart-cloud/instances-advance/instances-create',{ idSnapshot: idSnapshot }])
         } else {
-          this.router.navigate(['/app-smart-cloud/instances/instances-create'], { queryParams: { idSnapshot: idSnapshot } })
+          this.router.navigate(['/app-smart-cloud/instances/instances-create',{ idSnapshot: idSnapshot }])
         }
       }
     }
@@ -311,7 +311,7 @@ export class SnapshotListComponent implements OnInit {
     if (this.region === RegionID.ADVANCE) {
       this.router.navigate(['/app-smart-cloud/volume-advance/create'])
     } else {
-      this.router.navigate(['/app-smart-cloud/volume/create'])
+      this.router.navigate(['/app-smart-cloud/volumes/create'])
     }
 
   }
