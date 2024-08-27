@@ -190,7 +190,7 @@ const routes: Routes = [
     component: VolumeComponent,
   },
   {
-    path: 'volume/create',
+    path: 'volumes/create',
     component: CreateVolumeComponent,
     canActivate: [PermissionGuard],
     data: {
@@ -206,7 +206,7 @@ const routes: Routes = [
     }
   },
   {
-    path: 'volume/detail/:id',
+    path: 'volumes/detail/:id',
     component: DetailVolumeComponent,
     canActivate: [PermissionGuard],
     data: {
@@ -222,7 +222,7 @@ const routes: Routes = [
     }
   },
   {
-    path: 'volume/edit/:id',
+    path: 'volumes/edit/:id',
     component: EditVolumeComponent,
     canActivate: [PermissionGuard],
     data: {
