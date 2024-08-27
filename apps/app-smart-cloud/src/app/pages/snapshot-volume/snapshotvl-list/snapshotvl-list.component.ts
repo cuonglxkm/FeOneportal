@@ -90,7 +90,7 @@ export class SnapshotVolumeListComponent implements OnInit {
         },
       });
     } else {
-      this.router.navigate(['/app-smart-cloud/volume/create'], {
+      this.router.navigate(['/app-smart-cloud/volumes/create'], {
         queryParams: {
           createdFromSnapshot: 'true',
           idSnapshot: snapshotVl.id,

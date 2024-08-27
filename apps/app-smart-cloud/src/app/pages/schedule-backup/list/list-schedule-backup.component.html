@@ -57,7 +57,7 @@
             </ng-template>
           </nz-col>
           <nz-col nzSpan="8" style="flex:none;">
-            <button nz-button nzType="primary" nzSize="large" (click)="navigateToCreate(typeVPC)">
+            <button *ngIf="isCreateOrder" nz-button nzType="primary" nzSize="large" (click)="navigateToCreate(typeVPC)">
               <img style="padding-right: 10px; margin-top: -4px" src="assets/imgs/add-circle.svg" alt="" />
               <span class="button-text-primary">{{ 'schedule.backup.create' | i18n }}</span>
             </button>
@@ -133,25 +133,26 @@
               <td>{{ data.createdAt | date: 'dd/MM/yyyy' }}</td>
               <td>
                 <div *ngIf="data.status === 'ACTIVE'">
-                  <img nz-popover src="assets/imgs/edit-2.svg" alt=""
+                  <img *ngIf="('cloudproject:Get' | IsPermissionPipe) && ('backupschedule:Get' | IsPermissionPipe) && ('backupschedule:Search' | IsPermissionPipe) && ('backup:GetBackupPacket' | IsPermissionPipe) && ('backupschedule:Update' | IsPermissionPipe)" 
+                      nz-popover src="assets/imgs/edit-2.svg" alt=""
                        nzPopoverPlacement="bottom"
                        (click)="navigateToEdit(data.serviceType, data.id)"
                        style="cursor: pointer; margin-left: 5px; margin-top: 2px;"
                        [nzPopoverContent]="'app.text.edit' | i18n" />
-                  <one-portal-stop-schedule [id]="data.id" [nameScheduleBackup]="data.name" (onOk)="handlePausedOk()" />
-                  <one-portal-delete-schedule [id]="data.id" [nameScheduleBackup]="data.name"
+                  <one-portal-stop-schedule *ngIf="('backupschedule:Action' | IsPermissionPipe)" [id]="data.id" [nameScheduleBackup]="data.name" (onOk)="handlePausedOk()" />
+                  <one-portal-delete-schedule *ngIf="('backupschedule:Delete' | IsPermissionPipe)" [id]="data.id" [nameScheduleBackup]="data.name"
                                               (onOk)="handleDeletedOk()" />
                 </div>
                 <div *ngIf="data.status === 'DISABLED'">
-                  <one-portal-restore-schedule [id]="data.id" [nameScheduleBackup]="data.name"
+                  <one-portal-restore-schedule *ngIf="('backupschedule:Action' | IsPermissionPipe)" [id]="data.id" [nameScheduleBackup]="data.name"
                                                (onOk)="handleRestoredOk()" />
-                  <one-portal-delete-schedule [id]="data.id" [nameScheduleBackup]="data.name"
+                  <one-portal-delete-schedule *ngIf="('backupschedule:Delete' | IsPermissionPipe)" [id]="data.id" [nameScheduleBackup]="data.name"
                                               (onOk)="handleDeletedOk()" />
                 </div>
                 <div *ngIf="data.status === 'PAUSED'">
-                  <one-portal-replay-schedule [id]="data.id" [nameScheduleBackup]="data.name"
+                  <one-portal-replay-schedule *ngIf="('backupschedule:Action' | IsPermissionPipe)" [id]="data.id" [nameScheduleBackup]="data.name"
                                               (onOk)="handlePlaydOk()" />
-                  <one-portal-delete-schedule [id]="data.id" [nameScheduleBackup]="data.name"
+                  <one-portal-delete-schedule *ngIf="('backupschedule:Delete' | IsPermissionPipe)" [id]="data.id" [nameScheduleBackup]="data.name"
                                               (onOk)="handleDeletedOk()" />
                 </div>
               </td>
@@ -241,7 +242,7 @@
               <span class="text-intro-desc">{{ 'schedule.backup.note2' | i18n }}</span>
             </nz-col>
           </nz-row>
-          <button style="margin-top: 20px" nz-button [nzType]="'primary'"
+          <button *ngIf="isCreateOrder" style="margin-top: 20px" nz-button [nzType]="'primary'"
                   (click)="navigateToCreate(typeVPC)" nzSize="large">
             <img style="padding-right: 10px; margin-top: -4px" src="assets/imgs/cloud-plus-bold.svg" alt="" />
             {{ 'app.button.create' | i18n }}

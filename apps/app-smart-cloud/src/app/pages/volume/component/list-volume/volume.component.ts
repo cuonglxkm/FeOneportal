@@ -222,7 +222,7 @@ export class VolumeComponent implements OnInit, OnDestroy {
       if (this.region === RegionID.ADVANCE) {
         this.router.navigate(['/app-smart-cloud/volume-advance/create']);
       } else {
-        this.router.navigate(['/app-smart-cloud/volume/create']);
+        this.router.navigate(['/app-smart-cloud/volumes/create']);
       }
     }
 
@@ -232,7 +232,7 @@ export class VolumeComponent implements OnInit, OnDestroy {
     if (this.region === RegionID.ADVANCE) {
       this.router.navigate(['/app-smart-cloud/volume-advance/detail', id]);
     } else {
-      this.router.navigate(['/app-smart-cloud/volume/detail', id]);
+      this.router.navigate(['/app-smart-cloud/volumes/detail', id]);
     }
   }
 

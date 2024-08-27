@@ -6,7 +6,7 @@
       <nz-breadcrumb-item><a [routerLink]="['/']">{{ 'app.breadcrumb.home' | i18n }}</a></nz-breadcrumb-item>
       <nz-breadcrumb-item>{{'app.breadcrumb.infrastructure.service' | i18n }}</nz-breadcrumb-item>
       <nz-breadcrumb-item>Block Storage</nz-breadcrumb-item>
-      <nz-breadcrumb-item><a routerLink="/app-smart-cloud/snapshot">Snapshot</a></nz-breadcrumb-item>
+      <nz-breadcrumb-item><a routerLink="/app-smart-cloud/snapshot">Snapshot Volume</a></nz-breadcrumb-item>
     </nz-breadcrumb>
     <ng-template #separatorTemplate><img src="assets/imgs/arrow-square-right.svg" alt="" />
     </ng-template>
@@ -90,7 +90,7 @@
               <td>{{data.startDate | date: 'HH:mm:ss dd/MM/yyyy'}}</td>
               <td>
                 <img
-                  *ngIf="data.status != 'CREATING' && data.status != 'RESIZING'&& data.status != 'DELETING' && data.status!='SUSPENDED' && data.status !='ERROR_DELETING'"
+                  *ngIf="data.status != 'CREATING' && data.status != 'RESIZING'&& data.status != 'DELETING' && data.status!='SUSPENDED' && data.status !='ERROR_DELETING' && ('volumesnapshot:Update' | IsPermissionPipe)"
                   (click)="enableEdit(data)" src="assets/imgs/edit-2.svg" alt=""
                   nzTooltipTitle="{{'app.text.edit' | i18n}}"
                   style="cursor: pointer; width: 20px; height: 20px; margin-bottom: 3px;" />
@@ -103,11 +103,11 @@
                       nz-menu-item (click)="navigateToCreateVolumeVM(data.id,0)">{{ 'volume.notification.request.create'
                       | i18n}}</li>
                     <li
-                      *ngIf="data.fromRootVolume == true && (data.suspendReason == null || data.suspendReason === '') "
+                      *ngIf="data.fromRootVolume == true && (data.suspendReason == null || data.suspendReason === '') && ('order:Create' | IsPermissionPipe)"
                       nz-menu-item (click)="navigateToCreateVolumeVM(data.id,1)">{{ 'app.instances.create1' | i18n}}
                     </li>
                     <li nz-menu-item
-                      *ngIf="data.status != 'CREATING' && data.status != 'RESIZING'&& data.status != 'DELETING' && data.status!='SUSPENDED' "
+                      *ngIf="data.status != 'CREATING' && data.status != 'RESIZING'&& data.status != 'DELETING' && data.status!='SUSPENDED' && ('volumesnapshot:Delete' | IsPermissionPipe)"
                       (click)="enableDelete(data)" style="color: red">{{ 'app.delete' | i18n}}</li>
                   </ul>
                 </nz-dropdown-menu>

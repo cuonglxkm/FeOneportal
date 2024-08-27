@@ -14,7 +14,7 @@
         <a routerLink="/app-smart-cloud/volumes">Volume</a>
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>
-        <a routerLink="/app-smart-cloud/volume/create">{{ 'volume.button.create' | i18n }}</a>
+        <a routerLink="/app-smart-cloud/volumes/create">{{ 'volume.button.create' | i18n }}</a>
       </nz-breadcrumb-item>
     </nz-breadcrumb>
     <ng-template #iconTemplate>
@@ -120,8 +120,7 @@
               </div>
             </nz-form-label>
             <nz-form-control nzDisableAutoTips>
-              <nz-radio-group formControlName="radio"
-                              [nzDisabled]="isInitSnapshot">
+              <nz-radio-group formControlName="radio">
                 <nz-row [nzGutter]="{ xs: 24, sm: 24, md: 24, lg: 24 }"
                         style="margin-top: 10px">
                   <nz-col *ngIf="isVolumeHdd" [nzLg]="12" [nzMd]="12" [nzSm]="24" [nzXl]="12" [nzXs]="24">

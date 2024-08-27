@@ -62,7 +62,7 @@
               </ng-template>
             </nz-col>
             <nz-col nzSpan="8" style="flex:none;">
-              <button nz-button nzType="primary" nzSize="large" (click)="navigateToCreate()">
+              <button *ngIf="isCreateOrder" nz-button nzType="primary" nzSize="large" (click)="navigateToCreate()">
                 <img style="padding-right: 10px; margin-top: -4px" src="assets/imgs/add-circle.svg" alt="" />
                 <span class="button-text-primary">{{ 'app.backup.package.create'|i18n }}</span>
               </button>
@@ -121,32 +121,33 @@
               <td nzBreakWord *ngIf="!['DELETING'].includes(data.status)">
                 <div *ngIf="['ACTIVE', 'AVAILABLE'].includes(data.status)">
                   <!---Chỉnh sửa------>
-                  <one-portal-update-backup-package [region]="region"
+                  <one-portal-update-backup-package *ngIf="('backup:UpdateBackupPacket' | IsPermissionPipe)" [region]="region"
                                                     [project]="project"
                                                     [idBackupPackage]="data.id"
                                                     [backupPackage]="data"
                                                     (onOk)="handleUpdateOk()" />
                   <!---Điều chỉnh dung lượng------>
-                  <img src="assets/imgs/resize.svg" alt="" style="margin-left: 5px;cursor: pointer;"
+                  <img *ngIf="('backup:GetBackupPacket' | IsPermissionPipe) && ('configuration:Get' | IsPermissionPipe) && ('order:GetOrderAmount' | IsPermissionPipe) && ('order:Create' | IsPermissionPipe)" 
+                      src="assets/imgs/resize.svg" alt="" style="margin-left: 5px;cursor: pointer;"
                        (click)="navigateToResize(data.id)"
                        nz-popover nzPopoverPlacement="bottom"
                        [nzPopoverContent]="'app.backup.package.breadcrumb.resize'|i18n" />
                   <!---Xóa------>
-                  <one-portal-delete-backup-package [region]="region" [project]="project" [packageBackupModel]="data"
+                  <one-portal-delete-backup-package *ngIf="('backup:DeleteBackupPacket' | IsPermissionPipe)" [region]="region" [project]="project" [packageBackupModel]="data"
                                                     (onOk)="handleDeletedOk()" />
                 </div>
                 <div *ngIf="!['ACTIVE', 'AVAILABLE'].includes(data.status) && data.status != 'ERROR'">
-                  <img src="assets/imgs/calendar-tick.svg" alt=""
+                  <img *ngIf="('backup:GetBackupPacket' | IsPermissionPipe) && ('order:GetOrderAmount' | IsPermissionPipe) && ('order:Create' | IsPermissionPipe)" src="assets/imgs/calendar-tick.svg" alt=""
                        (click)="navigateToExtend(data.id)"
                        nz-popover nzPopoverPlacement="bottom"
                        [nzPopoverContent]="'app.dashboard.service.near.expire.extend'|i18n" />
                   <!---Xóa------>
-                  <one-portal-delete-backup-package [region]="region" [project]="project" [packageBackupModel]="data"
+                  <one-portal-delete-backup-package *ngIf="('backup:DeleteBackupPacket' | IsPermissionPipe)" [region]="region" [project]="project" [packageBackupModel]="data"
                                                     (onOk)="handleDeletedOk()" />
                 </div>
                 <div *ngIf="data.status == 'ERROR'">
                   <!---Xóa------>
-                  <one-portal-delete-backup-package [region]="region" [project]="project" [packageBackupModel]="data"
+                  <one-portal-delete-backup-package *ngIf="('backup:DeleteBackupPacket' | IsPermissionPipe)" [region]="region" [project]="project" [packageBackupModel]="data"
                                                     (onOk)="handleDeletedOk()" />
                 </div>
               </td>
@@ -197,7 +198,7 @@
               <span class="text-intro-desc">{{ 'app.backup.package.intro.desc' | i18n }}</span>
             </nz-col>
           </nz-row>
-          <button *ngIf="typeVPC != 1" style="margin-top: 20px" nz-button [nzType]="'primary'"
+          <button *ngIf="typeVPC != 1 && isCreateOrder" style="margin-top: 20px" nz-button [nzType]="'primary'"
                   (click)="navigateToCreate()" nzSize="large">
             <img style="padding-right: 10px; margin-top: -4px" src="assets/imgs/cloud-plus-bold.svg" alt="" />
             {{ 'app.backup.package.create' | i18n }}

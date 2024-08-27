@@ -7,7 +7,7 @@
       <nz-breadcrumb-item><a [routerLink]="['/']">{{ 'app.breadcrumb.home' | i18n }}</a></nz-breadcrumb-item>
       <nz-breadcrumb-item>{{'app.breadcrumb.infrastructure.service' | i18n }}</nz-breadcrumb-item>
       <nz-breadcrumb-item>Block Storage</nz-breadcrumb-item>
-      <nz-breadcrumb-item><a routerLink="/app-smart-cloud/snapshot">Snapshot</a></nz-breadcrumb-item>
+      <nz-breadcrumb-item><a routerLink="/app-smart-cloud/snapshot">Snapshot Volume</a></nz-breadcrumb-item>
       <nz-breadcrumb-item>Chi tiết Snapshot</nz-breadcrumb-item>
     </nz-breadcrumb>
     <ng-template #separatorTemplate
@@ -64,7 +64,7 @@
           <nz-col nzSpan="12">
             <nz-row style="padding: 12px 0 12px 0">
               <span class="text-label customSpan" style="width: 35%">Loại Snapshot:</span>
-              <span class="text-value-detail customSpan">{{data?.fromRootVolume == true ? 'Snapshot VM' : 'Snapshot Volume'}}</span>
+              <span class="text-value-detail customSpan">{{data?.fromRootVolume == true ? 'Snapshot máy ảo' : 'Snapshot Volume'}}</span>
             </nz-row>
           </nz-col>
           <nz-col nzSpan="12">
