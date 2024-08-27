@@ -97,6 +97,8 @@ export class WafUsageStatistics implements OnInit {
         this.getDataTraffic();
         this.getDataBack2Origin();
         this.getBandwidthSaving();
+        //daily table
+        this.createDailyTableData();
         this.getTop10BandwidthSaving();
       },
       error: (error) => {
@@ -240,40 +242,103 @@ export class WafUsageStatistics implements OnInit {
     };
   }
 
+  caculateDailyTableBandwidthEdge(data: QueryTrafficRequestInTotalAndPeakValueResponse){
+    var timestamps = data.result[0].flowRequestData.map(x=>x.timestamp+":00");
+    var bandwidths = data.result[0].flowRequestData.map(x=>parseFloat(x.bandwidth));
+    var flows = data.result[0].flowRequestData.map(x=>parseFloat(x.flow));
+    var maxEdges= this.groupByDateAndGetMax2(timestamps,bandwidths,flows);
+    this.peakEdgeTable=maxEdges.map(x=>({
+      date:x.dateTime.split(' ')[0],
+      time:x.dateTime.split(' ')[1],
+      bandwidth:x.max,
+      total: Math.ceil(x.total / 1024 * 100) / 100
+    })).reverse();
+    this.renderPeakTable();
+  }
+  caculateDailyTableBandwidthB2O(data: QueryBacktoOriginTrafficAndRequestResponse){
+    var timestamps = data.result.map(x=>x.flowRequestOriginData[0].timestamp+":00");
+    var bandwidths = data.result.map(x=>parseFloat(x.flowRequestOriginData[0].bandwidth));
+    var flows = data.result.map(x=>parseFloat(x.flowRequestOriginData[0].flow));
+    var b2os= this.groupByDateAndGetMax2(timestamps,bandwidths,flows);
+    this.peakB2OTable=b2os.map(x=>({
+      date:x.dateTime.split(' ')[0],
+      time:x.dateTime.split(' ')[1],
+      bandwidth:x.max,
+      total: Math.ceil(x.total / 1024 * 100) / 100
+    })).reverse();
+    this.renderPeakTable();
+  }
+  caculateDailyTableBandwidthSaving(data: QueryRequesBandwidthtSavingRatioResponse){
+    var timestamps = data.data[0].savingBandwidthDatas.map(x=>x.timestamp+(this.selectedTypeDate=='fiveminutes'?':00':':00:00'));
+    var savingBandwidtds = data.data[0].savingBandwidthDatas.map(x=>parseFloat(x.savingBandwidth));
+    var b2os= this.groupByDateAndGetMax(timestamps,savingBandwidtds);
+    this.peakSavingTable=b2os.map(x=>({
+      date:x.dateTime.split(' ')[0],
+      time:x.dateTime.split(' ')[1],
+      peak:x.max*100,
+      average: (x.total/x.count)*100
+    })).reverse();
+    this.renderPeakTable();
+  }
+  caculateDailyTableRequestHitRatio(data: QueryRequestHitRatioResponse){
+    var timestamps = data.data[0].hitRatioDatas.map(x=>x.timestamp+(this.selectedTypeDate=='fiveminutes'?':00':':00:00'));
+    var hitRatios = data.data[0].hitRatioDatas.map(x=>parseFloat(x.hitRatio));
+    var HRs= this.groupByDateAndGetMax(timestamps,hitRatios);
+    this.totalHitRatioTable=HRs.map(x=>({
+      date:x.dateTime.split(' ')[0],
+      time:x.dateTime.split(' ')[1],
+      peak:x.max*100,
+      average: (x.total/x.count)*100
+    })).reverse();
+    this.renderPeakTable();
+  }
   createDailyTableData(){
-    if(this.apiCallProcessing.some(x=>x==true) && this.currentTab=='bandwidth'){
-      return;
-    }
-    if(this.apiRequestCallProcessing.some(x=>x==true) && this.currentTab=='requests'){
-      return;
-    }
     if(this.currentTab=='bandwidth'){
-      var maxEdges= this.groupByDateAndGetMax(this.xAxis,this.bandWidthData);
-      this.peakEdgeTable=maxEdges.map(x=>({
-        date:x.dateTime.split(' ')[0],
-        time:x.dateTime.split(' ')[1],
-        bandwidth:x.max
-      }));
-      var maxB2O= this.groupByDateAndGetMax(this.xAxis,this.back2OriginBandwidthData);
-      this.peakB2OTable=maxB2O.map(x=>({
-        date:x.dateTime.split(' ')[0],
-        time:x.dateTime.split(' ')[1],
-        bandwidth:x.max
-      }));
-  
-      var maxSaving= this.groupByDateAndGetMax(this.xAxis,this.bandWidthSavingData);
-      this.peakSavingTable=maxSaving.map(x=>({
-        date:x.dateTime.split(' ')[0],
-        time:x.dateTime.split(' ')[1],
-        peak:x.max
-      }));
+      if(this.selectedTypeRequest =="EDGE"){
+        this.wafService.queryTrafficRequestInTotalAndPeakValue({dateFrom:this.fromDate,dateTo:this.toDate,domain:this.domains,groupBy:[],dataPadding:null}).subscribe({
+          next: (res) => {
+            this.caculateDailyTableBandwidthEdge(res);
+          },
+          error: (error) => {
+            console.log(error);
+          }
+        })
+      }
+
+      if(this.selectedTypeRequest =="B2O"){
+        this.wafService.getBacktoOriginTrafficAndRequest({dateFrom:this.fromDate,dateTo:this.toDate,dataInterval:'5m',domain:this.domains,groupBy:[],backsrcOnly:null}).subscribe({
+          next: (res) => {
+            this.caculateDailyTableBandwidthB2O(res);
+          },
+          error: (error) => {
+            console.log(error);
+          }
+        })
+      }
+
+      if(this.selectedTypeRequest =="BSR"){
+        if(this.selectedTypeDate =='fiveminutes'){
+          var dataInterval = '5m';
+        }else{
+          var dataInterval = '1h';
+        }
+        this.wafService.getBandWidthSaving({dateFrom:this.fromDate,dateTo:this.toDate,dataInterval:dataInterval,domain:this.domains}).subscribe({
+          next: (res) => {
+            this.caculateDailyTableBandwidthSaving(res);
+          },
+          error: (error) => {
+            console.log(error);
+          }
+        })
+      }
     }
     else{
       var maxEdges= this.groupByDateAndGetMax(this.xAxis,this.requestNumberData);
       this.totalEdgeRequestTable=maxEdges.map(x=>({
         date:x.dateTime.split(' ')[0],
         total:x.total
-      }));
+      })).reverse();
+
       this.totalEdgeRequestTable.push({
         date:'Total',
         total: this.totalEdgeRequestTable.reduce((a, b) => a + b.total, 0)
@@ -283,21 +348,33 @@ export class WafUsageStatistics implements OnInit {
       this.totalB2ORequestTable=maxB2O.map(x=>({
         date:x.dateTime.split(' ')[0],
         total:x.total
-      }));
+      })).reverse();
+
       this.totalB2ORequestTable.push({
         date:'Total',
         total: this.totalB2ORequestTable.reduce((a, b) => a + b.total, 0)
       })
       
-      var maxHitRatio= this.groupByDateAndGetMax(this.xAxis,this.requestHitRatioData);
-      this.totalHitRatioTable=maxHitRatio.map(x=>({
-        date:x.dateTime.split(' ')[0],
-        peak:x.max,
-        averange:0// chưa tính được
-      }));
+      if(this.selectedTypeRequest =="HR"){
+        if(this.selectedTypeDate =='fiveminutes'){
+          var dataInterval = '5m';
+        }else{
+          var dataInterval = '1h';
+        }
+        this.wafService.queryRequestHitRatio({dateFrom:this.fromDate,dateTo:this.toDate,domain:this.domains,dataInterval:dataInterval}).subscribe({
+          next: (res) => {
+            this.caculateDailyTableRequestHitRatio(res);
+          },
+          error: (error) => {
+            console.log(error);
+          }
+        })
+      }
+      
+      
+      this.renderPeakTable();
     }
     
-    this.renderPeakTable();
   }
 
 
@@ -354,8 +431,9 @@ export class WafUsageStatistics implements OnInit {
   }
 
   getDataBandwidth(){
+    if(!this.isSpinning)
+      this.isSpinning = true;
     this.apiCallProcessing[0]=true;
-    this.isSpinning=true;
     this.wafService.bandwidthForMultiDomain(this.fromDate,this.toDate,this.selectedTypeDate,this.domains).subscribe({
       next: (res) => {
         this.apiCallProcessing[0]=false;
@@ -365,7 +443,7 @@ export class WafUsageStatistics implements OnInit {
         this.fillBandwidthData();
         this.caculateEdge()
         this.draw();
-        this.createDailyTableData();
+        //this.createDailyTableData();
       },
       error: (error) => {
         this.apiCallProcessing[0]=false;
@@ -404,17 +482,39 @@ export class WafUsageStatistics implements OnInit {
     this.back2OriginBandwidthData = temp;
   }
   fillBack2OriginRequestData(){
+
     var temp = [];
     var back2OriginDatas = this.dataBack2Origin.result;
     back2OriginDatas.forEach(x=>x.flowRequestOriginData[0].timestamp+=':00');
+    var sum = 0;
     for(var i=0; i<this.xAxis.length; i++){
       var timestamp = this.xAxis[i];
-      var index = back2OriginDatas.findIndex(x=>x.flowRequestOriginData[0].timestamp==timestamp);
-      if(index==-1){
-        temp[i]=null;
-      }else{
-        temp[i]= parseInt(back2OriginDatas[index].flowRequestOriginData[0].request);
+      if(this.selectedTypeDate=='fiveminutes'){
+        var index = back2OriginDatas.findIndex(x=>x.flowRequestOriginData[0].timestamp==timestamp);
+        if(index==-1){
+          temp[i]=null;
+        }else{
+          temp[i]= parseInt(back2OriginDatas[index].flowRequestOriginData[0].request);
+        }
       }
+      else
+      {
+        var current = new Date(timestamp);
+        current.setHours(current.getHours() - 1);
+        let formattedDate = current.getFullYear() + '-' + 
+                  String(current.getMonth() + 1).padStart(2, '0') + '-' + 
+                  String(current.getDate()).padStart(2, '0') + ' ' + 
+                  String(current.getHours()).padStart(2, '0');
+        var index1 = back2OriginDatas.findIndex(x=>x.flowRequestOriginData[0].timestamp==timestamp);
+        var totalRequest = back2OriginDatas.filter(x=>x.flowRequestOriginData[0].timestamp.startsWith(formattedDate) && !x.flowRequestOriginData[0].timestamp.endsWith(':00:00')).reduce((a, b) => a + parseInt(b.flowRequestOriginData[0].request), 0);
+        temp[i]= totalRequest;
+        if(index1>-1){
+          temp[i]+= parseInt(back2OriginDatas[index1].flowRequestOriginData[0].request);
+        }
+        sum+=totalRequest;
+        console.log(current,sum)
+      }
+      
     }
     this.back2OriginRequestData = temp;
   }
@@ -432,21 +532,22 @@ export class WafUsageStatistics implements OnInit {
   }
   caculateBack2OriginRequest(){
     this.totalB20NumberRequest = this.dataBack2Origin.result.reduce((a, b) => a + parseFloat(b.totalRequest), 0);
-    this.peakB20NumberRequest = Math.max(...this.dataBack2Origin.result.map(x=>parseInt(x.peakRequest)));
+    this.peakB20NumberRequest = Math.max(...this.back2OriginRequestData);
   }
   
   getDataBack2Origin(){
+    if(!this.isSpinning)
+      this.isSpinning = true;
     if(this.currentTab=='bandwidth'){
       this.apiCallProcessing[2]=true;
     }else{
       this.apiRequestCallProcessing[1]=true;
     }
-    if(this.selectedTypeDate =='fiveminutes'){
+    if(this.selectedTypeDate =='fiveminutes'){ //api chỉ hỗ trợ 5m
       var dataInterval = '5m';
     }else{
       var dataInterval = '5m';
     }
-    this.isSpinning = true;
     this.wafService.getBacktoOriginTrafficAndRequest({dateFrom:this.fromDate,dateTo:this.toDate,dataInterval:dataInterval,domain:this.domains,groupBy:[],backsrcOnly:null}).subscribe({
       next: (res) => {
         if(this.currentTab=='bandwidth'){
@@ -465,7 +566,7 @@ export class WafUsageStatistics implements OnInit {
         }
         
         this.draw();
-        this.createDailyTableData();
+        //this.createDailyTableData();
       },
       error: (error) => {
         if(this.currentTab=='bandwidth'){
@@ -496,9 +597,9 @@ export class WafUsageStatistics implements OnInit {
     }else{
       var dataInterval = '1h';
     }
-    
+    if(!this.isSpinning)
+      this.isSpinning = true;
     this.apiCallProcessing[1]=true;
-    this.isSpinning = true;
     this.wafService.getBandWidthSaving({dateFrom:this.fromDate,dateTo:this.toDate,dataInterval:dataInterval,domain:this.domains}).subscribe({
       next: (res) => {
         this.dataBandwidthSaving = res;
@@ -507,7 +608,7 @@ export class WafUsageStatistics implements OnInit {
         this.fillBandwidthSavingData();
         this.caculateBandwidthSaving();
         this.draw();
-        this.createDailyTableData();
+        //.createDailyTableData();
       },
       error: (error) => {
         this.apiCallProcessing[1]=false;
@@ -552,6 +653,19 @@ export class WafUsageStatistics implements OnInit {
     var requestNumberDatas = this.dataRequestNumber.result[0].flowRequestData;
     requestNumberDatas.forEach(x=>x.timestamp+=':00');
     
+    if(this.selectedTypeDate =='hourly'){
+      let requestInHour = 0;
+      let currentHour = requestNumberDatas[0].timestamp.split(' ')[1].split(':')[0];
+      requestNumberDatas.forEach(x=>{
+        requestInHour+=parseInt(x.request);
+        var hour = x.timestamp.split(' ')[1].split(':')[0];
+        if(currentHour!=hour){
+          x.totalRequestInHour = requestInHour;
+          currentHour = hour;
+          requestInHour = 0;
+        }
+      });
+    } 
 
     for(var i=0; i<this.xAxis.length; i++){
       var timestamp = this.xAxis[i];
@@ -559,23 +673,27 @@ export class WafUsageStatistics implements OnInit {
       if(index==-1){
         temp[i]=null;
       }else{
-        temp[i]= parseInt(requestNumberDatas[index].request);
+        if(this.selectedTypeDate=='fiveminutes'){
+          temp[i]= parseInt(requestNumberDatas[index].request);
+        }else{
+          temp[i]= requestNumberDatas[index].totalRequestInHour;
+        }
       }
     }
     this.requestNumberData = temp;
   }
   caculateRequestNumber(){
     this.totalEdgeNumberRequest = parseFloat(this.dataRequestNumber.result[0].totalRequest);
-    this.peakEdgeNumberRequest = parseFloat(this.dataRequestNumber.result[0].peakRequest);
-  }
-  getEdgeRequestNumber(){
-    if(this.selectedTypeDate =='fiveminutes'){
-      var dataInterval = '5m';
+    if(this.selectedTypeDate=='fiveminutes'){
+      this.peakEdgeNumberRequest = parseFloat(this.dataRequestNumber.result[0].peakRequest);
     }else{
-      var dataInterval = '1h';
+      this.peakEdgeNumberRequest = Math.max(...this.dataRequestNumber.result[0].flowRequestData.map(x=>x.totalRequestInHour?x.totalRequestInHour:null));
     }
+  }
+  getEdgeRequestNumber(){ 
+    if(!this.isSpinning)
+      this.isSpinning = true;
     this.apiRequestCallProcessing[0]=true;
-    this.isSpinning = true;
     this.wafService.queryTrafficRequestInTotalAndPeakValue({dateFrom:this.fromDate,dateTo:this.toDate,domain:this.domains,groupBy:[],dataPadding:null}).subscribe({
       next: (res) => {
         this.dataRequestNumber = res;
@@ -584,7 +702,7 @@ export class WafUsageStatistics implements OnInit {
         this.fillRequestNumber();
         this.caculateRequestNumber();
         this.draw();
-        this.createDailyTableData();
+        //this.createDailyTableData();
       },
       error: (error) => {
         this.apiRequestCallProcessing[0]=false;
@@ -623,8 +741,9 @@ export class WafUsageStatistics implements OnInit {
     }else{
       var dataInterval = '1h';
     }
+    if(!this.isSpinning)
+      this.isSpinning = true;
     this.apiRequestCallProcessing[2]=true;
-    this.offSpining();
     this.wafService.queryRequestHitRatio({dateFrom:this.fromDate,dateTo:this.toDate,domain:this.domains,dataInterval:dataInterval}).subscribe({
       next: (res) => {
         this.dataRequestHitRatio = res;
@@ -633,7 +752,7 @@ export class WafUsageStatistics implements OnInit {
         this.fillRequestHitRatio();
         this.caculateRequestHitRatio();
         this.draw();
-        this.createDailyTableData();
+        //this.createDailyTableData();
       },
       error: (error) => {
         this.apiRequestCallProcessing[2]=false;
@@ -702,6 +821,8 @@ export class WafUsageStatistics implements OnInit {
 
       this.getTop10HitRatio();
     }
+    
+    this.createDailyTableData();
   }
 
   onChangeDomain(){
@@ -732,6 +853,8 @@ export class WafUsageStatistics implements OnInit {
       this.getRequestHitRatio();
       this.getTop10HitRatio();
     }
+    
+    this.createDailyTableData();
   }
 
   isSameDay(date1: Date, date2: Date): boolean {
@@ -791,7 +914,7 @@ export class WafUsageStatistics implements OnInit {
     this.selectedTypeRequest = "EDGE";
   }
   changeTypeRequest(){
-    this.renderPeakTable();
+    this.createDailyTableData();
   }
   getDatesInRange(startDate: Date, endDate: Date): string[] {
     const dateArray: string[] = [];
@@ -803,8 +926,8 @@ export class WafUsageStatistics implements OnInit {
     }
     return dateArray;
   }
-  groupByDateAndGetMax(x: string[], y: number[]): Array<{ dateTime: string, max: number, total: number }> {
-    const dateMaxMap: { [key: string]: { dateTime: string, max: number, total: number } } = {};
+  groupByDateAndGetMax(x: string[], y: number[]): Array<{ dateTime: string, max: number, total: number,count: number }> {
+    const dateMaxMap: { [key: string]: { dateTime: string, max: number, total: number, count: number } } = {};
 
     for (let i = 0; i < x.length; i++) {
         const dateTime = x[i];
@@ -812,11 +935,42 @@ export class WafUsageStatistics implements OnInit {
         const value = y[i];
       
         if (!dateMaxMap[date]) {
-            dateMaxMap[date] = { dateTime: dateTime, max: value, total: value };
+            dateMaxMap[date] = { dateTime: dateTime, max: value, total: value, count: 1 };
         } else {
             dateMaxMap[date].total += value;
+            dateMaxMap[date].count += 1;
             if (value > dateMaxMap[date].max) {
                 dateMaxMap[date].max = value;
+                dateMaxMap[date].dateTime = dateTime;
+            }
+        }
+    }
+
+    // Chuyển đổi từ đối tượng dateMaxMap thành mảng
+    const resultArray = Object.keys(dateMaxMap).map(date => ({
+        dateTime: dateMaxMap[date].dateTime,
+        max: dateMaxMap[date].max,
+        total: dateMaxMap[date].total,
+        count: dateMaxMap[date].count
+    }));
+
+    return resultArray;
+  }
+
+  groupByDateAndGetMax2(x: string[], y: number[], z:number[]): Array<{ dateTime: string, max: number, total: number }> {
+    const dateMaxMap: { [key: string]: { dateTime: string, max: number, total: number } } = {};
+
+    for (let i = 0; i < x.length; i++) {
+        const dateTime = x[i];
+        const date = dateTime.split(' ')[0]; // Lấy phần ngày 'YYYY-MM-DD'
+        const valueMax = y[i];
+        const valueTotal = z[i];
+        if (!dateMaxMap[date]) {
+            dateMaxMap[date] = { dateTime: dateTime, max: valueMax, total: valueTotal };
+        } else {
+            dateMaxMap[date].total += valueTotal;
+            if (valueMax > dateMaxMap[date].max) {
+                dateMaxMap[date].max = valueMax;
                 dateMaxMap[date].dateTime = dateTime;
             }
         }
