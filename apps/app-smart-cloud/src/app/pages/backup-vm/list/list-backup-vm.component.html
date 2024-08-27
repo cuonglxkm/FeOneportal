@@ -58,7 +58,7 @@
             </ng-template>
           </nz-col>
           <nz-col>
-            <button nz-button nzType="primary" nzSize="large" [nzLoading]="isLoadingAction" (click)="navigateToCreateBackup()">
+            <button *ngIf="isCreateOrder" nz-button nzType="primary" nzSize="large" [nzLoading]="isLoadingAction" (click)="navigateToCreateBackup()">
               <img style="padding-right: 10px; margin-top: -4px" src="assets/imgs/add-circle.svg" alt="" />
               <span class="button-text-primary">{{ 'app.backup.vm.create.button'|i18n }}</span>
             </button>
@@ -118,32 +118,32 @@
             <td nzBreakWord>
 <!--              <div [ngSwitch]="data.status">-->
                 <div *ngIf="data.status.includes('AVAILABLE')">
-                  <one-portal-update-backup-vm [region]="region"
+                  <one-portal-update-backup-vm *ngIf="('backup:InstanceBackupUpdate' | IsPermissionPipe)" [region]="region"
                                                [project]="project"
                                                [idBackupVm]="data.id"
                                                [backupName]="data.name"
                                                [backupVmInfo]="data"
                                                (onOk)="handleOkUpdate()" />
-                  <img src="assets/imgs/rotate-right.svg" alt=""
+                  <img *ngIf="('backup:InstanceBackupRestore' | IsPermissionPipe)" src="assets/imgs/rotate-right.svg" alt=""
                        style="cursor: pointer; margin-left: 5px;"
                        (click)="navigateToRestore(data.id)"
                        nz-popover nzPopoverPlacement="bottom"
                        [nzPopoverContent]="'Restore'" />
-                  <one-portal-delete-backup-vm [region]="region"
+                  <one-portal-delete-backup-vm *ngIf="('backup:Delete' | IsPermissionPipe)" [region]="region"
                                                [project]="project"
                                                [idBackup]="data.id"
                                                [backupName]="data.name"
                                                (onOk)="handleOkDelete()" />
                 </div>
                 <div *ngIf="data.status.includes('SUSPENDED')">
-                  <one-portal-delete-backup-vm [region]="region"
+                  <one-portal-delete-backup-vm *ngIf="('backup:Delete' | IsPermissionPipe)" [region]="region"
                                                [project]="project"
                                                [idBackup]="data.id"
                                                [backupName]="data.name"
                                                (onOk)="handleOkDelete()" />
                 </div>
                 <div *ngIf="data.status.includes('ERROR')">
-                  <one-portal-delete-backup-vm [region]="region"
+                  <one-portal-delete-backup-vm *ngIf="('backup:Delete' | IsPermissionPipe)" [region]="region"
                                                [project]="project"
                                                [idBackup]="data.id"
                                                [backupName]="data.name"
@@ -173,7 +173,7 @@
               <span class="text-intro-desc">{{ 'app.backup.vm.intro.desc'|i18n }}</span>
             </nz-col>
           </nz-row>
-          <button style="margin-top: 20px" nz-button [nzType]="'primary'"
+          <button *ngIf="isCreateOrder" style="margin-top: 20px" nz-button [nzType]="'primary'"
                   (click)="navigateToCreateBackup()" nzSize="large">
             <img style="padding-right: 10px; margin-top: -4px" src="assets/imgs/cloud-plus-bold.svg" alt="" />
             {{ 'app.backup.vm.button.create'|i18n }}

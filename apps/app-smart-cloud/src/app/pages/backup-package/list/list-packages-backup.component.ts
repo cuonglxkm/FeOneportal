@@ -19,6 +19,7 @@ import { debounceTime, Subject, Subscription } from 'rxjs';
 import {
   ProjectSelectDropdownComponent
 } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
+import { PolicyService } from 'src/app/shared/services/policy.service';
 
 @Component({
   selector: 'one-portal-list-packages-backup',
@@ -76,7 +77,7 @@ export class ListPackagesBackupComponent implements OnInit, OnDestroy {
   dataSubjectInputSearch: Subject<any> = new Subject<any>();
   private searchSubscription: Subscription;
   private enterPressed: boolean = false;
-
+  isCreateOrder: boolean = false;
   projectName: string;
 
   constructor(private router: Router,
@@ -86,7 +87,8 @@ export class ListPackagesBackupComponent implements OnInit, OnDestroy {
               private fb: NonNullableFormBuilder,
               private projectService: ProjectService,
               private notificationService: NotificationService,
-              @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService) {
+              @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
+              private policyService: PolicyService) {
   }
 
   regionChanged(region: RegionModel) {
@@ -105,6 +107,10 @@ export class ListPackagesBackupComponent implements OnInit, OnDestroy {
     this.typeVPC = project?.type;
     this.projectName = project?.projectName;
     this.getListPackageBackups(true);
+    this.isCreateOrder = this.policyService.hasPermission("backup:ListBackupPacket") &&
+      this.policyService.hasPermission("configuration:Get") && 
+      this.policyService.hasPermission("order:GetOrderAmount") &&
+      this.policyService.hasPermission("order:Create");
   }
 
   onInputChange(value: string) {
@@ -174,6 +180,12 @@ export class ListPackagesBackupComponent implements OnInit, OnDestroy {
     }, error => {
       this.isLoading = false;
       this.response = null;
+      if(error.status == 403) {
+        this.notification.error(
+          error.statusText,
+          this.i18n.fanyi('app.non.permission')
+        );
+      }
     });
   }
 
