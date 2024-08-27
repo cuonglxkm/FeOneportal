@@ -252,9 +252,13 @@ export class SnapshotCreateComponent implements OnInit, OnChanges {
       }))
       .subscribe(
         data => {
-          this.volumeArray = data?.records.filter(item =>
-            item?.serviceStatus == 'AVAILABLE'
-          );
+          // this.volumeArray = data?.records.filter(item =>
+          //   item?.serviceStatus == 'AVAILABLE'
+          // );
+          this.volumeArray = data?.records.filter(item => {
+            return ['AVAILABLE', 'IN-USE'].includes(item?.serviceStatus);
+          });
+
           // check id volume được chọn khi tạo từ ds volume
           this.activatedRoute.queryParams.subscribe(params => {
             this.idVolume = params['volumeId'];
@@ -293,9 +297,12 @@ export class SnapshotCreateComponent implements OnInit, OnChanges {
           //   this.selectedVM = null;
           //   // this.selectedSnapshotType = 0;
           // }
-          this.vmArray = data.records.filter(item => {
-            return item.taskState === 'ACTIVE';
-          });
+          // this.vmArray = data.records.filter(item => {
+          //   return item.taskState === 'ACTIVE';
+          // });
+          this.vmArray = data.records.filter(item => 
+             item.taskState === 'ACTIVE' && item.status==='KHOITAO'
+          );
           console.log("this.vmArray 22", this.vmArray)
           // check id máy ảo được chọn khi tạo từ ds máy ảo
           this.activatedRoute.queryParams.subscribe(params => {
