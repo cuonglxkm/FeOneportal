@@ -47,9 +47,10 @@ export class SnapshotScheduleListComponent implements OnInit {
 
   status = [
     { label: 'Tất cả trạng thái', value: '' },
-    { label: 'Đang khởi tạo', value: 'DANGKHOITAO' },
-    { label: 'Hủy', value: 'HUY' },
-    { label: 'Tạm ngừng', value: 'TAMNGUNG' }
+    { label: 'Gián đoạn', value: 'DISABLED' }
+    // { label: 'Đang khởi tạo', value: 'DANGKHOITAO' },
+    // { label: 'Hủy', value: 'HUY' },
+    // { label: 'Tạm ngừng', value: 'TAMNGUNG' }
   ];
 
   pageSize: number = 10;
@@ -86,6 +87,7 @@ export class SnapshotScheduleListComponent implements OnInit {
           this.totalData = next.totalCount;
           this.listOfData = next.records;
           this.isLoadingEntities = false;
+          console.log("this.response?.records", this.response?.records)
           if (checkBegin) {
             if (this.response?.records == undefined || this.response?.records.length == 0) {
               this.isBegin = true;
@@ -95,7 +97,7 @@ export class SnapshotScheduleListComponent implements OnInit {
           }
         },
         error: (error) => {
-          if(error.status == 403) {
+          if (error.status == 403) {
             this.notification.error(
               error.statusText,
               this.i18n.fanyi('app.non.permission')
@@ -146,7 +148,7 @@ export class SnapshotScheduleListComponent implements OnInit {
   }
 
 
-  navigateToPackageDetail(id){
+  navigateToPackageDetail(id) {
     if (this.region === RegionID.ADVANCE) {
       this.router.navigate([`/app-smart-cloud/snapshot-advance/packages/detail/`, id])
     } else {
@@ -191,109 +193,7 @@ export class SnapshotScheduleListComponent implements OnInit {
       });
   }
 
-  // doPauseSnapshotSchedule(id: number) {
-  //   const modal: NzModalRef = this.modalService.create({
-  //     nzTitle: 'Tạm dừng lịch Snapshot',
-  //     nzContent: `<p>Vui lòng cân nhắc thật kỹ trước khi click nút <b>Đồng ý</b>. Quý khách chắc chắn muốn thực hiện tạm dừng lịch Snapshot?</p>`,
-  //     nzFooter: [
-  //       {
-  //         label: 'Hủy',
-  //         type: 'default',
-  //         onClick: () => modal.destroy(),
-  //       },
-  //       {
-  //         label: 'Đồng ý',
-  //         type: 'primary',
-  //         onClick: () => {
-  //           this.snapshotVolumeService
-  //             .actionSchedule(
-  //               id,
-  //               'suspend',
-  //               this.customerId,
-  //               this.region,
-  //               this.project
-  //             )
-  //             .subscribe({
-  //               next: (next) => {
-  //                 this.notification.success(
-  //                   'Success',
-  //                   'Tạm dừng lịch Snapshot thành công.'
-  //                 );
-  //                 this.doGetSnapSchedules(
-  //                   this.pageSize,
-  //                   this.pageNumber,
-  //                   this.region,
-  //                   this.project,
-  //                   this.searchName,
-  //                   '',true
-  //                 );
-  //               },
-  //               error: (e) => {
-  //                 this.notification.error(
-  //                   'Có lỗi xảy ra',
-  //                   'Tạm dừng lịch Snapshot thất bại.'
-  //                 );
-  //               },
-  //             });
-  //           modal.destroy();
-  //         },
-  //       },
-  //     ],
-  //   });
-  // }
-
-  // doResumeSnapshotSchedule(id: number) {
-  //   const modal: NzModalRef = this.modalService.create({
-  //     nzTitle: 'Tiếp tục lịch Snapshot',
-  //     nzContent: `<p>Vui lòng cân nhắc thật kỹ trước khi click nút <b>Đồng ý</b>. Quý khách chắc chắn muốn thực hiện tiếp tục lịch Snapshot?</p>`,
-  //     nzFooter: [
-  //       {
-  //         label: 'Hủy',
-  //         type: 'default',
-  //         onClick: () => modal.destroy(),
-  //       },
-  //       {
-  //         label: 'Đồng ý',
-  //         type: 'primary',
-  //         onClick: () => {
-  //           this.snapshotVolumeService
-  //             .actionSchedule(
-  //               id,
-  //               'restore',
-  //               this.customerId,
-  //               this.region,
-  //               this.project
-  //             )
-  //             .subscribe({
-  //               next: (next) => {
-  //                 this.notification.success(
-  //                   'Success',
-  //                   'Tiếp tục lịch Snapshot thành công.'
-  //                 );
-  //                 this.doGetSnapSchedules(
-  //                   this.pageSize,
-  //                   this.pageNumber,
-  //                   this.region,
-  //                   this.project,
-  //                   this.searchName,
-  //                   '',
-  //                   true
-  //                 );
-  //               },
-  //               error: (e) => {
-  //                 this.notification.error(
-  //                   'Có lỗi xảy ra',
-  //                   'Tiếp tục lịch Snapshot thất bại.'
-  //                 );
-  //               },
-  //             });
-  //           modal.destroy();
-  //         },
-  //       },
-  //     ],
-  //   });
-  // }
-
+ 
   navigateToDetail(id: number) {
     if (this.region === RegionID.ADVANCE) {
       this.router.navigate(['/app-smart-cloud/schedule/snapshot-advance/detail/' + id]);
@@ -324,7 +224,7 @@ export class SnapshotScheduleListComponent implements OnInit {
 
   onRegionChange(region: RegionModel) {
     this.region = region.regionId;
-    if(this.projectCombobox){
+    if (this.projectCombobox) {
       this.projectCombobox.loadProjects(true, region.regionId);
     }
   }
@@ -336,10 +236,10 @@ export class SnapshotScheduleListComponent implements OnInit {
   onProjectChange(project: ProjectModel) {
     this.project = project?.id;
     this.searchSnapshotScheduleList(true);
-    this.isCreateOrder = this.policyService.hasPermission("snapshotpackage:ListSnapshotPackage") && 
+    this.isCreateOrder = this.policyService.hasPermission("snapshotpackage:ListSnapshotPackage") &&
       this.policyService.hasPermission("volumesnapshotschedule:Get") &&
-      this.policyService.hasPermission("volume:List") && 
-      this.policyService.hasPermission("instance:List") && 
+      this.policyService.hasPermission("volume:List") &&
+      this.policyService.hasPermission("instance:List") &&
       this.policyService.hasPermission("volumesnapshotschedule:Create");
   }
 
@@ -431,17 +331,17 @@ export class SnapshotScheduleListComponent implements OnInit {
         this.handleCancel();
       }))
       .subscribe(
-      data => {
-        this.notification.success(this.i18n.fanyi('app.status.success'), 'Edit lịch Snapshot thành công');
-        this.searchSnapshotScheduleList(true);
-      },
-      error => {
-        this.notification.error(this.i18n.fanyi('app.status.fail'), 'Edit lịch Snapshot không thành công');
-      }
-    )
+        data => {
+          this.notification.success(this.i18n.fanyi('app.status.success'), 'Sửa lịch Snapshot thành công');
+          this.searchSnapshotScheduleList(true);
+        },
+        error => {
+          this.notification.error(this.i18n.fanyi('app.status.fail'), 'Sửa lịch Snapshot không thành công');
+        }
+      )
   }
 
-   time : any;
+  time: any;
   VMsnap: string;
 
   getSuspendedReason(warningMessage: any) {
