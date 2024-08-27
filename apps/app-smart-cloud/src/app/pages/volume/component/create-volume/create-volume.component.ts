@@ -305,6 +305,7 @@ export class CreateVolumeComponent implements OnInit {
 
 
   onChangeStatusSSD() {
+    if(this.disableSSD) return
     this.selectedValueSSD = true;
     this.selectedValueHDD = false;
 
@@ -324,6 +325,7 @@ export class CreateVolumeComponent implements OnInit {
   }
 
   onChangeStatusHDD() {
+    if(this.disableHDD) return
     this.selectedValueHDD = true;
     this.selectedValueSSD = false;
     console.log('Selected option changed hdd:', this.selectedValueHDD);
@@ -614,12 +616,14 @@ export class CreateVolumeComponent implements OnInit {
       if (data.volumeType == 'hdd') {
         this.selectedValueHDD = true;
         this.selectedValueSSD = false;
-        this.disableHDD = true
+        this.disableSSD = true
+        this.disableHDD = false
       }
       if (data.volumeType == 'ssd') {
         this.selectedValueSSD = true;
         this.selectedValueHDD = false;
-        this.disableSSD = true
+        this.disableHDD = true
+        this.disableSSD = false
       }
     });
   }

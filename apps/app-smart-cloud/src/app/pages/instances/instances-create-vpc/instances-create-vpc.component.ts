@@ -309,6 +309,10 @@ export class InstancesCreateVpcComponent implements OnInit {
         this.activeBlockSSD =
           !data.filter((e) => e.productName == 'volume-hdd')[0]?.isActive &&
           data.filter((e) => e.productName == 'volume-ssd')[0]?.isActive;
+
+        if(this.activeBlockSSD){
+          this.initSSD()
+        }
       });
   }
 
@@ -347,7 +351,8 @@ export class InstancesCreateVpcComponent implements OnInit {
       .subscribe({
         next: (data) => {
           this.infoVPC = data;
-          this.remainingVolume =
+          this.remainingVolume = this.activeBlockSSD ? this.infoVPC.cloudProject.quotaSSDInGb -
+          this.infoVPC.cloudProjectResourceUsed.ssd :
             this.infoVPC.cloudProject.quotaHddInGb -
             this.infoVPC.cloudProjectResourceUsed.hdd;
           this.remainingRAM =

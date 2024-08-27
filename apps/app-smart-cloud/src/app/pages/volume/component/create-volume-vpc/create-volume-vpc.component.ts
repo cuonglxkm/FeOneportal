@@ -233,6 +233,9 @@ export class CreateVolumeVpcComponent implements OnInit {
     });
   }
 
+  disableHDD: boolean
+  disableSSD: boolean
+
   getDetailSnapshotVolume(id) {
     this.snapshotvlService.getSnapshotVolumeById(id).subscribe(data => {
       console.log('data', data);
@@ -245,10 +248,14 @@ export class CreateVolumeVpcComponent implements OnInit {
       if (data.volumeType == 'hdd') {
         this.selectedValueHDD = true;
         this.selectedValueSSD = false;
+        this.disableHDD = false;
+        this.disableSSD = true
       }
       if (data.volumeType == 'ssd') {
         this.selectedValueSSD = true;
         this.selectedValueHDD = false;
+        this.disableHDD = true;
+        this.disableSSD = false
       }
     });
   }
@@ -321,6 +328,7 @@ export class CreateVolumeVpcComponent implements OnInit {
   }
 
   onChangeStatusSSD() {
+    if(this.disableSSD) return
     this.selectedValueSSD = true;
     this.selectedValueHDD = false;
 
@@ -346,6 +354,7 @@ export class CreateVolumeVpcComponent implements OnInit {
   }
 
   onChangeStatusHDD() {
+    if(this.disableHDD) return
     this.selectedValueHDD = true;
     this.selectedValueSSD = false;
     console.log('Selected option changed hdd:', this.selectedValueHDD);
@@ -480,8 +489,12 @@ export class CreateVolumeVpcComponent implements OnInit {
     this.isInitSnapshot = value;
     console.log('snap shot', this.isInitSnapshot);
     if (this.isInitSnapshot) {
+      this.disableHDD = true;
+      this.disableSSD = true
       this.validateForm.controls.snapshot.setValidators(Validators.required);
     } else {
+      this.disableHDD = false;
+      this.disableSSD = false
       this.validateForm.controls.snapshot.clearValidators();
       this.validateForm.controls.snapshot.updateValueAndValidity();
 
