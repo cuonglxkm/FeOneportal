@@ -2931,6 +2931,7 @@
   "app.vlan.create.port": "Create Port",
 
   "app.breadcrumb.block.storage": "Block Storage",
+  "app.breadcrumb.block.storage.advance": "Advanced Block Storage",
   "volume.title": "Volumes List",
   "volume.title.detail": "Volume Detail",
   "volume.detail.title": "Information of Volume",
