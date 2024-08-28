@@ -1,0 +1,44 @@
+.status .available {
+  color: #008D47;
+}
+
+.status .suspended {
+  color: #EA3829
+}
+
+.status .error {
+  color: #EA3829
+}
+
+
+.button-create {
+  padding: 8px 15px;
+  background: #0074CC;
+  border-radius: 4px;
+  border: 1px solid;
+  justify-content: center;
+  align-items: center; gap: 10px;
+  display: inline-flex;
+  color: #FFFFFF;
+}
+
+
+.border-left-text {
+  position: relative;
+  padding: 5px 0px 5px 5px ;
+  border-left: 3px solid #1890ff; /* Màu xanh của viền bên trái (sử dụng màu xanh của Ant Design) */
+  display: inline-block; /* Đảm bảo viền và văn bản nằm trên cùng một dòng */
+  line-height: 30px;
+}
+
+.peak::after{
+  content: "";
+  position: relative;
+  right: -10px;
+  width: 0;
+  height: 15px;
+  overflow: hidden;
+  display: inline-block;
+  vertical-align: middle;
+  border-right: 1px dashed #ccc;
+}
