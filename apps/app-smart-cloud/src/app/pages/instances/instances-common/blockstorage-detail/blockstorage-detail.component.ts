@@ -12,6 +12,7 @@ import { BlockStorageAttachments } from '../../instances.model';
 import { finalize } from 'rxjs';
 import { CatalogService } from 'src/app/shared/services/catalog.service';
 import { getCurrentRegionAndProject } from '@shared';
+import { CommonService } from 'src/app/shared/services/common.service';
 
 @Component({
   selector: 'one-portal-blockstorage-detail',
@@ -31,7 +32,8 @@ export class BlockstorageDetailComponent implements OnInit {
     private dataService: InstancesService,
     private cdr: ChangeDetectorRef,
     private catalogService: CatalogService,
-    public message: NzMessageService
+    public message: NzMessageService,
+    private commonService: CommonService
   ) {}
 
   projectChange(project: any) {
@@ -75,5 +77,9 @@ export class BlockstorageDetailComponent implements OnInit {
         this.listOfDataBlockStorage = data;
         this.cdr.detectChanges();
       });
+  }
+
+  navigateToVolumeDetail(id: string | number){
+    this.commonService.navigateAdvance('/app-smart-cloud/volumes/detail/' + id, '/app-smart-cloud/volume-advance/detail/' + id)
   }
 }

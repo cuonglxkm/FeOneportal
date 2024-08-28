@@ -32,7 +32,7 @@
               nz-tooltip
               [nzTooltipTitle]="'app.view.detail' | i18n"
               nzTooltipPlacement="bottom"
-              [routerLink]="'/app-smart-cloud/volumes/detail/' + data.id"
+              (click)="navigateToVolumeDetail(data.id)"
               >{{ data.name }}</a
             >
           </td>
