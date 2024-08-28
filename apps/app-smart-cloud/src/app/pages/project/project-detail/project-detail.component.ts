@@ -71,15 +71,7 @@ export class ProjectDetailComponent implements OnInit {
   ngOnInit() {
     let regionAndProject = getCurrentRegionAndProject();
     this.regionId = regionAndProject.regionId;
-    if (!this.url.includes('advance')) {
-      if (Number(localStorage.getItem('regionId')) === RegionID.ADVANCE) {
-        this.regionId = RegionID.NORMAL;
-      } else {
-        this.regionId = Number(localStorage.getItem('regionId'));
-      }
-    } else {
-      this.regionId = RegionID.ADVANCE;
-    }
+   
     const id = this.activatedRoute.snapshot.paramMap.get('id');
     this.getData(id);
     this.todayNow = new Date();
@@ -93,7 +85,6 @@ export class ProjectDetailComponent implements OnInit {
   onRegionChange(region: RegionModel) {
     this.regionId = region.regionId;
     this.router.navigate(['/app-smart-cloud/project'])
-    // this.navigateToRegion();
   }
 
   onRegionChanged(region: RegionModel) {
@@ -107,7 +98,7 @@ export class ProjectDetailComponent implements OnInit {
       .subscribe(
         data => {
           this.data = data;
-console.log("region chi tiết", this.regionId)
+        console.log("region chi tiết", this.regionId)
           const expireDate1 = new Date(this.data?.expireDate)
           const expireDateTime: string = this.getCurrentDateTime(expireDate1);
           const currentDateTime: string = this.getCurrentDateTime(this.todayNow);
@@ -124,7 +115,6 @@ console.log("region chi tiết", this.regionId)
 
           if (error.status === 500) {
             this.router.navigate(['/app-smart-cloud/project']);
-            // this.navigateToRegion();
             this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi(error.error.message));
           }
           this.loading = false;
@@ -177,13 +167,6 @@ console.log("region chi tiết", this.regionId)
 
   edit() {
     this.router.navigate(['/app-smart-cloud/project/update/' + this.activatedRoute.snapshot.paramMap.get('id')])
-    // if (this.region === RegionID.ADVANCE) {
-    //   this.router.navigate(['/app-smart-cloud/project/update-advance/' + this.activatedRoute.snapshot.paramMap.get('id')])
-    //   // this.router.navigate(['/app-smart-cloud/project-advance'])
-    // } else {
-    //   this.router.navigate(['/app-smart-cloud/project/update/' + this.activatedRoute.snapshot.paramMap.get('id')])
-    // }
-   
   }
 
   extend() {
@@ -222,6 +205,7 @@ console.log("region chi tiết", this.regionId)
   getProductActivebyregion() {
     const catalogs = ['volume-hdd','volume-ssd','ip', 'ipv6', 'volume-snapshot-hdd', 'volume-snapshot-ssd', 'backup-volume', 'loadbalancer-sdn', 'file-storage', 'file-storage-snapshot', 'vpns2s', 'vm-gpu']
     this.catalogService.getActiveServiceByRegion(catalogs, this.regionId).subscribe(data => {
+      console.log("region 1234 Huyn", this.regionId)
       this.serviceActiveByRegion = data;
       this.serviceActiveByRegion.forEach((item: any) => {
         if (['volume-hdd'].includes(item.productName)) {
@@ -264,12 +248,12 @@ console.log("region chi tiết", this.regionId)
       });
     });
   }
-  navigateToRegion(){
-    if (this.region === RegionID.ADVANCE) {
-      this.router.navigate(['/app-smart-cloud/project-advance'])
-    } else {
-      this.router.navigate(['/app-smart-cloud/project'])
-    }
-  }
+  // navigateToRegion(){
+  //   if (this.region === RegionID.ADVANCE) {
+  //     this.router.navigate(['/app-smart-cloud/project-advance'])
+  //   } else {
+  //     this.router.navigate(['/app-smart-cloud/project'])
+  //   }
+  // }
 
 }

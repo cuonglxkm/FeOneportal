@@ -50,8 +50,8 @@
             </div>
           </ng-template>
           <!-- Chưa có gói nào -->
-          <nz-alert *ngIf=" this.snapshotPackageArray?.length == 0  && projectType !=1" nzBanner style="margin-bottom: 10px;margin-top: 15px"
-            [nzMessage]="nzMessageNoData" nzShowIcon></nz-alert>
+          <nz-alert *ngIf=" this.snapshotPackageArray?.length == 0  && projectType !=1" nzBanner
+            style="margin-bottom: 10px;margin-top: 15px" [nzMessage]="nzMessageNoData" nzShowIcon></nz-alert>
           <ng-template #nzMessageNoData>
             <div>
               Quý khách chưa có gói Snapshot nào, để có thể sử dụng dịch vụ Snapshot, vui lòng tạo gói Snapshot
@@ -123,13 +123,10 @@
                 [placeholder]="'app.input.name' | i18n " [maxLength]="50" />
               <ng-template #nameErrorTpl let-control>
                 <ng-container *ngIf="control.hasError('required')">Vui lòng nhập tên Snapshot</ng-container>
-                <ng-container *ngIf="control.hasError('pattern')">Tên chỉ có thể chứa các ký tự chữ và số (a-z, A-Z,
-                  0-9, '_')
+                <ng-container *ngIf="control.hasError('pattern')">Tên chỉ có thể chứa các ký tự chữ và số (a-z, A-Z, 0-9, '_')
                 </ng-container>
-                <ng-container *ngIf="control.hasError('maxLength')">{{ 'volume.notification.input.name.maxLength' | i18n
-                  }}</ng-container>
-                <ng-container *ngIf="control.hasError('duplicateName')">{{ 'validation.exist.name' | i18n: { name: 'Load Balancer' } }}
-                </ng-container>
+                <ng-container *ngIf="control.hasError('maxLength')">{{ 'volume.notification.input.name.maxLength' | i18n}}</ng-container>
+                <ng-container *ngIf="control.hasError('duplicateName')">Tên Snapshot đã tồn tại. Vui lòng nhập tên khác</ng-container>
               </ng-template>
             </nz-form-control>
           </nz-form-item>
@@ -440,7 +437,9 @@
                   </nz-form-control>
                 </nz-form-item>
               </nz-col>
-              <nz-col [nzXs]="24" [nzSm]="24" [nzMd]="(projectType == 1 && navigateType == 2) ? 24 : 12" [nzLg]="(projectType == 1 && navigateType == 2) ? 24 : 12"  [nzXl]="(projectType == 1 && navigateType == 2) ? 24 : 12">
+              <nz-col [nzXs]="24" [nzSm]="24" [nzMd]="(projectType == 1 && navigateType == 2) ? 24 : 12"
+                [nzLg]="(projectType == 1 && navigateType == 2) ? 24 : 12"
+                [nzXl]="(projectType == 1 && navigateType == 2) ? 24 : 12">
                 <nz-form-item>
                   <nz-form-label>
                     <span>Dung lượng Snapshot (<span style="color: red;">*</span>)</span>
@@ -448,9 +447,11 @@
                       style="margin-left: 5px;" src="assets/imgs/pajamas_question.svg" alt="" />
                   </nz-form-label>
                   <nz-form-control nzDisableAutoTips>
-                    <div class="quotaType" [ngStyle]="(projectType!= 1 &&navigateType ==2) ? {'width': '95%'} : {'width': '100%'}">
+                    <div class="quotaType"
+                      [ngStyle]="(projectType!= 1 &&navigateType ==2) ? {'width': '95%'} : {'width': '100%'}">
 
-                      <p>{{quotaSelected}} GB {{ quotaTypeSelected ? (quotaTypeSelected=='hdd'? '- HDD':'- SSD') :''}} </p>
+                      <p>{{quotaSelected}} GB {{ quotaTypeSelected ? (quotaTypeSelected=='hdd'? '- HDD':'- SSD') :''}}
+                      </p>
                     </div>
                   </nz-form-control>
                 </nz-form-item>

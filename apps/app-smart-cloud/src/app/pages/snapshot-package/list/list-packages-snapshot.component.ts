@@ -18,6 +18,7 @@ import { SnapshotVolumeService } from '../../../shared/services/snapshot-volume.
 import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
 import { RegionID } from 'src/app/shared/enums/common.enum';
 import { PolicyService } from 'src/app/shared/services/policy.service';
+import { FormSearchScheduleSnapshot } from 'src/app/shared/models/snapshotvl.model';
 
 
 @Component({
@@ -72,6 +73,7 @@ export class ListPackagesSnapshotComponent implements OnInit {
   isCheckBegin: boolean = false
 
   formSearchPackageSnapshot: FormSearchPackageSnapshot = new FormSearchPackageSnapshot()
+  formSearchScheduleSnapshot: FormSearchScheduleSnapshot = new FormSearchScheduleSnapshot()
   isBegin: boolean = false;
   dataAction: any;
   isLoadingSnapshot = false;
@@ -88,6 +90,7 @@ export class ListPackagesSnapshotComponent implements OnInit {
     private notification: NzNotificationService,
     private fb: NonNullableFormBuilder,
     private vlService: VolumeService,
+   
     private snapshotVolumeService: SnapshotVolumeService,
     private projectService: ProjectService,
     private policyService: PolicyService) {
@@ -143,6 +146,7 @@ export class ListPackagesSnapshotComponent implements OnInit {
   }
 
   onChangeSelected(value) {
+    console.log(" this.searchStatus", value)
     this.selected = value
     if (this.selected === '') {
       this.selected = ''
@@ -328,23 +332,54 @@ export class ListPackagesSnapshotComponent implements OnInit {
       );
   }
 
+  // private loadingSnapshotSchedule() {
+  //   this.isLoadingSnapshotSchedule = true;
+  //   this.snapshotVolumeService.getListSchedule(99999, 1, this.region, this.project, '', '', this.dataAction.id)
+  //     .pipe(finalize(() => {
+  //       this.isLoadingSnapshotSchedule = false;
+  //     }))
+  //     .subscribe({
+  //       next: (next) => {
+  //         this.snapshotSchefuleArray = next.records;
+  //         console.log("snapshotSchefuleArray", this.snapshotSchefuleArray)
+  //       },
+  //       error: (error) => {
+  //         this.notification.error(
+  //           'Có lỗi xảy ra',
+  //           'Lấy danh sách lịch Snapshot thất bại'
+  //         );
+  //       },
+  //     });
+  // }
   private loadingSnapshotSchedule() {
     this.isLoadingSnapshotSchedule = true;
-    this.snapshotVolumeService.getListSchedule(99999, 1, this.region, this.project, '', '', this.dataAction.id)
-      .pipe(finalize(() => {
-        this.isLoadingSnapshotSchedule = false;
-      }))
+    this.formSearchScheduleSnapshot.projectId = this.project
+    this.formSearchScheduleSnapshot.regionId = this.region
+    this.formSearchScheduleSnapshot.pageSize = this.pageSize
+    this.formSearchScheduleSnapshot.pageNumber = 1
+
+    this.formSearchScheduleSnapshot.volumeName = ''
+    this.formSearchScheduleSnapshot.ssPackageId = ''
+    this.snapshotVolumeService.getListSchedule(this.formSearchScheduleSnapshot)
       .subscribe({
         next: (next) => {
           this.snapshotSchefuleArray = next.records;
-          console.log("snapshotSchefuleArray", this.snapshotSchefuleArray)
+          
         },
         error: (error) => {
-          this.notification.error(
-            'Có lỗi xảy ra',
-            'Lấy danh sách lịch Snapshot thất bại'
-          );
-        },
+          if (error.status == 403) {
+            this.notification.error(
+              error.statusText,
+              this.i18n.fanyi('app.non.permission')
+            );
+          } else {
+            this.notification.error(
+              'Có lỗi xảy ra',
+              'Lấy danh sách lịch Snapshot thất bại'
+            );
+          }
+          
+        }
       });
   }
 

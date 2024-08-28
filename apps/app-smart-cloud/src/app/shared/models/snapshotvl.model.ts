@@ -87,3 +87,14 @@ export class UpdateScheduleSnapshot {
   projectId: number;
   regionId: number;
 }
+
+export class FormSearchScheduleSnapshot{
+  pageSize: number;
+  pageNumber: number;
+  regionId: number;
+  projectId: number;
+  name: string;
+  volumeName: string;
+  ssPackageId: string;
+  state:any;
+}
