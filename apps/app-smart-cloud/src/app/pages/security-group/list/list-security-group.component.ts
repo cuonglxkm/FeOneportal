@@ -9,6 +9,10 @@ import { InstancesService } from '../../instances/instances.service';
 import Pagination from '../../../shared/models/pagination';
 import { RegionModel, ProjectModel } from '../../../../../../../libs/common-utils/src';
 import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
+import { I18NService } from '@core';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
+import { NzNotificationService } from 'ng-zorro-antd/notification';
+import { PolicyService } from 'src/app/shared/services/policy.service';
 
 @Component({
   selector: 'one-portal-list-security-group',
@@ -35,10 +39,14 @@ export class ListSecurityGroupComponent implements OnInit {
 
   listInstances: InstancesModel[];
   collection: Pagination<Instance>;
+  isCreateSG: boolean = false;
   @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
   constructor(private securityGroupService: SecurityGroupService,
               @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
-              private instanceService: InstancesService) {
+              private instanceService: InstancesService,
+              @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
+              private notification: NzNotificationService,
+              private policyService: PolicyService) {
   }
 
   regionChanged(region: RegionModel) {
@@ -57,8 +65,10 @@ export class ListSecurityGroupComponent implements OnInit {
     this.project = project.id;
     this.getListSG(true);
     this.getInstances();
-    this.listInbound = []
-    this.listOutbound = []
+    this.listInbound = [];
+    this.listOutbound = [];
+    this.isCreateSG = this.policyService.hasPermission("securitygroup:List") &&
+      this.policyService.hasPermission("securitygroup:Create");
   }
 
   onSecurityGroupChange(value) {
@@ -92,6 +102,12 @@ export class ListSecurityGroupComponent implements OnInit {
     }, error => {
       this.isLoadingSG = false;
       this.listSG = null;
+      if(error.status == 403){
+        this.notification.error(
+          error.statusText,
+          this.i18n.fanyi('app.non.permission')
+        );
+      }
     });
   }
 

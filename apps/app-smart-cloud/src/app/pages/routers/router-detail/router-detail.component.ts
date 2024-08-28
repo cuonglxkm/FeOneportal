@@ -146,6 +146,12 @@ export class RouterDetailComponent implements OnInit {
           this.listOfRouterInteface = data;
         },
         error: (e) => {
+          if(e.status == 403){
+            this.notification.error(
+              e.statusText,
+              this.i18n.fanyi('app.non.permission')
+            );
+          }
           // this.notification.error(
           //   this.i18n.fanyi('app.status.fail'),
           //   this.i18n.fanyi('router.alert.exist.router')
@@ -169,10 +175,17 @@ export class RouterDetailComponent implements OnInit {
           this.listOfRouterStatic = data;
         },
         error: (e) => {
-          this.notification.error(
-            this.i18n.fanyi('app.status.fail'),
-            this.i18n.fanyi('router.alert.exist.router')
-          );
+          if(e.status == 403){
+            this.notification.error(
+              e.statusText,
+              this.i18n.fanyi('app.non.permission')
+            );
+          } else {
+            this.notification.error(
+              this.i18n.fanyi('app.status.fail'),
+              this.i18n.fanyi('router.alert.exist.router')
+            );
+          }
           this.router.navigate(['/app-smart-cloud/network/router']);
         },
       });

@@ -7,6 +7,9 @@ import { NetworkTopologyNode } from 'src/app/shared/models/network-topology,mode
 import { Subject } from 'rxjs';
 import { Network, DataSet, Data, Edge, Options } from 'vis';
 import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
+import { NzNotificationService } from 'ng-zorro-antd/notification';
+import { I18NService } from '@core';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
 
 @Component({
   selector: 'one-portal-network-topology',
@@ -46,7 +49,9 @@ export class NetworkTopologyComponent {
   constructor(private routerService: RouterService,
   private el: ElementRef,
   private renderer: Renderer2,
-  @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService) {
+  @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
+  private notification: NzNotificationService,
+  @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService) {
     this.selectedData = new Subject<Data>();
   }
   onRegionChange(region: RegionModel) {
@@ -166,8 +171,14 @@ export class NetworkTopologyComponent {
         });
       }
     }, error => {
-        this.isLoading = false;
-      })
+      if(error.status == 403){
+        this.notification.error(
+          error.statusText,
+          this.i18n.fanyi('app.non.permission')
+        );
+      }
+      this.isLoading = false;
+    })
   }
 
   public getNetworkOptions(): Options {

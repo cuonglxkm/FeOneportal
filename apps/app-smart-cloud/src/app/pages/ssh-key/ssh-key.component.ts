@@ -12,6 +12,7 @@ import { getCurrentRegionAndProject } from '@shared';
 import { I18NService } from '@core';
 import { debounceTime, Subject } from 'rxjs';
 import { TimeCommon } from '../../shared/utils/common';
+import { PolicyService } from 'src/app/shared/services/policy.service';
 
 @Component({
   selector: 'one-portal-ssh-key',
@@ -47,10 +48,11 @@ export class SshKeyComponent implements OnInit {
     'border-radius': '10px',
     'width': '1000px'
   };
-
+  isCreateKey: boolean = false;
   constructor(private sshKeyService: SshKeyService, private mh: ModalHelper, private modal: NzModalService,
               @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
-              @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService, private notification: NzNotificationService) {
+              @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService, private notification: NzNotificationService,
+              private policyService: PolicyService) {
   }
 
   onPageSizeChange(event: any) {
@@ -90,7 +92,14 @@ export class SshKeyComponent implements OnInit {
         },
         error => {
           this.listOfData = [];
-          this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('keypair.notification.load.list.fail'));
+          if(error.status == 403){
+            this.notification.error(
+              error.statusText,
+              this.i18n.fanyi('app.non.permission')
+            );
+          } else {
+            this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('keypair.notification.load.list.fail'));
+          }
         });
 
   }
@@ -230,10 +239,12 @@ export class SshKeyComponent implements OnInit {
   onRegionChange(region: RegionModel) {
     this.regionId = this.checkNullObject(region) ? '' : region.regionId;
     this.loadSshKeys(true);
+    this.isCreateKey = this.policyService.hasPermission("keypair:Create");
   }
 
   onRegionChanged(region: RegionModel) {
     this.regionId = region.regionId;
+    this.isCreateKey = this.policyService.hasPermission("keypair:Create");
   }
 
   checkNullObject(object: any): Boolean {

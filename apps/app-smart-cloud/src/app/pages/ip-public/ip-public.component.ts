@@ -132,7 +132,12 @@ export class IpPublicComponent implements OnInit {
     this.projectId = project.id;
     this.projectType = project.type;
     this.getData(true);
-    this.isCreateOrder = this.policyService.hasPermission("order:Create");
+    this.isCreateOrder = this.policyService.hasPermission("order:Create") &&
+      this.policyService.hasPermission("ippublic:IpPublicListSubnet") &&
+      this.policyService.hasPermission("instance:List") &&
+      this.policyService.hasPermission("product:Search") &&
+      this.policyService.hasPermission("order:GetOrderAmount") &&
+      this.policyService.hasPermission("offer:Search");
   }
 
   onPageSizeChange(event: any) {
