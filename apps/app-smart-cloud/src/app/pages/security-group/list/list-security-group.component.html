@@ -22,7 +22,7 @@
                                [regionId]="region"></project-select-dropdown>
     </div>
   </ng-template>
-  <one-portal-create-security-group [region]="region"
+  <one-portal-create-security-group *ngIf="isCreateSG" [region]="region"
                                     [project]="project"
                                     nz-tooltip
                                     nzTooltipTitle="{{'sg.title.create' | i18n}}"
@@ -183,7 +183,7 @@
                 <span class="text-intro-desc">{{'sg.des1' | i18n}}</span>
           </nz-col>
         </nz-row>
-        <button style="margin-top: 20px" nz-button [nzType]="'primary'" nzSize="large">
+        <button *ngIf="isCreateSG" style="margin-top: 20px" nz-button [nzType]="'primary'" nzSize="large">
           <img style="padding-right: 10px; margin-top: -4px" src="assets/imgs/cloud-plus-bold.svg" alt="" />
           {{'sg.title.create' | i18n}}
         </button>

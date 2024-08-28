@@ -89,7 +89,7 @@
           <td>
             <div>
               <!----Gắn----->
-              <img *ngIf="item.status != 'DANGSUDUNG' && item.status != 'LOI' && item.resourceStatus != 'ERROR' &&  item.status != 'SUSPENDED' && ('ippublic:IpPublicAttach' | IsPermissionPipe)" style="padding-right: 10px;" src="assets/imgs/add.svg"
+              <img *ngIf="item.status != 'DANGSUDUNG' && item.status != 'LOI' && item.resourceStatus != 'ERROR' &&  item.status != 'SUSPENDED' && ('ippublic:IpPublicAttach' | IsPermissionPipe) && ('instance:List' | IsPermissionPipe)" style="padding-right: 10px;" src="assets/imgs/add.svg"
                    nz-tooltip nzTooltipTitle="{{'app.attach' | i18n}} IP Public" nzTooltipPlacement="bottom"
                    (click)="openIpMounted('Gắn Ip Pulbic', item)"/>
               <!---Gỡ------>
@@ -97,7 +97,7 @@
                    nz-tooltip nzTooltipTitle="{{'app.detach' | i18n}} IP Public" nzTooltipPlacement="bottom"
                    (click)="openIpMounted('Gỡ Ip Pulbic', item)"/>
               <!---Gia Han------>
-              <img *ngIf="projectType != 1 && item.status != 'LOI' && item.resourceStatus != 'ERROR' && item.status != 'SUSPENDED' && ('order:Create' | IsPermissionPipe)" style="padding-right: 10px;" src="assets/imgs/calendar-tick.svg"
+              <img *ngIf="projectType != 1 && item.status != 'LOI' && item.resourceStatus != 'ERROR' && item.status != 'SUSPENDED' && ('order:Create' | IsPermissionPipe) && ('ippublic:Get' | IsPermissionPipe) && ('order:GetOrderAmount' | IsPermissionPipe)" style="padding-right: 10px;" src="assets/imgs/calendar-tick.svg"
                    nz-tooltip nzTooltipTitle="{{'app.extend' | i18n}} IP Public" nzTooltipPlacement="bottom"
                    (click)="openIpMounted('Gia hạn Ip Pulbic', item)"/>
               <!----Xóa---->
