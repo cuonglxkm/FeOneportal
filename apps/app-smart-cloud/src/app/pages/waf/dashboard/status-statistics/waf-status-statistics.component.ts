@@ -1,10 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import type { EChartsOption, SeriesOption } from 'echarts';
 import { WafService } from 'src/app/shared/services/waf.service';
-import { QueryBacktoOriginTrafficAndRequestResponse, QueryBandwidthForMultiDomainResponse2, QueryRequesBandwidthtSavingRatioResponse, QueryRequestHitRatioResponse, QueryStatusCodeDistributionResponse, QueryStatusCodeDistributionResponseResultStatusCodeData, QueryTrafficForMultiDomainResponse, QueryTrafficRequestInTotalAndPeakValueResponse } from '../../waf.model';
+import { QueryOriginStatusCodeDistributionResponse, QueryOriginStatusCodeDistributionResponseResultStatusCodeOriginData, QueryStatusCodeDistributionResponse, QueryStatusCodeDistributionResponseResultStatusCodeData, QueryStatusCodeDistributionResponseResultStatusCodeDataRequestData, QueryTrafficForMultiDomainResponse, QueryTrafficRequestInTotalAndPeakValueResponse } from '../../waf.model';
 import { differenceInCalendarDays } from 'date-fns';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
-import { catchError, forkJoin, of } from 'rxjs';
 @Component({
   selector: 'app-waf-status-statistics',
   styleUrls: ['./waf-status-statistics.component.less'],
@@ -18,19 +17,22 @@ export class WafStatusStatistics implements OnInit {
   selectedTypeDate: string = 'hourly';
   selectDomainOptions = [];
   selectedDomain: any;
-  selectedTypeRequest:string="EDGE";
   isSpinning = false;
   fromDate = new Date();
   toDate = new Date();
   domains: string[];
   statusCodeDistributionResponse: QueryStatusCodeDistributionResponse;
+  originStatusCodeDistributionResponse: QueryOriginStatusCodeDistributionResponse;
   statusCodeData: QueryStatusCodeDistributionResponseResultStatusCodeData[];
+  originStatusCodeData: QueryOriginStatusCodeDistributionResponseResultStatusCodeOriginData[];
   legendData: string[] = [];
   isValid = true;
   isDateValid = true;
   currentTab = 'edge'
   xAxis=[];
-  seriesOptions : SeriesOption[]
+  seriesOptions : SeriesOption[];
+  tableStatusCodeTable:any[]=[];
+  tableOriginStatusCodeTable:any[]=[];
 
   constructor(
     private wafService: WafService,
@@ -56,7 +58,7 @@ export class WafStatusStatistics implements OnInit {
         this.selectedDomain = res.map(x=>x.id);
         this.domains = res.map(x=>x.domain);
         this.isValid=this.selectedDomain.length>0;
-        this.getDataBandwidth();
+        this.queryStatusCodeDistribution();
       },
       error: (error) => {
         console.log(error);
@@ -120,41 +122,100 @@ export class WafStatusStatistics implements OnInit {
     };
   }
 
-  fillBandwidthData(){
+
+  mapColor(status:string){
+    switch(status){
+      case '200':
+        return '#4168ff';
+      case '403':
+        return '#47cbff';
+      case '0':
+        return '#ff7a33';
+      case '304':
+        return '#45de7f';
+      case '400':
+        return '#ffac34';
+      case '405':
+        return '#5ad7d8';
+      case '444':
+        return '#8163e9';
+      case '302':
+        return '#ff5f45';
+      case '408':
+        return '#01c581';
+    }
+  }
+  mapDataToTimestamp(data: QueryStatusCodeDistributionResponseResultStatusCodeDataRequestData[]) : string[] {
+    data.shift();
+    data.forEach(x=>x.timestamp = x.timestamp+':00');
+    if(this.selectedTypeDate=='5m'){
+      return data.map(x=>x.value);
+    }
+    var temp = [];
+    if(this.selectedTypeDate=='hourly'){
+      var currentDateAndHour = data[0].timestamp.substring(0,13);
+      var totalRequestInHour = 0;
+      data.forEach(x=>{
+        totalRequestInHour += parseInt(x.value);
+        if(x.timestamp.substring(0,13) != currentDateAndHour){
+          temp.push(totalRequestInHour);
+          currentDateAndHour = x.timestamp.substring(0,13);
+          totalRequestInHour = 0;
+        }
+      });
+    }
+    if(this.selectedTypeDate=='daily'){
+      this.xAxis.forEach(x=>{ 
+        var totalRequestInDay = data.filter(y=>y.timestamp.split(' ')[0] == x.split(' ')[0]).reduce((a,b)=>a+parseInt(b.value),0);
+        temp.push(totalRequestInDay);
+      })
+    }
+    return temp;
+  }
+  
+  convertStatusToDataChart(){
     this.statusCodeData = this.statusCodeDistributionResponse.result[0].statusCodeData.filter(item => {
       const parsed = parseInt(item.statusCode, 10);
       return !isNaN(parsed) && parsed.toString() === item.statusCode;
     });
-    this.legendData = this.statusCodeData.map(x=>x.statusCode);  
+    var statusCodeData = this.statusCodeData.sort((a,b)=>parseInt(b.totalRequest)-parseInt(a.totalRequest)).slice(0,10);
+    this.legendData = statusCodeData.map(x=>x.statusCode);  
 
-    this.seriesOptions = this.statusCodeData.map(x=>({
+    this.seriesOptions = statusCodeData.map(x=>({
       name: x.statusCode,
       type: 'line',
-      data: x.requestData.map(y=>y.value),
+      data: this.mapDataToTimestamp(x.requestData),
       lineStyle: {
         width: 1,
-        color: '#4168FF'
+        color: this.mapColor(x.statusCode)
       },
       symbolSize: 5,
       showAllSymbol: false,
       itemStyle: {
-        color: '#4168FF', // Màu sắc của cột trong series
-
+        color: this.mapColor(x.statusCode)
       },
       areaStyle: {
         opacity: 0.1
       }
     }));
   }
-  
-  getDataBandwidth(){
-    if(!this.isSpinning)
-      this.isSpinning = true;
-    this.wafService.queryStatusCodeDistribution({dateFrom:this.fromDate,dateTo:this.toDate,domain:this.domains,dataInterval:'5m',groupBy:[],dataPadding:true,queryBy:null}).subscribe({
+  createStatusTableDetails(){
+    var totalRequestAllStatusCode = this.statusCodeData.reduce((a,b)=>a+parseInt(b.totalRequest),0);
+    var temp = [];
+    this.statusCodeData.forEach(x=>{
+      var ratio = (parseInt(x.totalRequest)/totalRequestAllStatusCode) * 100;
+      temp.push({statusCode:x.statusCode,totalRequest:x.totalRequest,ratio:ratio})
+    })
+    this.tableStatusCodeTable=temp.sort((a,b)=>parseInt(b.totalRequest)-parseInt(a.totalRequest));
+  }
+  queryStatusCodeDistribution(){
+    this.isSpinning = true;
+    this.wafService.queryStatusCodeDistribution({dateFrom:this.fromDate,dateTo:this.toDate,domain:this.domains,dataInterval:'5m',groupBy:null,dataPadding:true,queryBy:null}).subscribe({
       next: (res) => {
         this.statusCodeDistributionResponse = res;
-        this.fillBandwidthData();
+        this.convertStatusToDataChart();
         this.draw();
+        this.createStatusTableDetails()
         this.isSpinning = false;
       },
       error: (error) => {
@@ -163,6 +224,79 @@ export class WafStatusStatistics implements OnInit {
       }
     })
   }
+
+  convertOriginStatusToDataChart(){
+    var dates = this.generateTimeArray(this.fromDate, this.toDate, true);
+    this.originStatusCodeDistributionResponse.result[0].statusCodeOriginData.forEach(x=>{
+      var temp = [];
+      dates.forEach(y=>{
+        var timestamp = y.substring(0,16);
+        var data = x.requestData.find(z=>z.timestamp == timestamp);
+        if(data){
+          temp.push(data);
+        }else{
+          temp.push({timestamp: timestamp, value: 0});
+        }
+      });
+      x.totalRequest = temp.reduce((a,b)=>a+parseInt(b.value),0);
+      x.requestData = temp;
+    }); //fill Data bị thiếu
+
+    this.originStatusCodeData = this.originStatusCodeDistributionResponse.result[0].statusCodeOriginData.filter(item => {
+      const parsed = parseInt(item.statusCode, 10);
+      return !isNaN(parsed) && parsed.toString() === item.statusCode;
+    });
+
+    var originStatusCodeData = this.originStatusCodeData.sort((a,b)=>parseInt(b.totalRequest)-parseInt(a.totalRequest)).slice(0,10);
+
+    this.legendData = originStatusCodeData.map(x=>x.statusCode);  
+
+    this.seriesOptions = originStatusCodeData.map(x=>({
+      name: x.statusCode,
+      type: 'line',
+      data: this.mapDataToTimestamp(x.requestData),
+      lineStyle: {
+        width: 1,
+        color: this.mapColor(x.statusCode)
+      },
+      symbolSize: 5,
+      showAllSymbol: false,
+      itemStyle: {
+        color: this.mapColor(x.statusCode)
+      },
+      areaStyle: {
+        opacity: 0.1
+      }
+    }));
+  }
+  
+  createOriginStatusTableDetails(){
+    var totalRequestAllStatusCode = this.originStatusCodeData.reduce((a,b)=>a+parseInt(b.totalRequest),0);
+    var temp = [];
+    this.originStatusCodeData.forEach(x=>{
+      var ratio = (parseInt(x.totalRequest)/totalRequestAllStatusCode) * 100;
+      temp.push({statusCode:x.statusCode,totalRequest:x.totalRequest,ratio:ratio})
+    })
+    this.tableOriginStatusCodeTable=temp.sort((a,b)=>parseInt(b.totalRequest)-parseInt(a.totalRequest));
+  }
+  queryOriginStatusCodeDistribution(){
+    this.isSpinning = true;
+    this.wafService.queryOriginStatusCodeDistribution({dateFrom:this.fromDate,dateTo:this.toDate,domain:this.domains,dataInterval:'5m',groupBy:null,backsrcOnly:1,queryBy:null}).subscribe({
+      next: (res) => {
+        this.originStatusCodeDistributionResponse = res;
+        this.convertOriginStatusToDataChart();
+        this.draw();
+        this.createOriginStatusTableDetails();
+        this.isSpinning = false;
+      },
+      error: (error) => {
+        this.isSpinning = false;
+        console.log(error);
+      }
+    })
+  }
+
+  
 
   renderxAxis(){
     if(this.selectedTypeDate == '5m'){ 
@@ -178,20 +312,22 @@ export class WafStatusStatistics implements OnInit {
     }
   }
 
-  generateTimeArray(startDate, endDate) {
+  generateTimeArray(startDate, endDate, is5minutes = false) {
     const result = [];
     var currentDate = new Date(startDate); // Tạo một bản sao của startDate
     while (currentDate <= endDate) {
-        if(this.selectedTypeDate == '5m'){
+        if(this.selectedTypeDate == '5m' || is5minutes){
           result.push(this.formatDate(currentDate));
           currentDate = new Date(currentDate.getTime() + 5 * 60000); // Tăng thêm 1 giờ
         }
+        else
         if(this.selectedTypeDate == 'hourly'){
           result.push(this.formatDate(currentDate));
           currentDate = new Date(currentDate.getTime() + 60 * 60000); // Tăng thêm 1 giờ
         }
+        else
         if(this.selectedTypeDate == 'daily'){
-          if(currentDate!=endDate){
+          if(currentDate.getTime() != endDate.getTime()){
             result.push(this.formatDate(currentDate));
           }
           currentDate.setDate(currentDate.getDate() + 1); // Tăng thêm 1 giờ
@@ -201,7 +337,6 @@ export class WafStatusStatistics implements OnInit {
   }
   
   onDateChange(result: Date[]): void {
-    console.log(result);
     this.isValid = this.selectedDomain.length>0;
     this.isDateValid = differenceInCalendarDays(result[1], result[0]) <= 31;
     var from = new Date(result[0]);
@@ -210,8 +345,6 @@ export class WafStatusStatistics implements OnInit {
     to.setHours(24,0,0,0);
     this.fromDate = from;
     this.toDate = to;
-
-    this.renderxAxis();
     if(!this.isDateValid){
       this.notification.warning('',"Khoảng thời gian không lớn hơn 31 ngày");
       return;
@@ -220,12 +353,20 @@ export class WafStatusStatistics implements OnInit {
       return;
     }
     
-    if(this.currentTab=='bandwidth'){
-      this.getDataBandwidth();
-
+    if(this.currentTab=='edge'){
+      this.queryStatusCodeDistribution();
     }else{
+      this.queryOriginStatusCodeDistribution();
     }
-    
+  }
+
+  onTypeDateChange(){
+    this.renderxAxis();
+    if(this.currentTab=='edge'){
+      this.queryStatusCodeDistribution();
+    }else{
+      this.queryOriginStatusCodeDistribution();
+    }
   }
 
   onChangeDomain(){
@@ -242,16 +383,11 @@ export class WafStatusStatistics implements OnInit {
       this.notification.warning('',"Vui lòng chọn domains");
       return;
     }
-
-    if(this.currentTab=='bandwidth'){
-      this.getDataBandwidth();
-     
-
-     
+    if(this.currentTab=='edge'){
+      this.queryStatusCodeDistribution();
     }else{
-      
+      this.queryOriginStatusCodeDistribution();
     }
-    
   }
 
   isSameDay(date1: Date, date2: Date): boolean {
@@ -281,11 +417,11 @@ export class WafStatusStatistics implements OnInit {
   changeTab(tabName){
     this.currentTab = tabName;
     if(tabName=="edge"){
-      this.getDataBandwidth();
+      this.queryStatusCodeDistribution();
     }
     if(tabName=="b2o"){
+      this.queryOriginStatusCodeDistribution();
     }
-    this.selectedTypeRequest = "EDGE";
   }
   changeTypeRequest(){
   }
