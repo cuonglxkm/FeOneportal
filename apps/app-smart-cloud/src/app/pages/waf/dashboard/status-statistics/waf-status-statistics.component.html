@@ -26,6 +26,7 @@
         <nz-select [(ngModel)]="selectedTypeDate"
                      nzSize="default"
                      style="margin-left: 10px; width: 200px;"
+                     (ngModelChange)="onTypeDateChange()"
                      >
           <nz-option nzLabel="5 Minutes" nzValue="5m"></nz-option>
           <nz-option nzLabel="Hourly" nzValue="hourly"></nz-option>
@@ -48,25 +49,25 @@
       <nz-table #fixedTable
                 style="margin-top: 20px;"
                 nzShowSizeChanger
-                [nzData]=""
+                [nzData]="this.currentTab=='edge'? tableStatusCodeTable: tableOriginStatusCodeTable"
                 [nzLoading]="">
         <thead>
         <tr>
-          <th nzLeft>Date</th>
-          <th *ngIf="this.currentTab=='bandwidth'&& this.selectedTypeRequest!='BSR'" nzBreakWord>Bandwidth Peak Time</th>
-          <th *ngIf="this.currentTab=='bandwidth'&& this.selectedTypeRequest!='BSR'" nzBreakWord>Peak Bandwidth (Mbps)</th>
-          <th *ngIf="this.selectedTypeRequest=='BSR' || this.selectedTypeRequest=='HR'" nzBreakWord>{{selectedTypeRequest=='BSR'?"Peak Value":"Peak"}}</th>
-          <th nzBreakWord nzAlign="right">{{this.currentTab=='bandwidth'?this.selectedTypeRequest=='BSR'?'Average':'Total Traffic (GB)': this.selectedTypeRequest=='HR'?'Average':this.selectedTypeRequest=='EDGE'?'Total request':'Total origin requests'}}</th>
+          <th nzLeft style="width: 50px">Rank</th>
+          <th nzBreakWord>Status Code</th>
+          <th nzBreakWord nzAlign="right">Total requests</th>
+          <th nzBreakWord nzAlign="right">Ratio</th>
+          <th *ngIf="this.currentTab=='edge'" nzBreakWord nzAlign="center">Error Details</th>
         </tr>
         </thead>
         <tbody>
-          <ng-container *ngFor="let data of fixedTable.data">
+          <ng-container *ngFor="let data of fixedTable.data;let i=index">
             <tr>
-              <td nzLeft>{{ data.date }}</td>
-              <td *ngIf="this.currentTab=='bandwidth' && this.selectedTypeRequest!='BSR'"  nzBreakWord nzAlign="left">{{ data.time }}</td>
-              <td *ngIf="this.currentTab=='bandwidth' && this.selectedTypeRequest!='BSR'"  nzBreakWord nzAlign="left">{{ data.bandwidth?.toFixed(2) }} </td>
-              <td *ngIf="this.selectedTypeRequest=='BSR' || this.selectedTypeRequest=='HR'" nzBreakWord>{{ data.peak?.toFixed(2) }}%</td>
-              <td nzBreakWord nzAlign="right">{{ this.selectedTypeRequest=='BSR' || this.selectedTypeRequest=='HR'? data.average?.toFixed(2)+'%' : this.currentTab=='bandwidth'? data.total?.toFixed(2): data.total  }}</td>
+              <td nzAlign="center">{{ i + 1 }}</td>
+              <td nzBreakWord nzAlign="left">{{ data.statusCode }}</td>
+              <td nzBreakWord nzAlign="right">{{ data.totalRequest }} </td>
+              <td nzBreakWord nzAlign="right">{{ data.ratio?.toFixed(2) }}%</td>
+              <td *ngIf="this.currentTab=='edge'" nzBreakWord nzAlign="center">{{ 'details' }}</td>
             </tr>
           </ng-container>
         </tbody>
