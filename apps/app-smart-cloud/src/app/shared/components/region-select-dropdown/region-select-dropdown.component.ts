@@ -38,6 +38,15 @@ export class RegionSelectDropdownComponent implements OnInit {
     const snapshotPackagePath = '/app-smart-cloud/snapshot/packages';
     const instancesPath = '/app-smart-cloud/instances';
     if (localStorage.getItem('regions')) {
+     if(this.url.includes('app-smart-cloud/backup-volume') || this.url.includes('app-smart-cloud/backup-vm')|| this.url.includes('app-smart-cloud/schedule/backup') || this.url.includes('app-smart-cloud/backup/packages')) { 
+      const listRegionWithoutAdvance = JSON.parse(localStorage.getItem('regions'));
+      this.listRegion = listRegionWithoutAdvance.filter(x => x.id === 1)
+      this.selectedRegion = this.listRegion.find(
+        (item) =>
+          item.regionId == JSON.parse(localStorage.getItem('regionId'))
+      ); 
+      this.setRegionNormal()
+     }else{
       this.listRegion = JSON.parse(localStorage.getItem('regions'));
       if (
         localStorage.getItem('regionId') != null &&
@@ -62,6 +71,7 @@ export class RegionSelectDropdownComponent implements OnInit {
       ) {
         this.setRegionAdvance()
       }
+     }
     } else {
       this.regionService.getAll(environment['baseUrl']).subscribe({
         next: (data) => {
