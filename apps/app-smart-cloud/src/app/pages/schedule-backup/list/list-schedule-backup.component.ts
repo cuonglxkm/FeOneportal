@@ -15,6 +15,7 @@ import { PackageBackupService } from '../../../shared/services/package-backup.se
 import { PackageBackupModel } from '../../../shared/models/package-backup.model';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
+import { PolicyService } from 'src/app/shared/services/policy.service';
 
 @Component({
   selector: 'one-portal-list-schedule-backup',
@@ -59,14 +60,16 @@ export class ListScheduleBackupComponent implements OnInit, OnDestroy {
 
   projectName: string;
 
-  backupPackageModel: PackageBackupModel = new PackageBackupModel()
+  backupPackageModel: PackageBackupModel = new PackageBackupModel();
+  isCreateOrder: boolean = false;
   @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
   constructor(private router: Router,
               @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
               private backupScheduleService: ScheduleService,
               private backupPackageService: PackageBackupService,
               private notification: NzNotificationService,
-              private notificationService: NotificationService) {
+              private notificationService: NotificationService,
+              private policyService: PolicyService) {
   }
 
   regionChanged(region: RegionModel) {
@@ -88,6 +91,14 @@ export class ListScheduleBackupComponent implements OnInit, OnDestroy {
     this.projectName = project?.projectName
     this.getListScheduleBackup(true);
     this.getCapacityBackup();
+    this.isCreateOrder = this.policyService.hasPermission("instance:List") && 
+      this.policyService.hasPermission("volume:List") && 
+      this.policyService.hasPermission("backup:ListBackupPacket") &&
+      this.policyService.hasPermission("backup:GetBackupPacket") &&
+      this.policyService.hasPermission("backupschedule:Search") && 
+      this.policyService.hasPermission("instance:Get") && 
+      this.policyService.hasPermission("instance:InstanceListVolume") && 
+      this.policyService.hasPermission("backupschedule:Create");
   }
 
   onChange(value: string) {
@@ -193,6 +204,12 @@ export class ListScheduleBackupComponent implements OnInit, OnDestroy {
     }, error => {
       this.response = null;
       this.isLoading = false;
+      if(error.status == 403) {
+        this.notification.error(
+          error.statusText,
+          this.i18n.fanyi('app.non.permission')
+        );
+      }
     });
   }
 

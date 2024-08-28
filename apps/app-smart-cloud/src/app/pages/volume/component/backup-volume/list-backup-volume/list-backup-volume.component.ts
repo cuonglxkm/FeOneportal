@@ -17,6 +17,7 @@ import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from '@core';
 import { debounceTime, Subject, Subscription } from 'rxjs';
 import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
+import { PolicyService } from 'src/app/shared/services/policy.service';
 
 @Component({
   selector: 'one-portal-list-backup-volume',
@@ -50,6 +51,7 @@ export class ListBackupVolumeComponent implements OnInit, OnDestroy{
   dataSubjectInputSearch: Subject<any> = new Subject<any>();
   private searchSubscription: Subscription;
   private enterPressed: boolean = false;
+  isCreateOrder: boolean = false;
   @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
   //child component
   // @ViewChild('container', { read: ViewContainerRef }) container: ViewContainerRef;
@@ -61,7 +63,8 @@ export class ListBackupVolumeComponent implements OnInit, OnDestroy{
               private notification: NzNotificationService,
               private cdr: ChangeDetectorRef,
               private notificationService: NotificationService,
-              @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService) {
+              @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
+              private policyService: PolicyService) {
   }
 
   regionChanged(region: RegionModel) {
@@ -80,8 +83,14 @@ export class ListBackupVolumeComponent implements OnInit, OnDestroy{
   projectChanged(project: ProjectModel) {
     this.project = project?.id;
     this.typeVpc = project?.type;
-    setTimeout(() => {this.getListBackupVolumes(true)}, 1500)
+    setTimeout(() => {this.getListBackupVolumes(true)}, 1500);
     // this.getListVolume(true);
+    this.isCreateOrder = this.policyService.hasPermission("backup:List") && 
+      this.policyService.hasPermission("volume:List") && 
+      this.policyService.hasPermission("backup:ListBackupPacket") &&
+      this.policyService.hasPermission("backup:GetBackupPacket") &&
+      this.policyService.hasPermission("volume:Get") && 
+      this.policyService.hasPermission("order:Create");
   }
 
   onChange(value) {
@@ -151,9 +160,16 @@ export class ListBackupVolumeComponent implements OnInit, OnDestroy{
         this.isBegin = this.response.records.length < 1 || this.response.records === null ? true : false;
       }
     }, error =>  {
-      this.isLoading = false
-      this.response = null
-      this.notification.error(error.statusText, this.i18n.fanyi('app.failData'))
+      this.isLoading = false;
+      this.response = null;
+      if(error.status == 403) {
+        this.notification.error(
+          error.statusText,
+          this.i18n.fanyi('app.non.permission')
+        );
+      } else {
+        this.notification.error(error.statusText, this.i18n.fanyi('app.failData'));
+      }
     });
   }
 

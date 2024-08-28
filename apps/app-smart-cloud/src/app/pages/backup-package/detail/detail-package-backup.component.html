@@ -35,7 +35,7 @@
   <div *ngIf="typeVPC != 1" style="display:flex;">
     <div style="margin-right: 15px;" *ngIf="packageBackupModel?.status === 'AVAILABLE'">
       <div nz-col nzSpan="4">
-        <button nz-button nzType="primary"
+        <button *ngIf="('backup:GetBackupPacket' | IsPermissionPipe) && ('order:GetOrderAmount' | IsPermissionPipe) && ('order:Create' | IsPermissionPipe)" nz-button nzType="primary"
                 nzSize="default" style="cursor: pointer;" (click)="navigateToExtend()">
           <img src="assets/imgs/calendar-tick2.svg" alt="" style="cursor: pointer;margin-bottom: 3px;" />
           <span style="margin-left: 10px; margin-top: 3px;">{{ 'app.button.extend' | i18n }}</span>
@@ -44,7 +44,7 @@
     </div>
     <div *ngIf="packageBackupModel?.status === 'AVAILABLE'">
       <div nz-col nzSpan="4">
-        <button nz-button nzType="primary"
+        <button *ngIf="('backup:GetBackupPacket' | IsPermissionPipe) && ('configuration:Get' | IsPermissionPipe) && ('order:GetOrderAmount' | IsPermissionPipe) && ('order:Create' | IsPermissionPipe)" nz-button nzType="primary"
                 nzSize="default" style="cursor: pointer;" (click)="navigateToResize()">
           <img src="assets/imgs/edit-1.svg" alt=""
                style="cursor: pointer; width: 20px; height: 20px; margin-bottom: 3px;" />

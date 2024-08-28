@@ -28,7 +28,6 @@
       <ng-container *ngSwitchCase="false">
         <nz-row nzJustify="space-between">
           <nz-col nzSpan="12">
-            <!--            <span class="text-card-header">{{ 'app.load.balancer.list' | i18n }}</span>-->
             <nz-select [(ngModel)]="searchStatus" (ngModelChange)="searchSnapshotScheduleList(false)" nzSize="large"
               style="width: 200px">
               <nz-option *ngFor="let p of status" [nzValue]="p.value" [nzLabel]="p.label"></nz-option>
@@ -38,7 +37,7 @@
                 [placeholder]="'menu.search' | i18n" (keydown.enter)="searchSnapshotScheduleList(false)" />
             </nz-input-group>
             <ng-template #prefixIconSearch>
-              <img src="assets/imgs/search.svg" alt="" style="cursor: pointer" />
+              <img src="assets/imgs/search.svg" alt=""  />
             </ng-template>
           </nz-col>
           <nz-col nzSpan="12" style="flex:none;">
@@ -58,8 +57,8 @@
               <th nzLeft>{{'app.snapshot-package1' | i18n}}</th>
               <th nzLeft>{{'app.snapshot.schedule.label.type' | i18n}}</th>
               <th nzLeft>Volume/VM</th>
-              <th nzLeft>{{'app.maximum.number.of.record' | i18n}}</th>
-              <th nzLeft>{{'app.next.snapshot' | i18n}}</th>
+              <th nzLeft>Bản ghi tối đa</th>
+              <th nzLeft>Lần Snapshot tiếp theo</th>
               <th nzLeft>{{ 'app.service.status' | i18n }}</th>
               <th nzLeft>{{ 'app.action-history.operation' | i18n }}</th>
             </tr>
@@ -69,7 +68,7 @@
               <td style="max-width:180px"><a (click)="navigateToDetail(data.id)">{{data.name}}</a></td>
               <td style="max-width:180px"><a (click)="navigateToPackageDetail(data.snapshotPackageId)">{{data.packageName}}</a></td>
               <td>{{data.snapshotType == 1 ? ('app.vm.snapshot' | i18n ) : 'Snapshot Volume'}}</td>
-              <td>{{data.serviceName}}</td>
+              <td style="max-width:180px">{{data.serviceName}}</td>
               <td>{{data.maxSnapshot}}</td>
               <td>{{data.nextRuntime | date : 'HH:mm:ss dd/MM/yyyy'}}</td>
               <ng-container *ngIf="data.status | ServiceStatusPipe as statusModel">
