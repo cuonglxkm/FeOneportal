@@ -86,13 +86,14 @@ export class ProjectDetailComponent implements OnInit {
     this.checkExpireDate()
 
     this.getProductActivebyregion();
+    
 
   }
 
   onRegionChange(region: RegionModel) {
     this.regionId = region.regionId;
-    // this.router.navigate(['/app-smart-cloud/project'])
-    this.navigateToRegion();
+    this.router.navigate(['/app-smart-cloud/project'])
+    // this.navigateToRegion();
   }
 
   onRegionChanged(region: RegionModel) {
@@ -106,7 +107,7 @@ export class ProjectDetailComponent implements OnInit {
       .subscribe(
         data => {
           this.data = data;
-
+console.log("region chi tiết", this.regionId)
           const expireDate1 = new Date(this.data?.expireDate)
           const expireDateTime: string = this.getCurrentDateTime(expireDate1);
           const currentDateTime: string = this.getCurrentDateTime(this.todayNow);
@@ -122,8 +123,8 @@ export class ProjectDetailComponent implements OnInit {
         }, error => {
 
           if (error.status === 500) {
-            // this.router.navigate(['/app-smart-cloud/project']);
-            this.navigateToRegion();
+            this.router.navigate(['/app-smart-cloud/project']);
+            // this.navigateToRegion();
             this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi(error.error.message));
           }
           this.loading = false;
@@ -137,13 +138,9 @@ export class ProjectDetailComponent implements OnInit {
       }))
       .subscribe(
         data => {
-          this.dataTotal = data;
-          console.log("object dataTotal", this.dataTotal)
+          this.dataTotal = data;         
           this.totalLimit = data.cloudProject;
-          console.log("totalLimit", this.totalLimit)
           this.totalUsed = data.cloudProjectResourceUsed;
-          console.log("totalUsed", this.totalUsed)
-
           this.percentCpu = Math.round((this.totalUsed.cpu / this.totalLimit.quotavCpu) * 100)
           this.percentRam = Math.round((this.totalUsed.ram / this.totalLimit.quotaRamInGb) * 100)
           this.percentHHD = Math.round((this.totalUsed.hdd / this.totalLimit.quotaHddInGb) * 100)
@@ -179,12 +176,13 @@ export class ProjectDetailComponent implements OnInit {
 
 
   edit() {
-    if (this.region === RegionID.ADVANCE) {
-      this.router.navigate(['/app-smart-cloud/project/update-advance/' + this.activatedRoute.snapshot.paramMap.get('id')])
-      // this.router.navigate(['/app-smart-cloud/project-advance'])
-    } else {
-      this.router.navigate(['/app-smart-cloud/project/update/' + this.activatedRoute.snapshot.paramMap.get('id')])
-    }
+    this.router.navigate(['/app-smart-cloud/project/update/' + this.activatedRoute.snapshot.paramMap.get('id')])
+    // if (this.region === RegionID.ADVANCE) {
+    //   this.router.navigate(['/app-smart-cloud/project/update-advance/' + this.activatedRoute.snapshot.paramMap.get('id')])
+    //   // this.router.navigate(['/app-smart-cloud/project-advance'])
+    // } else {
+    //   this.router.navigate(['/app-smart-cloud/project/update/' + this.activatedRoute.snapshot.paramMap.get('id')])
+    // }
    
   }
 
