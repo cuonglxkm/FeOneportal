@@ -1228,6 +1228,7 @@
                       [placeholder]="'app.input.password' | i18n"
                       formControlName="passOrKeyFormControl"
                       [(ngModel)]="password"
+                      autocomplete="new-password"
                     />
                   </nz-input-group>
                   <ng-template #suffixTemplate>
@@ -1378,10 +1379,20 @@
                         (ngModelChange)="onInputBlockStorage(data.id, $event)"
                         nzSize="large"
                       >
-                        <nz-option
+                        <!-- <nz-option
                           *ngFor="let p of typeBlockStorage"
                           [nzValue]="p.value"
                           [nzLabel]="p.label"
+                        ></nz-option> -->
+                        <nz-option
+                          *ngIf="isVolumeHdd"
+                          [nzValue]="'hdd'"
+                          [nzLabel]="'HDD'"
+                        ></nz-option>
+                        <nz-option
+                          *ngIf="isVolumeSsd"
+                          [nzValue]="'ssd'"
+                          [nzLabel]="'SSD'"
                         ></nz-option>
                       </nz-select>
                     </td>
