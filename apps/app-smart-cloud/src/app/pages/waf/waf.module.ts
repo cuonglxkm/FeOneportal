@@ -37,6 +37,7 @@ import { NgxEchartsDirective, NgxEchartsModule } from 'ngx-echarts';
 import { WafDash } from './dashboard/waf-dash.component';
 import { WafUsageStatistics } from './dashboard/usage-statistics/waf-usage-statistics.component';
 import { WafStatusStatistics } from './dashboard/status-statistics/waf-status-statistics.component';
+import { WafCloudSecurityStatistics } from './dashboard/cloud-security/waf-cloud-security-statistics.component';
 
 @NgModule({
   declarations: [
@@ -67,7 +68,8 @@ import { WafStatusStatistics } from './dashboard/status-statistics/waf-status-st
     EditSslCertWAFComponent,
     WafDash,
     WafUsageStatistics,
-    WafStatusStatistics
+    WafStatusStatistics,
+    WafCloudSecurityStatistics
   ],
   imports: [
     CommonModule,
