@@ -334,3 +334,71 @@ export interface QueryRequestHitRatioResponseDataHitRatioDatas {
   timestamp: string;
   hitRatio: string;
 }
+
+
+export class QueryStatusCodeDistributionRequestDto
+{
+    dateFrom: Date;
+    dateTo: Date;
+    domain: string[];
+    dataInterval: string;
+    groupBy: string[];
+    dataPadding: boolean|null;
+    queryBy: string;
+}
+
+export class QueryOriginStatusCodeDistributionRequestDto
+{
+    dateFrom:Date;
+    dateTo:Date;
+    domain: string[];
+    dataInterval:string;
+    groupBy:string[];
+    backsrcOnly:number|null ;
+    queryBy:string;
+}
+
+export class QueryStatusCodeDistributionResponse {
+  code: string;
+  message: string;
+  result: QueryStatusCodeDistributionResponseResult[];
+}
+
+export class QueryStatusCodeDistributionResponseResult {
+  domain: string;
+  statusCodeData: QueryStatusCodeDistributionResponseResultStatusCodeData[];
+}
+
+export class QueryStatusCodeDistributionResponseResultStatusCodeData {
+  statusCode: string;
+  totalRequest: string;
+  statusCodeType: string;
+  requestData: QueryStatusCodeDistributionResponseResultStatusCodeDataRequestData[];
+}
+
+export class QueryStatusCodeDistributionResponseResultStatusCodeDataRequestData {
+  timestamp: string;
+  value: string;
+}
+
+export class QueryOriginStatusCodeDistributionResponse {
+  code: string;
+  message: string;
+  result: QueryOriginStatusCodeDistributionResponseResult[];
+}
+
+export class QueryOriginStatusCodeDistributionResponseResult {
+  domain: string;
+  statusCodeType: string;
+  statusCodeOriginData: QueryOriginStatusCodeDistributionResponseResultStatusCodeOriginData[];
+}
+
+export class QueryOriginStatusCodeDistributionResponseResultStatusCodeOriginData {
+  statusCode: string;
+  requestData: QueryOriginStatusCodeDistributionResponseResultStatusCodeOriginDataRequestData[];
+}
+
+export class QueryOriginStatusCodeDistributionResponseResultStatusCodeOriginDataRequestData {
+  timestamp: string;
+  value: string;
+}
