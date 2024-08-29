@@ -269,7 +269,11 @@ export class VolumeComponent implements OnInit, OnDestroy {
 
   //create schedule snapshot
   navigateToCreateScheduleSnapshot(idVolume: number) {
-    this.router.navigate(['/app-smart-cloud/schedule/snapshot/create', { volumeId: idVolume }], { queryParams: { snapshotTypeCreate: 0 } });
+    if(this.region === RegionID.ADVANCE){
+      this.router.navigate(['/app-smart-cloud/schedule/snapshot-advance/create', { volumeId: idVolume }], { queryParams: { snapshotTypeCreate: 0 } });
+    }else{
+      this.router.navigate(['/app-smart-cloud/schedule/snapshot/create', { volumeId: idVolume }], { queryParams: { snapshotTypeCreate: 0 } });
+    }
   }
 
   //create backup
@@ -428,6 +432,7 @@ export class VolumeComponent implements OnInit, OnDestroy {
       this.cdr.detectChanges();
     })
   }
+  isAdvance: boolean
 
   ngOnInit() {
     // Lấy thong tin region & project từ local
@@ -438,11 +443,13 @@ export class VolumeComponent implements OnInit, OnDestroy {
     if (!this.url.includes('advance')) {
       if (Number(localStorage.getItem('regionId')) === RegionID.ADVANCE) {
         this.region = RegionID.NORMAL;
+        this.isAdvance = false
       } else {
         this.region = Number(localStorage.getItem('regionId'));
       }
     } else {
       this.region = RegionID.ADVANCE;
+      this.isAdvance = true
     }
     //lấy role
     this.hasRoleSI = localStorage.getItem('role').includes('SI');
