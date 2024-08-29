@@ -8,7 +8,7 @@
                      [nzMaxTagCount]="0"
                      [nzMaxTagPlaceholder]="tagPlaceHolder"
                      nzSize="default"
-                     style="margin-left: 10px; width: 200px;"
+                     style="margin-left: 10px; width: 220px;"
                      nzPlaceHolder="Chọn domain"
                      nzTooltipPlacement="bottom"
                      nz-tooltip
@@ -17,7 +17,7 @@
                      [nzStatus]="!isValid?'error':''" >
           <nz-option *ngFor="let item of selectDomainOptions" [nzValue]="item.value" [nzLabel]="item.label"></nz-option>
         </nz-select>
-        <ng-template #tagPlaceHolder let-selectedList>{{ selectedList.length }} domain selected</ng-template>
+        <ng-template #tagPlaceHolder let-selectedList>{{ selectedList.length }}/{{this.selectDomainOptions.length}} domain selected</ng-template>
         <button style="margin-left: 10px" nz-button nzType="primary" (click)="queryDomain()">Query</button>
       </div>
       <div nz-row class="pt-5">
@@ -42,8 +42,10 @@
   
       <nz-alert nzType="warning" nzMessage="Mô tả chức năng: Chỉ có 10 mã trạng thái TOP được hiển thị trên biểu đồ xu hướng" nzShowIcon></nz-alert>
   
-      <div nz-row class="pt-5 pb-5">
+      <div nz-row class="pt-5" nz-flex nzJustify="space-between">
         <span class="border-left-text ">Details</span>
+        <img nz-popover src="assets/imgs/download-file.svg" alt="" nzPopoverPlacement="bottom" (click)="exportToExcel()"
+                style="cursor: pointer; margin-right: 5px; margin-top: 2px;" nzPopoverContent="Export" />
       </div>
   
       <nz-table #fixedTable

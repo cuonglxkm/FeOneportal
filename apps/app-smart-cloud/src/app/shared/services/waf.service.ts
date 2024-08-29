@@ -9,7 +9,7 @@ import {
 import { BaseService } from './base.service';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { BaseResponse } from '../../../../../../libs/common-utils/src';
-import { AddDomainRequest, HttpsSettingRequest, SslCertDTO, SslCertRequest, WafDetailDTO, WafDomain, WafDTO, UpdatePolicies, QueryRequesBandwidthtSavingRatioRequestDto, QueryBacktoOriginTrafficAndRequestRequestDto, QueryTrafficRequestInTotalAndPeakValueRequestDto, QueryRequestHitRatioRequestDto, QueryStatusCodeDistributionRequestDto, QueryOriginStatusCodeDistributionRequestDto, QueryEventTrendRequestDto } from 'src/app/pages/waf/waf.model';
+import { AddDomainRequest, HttpsSettingRequest, SslCertDTO, SslCertRequest, WafDetailDTO, WafDomain, WafDTO, UpdatePolicies, QueryRequesBandwidthtSavingRatioRequestDto, QueryBacktoOriginTrafficAndRequestRequestDto, QueryTrafficRequestInTotalAndPeakValueRequestDto, QueryRequestHitRatioRequestDto, QueryStatusCodeDistributionRequestDto, QueryOriginStatusCodeDistributionRequestDto, QueryEventTrendRequestDto, QueryRequesBandwidthtSavingRatioResponse, QueryRequestHitRatioResponse } from 'src/app/pages/waf/waf.model';
 import { OfferItem } from 'src/app/pages/instances/instances.model';
 
 @Injectable({
@@ -271,8 +271,8 @@ export class WafService extends BaseService {
     );
   }
 
-  getBandWidthSaving(dto: QueryRequesBandwidthtSavingRatioRequestDto): Observable<any> {
-    return this.http.post<any>(
+  getBandWidthSaving(dto: QueryRequesBandwidthtSavingRatioRequestDto): Observable<QueryRequesBandwidthtSavingRatioResponse> {
+    return this.http.post<QueryRequesBandwidthtSavingRatioResponse>(
       this.baseUrl + this.ENDPOINT.provisions + '/waf/report/request/saving-bandwidth/total',
       dto,
       this.getHeaders()
@@ -296,7 +296,7 @@ export class WafService extends BaseService {
   }
 
   queryRequestHitRatio(dto: QueryRequestHitRatioRequestDto){
-    return this.http.post<any>(
+    return this.http.post<QueryRequestHitRatioResponse>(
       this.baseUrl + this.ENDPOINT.provisions + '/waf/report/request/hit-ratio/total',
       dto,
       this.getHeaders()

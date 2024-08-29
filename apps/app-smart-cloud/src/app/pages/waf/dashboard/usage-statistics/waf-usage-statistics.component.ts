@@ -2,11 +2,13 @@ import { Component, OnInit } from '@angular/core';
 import type { EChartsOption } from 'echarts';
 import { WafService } from 'src/app/shared/services/waf.service';
 import { QueryBacktoOriginTrafficAndRequestResponse, QueryBandwidthForMultiDomainResponse2, QueryRequesBandwidthtSavingRatioResponse, QueryRequestHitRatioResponse, QueryTrafficForMultiDomainResponse, QueryTrafficRequestInTotalAndPeakValueResponse } from '../../waf.model';
-import { differenceInCalendarDays, setHours } from 'date-fns';
+import { differenceInCalendarDays, setHours, format  } from 'date-fns';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { el } from 'date-fns/locale';
 import { catchError, forkJoin, of } from 'rxjs';
 import * as e from 'express';
+import { saveAs } from 'file-saver';
+import { XlsxService } from '@delon/abc/xlsx';
 @Component({
   selector: 'app-waf-usage-statistics',
   styleUrls: ['./waf-usage-statistics.component.less'],
@@ -71,7 +73,8 @@ export class WafUsageStatistics implements OnInit {
   top10HitRatioTable: any[]=[];
   constructor(
     private wafService: WafService,
-    private notification: NzNotificationService) {
+    private notification: NzNotificationService,
+    private xlsx: XlsxService) {
     
   }
   ngOnInit() {
@@ -253,6 +256,9 @@ export class WafUsageStatistics implements OnInit {
       bandwidth:x.max,
       total: Math.ceil(x.total / 1024 * 100) / 100
     })).reverse();
+    if(this.peakEdgeTable[0].date == format(this.toDate, 'yyyy-MM-dd')){
+      this.peakEdgeTable.shift();
+    }
     this.renderPeakTable();
   }
   caculateDailyTableBandwidthB2O(data: QueryBacktoOriginTrafficAndRequestResponse){
@@ -266,6 +272,9 @@ export class WafUsageStatistics implements OnInit {
       bandwidth:x.max,
       total: Math.ceil(x.total / 1024 * 100) / 100
     })).reverse();
+    if(this.peakB2OTable[0].date == format(this.toDate, 'yyyy-MM-dd')){
+      this.peakB2OTable.shift();
+    }
     this.renderPeakTable();
   }
   caculateDailyTableBandwidthSaving(data: QueryRequesBandwidthtSavingRatioResponse){
@@ -276,9 +285,32 @@ export class WafUsageStatistics implements OnInit {
       date:x.dateTime.split(' ')[0],
       time:x.dateTime.split(' ')[1],
       peak:x.max*100,
-      average: (x.total/x.count)*100
+      average:0
     })).reverse();
-    this.renderPeakTable();
+
+    if(this.peakSavingTable[0].date == format(this.toDate, 'yyyy-MM-dd')){
+      this.peakSavingTable.shift();
+    }
+
+    if(this.selectedTypeDate=='fiveminutes'){
+      this.peakSavingTable[0].average = data.data[0].totalAvg*100;
+      this.renderPeakTable();
+    }else{
+      this.wafService.getBandWidthSaving({dateFrom:this.fromDate,dateTo:this.toDate,dataInterval:'1d',domain:this.domains}).subscribe({
+        next: (res) => {
+          this.peakSavingTable.forEach(x=>{
+            var bandwidth = res.data[0].savingBandwidthDatas.find(y=>y.timestamp.split(' ')[0]==x.date);
+            x.average = bandwidth ? parseFloat(bandwidth.savingBandwidth)*100 : 0;
+          });
+          this.renderPeakTable();
+        },
+        error: (error) => {
+          console.log(error);
+        }
+      })
+    } 
+    
+    
   }
   caculateDailyTableRequestHitRatio(data: QueryRequestHitRatioResponse){
     var timestamps = data.data[0].hitRatioDatas.map(x=>x.timestamp+(this.selectedTypeDate=='fiveminutes'?':00':':00:00'));
@@ -288,9 +320,30 @@ export class WafUsageStatistics implements OnInit {
       date:x.dateTime.split(' ')[0],
       time:x.dateTime.split(' ')[1],
       peak:x.max*100,
-      average: (x.total/x.count)*100
+      average: 0
     })).reverse();
-    this.renderPeakTable();
+    
+    if(this.totalHitRatioTable[0].date == format(this.toDate, 'yyyy-MM-dd')){
+      this.totalHitRatioTable.shift();
+    }
+    if(this.selectedTypeDate=='fiveminutes'){
+      this.totalHitRatioTable[0].average = data.data[0].totalAvg<0 ? 0 : data.data[0].totalAvg*100;
+      this.renderPeakTable();
+    }
+    else{
+      this.wafService.queryRequestHitRatio({dateFrom:this.fromDate,dateTo:this.toDate,domain:this.domains,dataInterval:'1d'}).subscribe({
+        next: (res) => {
+          this.totalHitRatioTable.forEach(x=>{
+            var bandwidth = res.data[0].hitRatioDatas.find(y=>y.timestamp.split(' ')[0]==x.date);
+            x.average = bandwidth ? parseFloat(bandwidth.hitRatio)*100 : 0;
+          });
+          this.renderPeakTable();
+        },
+        error: (error) => {
+          console.log(error);
+        }
+      })
+    } 
   }
   createDailyTableData(){
     if(this.currentTab=='bandwidth'){
@@ -628,7 +681,8 @@ export class WafUsageStatistics implements OnInit {
         if(index==-1){
           temp[i]=null;
         }else{
-          temp[i]= parseFloat(savingBandwidthDatas[index].savingBandwidth) * 100;
+          var savingBw = parseFloat(savingBandwidthDatas[index].savingBandwidth);
+          temp[i]= savingBw<0? 0: savingBw * 100;
         }
       }
       this.bandWidthSavingData = temp;
@@ -642,7 +696,8 @@ export class WafUsageStatistics implements OnInit {
         if(index==-1){
           temp1[i]=null;
         }else{
-          temp1[i]= parseFloat(savingBandwidthDatas[index].savingBandwidth) * 100;
+          var savingBw = parseFloat(savingBandwidthDatas[index].savingBandwidth);
+          temp1[i]=  savingBw<0? 0: savingBw * 100;
         }
       }
       this.bandWidthSavingData = temp1;
@@ -726,13 +781,14 @@ export class WafUsageStatistics implements OnInit {
       if(index==-1){
         temp[i]=null;
       }else{
-        temp[i]= parseFloat(requestHitRatioDatas[index].hitRatio)*100;
+        var savingBw = parseFloat(requestHitRatioDatas[index].hitRatio);
+        temp[i]= savingBw<0? 0: savingBw*100;
       }
     }
     this.requestHitRatioData = temp;
   }
   caculateRequestHitRatio(){
-    this.averageHitRatio = this.dataRequestHitRatio.data[0].totalAvg * 100;
+    this.averageHitRatio = this.dataRequestHitRatio.data[0].totalAvg <0? 0: this.dataRequestHitRatio.data[0].totalAvg * 100;
     this.peakHitRatio = Math.max(...this.dataRequestHitRatio.data[0].hitRatioDatas.map(x=>parseFloat(x.hitRatio))) * 100;
   }
   getRequestHitRatio(){
@@ -1067,6 +1123,106 @@ export class WafUsageStatistics implements OnInit {
       error: (error) => {
         console.log('Overall error:', error);
       }
+    });
+  }
+  exportToExcel(): void {
+
+    var titles = ['Date'];
+    if(this.currentTab=='bandwidth'&& this.selectedTypeRequest!='BSR'){
+      titles.push('Bandwidth Peak Time');
+    }
+    if(this.currentTab=='bandwidth'&& this.selectedTypeRequest!='BSR'){
+      titles.push('Peak Bandwidth (Mbps)');
+    }
+    if(this.selectedTypeRequest=='BSR' || this.selectedTypeRequest=='HR'){
+      if(this.selectedTypeRequest=='BSR'){
+        titles.push('Peak Value')
+      }else{
+        titles.push('Peak')
+      }
+    }
+    if(this.currentTab=='bandwidth'){
+      if(this.selectedTypeRequest=='BSR'){
+        titles.push('Average')
+      }else{
+        titles.push('Total Traffic (GB)');
+      }
+    }else{
+      if(this.selectedTypeRequest=='HR'){
+        titles.push('Average')
+      }else{
+        if(this.selectedTypeRequest=='EDGE'){
+          titles.push('Total request')
+        }else{
+          titles.push('Total origin requests')  
+        }
+      }
+    }
+    var datas = this.peakTable.map(item => {
+      var data = [item.date];
+      if(this.currentTab=='bandwidth' && this.selectedTypeRequest!='BSR'){
+        data.push(item.time);
+      }
+      if(this.currentTab=='bandwidth' && this.selectedTypeRequest!='BSR'){
+        data.push(item.bandwidth?.toFixed(2));
+      }
+      if(this.selectedTypeRequest=='BSR' || this.selectedTypeRequest=='HR'){
+        data.push(item.peak?.toFixed(2));
+      }
+      if(this.selectedTypeRequest=='BSR' || this.selectedTypeRequest=='HR'){
+        data.push(item.average?.toFixed(2)+'%')
+      }
+      else{
+        if(this.currentTab=='bandwidth'){
+          data.push(item.total?.toFixed(2));
+        }else{
+          item.total
+        }
+      }
+      return data;
+    });
+    const sheetData = [titles, ...datas];
+    this.xlsx.export({
+      sheets: [
+        {
+          data: sheetData,
+          name: 'Sheet1',
+        }
+      ],
+      filename: this.currentTab=='bandwidth'? 'Edge Bandwidth-Traffic Daily Data.xlsx':'Edge Requests Daily Data.xlsx',
+    });
+  }
+  exportToExcelTop10(): void {
+
+    var titles = ['Rank','Domain'];
+    if(this.currentTab=='bandwidth'){
+      titles.push('Peak Value (%)');
+    }else{
+      titles.push('Peak (%)');
+    }
+    titles.push('Average (%)');
+    var datas=[];
+    if(this.currentTab=='bandwidth'){
+      datas= this.top10SavingTable.map((item,index) => {
+        var data = [index+1,item.domain,item.peak?.toFixed(2)+'%',item.average?.toFixed(2)+'%'];
+        return data;
+      });
+    }else{
+      datas= this.top10HitRatioTable.map((item,index) => {
+        var data = [index+1,item.domain,item.peak?.toFixed(2)+'%',item.average?.toFixed(2)+'%'];
+        return data;
+      });
+    }
+    
+    const sheetData = [titles, ...datas];
+    this.xlsx.export({
+      sheets: [
+        {
+          data: sheetData,
+          name: 'Sheet1',
+        }
+      ],
+      filename: this.currentTab=='bandwidth'? 'TOP Saves BtO Bandwidth Ranking.xlsx':'TOP Hit Ratio Ranking.xlsx',
     });
   }
 }
