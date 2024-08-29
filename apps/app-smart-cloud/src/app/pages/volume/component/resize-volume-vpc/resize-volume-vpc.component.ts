@@ -331,6 +331,7 @@ export class ResizeVolumeVpcComponent implements OnInit {
     })
   }
   url = window.location.pathname;
+  isAdvance: boolean
   ngOnInit() {
     this.validateForm.controls.storage.markAsDirty()
     this.validateForm.controls.storage.updateValueAndValidity()
@@ -341,11 +342,13 @@ export class ResizeVolumeVpcComponent implements OnInit {
     if (!this.url.includes('advance')) {
       if (Number(localStorage.getItem('regionId')) === RegionID.ADVANCE) {
         this.region = RegionID.NORMAL;
+        this.isAdvance = false
       } else {
         this.region = Number(localStorage.getItem('regionId'));
       }
     } else {
       this.region = RegionID.ADVANCE;
+      this.isAdvance = true
     }
     this.volumeId = Number.parseInt(this.route.snapshot.paramMap.get('id'));
     this.getConfiguration();

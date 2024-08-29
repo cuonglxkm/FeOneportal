@@ -253,16 +253,19 @@ export class EditVolumeComponent implements OnInit {
 
   hasRoleSI: boolean;
   url = window.location.pathname;
+  isAdvance: boolean
   ngOnInit() {
     this.volumeId = Number.parseInt(this.route.snapshot.paramMap.get('id'));
     if (!this.url.includes('advance')) {
       if (Number(localStorage.getItem('regionId')) === RegionID.ADVANCE) {
         this.region = RegionID.NORMAL;
+        this.isAdvance = false
       } else {
         this.region = Number(localStorage.getItem('regionId'));
       }
     } else {
       this.region = RegionID.ADVANCE;
+      this.isAdvance = true
     }
     this.getConfiguration();
     this.dateEdit = new Date();

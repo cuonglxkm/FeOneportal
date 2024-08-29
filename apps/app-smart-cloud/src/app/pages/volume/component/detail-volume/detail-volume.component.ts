@@ -86,6 +86,7 @@ export class DetailVolumeComponent implements OnInit {
     //
   }
   url = window.location.pathname;
+  isAdvance: boolean
   ngOnInit(): void {
     const idVolume = this.activatedRoute.snapshot.paramMap.get('id');
     let regionAndProject = getCurrentRegionAndProject();
@@ -94,11 +95,13 @@ export class DetailVolumeComponent implements OnInit {
     if (!this.url.includes('advance')) {
       if (Number(localStorage.getItem('regionId')) === RegionID.ADVANCE) {
         this.region = RegionID.NORMAL;
+        this.isAdvance = false
       } else {
         this.region = Number(localStorage.getItem('regionId'));
       }
     } else {
       this.region = RegionID.ADVANCE;
+      this.isAdvance = true
     }
     this.getActiveServiceByRegion();
     // this.customerId = this.tokenService.get()?.userId
