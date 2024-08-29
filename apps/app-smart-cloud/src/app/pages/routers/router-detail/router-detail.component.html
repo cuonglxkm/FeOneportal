@@ -45,7 +45,7 @@
   <nz-tabset nzSize="large">
     <nz-tab nzTitle="Router Interface">
       <div class="text-right">
-        <button
+        <button *ngIf="('routerinterface:ListSubnetInRouterInterface' | IsPermissionPipe) && ('routerinterface:Create' | IsPermissionPipe)"
           nz-button
           nzType="primary"
           nzSize="large"
@@ -100,7 +100,7 @@
     </nz-tab>
     <nz-tab nzTitle="Static Route">
       <div class="text-right">
-        <button
+        <button *ngIf="('routestatic:Create' | IsPermissionPipe)"
           nz-button
           nzType="primary"
           nzSize="large"

@@ -36,6 +36,8 @@ import { EditSslCertWAFComponent } from './ssl-cert/edit/edit-ssl-cert.component
 import { NgxEchartsDirective, NgxEchartsModule } from 'ngx-echarts';
 import { WafDash } from './dashboard/waf-dash.component';
 import { WafUsageStatistics } from './dashboard/usage-statistics/waf-usage-statistics.component';
+import { WafStatusStatistics } from './dashboard/status-statistics/waf-status-statistics.component';
+import { WafCloudSecurityStatistics } from './dashboard/cloud-security/waf-cloud-security-statistics.component';
 
 @NgModule({
   declarations: [
@@ -65,7 +67,9 @@ import { WafUsageStatistics } from './dashboard/usage-statistics/waf-usage-stati
     DisassociateDomainBtnComponent,
     EditSslCertWAFComponent,
     WafDash,
-    WafUsageStatistics
+    WafUsageStatistics,
+    WafStatusStatistics,
+    WafCloudSecurityStatistics
   ],
   imports: [
     CommonModule,

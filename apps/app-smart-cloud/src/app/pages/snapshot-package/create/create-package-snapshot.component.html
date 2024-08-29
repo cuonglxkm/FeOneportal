@@ -55,6 +55,7 @@
                 </ng-container>
                 <ng-container *ngIf="control.hasError('maxLength')">Tối đa 50 ký tự
                 </ng-container>
+                <ng-container *ngIf="control.hasError('duplicateName')">Tên gói Snapshot đã tồn tại. Vui lòng nhập tên khác</ng-container>
               </ng-template>
             </nz-form-control>
           </nz-form-item>

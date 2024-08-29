@@ -1,0 +1,62 @@
+<nz-spin [nzSpinning]="isSpinning">
+  <nz-content>
+    <nz-card>
+      <div nz-row>
+        <nz-range-picker [nzShowTime]="true" [(ngModel)]="selectedDate" nzAllowClear="false" (ngModelChange)="onDateChange($event)" [nzDisabledDate]="disabledDate"></nz-range-picker>
+        <nz-select [(ngModel)]="selectedDomain"
+                    (ngModelChange)="onChangeDomain()"
+                     [nzMaxTagCount]="0"
+                     [nzMaxTagPlaceholder]="tagPlaceHolder"
+                     nzSize="default"
+                     style="margin-left: 10px; width: 200px;"
+                     nzPlaceHolder="Chọn domain"
+                     nzTooltipPlacement="bottom"
+                     nz-tooltip
+                     nzMode="multiple"
+                     nzAllowClear="true"
+                     [nzStatus]="!isValid?'error':''" >
+          <nz-option *ngFor="let item of selectDomainOptions" [nzValue]="item.value" [nzLabel]="item.label"></nz-option>
+        </nz-select>
+        <ng-template #tagPlaceHolder let-selectedList>{{ selectedList.length }} domain selected</ng-template>
+        <button style="margin-left: 10px" nz-button nzType="primary" (click)="queryDomain()">Query</button>
+      </div>
+      <div nz-row class="pt-5 pb-5">
+        <span class="border-left-text">Requests</span>
+      </div>
+      <div nz-row class="pt-5 pb-5" [nzGutter]="16">
+        <div nz-col nzSpan="6">
+          <nz-card class="custom-card">
+            <span class="custom-card-number">{{sumTotal}}</span><br />
+            <span class="custom-card-detail">Total</span>
+          </nz-card>
+        </div>
+        <div nz-col nzSpan="6">
+          <nz-card class="custom-card">
+            <span class="custom-card-number">{{sumMitigated}}</span><br />
+            <span class="custom-card-detail">Mitigated</span>
+          </nz-card>
+        </div>
+        <div nz-col nzSpan="6">
+          <nz-card class="custom-card">
+            <span class="custom-card-number">{{sumMonitored}}</span><br />
+            <span class="custom-card-detail">Monitored</span>
+          </nz-card>
+        </div>
+        <div nz-col nzSpan="6">
+          <nz-card class="custom-card">
+            <span class="custom-card-number">{{sumWhitelist}}</span><br />
+            <span class="custom-card-detail">Whitelisted</span>
+          </nz-card>
+        </div>
+      </div>
+      <div nz-row class="pt-5 pb-5">
+        <span class="border-left-text">Trends</span>
+      </div>
+      <div echarts [options]="options" class="demo-chart" style="height: 500px"></div>
+  
+    </nz-card>
+  </nz-content>
+</nz-spin>
+
+
+ 

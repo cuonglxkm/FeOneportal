@@ -34,7 +34,7 @@ export class SnapshotCreateComponent implements OnInit, OnChanges {
   }> = this.fb.group({
     name: ['', [Validators.required,
     Validators.pattern(/^[a-zA-Z0-9_]*$/),
-    Validators.maxLength(50)]],
+    Validators.maxLength(50),this.duplicateNameValidator.bind(this)]],
     description: ['', Validators.maxLength(255)],
     quota: ['0 GB', []]
   });
@@ -80,6 +80,8 @@ export class SnapshotCreateComponent implements OnInit, OnChanges {
   loadingCreate: boolean;
   disableByQuota = false;
 
+  nameList: string[] = [];
+
   quotaType: any;
   quotaHDDTotal: any;
   quotaHDDUsed: any;
@@ -108,6 +110,7 @@ export class SnapshotCreateComponent implements OnInit, OnChanges {
     private activatedRoute: ActivatedRoute,
     private loadingSrv: LoadingService,
     private vlService: VolumeService,
+   
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
     private fb: NonNullableFormBuilder) {
   }
@@ -129,9 +132,37 @@ export class SnapshotCreateComponent implements OnInit, OnChanges {
     this.loadVolumeList();
     this.loadVmList();
     this.validateForm.controls['quota'].disable();
-    console.log("this.quotaType1123", this.quotaType)
-    console.log("select vomueeeee", this.selectedVolume)
+    this.getListSnapshot()
   }
+ // validate name khi nhap trung
+ duplicateNameValidator(control) {
+  const value = control.value;
+  // Check if the input name is already in the list
+  if (this.nameList && this.nameList.includes(value)) {
+    return { duplicateName: true }; 
+  } else {
+    return null; 
+  }
+}
+  // call api get list snapshot check validate name
+  getListSnapshot() {
+    this.vlService.serchSnapshot(99999, 1, this.region, this.project, '','', '')
+      .pipe(finalize(() => { }))
+      .subscribe(
+        data => {
+          data.records.forEach((item) => {
+            if (this.nameList.length > 0) {
+              this.nameList.push(item.name);
+            } else {
+              this.nameList = [item.name];
+            }
+          });
+        },(error) => {
+          this.nameList = null;
+        }
+      );
+  }
+
 
   regionChanged(region: RegionModel) {
     if (this.projectCombobox) {

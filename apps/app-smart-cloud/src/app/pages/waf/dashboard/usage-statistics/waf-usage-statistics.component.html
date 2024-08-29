@@ -111,8 +111,8 @@
         <tr>
           <th nzLeft>Date</th>
           <th *ngIf="this.currentTab=='bandwidth'&& this.selectedTypeRequest!='BSR'" nzBreakWord>Bandwidth Peak Time</th>
-          <th *ngIf="this.currentTab=='bandwidth'&& this.selectedTypeRequest!='BSR'" nzBreakWord>Peak Bandwidth (Mbps)</th>
-          <th *ngIf="this.selectedTypeRequest=='BSR' || this.selectedTypeRequest=='HR'" nzBreakWord>{{selectedTypeRequest=='BSR'?"Peak Value":"Peak"}}</th>
+          <th nzAlign="right" *ngIf="this.currentTab=='bandwidth'&& this.selectedTypeRequest!='BSR'" nzBreakWord>Peak Bandwidth (Mbps)</th>
+          <th nzAlign="right" *ngIf="this.selectedTypeRequest=='BSR' || this.selectedTypeRequest=='HR'" nzBreakWord>{{selectedTypeRequest=='BSR'?"Peak Value":"Peak"}}</th>
           <th nzBreakWord nzAlign="right">{{this.currentTab=='bandwidth'?this.selectedTypeRequest=='BSR'?'Average':'Total Traffic (GB)': this.selectedTypeRequest=='HR'?'Average':this.selectedTypeRequest=='EDGE'?'Total request':'Total origin requests'}}</th>
         </tr>
         </thead>
@@ -121,8 +121,8 @@
             <tr>
               <td nzLeft>{{ data.date }}</td>
               <td *ngIf="this.currentTab=='bandwidth' && this.selectedTypeRequest!='BSR'"  nzBreakWord nzAlign="left">{{ data.time }}</td>
-              <td *ngIf="this.currentTab=='bandwidth' && this.selectedTypeRequest!='BSR'"  nzBreakWord nzAlign="left">{{ data.bandwidth?.toFixed(2) }} </td>
-              <td *ngIf="this.selectedTypeRequest=='BSR' || this.selectedTypeRequest=='HR'" nzBreakWord>{{ data.peak?.toFixed(2) }}%</td>
+              <td nzAlign="right" *ngIf="this.currentTab=='bandwidth' && this.selectedTypeRequest!='BSR'"  nzBreakWord>{{ data.bandwidth?.toFixed(2) }} </td>
+              <td nzAlign="right" *ngIf="this.selectedTypeRequest=='BSR' || this.selectedTypeRequest=='HR'" nzBreakWord>{{ data.peak?.toFixed(2) }}%</td>
               <td nzBreakWord nzAlign="right">{{ this.selectedTypeRequest=='BSR' || this.selectedTypeRequest=='HR'? data.average?.toFixed(2)+'%' : this.currentTab=='bandwidth'? data.total?.toFixed(2): data.total  }}</td>
             </tr>
           </ng-container>
@@ -139,19 +139,19 @@
                 [nzLoading]="dailyTableLoading">
         <thead>
         <tr>
-          <th nzLeft>Rank</th>
+          <th nzLeft style="width: 50px">Rank</th>
           <th nzBreakWord>Domain</th>
-          <th nzBreakWord>{{this.currentTab=='bandwidth'?'Peak Value (%)':'Peak (%)'}}</th>
-          <th nzBreakWord>Average (%)</th>
+          <th nzBreakWord nzAlign="right">{{this.currentTab=='bandwidth'?'Peak Value (%)':'Peak (%)'}}</th>
+          <th nzBreakWord nzAlign="right">Average (%)</th>
         </tr>
         </thead>
         <tbody>
           <ng-container *ngFor="let data of fixedTable2.data;let i=index">
             <tr>
-              <td nzLeft>{{ i+1 }}</td>
+              <td nzAlign="center">{{ i+1 }}</td>
               <td nzBreakWord nzAlign="left">{{ data.domain }}</td>
-              <td nzBreakWord nzAlign="left">{{ data.peak?.toFixed(2) }}% </td>
-              <td nzBreakWord nzAlign="left">{{ data.average?.toFixed(2) }}%</td>
+              <td nzBreakWord nzAlign="right">{{ data.peak?.toFixed(2) }}% </td>
+              <td nzBreakWord nzAlign="right">{{ data.average?.toFixed(2) }}%</td>
             </tr>
           </ng-container>
         </tbody>
