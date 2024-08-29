@@ -5,10 +5,12 @@
     <nz-breadcrumb [nzSeparator]="iconTemplate">
       <nz-breadcrumb-item [routerLink]="'/'">{{ 'app.breadcrumb.home' | i18n }}</nz-breadcrumb-item>
       <nz-breadcrumb-item>
-        {{ 'app.breadcrumb.infrastructure.service' | i18n }}
+        <!-- {{ 'app.breadcrumb.infrastructure.service' | i18n }} -->
+        {{isAdvance ? ('app.breadscrumb.advanced.service' | i18n) : 'app.breadcrumb.infrastructure.service' | i18n }}
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>
-        {{ 'app.breadcrumb.block.storage' | i18n }}
+        <!-- {{ 'app.breadcrumb.block.storage' | i18n }} -->
+        {{isAdvance ? ('app.breadcrumb.block.storage.advance' | i18n) : 'app.breadcrumb.block.storage' | i18n }}
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>
         <a (click)="navigateToVolume()">Volume</a>
@@ -181,9 +183,9 @@
                         (click)="navigateToCreateScheduleBackup(data.id)">{{ 'volume.menu.create.schedule.backup' | i18n }}
                     </li>
                     <!-----TẠO SNAPSHOT---------->
-                    <li *ngIf="(isVolumeSnapshotHdd || isVolumeSnapshotSsd) && ('volumesnapshot:Create' | IsPermissionPipe) && (['AVAILABLE', 'INUSED'].includes(data.serviceStatus))" nz-menu-item (click)="navigateToSnapshot(data.id)">{{ 'app.snapshot.create' | i18n }}</li>
+                    <li *ngIf="(isVolumeSnapshotHdd || isVolumeSnapshotSsd) && ('volumesnapshot:Create' | IsPermissionPipe) && (['AVAILABLE', 'IN-USE'].includes(data.serviceStatus))" nz-menu-item (click)="navigateToSnapshot(data.id)">{{ 'app.snapshot.create' | i18n }}</li>
                     <!-----TẠO LỊCH SNAPSHOT--------->
-                    <li *ngIf="(isVolumeSnapshotHdd || isVolumeSnapshotSsd) && ('volumesnapshotschedule:Create' | IsPermissionPipe) && (['AVAILABLE', 'INUSED'].includes(data.serviceStatus))" nz-menu-item (click)="navigateToCreateScheduleSnapshot(data.id)">{{ 'volume.menu.create.schedule.snapshot' | i18n }}</li>
+                    <li *ngIf="(isVolumeSnapshotHdd || isVolumeSnapshotSsd) && ('volumesnapshotschedule:Create' | IsPermissionPipe) && (['AVAILABLE', 'IN-USE'].includes(data.serviceStatus))" nz-menu-item (click)="navigateToCreateScheduleSnapshot(data.id)">{{ 'volume.menu.create.schedule.snapshot' | i18n }}</li>
                     <!-----CHỈNH SỬA--------->
                     <one-portal-update-volume *ngIf="'backupschedule:Update' | IsPermissionPipe" [region]="region" [project]="project" [volume]="data"
                                               (onOk)="handleOkUpdate()" />
