@@ -5,7 +5,7 @@ import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { getCurrentRegionAndProject } from '@shared';
 import { addDays } from 'date-fns';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
-import { FormCreateSnapshotPackage, SnapshotPackageRequestModel } from 'src/app/shared/models/package-snapshot.model';
+import { FormCreateSnapshotPackage, FormSearchPackageSnapshot, SnapshotPackageRequestModel } from 'src/app/shared/models/package-snapshot.model';
 import { PackageBackupService } from '../../../shared/services/package-backup.service';
 import { DataPayment, ItemPayment } from '../../instances/instances.model';
 import { InstancesService } from '../../instances/instances.service';
@@ -19,6 +19,7 @@ import { ConfigurationsService } from '../../../shared/services/configurations.s
 import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
 import { SupportService } from 'src/app/shared/models/catalog.model';
 import { CatalogService } from 'src/app/shared/services/catalog.service';
+import { PackageSnapshotService } from 'src/app/shared/services/package-snapshot.service';
 
 @Component({
   selector: 'one-portal-create-package-snapshot',
@@ -38,7 +39,7 @@ export class CreatePackageSnapshotComponent implements OnInit {
   }> = this.fb.group({
     namePackage: ['', [Validators.required,
     Validators.pattern(/^[a-zA-Z0-9_]*$/),
-    Validators.maxLength(70)]],
+    Validators.maxLength(50),this.duplicateNameValidator.bind(this)]],
     description: ['', [Validators.maxLength(255)]],
     time: [1, [Validators.required]]
   });
@@ -61,6 +62,15 @@ export class CreatePackageSnapshotComponent implements OnInit {
   isVisiblePopupError: boolean = false;
   errorList: string[] = [];
 
+  formCreateSnapshotPackage: FormCreateSnapshotPackage = new FormCreateSnapshotPackage();
+  hddPrice = 0;
+  hddUnitPrice = 0
+  ssdPrice = 0;
+  ssdUnitPrice = 0;
+  numberHDD = 0;
+  numberSSD = 0;
+  loadingCalculate = false;
+
   minBlock: number = 0;
   stepBlock: number = 0;
   maxBlock: number = 0;
@@ -68,11 +78,15 @@ export class CreatePackageSnapshotComponent implements OnInit {
   serviceActiveByRegion: SupportService[] = [];
   typeSnapshotHdd: boolean;
   typeSnapshotSsd: boolean;
+
+  nameList: string[] = [];
+  formSearchPackageSnapshot: FormSearchPackageSnapshot = new FormSearchPackageSnapshot()
   closePopupError() {
     this.isVisiblePopupError = false;
   }
   @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
   constructor(private router: Router,
+    private packageSnapshotService: PackageSnapshotService,
     private orderService: OrderService,
     private configurationsService: ConfigurationsService,
     private packageBackupService: PackageBackupService,
@@ -107,17 +121,52 @@ export class CreatePackageSnapshotComponent implements OnInit {
     console.log(this.tokenService.get());
     this.getStepBlock('BLOCKSTORAGE');
     this.getProductActivebyregion();
+    this.getListPackageSnapshot();
 
   }
-
+  // validate name khi nhap trung
+  duplicateNameValidator(control) {
+    const value = control.value;
+    // Check if the input name is already in the list
+    if (this.nameList && this.nameList.includes(value)) {
+      return { duplicateName: true }; 
+    } else {
+      return null; 
+    }
+  }
+  // call api get list package check validate name
+  getListPackageSnapshot() {
+    this.isLoading = true
+    this.formSearchPackageSnapshot.projectId = this.project
+    this.formSearchPackageSnapshot.regionId = this.region
+    this.packageSnapshotService.getPackageSnapshot(this.formSearchPackageSnapshot)
+      // .pipe(debounceTime(500))
+      .subscribe(data => {
+        data.records.forEach((item) => {
+         
+          if (this.nameList.length > 0) {
+            this.nameList.push(item.packageName);
+          } else {
+            this.nameList = [item.packageName];
+          }
+        });
+      }, (error) => {
+        this.nameList = null;
+      })
+  }
   // call api get step block 
   getStepBlock(name: string) {
     this.configurationsService.getConfigurations(name).subscribe((res: any) => {
       const valuestring: any = res.valueString;
       const parts = valuestring.split("#")
       this.minBlock = parseInt(parts[0]);
+      console.log("this.minBlock",this.minBlock)
       this.stepBlock = parseInt(parts[1]);
+      console.log("this.stepBlock",this.stepBlock)
       this.maxBlock = parseInt(parts[2]);
+      console.log("this.maxBlock",this.maxBlock)
+      this.numberHDD = this.minBlock;
+      this.numberSSD = this.minBlock;
     })
   }
   onInputChange(value: number, name: string): void {
@@ -225,14 +274,10 @@ export class CreatePackageSnapshotComponent implements OnInit {
   }
 
 
-  formCreateSnapshotPackage: FormCreateSnapshotPackage = new FormCreateSnapshotPackage();
-  hddPrice = 0;
-  hddUnitPrice = 0
-  ssdPrice = 0;
-  ssdUnitPrice = 0;
-  numberHDD = 0;
-  numberSSD = 0;
-  loadingCalculate = false;
+ 
+  // ngDoCheck(){
+  //   this.numberHDD = this.minBlock;
+  // }
 
   packageBackupInit() {
     this.formCreateSnapshotPackage.packageName = this.validateForm.get('namePackage').value;

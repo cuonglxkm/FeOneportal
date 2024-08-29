@@ -4,7 +4,7 @@ import { SnapshotVolumeService } from '../../../shared/services/snapshot-volume.
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
-import { ScheduleSnapshotVL } from 'src/app/shared/models/snapshotvl.model';
+import { FormSearchScheduleSnapshot, ScheduleSnapshotVL } from 'src/app/shared/models/snapshotvl.model';
 import { getCurrentRegionAndProject } from '@shared';
 import { RegionModel, ProjectModel } from '../../../../../../../libs/common-utils/src';
 import { debounceTime, finalize, Subject } from 'rxjs';
@@ -28,7 +28,8 @@ export class SnapshotScheduleListComponent implements OnInit {
   region: number;
   project: number;
 
-  searchStatus: string = '';
+  // searchStatus: string = '';
+  searchStatus: string[] = [];
   searchName: string = '';
 
   validateForm: FormGroup<{
@@ -38,20 +39,19 @@ export class SnapshotScheduleListComponent implements OnInit {
     name: ['', [Validators.required, Validators.pattern(/^[\w\d]{1,64}$/)]],
     description: ['', [Validators.maxLength(255)]]
   })
-
+  formSearchScheduleSnapshot: FormSearchScheduleSnapshot = new FormSearchScheduleSnapshot()
   modalStyle = {
     'padding': '20px',
     'border-radius': '10px',
     'width': '600px'
   };
 
-  status = [
-    { label: 'Tất cả trạng thái', value: '' },
-    { label: 'Gián đoạn', value: 'DISABLED' }
-    // { label: 'Đang khởi tạo', value: 'DANGKHOITAO' },
-    // { label: 'Hủy', value: 'HUY' },
-    // { label: 'Tạm ngừng', value: 'TAMNGUNG' }
-  ];
+  // status = [
+  //   { label: 'Tất cả trạng thái', value: '' },
+  //   { label: 'Gián đoạn', value: 'DISABLED' },
+  //   { label: 'Đang hoat động', value: 'ACTIVE' }
+
+  // ];
 
   pageSize: number = 10;
   pageNumber: number = 1;
@@ -69,49 +69,52 @@ export class SnapshotScheduleListComponent implements OnInit {
   nameDelete: any;
   disableDelete = true;
   loadingDelete = false;
+
   isVisibleRestart = false;
   loadingRestart: any;
   isCreateOrder: boolean = false;
+  scheduleName:string;
+  isInput: boolean = false;
   @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
   searchSnapshotScheduleList(checkBegin: any) {
-    this.doGetSnapSchedules(this.pageSize, this.pageNumber, this.region, this.project, this.searchName, '', checkBegin);
+    this.getSnapSchedules(checkBegin);
   }
 
-  private doGetSnapSchedules(pageSize: number, pageNumber: number, regionId: number, projectId: number, name: string, volumeName: string, checkBegin: boolean) {
-    this.isLoadingEntities = true;
-    this.listOfData = [];
-    this.snapshot.getListSchedule(pageSize, pageNumber, regionId, projectId, name, volumeName, '')
-      .subscribe({
-        next: (next) => {
-          this.response = next;
-          this.totalData = next.totalCount;
-          this.listOfData = next.records;
-          this.isLoadingEntities = false;
-          console.log("this.response?.records", this.response?.records)
-          if (checkBegin) {
-            if (this.response?.records == undefined || this.response?.records.length == 0) {
-              this.isBegin = true;
-            } else {
-              this.isBegin = false;
-            }
-          }
-        },
-        error: (error) => {
-          if (error.status == 403) {
-            this.notification.error(
-              error.statusText,
-              this.i18n.fanyi('app.non.permission')
-            );
-          } else {
-            this.notification.error(
-              'Có lỗi xảy ra',
-              'Lấy danh sách lịch Snapshot thất bại'
-            );
-          }
-          this.isLoadingEntities = false;
-        }
-      });
-  }
+  // private doGetSnapSchedules(pageSize: number, pageNumber: number, regionId: number, projectId: number, name: string, volumeName: string, checkBegin: boolean) {
+  //   this.isLoadingEntities = true;
+  //   this.listOfData = [];
+  //   this.snapshot.getListSchedule(pageSize, pageNumber, regionId, projectId, name, volumeName, '')
+  //     .subscribe({
+  //       next: (next) => {
+  //         this.response = next;
+  //         this.totalData = next.totalCount;
+  //         this.listOfData = next.records;
+  //         this.isLoadingEntities = false;
+  //         console.log("this.response?.records", this.response?.records)
+  //         if (checkBegin) {
+  //           if (this.response?.records == undefined || this.response?.records.length == 0) {
+  //             this.isBegin = true;
+  //           } else {
+  //             this.isBegin = false;
+  //           }
+  //         }
+  //       },
+  //       error: (error) => {
+  //         if (error.status == 403) {
+  //           this.notification.error(
+  //             error.statusText,
+  //             this.i18n.fanyi('app.non.permission')
+  //           );
+  //         } else {
+  //           this.notification.error(
+  //             'Có lỗi xảy ra',
+  //             'Lấy danh sách lịch Snapshot thất bại'
+  //           );
+  //         }
+  //         this.isLoadingEntities = false;
+  //       }
+  //     });
+  // }
 
   constructor(
     private router: Router,
@@ -147,6 +150,112 @@ export class SnapshotScheduleListComponent implements OnInit {
     this.VMsnap = this.i18n.fanyi('app.vm.snapshot')
   }
 
+  // private doGetSnapSchedules(pageSize: number, pageNumber: number, regionId: number, projectId: number, name: string, volumeName: string, checkBegin: boolean) {
+  //   this.isLoadingEntities = true;
+  //   this.listOfData = [];
+  //   this.snapshot.getListSchedule(pageSize, pageNumber, regionId, projectId, name, volumeName, '')
+  //     .subscribe({
+  //       next: (next) => {
+  //         this.response = next;
+  //         this.totalData = next.totalCount;
+  //         this.listOfData = next.records;
+  //         this.isLoadingEntities = false;
+  //         console.log("this.response?.records", this.response?.records)
+  //         if (checkBegin) {
+  //           if (this.response?.records == undefined || this.response?.records.length == 0) {
+  //             this.isBegin = true;
+  //           } else {
+  //             this.isBegin = false;
+  //           }
+  //         }
+  //       },
+  //       error: (error) => {
+  //         if (error.status == 403) {
+  //           this.notification.error(
+  //             error.statusText,
+  //             this.i18n.fanyi('app.non.permission')
+  //           );
+  //         } else {
+  //           this.notification.error(
+  //             'Có lỗi xảy ra',
+  //             'Lấy danh sách lịch Snapshot thất bại'
+  //           );
+  //         }
+  //         this.isLoadingEntities = false;
+  //       }
+  //     });
+  // }
+
+  // call api get list snapshot schedule
+  private getSnapSchedules(checkBegin: boolean) {
+    this.isLoadingEntities = true;
+    this.listOfData = [];
+    this.formSearchScheduleSnapshot.projectId = this.project
+    this.formSearchScheduleSnapshot.regionId = this.region
+    this.formSearchScheduleSnapshot.pageSize = this.pageSize
+    this.formSearchScheduleSnapshot.pageNumber = this.pageNumber
+    this.formSearchScheduleSnapshot.name = this.searchName
+    this.formSearchScheduleSnapshot.state = this.searchStatus
+    this.formSearchScheduleSnapshot.volumeName = ''
+    this.formSearchScheduleSnapshot.ssPackageId = ''
+    this.snapshot.getListSchedule(this.formSearchScheduleSnapshot)
+      .subscribe({
+        next: (next) => {
+          this.response = next;
+          this.totalData = next.totalCount;
+          this.listOfData = next.records;
+          this.isLoadingEntities = false;
+          console.log("this.response?.records", this.response?.records)
+          if (checkBegin) {
+            if (this.response?.records == undefined || this.response?.records.length <= 0) {
+              this.isBegin = true;
+            } else {
+              this.isBegin = false;
+            }
+          }
+        },
+        error: (error) => {
+          if (error.status == 403) {
+            this.notification.error(
+              error.statusText,
+              this.i18n.fanyi('app.non.permission')
+            );
+          } else {
+            this.notification.error(
+              'Có lỗi xảy ra',
+              'Lấy danh sách lịch Snapshot thất bại'
+            );
+          }
+          this.isLoadingEntities = false;
+        }
+      });
+  }
+  // search theo ten snapshot schedule
+  onInputChange(value: string) {
+    this.pageNumber = 1;
+    this.searchName = value;
+    this.getSnapSchedules(false)
+  }
+  // search theo status snapshot schedule
+  onChangeStatus(value) {
+    this.searchStatus = [value]
+    console.log(" this.searchStatus", this.searchStatus)
+    if (value === '') {
+      this.searchStatus = [];
+    }
+    this.getSnapSchedules(false)
+  }
+
+  getDisplayText(): string {
+    // Nếu mảng rỗng, hiển thị "Tất cả trạng thái"
+    if (this.searchStatus.length === 0) {
+      return 'Tất cả trạng thái';
+    }
+  
+    // Nếu không, hiển thị giá trị đầu tiên trong mảng (có thể bạn chỉ lưu 1 giá trị trong mảng này)
+    return this.searchStatus.join(', ');  // Hiển thị dưới dạng chuỗi phân cách bởi dấu phẩy
+  }
+
 
   navigateToPackageDetail(id) {
     if (this.region === RegionID.ADVANCE) {
@@ -164,36 +273,80 @@ export class SnapshotScheduleListComponent implements OnInit {
     console.log(id);
   }
 
-  showModalDelete(id: number) {
-    console.log(id);
+  // showModalDelete(id: number) {
+  //   console.log(id);
+  // }
+
+  showDelete(data: ScheduleSnapshotVL) {
+    this.isVisibleDelete = true
+    this.dataAction = data;
+    this.scheduleName = data.name;
+    console.log(" this.scheduleName", this.scheduleName)
+    // this.loadingSnapshot();
+    // this.loadingSnapshotSchedule();
   }
+
 
   enableDelete(data: any) {
     this.isVisibleDelete = true;
     this.dataAction = data;
   }
 
-  DeleteSnapshot() {
+  // DeleteSchedule() {
+  //   this.loadingDelete = true;
+  //   this.snapshotVolumeService.deleteSnapshotSchedule(this.dataAction.id, this.customerId, this.region, this.project)
+  //     .pipe(finalize(() => {
+  //       this.loadingDelete = false;
+  //       this.handleCancel();
+  //       this.getSnapSchedules(true)
+  //     }))
+  //     .subscribe((result: any) => {
+  //       if (result == true) {
+  //         this.notification.success('', 'Xóa lịch Snapshot thành công');
+  //         this.getSnapSchedules(true)
+  //         // this.getSnapSchedules(this.pageSize, this.pageNumber, this.region, this.project, this.searchName, '', true);
+  //       } else {
+  //         this.notification.error(
+  //           '',
+  //           'Xóa lịch Snapshot không thành công'
+  //         );
+  //       }
+  //     });
+  // }
+  DeleteSchedule() {
     this.loadingDelete = true;
-    this.snapshotVolumeService.deleteSnapshotSchedule(this.dataAction.id, this.customerId, this.region, this.project)
-      .pipe(finalize(() => {
-        this.loadingDelete = false;
-        this.handleCancel();
-      }))
-      .subscribe((result: any) => {
-        if (result == true) {
-          this.notification.success('', 'Xóa lịch Snapshot thành công');
-          this.doGetSnapSchedules(this.pageSize, this.pageNumber, this.region, this.project, this.searchName, '', true);
-        } else {
-          this.notification.error(
-            '',
-            'Xóa lịch Snapshot không thành công'
-          );
-        }
-      });
+    if (this.nameDelete === this.scheduleName) {
+      this.isInput = false;
+      
+      this.snapshotVolumeService.deleteSnapshotSchedule(this.dataAction.id, this.customerId, this.region, this.project)
+        .pipe(finalize(() => {
+         
+          this.handleCancel();
+          this.getSnapSchedules(true)
+        }))
+        .subscribe((data: any) => {
+          this.loadingDelete = false
+          this.isVisibleDelete = false
+          this.notification.success('Thành công', 'Xóa lịch Snapshot thành công');
+          this.nameDelete = ''
+          this.getSnapSchedules(true)
+  
+        }, error => {
+          this.isVisibleDelete = false
+          this.isVisibleDelete = false
+          this.notification.error('Thất bại', 'Xóa lịch Snapshot thất bại')
+        });
+    }
+    else {
+      this.isInput = true;
+      this.loadingDelete = false
+      // this.notification.error('Error', 'Vui lòng nhập đúng thông tin')
+    }
+  }
+  confirmNameDelete(nameDelete) {
+    this.nameDelete = nameDelete
   }
 
- 
   navigateToDetail(id: number) {
     if (this.region === RegionID.ADVANCE) {
       this.router.navigate(['/app-smart-cloud/schedule/snapshot-advance/detail/' + id]);
@@ -267,22 +420,24 @@ export class SnapshotScheduleListComponent implements OnInit {
   }
 
   handleCancel() {
+    this.nameDelete='';
     this.isVisibleDelete = false;
     this.isVisibleRestart = false;
     this.isVisibleUpdate = false;
   }
 
-  confirmNameDelete($event: any) {
-    if ($event == this.dataAction.name) {
-      this.disableDelete = false;
-    } else {
-      this.disableDelete = true;
-    }
-  }
+  // confirmNameDelete($event: any) {
+  //   if ($event == this.dataAction.name) {
+  //     this.disableDelete = false;
+  //   } else {
+  //     this.disableDelete = true;
+  //   }
+  // }
+
 
   openIpDeleteCf() {
     if (this.disableDelete == false) {
-      this.DeleteSnapshot();
+      this.DeleteSchedule();
     }
   }
 
@@ -300,7 +455,9 @@ export class SnapshotScheduleListComponent implements OnInit {
       .subscribe(
         result => {
           this.notification.success(this.i18n.fanyi('app.status.success'), 'Khôi phục lịch Snapshot thành công');
-          this.doGetSnapSchedules(this.pageSize, this.pageNumber, this.region, this.project, this.searchName, '', true);
+          this.getSnapSchedules(true)
+          // this.getSnapSchedules(this.pageSize, this.pageNumber, this.region, this.project, this.searchName, '', true);
+
         },
         error => {
           this.notification.error(this.i18n.fanyi('app.status.fail'), 'Khôi phục lịch Snapshot không thành công');
@@ -311,34 +468,39 @@ export class SnapshotScheduleListComponent implements OnInit {
   isLoadingUpdate = false;
 
   handleUpdateOk() {
-    this.isLoadingUpdate = true;
-    let data = {
-      id: this.dataAction.id,
-      mode: 1,
-      projectId: this.project,
-      regionId: this.region,
-      name: this.validateForm.controls['name'].value,
-      description: this.validateForm.controls['description'].value,
-      runtime: this.datepipe.transform(
-        this.time,
-        'yyyy-MM-ddTHH:mm:ss',
-        'vi-VI'
-      ),
+    if (this.validateForm.valid) {
+      this.isLoadingUpdate = true;
+      let data = {
+        id: this.dataAction.id,
+        mode: 1,
+        projectId: this.project,
+        regionId: this.region,
+        name: this.validateForm.controls['name'].value,
+        description: this.validateForm.controls['description'].value,
+        runtime: this.datepipe.transform(
+          this.time,
+          'yyyy-MM-ddTHH:mm:ss',
+          'vi-VI'
+        ),
+      }
+      this.snapshotVolumeService.editSnapshotSchedule(data)
+        .pipe(finalize(() => {
+          this.isLoadingUpdate = false;
+          this.handleCancel();
+        }))
+        .subscribe(
+          data => {
+            this.notification.success(this.i18n.fanyi('app.status.success'), 'Sửa lịch Snapshot thành công');
+            this.searchSnapshotScheduleList(true);
+          },
+          error => {
+            this.notification.error(this.i18n.fanyi('app.status.fail'), 'Sửa lịch Snapshot không thành công');
+          }
+        )
     }
-    this.snapshotVolumeService.editSnapshotSchedule(data)
-      .pipe(finalize(() => {
-        this.isLoadingUpdate = false;
-        this.handleCancel();
-      }))
-      .subscribe(
-        data => {
-          this.notification.success(this.i18n.fanyi('app.status.success'), 'Sửa lịch Snapshot thành công');
-          this.searchSnapshotScheduleList(true);
-        },
-        error => {
-          this.notification.error(this.i18n.fanyi('app.status.fail'), 'Sửa lịch Snapshot không thành công');
-        }
-      )
+    else {
+      this.validateForm.markAllAsTouched();
+    }
   }
 
   time: any;

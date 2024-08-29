@@ -291,16 +291,19 @@ export class RenewVolumeComponent implements OnInit {
 
   hasRoleSI: boolean;
   url = window.location.pathname;
+  isAdvance: boolean
   ngOnInit(): void {
     this.idVolume = Number.parseInt(this.activatedRoute.snapshot.paramMap.get('id'));
     if (!this.url.includes('advance')) {
       if (Number(localStorage.getItem('regionId')) === RegionID.ADVANCE) {
         this.region = RegionID.NORMAL;
+        this.isAdvance = false
       } else {
         this.region = Number(localStorage.getItem('regionId'));
       }
     } else {
       this.region = RegionID.ADVANCE;
+      this.isAdvance = true
     }
     this.getVolumeById(this.idVolume);
     this.validateForm.controls.time.setValue('1')

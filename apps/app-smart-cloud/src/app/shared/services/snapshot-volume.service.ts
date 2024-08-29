@@ -1,5 +1,5 @@
 import { BaseService } from './base.service';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Inject, Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
@@ -7,11 +7,14 @@ import { NzMessageService } from 'ng-zorro-antd/message';
 import {
   CreateScheduleSnapshotDTO,
   EditSnapshotVolume,
+  FormSearchScheduleSnapshot,
+  ScheduleSnapshotVL,
   GetListSnapshotVlModel,
   UpdateScheduleSnapshot,
 } from '../models/snapshotvl.model';
 import { SnapshotVolumeDto } from '../dto/snapshot-volume.dto';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
+import { BaseResponse } from '../../../../../../libs/common-utils/src';
 
 @Injectable({
   providedIn: 'root',
@@ -65,28 +68,62 @@ export class SnapshotVolumeService extends BaseService {
     return this.http.get<SnapshotVolumeDto>(this.baseUrl + this.ENDPOINT.provisions + `/vlsnapshots/schedule/${id}`, this.getHeaders());
   }
 
-  getListSchedule(
-    pageSize: number,
-    pageNumber: number,
-    regionId: number,
-    projectId: number,
-    name: string,
-    volumeName: string,
-    ssPackageId: string
-  ): Observable<any> {
-    let urlResult = `/vlsnapshots/schedule?pageSize=${pageSize}&pageNumber=${pageNumber}&regionId=${regionId}&projectId=${projectId}&name=${name}&volumeName=${volumeName}&ssPackageId=${ssPackageId}`;
-    return this.http
-      .get<any>(
-        this.baseUrl + this.ENDPOINT.provisions + urlResult,
-        this.getHeaders()
-      )
-      .pipe(
-        catchError(
-          this.handleError<GetListSnapshotVlModel>(
-            'get shedule-snapshot-volume-list error'
-          )
-        )
-      );
+  // getListSchedule(
+  //   pageSize: number,
+  //   pageNumber: number,
+  //   regionId: number,
+  //   projectId: number,
+  //   name: string,
+  //   volumeName: string,
+  //   ssPackageId: string
+  // ): Observable<any> {
+  //   let urlResult = `/vlsnapshots/schedule?pageSize=${pageSize}&pageNumber=${pageNumber}&regionId=${regionId}&projectId=${projectId}&name=${name}&volumeName=${volumeName}&ssPackageId=${ssPackageId}`;
+  //   return this.http
+  //     .get<any>(
+  //       this.baseUrl + this.ENDPOINT.provisions + urlResult,
+  //       this.getHeaders()
+  //     )
+  //     .pipe(
+  //       catchError(
+  //         this.handleError<GetListSnapshotVlModel>(
+  //           'get shedule-snapshot-volume-list error'
+  //         )
+  //       )
+  //     );
+  // }
+
+  getListSchedule(formSearch: FormSearchScheduleSnapshot) {
+    let params = new HttpParams()
+    if (formSearch.regionId != undefined || formSearch.regionId != null) {
+      params = params.append('regionId', formSearch.regionId)
+    }
+    if (formSearch.name != undefined || formSearch.name != null) {
+      params = params.append('name', formSearch.name.trim().toLowerCase())
+    }
+    if (formSearch.volumeName != undefined || formSearch.volumeName != null) {
+        params = params.append('volumeName', formSearch.volumeName)
+      }
+    if (formSearch.projectId != undefined || formSearch.projectId != null) {
+      params = params.append('projectId', formSearch.projectId)
+    }
+    if (formSearch.pageSize != undefined || formSearch.pageSize != null) {
+      params = params.append('pageSize', formSearch.pageSize)
+    }
+    if (formSearch.pageNumber != undefined || formSearch.pageNumber != null) {
+      params = params.append('pageNumber', formSearch.pageNumber)
+    }
+    if (formSearch.ssPackageId != undefined || formSearch.ssPackageId != null) {
+      params = params.append('ssPackageId', formSearch.ssPackageId)
+    }
+    if (formSearch.state && Array.isArray(formSearch.state)) {
+      formSearch.state.forEach((stateValue: string) => {
+        params = params.append('state', stateValue);
+      });
+    }
+    return this.http.get<BaseResponse<ScheduleSnapshotVL[]>>(this.baseUrl + this.ENDPOINT.provisions + '/vlsnapshots/schedule', {
+      headers: this.getHeaders().headers,
+      params: params
+    })
   }
 
   editSnapshotSchedule(editRequest: any): Observable<any> {
