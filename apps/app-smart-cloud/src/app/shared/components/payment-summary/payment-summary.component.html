@@ -323,6 +323,7 @@
           nzShowSizeChanger
           [nzFrontPagination]="false"
           [nzData]="listServiceInfo"
+          nzTableLayout="fixed"
         >
           <thead>
             <tr>
@@ -338,7 +339,7 @@
           </thead>
           <tbody>
             <tr *ngFor="let item of listServiceInfo; let i = index">
-              <td>{{ item.name }}</td>
+              <td title="{{ item.name }}" class="text-hidden">{{ item.name }}</td>
               <td>{{ item.type }}</td>
               <td nzAlign="right">{{ item.price | number : '1.0-0' }}</td>
               <td nzAlign="right">
