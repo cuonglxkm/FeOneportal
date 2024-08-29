@@ -8,7 +8,7 @@
                      [nzMaxTagCount]="0"
                      [nzMaxTagPlaceholder]="tagPlaceHolder"
                      nzSize="default"
-                     style="margin-left: 10px; width: 200px;"
+                     style="margin-left: 10px; width: 220px;"
                      nzPlaceHolder="Chọn domain"
                      nzTooltipPlacement="bottom"
                      nz-tooltip
@@ -17,7 +17,7 @@
                      [nzStatus]="!isValid?'error':''" >
           <nz-option *ngFor="let item of selectDomainOptions" [nzValue]="item.value" [nzLabel]="item.label"></nz-option>
         </nz-select>
-        <ng-template #tagPlaceHolder let-selectedList>{{ selectedList.length }} domain selected</ng-template>
+        <ng-template #tagPlaceHolder let-selectedList>{{ selectedList.length }}/{{this.selectDomainOptions.length}} domain selected</ng-template>
         <button style="margin-left: 10px" nz-button nzType="primary" (click)="queryDomain()">Query</button>
       </div>
       <div nz-row class="pt-5 pb-5">
