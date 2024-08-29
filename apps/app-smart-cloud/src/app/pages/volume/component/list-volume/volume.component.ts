@@ -270,9 +270,9 @@ export class VolumeComponent implements OnInit, OnDestroy {
   //create schedule snapshot
   navigateToCreateScheduleSnapshot(idVolume: number) {
     if(this.region === RegionID.ADVANCE){
-      this.router.navigate(['/app-smart-cloud/schedule/snapshot-advance/create', { volumeId: idVolume }], { queryParams: { snapshotTypeCreate: 0 } });
+      this.router.navigate(['/app-smart-cloud/schedule/snapshot-advance/create'], { queryParams: { volumeId: idVolume , snapshotTypeCreate: 0 } });
     }else{
-      this.router.navigate(['/app-smart-cloud/schedule/snapshot/create', { volumeId: idVolume }], { queryParams: { snapshotTypeCreate: 0 } });
+      this.router.navigate(['/app-smart-cloud/schedule/snapshot/create'], { queryParams: { volumeId: idVolume , snapshotTypeCreate: 0 } });
     }
   }
 

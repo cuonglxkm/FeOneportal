@@ -365,13 +365,9 @@ export class SnapshotScheduleListComponent implements OnInit {
 
   navigateToCreate() {
     if (this.region === RegionID.ADVANCE) {
-      this.router.navigate(['/app-smart-cloud/schedule/snapshot-advance/create', {
-        snapshotTypeCreate: 2
-      }]);
+      this.router.navigate(['/app-smart-cloud/schedule/snapshot-advance/create'],{queryParams: {  snapshotTypeCreate: 2 }});
     } else {
-      this.router.navigate(['/app-smart-cloud/schedule/snapshot/create', {
-        snapshotTypeCreate: 2
-      }]);
+      this.router.navigate(['/app-smart-cloud/schedule/snapshot/create'],{queryParams: {  snapshotTypeCreate: 2 }});
     }
   }
 

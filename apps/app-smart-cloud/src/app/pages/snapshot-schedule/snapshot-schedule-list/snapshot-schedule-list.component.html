@@ -73,7 +73,7 @@
               <td style="max-width:180px"><a (click)="navigateToDetail(data.id)">{{data.name}}</a></td>
               <td style="max-width:180px"><a
                   (click)="navigateToPackageDetail(data.snapshotPackageId)">{{data.packageName}}</a></td>
-              <td>{{data.snapshotType == 1 ? ('app.vm.snapshot' | i18n ) : 'Snapshot Volume'}}</td>
+              <td>{{data.snapshotType == 1 ? 'Snapshot máy ảo' : 'Snapshot Volume'}}</td>
               <td style="max-width:180px">{{data.serviceName}}</td>
               <td>{{data.maxSnapshot}}</td>
               <td>{{data.nextRuntime | date : 'HH:mm:ss dd/MM/yyyy'}}</td>
@@ -120,12 +120,12 @@
           </nz-row>
           <nz-row style="margin-top: 20px">
             <nz-col class="text-center" style="width: 100%">
-              <span class="text-intro-title" style="color: #0066b3">{{'app.restore' | i18n}}</span>
+              <span class="text-intro-title" style="color: #0066b3">Lịch Snapshot</span>
             </nz-col>
           </nz-row>
           <nz-row style="margin-top: 20px">
             <nz-col class="text-center" style="width: 100%">
-              <span class="text-intro-desc">{{'app.snapshot.schedule.description' | i18n}}</span>
+              <span class="text-intro-desc">Giúp người dùng lưu lại trạng thái hiện tại của Volume/VM. Người dùng có thể sử dụng để sao lưu volume trước khi thực hiện 1 thao tác rủi ro đến dữ liệu trên VM.</span>
             </nz-col>
           </nz-row>
           <button *ngIf="isCreateOrder" style="margin-top: 20px" nz-button [nzType]="'primary'"
