@@ -70,8 +70,13 @@
                 <nz-col [nzLg]="12" [nzMd]="12" [nzSm]="24" [nzXl]="12" [nzXs]="24">
                   <!--        name-->
                   <nz-form-item>
-                    <nz-form-label nzFor="name">{{ 'app.snapshot.schedule.name' | i18n }} (<span
-                        class="text-red">*</span>)
+                    <nz-form-label nzFor="name"><span>
+                      {{ 'app.snapshot.schedule.name' | i18n }} (<span class="text-red">*</span>)
+                      <img nz-popover
+                          [nz-tooltip]="'Cho phép nhập ký tự chữ và số (a-z, A-Z, 0-9, \'_\'). Độ dài dữ liệu đầu vào của bạn tối đa 50 ký tự'"
+                           style="margin-left: 5px;" src="assets/imgs/pajamas_question.svg"
+                          alt="" />
+                    </span>
                     </nz-form-label>
                     <nz-form-control nzDisableAutoTips [nzErrorTip]="nameErrorTpl">
                       <input class="input-custom" nz-input formControlName="name" [(ngModel)]="request.name"
