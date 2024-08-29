@@ -71,6 +71,25 @@ export class ResizeSnapshotPackageComponent implements OnInit {
   serviceActiveByRegion: SupportService[] = [];
   typeSnapshotHdd:boolean;
   typeSnapshotSsd:boolean;
+
+  typeVPC: number;
+  numberHDD = 0;
+  numberSSD = 0;
+  numberHDDBonus = 0;
+  numberSSDBonus = 0;
+  totalAmount: number;
+  totalPayment: number;
+  totalVat: number;
+  hddPrice = 0;
+  hddUnitPrice = 0;
+  ssdPrice = 0;
+  ssdUnitPrice = 0;
+  today = new Date();
+
+  formUpdateSnapshotPackageModel: FormUpdateSnapshotPackageModel = new FormUpdateSnapshotPackageModel();
+  orderItem: OrderItem = new OrderItem();
+  unitPrice = 0;
+
   closePopupError() {
     this.isVisiblePopupError = false;
   }
@@ -102,6 +121,9 @@ export class ResizeSnapshotPackageComponent implements OnInit {
       this.minBlock = parseInt(parts[0]);
       this.stepBlock = parseInt(parts[1]);
       this.maxBlock = parseInt(parts[2]);
+      this.numberHDDBonus = this.minBlock;
+      this.numberSSDBonus = this.minBlock;
+      this.getTotalAmount();
     })
   }
   onInputChange(value: number, name: string): void {
@@ -217,9 +239,7 @@ export class ResizeSnapshotPackageComponent implements OnInit {
     this.validateForm.reset();
   }
 
-  formUpdateSnapshotPackageModel: FormUpdateSnapshotPackageModel = new FormUpdateSnapshotPackageModel();
-  orderItem: OrderItem = new OrderItem();
-  unitPrice = 0;
+ 
 
   getTotalAmount() {
     this.loadingCalculate = true;
@@ -328,19 +348,7 @@ export class ResizeSnapshotPackageComponent implements OnInit {
 
   }
 
-  typeVPC: number;
-  numberHDD = 0;
-  numberSSD = 0;
-  numberHDDBonus = 0;
-  numberSSDBonus = 0;
-  totalAmount: number;
-  totalPayment: number;
-  totalVat: number;
-  hddPrice = 0;
-  hddUnitPrice = 0;
-  ssdPrice = 0;
-  ssdUnitPrice = 0;
-  today = new Date();
+ 
 
   loadProjects() {
     this.projectService.getByRegion(this.region).subscribe(data => {

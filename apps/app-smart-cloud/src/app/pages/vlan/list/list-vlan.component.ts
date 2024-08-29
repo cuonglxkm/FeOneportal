@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, Inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormSearchNetwork, NetWorkModel } from '../../../shared/models/vlan.model';
 import { AppValidator, BaseResponse, ProjectModel, RegionModel } from '../../../../../../../libs/common-utils/src';
 import { VlanService } from '../../../shared/services/vlan.service';
@@ -9,6 +9,9 @@ import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@ang
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { add } from 'date-fns';
 import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
+import { I18NService } from '@core';
+import { PolicyService } from 'src/app/shared/services/policy.service';
 
 @Component({
   selector: 'one-portal-list-vlan',
@@ -45,12 +48,15 @@ export class ListVlanComponent implements OnInit, OnDestroy {
   dataSubjectInputSearch: Subject<any> = new Subject<any>();
   private searchSubscription: Subscription;
   private enterPressed: boolean = false;
+  isCreateOrder: boolean = false;
   @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
   constructor(private vlanService: VlanService,
               private router: Router,
               private route: ActivatedRoute,
               private notification: NzNotificationService,
-              private fb: NonNullableFormBuilder) {
+              private fb: NonNullableFormBuilder,
+              @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
+              private policyService: PolicyService) {
   }
 
   regionChanged(region: RegionModel) {
@@ -66,10 +72,13 @@ export class ListVlanComponent implements OnInit, OnDestroy {
   }
 
   projectChanged(project: ProjectModel) {
-    this.project = project?.id
-    this.typeVPC = project?.type
+    this.project = project?.id;
+    this.typeVPC = project?.type;
 
-    this.getListVlanNetwork(true)
+    this.getListVlanNetwork(true);
+    this.isCreateOrder = this.policyService.hasPermission("network:List") &&
+      this.policyService.hasPermission("network:Get") &&
+      this.policyService.hasPermission("network:Create");
   }
 
   ngOnDestroy(): void {
@@ -141,9 +150,16 @@ export class ListVlanComponent implements OnInit, OnDestroy {
         this.isBegin = this.response?.records === null || this.response?.records.length < 1 ? true : false;
       }
     }, error => {
-        this.response = null
-        this.isLoading = false
-        this.notification.error(error.statusText, 'Lấy dữ liệu thất bại')
+        this.response = null;
+        this.isLoading = false;
+        if(error.status == 403){
+          this.notification.error(
+            error.statusText,
+            this.i18n.fanyi('app.non.permission')
+          );
+        } else {
+          this.notification.error(error.statusText, 'Lấy dữ liệu thất bại');
+        }
       })
   }
 

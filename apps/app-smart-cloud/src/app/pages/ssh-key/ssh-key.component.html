@@ -27,7 +27,7 @@
       </ng-template>
     </div>
 
-    <button *ngIf="!isBegin" (click)="createKey()" nz-button nzType="primary">
+    <button *ngIf="!isBegin && isCreateKey" (click)="createKey()" nz-button nzType="primary">
       <img style="padding-right: 10px;" src="assets/imgs/add-circle.svg" alt="" />
       <span class="button-text-primary">{{'keypair.title.create' | i18n}}</span>
     </button>
@@ -57,7 +57,7 @@
           <td>{{ data.fingerprint }}</td>
           <td>
             <!----Xóa---->
-            <img src="assets/imgs/delete.svg" style="width: 28px;height: 28px; cursor: pointer;"
+            <img *ngIf="('keypair:Delete' | IsPermissionPipe)" src="assets/imgs/delete.svg" style="width: 28px;height: 28px; cursor: pointer;"
                  nz-tooltip nzTooltipTitle="{{'app.delete' | i18n}}" nzTooltipPlacement="bottom"
                  (click)="deleteKey(data)"/>
           </td>
@@ -98,7 +98,7 @@
           </div>
         </nz-row>
         <nz-row nzJustify="center" style="margin: 50px 0 20px 0">
-          <button (click)="createKey()" style="text-align: center" nz-button nzType="primary">{{'keypair.title.init' | i18n}}</button>
+          <button *ngIf="isCreateKey" (click)="createKey()" style="text-align: center" nz-button nzType="primary">{{'keypair.title.init' | i18n}}</button>
         </nz-row>
       </nz-card>
     </ng-container>

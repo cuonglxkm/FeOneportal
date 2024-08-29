@@ -395,10 +395,52 @@ export class QueryOriginStatusCodeDistributionResponseResult {
 
 export class QueryOriginStatusCodeDistributionResponseResultStatusCodeOriginData {
   statusCode: string;
+  totalRequest: string;
   requestData: QueryOriginStatusCodeDistributionResponseResultStatusCodeOriginDataRequestData[];
 }
 
 export class QueryOriginStatusCodeDistributionResponseResultStatusCodeOriginDataRequestData {
   timestamp: string;
   value: string;
+}
+
+export class QueryEventTrendRequestDto
+{
+    startTime: Date;
+    endTime: Date;
+    domains: string[];
+    actType: string[];
+}
+
+export class QueryEventTrendResponse
+{
+    code: Date;
+    msg: Date;
+    data: EventTrendDTO[];
+}
+
+export class EventTrendDTO {
+    timePoint: string;
+    total: number | null;
+    attack: number | null;
+    mitigated: number | null;
+    monitored: number | null;
+    whitelist: number | null;
+    distribution: EventTypeDTO[];
+}
+
+export class EventTypeDTO {
+  code: string;
+  value: number | null;
+}
+
+export class EventTrend
+{
+    name: string;
+    data: EventTrendValue[];
+}
+export class EventTrendValue
+{
+    timePoint: string;
+    value: number;
 }

@@ -67,7 +67,11 @@ export class ListIpFloatingComponent implements OnInit {
     console.log(this.projectType);
     this.value = '';
     this.getData(true);
-    this.isCreateOrder = this.policyService.hasPermission("order:Create");
+    this.isCreateOrder = this.policyService.hasPermission("order:Create") &&
+      this.policyService.hasPermission("ippublic:IpPublicListSubnet") &&
+      this.policyService.hasPermission("product:Search") &&
+      this.policyService.hasPermission("order:GetOrderAmount") &&
+      this.policyService.hasPermission("offer:Search");
   }
 
   onPageSizeChange(event) {

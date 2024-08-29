@@ -32,6 +32,7 @@ import { TimeCommon } from 'src/app/shared/utils/common';
 import { Subject } from 'rxjs';
 import { NAME_REGEX } from 'src/app/shared/constants/constants';
 import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
+import { PolicyService } from 'src/app/shared/services/policy.service';
 
 @Component({
   selector: 'one-portal-router-list',
@@ -104,6 +105,7 @@ export class RouterListComponent implements OnInit {
   value: string = ''
 
   searchDelay = new Subject<boolean>();
+  isCreateOrder: boolean = false;
   @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
   constructor(
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
@@ -111,7 +113,8 @@ export class RouterListComponent implements OnInit {
     private cdr: ChangeDetectorRef,
     private notification: NzNotificationService,
     @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
-    private fb: NonNullableFormBuilder
+    private fb: NonNullableFormBuilder,
+    private policyService: PolicyService
   ) {}
 
   ngOnInit() {
@@ -147,6 +150,8 @@ export class RouterListComponent implements OnInit {
     this.loading = true;
     this.projectId = project.id;
     this.getDataList(true);
+    this.isCreateOrder = this.policyService.hasPermission("router:FindVlannetworksInRouter") &&
+      this.policyService.hasPermission("router:Create");
   }
 
   onPageSizeChange(event) {
@@ -186,9 +191,15 @@ export class RouterListComponent implements OnInit {
         }
         this.cdr.detectChanges();
     }, error => {
-      this.loading = false
-        this.dataList = null
-      })
+      this.loading = false;
+      this.dataList = null;
+      if(error.status == 403){
+        this.notification.error(
+          error.statusText,
+          this.i18n.fanyi('app.non.permission')
+        );
+      }
+    })
   }
 
   

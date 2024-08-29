@@ -1,0 +1,67 @@
+.status .available {
+  color: #008D47;
+}
+
+.status .suspended {
+  color: #EA3829
+}
+
+.status .error {
+  color: #EA3829
+}
+
+
+.button-create {
+  padding: 8px 15px;
+  background: #0074CC;
+  border-radius: 4px;
+  border: 1px solid;
+  justify-content: center;
+  align-items: center; gap: 10px;
+  display: inline-flex;
+  color: #FFFFFF;
+}
+
+
+.border-left-text {
+  position: relative;
+  padding: 5px 0px 5px 5px ;
+  border-left: 3px solid #1890ff; /* Màu xanh của viền bên trái (sử dụng màu xanh của Ant Design) */
+  display: inline-block; /* Đảm bảo viền và văn bản nằm trên cùng một dòng */
+  line-height: 30px;
+}
+
+.peak::after{
+  content: "";
+  position: relative;
+  right: -10px;
+  width: 0;
+  height: 15px;
+  overflow: hidden;
+  display: inline-block;
+  vertical-align: middle;
+  border-right: 1px dashed #ccc;
+}
+
+.custom-card {
+  border: 1px solid #0074CC;
+  box-shadow: 0 4px 4px rgba(0, 0, 0, 0.4); /* Hiệu ứng shadow */
+  text-align: center;
+}
+.custom-card-number {
+  color: #0074CC;
+  font-weight: bold;
+  font-size: 50px;
+  line-height: 1.2;
+  text-align: center;
+}
+.custom-card-detail {
+  font-weight: bold;
+  font-size: 20px;
+  line-height: 1.2;
+  text-align: center;
+}
+.ant-card-body{
+  padding-top: 5px;
+  padding-bottom: 5px;
+}
