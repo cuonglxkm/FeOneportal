@@ -122,13 +122,13 @@
   <div style="margin-bottom: 20px">
     <span class="text-card-header">{{ 'project.note27' | i18n }}</span>
   </div>
-  <nz-row *ngIf="data?.type == 'VPC'" style="margin-bottom: 30px;text-align: center" class="percent_vpc">
+  <nz-row *ngIf="data?.type == 'VPC'" style="margin-bottom: 30px;text-align: center; display: flex; justify-content: space-between;" class="percent_vpc">
     <div nz-col nzSpan="4"><nz-progress [nzPercent]= percentCpu nzType="circle" [nzWidth]="180"  [nzStrokeWidth]="15"></nz-progress><h3 style="margin-top: 14px;">CPU</h3></div>
     <div nz-col nzSpan="4"><nz-progress [nzPercent]= percentRam nzType="circle" [nzWidth]="180"  [nzStrokeWidth]="15"></nz-progress><h3 style="margin-top: 14px;">RAM (GB)</h3></div>
     <div nz-col nzSpan="4" *ngIf="typeHdd"><nz-progress [nzPercent]= percentHHD nzType="circle" [nzWidth]="180"  [nzStrokeWidth]="15"></nz-progress><h3 style="margin-top: 14px;">HDD (GB)</h3></div>
     <div nz-col nzSpan="4" *ngIf="typeSsd"><nz-progress [nzPercent]= percentSSD nzType="circle" [nzWidth]="180"  [nzStrokeWidth]="15"></nz-progress><h3 style="margin-top: 14px;">SSD (GB)</h3></div>
     <div nz-col nzSpan="4"><nz-progress [nzPercent]= percentIPFloating nzType="circle" [nzWidth]="180"  [nzStrokeWidth]="15"></nz-progress><h3 style="margin-top: 14px;">IP FLOATING</h3></div>
-    <div nz-col nzSpan="4"><nz-progress [nzPercent]= percentBackup nzType="circle" [nzWidth]="180"  [nzStrokeWidth]="15"></nz-progress><h3 style="margin-top: 14px;">BACKUP (GB)</h3></div>
+    <div nz-col nzSpan="4" *ngIf="typeBackup_volume"><nz-progress [nzPercent]= percentBackup nzType="circle" [nzWidth]="180"  [nzStrokeWidth]="15"></nz-progress><h3 style="margin-top: 14px;">BACKUP (GB)</h3></div>
   </nz-row>
   <nz-table [nzData]="listOfData" [nzLoading]="loading" [nzFrontPagination]="false">
     <thead>
@@ -159,37 +159,37 @@
       <td>{{totalUsed?.ram}} GB</td>
       <td>{{totalLimit?.quotaRamInGb-totalUsed?.ram}} GB</td>
     </tr>
-    <tr  *ngIf="data?.type == 'VPC' || typeHdd">
+    <tr  *ngIf="data?.type == 'VPC' && typeHdd">
       <td>HDD (GB)</td>
       <td>{{totalLimit?.quotaHddInGb}} GB</td>
       <td>{{totalUsed?.hdd}} GB</td>
       <td>{{totalLimit?.quotaHddInGb-totalUsed?.hdd}} GB</td>
     </tr>
-    <tr  *ngIf="data?.type == 'VPC' || typeSsd">
+    <tr  *ngIf="data?.type == 'VPC' && typeSsd">
       <td>SSD (GB)</td>
       <td>{{totalLimit?.quotaSSDInGb}} GB</td>
       <td>{{totalUsed?.ssd}} GB</td>
       <td>{{totalLimit?.quotaSSDInGb-totalUsed?.ssd}} GB</td>
     </tr>
-    <tr  *ngIf="typeBackup_volume || data?.type == 'VPC'">
+    <tr  *ngIf="typeBackup_volume && data?.type == 'VPC'">
       <td>Dung lượng Backup Volume/VM(GB)</td>
       <td>{{totalLimit?.quotaBackupVolumeInGb}} GB</td>
       <td>{{totalUsed?.backup}} GB</td>
       <td>{{totalLimit?.quotaBackupVolumeInGb-totalUsed?.backup}} GB</td>
     </tr>
-    <tr  *ngIf="typeIp || data?.type == 'VPC'">
+    <tr  *ngIf="typeIp && data?.type == 'VPC'">
       <td>Số lượng IP Floating</td>
       <td>{{totalLimit?.quotaIpFloatingCount}}</td>
       <td>{{totalUsed?.ipFloatingCount}}</td>
       <td>{{totalLimit?.quotaIpFloatingCount-totalUsed?.ipFloatingCount}}</td>
     </tr>
-    <tr *ngIf="typeIp || data?.type == 'VPC'">
+    <tr *ngIf="typeIp && data?.type == 'VPC'">
       <td>Số lượng IP Public</td>
       <td>{{totalLimit?.quotaIpPublicCount}}</td>
       <td>{{totalUsed?.ipPublicCount}}</td>
       <td>{{totalLimit?.quotaIpPublicCount-totalUsed?.ipPublicCount}}</td>
     </tr>
-    <tr *ngIf="typeIpv6 || data?.type == 'VPC'">
+    <tr *ngIf="typeIpv6 && data?.type == 'VPC'">
       <td>Số lượng IPv6</td>
       <td>{{totalLimit?.quotaIpv6Count}}</td>
       <td>{{totalUsed?.ipv6Count}}</td>
@@ -213,32 +213,32 @@
       <td>{{totalUsed?.routerCount}}</td>
       <td>{{totalLimit?.quotaRouterCount-totalUsed?.routerCount}}</td>
     </tr>
-    <tr *ngIf="typeLoadbalancer_sdn || data?.type == 'VPC'">
+    <tr *ngIf="typeLoadbalancer_sdn && data?.type == 'VPC'">
       <td>Số lượng Load Balancer</td>
       <td>{{totalLimit?.quotaLoadBalancerSDNCount}}</td>
       <td>{{totalUsed?.loadBalancerSdnCount}}</td>
       <td>{{totalLimit?.quotaLoadBalancerSDNCount-totalUsed?.loadBalancerSdnCount}}</td>
     </tr>
-    <tr *ngIf="typeFile_storage || data?.type == 'VPC'">
+    <tr *ngIf="typeFile_storage && data?.type == 'VPC'">
       <td>Dung lượng File System (GB)</td>
       <td>{{totalLimit?.quotaShareInGb}} GB</td>
       <td>{{totalUsed?.quotaShareInGb}} GB</td>
       <td>{{totalLimit?.quotaShareInGb-totalUsed?.quotaShareInGb}} GB</td>
     </tr>
-    <tr *ngIf="typeFile_storage_snapshot || data?.type == 'VPC'" >
+    <tr *ngIf="typeFile_storage_snapshot && data?.type == 'VPC'" >
       <td>Dung lượng File System Snapshot (GB)</td>
       <td>{{totalLimit?.quotaShareSnapshotInGb}} GB</td>
       <td>{{totalUsed?.quotaShareSnapshotInGb}} GB</td>
       <td>{{totalLimit?.quotaShareSnapshotInGb-totalUsed?.quotaShareSnapshotInGb}} GB</td>
     </tr>
 
-    <tr *ngIf="typeVolume_snapshot_hdd || data?.type == 'VPC'">
+    <tr *ngIf="typeVolume_snapshot_hdd && data?.type == 'VPC'">
       <td>Dung lượng Snapshot HDD (GB)</td>
       <td>{{totalLimit?.quotaVolumeSnapshotHddInGb}} GB</td>
       <td>{{totalUsed?.volumeSnapshotHddInGb}} GB</td>
       <td>{{totalLimit?.quotaVolumeSnapshotHddInGb-totalUsed?.volumeSnapshotHddInGb}} GB</td>
     </tr>
-    <tr *ngIf="typeVolume_snapshot_ssd || data?.type == 'VPC'">
+    <tr *ngIf="typeVolume_snapshot_ssd && data?.type == 'VPC'">
       <td>Dung lượng Snapshot SSD (GB)</td>
       <td>{{totalLimit?.quotaVolumeSnapshotSsdInGb}} GB</td>
       <td>{{totalUsed?.volumeSnapshotSsdInGb}} GB</td>
@@ -246,10 +246,10 @@
     </tr>
 
       <tr *ngFor="let gpu of totalGpu" >
-        <td *ngIf="typeVm_gpu || data?.type == 'VPC'">Số lượng GPU ({{gpu?.gpuType}})</td>
-        <td *ngIf="typeVm_gpu || data?.type == 'VPC'">{{gpu?.totalLimitGpu}}</td>
-        <td *ngIf="typeVm_gpu || data?.type == 'VPC'">{{gpu?.totalUsedGpu}}</td>
-        <td *ngIf="typeVm_gpu || data?.type == 'VPC'">{{gpu?.totalLimitGpu-gpu?.totalUsedGpu}}</td>
+        <td *ngIf="typeVm_gpu && data?.type == 'VPC'">Số lượng GPU ({{gpu?.gpuType}})</td>
+        <td *ngIf="typeVm_gpu && data?.type == 'VPC'">{{gpu?.totalLimitGpu}}</td>
+        <td *ngIf="typeVm_gpu && data?.type == 'VPC'">{{gpu?.totalUsedGpu}}</td>
+        <td *ngIf="typeVm_gpu && data?.type == 'VPC'">{{gpu?.totalLimitGpu-gpu?.totalUsedGpu}}</td>
       </tr>
 
    
