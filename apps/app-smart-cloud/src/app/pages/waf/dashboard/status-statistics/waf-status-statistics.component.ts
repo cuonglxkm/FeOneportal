@@ -4,6 +4,7 @@ import { WafService } from 'src/app/shared/services/waf.service';
 import { QueryOriginStatusCodeDistributionResponse, QueryOriginStatusCodeDistributionResponseResultStatusCodeOriginData, QueryStatusCodeDistributionResponse, QueryStatusCodeDistributionResponseResultStatusCodeData, QueryStatusCodeDistributionResponseResultStatusCodeDataRequestData, QueryTrafficForMultiDomainResponse, QueryTrafficRequestInTotalAndPeakValueResponse } from '../../waf.model';
 import { differenceInCalendarDays } from 'date-fns';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
+import { XlsxService } from '@delon/abc/xlsx';
 @Component({
   selector: 'app-waf-status-statistics',
   styleUrls: ['./waf-status-statistics.component.less'],
@@ -36,7 +37,8 @@ export class WafStatusStatistics implements OnInit {
 
   constructor(
     private wafService: WafService,
-    private notification: NzNotificationService) {
+    private notification: NzNotificationService,
+    private xlsx: XlsxService) {
     
   }
   ngOnInit() {
@@ -174,10 +176,10 @@ export class WafStatusStatistics implements OnInit {
   }
   
   convertStatusToDataChart(){
-    this.statusCodeData = this.statusCodeDistributionResponse.result[0].statusCodeData.filter(item => {
+    this.statusCodeData = this.statusCodeDistributionResponse.result[0]?.statusCodeData.filter(item => {
       const parsed = parseInt(item.statusCode, 10);
       return !isNaN(parsed) && parsed.toString() === item.statusCode;
-    });
+    })??[];
     var statusCodeData = this.statusCodeData.sort((a,b)=>parseInt(b.totalRequest)-parseInt(a.totalRequest)).slice(0,10);
     this.legendData = statusCodeData.map(x=>x.statusCode);  
 
@@ -227,7 +229,7 @@ export class WafStatusStatistics implements OnInit {
 
   convertOriginStatusToDataChart(){
     var dates = this.generateTimeArray(this.fromDate, this.toDate, true);
-    this.originStatusCodeDistributionResponse.result[0].statusCodeOriginData.forEach(x=>{
+    this.originStatusCodeDistributionResponse.result[0]?.statusCodeOriginData.forEach(x=>{
       var temp = [];
       dates.forEach(y=>{
         var timestamp = y.substring(0,16);
@@ -242,10 +244,10 @@ export class WafStatusStatistics implements OnInit {
       x.requestData = temp;
     }); //fill Data bị thiếu
 
-    this.originStatusCodeData = this.originStatusCodeDistributionResponse.result[0].statusCodeOriginData.filter(item => {
+    this.originStatusCodeData = this.originStatusCodeDistributionResponse.result[0]?.statusCodeOriginData.filter(item => {
       const parsed = parseInt(item.statusCode, 10);
       return !isNaN(parsed) && parsed.toString() === item.statusCode;
-    });
+    })??[];
 
     var originStatusCodeData = this.originStatusCodeData.sort((a,b)=>parseInt(b.totalRequest)-parseInt(a.totalRequest)).slice(0,10);
 
@@ -284,6 +286,7 @@ export class WafStatusStatistics implements OnInit {
     this.wafService.queryOriginStatusCodeDistribution({dateFrom:this.fromDate,dateTo:this.toDate,domain:this.domains,dataInterval:'5m',groupBy:null,backsrcOnly:1,queryBy:null}).subscribe({
       next: (res) => {
         this.originStatusCodeDistributionResponse = res;
+        
         this.convertOriginStatusToDataChart();
         this.draw();
         this.createOriginStatusTableDetails();
@@ -496,5 +499,31 @@ export class WafStatusStatistics implements OnInit {
   }
 
   
-  
+  exportToExcel(): void {
+
+    var titles = ['Rank','Status Code','Total requests','Ratio'];
+    var datas=[];
+    if(this.currentTab=='edge'){
+      datas= this.tableStatusCodeTable.map((item,index) => {
+        var data = [index+1,item.statusCode,item.totalRequest,item.ratio?.toFixed(2)+'%'];
+        return data;
+      });
+    }else{
+      datas= this.tableOriginStatusCodeTable.map((item,index) => {
+        var data = [index+1,item.statusCode,item.totalRequest,item.ratio?.toFixed(2)+'%'];
+        return data;
+      });
+    }
+    
+    const sheetData = [titles, ...datas];
+    this.xlsx.export({
+      sheets: [
+        {
+          data: sheetData,
+          name: 'Sheet1',
+        }
+      ],
+      filename: this.currentTab=='edge'?'Detailed Data Of Status Codes.xlsx':'Origin Status Code Details.xlsx',
+    });
+  }
 }
