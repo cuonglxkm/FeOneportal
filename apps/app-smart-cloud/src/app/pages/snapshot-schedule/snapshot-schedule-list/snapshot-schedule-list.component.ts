@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, Inject, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { SnapshotVolumeService } from '../../../shared/services/snapshot-volume.service';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
@@ -70,7 +70,7 @@ export class SnapshotScheduleListComponent implements OnInit {
   disableDelete = true;
   loadingDelete = false;
 
-  isVisibleRestart = false;
+  isVisibleRestart:boolean = false;
   loadingRestart: any;
   isCreateOrder: boolean = false;
   scheduleName:string;
@@ -126,7 +126,8 @@ export class SnapshotScheduleListComponent implements OnInit {
     @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
     private fb: NonNullableFormBuilder,
     private notification: NzNotificationService,
-    private policyService: PolicyService
+    private policyService: PolicyService,
+    private cdr: ChangeDetectorRef
   ) {
   }
   url = window.location.pathname;
@@ -238,6 +239,7 @@ export class SnapshotScheduleListComponent implements OnInit {
   }
   // search theo status snapshot schedule
   onChangeStatus(value) {
+   
     this.searchStatus = [value]
     console.log(" this.searchStatus", this.searchStatus)
     if (value === '') {
@@ -245,6 +247,7 @@ export class SnapshotScheduleListComponent implements OnInit {
     }
     this.getSnapSchedules(false)
   }
+  
 
   getDisplayText(): string {
     // Nếu mảng rỗng, hiển thị "Tất cả trạng thái"
@@ -290,6 +293,8 @@ export class SnapshotScheduleListComponent implements OnInit {
   enableDelete(data: any) {
     this.isVisibleDelete = true;
     this.dataAction = data;
+
+   
   }
 
   // DeleteSchedule() {
@@ -411,8 +416,25 @@ export class SnapshotScheduleListComponent implements OnInit {
   }
 
   enableRestart(data: any) {
-    this.isVisibleRestart = true;
-    this.dataAction = data;
+
+    // this.isVisibleRestart = true;
+    // this.dataAction = data;
+
+    this.snapshotVolumeService.checkValidSchedule(data.id)
+    .pipe(finalize(() => {}))
+    .subscribe(
+      result => {
+        if(result.success){
+          this.isVisibleRestart = true;
+          this.dataAction = data;
+        }
+        else{
+          this.notification.error(this.i18n.fanyi('app.status.fail'), result.message);
+        }
+      },
+      error => {
+        this.notification.error(this.i18n.fanyi('app.status.fail'), error.error.message);
+      });
   }
 
   handleCancel() {
@@ -456,7 +478,7 @@ export class SnapshotScheduleListComponent implements OnInit {
 
         },
         error => {
-          this.notification.error(this.i18n.fanyi('app.status.fail'), 'Khôi phục lịch Snapshot không thành công');
+          this.notification.error(this.i18n.fanyi('app.status.fail'), error.error.message);
         });
   }
 
@@ -490,7 +512,7 @@ export class SnapshotScheduleListComponent implements OnInit {
             this.searchSnapshotScheduleList(true);
           },
           error => {
-            this.notification.error(this.i18n.fanyi('app.status.fail'), 'Sửa lịch Snapshot không thành công');
+            this.notification.error(this.i18n.fanyi('app.status.fail'),  error.error.message);
           }
         )
     }
@@ -512,4 +534,24 @@ export class SnapshotScheduleListComponent implements OnInit {
         break;
     }
   }
+  // checkValidSchedule(data:any){
+  //   this.snapshotVolumeService.checkValidSchedule(this.dataAction.id)
+  //     .pipe(finalize(() => {
+  //       this.loadingRestart = false;
+  //       this.handleCancel();
+  //     }))
+  //     .subscribe(
+  //       result => {
+  //         this.isVisibleRestart = true;
+  //   this.dataAction = data;
+  //         // this.enableRestart();
+  //         // this.notification.success(this.i18n.fanyi('app.status.success'), 'Khôi phục lịch Snapshot thành công');
+  //         // this.getSnapSchedules(true)
+  //         // this.getSnapSchedules(this.pageSize, this.pageNumber, this.region, this.project, this.searchName, '', true);
+
+  //       },
+  //       error => {
+  //         this.notification.error(this.i18n.fanyi('app.status.fail'), error.error.message);
+  //       });
+  // }
 }

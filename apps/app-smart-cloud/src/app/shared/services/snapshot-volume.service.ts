@@ -154,6 +154,9 @@ export class SnapshotVolumeService extends BaseService {
       this.getHeaders()
     );
   }
+  checkValidSchedule(id): Observable<any> {
+    return this.http.get<SnapshotVolumeDto>(this.baseUrl + this.ENDPOINT.provisions + `/vlsnapshots/schedule/${id}/checkvalid`, this.getHeaders());
+  }
 
   actionSchedule(
     id: number,
