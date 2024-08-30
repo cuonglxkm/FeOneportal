@@ -47,10 +47,10 @@ export class WafCloudSecurityStatistics implements OnInit {
   }
 
   getData(){
-    this.wafService.getDomainOfUser().subscribe({
+    this.isSpinning = true;
+    this.wafService.getDomainOfUserInCloudSecurity().subscribe({
       next: (res) => {
-        var any:any = [{domain:'cuong.tokyo',id:2}];
-        res = any;
+        this.isSpinning=false;
         this.selectDomainOptions = res.map(x=>({label:x.domain,value:x.id}));
         this.selectedDomain = res.map(x=>x.id);
         this.domains = res.map(x=>x.domain);
