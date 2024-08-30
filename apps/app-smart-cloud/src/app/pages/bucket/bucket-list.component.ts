@@ -249,10 +249,17 @@ export class BucketListComponent implements OnInit {
         error: (e) => {
           this.loading = false;
           this.listBucket = [];
-          this.notification.error(
-            this.i18n.fanyi('app.status.fail'),
-            this.i18n.fanyi('app.bucket.getBucket.fail')
-          );
+          if(e.status == 403){
+            this.notification.error(
+              e.statusText,
+              this.i18n.fanyi('app.non.permission')
+            );
+          } else {
+            this.notification.error(
+              this.i18n.fanyi('app.status.fail'),
+              this.i18n.fanyi('app.bucket.getBucket.fail')
+            );
+          }
           
         },
       });
