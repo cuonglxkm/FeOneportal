@@ -22,9 +22,9 @@ export class ServiceStatusPipe implements PipeTransform {
       case "ACTIVE":
         return new StatusModel("#008d47", this.i18n.fanyi('service.status.active'));
       case "EXTENDING":
-        return new StatusModel("#0066B0 ", this.i18n.fanyi('service.status.resizing'));
+        return new StatusModel("#0066B0 ", this.i18n.fanyi('service.status.extending'));
       case "RESIZING":
-        return new StatusModel("#EA3824", this.i18n.fanyi('service.status.extending'));
+        return new StatusModel("#EA3824", this.i18n.fanyi('service.status.resizing'));
       case "DELETING":
         return new StatusModel("#EA3829", this.i18n.fanyi('service.status.deleting'));
       case "ERROR_DELETING":

@@ -1082,8 +1082,8 @@ export class InstancesComponent implements OnInit {
 
   navigateToCreateScheduleSnapshot(id: number) {
     this.router.navigate(
-      ['/app-smart-cloud/schedule/snapshot/create', { instanceId: id }],
-      { queryParams: { snapshotTypeCreate: 1 } }
+      ['/app-smart-cloud/schedule/snapshot/create'],
+      { queryParams: { instanceId: id, snapshotTypeCreate: 1 } }
     );
   }
 

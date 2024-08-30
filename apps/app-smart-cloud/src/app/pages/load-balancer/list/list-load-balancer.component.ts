@@ -16,6 +16,7 @@ import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { finalize } from 'rxjs/operators';
 import { da } from 'date-fns/locale';
 import { VpcService } from '../../../shared/services/vpc.service';
+import { PolicyService } from 'src/app/shared/services/policy.service';
 
 @Component({
   selector: 'one-portal-list-load-balancer',
@@ -39,7 +40,7 @@ export class ListLoadBalancerComponent implements OnInit {
   createNewLB: boolean = false;
   noneQuota: boolean;
   projectCurrentModel: any= undefined;
-
+  isCreateOrder: boolean = false;
   constructor(@Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
               private router: Router,
               private cdr: ChangeDetectorRef,
@@ -48,7 +49,8 @@ export class ListLoadBalancerComponent implements OnInit {
               private vpcService: VpcService,
               private catalogService: CatalogService,
               private notification: NzNotificationService,
-              @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService) {
+              @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
+              private policyService: PolicyService) {
     this.loadBalancerStatus = new Map<String, string>();
     this.loadBalancerStatus.set('KHOITAO', this.i18n.fanyi('app.status.running'));
     this.loadBalancerStatus.set('HUY', this.i18n.fanyi('app.status.low-renew'));
@@ -117,6 +119,15 @@ export class ListLoadBalancerComponent implements OnInit {
     } else {
       this.search(true);
     }
+    this.isCreateOrder = this.policyService.hasPermission("order:Create") &&
+      this.policyService.hasPermission("network:List") &&
+      this.policyService.hasPermission("product:Search") &&
+      this.policyService.hasPermission("loadbalancer:List") &&
+      this.policyService.hasPermission("loadbalancer:Get") &&
+      this.policyService.hasPermission("offer:Get") &&
+      this.policyService.hasPermission("ippublic:IpPublicListSubnet") &&
+      this.policyService.hasPermission("order:GetOrderAmount") &&
+      this.policyService.hasPermission("offer:Search");
   }
 
   onPageSizeChange(value) {
@@ -183,6 +194,12 @@ export class ListLoadBalancerComponent implements OnInit {
     }, error => {
       this.isLoading = false;
       this.response = null;
+      if(error.status == 403){
+        this.notification.error(
+          error.statusText,
+          this.i18n.fanyi('app.non.permission')
+        );
+      }
     });
   }
 

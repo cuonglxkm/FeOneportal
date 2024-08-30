@@ -157,6 +157,15 @@ export class S3KeyComponent implements OnInit {
         this.total = data?.totalCount;
         this.response = data;
         this.listOfS3Key = data?.records;
+      }, error => {
+        this.isLoading = false;
+        this.response = null;
+        if(error.status == 403){
+          this.notification.error(
+            error.statusText,
+            this.i18n.fanyi('app.non.permission')
+          );
+        }
       });
   }
 
