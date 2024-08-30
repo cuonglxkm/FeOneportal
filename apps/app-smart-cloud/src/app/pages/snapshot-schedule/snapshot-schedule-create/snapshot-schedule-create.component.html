@@ -565,12 +565,12 @@
             <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
             <div *ngIf="snapshotTypeCreate == 0 ||  (snapshotTypeCreate == 2 && selectedSnapshotType == 0)">
               <div  style="margin-top: 10px" class="text-value">Volume</div>
-              <div style="margin-top: 10px" class="text-label truncate" [nz-tooltip]="selectedVolume?.name ">{{ selectedVolume?.name }} ({{quotaTypeSelected?.toUpperCase()}},{{quotaSelected}} )</div>
+              <div style="margin-top: 10px" class="text-label truncate" [nz-tooltip]="selectedVolume?.name ">{{ selectedVolume?.name }} {{quotaTypeSelected||quotaSelected ? '(' :'' }} {{quotaTypeSelected ? quotaTypeSelected.toUpperCase() :''}} {{quotaTypeSelected&&quotaSelected ? ',' :'' }} {{quotaSelected ? quotaSelected:''}} {{quotaTypeSelected||quotaSelected ? ')' :'' }}</div>
               <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
             </div>
             <div *ngIf="snapshotTypeCreate == 1 || (snapshotTypeCreate == 2 && selectedSnapshotType == 1)">
               <div style="margin-top: 10px" class="text-value">Máy ảo</div>
-              <div style="margin-top: 10px" class="text-label">{{ selectedVM?.name }} ({{quotaTypeSelected?.toUpperCase()}},{{quotaSelected}} )</div>
+              <div style="margin-top: 10px" class="text-label">{{ selectedVM?.name }} {{quotaTypeSelected||quotaSelected ? '(' :'' }} {{quotaTypeSelected ? quotaTypeSelected.toUpperCase() :''}} {{quotaTypeSelected&&quotaSelected ? ',' :'' }} {{quotaSelected ? quotaSelected:''}} {{quotaTypeSelected||quotaSelected ? ')' :'' }}</div>
               <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
             </div>
 
@@ -580,12 +580,12 @@
             <div style="margin-top: 10px" class="text-value">Loại Snapshot</div>
             <div style="margin-top: 10px" class="text-label">{{quotaType?.toUpperCase()}}</div>
             <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider> -->
-            <div style="margin-top: 10px" class="text-value">{{'app.capacity' | i18n}}</div>
+            <!-- <div style="margin-top: 10px" class="text-value">{{'app.capacity' | i18n}}</div>
             <div style="margin-top: 10px" class="text-label">{{quotaSelected}} GB</div>
             <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
             <div style="margin-top: 10px" class="text-value">Loại Snapshot</div>
             <div style="margin-top: 10px" class="text-label">{{quotaTypeSelected?.toUpperCase()}}</div>
-            <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
+            <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider> -->
 
 
             <div style="margin-top: 10px" class="text-value">Chế độ Snapshot</div>
@@ -597,9 +597,15 @@
             <div style="margin-top: 10px" class="text-value">{{ 'app.number.of.snapshot.copy' | i18n }}</div>
             <div style="margin-top: 10px" class="text-label">{{ numOfVersion }}</div>
             <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
-            <button nz-button nzType="primary"
+            <!-- <button nz-button nzType="primary"
               style=" border: none;width: 100%;display: flex;align-items: center;gap: 5px;justify-content: center;"
               nzSize="large" [disabled]="validateForm.invalid || disableByQuota" (click)="create()">
+              <img src="assets/imgs/wallet.svg" alt="" />
+              <span class="button-text-primary">Khởi tạo</span>
+            </button> -->
+            <button nz-button nzType="primary"
+              style=" border: none;width: 100%;display: flex;align-items: center;gap: 5px;justify-content: center;"
+              nzSize="large" [disabled]="validateForm.invalid || (projectType !=1 && !selectedSnapshotPackage ||( this.selectedVolume==undefined ) && (this.selectedVM==undefined) ) || (projectType==1 && ( this.selectedVolume==undefined ) && ( this.selectedVM==undefined ))" (click)="create()">
               <img src="assets/imgs/wallet.svg" alt="" />
               <span class="button-text-primary">Khởi tạo</span>
             </button>
