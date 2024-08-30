@@ -46,7 +46,7 @@
           <nz-col [nzSpan]="16" style="flex:none;">
             <div>
 
-              <button style="margin-left: 10px;" nz-button nzType="primary" nzSize="large"
+              <button *ngIf="isCreateOrder" style="margin-left: 10px;" nz-button nzType="primary" nzSize="large"
                       (click)="navigateToCreateFileSystem(typeVpc)">
                 <img style="padding-right: 10px; margin-top: -4px" src="assets/imgs/add-circle.svg" alt="" />
                 <span class="button-text-primary">{{ 'app.file.system.create.button' | i18n }}</span>
@@ -100,19 +100,19 @@
             <td nzAlign="right">{{ data.size }}</td>
             <td>
               <div *ngIf="(['Không tìm thấy tài nguyên', 'error'].includes(data.taskState))">
-                <one-portal-delete-file-system [region]="region"
+                <one-portal-delete-file-system *ngIf="('fileStorages:DeleteShareFileStorage' | IsPermissionPipe)" [region]="region"
                                                [project]="project"
                                                [fileSystemId]="data.id"
                                                [fileSystemName]="data.name"
                                                (onOk)="handleOkDelete()" />
               </div>
               <div *ngIf="(data.taskState === 'available')">
-                <one-portal-edit-file-system *ngIf="data.status !== 'TAMNGUNG'" 
+                <one-portal-edit-file-system *ngIf="data.status !== 'TAMNGUNG' && ('fileStorages:GetShareFileStorage' | IsPermissionPipe) && ('fileStorages:UpdateShareFileStorage' | IsPermissionPipe)" 
                                             [region]="region"
                                              [project]="project"
                                              [fileSystem]="data"
                                              (onOk)="handleOkEdit()" />
-                <one-portal-delete-file-system [region]="region"
+                <one-portal-delete-file-system *ngIf="('fileStorages:DeleteShareFileStorage' | IsPermissionPipe)" [region]="region"
                                                [project]="project"
                                                [fileSystemId]="data.id"
                                                [fileSystemName]="data.name"
@@ -155,7 +155,7 @@
                 <span class="text-intro-desc">{{ 'app.file.system.des' | i18n }}</span>
             </nz-col>
           </nz-row>
-          <button style="margin-top: 20px" nz-button [nzType]="'primary'" [nzLoading]="isLoading"
+          <button *ngIf="isCreateOrder" style="margin-top: 20px" nz-button [nzType]="'primary'" [nzLoading]="isLoading"
                   (click)="navigateToCreateFileSystem(typeVpc)" nzSize="large">
             <img style="padding-right: 10px; margin-top: -4px" src="assets/imgs/cloud-plus-bold.svg" alt="" />
             {{ 'app.file.system.create.button' | i18n }}
