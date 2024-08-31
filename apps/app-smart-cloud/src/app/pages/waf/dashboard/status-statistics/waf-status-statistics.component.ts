@@ -34,6 +34,8 @@ export class WafStatusStatistics implements OnInit {
   seriesOptions : SeriesOption[];
   tableStatusCodeTable:any[]=[];
   tableOriginStatusCodeTable:any[]=[];
+  isShowModel=false;
+  tableDetails:any[]=[];
 
   constructor(
     private wafService: WafService,
@@ -54,8 +56,6 @@ export class WafStatusStatistics implements OnInit {
   getData(){
     this.wafService.getDomainOfUser().subscribe({
       next: (res) => {
-        var any:any = [{domain:'cloud.vnpt.vn',id:1},{domain:'cuong.tokyo',id:2}];
-        res = any;
         this.selectDomainOptions = res.map(x=>({label:x.domain,value:x.id}));
         this.selectedDomain = res.map(x=>x.id);
         this.domains = res.map(x=>x.domain);
@@ -525,5 +525,14 @@ export class WafStatusStatistics implements OnInit {
       ],
       filename: this.currentTab=='edge'?'Detailed Data Of Status Codes.xlsx':'Origin Status Code Details.xlsx',
     });
+  }
+  handleCancel(){
+    this.isShowModel=false;
+  }
+  showModal(){
+    this.isShowModel=true;
+    for (let i = 0; i < 100; i++) {
+      this.tableDetails.push({url:'https://abv.com',referrer:'aa',requests:10})
+    }
   }
 }
