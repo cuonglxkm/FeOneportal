@@ -90,8 +90,6 @@ export class WafUsageStatistics implements OnInit {
   getData(){
     this.wafService.getDomainOfUser().subscribe({
       next: (res) => {
-        var any:any = [{domain:'cloud.vnpt.vn',id:1},{domain:'cuong.tokyo',id:2}];
-        res = any;
         this.selectDomainOptions = res.map(x=>({label:x.domain,value:x.id}));
         this.selectedDomain = res.map(x=>x.id);
         this.domains = res.map(x=>x.domain);
@@ -348,7 +346,7 @@ export class WafUsageStatistics implements OnInit {
   createDailyTableData(){
     if(this.currentTab=='bandwidth'){
       if(this.selectedTypeRequest =="EDGE"){
-        this.wafService.queryTrafficRequestInTotalAndPeakValue({dateFrom:this.fromDate,dateTo:this.toDate,domain:this.domains,groupBy:[],dataPadding:null}).subscribe({
+        this.wafService.queryTrafficRequestInTotalAndPeakValue({dateFrom:this.fromDate,dateTo:this.toDate,domain:this.domains,groupBy:null,dataPadding:null}).subscribe({
           next: (res) => {
             this.caculateDailyTableBandwidthEdge(res);
           },
@@ -564,7 +562,7 @@ export class WafUsageStatistics implements OnInit {
         if(index1>-1){
           temp[i]+= parseInt(back2OriginDatas[index1].flowRequestOriginData[0].request);
         }
-        sum+=totalRequest;
+        sum+=temp[i];
         console.log(current,sum)
       }
       
@@ -584,7 +582,10 @@ export class WafUsageStatistics implements OnInit {
     this.totalB2OTraffic = Math.ceil(sumTraffic / 1024 * 100) / 100; 
   }
   caculateBack2OriginRequest(){
-    this.totalB20NumberRequest = this.dataBack2Origin.result.reduce((a, b) => a + parseFloat(b.totalRequest), 0);
+    if(this.dataBack2Origin.result[0].flowRequestOriginData[0].timestamp == format(this.fromDate, 'yyyy-MM-dd HH:mm:ss')){
+      this.dataBack2Origin.result.shift();
+    }
+    this.totalB20NumberRequest = this.dataBack2Origin.result.reduce((a, b) => a + parseFloat(b.flowRequestOriginData[0].request), 0);
     this.peakB20NumberRequest = Math.max(...this.back2OriginRequestData);
   }
   
@@ -616,10 +617,10 @@ export class WafUsageStatistics implements OnInit {
         }else{
           this.fillBack2OriginRequestData();
           this.caculateBack2OriginRequest();
+          this.createDailyTableData();
         }
         
         this.draw();
-        //this.createDailyTableData();
       },
       error: (error) => {
         if(this.currentTab=='bandwidth'){
@@ -749,7 +750,7 @@ export class WafUsageStatistics implements OnInit {
     if(!this.isSpinning)
       this.isSpinning = true;
     this.apiRequestCallProcessing[0]=true;
-    this.wafService.queryTrafficRequestInTotalAndPeakValue({dateFrom:this.fromDate,dateTo:this.toDate,domain:this.domains,groupBy:[],dataPadding:null}).subscribe({
+    this.wafService.queryTrafficRequestInTotalAndPeakValue({dateFrom:this.fromDate,dateTo:this.toDate,domain:this.domains,groupBy:null,dataPadding:null}).subscribe({
       next: (res) => {
         this.dataRequestNumber = res;
         this.apiRequestCallProcessing[0]=false;
@@ -757,7 +758,7 @@ export class WafUsageStatistics implements OnInit {
         this.fillRequestNumber();
         this.caculateRequestNumber();
         this.draw();
-        //this.createDailyTableData();
+        this.createDailyTableData();
       },
       error: (error) => {
         this.apiRequestCallProcessing[0]=false;

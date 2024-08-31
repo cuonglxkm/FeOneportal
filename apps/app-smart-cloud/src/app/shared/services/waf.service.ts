@@ -261,6 +261,10 @@ export class WafService extends BaseService {
     return this.http.get<WafDomain[]>(`${this.baseUrl+this.ENDPOINT.provisions}/waf/domain-of-user`);
   }
 
+  getDomainOfUserInCloudSecurity(): Observable<WafDomain[]> {
+    return this.http.get<WafDomain[]>(`${this.baseUrl+this.ENDPOINT.provisions}/waf/domain-of-user/cloud-security`);
+  }
+
   trafficForMultiDomain(fromDate:Date, toDate:Date, type: string, domains: string[]): Observable<any> {
     var url = `fromDate=${fromDate.toISOString()}&toDate=${toDate.toISOString()}&type=${type}`;
     var encodedUrl = url.replace(/\+/g, "%2B").replace(/:/g, "%3A");
