@@ -51,7 +51,7 @@ export class DetailVolumeComponent implements OnInit {
 
   navigateToDetail(id){
     if (this.region === RegionID.ADVANCE) {
-      this.router.navigate(['/app-smart-cloud/volume-advance/detail', id]);
+      this.router.navigate(['/app-smart-cloud/volumes-advance/detail', id]);
       }else{
         this.router.navigate(['/app-smart-cloud/volumes/detail', id]);
       }
@@ -155,7 +155,7 @@ export class DetailVolumeComponent implements OnInit {
   navigateEditVolume(idVolume: number) {
     if (this.region === RegionID.ADVANCE) {
       this.router.navigate([
-        '/app-smart-cloud/volume-advance/edit/' + idVolume,
+        '/app-smart-cloud/volumes-advance/edit/' + idVolume,
       ]);
     } else {
       this.router.navigate(['/app-smart-cloud/volumes/edit/' + idVolume]);
@@ -176,7 +176,7 @@ export class DetailVolumeComponent implements OnInit {
   navigateToResizeVPC(idVolume: number) {
     if (this.region === RegionID.ADVANCE) {
       this.router.navigate([
-        '/app-smart-cloud/volume-advance/vpc/resize/' + idVolume,
+        '/app-smart-cloud/volumes-advance/vpc/resize/' + idVolume,
       ]);
     } else {
       this.router.navigate(['/app-smart-cloud/volume/vpc/resize/' + idVolume]);

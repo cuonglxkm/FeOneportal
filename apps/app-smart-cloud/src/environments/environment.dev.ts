@@ -8,8 +8,10 @@ export const environment = {
     refreshTokenEnabled: true,
     refreshTokenType: 'auth-refresh'
   },
-  baseUrl: 'https://idg-api-gw-dev.onsmartcloud.com',
-  issuer: 'https://identity-dev.onsmartcloud.com',
+  // baseUrl: 'https://idg-api-gw-dev.onsmartcloud.com',
+  // issuer: 'https://identity-dev.onsmartcloud.com',
+  baseUrl: 'https://test-api.cloud.vnpt.vn',
+  issuer: 'https://test-identity.cloud.vnpt.vn',
   unitOfMeasureVpn: 'vpns2s',
   domain: '.onsmartcloud.com',
   cms_baseUrl: 'https://cms.onsmartcloud.com',

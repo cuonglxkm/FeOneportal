@@ -198,7 +198,7 @@ const routes: Routes = [
     }
   },
   {
-    path: 'volume-advance/create',
+    path: 'volumes-advance/create',
     component: CreateVolumeComponent,
     canActivate: [PermissionGuard],
     data: {
@@ -214,7 +214,7 @@ const routes: Routes = [
     }
   },
   {
-    path: 'volume-advance/detail/:id',
+    path: 'volumes-advance/detail/:id',
     component: DetailVolumeComponent,
     canActivate: [PermissionGuard],
     data: {
@@ -230,7 +230,7 @@ const routes: Routes = [
     }
   },
   {
-    path: 'volume-advance/edit/:id',
+    path: 'volumes-advance/edit/:id',
     component: EditVolumeComponent,
     canActivate: [PermissionGuard],
     data: {
@@ -794,7 +794,7 @@ const routes: Routes = [
 
   },
   {
-    path: 'volume-advance/vpc/create',
+    path: 'volumes-advance/vpc/create',
     component: CreateVolumeVpcComponent,
     canActivate: [PermissionGuard],
     data: {
@@ -812,7 +812,7 @@ const routes: Routes = [
 
   },
   {
-    path: 'volume-advance/vpc/resize/:id',
+    path: 'volumes-advance/vpc/resize/:id',
     component: ResizeVolumeVpcComponent,
     canActivate: [PermissionGuard],
     data: {

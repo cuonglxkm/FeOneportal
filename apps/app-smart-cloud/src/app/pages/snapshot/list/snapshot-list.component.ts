@@ -190,13 +190,13 @@ export class SnapshotListComponent implements OnInit {
     if (type == 0) {
       if (this.typeVpc == 1) {
         if (this.region === RegionID.ADVANCE) {
-          this.router.navigate(['/app-smart-cloud/volume-advance/vpc/create',{ idSnapshot: idSnapshot }])
+          this.router.navigate(['/app-smart-cloud/volumes-advance/vpc/create',{ idSnapshot: idSnapshot }])
         } else {
           this.router.navigate(['/app-smart-cloud/volume/vpc/create',{ idSnapshot: idSnapshot }])
         }
       } else {
         if (this.region === RegionID.ADVANCE) {
-          this.router.navigate(['/app-smart-cloud/volume-advance/create',{ idSnapshot: idSnapshot }])
+          this.router.navigate(['/app-smart-cloud/volumes-advance/create',{ idSnapshot: idSnapshot }])
         } else {
           this.router.navigate(['/app-smart-cloud/volumes/create',{ idSnapshot: idSnapshot }])
         }
@@ -309,7 +309,7 @@ export class SnapshotListComponent implements OnInit {
 
   navigateCreateVl() {
     if (this.region === RegionID.ADVANCE) {
-      this.router.navigate(['/app-smart-cloud/volume-advance/create'])
+      this.router.navigate(['/app-smart-cloud/volumes-advance/create'])
     } else {
       this.router.navigate(['/app-smart-cloud/volumes/create'])
     }

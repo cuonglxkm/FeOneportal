@@ -523,7 +523,7 @@ export class CreateVolumeComponent implements OnInit {
             });
         } else {
           if (this.region === RegionID.ADVANCE) {
-            var returnPath: string = '/app-smart-cloud/volume-advance/create';
+            var returnPath: string = '/app-smart-cloud/volumes-advance/create';
             }else{
               var returnPath: string = '/app-smart-cloud/volumes/create';
             }

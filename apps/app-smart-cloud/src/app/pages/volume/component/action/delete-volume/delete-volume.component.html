@@ -8,10 +8,10 @@
     <span class="text-modal-title">{{ 'volume.action.delete' | i18n }} {{ volumeName }}</span>
   </div>
   <div *nzModalContent>
-    <nz-alert nzBanner
+    <!-- <nz-alert nzBanner
               nzShowIcon
               [nzMessage]="'volume.alert.message.delete' | i18n">
-    </nz-alert>
+    </nz-alert> -->
     <div style="margin-top: 10px;">
       <span class="text-label">{{ 'volume.modal.subtitle.delete' | i18n:{"name": volumeName}  }}</span>
       <input nz-input #volumeInputName

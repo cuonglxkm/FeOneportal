@@ -78,10 +78,17 @@ export class DashboardObjectStorageComponent implements OnInit {
           this.cdr.detectChanges();
         },
         error: (e) => {
-          this.notification.error(
-            this.i18n.fanyi('app.status.fail'),
-            this.i18n.fanyi('app.bucket.getObject.fail')
-          );
+          if(e.status == 403){
+            this.notification.error(
+              e.statusText,
+              this.i18n.fanyi('app.non.permission')
+            );
+          } else {
+            this.notification.error(
+              this.i18n.fanyi('app.status.fail'),
+              this.i18n.fanyi('app.bucket.getObject.fail')
+            );
+          }
         }
       });
   }
@@ -119,7 +126,13 @@ export class DashboardObjectStorageComponent implements OnInit {
       .subscribe(data => {
         this.summary = data;
       }, error => {
-        console.log('error: ', error)
+        console.log('error: ', error);
+        if(error.status == 403){
+          this.notification.error(
+            error.statusText,
+            this.i18n.fanyi('app.non.permission')
+          );
+        }
       });
   }
 
@@ -141,6 +154,15 @@ export class DashboardObjectStorageComponent implements OnInit {
       console.log(this.bucketSelected);
       console.log(this.bucketList);
       this.getSummaryObjectStorage();
+    }, error => {
+      this.isLoading = false;
+      this.response = null;
+      if(error.status == 403){
+        this.notification.error(
+          error.statusText,
+          this.i18n.fanyi('app.non.permission')
+        );
+      }
     });
   }
 

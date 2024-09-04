@@ -28,7 +28,7 @@
       <ng-container *ngSwitchCase="false">
         <nz-row nzJustify="space-between">
           <nz-col nzSpan="12">
-            <nz-select [nzPlaceHolder]="'Trạng thái'" [ngModel]="searchStatus" (ngModelChange)="onChangeStatus($event)" [selected]="getDisplayText()"
+            <nz-select [nzPlaceHolder]="'Trạng thái'" [ngModel]="searchStatus" (ngModelChange)="onChangeStatus($event)"  [nzLabel]="getDisplayText()"  
               nzSize="large" style="margin-right: 15px; width: 170px;" nzPlaceHolder="Tất cả trạng thái"
               nzTooltipTitle="Tìm kiếm theo trạng thái" nzTooltipPlacement="bottom" nz-tooltip>
               <nz-option nzValue="" nzLabel="Tất cả trạng thái"></nz-option>
@@ -38,7 +38,7 @@
             </nz-select>
 
             <nz-input-group style="width: 350px; margin-left: 15px;" [nzPrefix]="prefixIconSearch" nzSize="large">
-              <input name="name" nz-input [(ngModel)]="searchName" [placeholder]="'menu.search' | i18n"
+              <input name="name" nz-input [(ngModel)]="searchName" placeholder="Tìm kiếm theo tên lịch Snapshot"
                 (keydown.enter)="onInputChange(value)" (input)="onInputChange($event.target['value'])" />
             </nz-input-group>
             <ng-template #prefixIconSearch>
@@ -73,9 +73,9 @@
               <td style="max-width:180px"><a (click)="navigateToDetail(data.id)">{{data.name}}</a></td>
               <td style="max-width:180px"><a
                   (click)="navigateToPackageDetail(data.snapshotPackageId)">{{data.packageName}}</a></td>
-              <td>{{data.snapshotType == 1 ? ('app.vm.snapshot' | i18n ) : 'Snapshot Volume'}}</td>
+              <td>{{data.snapshotType == 1 ? 'VM (Máy ảo)' : 'Volume'}}</td>
               <td style="max-width:180px">{{data.serviceName}}</td>
-              <td>{{data.maxSnapshot}}</td>
+              <td style="text-align: end;">{{data.maxSnapshot}}</td>
               <td>{{data.nextRuntime | date : 'HH:mm:ss dd/MM/yyyy'}}</td>
               <ng-container *ngIf="data.status | ServiceStatusPipe as statusModel" >
                 <td nzBreakWord nzAlign="left" [ngStyle]="{ color: statusModel.color }">
@@ -88,14 +88,31 @@
                   {{ statusModel.status }}
                 </td>
               </ng-container>
-              <td>
+              <td class="flex" style="align-items: center;">
                 <img *ngIf="data.status == 'ACTIVE' && ('volumesnapshotschedule:Update' | IsPermissionPipe)"
                   (click)="enableEdit(data)" src="assets/imgs/edit-2.svg" alt=""
                   nzTooltipTitle="{{'app.text.edit' | i18n}}"
                   style="cursor: pointer; width: 20px; height: 20px; margin-bottom: 3px;" />
-                <img nz-dropdown [nzDropdownMenu]="opMenu" src="assets/imgs/more1.svg" alt=""
-                  style="margin-left: 5px; cursor:pointer;" />
-                <nz-dropdown-menu #opMenu="nzDropdownMenu">
+                <!-- <img nz-dropdown [nzDropdownMenu]="opMenu" src="assets/imgs/more1.svg" alt=""
+                  style="margin-left: 5px; cursor:pointer;" /> -->
+
+                  <img src="assets/imgs/khoiphuc.svg"  style="width: 22px;height: 22px; cursor: pointer;" *ngIf="data.status == 'DISABLED' || data.status == 'SUSPENDED' && ('volumesnapshotschedule:VolumeSnapshotScheduleAction' | IsPermissionPipe)" (click)="enableRestart(data)" />
+                  <!-- <li
+                  *ngIf="data.status == 'DISABLED' || data.status == 'SUSPENDED' && ('volumesnapshotschedule:VolumeSnapshotScheduleAction' | IsPermissionPipe)"
+                  nz-menu-item (click)="enableRestart(data)">
+                  {{'app.restore' | i18n}}
+                </li> -->
+
+
+                <!-- <li *ngIf="('volumesnapshotschedule:Delete' | IsPermissionPipe)" nz-menu-item
+                  (click)="showDelete(data)" style="color: red">{{ 'app.delete' | i18n}}</li> -->
+
+                  <img src="assets/imgs/delete.svg"
+                  *ngIf="('volumesnapshotschedule:Delete' | IsPermissionPipe)"
+                  style="width: 30px;height: 30px; cursor: pointer;" nz-tooltip
+                  nzTooltipTitle="{{'app.delete' | i18n}}" nzTooltipPlacement="bottom"   (click)="showDelete(data)" />
+
+                <!-- <nz-dropdown-menu #opMenu="nzDropdownMenu">
                   <ul nz-menu>
                     <li
                       *ngIf="data.status == 'DISABLED' || data.status == 'SUSPENDED' && ('volumesnapshotschedule:VolumeSnapshotScheduleAction' | IsPermissionPipe)"
@@ -105,7 +122,7 @@
                     <li *ngIf="('volumesnapshotschedule:Delete' | IsPermissionPipe)" nz-menu-item
                       (click)="showDelete(data)" style="color: red">{{ 'app.delete' | i18n}}</li>
                   </ul>
-                </nz-dropdown-menu>
+                </nz-dropdown-menu> -->
               </td>
             </tr>
           </tbody>
@@ -120,12 +137,12 @@
           </nz-row>
           <nz-row style="margin-top: 20px">
             <nz-col class="text-center" style="width: 100%">
-              <span class="text-intro-title" style="color: #0066b3">{{'app.restore' | i18n}}</span>
+              <span class="text-intro-title" style="color: #0066b3">Lịch Snapshot</span>
             </nz-col>
           </nz-row>
           <nz-row style="margin-top: 20px">
             <nz-col class="text-center" style="width: 100%">
-              <span class="text-intro-desc">{{'app.snapshot.schedule.description' | i18n}}</span>
+              <span class="text-intro-desc">Giúp người dùng lưu lại trạng thái hiện tại của Volume/VM. Người dùng có thể sử dụng để sao lưu volume trước khi thực hiện 1 thao tác rủi ro đến dữ liệu trên VM.</span>
             </nz-col>
           </nz-row>
           <button *ngIf="isCreateOrder" style="margin-top: 20px" nz-button [nzType]="'primary'"
@@ -215,8 +232,8 @@
       </nz-form-item>
       <nz-form-item>
         <nz-form-label><span>{{ 'app.choose.perform.snapshot.time' | i18n }} (<span class="text-red">*</span>)
-            <img nz-popover [nzPopoverContent]="'{{\'app.snapshot.schedule.select.volume\' | i18n}}'"
-              nzPopoverPlacement="bottom" style="margin-left: 5px;" src="assets/imgs/pajamas_question.svg"
+            <img [nz-tooltip]="'Thời gian trong ngày Snapshot sẽ được thực hiện'"
+              style="margin-left: 5px;" src="assets/imgs/pajamas_question.svg"
               alt="" /></span></nz-form-label>
         <nz-time-picker style="width: 100%; border-radius: 8px" [(ngModel)]="time"
           [ngModelOptions]="{ standalone: true }" nzFormat="HH:mm" nzSize="large"></nz-time-picker>

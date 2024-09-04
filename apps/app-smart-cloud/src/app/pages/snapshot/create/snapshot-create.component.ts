@@ -203,7 +203,7 @@ export class SnapshotCreateComponent implements OnInit, OnChanges {
 
   navigateToCreateVolume() {
     if (this.region === RegionID.ADVANCE) {
-      this.router.navigate([`/app-smart-cloud/volume-advance/create`])
+      this.router.navigate([`/app-smart-cloud/volumes-advance/create`])
     } else {
       this.router.navigate([`/app-smart-cloud/volumes/create`])
     }
@@ -451,7 +451,7 @@ export class SnapshotCreateComponent implements OnInit, OnChanges {
     console.log("this.projectType", this.projectType)
     console.log("this.selectedSnapshotPackage 23", this.selectedSnapshotPackage)
     // dự án thường
-    if (this.projectType == 2 && this.selectedSnapshotPackage) {
+    if (this.projectType !=1 && this.selectedSnapshotPackage) {
 
       this.packageSnapshotService.detail(this.selectedSnapshotPackage.id, this.project)
         .pipe(finalize(() => {
@@ -653,7 +653,7 @@ export class SnapshotCreateComponent implements OnInit, OnChanges {
           }
         );
     }
-    else if (this.selectedSnapshotType == 1 || this.navigateTypeSelected == 0) {
+    else if (this.selectedSnapshotType == 1 || this.navigateTypeSelected == 1) {
       this.vlService.getVolumeById(this.selectedVM.volumeRootId, this.project)
         .pipe(finalize(() => {
           // this.checkDisable();

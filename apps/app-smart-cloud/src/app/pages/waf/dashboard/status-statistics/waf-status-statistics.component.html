@@ -8,7 +8,7 @@
                      [nzMaxTagCount]="0"
                      [nzMaxTagPlaceholder]="tagPlaceHolder"
                      nzSize="default"
-                     style="margin-left: 10px; width: 200px;"
+                     style="margin-left: 10px; width: 220px;"
                      nzPlaceHolder="Chọn domain"
                      nzTooltipPlacement="bottom"
                      nz-tooltip
@@ -17,7 +17,7 @@
                      [nzStatus]="!isValid?'error':''" >
           <nz-option *ngFor="let item of selectDomainOptions" [nzValue]="item.value" [nzLabel]="item.label"></nz-option>
         </nz-select>
-        <ng-template #tagPlaceHolder let-selectedList>{{ selectedList.length }} domain selected</ng-template>
+        <ng-template #tagPlaceHolder let-selectedList>{{ selectedList.length }}/{{this.selectDomainOptions.length}} domain selected</ng-template>
         <button style="margin-left: 10px" nz-button nzType="primary" (click)="queryDomain()">Query</button>
       </div>
       <div nz-row class="pt-5">
@@ -42,8 +42,10 @@
   
       <nz-alert nzType="warning" nzMessage="Mô tả chức năng: Chỉ có 10 mã trạng thái TOP được hiển thị trên biểu đồ xu hướng" nzShowIcon></nz-alert>
   
-      <div nz-row class="pt-5 pb-5">
+      <div nz-row class="pt-5" nz-flex nzJustify="space-between">
         <span class="border-left-text ">Details</span>
+        <img nz-popover src="assets/imgs/download-file.svg" alt="" nzPopoverPlacement="bottom" (click)="exportToExcel()"
+                style="cursor: pointer; margin-right: 5px; margin-top: 2px;" nzPopoverContent="Export" />
       </div>
   
       <nz-table #fixedTable
@@ -67,7 +69,7 @@
               <td nzBreakWord nzAlign="left">{{ data.statusCode }}</td>
               <td nzBreakWord nzAlign="right">{{ data.totalRequest }} </td>
               <td nzBreakWord nzAlign="right">{{ data.ratio?.toFixed(2) }}%</td>
-              <td *ngIf="this.currentTab=='edge'" nzBreakWord nzAlign="center">{{ 'details' }}</td>
+              <td *ngIf="this.currentTab=='edge'" nzBreakWord nzAlign="center"><a (click)="showModal(data)">Details</a></td>
             </tr>
           </ng-container>
         </tbody>
@@ -76,5 +78,30 @@
   </nz-content>
 </nz-spin>
 
-
- 
+<nz-modal [(nzVisible)]="isShowModel" [nzStyle]="{top: '0', width: '100vw', height: '100vh'}" 
+          [nzBodyStyle]="{height: 'calc(100vh - 63.24px)'}" nzTitle="Error details" [nzFooter]="null"
+          (nzOnCancel)="handleCancel()">
+  <ng-container *nzModalContent>
+    <nz-table #detailTable
+              nzShowSizeChanger
+              [nzData]="tableDetails"
+              [nzLoading]="">
+      <thead>
+      <tr>
+        <th nzLeft>Target URL</th>
+        <th nzBreakWord>Referrer</th>
+        <th nzBreakWord nzAlign="right">Requests</th>
+      </tr>
+      </thead>
+      <tbody>
+        <ng-container *ngFor="let data of detailTable.data">
+          <tr>
+            <td nzBreakWord nzAlign="left">{{ data.url }}</td>
+            <td nzBreakWord nzAlign="left">{{ data.referrer }} </td>
+            <td nzBreakWord nzAlign="right">{{ data.requests }}</td>
+          </tr>
+        </ng-container>
+      </tbody>
+    </nz-table>
+  </ng-container>
+</nz-modal>
