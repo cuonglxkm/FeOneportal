@@ -116,9 +116,10 @@ export class SnapshotVolumeService extends BaseService {
       params = params.append('ssPackageId', formSearch.ssPackageId)
     }
     if (formSearch.state && Array.isArray(formSearch.state)) {
-      formSearch.state.forEach((stateValue: string) => {
-        params = params.append('state', stateValue);
-      });
+      params = params.append('state', formSearch.state[0]);
+      // formSearch.state.forEach((stateValue: string) => {
+      //   params = params.append('state', stateValue);
+      // });
     }
     return this.http.get<BaseResponse<ScheduleSnapshotVL[]>>(this.baseUrl + this.ENDPOINT.provisions + '/vlsnapshots/schedule', {
       headers: this.getHeaders().headers,

@@ -105,7 +105,7 @@ export class SnapshotScheduleDetailComponent implements OnInit {
           );
         }
       },error =>{      
-        if(error.status===404){
+        if(error.status===500){
           this.router.navigate(['/app-smart-cloud/schedule/snapshot']);
           this.notification.error('Thất bại',error.error.title );
         }

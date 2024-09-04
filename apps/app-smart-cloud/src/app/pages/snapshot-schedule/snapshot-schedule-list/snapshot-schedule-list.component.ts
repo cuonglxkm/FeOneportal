@@ -256,7 +256,7 @@ export class SnapshotScheduleListComponent implements OnInit {
     }
   
     // Nếu không, hiển thị giá trị đầu tiên trong mảng (có thể bạn chỉ lưu 1 giá trị trong mảng này)
-    return this.searchStatus.join(', ');  // Hiển thị dưới dạng chuỗi phân cách bởi dấu phẩy
+    return this.searchStatus[0];  // Hiển thị dưới dạng chuỗi phân cách bởi dấu phẩy
   }
 
 
