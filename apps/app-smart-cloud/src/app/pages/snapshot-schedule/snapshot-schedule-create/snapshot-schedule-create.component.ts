@@ -88,6 +88,21 @@ export class SnapshotScheduleCreateComponent implements OnInit {
 
   instanceId: number;
 
+  request = new CreateScheduleSnapshotDTO();
+  projectType: number;
+  snapshotPackageLoading: boolean;
+  selectedSnapshotPackage: any;
+  snapshotPackageArray: any;
+  selectedSnapshotType = 0; // 0 vlome 1 vm
+  volumeLoading: boolean | string;
+  selectedVolume: any;
+  vmLoading: boolean | string;
+  selectedVM: any;
+  volumeArray: any;
+  vmArray: any;
+  numOfVersion = 1;
+  disableCreate = true;
+
 
   @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
   constructor(
@@ -131,6 +146,7 @@ export class SnapshotScheduleCreateComponent implements OnInit {
     snapshotPackage: [null as number, []]
   })
   url = window.location.pathname;
+
   ngOnInit(): void {
     let regionAndProject = getCurrentRegionAndProject()
     this.region = regionAndProject.regionId
@@ -166,6 +182,13 @@ export class SnapshotScheduleCreateComponent implements OnInit {
       )
     // this.validateForm.controls['quota'].disable();
     this.getListSchedules();
+
+    // const currentDate = new Date();
+    // const hours = currentDate.getHours(); // Lấy giờ hiện tại
+    // const minutes = currentDate.getMinutes(); // Lấy phút hiện tại
+
+    // Định dạng giờ phút thành chuỗi dạng "HH:MM"
+    //  this.formattedTime = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
   }
 
 
@@ -243,24 +266,13 @@ export class SnapshotScheduleCreateComponent implements OnInit {
     }
   }
 
-  request = new CreateScheduleSnapshotDTO();
-  projectType: number;
-  snapshotPackageLoading: boolean;
-  selectedSnapshotPackage: any;
-  snapshotPackageArray: any;
-  selectedSnapshotType = 0; // 0 vlome 1 vm
-  volumeLoading: boolean | string;
-  selectedVolume: any;
-  vmLoading: boolean | string;
-  selectedVM: any;
-  volumeArray: any;
-  vmArray: any;
-  numOfVersion = 1;
-  disableCreate = true;
+
   create() {
+    console.log("time 77", this.time)
+
     const modal: NzModalRef = this.modalService.create({
-      nzTitle: 'Xác nhận tạo lịch Snapshot',
-      nzContent: `<p>Vui lòng cân nhắc thật kỹ trước khi click nút <b>Đồng ý</b>. Quý khách chắc chắn muốn thực hiện tạo lịch Snapshot?</p>`,
+      nzTitle: 'Tạo lịch Snapshot',
+      nzContent: `<p>Quý khách muốn thực hiện tạo lịch Snapshot?</p><br> <p>Vui lòng cân nhắc thật kỹ trước khi click nút <b>Xác nhận</b>.</p>`,
       nzFooter: [
         {
           label: 'Hủy',
@@ -268,7 +280,7 @@ export class SnapshotScheduleCreateComponent implements OnInit {
           onClick: () => modal.destroy(),
         },
         {
-          label: 'Đồng ý',
+          label: 'Xác nhận',
           type: 'primary',
           onClick: () => {
             this.isLoading = true;
@@ -281,6 +293,7 @@ export class SnapshotScheduleCreateComponent implements OnInit {
             // this.request.duration = 0;
             // this.request.volumeId = ((this.selectedSnapshotType==0 && this.snapshotTypeCreate==2) || this.snapshotTypeCreate==0) ?  : '';
             this.request.runtime = new Date();
+            // this.request.runtime = this.formattedTime;
             // this.request.intervalMonth = 0;
             // this.request.maxBaxup = 1; // fix cứng số bản
             this.request.snapshotPacketId = this.projectType == 1 ? null : this.selectedSnapshotPackage.id;
@@ -620,7 +633,7 @@ export class SnapshotScheduleCreateComponent implements OnInit {
   }
   checkPossiblePress(event: KeyboardEvent) {
     const key = event.key;
-    if (isNaN(Number(key)) && key !== 'Backspace' && key !== 'Delete' && key !== 'ArrowLeft' && key !== 'ArrowRight') {
+    if (isNaN(Number(key)) && key !== 'Backspace' && key !== 'Delete' && key !== 'ArrowLeft' && key !== 'ArrowRight' && key !=='Tab') {
       event.preventDefault();
     }
   }
