@@ -6,6 +6,9 @@ import { FormSearchSslSearch } from 'src/app/shared/models/ssl-cert.model';
 import { SSLCertService } from 'src/app/shared/services/ssl-cert.service';
 import { BaseResponse, ProjectModel, RegionModel } from '../../../../../../libs/common-utils/src';
 import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
+import { NzNotificationService } from 'ng-zorro-antd/notification';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
+import { I18NService } from '@core';
 
 @Component({
   selector: 'one-portal-ssl-cert-list',
@@ -34,7 +37,9 @@ export class SslCertListComponent {
   formSearchSslSearch: FormSearchSslSearch = new FormSearchSslSearch()
   @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
   constructor(private SslCertService: SSLCertService,
-            @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService) {
+            @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
+            private notification: NzNotificationService,
+            @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,) {
 }
 
   ngOnInit() {
@@ -104,6 +109,15 @@ export class SslCertListComponent {
       this.isLoading = false
       this.response = data
       
+    }, error => {
+      this.isLoading = false;
+      this.response = null;
+      if(error.status == 403){
+        this.notification.error(
+          error.statusText,
+          this.i18n.fanyi('app.non.permission')
+        );
+      }
     })
   }
 

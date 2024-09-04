@@ -7,12 +7,20 @@ import type { EChartsOption } from 'echarts';
 
 export class WafDash implements OnInit {
   options: EChartsOption;
-
-
+  statusLoaded = false;
+  cloudLoaded = false;
   constructor() {
     
   }
   ngOnInit() {
     
+  }
+  onTabChange(index: number): void {
+      if (index == 1) {
+        this.statusLoaded = true;
+      }
+      if (index == 2) {
+        this.cloudLoaded = true;
+      }
   }
 }

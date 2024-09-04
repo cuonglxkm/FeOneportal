@@ -21,14 +21,14 @@
   
 </page-header>
 
-<nz-tabset>
+<nz-tabset (nzSelectedIndexChange)="onTabChange($event)">
   <nz-tab nzTitle="Usage Statistics">
     <app-waf-usage-statistics></app-waf-usage-statistics>
   </nz-tab>
   <nz-tab nzTitle="Status Statistics">
-    <app-waf-status-statistics></app-waf-status-statistics>
+    <app-waf-status-statistics *ngIf="statusLoaded"></app-waf-status-statistics>
   </nz-tab>
   <nz-tab nzTitle="Cloud Security">
-    <app-waf-cloud-security-statistics></app-waf-cloud-security-statistics>
+    <app-waf-cloud-security-statistics *ngIf="cloudLoaded"></app-waf-cloud-security-statistics>
   </nz-tab>
 </nz-tabset>

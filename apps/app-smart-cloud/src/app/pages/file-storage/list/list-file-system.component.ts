@@ -17,6 +17,7 @@ import { SizeInCloudProject } from 'src/app/shared/models/project.model';
 import { ProjectService } from 'src/app/shared/services/project.service';
 import { debounceTime, Subject, Subscription } from 'rxjs';
 import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
+import { PolicyService } from 'src/app/shared/services/policy.service';
 
 @Component({
   selector: 'one-portal-list-file-system',
@@ -48,6 +49,7 @@ export class ListFileSystemComponent implements OnInit, OnDestroy {
   private searchSubscription: Subscription;
   private enterPressed: boolean = false;
   isFirstVisit: boolean = true;
+  isCreateOrder: boolean = false;
   @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
   constructor(
     private router: Router,
@@ -57,7 +59,8 @@ export class ListFileSystemComponent implements OnInit, OnDestroy {
     @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
     private projectService: ProjectService,
     private cdr: ChangeDetectorRef,
-    private notificationService: NotificationService) {
+    private notificationService: NotificationService,
+    private policyService: PolicyService) {
   }
 
   ngOnDestroy(): void {
@@ -111,6 +114,12 @@ export class ListFileSystemComponent implements OnInit, OnDestroy {
       this.getListFileSystem(true);
       this.getProject();
     }, 2000);
+    this.isCreateOrder = this.policyService.hasPermission("order:Create") &&
+      this.policyService.hasPermission("fileStorages:CheckRouterInFileStorage") &&
+      this.policyService.hasPermission("configuration:Get") &&
+      this.policyService.hasPermission("fileStorages:GetListShareSnapshotFileStorage") &&
+      this.policyService.hasPermission("fileStorages:GetListShareFileStorage") &&
+      this.policyService.hasPermission("order:GetOrderAmount");
   }
 
   navigateToExtendFileSystem(id) {
@@ -209,7 +218,14 @@ export class ListFileSystemComponent implements OnInit, OnDestroy {
         },
         error => {
           this.isLoading = false;
-          this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.failData'));
+          if(error.status == 403){
+            this.notification.error(
+              error.statusText,
+              this.i18n.fanyi('app.non.permission')
+            );
+          } else {
+            this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.failData'));
+          }
         }
       );
   }

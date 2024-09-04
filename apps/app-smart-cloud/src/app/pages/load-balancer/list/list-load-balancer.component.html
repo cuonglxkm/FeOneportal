@@ -58,7 +58,7 @@
                 </ng-template>
               </nz-col>
               <nz-col nzSpan="12" style="flex:none;">
-                <button nz-button nzType="primary" nzSize="large" (click)="navigateToCreate(typeVPC)">
+                <button *ngIf="isCreateOrder" nz-button nzType="primary" nzSize="large" (click)="navigateToCreate(typeVPC)">
                   <img style="padding-right: 10px; margin-top: -4px" src="assets/imgs/add-circle.svg" alt="" />
                   <span class="button-text-primary">{{ 'app.button.load.balancer.create' | i18n }}</span>
                 </button>
@@ -122,10 +122,10 @@
                 <td nzBreakWord>{{ data.offerName }}</td>
                 <td *ngIf="data.provisioningStatus == 'PENDING_CREATE'" nzBreakWord></td>
                 <td *ngIf="data.provisioningStatus == 'TAMNGUNG'" nzBreakWord>
-                  <one-portal-delete-load-balancer [idLoadBalancer]="data.id"
+                  <one-portal-delete-load-balancer *ngIf="('loadbalancer:Delete' | IsPermissionPipe)" [idLoadBalancer]="data.id"
                                                    [nameLoadBalancer]="data.name" [region]="region" [project]="project"
                                                    (onOk)="handleDeleteOk()" />
-                  <img *ngIf="typeVPC != 1" style="padding-right: 10px;" src="assets/imgs/calendar-tick.svg"
+                  <img *ngIf="typeVPC != 1 && ('loadbalancer:Get' | IsPermissionPipe) && ('order:GetOrderAmount' | IsPermissionPipe) && ('order:Create' | IsPermissionPipe)" style="padding-right: 10px;" src="assets/imgs/calendar-tick.svg"
                        nz-tooltip nzTooltipTitle="{{'app.extend' | i18n}} Load Balancer" nzTooltipPlacement="bottom"
                        (click)="navigateToExtend(data.id)" />
                 </td>
@@ -144,10 +144,10 @@
                                                   [ipFloatingAddress]="data.floatingIPAddress" />
                 </span>
                   <!---Gia Han------>
-                  <img *ngIf="typeVPC != 1" style="padding-right: 10px;" src="assets/imgs/calendar-tick.svg"
+                  <img *ngIf="typeVPC != 1 && ('loadbalancer:Get' | IsPermissionPipe) && ('order:GetOrderAmount' | IsPermissionPipe) && ('order:Create' | IsPermissionPipe)" style="padding-right: 10px;" src="assets/imgs/calendar-tick.svg"
                        nz-tooltip nzTooltipTitle="{{'app.extend' | i18n}} Load Balancer" nzTooltipPlacement="bottom"
                        (click)="navigateToExtend(data.id)" />
-                  <one-portal-update-load-balancer-normal [region]="region" [project]="project"
+                  <one-portal-update-load-balancer-normal *ngIf="('loadbalancer:List' | IsPermissionPipe) && ('loadbalancer:Update' | IsPermissionPipe)" [region]="region" [project]="project"
                                                           [loadBalancer]="data"
                                                           (onOk)="search(false)"></one-portal-update-load-balancer-normal>
                   <!--                  <span *ngIf="typeVPC == 1">-->
@@ -161,14 +161,14 @@
                   <!--                <img *ngIf="typeVPC == 0" style="padding-right: 10px; cursor: pointer;"-->
                   <!--                     src="assets/imgs/calendar-tick.svg"-->
                   <!--                     nz-popover [nzPopoverContent]="'app.load.balancer.extend' | i18n" nzPopoverPlacement="bottom" />-->
-                  <one-portal-delete-load-balancer [idLoadBalancer]="data.id"
+                  <one-portal-delete-load-balancer *ngIf="('loadbalancer:Delete' | IsPermissionPipe)" [idLoadBalancer]="data.id"
                                                    [nameLoadBalancer]="data.name" [region]="region" [project]="project"
                                                    (onOk)="handleDeleteOk()" />
                   <img nz-dropdown [nzDropdownMenu]="opMenu" src="assets/imgs/more1.svg" alt=""
                        style="margin-left: 5px; cursor:pointer;" />
                   <nz-dropdown-menu #opMenu="nzDropdownMenu">
                     <ul nz-menu>
-                      <li nz-menu-item (click)="navigateToCreateListener(data.id)">{{ 'app.listener.create' | i18n }}
+                      <li *ngIf="('instance:List' | IsPermissionPipe) && ('loadbalancer:Get' | IsPermissionPipe)" nz-menu-item (click)="navigateToCreateListener(data.id)">{{ 'app.listener.create' | i18n }}
                       </li>
                     </ul>
                   </nz-dropdown-menu>
@@ -203,7 +203,7 @@
                   <span class="text-intro-desc">{{ 'app.load.balancing.intro' | i18n }}</span>
                 </nz-col>
               </nz-row>
-              <button style="margin-top: 20px" nz-button [nzType]="'primary'" (click)="navigateToCreate(typeVPC)"
+              <button *ngIf="isCreateOrder" style="margin-top: 20px" nz-button [nzType]="'primary'" (click)="navigateToCreate(typeVPC)"
                       nzSize="large">
                 <img style="padding-right: 10px; margin-top: -4px" src="assets/imgs/cloud-plus-bold.svg" alt="" />
                 {{ 'app.button.load.balancer.create' | i18n }}
