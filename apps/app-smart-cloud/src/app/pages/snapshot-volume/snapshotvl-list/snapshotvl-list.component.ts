@@ -81,7 +81,7 @@ export class SnapshotVolumeListComponent implements OnInit {
   initVolume(snapshotVl: SnapshotVolumeDto) {
     
     if (this.regionId === RegionID.ADVANCE) {
-      this.router.navigate(['/app-smart-cloud/volume-advance/create'], {
+      this.router.navigate(['/app-smart-cloud/volumes-advance/create'], {
         queryParams: {
           createdFromSnapshot: 'true',
           idSnapshot: snapshotVl.id,

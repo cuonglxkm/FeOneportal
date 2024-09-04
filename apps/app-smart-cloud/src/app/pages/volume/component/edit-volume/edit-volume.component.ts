@@ -184,7 +184,7 @@ export class EditVolumeComponent implements OnInit {
             })
           } else {
             if (this.region === RegionID.ADVANCE) {
-              var returnPath: string = '/app-smart-cloud/volume-advance/edit/' + this.volumeId;
+              var returnPath: string = '/app-smart-cloud/volumes-advance/edit/' + this.volumeId;
             } else {
               var returnPath: string = '/app-smart-cloud/volumes/edit/' + this.volumeId;
             }
@@ -449,6 +449,23 @@ export class EditVolumeComponent implements OnInit {
     });
   }
 
+  onKeyDown(event: KeyboardEvent) {
+    // Lấy giá trị của phím được nhấn
+    const key = event.key;
+    // Kiểm tra xem phím nhấn có phải là một số hoặc phím di chuyển không
+    if (
+      (isNaN(Number(key)) &&
+        key !== 'Backspace' &&
+        key !== 'Delete' &&
+        key !== 'ArrowLeft' &&
+        key !== 'ArrowRight') ||
+      key === '.' || key === '-'
+    ) {
+      // Nếu không phải số hoặc đã nhập dấu chấm và đã có dấu chấm trong giá trị hiện tại
+      event.preventDefault(); // Hủy sự kiện để ngăn người dùng nhập ký tự đó
+    }
+  }
+
   // doEditSizeVolume() {
   //   this.getTotalAmount();
   //   let request = new EditSizeVolumeModel();
@@ -469,7 +486,7 @@ export class EditVolumeComponent implements OnInit {
   //   console.log('request', request);
   //   console.log('price', this.orderItem?.orderItemPrices[0]?.totalAmount.amount);
   //   if (this.region === RegionID.ADVANCE) {
-  //     var returnPath: string = '/app-smart-cloud/volume-advance/detail/' + this.volumeId;
+  //     var returnPath: string = '/app-smart-cloud/volumes-advance/detail/' + this.volumeId;
   //   } else {
   //     var returnPath: string = '/app-smart-cloud/volumes/detail/' + this.volumeId;
   //   }
