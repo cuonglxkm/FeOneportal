@@ -104,6 +104,12 @@ export class SnapshotScheduleDetailComponent implements OnInit {
             'Lấy thông tin Snapshot Schedule thất bại'
           );
         }
+      },error =>{      
+        if(error.status===404){
+          this.router.navigate(['/app-smart-cloud/schedule/snapshot']);
+          this.notification.error('Thất bại',error.error.title );
+        }
+        
       });
   }
   navigateToSnapshotSchedule() {

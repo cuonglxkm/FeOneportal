@@ -38,7 +38,7 @@
             </nz-select>
 
             <nz-input-group style="width: 350px; margin-left: 15px;" [nzPrefix]="prefixIconSearch" nzSize="large">
-              <input name="name" nz-input [(ngModel)]="searchName" [placeholder]="'menu.search' | i18n"
+              <input name="name" nz-input [(ngModel)]="searchName" placeholder="Tìm kiếm theo tên lịch Snapshot"
                 (keydown.enter)="onInputChange(value)" (input)="onInputChange($event.target['value'])" />
             </nz-input-group>
             <ng-template #prefixIconSearch>
@@ -75,7 +75,7 @@
                   (click)="navigateToPackageDetail(data.snapshotPackageId)">{{data.packageName}}</a></td>
               <td>{{data.snapshotType == 1 ? 'Snapshot máy ảo' : 'Snapshot Volume'}}</td>
               <td style="max-width:180px">{{data.serviceName}}</td>
-              <td>{{data.maxSnapshot}}</td>
+              <td style="text-align: end;">{{data.maxSnapshot}}</td>
               <td>{{data.nextRuntime | date : 'HH:mm:ss dd/MM/yyyy'}}</td>
               <ng-container *ngIf="data.status | ServiceStatusPipe as statusModel" >
                 <td nzBreakWord nzAlign="left" [ngStyle]="{ color: statusModel.color }">
