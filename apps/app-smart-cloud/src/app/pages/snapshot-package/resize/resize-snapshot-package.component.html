@@ -12,11 +12,15 @@
         <a routerLink="/app-smart-cloud/snapshot/packages">Gói Snapshot</a>
       </nz-breadcrumb-item> -->
       <nz-breadcrumb-item>
-        <a routerLink="/app-smart-cloud/snapshot/packages/detail/{{idSnapshotPackage}}">Gói Snapshot</a>
+        <a routerLink="/app-smart-cloud/snapshot/packages">Gói Snapshot</a>
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item>     
+        <a [routerLink]="'/app-smart-cloud/snapshot/packages/detail/' + idSnapshotPackage">  Chi tiết gói Snapshot</a>
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>
-        <a routerLink="/app-smart-cloud/snapshot/packages/edit/{{idSnapshotPackage}}">Điều chỉnh gói
-          Snapshot</a>
+        <!-- <a routerLink="/app-smart-cloud/snapshot/packages/edit/{{idSnapshotPackage}}">Điều chỉnh gói -->
+          Điều chỉnh gói Snapshot
+        <!-- </a> -->
       </nz-breadcrumb-item>
     </nz-breadcrumb>
     <ng-template #separatorTemplate><img src="assets/imgs/arrow-square-right.svg" alt="" />
@@ -44,7 +48,7 @@
               <nz-col nzSpan="12">
                 <nz-row style="padding: 12px 0 12px 0">
                   <span class="text-label customSpan" style="width: 35%">Tên gói Snapshot:</span>
-                  <span class="text-value-detail customSpan">{{packageSnapshotModel.packageName}}</span>
+                  <span class="text-value-detail customSpan truncate" [nz-tooltip]="packageSnapshotModel.packageName">{{packageSnapshotModel.packageName}}</span>
                 </nz-row>
               </nz-col>
               <nz-col nzSpan="12">
@@ -188,7 +192,7 @@
               <span class="text-card-header">{{'app.estimated.cost' | i18n}}</span>
             </div>
             <div class="text-value">Tên gói Snapshot</div>
-            <div style="margin-top: 10px" class="text-label">{{ packageSnapshotModel.packageName }}</div>
+            <div style="margin-top: 10px" class="text-label truncate" [nz-tooltip]="packageSnapshotModel.packageName" >{{ packageSnapshotModel.packageName }}</div>
             <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
             <div class="text-value">Dung lượng tổng</div>
             <div style="margin-top: 10px" class="text-label">{{ numberSSD + numberHDD + numberHDDBonus + numberSSDBonus
