@@ -203,7 +203,7 @@ export class SnapshotCreateComponent implements OnInit, OnChanges {
 
   navigateToCreateVolume() {
     if (this.region === RegionID.ADVANCE) {
-      this.router.navigate([`/app-smart-cloud/volume-advance/create`])
+      this.router.navigate([`/app-smart-cloud/volumes-advance/create`])
     } else {
       this.router.navigate([`/app-smart-cloud/volumes/create`])
     }
