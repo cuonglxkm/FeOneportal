@@ -317,12 +317,12 @@
       </nz-col>
       <nz-col nzSpan="8">
         <nz-affix [nzOffsetTop]="72">
-          <nz-card style="border-radius: 8px;" class="border-card">
+          <nz-card style="border-radius: 8px" class="border-card">
             <div style="margin-bottom: 20px">
               <span class="text-card-header">{{ 'app.config.parameters' | i18n }}</span>
             </div>
             <div class="text-value">{{ 'app.volume.name' | i18n }}</div>
-            <div style="margin-top: 10px" class="text-label">
+            <div style="margin-top: 10px" class="text-label volume-name" nz-tooltip [nzTooltipTitle]="validateForm.controls.name.getRawValue()">
               {{ validateForm.controls.name.getRawValue() }}
             </div>
             <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>

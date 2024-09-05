@@ -344,7 +344,7 @@
                   data.taskState.toUpperCase() != 'ERROR' &&
                   data.taskState.toUpperCase() != 'DELETED' &&
                   (isVolumeSnapshotHdd || isVolumeSnapshotSsd) &&
-                  ('volumesnapshotschedule:Create' | IsPermissionPipe)
+                  ('volumesnapshotschedule:Create' | IsPermissionPipe) && !dataInstanceExisted.includes(data.id)
                 "
                 nz-menu-item
                 (click)="navigateToCreateScheduleSnapshot(data.id)"
