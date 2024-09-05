@@ -45,6 +45,7 @@ import { ScheduleService } from '../../../shared/services/schedule.service';
 import { PolicyService } from 'src/app/shared/services/policy.service';
 import { RegionID } from 'src/app/shared/enums/common.enum';
 import { CommonService } from 'src/app/shared/services/common.service';
+import { PackageSnapshotService } from 'src/app/shared/services/package-snapshot.service';
 
 class SearchParam {
   status: string = '';
@@ -81,6 +82,7 @@ export class InstancesComponent implements OnInit {
   isVisibleGanVLAN: boolean = false;
   isVisibleGoKhoiVLAN: boolean = false;
   isCreateOrder: boolean = false;
+  dataInstanceExisted: number[] = []
   @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
   typeVpc: number;
 
@@ -96,7 +98,8 @@ export class InstancesComponent implements OnInit {
     private vlanService: VlanService,
     private backupScheduleService: ScheduleService,
     private commonSrv: CommonService,
-    private policyService: PolicyService
+    private policyService: PolicyService,
+    private packageSnapshotService: PackageSnapshotService
   ) {}
   url = window.location.pathname;
 
@@ -115,6 +118,7 @@ export class InstancesComponent implements OnInit {
     }
     this.userId = this.tokenService.get()?.userId;
     this.getActiveServiceByRegion();
+    this.getExistedSnapshotScheduleInstance()
     this.notificationService.connection.on('UpdateInstance', (data) => {
       if (data) {
         let instanceId = data.serviceId;
@@ -186,15 +190,29 @@ export class InstancesComponent implements OnInit {
     this.onChangeSearchParam();
   }
 
+  //Lấy các máy ảo đã có lịch snapshot
+  getExistedSnapshotScheduleInstance(){
+    this.packageSnapshotService.getExistedSchedule(this.projectId).subscribe(data => {
+      for (let item of data) {
+        console.log("data dataInstanceExisted", data)
+        if (item.snapshotType == 1) {
+          this.dataInstanceExisted.push(item.serviceInstanceId)
+        }
+      }
+      this.cdr.detectChanges()
+    })
+  }
+
   //Lấy các dịch vụ hỗ trợ theo region
   isVolumeSnapshotHdd: boolean = false;
   isVolumeSnapshotSsd: boolean = false;
   isBackupVm: boolean = false;
+  isRescueVm: boolean = false;
 
   getActiveServiceByRegion() {
     this.catalogService
       .getActiveServiceByRegion(
-        ['volume-snapshot-hdd', 'volume-snapshot-ssd', 'backup-vm'],
+        ['volume-snapshot-hdd', 'volume-snapshot-ssd', 'backup-vm', 'rescue-vm'],
         this.region
       )
       .subscribe((data) => {
@@ -208,6 +226,9 @@ export class InstancesComponent implements OnInit {
         this.isBackupVm = data.filter(
           (e) => e.productName == 'backup-vm'
         )[0].isActive;
+        // this.isRescueVm = data.filter(
+        //   (e) => e.productName == 'rescue-vm'
+        // )[0].isActive;
         this.cdr.detectChanges();
       });
   }

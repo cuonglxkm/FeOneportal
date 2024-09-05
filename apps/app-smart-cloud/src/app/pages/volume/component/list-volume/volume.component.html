@@ -178,6 +178,9 @@
                      src="assets/imgs/more1.svg" alt="" style="cursor: pointer; margin-left: 5px;" />
                 <nz-dropdown-menu #opMenu="nzDropdownMenu">
                   <ul nz-menu>
+                    <!-----CHỈNH SỬA--------->
+                    <one-portal-update-volume *ngIf="'backupschedule:Update' | IsPermissionPipe" [region]="region" [project]="project" [volume]="data"
+                                              (onOk)="handleOkUpdate()" />
                     <!----TẠO LỊCH BACKUP---------->
                     <li nz-menu-item *ngIf="'backupschedule:Create' | IsPermissionPipe"
                         (click)="navigateToCreateScheduleBackup(data.id)">{{ 'volume.menu.create.schedule.backup' | i18n }}
@@ -185,10 +188,7 @@
                     <!-----TẠO SNAPSHOT---------->
                     <li *ngIf="(isVolumeSnapshotHdd || isVolumeSnapshotSsd) && ('volumesnapshot:Create' | IsPermissionPipe) && (['AVAILABLE', 'IN-USE'].includes(data.serviceStatus))" nz-menu-item (click)="navigateToSnapshot(data.id)">{{ 'app.snapshot.create' | i18n }}</li>
                     <!-----TẠO LỊCH SNAPSHOT--------->
-                    <li *ngIf="(isVolumeSnapshotHdd || isVolumeSnapshotSsd) && ('volumesnapshotschedule:Create' | IsPermissionPipe) && (['AVAILABLE', 'IN-USE'].includes(data.serviceStatus))" nz-menu-item (click)="navigateToCreateScheduleSnapshot(data.id)">{{ 'volume.menu.create.schedule.snapshot' | i18n }}</li>
-                    <!-----CHỈNH SỬA--------->
-                    <one-portal-update-volume *ngIf="'backupschedule:Update' | IsPermissionPipe" [region]="region" [project]="project" [volume]="data"
-                                              (onOk)="handleOkUpdate()" />
+                    <li *ngIf="(isVolumeSnapshotHdd || isVolumeSnapshotSsd) && ('volumesnapshotschedule:Create' | IsPermissionPipe) && (['AVAILABLE', 'IN-USE'].includes(data.serviceStatus)) && !dataVolumeExisted.includes(data.id)" nz-menu-item (click)="navigateToCreateScheduleSnapshot(data.id)">{{ 'volume.menu.create.schedule.snapshot' | i18n }}</li>       
                   </ul>
                 </nz-dropdown-menu>
               </div>

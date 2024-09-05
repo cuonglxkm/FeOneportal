@@ -61,7 +61,7 @@ export class UpdateVolumeComponent implements AfterViewInit{
   nameList: string[] = [];
 
   focusOkButton(event: KeyboardEvent): void {
-    if (event.key === 'Enter') {
+    if (event.key === 'Enter' && this.validateForm.valid) {
       event.preventDefault();
       this.handleOk();
     }
