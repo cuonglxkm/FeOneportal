@@ -269,10 +269,12 @@ export class SnapshotScheduleCreateComponent implements OnInit {
 
   create() {
     console.log("time 77", this.time)
-
+    const formattedTime = new Date(this.time)
+    console.log("formattedTime", formattedTime)
+    console.log("formattedTime.toTimeString().slice(0, 5", formattedTime.toTimeString().slice(0, 5))
     const modal: NzModalRef = this.modalService.create({
       nzTitle: 'Tạo lịch Snapshot',
-      nzContent: `<p>Quý khách muốn thực hiện tạo lịch Snapshot?</p><br> <p>Vui lòng cân nhắc thật kỹ trước khi click nút <b>Xác nhận</b>.</p>`,
+      nzContent: `<p>Quý khách muốn thực hiện tạo lịch Snapshot?</p> <p>Vui lòng cân nhắc thật kỹ trước khi click nút <b>Xác nhận</b>.</p>`,
       nzFooter: [
         {
           label: 'Hủy',
@@ -292,11 +294,11 @@ export class SnapshotScheduleCreateComponent implements OnInit {
             // this.request.dates = 0;
             // this.request.duration = 0;
             // this.request.volumeId = ((this.selectedSnapshotType==0 && this.snapshotTypeCreate==2) || this.snapshotTypeCreate==0) ?  : '';
-            this.request.runtime = new Date();
-            // this.request.runtime = this.formattedTime;
+            // this.request.runtime = new Date();
+            this.request.runtime = formattedTime.toTimeString().slice(0, 5);
             // this.request.intervalMonth = 0;
             // this.request.maxBaxup = 1; // fix cứng số bản
-            this.request.snapshotPacketId = this.projectType == 1 ? null : this.selectedSnapshotPackage.id;
+            this.request.snapshotPacketId = this.projectType == 1 ? null : this.selectedSnapshotPackage?.id;
             this.request.serviceInstanceId = ((this.selectedSnapshotType == 1 && this.snapshotTypeCreate == 2) || this.snapshotTypeCreate == 1) ? this.selectedVM.id : this.selectedVolume.id;
             this.request.maxSnapshot = this.numOfVersion
             this.request.snapshotType = ((this.selectedSnapshotType == 1 && this.snapshotTypeCreate == 2) || this.snapshotTypeCreate == 1) ? 1 : 0;
