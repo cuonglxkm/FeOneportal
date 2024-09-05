@@ -210,9 +210,14 @@ export class S3KeyComponent implements OnInit {
           });
         },
         error: (e) => {
+          debugger;
           this.isLoadingDelete = false
           this.isVisibleDelete = false
-          this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.notification.delete.s3.key.fail'));
+          if(e.error.detail=="DeleteOwnerException"){
+            this.notification.error(this.i18n.fanyi('app.status.fail'),"Cần ít nhất một S3 Key cho Owner");
+          }else{
+            this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('app.notification.delete.s3.key.fail'));
+          }    
         },
       });
     this.getData();

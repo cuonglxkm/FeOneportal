@@ -133,8 +133,6 @@ export class BucketCreateComponent implements OnInit {
       error: (e) => {
         this.isLoading = false
 
-        console.log(e);
-        debugger;
         if(e.status === 500){
           const errorObject = JSON.parse(e.error);
           if(errorObject.type=="Exception"){

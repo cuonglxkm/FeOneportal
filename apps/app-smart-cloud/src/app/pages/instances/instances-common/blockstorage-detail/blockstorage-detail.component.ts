@@ -80,6 +80,6 @@ export class BlockstorageDetailComponent implements OnInit {
   }
 
   navigateToVolumeDetail(id: string | number){
-    this.commonService.navigateAdvance('/app-smart-cloud/volumes/detail/' + id, '/app-smart-cloud/volume-advance/detail/' + id)
+    this.commonService.navigateAdvance('/app-smart-cloud/volumes/detail/' + id, '/app-smart-cloud/volumes-advance/detail/' + id)
   }
 }

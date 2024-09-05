@@ -91,8 +91,13 @@ export class SnapshotDetailComponent implements OnInit{
        
        
         this.validateForm.controls['description'].setValue(data.description);
-      }
-    )
+      },error =>{      
+        if(error.status===500){
+          this.router.navigate(['/app-smart-cloud/snapshot']);
+          this.notification.error('Thất bại',error.error.message );
+        }
+        
+      });
   }
 
   navigateToDetail(){

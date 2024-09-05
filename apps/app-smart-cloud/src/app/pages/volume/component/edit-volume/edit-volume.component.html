@@ -135,7 +135,8 @@
                                  [nzMin]="0"
                                  (ngModelChange)="changeValueStorage($event)"
                                  [nzStep]="stepStorage"
-                                 [nzMax]="maxStorage"/>
+                                 [nzMax]="maxStorage"
+                                 (keydown)="onKeyDown($event)"/>
                 <ng-template #storageErrorTpl let-control>
                   <ng-container *ngIf="control.hasError('required')">{{'volume.input.required.storage'|i18n}}</ng-container>
                   <ng-container *ngIf="control.hasError('pattern')">{{'volume.input.storage.required'|i18n}}</ng-container>

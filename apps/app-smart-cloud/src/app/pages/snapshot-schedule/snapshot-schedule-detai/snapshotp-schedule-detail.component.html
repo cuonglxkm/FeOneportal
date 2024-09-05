@@ -57,8 +57,8 @@
       <nz-row style="background-color: #e2e2e9">
         <nz-col nzSpan="12">
           <nz-row style="padding: 12px 0 12px 0">
-            <span *ngIf="data.snapshotType == 1" class="text-label customSpan" style="width: 35%">Máy ảo:</span>
-            <span *ngIf="data.snapshotType != 1" class="text-label customSpan" style="width: 35%">Volume:</span>
+            <span *ngIf="data?.snapshotType == 1" class="text-label customSpan" style="width: 35%">Máy ảo:</span>
+            <span *ngIf="data?.snapshotType != 1" class="text-label customSpan" style="width: 35%">Volume:</span>
             <span class="text-value-detail customSpan">{{data?.serviceName}}</span>
           </nz-row>
         </nz-col>
@@ -87,7 +87,7 @@
         <nz-col nzSpan="12">
           <nz-row style="padding: 12px 0 12px 0">
             <span class="text-label customSpan" style="width: 35%">Trạng thái:</span>
-            <ng-container *ngIf="data.status | ServiceStatusPipe as statusModel">
+            <ng-container *ngIf="data?.status | ServiceStatusPipe as statusModel">
               <span nzBreakWord  [ngStyle]="{ color: statusModel.color }" class="text-value-detail customSpan">{{statusModel.status}}</span>
             </ng-container>
           </nz-row>

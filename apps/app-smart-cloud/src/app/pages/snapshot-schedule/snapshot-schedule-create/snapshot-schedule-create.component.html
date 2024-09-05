@@ -55,7 +55,7 @@
               style="margin-bottom: 10px;margin-top: 15px" [nzMessage]="nzMessageNoData" nzShowIcon></nz-alert>
             <ng-template #nzMessageNoData>
               <div>
-                Quý khách chưa có gói Snapshot nào, để có thể sử dụng dịch vụ Snapshot, vui lòng tạo gói Snapshot
+                Quý khách chưa có gói Snapshot nào, để có thể sử dụng dịch vụ lịch Snapshot, vui lòng tạo gói Snapshot
                 <a (click)="navigateToCreateVolume()" [routerLink]="'/app-smart-cloud/snapshot/packages/create'">tại
                   đây</a>
               </div>
@@ -541,9 +541,9 @@
                 <nz-col  [nzXs]="24" [nzSm]="24" [nzMd]="12" [nzLg]="24" [nzXl]="24">
                   <nz-form-item style="margin-right:0.5rem; margin-left:0.5rem">
                     <nz-form-label>Mô tả</nz-form-label>
-                    <nz-form-control>
-                      <nz-textarea-count [nzMaxCharacterCount]="255">
-                        <textarea rows="4" nz-input [(ngModel)]="descSchedule"
+                    <nz-form-control >
+                      <nz-textarea-count [nzMaxCharacterCount]="255" >
+                        <textarea rows="4" nz-input [(ngModel)]="descSchedule" maxlength="255"  
                           [ngModelOptions]="{ standalone: true }"></textarea>
                       </nz-textarea-count>
                     </nz-form-control>
@@ -565,12 +565,12 @@
             <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
             <div *ngIf="snapshotTypeCreate == 0 ||  (snapshotTypeCreate == 2 && selectedSnapshotType == 0)">
               <div  style="margin-top: 10px" class="text-value">Volume</div>
-              <div style="margin-top: 10px" class="text-label truncate" [nz-tooltip]="selectedVolume?.name ">{{ selectedVolume?.name }} ({{quotaTypeSelected?.toUpperCase()}},{{quotaSelected}} )</div>
+              <div style="margin-top: 10px" class="text-label truncate" [nz-tooltip]="selectedVolume?.name ">{{ selectedVolume?.name }} {{quotaTypeSelected||quotaSelected ? '(' :'' }} {{quotaTypeSelected ? quotaTypeSelected.toUpperCase() :''}} {{quotaTypeSelected&&quotaSelected ? ',' :'' }} {{quotaSelected ? quotaSelected:''}} {{quotaTypeSelected||quotaSelected ? ')' :'' }}</div>
               <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
             </div>
             <div *ngIf="snapshotTypeCreate == 1 || (snapshotTypeCreate == 2 && selectedSnapshotType == 1)">
               <div style="margin-top: 10px" class="text-value">Máy ảo</div>
-              <div style="margin-top: 10px" class="text-label">{{ selectedVM?.name }} ({{quotaTypeSelected?.toUpperCase()}},{{quotaSelected}} )</div>
+              <div style="margin-top: 10px" class="text-label">{{ selectedVM?.name }} {{quotaTypeSelected||quotaSelected ? '(' :'' }} {{quotaTypeSelected ? quotaTypeSelected.toUpperCase() :''}} {{quotaTypeSelected&&quotaSelected ? ',' :'' }} {{quotaSelected ? quotaSelected:''}} {{quotaTypeSelected||quotaSelected ? ')' :'' }}</div>
               <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
             </div>
 
@@ -580,12 +580,12 @@
             <div style="margin-top: 10px" class="text-value">Loại Snapshot</div>
             <div style="margin-top: 10px" class="text-label">{{quotaType?.toUpperCase()}}</div>
             <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider> -->
-            <div style="margin-top: 10px" class="text-value">{{'app.capacity' | i18n}}</div>
+            <!-- <div style="margin-top: 10px" class="text-value">{{'app.capacity' | i18n}}</div>
             <div style="margin-top: 10px" class="text-label">{{quotaSelected}} GB</div>
             <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
             <div style="margin-top: 10px" class="text-value">Loại Snapshot</div>
             <div style="margin-top: 10px" class="text-label">{{quotaTypeSelected?.toUpperCase()}}</div>
-            <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
+            <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider> -->
 
 
             <div style="margin-top: 10px" class="text-value">Chế độ Snapshot</div>
@@ -597,12 +597,24 @@
             <div style="margin-top: 10px" class="text-value">{{ 'app.number.of.snapshot.copy' | i18n }}</div>
             <div style="margin-top: 10px" class="text-label">{{ numOfVersion }}</div>
             <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
-            <button nz-button nzType="primary"
+            <!-- <button nz-button nzType="primary"
               style=" border: none;width: 100%;display: flex;align-items: center;gap: 5px;justify-content: center;"
               nzSize="large" [disabled]="validateForm.invalid || disableByQuota" (click)="create()">
               <img src="assets/imgs/wallet.svg" alt="" />
               <span class="button-text-primary">Khởi tạo</span>
+            </button> -->
+            <button nz-button nzType="primary"
+              style=" border: none;width: 100%;display: flex;align-items: center;gap: 5px;justify-content: center;"
+              nzSize="large" [disabled]="validateForm.invalid || (projectType !=1 && !selectedSnapshotPackage ||( this.selectedVolume==undefined ) && (this.selectedVM==undefined) ) || (projectType==1 && ( this.selectedVolume==undefined ) && ( this.selectedVM==undefined ))" (click)="create()">
+              <img src="assets/imgs/wallet.svg" alt="" />
+              <span class="button-text-primary">Khởi tạo</span>
             </button>
+            <!-- <button nz-button nzType="primary"
+            style=" border: none;width: 100%;display: flex;align-items: center;gap: 5px;justify-content: center;"
+            nzSize="large" [disabled]="validateForm.invalid " (click)="create()">
+            <img src="assets/imgs/wallet.svg" alt="" />
+            <span class="button-text-primary">Khởi tạo</span>
+          </button> -->
           </nz-card>
         </nz-affix>
       </nz-col>

@@ -45,7 +45,7 @@ export class VolumeComponent implements OnInit, OnDestroy {
   options = [
     { label: this.i18n.fanyi('app.status.all'), value: '' },
     { label: this.i18n.fanyi('app.status.running'), value: 'KHOITAO' },
-    { label: this.i18n.fanyi('app.status.error'), value: 'ERROR' },
+    // { label: this.i18n.fanyi('app.status.error'), value: 'ERROR' },
     { label: this.i18n.fanyi('app.status.suspend'), value: 'SUSPENDED' }
   ];
 
@@ -214,13 +214,13 @@ export class VolumeComponent implements OnInit, OnDestroy {
   navigateToCreateVolume() {
     if (this.typeVPC == 1) {
       if (this.region === RegionID.ADVANCE) {
-        this.router.navigate(['/app-smart-cloud/volume-advance/vpc/create']);
+        this.router.navigate(['/app-smart-cloud/volumes-advance/vpc/create']);
       } else {
         this.router.navigate(['/app-smart-cloud/volume/vpc/create']);
       }
     } else {
       if (this.region === RegionID.ADVANCE) {
-        this.router.navigate(['/app-smart-cloud/volume-advance/create']);
+        this.router.navigate(['/app-smart-cloud/volumes-advance/create']);
       } else {
         this.router.navigate(['/app-smart-cloud/volumes/create']);
       }
@@ -230,7 +230,7 @@ export class VolumeComponent implements OnInit, OnDestroy {
 
   navigateToDetail(id) {
     if (this.region === RegionID.ADVANCE) {
-      this.router.navigate(['/app-smart-cloud/volume-advance/detail', id]);
+      this.router.navigate(['/app-smart-cloud/volumes-advance/detail', id]);
     } else {
       this.router.navigate(['/app-smart-cloud/volumes/detail', id]);
     }
