@@ -28,8 +28,8 @@ export class SnapshotScheduleListComponent implements OnInit {
   region: number;
   project: number;
 
-  // searchStatus: string = '';
-  searchStatus: string[] = [];
+  searchStatus: string = '';
+  // searchStatus: string[] = [];
   searchName: string = '';
 
   validateForm: FormGroup<{
@@ -240,10 +240,10 @@ export class SnapshotScheduleListComponent implements OnInit {
   // search theo status snapshot schedule
   onChangeStatus(value) {
    
-    this.searchStatus = [value]
+    this.searchStatus = value
     console.log(" this.searchStatus", this.searchStatus)
     if (value === '') {
-      this.searchStatus = [];
+      this.searchStatus = '';
     }
     this.getSnapSchedules(false)
   }

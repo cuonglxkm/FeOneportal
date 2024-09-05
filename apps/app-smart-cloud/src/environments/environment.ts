@@ -18,8 +18,15 @@ export const environment = {
   // issuer: 'https://identity-dev.onsmartcloud.com',
   // baseUrl: 'https://test-api.cloud.vnpt.vn',
   // issuer: 'https://test-identity.cloud.vnpt.vn',
-  baseUrl: 'https://test-api.cloud.vnpt.vn',
-  issuer: 'https://test-identity.cloud.vnpt.vn',
+
+
+  // baseUrl: 'https://test-api.cloud.vnpt.vn',
+  // issuer: 'https://test-identity.cloud.vnpt.vn',
+  
+   baseUrl: 'https://idg-api-gw-dev.onsmartcloud.com',
+   issuer: 'https://identity-dev.onsmartcloud.com',
+
+
   //issuer: 'https://localhost:1000',
   unitOfMeasureVpn: 'vpns2s',
   domain: '.onsmartcloud.com',
