@@ -31,16 +31,16 @@ export class WafUsageStatistics implements OnInit {
   domains: string[];
   dataBandwidth: QueryBandwidthForMultiDomainResponse2;
   dataTraffic: QueryTrafficForMultiDomainResponse;
-  totalEdgeTraffic: number;
-  totalB2OTraffic: number;
-  totalEdgeNumberRequest: number;
-  peakEdgeNumberRequest: number;
-  totalB20NumberRequest: number;
-  peakB20NumberRequest: number;
+  totalEdgeTraffic: number = 0;
+  totalB2OTraffic: number = 0;
+  totalEdgeNumberRequest: number = 0;
+  peakEdgeNumberRequest: number = 0;
+  totalB20NumberRequest: number = 0;
+  peakB20NumberRequest: number = 0;
   dataBandwidthSaving: QueryRequesBandwidthtSavingRatioResponse;
-  averageBandwidthSaving: number;
-  averageHitRatio: number;
-  peakHitRatio: number;
+  averageBandwidthSaving: number = 0;
+  averageHitRatio: number = 0;
+  peakHitRatio: number = 0;
   dataBack2Origin: QueryBacktoOriginTrafficAndRequestResponse;
   dataRequestNumber: QueryTrafficRequestInTotalAndPeakValueResponse;
   dataRequestHitRatio: QueryRequestHitRatioResponse;
@@ -103,7 +103,8 @@ export class WafUsageStatistics implements OnInit {
         this.getTop10BandwidthSaving();
       },
       error: (error) => {
-        console.log(error);
+				this.notification.error('', "Lấy dữ liệu thất bại");
+				console.log(error);
       }
     })
     
@@ -244,6 +245,11 @@ export class WafUsageStatistics implements OnInit {
   }
 
   caculateDailyTableBandwidthEdge(data: QueryTrafficRequestInTotalAndPeakValueResponse){
+    if(data.result.length==0){
+      this.peakEdgeTable=[];
+      this.renderPeakTable();
+      return;
+    }
     var timestamps = data.result[0].flowRequestData.map(x=>x.timestamp+":00");
     var bandwidths = data.result[0].flowRequestData.map(x=>parseFloat(x.bandwidth));
     var flows = data.result[0].flowRequestData.map(x=>parseFloat(x.flow));
@@ -260,6 +266,11 @@ export class WafUsageStatistics implements OnInit {
     this.renderPeakTable();
   }
   caculateDailyTableBandwidthB2O(data: QueryBacktoOriginTrafficAndRequestResponse){
+    if(data.result.length==0){
+      this.peakB2OTable=[];
+      this.renderPeakTable();
+      return;
+    }
     var timestamps = data.result.map(x=>x.flowRequestOriginData[0].timestamp+":00");
     var bandwidths = data.result.map(x=>parseFloat(x.flowRequestOriginData[0].bandwidth));
     var flows = data.result.map(x=>parseFloat(x.flowRequestOriginData[0].flow));
@@ -276,6 +287,11 @@ export class WafUsageStatistics implements OnInit {
     this.renderPeakTable();
   }
   caculateDailyTableBandwidthSaving(data: QueryRequesBandwidthtSavingRatioResponse){
+    if(data.data.length==0){
+      this.peakSavingTable=[];
+      this.renderPeakTable();
+      return;
+    }
     var timestamps = data.data[0].savingBandwidthDatas.map(x=>x.timestamp+(this.selectedTypeDate=='fiveminutes'?':00':':00:00'));
     var savingBandwidtds = data.data[0].savingBandwidthDatas.map(x=>parseFloat(x.savingBandwidth));
     var b2os= this.groupByDateAndGetMax(timestamps,savingBandwidtds);
@@ -303,7 +319,8 @@ export class WafUsageStatistics implements OnInit {
           this.renderPeakTable();
         },
         error: (error) => {
-          console.log(error);
+          this.notification.error('', "Lấy dữ liệu thất bại");
+				  console.log(error);
         }
       })
     } 
@@ -311,6 +328,11 @@ export class WafUsageStatistics implements OnInit {
     
   }
   caculateDailyTableRequestHitRatio(data: QueryRequestHitRatioResponse){
+    if(data.data.length==0){
+      this.totalHitRatioTable=[];
+      this.renderPeakTable();
+      return;
+    }
     var timestamps = data.data[0].hitRatioDatas.map(x=>x.timestamp+(this.selectedTypeDate=='fiveminutes'?':00':':00:00'));
     var hitRatios = data.data[0].hitRatioDatas.map(x=>parseFloat(x.hitRatio));
     var HRs= this.groupByDateAndGetMax(timestamps,hitRatios);
@@ -338,7 +360,8 @@ export class WafUsageStatistics implements OnInit {
           this.renderPeakTable();
         },
         error: (error) => {
-          console.log(error);
+          this.notification.error('', "Lấy dữ liệu thất bại");
+				  console.log(error);
         }
       })
     } 
@@ -351,7 +374,8 @@ export class WafUsageStatistics implements OnInit {
             this.caculateDailyTableBandwidthEdge(res);
           },
           error: (error) => {
-            console.log(error);
+            this.notification.error('', "Lấy dữ liệu thất bại");
+				console.log(error);
           }
         })
       }
@@ -362,7 +386,8 @@ export class WafUsageStatistics implements OnInit {
             this.caculateDailyTableBandwidthB2O(res);
           },
           error: (error) => {
-            console.log(error);
+            this.notification.error('', "Lấy dữ liệu thất bại");
+				console.log(error);
           }
         })
       }
@@ -378,34 +403,44 @@ export class WafUsageStatistics implements OnInit {
             this.caculateDailyTableBandwidthSaving(res);
           },
           error: (error) => {
-            console.log(error);
+            this.notification.error('', "Lấy dữ liệu thất bại");
+				    console.log(error);
           }
         })
       }
     }
     else{
-      var maxEdges= this.groupByDateAndGetMax(this.xAxis,this.requestNumberData);
-      this.totalEdgeRequestTable=maxEdges.map(x=>({
-        date:x.dateTime.split(' ')[0],
-        total:x.total
-      })).reverse();
 
-      this.totalEdgeRequestTable.push({
-        date:'Total',
-        total: this.totalEdgeRequestTable.reduce((a, b) => a + b.total, 0)
-      })
-
-      var maxB2O= this.groupByDateAndGetMax(this.xAxis,this.back2OriginRequestData);
-      this.totalB2ORequestTable=maxB2O.map(x=>({
-        date:x.dateTime.split(' ')[0],
-        total:x.total
-      })).reverse();
-
-      this.totalB2ORequestTable.push({
-        date:'Total',
-        total: this.totalB2ORequestTable.reduce((a, b) => a + b.total, 0)
-      })
+      if(this.requestNumberData.length==0){
+        this.totalEdgeRequestTable=[];
+      }else{
+        var maxEdges= this.groupByDateAndGetMax(this.xAxis,this.requestNumberData);
+        this.totalEdgeRequestTable=maxEdges.map(x=>({
+          date:x.dateTime.split(' ')[0],
+          total:x.total
+        })).reverse();
+        this.totalEdgeRequestTable.push({
+          date:'Total',
+          total: this.totalEdgeRequestTable.reduce((a, b) => a + b.total, 0)
+        })
+      }
       
+      if(!this.back2OriginRequestData || this.back2OriginRequestData.length==0){
+        this.totalB2ORequestTable=[];
+      }
+      else{
+        var maxB2O= this.groupByDateAndGetMax(this.xAxis,this.back2OriginRequestData);
+        this.totalB2ORequestTable=maxB2O.map(x=>({
+          date:x.dateTime.split(' ')[0],
+          total:x.total
+        })).reverse();
+
+        this.totalB2ORequestTable.push({
+          date:'Total',
+          total: this.totalB2ORequestTable.reduce((a, b) => a + b.total, 0)
+        })
+      }
+
       if(this.selectedTypeRequest =="HR"){
         if(this.selectedTypeDate =='fiveminutes'){
           var dataInterval = '5m';
@@ -417,7 +452,8 @@ export class WafUsageStatistics implements OnInit {
             this.caculateDailyTableRequestHitRatio(res);
           },
           error: (error) => {
-            console.log(error);
+            this.notification.error('', "Lấy dữ liệu thất bại");
+				console.log(error);
           }
         })
       }
@@ -460,7 +496,7 @@ export class WafUsageStatistics implements OnInit {
       var max= Math.max(...this.bandWidthData);
       this.peakEdge ={
         bandwidth: max,
-        timestamp: this.xAxis[this.bandWidthData.indexOf(max)]
+        timestamp: max ? this.xAxis[this.bandWidthData.indexOf(max)]:null
       };
     }
   }
@@ -499,7 +535,8 @@ export class WafUsageStatistics implements OnInit {
       error: (error) => {
         this.apiCallProcessing[0]=false;
         this.offSpining();
-        console.log(error);
+        this.notification.error('', "Lấy dữ liệu thất bại");
+				console.log(error);
       }
     })
   }
@@ -512,7 +549,8 @@ export class WafUsageStatistics implements OnInit {
       },
       error: (error) => {
         this.isSpinning=false;
-        console.log(error);
+        this.notification.error('', "Lấy dữ liệu thất bại");
+				console.log(error);
       }
     })
   }
@@ -582,6 +620,11 @@ export class WafUsageStatistics implements OnInit {
     this.totalB2OTraffic = Math.ceil(sumTraffic / 1024 * 100) / 100; 
   }
   caculateBack2OriginRequest(){
+    if(this.dataBack2Origin.result.length==0){
+      this.totalB20NumberRequest = 0;
+      this.peakB20NumberRequest = 0;
+      return;
+    }
     if(this.dataBack2Origin.result[0].flowRequestOriginData[0].timestamp == format(this.fromDate, 'yyyy-MM-dd HH:mm:ss')){
       this.dataBack2Origin.result.shift();
     }
@@ -629,12 +672,21 @@ export class WafUsageStatistics implements OnInit {
           this.apiRequestCallProcessing[1]=false;
         }
         this.offSpining();
-        console.log(error);
+        this.notification.error('', "Lấy dữ liệu thất bại");
+				console.log(error);
       }
     })
   }
 
   caculateBandwidthSaving(){
+    if(this.dataBandwidthSaving.data.length==0){
+      this.averageBandwidthSaving = 0;
+      this.peakSaving={
+        savingBandwidth: 0,
+        timestamp: null
+      };
+      return;
+    }
     this.averageBandwidthSaving = this.dataBandwidthSaving.data[0].totalAvg * 100;
     if(this.selectedTypeDate=='fiveminutes'){
       var max= Math.max(...this.bandWidthSavingData);
@@ -667,11 +719,17 @@ export class WafUsageStatistics implements OnInit {
       error: (error) => {
         this.apiCallProcessing[1]=false;
         this.offSpining();
-        console.log(error);
+        this.notification.error('', "Lấy dữ liệu thất bại");
+				console.log(error);
       }
     })
   }
   fillBandwidthSavingData(){
+    if(this.dataBandwidthSaving.data.length==0){
+      this.bandWidthSavingData = [];
+      return;
+    }
+
     if(this.selectedTypeDate =='fiveminutes'){
       var temp = [];
       var savingBandwidthDatas = this.dataBandwidthSaving.data[0].savingBandwidthDatas;
@@ -705,6 +763,10 @@ export class WafUsageStatistics implements OnInit {
     }
   }
   fillRequestNumber(){
+    if(this.dataRequestNumber.result.length==0){
+      this.requestNumberData = [];
+      return;
+    }
     var temp = [];
     var requestNumberDatas = this.dataRequestNumber.result[0].flowRequestData;
     requestNumberDatas.forEach(x=>x.timestamp+=':00');
@@ -739,6 +801,11 @@ export class WafUsageStatistics implements OnInit {
     this.requestNumberData = temp;
   }
   caculateRequestNumber(){
+    if(this.requestNumberData.length==0){
+      this.totalEdgeNumberRequest = 0;
+      this.peakEdgeNumberRequest = 0;
+      return;
+    }
     this.totalEdgeNumberRequest = parseFloat(this.dataRequestNumber.result[0].totalRequest);
     if(this.selectedTypeDate=='fiveminutes'){
       this.peakEdgeNumberRequest = parseFloat(this.dataRequestNumber.result[0].peakRequest);
@@ -763,11 +830,16 @@ export class WafUsageStatistics implements OnInit {
       error: (error) => {
         this.apiRequestCallProcessing[0]=false;
         this.offSpining();
-        console.log(error);
+        this.notification.error('', "Lấy dữ liệu thất bại");
+				console.log(error);
       }
     })
   }
   fillRequestHitRatio(){
+    if(this.dataRequestHitRatio.data.length==0){
+      this.requestHitRatioData = [];
+      return;
+    }
     var temp = [];
     var requestHitRatioDatas = this.dataRequestHitRatio.data[0].hitRatioDatas;
     if(this.selectedTypeDate =='fiveminutes'){
@@ -789,6 +861,11 @@ export class WafUsageStatistics implements OnInit {
     this.requestHitRatioData = temp;
   }
   caculateRequestHitRatio(){
+    if(this.dataRequestHitRatio.data.length == 0){
+      this.averageHitRatio=0;
+      this.peakHitRatio=0;
+      return;
+    }
     this.averageHitRatio = this.dataRequestHitRatio.data[0].totalAvg <0? 0: this.dataRequestHitRatio.data[0].totalAvg * 100;
     this.peakHitRatio = Math.max(...this.dataRequestHitRatio.data[0].hitRatioDatas.map(x=>parseFloat(x.hitRatio))) * 100;
   }
@@ -814,7 +891,8 @@ export class WafUsageStatistics implements OnInit {
       error: (error) => {
         this.apiRequestCallProcessing[2]=false;
         this.offSpining();
-        console.log(error);
+        this.notification.error('', "Lấy dữ liệu thất bại");
+				console.log(error);
       }
     })
   }
@@ -842,13 +920,14 @@ export class WafUsageStatistics implements OnInit {
   onDateChange(result: Date[]): void {
     console.log(result);
     this.isValid = this.selectedDomain.length>0;
-    this.isDateValid = differenceInCalendarDays(result[1], result[0]) <= 31;
     var from = new Date(result[0]);
     var to = new Date(result[1]);
     from.setHours(0,0,0,0); 
     to.setHours(24,0,0,0);
     this.fromDate = from;
     this.toDate = to;
+    var datediff= differenceInCalendarDays(this.toDate, this.fromDate);
+    this.isDateValid =  datediff<= 31;
     if(this.isSameDay(result[0],result[1])){
       this.selectedTypeDate = 'fiveminutes';
       

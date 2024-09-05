@@ -341,13 +341,13 @@ export class WafStatusStatistics implements OnInit {
   
   onDateChange(result: Date[]): void {
     this.isValid = this.selectedDomain.length>0;
-    this.isDateValid = differenceInCalendarDays(result[1], result[0]) <= 31;
     var from = new Date(result[0]);
     var to = new Date(result[1]);
     from.setHours(0,0,0,0); 
     to.setHours(24,0,0,0);
     this.fromDate = from;
     this.toDate = to;
+    this.isDateValid = differenceInCalendarDays(this.toDate, this.fromDate) <= 31;
     if(!this.isDateValid){
       this.notification.warning('',"Khoảng thời gian không lớn hơn 31 ngày");
       return;

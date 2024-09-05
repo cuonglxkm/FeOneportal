@@ -42,7 +42,7 @@
           <span *ngIf="this.selectedTypeDate=='fiveminutes' || this.currentTab=='requests'" class="peak">
             {{this.currentTab=='bandwidth'?'Peak Bandwidth':'Total Requests'}} :
             <ng-container *ngIf="this.currentTab=='bandwidth';else elseBlock1">
-              <span style="color: #512DA8; font-weight: bold">{{this.peakEdge?.bandwidth?.toFixed(2)}} Mbps </span>({{this.peakEdge?.timestamp}}) 
+              <span style="color: #512DA8; font-weight: bold">{{this.peakEdge?.bandwidth?.toFixed(2) ?? 0}} Mbps </span>{{this.bandwidth?.timestamp ? '('+this.bandwidth?.timestamp+')':''}}
             </ng-container> 
             <ng-template #elseBlock1>
               <span style="color: #512DA8; font-weight: bold">{{this.totalEdgeNumberRequest}} </span>
@@ -57,7 +57,7 @@
           <span *ngIf="this.selectedTypeDate=='fiveminutes' || this.currentTab=='requests'" class="peak">
             {{this.currentTab=='bandwidth'?'Peak Bandwidth':'Total Requests'}} :
             <ng-container *ngIf="this.currentTab=='bandwidth';else elseBlock2">
-              <span style="color: #512DA8; font-weight: bold">{{this.peakB2O?.bandwidth?.toFixed(2)}} Mbps </span>({{this.peakB2O?.timestamp}}) 
+              <span style="color: #512DA8; font-weight: bold">{{this.peakB2O?.bandwidth?.toFixed(2)??0}} Mbps </span>{{this.peakB2O?.timestamp ? '('+this.peakB2O?.timestamp+')':''}}
             </ng-container> 
             <ng-template #elseBlock2>
               <span style="color: #512DA8; font-weight: bold">{{this.totalB20NumberRequest}} </span>
@@ -72,7 +72,7 @@
           <span class="peak">
             {{this.currentTab=='bandwidth'?'Peak Value':'Peak'}} :
             <ng-container *ngIf="this.currentTab=='bandwidth';else elseBlock3">
-              <span style="color: #512DA8; font-weight: bold">{{this.peakSaving?.savingBandwidth?.toFixed(2)}}% </span>({{this.peakSaving?.timestamp}})
+              <span style="color: #512DA8; font-weight: bold">{{this.peakSaving?.savingBandwidth?.toFixed(2)??0}}% </span>{{this.peakSaving?.timestamp ? '('+this.peakSaving?.timestamp+')':''}}
             </ng-container> 
             <ng-template #elseBlock3>
               <span style="color: #512DA8; font-weight: bold">{{this.peakHitRatio?.toFixed(2)}}%   </span>
