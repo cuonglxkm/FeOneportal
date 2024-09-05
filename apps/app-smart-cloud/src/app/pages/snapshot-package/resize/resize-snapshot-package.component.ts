@@ -321,7 +321,7 @@ export class ResizeSnapshotPackageComponent implements OnInit {
         orderItemQuantity: 1,
         specification: JSON.stringify(data),
         specificationType: 'snapshotpackage_resize',
-        price: 0,
+        price:this.orderItem?.totalAmount?.amount,
         serviceDuration: 0
       }
     ];
