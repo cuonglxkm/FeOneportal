@@ -49,6 +49,10 @@
           (click)="doSearch()"
         />
       </ng-template>
+      <button style="border: none; position: absolute; right: 0px;" nz-button nzSize="large" nz-tooltip nzTooltipTitle="Làm mới"
+          nzTooltipPlacement="bottom" (click)="search(searchBox.value)">
+          <img style="margin-top: -4px" src="assets/imgs/refresh.svg" alt="" />
+        </button>
     </nz-col>
   </nz-row>
   <nz-table
