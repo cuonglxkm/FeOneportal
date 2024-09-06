@@ -486,6 +486,24 @@ export class CreateVolumeVpcComponent implements OnInit {
     }
   }
 
+  // onSwitchSnapshot(value) {
+  //   this.isInitSnapshot = value;
+  //   console.log('snap shot', this.isInitSnapshot);
+  //   if (this.isInitSnapshot) {
+  //     this.disableHDD = true;
+  //     this.disableSSD = true
+  //     this.validateForm.controls.snapshot.setValidators(Validators.required);
+  //   } else {
+  //     this.disableHDD = false;
+  //     this.disableSSD = false
+  //     this.validateForm.controls.snapshot.clearValidators();
+  //     this.validateForm.controls.snapshot.updateValueAndValidity();
+
+  //     this.validateForm.controls.storage.clearValidators();
+  //     this.validateForm.controls.storage.updateValueAndValidity();
+  //   }
+  // }
+
   onSwitchSnapshot(value) {
     this.isInitSnapshot = value;
     console.log('snap shot', this.isInitSnapshot);
@@ -493,13 +511,16 @@ export class CreateVolumeVpcComponent implements OnInit {
       this.disableHDD = true;
       this.disableSSD = true
       this.validateForm.controls.snapshot.setValidators(Validators.required);
+      
+      this.validateForm.controls.storage.clearValidators();
+      this.validateForm.controls.storage.updateValueAndValidity();
     } else {
       this.disableHDD = false;
       this.disableSSD = false
       this.validateForm.controls.snapshot.clearValidators();
       this.validateForm.controls.snapshot.updateValueAndValidity();
 
-      this.validateForm.controls.storage.clearValidators();
+      this.validateForm.controls.storage.setValidators([Validators.required, Validators.pattern(/^[0-9]*$/), this.checkQuota.bind(this)]);
       this.validateForm.controls.storage.updateValueAndValidity();
     }
   }
