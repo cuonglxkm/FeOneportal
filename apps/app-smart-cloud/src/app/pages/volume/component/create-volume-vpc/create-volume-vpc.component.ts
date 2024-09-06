@@ -143,6 +143,7 @@ export class CreateVolumeVpcComponent implements OnInit {
   }
 
   checkQuota(control) {
+    console.log('remaining: ', this.remaining)
     const value = control.value;
     if (this.remaining < value) {
       return { notEnough: true };
