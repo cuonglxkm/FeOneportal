@@ -4,7 +4,7 @@ import { DA_SERVICE_TOKEN, ITokenService } from "@delon/auth";
 import { NzNotificationService } from "ng-zorro-antd/notification";
 import { PackageBackupService } from "../../../shared/services/package-backup.service";
 import { FormUpdate, PackageBackupModel, ServiceInPackage } from "../../../shared/models/package-backup.model";
-import { BaseResponse, ProjectModel, RegionModel } from "../../../../../../../libs/common-utils/src";
+import { BaseResponse, NotificationService, ProjectModel, RegionModel } from "../../../../../../../libs/common-utils/src";
 import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from "@angular/forms";
 import { getCurrentRegionAndProject } from "@shared";
 import { FormSearchPackageSnapshot, PackageSnapshotModel } from 'src/app/shared/models/package-snapshot.model';
@@ -90,7 +90,7 @@ export class ListPackagesSnapshotComponent implements OnInit {
     private notification: NzNotificationService,
     private fb: NonNullableFormBuilder,
     private vlService: VolumeService,
-   
+    private notificationService: NotificationService,
     private snapshotVolumeService: SnapshotVolumeService,
     private projectService: ProjectService,
     private policyService: PolicyService) {
@@ -265,6 +265,23 @@ export class ListPackagesSnapshotComponent implements OnInit {
     } else {
       this.region = RegionID.ADVANCE;
     }
+
+    this.notificationService.connection.on('UpdateStateSnapshotPackage', (message) => {
+      if (message) {
+        switch (message.actionType) {
+          case 'CREATING':
+          case 'CREATED':
+          case 'RESIZING':
+          case 'RESIZED':
+          case 'EXTENDING':
+          case 'EXTENDED':
+          case 'DELETED':
+          case 'DELETING':
+            this.getListPackageSnapshot(true);
+            break;
+        }
+      }
+    });
   }
 
   navigateToPackageDetail(id) {
