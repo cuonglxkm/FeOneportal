@@ -83,9 +83,9 @@ export class SnapshotScheduleDetailComponent implements OnInit {
           this.volumeName = data.volumeName;
           this.timeString = Date.parse(data.runtime);
           if (data.snapshotType == 1) {
-            this.typeSnapshot = 'VM (Máy ảo)';
+            this.typeSnapshot = 'Snapshot máy ảo';
           } else {
-            this.typeSnapshot = 'Volume';
+            this.typeSnapshot = 'Snapshot Volume';
           }
           let myRuntime: Date = new Date(data.runtime);
           this.scheduleStartTime =
