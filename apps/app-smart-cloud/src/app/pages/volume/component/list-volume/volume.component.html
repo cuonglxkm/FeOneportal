@@ -182,7 +182,7 @@
                     <one-portal-update-volume *ngIf="'backupschedule:Update' | IsPermissionPipe" [region]="region" [project]="project" [volume]="data"
                                               (onOk)="handleOkUpdate()" />
                     <!----TẠO LỊCH BACKUP---------->
-                    <li nz-menu-item *ngIf="'backupschedule:Create' | IsPermissionPipe"
+                    <li nz-menu-item *ngIf="isBackupVolume && ('backupschedule:Create' | IsPermissionPipe)"
                         (click)="navigateToCreateScheduleBackup(data.id)">{{ 'volume.menu.create.schedule.backup' | i18n }}
                     </li>
                     <!-----TẠO SNAPSHOT---------->
