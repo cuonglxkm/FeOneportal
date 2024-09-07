@@ -136,7 +136,7 @@
           <td>
             <div class="d-flex gap-2 justify-content-center">
               <one-portal-edit-file-system-snapshot
-                *ngIf="data.status === 'available' && !data.serviceStatus.includes('TAMNGUNG')"
+                *ngIf="data.status === 'available' && !data.serviceStatus.includes('TAMNGUNG') &&('	fileStorages:UpdateShareSnapshotFileStorage' | IsPermissionPipe)"
                 [region]="region"
                 [project]="project"
                 [data]="data"
