@@ -16,6 +16,7 @@ import { AlainConfigService } from '@delon/util/config';
 import { enUS as dfEn, zhCN as dfZhCn, zhTW as dfZhTw, } from 'date-fns/locale';
 import { NzSafeAny } from 'ng-zorro-antd/core/types';
 import { en_US as zorroEnUS, NzI18nService, vi_VN } from 'ng-zorro-antd/i18n';
+import { CookieService } from 'ngx-cookie-service';
 import { Observable } from 'rxjs';
 
 interface LangConfigData {
@@ -27,7 +28,7 @@ interface LangConfigData {
   delon: NzSafeAny;
 }
 
-const DEFAULT = 'vi-VI';
+const DEFAULT = 'en-US';
 const LANGS: { [key: string]: LangConfigData } = {
   'vi-VI': {
     text: 'Vietnamese',
@@ -54,18 +55,25 @@ export class I18NService extends AlainI18nBaseService {
     const item = LANGS[code];
     return { code, text: item.text, abbr: item.abbr };
   });
-
   constructor(
     private http: _HttpClient,
     private settings: SettingsService,
     private nzI18nService: NzI18nService,
     private delonLocaleService: DelonLocaleService,
     private platform: Platform,
+    private cookieService: CookieService,
     cogSrv: AlainConfigService
   ) {
     super(cogSrv);
-
-    const defaultLang = this.getDefaultLang();
+    const langCookie = this.cookieService.get('ui.language') ?? ''
+    let language = '';
+    if(langCookie === 'en') {
+      language = 'en-US';
+    }else if(langCookie === 'vi') {
+      language = 'vi-VI';
+    }
+    
+    const defaultLang = language !== '' ? language : this.getDefaultLang()
     this._defaultLang = this._langs.findIndex(w => w.code === defaultLang) === -1 ? DEFAULT : defaultLang;
   }
 
@@ -91,7 +99,7 @@ export class I18NService extends AlainI18nBaseService {
 
     this._data = this.flatData(data, []);
 
-    const item = LANGS[lang];
+    const item = LANGS[lang]; 
     registerLocaleData(item.ng);
     this.nzI18nService.setLocale(item.zorro);
     this.nzI18nService.setDateLocale(item.date);
