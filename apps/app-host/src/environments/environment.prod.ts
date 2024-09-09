@@ -24,6 +24,7 @@ export const environment = {
     logout_callback: 'https://console.cloud.vnpt.vn',
     scope: 'openid email roles offline_access',
     domain: '.cloud.vnpt.vn',
+    issuerDomain: 'identity.cloud.vnpt.vn'
   },
   recaptcha: {
     siteKey: '6LciGRgqAAAAAPvyRuPN5hcUa9LSuvwss7Iv11lE',

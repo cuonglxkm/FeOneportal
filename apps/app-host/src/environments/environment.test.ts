@@ -24,6 +24,7 @@ export const environment = {
     logout_callback: 'https://oneportal.onsmartcloud.com',
     scope: 'openid email roles offline_access',
     domain: '.onsmartcloud.com',
+    issuerDomain: 'identity.onsmartcloud.com'
   },
   recaptcha: {
     siteKey: '6LfueB8cAAAAAD74PxsPKL7-GVr0T7dUoxuBL4iR',
