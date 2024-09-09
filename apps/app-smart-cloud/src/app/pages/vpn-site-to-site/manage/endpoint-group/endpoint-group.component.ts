@@ -13,6 +13,10 @@ import {
 import { EndpointGroupService } from 'src/app/shared/services/endpoint-group.service';
 import { BaseResponse } from '../../../../../../../../libs/common-utils/src';
 import { TimeCommon } from 'src/app/shared/utils/common';
+import { NzNotificationService } from 'ng-zorro-antd/notification';
+import { PolicyService } from 'src/app/shared/services/policy.service';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
+import { I18NService } from '@core';
 
 @Component({
   selector: 'one-portal-endpoint-group',
@@ -37,10 +41,13 @@ export class EndpointGroupComponent {
 
   formSearchEnpointGroup: FormSearchEndpointGroup =
     new FormSearchEndpointGroup();
-
+  isCreatePermission: boolean = false;
   constructor(
     private endpointGroupService: EndpointGroupService,
-    @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService
+    @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
+    private notification: NzNotificationService,
+    @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
+    private policyService: PolicyService
   ) {}
 
   refreshParams() {
@@ -78,6 +85,18 @@ export class EndpointGroupComponent {
         this.isLoading = false;
         console.log('data', data);
         this.response = data;
+        this.isCreatePermission = this.policyService.hasPermission("vpnsitetosites:CreateEndpointGroups");
+      }, error => {
+        this.isLoading = false;
+        this.response = null;
+        console.log(error);
+        if(error.status == 403){
+          this.notification.error(
+            error.statusText,
+            this.i18n.fanyi('app.non.permission')
+          );
+        }
+        this.isCreatePermission = this.policyService.hasPermission("vpnsitetosites:CreateEndpointGroups");
       });
   }
 

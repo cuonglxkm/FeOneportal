@@ -223,7 +223,14 @@ export class VolumeComponent implements OnInit, OnDestroy {
         this.isLoading = false;
         this.response = null;
         console.log(error);
-        this.notification.error(error.statusText, this.i18n.fanyi('app.failData'));
+        if(error.status == 403){
+          this.notification.error(
+            error.statusText,
+            this.i18n.fanyi('app.non.permission')
+          );
+        } else {
+          this.notification.error(error.statusText, this.i18n.fanyi('app.failData'));
+        }
       });
   }
 
