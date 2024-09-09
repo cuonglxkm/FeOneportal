@@ -24,7 +24,7 @@
       </ng-template>
     </nz-col>
     <nz-col *ngIf="response?.records.length === 0">
-      <button
+      <button *ngIf="isCreatePermission"
         [routerLink]="['/app-smart-cloud/vpn-site-to-site/vpn-service/create']"
         nz-button
         nzType="primary"
@@ -74,7 +74,7 @@
       <td>{{ data.status }}</td>
       <td>
         <div class="d-flex gap-2 justify-content-center align-items-center">
-          <one-portal-edit-vpn-service
+          <one-portal-edit-vpn-service *ngIf="('vpnsitetosites:VPNUpdateVpnService' | IsPermissionPipe)"
             [region]="region"
             [project]="project"
             [vpnServiceId]="data.id"
@@ -83,7 +83,7 @@
             [vpnRouterName]="data.routerName"
             (onOk)="handleOkEdit()"
           ></one-portal-edit-vpn-service>
-          <one-portal-delete-vpn-service
+          <one-portal-delete-vpn-service *ngIf="('vpnsitetosites:VPNDeleteVpnService' | IsPermissionPipe)"
             [region]="region"
             [project]="project"
             [vpnServiceId]="data.id"

@@ -48,6 +48,10 @@ const routes: Routes = [
   {
     path: 'ipsec-policies/:id',
     component: DetailIpsecPoliciesComponent,
+    canActivate: [PermissionGuard],
+    data: {
+      permission: 'vpnsitetosites:GetIPsecPolicy'
+    }
   },
   {
     path: 'vpn-connection/create',
@@ -60,6 +64,10 @@ const routes: Routes = [
   {
     path: 'vpn-connection/:id',
     component: DetailVpnConnectionComponent,
+    canActivate: [PermissionGuard],
+    data: {
+      permission: 'vpnsitetosites:VPNGetVpnConnection'
+    }
   },
   {
     path: 'ike-policies/create',
@@ -80,14 +88,26 @@ const routes: Routes = [
   {
     path: 'endpoint-group/:id',
     component: DetailEndpointGroupComponent,
+    canActivate: [PermissionGuard],
+    data: {
+      permission: 'vpnsitetosites:GetEndpointGroups'
+    }
   },
   {
     path: 'vpn-service/:id',
     component: DetailVpnServiceComponent,
+    canActivate: [PermissionGuard],
+    data: {
+      permission: 'vpnsitetosites:VPNGetVpnService'
+    }
   },
   {
     path: 'ike-policies/:id',
     component: DetailIkePoliciesComponent,
+    canActivate: [PermissionGuard],
+    data: {
+      permission: 'vpnsitetosites:VPNGetIKEPolicy'
+    }
   },
 ];
 

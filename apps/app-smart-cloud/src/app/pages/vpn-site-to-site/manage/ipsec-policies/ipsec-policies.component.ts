@@ -5,7 +5,10 @@ import { FormSearchIpsecPolicy, IpsecPolicyDTO } from 'src/app/shared/models/ips
 import { IpsecPolicyService } from 'src/app/shared/services/ipsec-policy.service';
 import { BaseResponse } from '../../../../../../../../libs/common-utils/src';
 import { TimeCommon } from 'src/app/shared/utils/common';
-
+import { NzNotificationService } from 'ng-zorro-antd/notification';
+import { PolicyService } from 'src/app/shared/services/policy.service';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
+import { I18NService } from '@core';
 
 @Component({
   selector: 'one-portal-ipsec-policies',
@@ -30,9 +33,12 @@ export class IpsecPoliciesComponent {
   formSearchIpsecPolicy: FormSearchIpsecPolicy = new FormSearchIpsecPolicy()
 
   searchDelay = new Subject<boolean>();
-
+  isCreatePermission: boolean = false;
   constructor(private ipsecPolicyService: IpsecPolicyService,
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
+    private notification: NzNotificationService,
+    @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
+    private policyService: PolicyService
     ) {
 }
 
@@ -70,8 +76,20 @@ export class IpsecPoliciesComponent {
     this.ipsecPolicyService.getIpsecpolicy(this.formSearchIpsecPolicy)
       .pipe(debounceTime(500))
       .subscribe(data => {
-      this.isLoading = false
-      this.response = data
+      this.isLoading = false;
+      this.response = data;
+      this.isCreatePermission = this.policyService.hasPermission("vpnsitetosites:CreateIPsecPolicy");
+    }, error => {
+      this.isLoading = false;
+      this.response = null;
+      console.log(error);
+      if(error.status == 403){
+        this.notification.error(
+          error.statusText,
+          this.i18n.fanyi('app.non.permission')
+        );
+      }
+      this.isCreatePermission = this.policyService.hasPermission("vpnsitetosites:CreateIPsecPolicy");
     })
   }
 

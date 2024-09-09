@@ -1,10 +1,13 @@
-import { Component, QueryList, ViewChildren } from '@angular/core';
+import { Component, Inject, QueryList, ViewChildren } from '@angular/core';
 import { Router } from '@angular/router';
 import { getCurrentRegionAndProject } from '@shared';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
 import { VpnSiteToSiteService } from 'src/app/shared/services/vpn-site-to-site.service';
 import { ProjectModel, RegionModel } from '../../../../../../../libs/common-utils/src';
+import { PolicyService } from 'src/app/shared/services/policy.service';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
+import { I18NService } from '@core';
 
 @Component({
   selector: 'one-portal-vpn-site-to-site-manage',
@@ -21,11 +24,15 @@ export class VpnSiteToSiteManage {
   response: any
   isVisibleDelete: boolean = false;
   isLoadingDelete: boolean = false;
+  isCreateOrder: boolean = false;
+  isDetelePermission: boolean = false;
   @ViewChildren('projectCombobox') projectComboboxs:  QueryList<ProjectSelectDropdownComponent>;
   constructor(
     private vpnSiteToSiteService: VpnSiteToSiteService, 
     private router: Router, 
     private notification: NzNotificationService,
+    @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
+    private policyService: PolicyService
   ) {
   }
 
@@ -47,7 +54,11 @@ export class VpnSiteToSiteManage {
   projectChanged(project: ProjectModel) {
     this.projectObject = project;
     this.project = project ? project.id : 0;
-    this.getData(true)
+    this.getData(true);
+    this.isCreateOrder = this.policyService.hasPermission("order:Create") &&
+    this.policyService.hasPermission("offer:Search") &&
+    this.policyService.hasPermission("order:GetOrderAmount");
+    this.isDetelePermission = this.policyService.hasPermission("vpnsitetosites:Delete");
   }
   
 
@@ -75,6 +86,12 @@ export class VpnSiteToSiteManage {
       this.isLoading = false;
       this.response = null;
       console.log(error);
+      if(error.status == 403){
+        this.notification.error(
+          error.statusText,
+          this.i18n.fanyi('app.non.permission')
+        );
+      }
       if (isBegin) {
         this.isBegin = this.response ? false : true;
       }
