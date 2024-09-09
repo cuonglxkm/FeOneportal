@@ -3,16 +3,16 @@
     <nz-breadcrumb [nzSeparator]="separatorTemplate">
       <nz-breadcrumb-item><a routerLink="/app-smart-cloud"> Trang chủ</a></nz-breadcrumb-item>
       <nz-breadcrumb-item>
-        Dịch vụ hạ tầng
+       {{titleBreadcrumb}}
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>
         Block Storage
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>
-        <a routerLink="/app-smart-cloud/snapshot/packages">Gói Snapshot</a>
+        <a [routerLink]="navigateToSnapshotPackage()">Gói Snapshot</a>
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>
-        <a routerLink="/app-smart-cloud/snapshot/packages/create">Khởi tạo gói Snapshot</a>
+        Khởi tạo gói Snapshot
       </nz-breadcrumb-item>
     </nz-breadcrumb>
     <ng-template #separatorTemplate><img src="assets/imgs/arrow-square-right.svg" alt="" />

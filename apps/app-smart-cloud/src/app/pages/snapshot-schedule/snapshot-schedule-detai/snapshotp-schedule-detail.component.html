@@ -9,9 +9,9 @@
         <a [routerLink]="['/']">Home</a>
       </nz-breadcrumb-item>
       <nz-breadcrumb-item><a [routerLink]="['/']">{{ 'app.breadcrumb.home' | i18n }}</a></nz-breadcrumb-item>
-      <nz-breadcrumb-item>{{'app.breadcrumb.infrastructure.service' | i18n }}</nz-breadcrumb-item>
+      <nz-breadcrumb-item>{{titleBreadcrumb }}</nz-breadcrumb-item>
       <nz-breadcrumb-item>Block Storage</nz-breadcrumb-item>
-      <nz-breadcrumb-item><a routerLink="/app-smart-cloud/schedule/snapshot">Lịch Snapshot</a></nz-breadcrumb-item>
+      <nz-breadcrumb-item><a [routerLink]="navigateToBreadcrumb()">Lịch Snapshot</a></nz-breadcrumb-item>
       <nz-breadcrumb-item>Chi tiết lịch Snapshot</nz-breadcrumb-item>
     </nz-breadcrumb>
     <ng-template #separatorTemplate

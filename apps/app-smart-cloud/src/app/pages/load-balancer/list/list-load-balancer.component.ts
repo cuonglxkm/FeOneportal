@@ -17,6 +17,7 @@ import { finalize } from 'rxjs/operators';
 import { da } from 'date-fns/locale';
 import { VpcService } from '../../../shared/services/vpc.service';
 import { PolicyService } from 'src/app/shared/services/policy.service';
+import { SizeInCloudProject } from 'src/app/shared/models/project.model';
 
 @Component({
   selector: 'one-portal-list-load-balancer',
@@ -66,11 +67,39 @@ export class ListLoadBalancerComponent implements OnInit {
     this.search(true);
   }
 
+
   onRegionChanged(region: RegionModel) {
     this.loading = true;
     this.isFirstVisit = false;
     this.region = region.regionId;
   }
+  projectName:string;
+  // projectChanged(project: ProjectModel) {
+  //   console.log("ooo",project)
+  //   this.loading = true;
+  //   this.isFirstVisit = false;
+  //   this.projectCurrentModel = project;
+  //   this.isLoading = true;
+  //   this.createNewLB = false;
+  //   this.project = project?.id;
+  //   this.projectName = project.projectName
+  //   this.typeVPC = project?.type;
+  //   this.isBegin = false
+  //   setTimeout(() => {
+  //     this.search(true);
+  //     this.getProject();
+  //     this.loading = false;
+  //   }, 2000);
+  //   this.isCreateOrder = this.policyService.hasPermission("order:Create") &&
+  //     this.policyService.hasPermission("network:List") &&
+  //     this.policyService.hasPermission("product:Search") &&
+  //     this.policyService.hasPermission("loadbalancer:List") &&
+  //     this.policyService.hasPermission("loadbalancer:Get") &&
+  //     this.policyService.hasPermission("offer:Get") &&
+  //     this.policyService.hasPermission("ippublic:IpPublicListSubnet") &&
+  //     this.policyService.hasPermission("order:GetOrderAmount") &&
+  //     this.policyService.hasPermission("offer:Search");
+  // }
 
   projectChanged(project: ProjectModel) {
     this.loading = true;
@@ -84,9 +113,11 @@ export class ListLoadBalancerComponent implements OnInit {
     if (this.typeVPC == 1) {
       this.projectService.getProjectVpc(this.project)
         .pipe(finalize(() => {
+        
           this.search(true);
         }))
         .subscribe(data => {
+        
           const LBId = data?.cloudProject?.offerIdLBSDN;
           if (LBId != undefined && LBId != null) {
             this.catalogService.getDetailOffer(LBId)
@@ -129,7 +160,13 @@ export class ListLoadBalancerComponent implements OnInit {
       this.policyService.hasPermission("order:GetOrderAmount") &&
       this.policyService.hasPermission("offer:Search");
   }
-
+  projectInfo: SizeInCloudProject = new SizeInCloudProject();
+  getProject() {
+    this.projectService.getByProjectId(this.project).subscribe((data) => {
+      this.projectInfo = data;
+      console.log("this.projectInfo",this.projectInfo)
+    });
+  }
   onPageSizeChange(value) {
     this.pageSize = value;
     this.search(false);
@@ -177,10 +214,14 @@ export class ListLoadBalancerComponent implements OnInit {
     let formSearch = new FormSearchListBalancer();
     formSearch.vpcId = this.project;
     formSearch.regionId = this.region;
-    formSearch.name = this.value;
+    // formSearch.name = this.value;
+    formSearch.name = this.projectName;
     formSearch.pageSize = this.pageSize;
     formSearch.currentPage = this.pageIndex;
+    console.log('Sending formSearch payload:', formSearch);
     this.loadBalancerService.search(formSearch)
+
+    
       .pipe(finalize(() => {
         this.loading = false;
         this.isLoading = false;
@@ -214,7 +255,9 @@ export class ListLoadBalancerComponent implements OnInit {
   navigateToCreateListener(idLb: number) {
     this.router.navigate(['/app-smart-cloud/load-balancer/' + idLb + '/listener/create']);
   }
-
+  userChanged(project: ProjectModel) {
+    this.router.navigate(['/app-smart-cloud/load-balancer/list' ]);
+  }
   searchDelay = new Subject<boolean>();
   isFirstVisit: boolean = true;
   loading = true;
@@ -224,6 +267,7 @@ export class ListLoadBalancerComponent implements OnInit {
     let regionAndProject = getCurrentRegionAndProject();
     this.region = regionAndProject.regionId;
     this.project = regionAndProject.projectId;
+    console.log("regionAndProject",regionAndProject)
     if (!this.region || !this.project) {
       this.isLoading = true;
     }
