@@ -89,7 +89,7 @@ export class ResizeSnapshotPackageComponent implements OnInit {
   formUpdateSnapshotPackageModel: FormUpdateSnapshotPackageModel = new FormUpdateSnapshotPackageModel();
   orderItem: OrderItem = new OrderItem();
   unitPrice = 0;
-
+  titleBreadcrumb:string;
   closePopupError() {
     this.isVisiblePopupError = false;
   }
@@ -171,6 +171,14 @@ export class ResizeSnapshotPackageComponent implements OnInit {
     } else {
       this.router.navigate(['/app-smart-cloud/snapshot/packages']);
     }
+  }
+  navigateToDetail() {
+    if (this.region === RegionID.ADVANCE) {
+      this.router.navigate(['/app-smart-cloud/snapshot-advance/packages/detail/' + this.idSnapshotPackage])
+    } else {
+      this.router.navigate(['/app-smart-cloud/snapshot/packages/detail/' + this.idSnapshotPackage])
+    }
+    
   }
 
   regionChanged(region: RegionModel) {
@@ -371,8 +379,10 @@ export class ResizeSnapshotPackageComponent implements OnInit {
       } else {
         this.region = Number(localStorage.getItem('regionId'));
       }
+       this.titleBreadcrumb ='Dịch vụ hạ tầng'
     } else {
       this.region = RegionID.ADVANCE;
+       this.titleBreadcrumb ='Dịch vụ nâng cao'
     }
     // this.customerId = this.tokenService.get()?.userId
     if (this.project && this.region) {

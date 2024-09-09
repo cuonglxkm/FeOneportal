@@ -78,7 +78,7 @@ export class CreatePackageSnapshotComponent implements OnInit {
   serviceActiveByRegion: SupportService[] = [];
   typeSnapshotHdd: boolean;
   typeSnapshotSsd: boolean;
-
+  titleBreadcrumb:string;
   nameList: string[] = [];
   formSearchPackageSnapshot: FormSearchPackageSnapshot = new FormSearchPackageSnapshot()
   closePopupError() {
@@ -114,8 +114,10 @@ export class CreatePackageSnapshotComponent implements OnInit {
       } else {
         this.region = Number(localStorage.getItem('regionId'));
       }
+       this.titleBreadcrumb ='Dịch vụ hạ tầng'
     } else {
       this.region = RegionID.ADVANCE;
+       this.titleBreadcrumb ='Dịch vụ nâng cao'
     }
     // this.customerId = this.tokenService.get()?.userId
     console.log(this.tokenService.get());
@@ -223,6 +225,7 @@ export class CreatePackageSnapshotComponent implements OnInit {
   projectChanged(project: ProjectModel) {
     this.project = project?.id;
   }
+
 
   userChanged(project: ProjectModel) {
     this.navigateToSnapshotPackage()

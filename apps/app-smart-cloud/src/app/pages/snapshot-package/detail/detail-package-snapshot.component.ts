@@ -34,6 +34,7 @@ export class DetailSnapshotComponent implements OnInit{
   serviceActiveByRegion: SupportService[] = [];
   typeSnapshotHdd:boolean;
   typeSnapshotSsd:boolean;
+  titleBreadcrumb:string;
   @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
   constructor(private router: Router,
               private packageBackupService: PackageBackupService,
@@ -89,7 +90,8 @@ export class DetailSnapshotComponent implements OnInit{
       this.packageSnapshotModel = data;
     },error =>{      
       if(error.status===500){
-        this.router.navigate(['/app-smart-cloud/snapshot/packages']);
+        // this.router.navigate(['/app-smart-cloud/snapshot/packages']);
+        this.navigateToSnapshotPackage();
         this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi(error.error.detail));
       }
       
@@ -133,8 +135,10 @@ export class DetailSnapshotComponent implements OnInit{
       } else {
         this.region = Number(localStorage.getItem('regionId'));
       }
+      this.titleBreadcrumb ='Dịch vụ hạ tầng'
     } else {
       this.region = RegionID.ADVANCE;
+      this.titleBreadcrumb ='Dịch vụ nâng cao'
     }
     if (this.project && this.region) {
       this.loadProjects();
