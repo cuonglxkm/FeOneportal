@@ -65,7 +65,7 @@ export class I18NService extends AlainI18nBaseService {
   ) {
     super(cogSrv);
 
-    const defaultLang = this.getDefaultLang();
+    const defaultLang = this.getDefaultLang(); 
     this._defaultLang = this._langs.findIndex(w => w.code === defaultLang) === -1 ? DEFAULT : defaultLang;
   }
 
@@ -92,6 +92,8 @@ export class I18NService extends AlainI18nBaseService {
     this._data = this.flatData(data, []);
 
     const item = LANGS[lang];
+    console.log(item);
+    
     registerLocaleData(item.ng);
     this.nzI18nService.setLocale(item.zorro);
     this.nzI18nService.setDateLocale(item.date);

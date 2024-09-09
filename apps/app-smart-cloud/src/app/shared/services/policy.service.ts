@@ -1,5 +1,5 @@
 import {Inject, Injectable} from '@angular/core';
-import {Observable, of} from "rxjs";
+import {Observable, of, tap} from "rxjs";
 import {HttpClient, HttpHeaders, HttpParams, HttpResponse} from "@angular/common/http";
 import {
   AttachedEntitiesDTO,
@@ -187,8 +187,9 @@ export class PolicyService extends BaseService {
     return this.http.get<any>(this.baseUrl + this.ENDPOINT.iam + '/permissions/user', { headers: this.getHeaders().headers } );
   }
 
+
   hasPermission(action: string): boolean {
-    let permisionOPA = localStorage.getItem('PermissionOPA');
+    let permisionOPA = localStorage.getItem('PermissionOPA');   
     if (permisionOPA != null) {
       return this.isPermission(action, JSON.parse(permisionOPA));
     } else {

@@ -29,7 +29,7 @@ export class ObjectStorageService extends BaseService {
       .get<UserInfoObjectStorage>(
         this.baseUrl +
           this.ENDPOINT.provisions +
-          `/object-storage/userinfo?regionId=${regionId}`
+          `/object-storage/userinfo?regionId=${regionId}`, this.getHeaders()
       )
       .pipe(
         catchError((error: HttpErrorResponse) => {
@@ -56,7 +56,7 @@ export class ObjectStorageService extends BaseService {
       .get<Summary[]>(
         this.baseUrl +
           this.ENDPOINT.provisions +
-          `/object-storage/Monitor?from=${from}&bucketname=${bucketname}&regionId=${regionId}`
+          `/object-storage/Monitor?from=${from}&bucketname=${bucketname}&regionId=${regionId}`, this.getHeaders()
       )
       .pipe(
         catchError((error: HttpErrorResponse) => {
@@ -84,7 +84,7 @@ export class ObjectStorageService extends BaseService {
     return this.http.get<any>(
       this.baseUrl +
         this.ENDPOINT.provisions +
-        `/object-storage/GetUsageOfUser?regionId=${regionId}`
+        `/object-storage/GetUsageOfUser?regionId=${regionId}`, this.getHeaders()
     );
   }
 
