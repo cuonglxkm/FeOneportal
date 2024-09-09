@@ -7,7 +7,10 @@
       <nz-breadcrumb-item><a [routerLink]="['/']">{{ 'app.breadcrumb.home' | i18n }}</a></nz-breadcrumb-item>
       <nz-breadcrumb-item>{{titleBreadcrumb }}</nz-breadcrumb-item>
       <nz-breadcrumb-item>Block Storage</nz-breadcrumb-item>
-      <nz-breadcrumb-item><a [routerLink]="navigateToSnapshot()">Snapshot Volume</a></nz-breadcrumb-item>
+      <nz-breadcrumb-item>
+        <a (click)="navigateToSnapshot()">Snapshot Volume</a>
+        <!-- <a routerLink="/app-smart-cloud/snapshot">Snapshot Volume</a> -->
+      </nz-breadcrumb-item>
       <nz-breadcrumb-item>Chi tiết Snapshot</nz-breadcrumb-item>
     </nz-breadcrumb>
     <ng-template #separatorTemplate
