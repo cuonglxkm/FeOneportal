@@ -2,9 +2,9 @@
   <ng-template #breadcrumb>
     <nz-breadcrumb [nzSeparator]="separatorTemplate">
       <nz-breadcrumb-item><a [routerLink]="['/']">{{ 'app.breadcrumb.home' | i18n }}</a></nz-breadcrumb-item>
-      <nz-breadcrumb-item>{{'app.breadcrumb.infrastructure.service' | i18n }}</nz-breadcrumb-item>
+      <nz-breadcrumb-item>{{titleBreadcrumb}}</nz-breadcrumb-item>
       <nz-breadcrumb-item>Block Storage</nz-breadcrumb-item>
-      <nz-breadcrumb-item><a routerLink="/app-smart-cloud/schedule/snapshot">Lịch Snapshot</a></nz-breadcrumb-item>
+      <nz-breadcrumb-item><a [routerLink]="navigateToBreadcrumb()">Lịch Snapshot</a></nz-breadcrumb-item>
       <nz-breadcrumb-item>Khởi tạo lịch Snapshot</nz-breadcrumb-item>
     </nz-breadcrumb>
     <ng-template #separatorTemplate><img src="assets/imgs/arrow-square-right.svg" alt="" />
@@ -60,13 +60,23 @@
                   đây</a>
               </div>
             </ng-template>
+            <!-- dung lượng không đủ khi bản lưu trữ vượt quá dung lượng volume/vm -->
+            <nz-alert nzBanner
+              *ngIf="isMessageArchivedVersion "
+              style="margin-bottom: 10px;margin-top: 15px" [nzMessage]="isArchivedVersion" nzShowIcon></nz-alert>
+            <ng-template #isArchivedVersion>
+              <div>
+                {{messageArchivedVersion}}
+              </div>
+            </ng-template>
             <!-- VPC chưa mua snapshot -->
             <nz-alert nzBanner *ngIf="projectType==1 && projectTotalHdd==0 && projectTotalSsd==0"
               style="margin-bottom: 10px;margin-top: 15px" [nzMessage]="isVPCNotQuota" nzShowIcon></nz-alert>
             <ng-template #isVPCNotQuota>
               <div>
                 Quý khách chưa mua dung lượng Snapshot, vui lòng truy cập điều chỉnh VPC <a style="font-size:16px"
-                  [href]="'/app-smart-cloud/project/update/'+ projectId">{{projectName}} </a> tại đây để thực hiện bổ sung
+                  [href]="'/app-smart-cloud/project/update/'+ projectId">{{projectName}} </a> tại đây để thực hiện bổ
+                sung
                 dung lượng.
               </div>
             </ng-template>
@@ -110,11 +120,12 @@
                   [href]="'/app-smart-cloud/project/update/'+ projectId">{{projectName}} </a>) để mở rộng quota.
               </div>
             </ng-template>
+            
           </div>
-          
+
 
           <!-- <nz-spin [nzSpinning]="isLoading" nzSize="large"> -->
-            <!-- <nz-alert nzBanner *ngIf="disableCreate == false" style="margin-bottom: 10px;margin-top: 15px"
+          <!-- <nz-alert nzBanner *ngIf="disableCreate == false" style="margin-bottom: 10px;margin-top: 15px"
               [nzMessage]="nzMessage" nzShowIcon></nz-alert>
             <ng-template #nzMessage>
               <div>
@@ -123,7 +134,7 @@
                 dung lượng Snapshot
               </div>
             </ng-template> -->
-            <!-- <div *ngIf="projectType != 1">
+          <!-- <div *ngIf="projectType != 1">
               <nz-form-item *ngIf="snapshotTypeCreate != 2">
                 <nz-form-label nzFor="name">
                   <span>
@@ -378,179 +389,179 @@
               </nz-form-control>
             </nz-form-item> -->
 
-            <div>
-              <nz-row>
-                <nz-col [nzXs]="24" [nzSm]="24" [nzMd]="(snapshotTypeCreate==2 && projectType !=1) ? 12 : 24" [nzLg]="(snapshotTypeCreate==2 && projectType !=1) ? 12 : 24" [nzXl]="(snapshotTypeCreate==2 && projectType !=1) ? 12 : 24" >
-                  <nz-form-item style="margin-right:0.5rem; margin-left:0.5rem">
-                    <nz-form-label nzFor="name">
-                      <span>
-                        {{ 'app.snapshot.schedule.name' | i18n }} (<span class="text-red">*</span>)
-                        <img 
-                          [nz-tooltip]="'Cho phép nhập ký tự chữ và số (a-z, A-Z, 0-9, \'_\'). Độ dài dữ liệu đầu vào của bạn tối đa 50 ký tự'"
-                           style="margin-left: 5px;" src="assets/imgs/pajamas_question.svg"
-                          alt="" />
-                      </span>    
-                    </nz-form-label>   
-                    <nz-form-control nzDisableAutoTips [nzErrorTip]="nameErrorTpl">
-                      <input class="input-custom" nz-input formControlName="name" [(ngModel)]="request.name"
-                        placeholder="{{'app.snapshot.schedule.enter.name1' | i18n}}" maxlength="50" minlength="1"
-                        (change)="request.name = request.name.trim()" />
-                      <ng-template #nameErrorTpl let-control>
-                        <ng-container *ngIf="control.hasError('required')">Vui lòng nhập tên lịch Snapshot
-                        </ng-container>
-                        <ng-container *ngIf="control.hasError('pattern')">Tên chỉ có thể chứa các ký tự chữ và số (a-z, A-Z, 0-9, '_')
-                        </ng-container>
-                        <!-- <ng-container *ngIf="control.hasError('maxLength')">{{ 'volume.notification.input.name.maxLength' | i18n}}</ng-container> -->
-                        <ng-container *ngIf="control.hasError('duplicateName')">Tên lịch Snapshot này đã được sử dụng, vui lòng chọn tên khác</ng-container>
-                      </ng-template>
-                    </nz-form-control>
-                  </nz-form-item>
-                </nz-col>
-                <nz-col [nzLg]="12" [nzMd]="12" [nzSm]="24" [nzXl]="12" [nzXs]="24" *ngIf="snapshotTypeCreate ==2">
-                  <nz-form-item style="margin-right:0.5rem; margin-left:0.5rem">
-                    <nz-form-label>
-                      <span>Loại Snapshot (<span style="color: red;">*</span>)
-                        <img  [nz-tooltip]="'Chọn hình thức Snapshot'"
-                           style="margin-left: 5px;" src="assets/imgs/pajamas_question.svg"
-                          alt="" /></span>
-                    </nz-form-label>
-                    <nz-form-control nzDisableAutoTips>
-                      <nz-select [nzPlaceHolder]="'Chọn loại Snapshot'" 
-                        [(ngModel)]="selectedSnapshotType" (ngModelChange)="changeTypeSnaphot()"
-                        [ngModelOptions]="{ standalone: true }" nzSize="large" style="width: 100%">
-                        <nz-option *ngFor="let index of snapShotArray" [nzValue]="index.value"
-                          [nzLabel]="index.label"></nz-option>
-                      </nz-select>
-                    </nz-form-control>
-                  </nz-form-item>
-                </nz-col>
-                <nz-col [nzXs]="24" [nzSm]="24" [nzMd]="12" [nzLg]="12" [nzXl]="12" *ngIf=" snapshotTypeCreate==2">
-                  <nz-form-item style="margin-right:0.5rem; margin-left:0.5rem" *ngIf="selectedSnapshotType == 0 ">
-                    <nz-form-label>
-                      <span>Chọn volume (<span style="color: red;">*</span>)
-                        <img style="margin-left: 5px;" [nz-tooltip]="'Khách hàng chọn Volume thực hiện Snapshot'"
-                          src="assets/imgs/pajamas_question.svg" alt="" /></span>
-                    </nz-form-label>
-                    <nz-form-control nzDisableAutoTips>
-                      <nz-select nzPlaceHolder="Chọn volume" [(ngModel)]="selectedVolume" [disabled]="volumeLoading"
-                        [nzLoading]="volumeLoading" (ngModelChange)="changeVmVolumeSelected()"
-                        [ngModelOptions]="{ standalone: true }" nzSize="large">
-                        <nz-option *ngFor="let index of volumeArray" [nzValue]="index" [nzLabel]="index.name"></nz-option>
-                      </nz-select>
-                    </nz-form-control>
-                  </nz-form-item>
-                  <nz-form-item style="margin-right:0.5rem; margin-left:0.5rem" *ngIf="selectedSnapshotType == 1 ">
-                    <nz-form-label>
-                      <span>Chọn máy ảo (<span style="color: red;">*</span>)
-                        <img [nz-tooltip]="'Khách hàng chọn máy ảo thực hiện Snapshot'" style="margin-left: 5px;"
-                          src="assets/imgs/pajamas_question.svg" alt="" /></span>
-                    </nz-form-label>
-                    <nz-form-control nzDisableAutoTips>
-                      <nz-select nzPlaceHolder="Chọn máy ảo" [(ngModel)]="selectedVM" [disabled]="vmLoading"
-                        [nzLoading]="vmLoading" (ngModelChange)="changeVmVolumeSelected()"
-                        [ngModelOptions]="{ standalone: true }" nzSize="large">
-                        <nz-option *ngFor="let index of vmArray" [nzValue]="index" [nzLabel]="index.name"></nz-option>
-                      </nz-select>
-                    </nz-form-control>
-                  </nz-form-item>
-                </nz-col>
-                <nz-col [nzXs]="24" [nzSm]="24" [nzMd]="12" [nzLg]="12" [nzXl]="12" *ngIf=" snapshotTypeCreate==1">
-                  <nz-form-item style="margin-right:0.5rem; margin-left:0.5rem">
-                    <nz-form-label>
-                      <span>Chọn máy ảo (<span style="color: red;">*</span>)
-                        <img [nz-tooltip]="'Khách hàng chọn máy ảo thực hiện Snapshot'" style="margin-left: 5px;"
-                          src="assets/imgs/pajamas_question.svg" alt="" /></span>
-                    </nz-form-label>
-                    <nz-form-control nzDisableAutoTips>
-                      <nz-select nzPlaceHolder="Chọn máy ảo" [(ngModel)]="selectedVM" [disabled]="vmLoading"
-                        [nzLoading]="vmLoading" (ngModelChange)="changeVmVolumeSelected()"
-                        [ngModelOptions]="{ standalone: true }" nzSize="large">
-                        <nz-option *ngFor="let index of vmArray" [nzValue]="index" [nzLabel]="index.name"></nz-option>
-                      </nz-select>
-                    </nz-form-control>
-                  </nz-form-item>
-                </nz-col>
-                <nz-col [nzXs]="24" [nzSm]="24" [nzMd]="12" [nzLg]="12" [nzXl]="12" *ngIf=" snapshotTypeCreate==0">
-                  <nz-form-item style="margin-right:0.5rem; margin-left:0.5rem">
-                    <nz-form-label>
-                      <span>Chọn volume (<span style="color: red;">*</span>)
-                        <img style="margin-left: 5px;" [nz-tooltip]="'Khách hàng chọn Volume thực hiện Snapshot'"
-                          src="assets/imgs/pajamas_question.svg" alt="" /></span>
-                    </nz-form-label>
-                    <nz-form-control nzDisableAutoTips>
-                      <nz-select nzPlaceHolder="Chọn volume" [(ngModel)]="selectedVolume" [disabled]="volumeLoading"
-                        [nzLoading]="volumeLoading" (ngModelChange)="changeVmVolumeSelected()"
-                        [ngModelOptions]="{ standalone: true }" nzSize="large">
-                        <nz-option *ngFor="let index of volumeArray" [nzValue]="index" [nzLabel]="index.name"></nz-option>
-                      </nz-select>
-                    </nz-form-control>
-                  </nz-form-item>
-                </nz-col>
-                <nz-col [nzXs]="24" [nzSm]="24" [nzMd]="12" [nzLg]="12" [nzXl]="12" *ngIf="projectType !=1">
+          <div>
+            <nz-row>
+              <nz-col [nzXs]="24" [nzSm]="24" [nzMd]="(snapshotTypeCreate==2 && projectType !=1) ? 12 : 24"
+                [nzLg]="(snapshotTypeCreate==2 && projectType !=1) ? 12 : 24"
+                [nzXl]="(snapshotTypeCreate==2 && projectType !=1) ? 12 : 24">
+                <nz-form-item style="margin-right:0.5rem; margin-left:0.5rem">
+                  <nz-form-label nzFor="name">
+                    <span>
+                      {{ 'app.snapshot.schedule.name' | i18n }} (<span class="text-red">*</span>)
+                      <img
+                        [nz-tooltip]="'Cho phép nhập ký tự chữ và số (a-z, A-Z, 0-9, \'_\'). Độ dài dữ liệu đầu vào của bạn tối đa 50 ký tự'"
+                        style="margin-left: 5px;" src="assets/imgs/pajamas_question.svg" alt="" />
+                    </span>
+                  </nz-form-label>
+                  <nz-form-control nzDisableAutoTips [nzErrorTip]="nameErrorTpl">
+                    <input class="input-custom" nz-input formControlName="name" [(ngModel)]="request.name"
+                      placeholder="{{'app.snapshot.schedule.enter.name1' | i18n}}" maxlength="50" minlength="1"
+                      (change)="request.name = request.name.trim()" />
+                    <ng-template #nameErrorTpl let-control>
+                      <ng-container *ngIf="control.hasError('required')">Vui lòng nhập tên lịch Snapshot
+                      </ng-container>
+                      <ng-container *ngIf="control.hasError('pattern')">Tên chỉ có thể chứa các ký tự chữ và số (a-z,
+                        A-Z, 0-9, '_')
+                      </ng-container>
+                      <!-- <ng-container *ngIf="control.hasError('maxLength')">{{ 'volume.notification.input.name.maxLength' | i18n}}</ng-container> -->
+                      <ng-container *ngIf="control.hasError('duplicateName')">Tên lịch Snapshot này đã được sử dụng, vui
+                        lòng chọn tên khác</ng-container>
+                    </ng-template>
+                  </nz-form-control>
+                </nz-form-item>
+              </nz-col>
+              <nz-col [nzLg]="12" [nzMd]="12" [nzSm]="24" [nzXl]="12" [nzXs]="24" *ngIf="snapshotTypeCreate ==2">
+                <nz-form-item style="margin-right:0.5rem; margin-left:0.5rem">
+                  <nz-form-label>
+                    <span>Loại Snapshot (<span style="color: red;">*</span>)
+                      <img [nz-tooltip]="'Chọn hình thức Snapshot'" style="margin-left: 5px;"
+                        src="assets/imgs/pajamas_question.svg" alt="" /></span>
+                  </nz-form-label>
+                  <nz-form-control nzDisableAutoTips>
+                    <nz-select [nzPlaceHolder]="'Chọn loại Snapshot'" [(ngModel)]="selectedSnapshotType"
+                      (ngModelChange)="changeTypeSnaphot()" [ngModelOptions]="{ standalone: true }" nzSize="large"
+                      style="width: 100%">
+                      <nz-option *ngFor="let index of snapShotArray" [nzValue]="index.value"
+                        [nzLabel]="index.label"></nz-option>
+                    </nz-select>
+                  </nz-form-control>
+                </nz-form-item>
+              </nz-col>
+              <nz-col [nzXs]="24" [nzSm]="24" [nzMd]="12" [nzLg]="12" [nzXl]="12" *ngIf=" snapshotTypeCreate==2">
+                <nz-form-item style="margin-right:0.5rem; margin-left:0.5rem" *ngIf="selectedSnapshotType == 0 ">
+                  <nz-form-label>
+                    <span>Chọn volume (<span style="color: red;">*</span>)
+                      <img style="margin-left: 5px;" [nz-tooltip]="'Khách hàng chọn Volume thực hiện Snapshot'"
+                        src="assets/imgs/pajamas_question.svg" alt="" /></span>
+                  </nz-form-label>
+                  <nz-form-control nzDisableAutoTips>
+                    <nz-select nzPlaceHolder="Chọn volume" [(ngModel)]="selectedVolume" [disabled]="volumeLoading"
+                      [nzLoading]="volumeLoading" (ngModelChange)="changeVmVolumeSelected()"
+                      [ngModelOptions]="{ standalone: true }" nzSize="large">
+                      <nz-option *ngFor="let index of volumeArray" [nzValue]="index" [nzLabel]="index.name"></nz-option>
+                    </nz-select>
+                  </nz-form-control>
+                </nz-form-item>
+                <nz-form-item style="margin-right:0.5rem; margin-left:0.5rem" *ngIf="selectedSnapshotType == 1 ">
+                  <nz-form-label>
+                    <span>Chọn máy ảo (<span style="color: red;">*</span>)
+                      <img [nz-tooltip]="'Khách hàng chọn máy ảo thực hiện Snapshot'" style="margin-left: 5px;"
+                        src="assets/imgs/pajamas_question.svg" alt="" /></span>
+                  </nz-form-label>
+                  <nz-form-control nzDisableAutoTips>
+                    <nz-select nzPlaceHolder="Chọn máy ảo" [(ngModel)]="selectedVM" [disabled]="vmLoading"
+                      [nzLoading]="vmLoading" (ngModelChange)="changeVmVolumeSelected()"
+                      [ngModelOptions]="{ standalone: true }" nzSize="large">
+                      <nz-option *ngFor="let index of vmArray" [nzValue]="index" [nzLabel]="index.name"></nz-option>
+                    </nz-select>
+                  </nz-form-control>
+                </nz-form-item>
+              </nz-col>
+              <nz-col [nzXs]="24" [nzSm]="24" [nzMd]="12" [nzLg]="12" [nzXl]="12" *ngIf=" snapshotTypeCreate==1">
+                <nz-form-item style="margin-right:0.5rem; margin-left:0.5rem">
+                  <nz-form-label>
+                    <span>Chọn máy ảo (<span style="color: red;">*</span>)
+                      <img [nz-tooltip]="'Khách hàng chọn máy ảo thực hiện Snapshot'" style="margin-left: 5px;"
+                        src="assets/imgs/pajamas_question.svg" alt="" /></span>
+                  </nz-form-label>
+                  <nz-form-control nzDisableAutoTips>
+                    <nz-select nzPlaceHolder="Chọn máy ảo" [(ngModel)]="selectedVM" [disabled]="vmLoading"
+                      [nzLoading]="vmLoading" (ngModelChange)="changeVmVolumeSelected()"
+                      [ngModelOptions]="{ standalone: true }" nzSize="large">
+                      <nz-option *ngFor="let index of vmArray" [nzValue]="index" [nzLabel]="index.name"></nz-option>
+                    </nz-select>
+                  </nz-form-control>
+                </nz-form-item>
+              </nz-col>
+              <nz-col [nzXs]="24" [nzSm]="24" [nzMd]="12" [nzLg]="12" [nzXl]="12" *ngIf=" snapshotTypeCreate==0">
+                <nz-form-item style="margin-right:0.5rem; margin-left:0.5rem">
+                  <nz-form-label>
+                    <span>Chọn volume (<span style="color: red;">*</span>)
+                      <img style="margin-left: 5px;" [nz-tooltip]="'Khách hàng chọn Volume thực hiện Snapshot'"
+                        src="assets/imgs/pajamas_question.svg" alt="" /></span>
+                  </nz-form-label>
+                  <nz-form-control nzDisableAutoTips>
+                    <nz-select nzPlaceHolder="Chọn volume" [(ngModel)]="selectedVolume" [disabled]="volumeLoading"
+                      [nzLoading]="volumeLoading" (ngModelChange)="changeVmVolumeSelected()"
+                      [ngModelOptions]="{ standalone: true }" nzSize="large">
+                      <nz-option *ngFor="let index of volumeArray" [nzValue]="index" [nzLabel]="index.name"></nz-option>
+                    </nz-select>
+                  </nz-form-control>
+                </nz-form-item>
+              </nz-col>
+              <nz-col [nzXs]="24" [nzSm]="24" [nzMd]="12" [nzLg]="12" [nzXl]="12" *ngIf="projectType !=1">
                 <nz-form-item style="margin-right:0.5rem; margin-left:0.5rem">
                   <nz-form-label>
                     <span>Chọn gói Snapshot (<span style="color: red;">*</span>)</span>
-                    <img
-                      [nz-tooltip]="'Gói Snapshot chỉ xuất hiện trong VPC mặc định'"
-                      style="margin-left: 5px;" src="assets/imgs/pajamas_question.svg" alt="" />
+                    <img [nz-tooltip]="'Gói Snapshot chỉ xuất hiện trong VPC mặc định'" style="margin-left: 5px;"
+                      src="assets/imgs/pajamas_question.svg" alt="" />
                   </nz-form-label>
 
                   <nz-form-control nzDisableAutoTips>
                     <nz-select [nzPlaceHolder]="'Chọn gói Snapshot'" nzAllowClear [disabled]="snapshotPackageLoading"
-                        [nzLoading]="snapshotPackageLoading" [(ngModel)]="selectedSnapshotPackage"
-                        (ngModelChange)="changePackageSnapshot()" [ngModelOptions]="{ standalone: true }"
-                        nzSize="large">
-                        <nz-option *ngFor="let index of snapshotPackageArray" [nzValue]="index"
+                      [nzLoading]="snapshotPackageLoading" [(ngModel)]="selectedSnapshotPackage"
+                      (ngModelChange)="changePackageSnapshot()" [ngModelOptions]="{ standalone: true }" nzSize="large">
+                      <nz-option *ngFor="let index of snapshotPackageArray" [nzValue]="index"
                         [nzLabel]="formatLabel(index)"></nz-option>
-                      </nz-select>
+                    </nz-select>
                   </nz-form-control>
                 </nz-form-item>
-                </nz-col>
-                <nz-col [nzXs]="24" [nzSm]="24" [nzMd]="12" [nzLg]="12" [nzXl]="12">
-                  <nz-form-item style="margin-right:0.5rem; margin-left:0.5rem">
-                    <nz-form-label><span>Chế độ Snapshot (<span class="text-red">*</span>)
-                      <img [nz-tooltip]="'Mặc định tần suất Snapshot là Hằng ngày'"
-                         style="margin-left: 5px;" src="assets/imgs/pajamas_question.svg"
+              </nz-col>
+              <nz-col [nzXs]="24" [nzSm]="24" [nzMd]="12" [nzLg]="12" [nzXl]="12">
+                <nz-form-item style="margin-right:0.5rem; margin-left:0.5rem">
+                  <nz-form-label><span>Chế độ Snapshot (<span class="text-red">*</span>)
+                      <img [nz-tooltip]="'Mặc định tần suất Snapshot là Hằng ngày'" style="margin-left: 5px;"
+                        src="assets/imgs/pajamas_question.svg" alt="" /></span></nz-form-label>
+                  <input nz-input [(ngModel)]="mode" [ngModelOptions]="{ standalone: true }" disabled="true" type="text"
+                    nzSize="large" /></nz-form-item>
+              </nz-col>
+              <nz-col [nzXs]="24" [nzSm]="24" [nzMd]="12" [nzLg]="12" [nzXl]="12">
+                <nz-form-item style="margin-right:0.5rem; margin-left:0.5rem">
+                  <nz-form-label><span>{{ 'app.choose.perform.snapshot.time' | i18n }} (<span class="text-red">*</span>)
+                      <img [nz-tooltip]="'Thời gian trong ngày Snapshot sẽ được thực hiện'" style="margin-left: 5px;"
+                        src="assets/imgs/pajamas_question.svg" alt="" /></span></nz-form-label>
+                  <nz-time-picker style="width: 100%; border-radius: 8px" [(ngModel)]="time"
+                    [ngModelOptions]="{ standalone: true }" nzFormat="HH:mm" [nzDefaultOpenValue]="defaultOpenValue"
+                    nzSize="large"></nz-time-picker>
+                </nz-form-item>
+              </nz-col>
+              <nz-col [nzXs]="24" [nzSm]="24" [nzMd]="12" [nzLg]="24" [nzXl]="24">
+                <nz-form-item style="margin-right:0.5rem; margin-left:0.5rem">
+                  <nz-form-label><span>Số bản Snapshot lưu trữ (<span class="text-red">*</span>)
+                      <img
+                        [nz-tooltip]="'Khi một bản Snapshot được tạo ra, hệ thống tự động ghi đè lên bản cũ nhất để đảm bảo số bản Snapshot tối đa được lưu trữ không vượt quá số lượng được cài đặt. Số lượng này chỉ tác động đến các bản Snapshot được cài đặt theo lịch mà không tác động đến các bản Snapshot được tạo thủ công.'"
+                        style="margin-left: 5px;" src="assets/imgs/pajamas_question.svg"
                         alt="" /></span></nz-form-label>
-                    <input nz-input [(ngModel)]="mode" [ngModelOptions]="{ standalone: true }" disabled="true" type="text"
-                      nzSize="large" /></nz-form-item>
-                </nz-col>
-                <nz-col [nzXs]="24" [nzSm]="24" [nzMd]="12" [nzLg]="12" [nzXl]="12">
-                  <nz-form-item style="margin-right:0.5rem; margin-left:0.5rem">
-                    <nz-form-label><span>{{ 'app.choose.perform.snapshot.time' | i18n }} (<span class="text-red">*</span>)
-                        <img [nz-tooltip]="'Thời gian trong ngày Snapshot sẽ được thực hiện'"
-                           style="margin-left: 5px;" src="assets/imgs/pajamas_question.svg"
-                          alt="" /></span></nz-form-label>
-                    <nz-time-picker style="width: 100%; border-radius: 8px" [(ngModel)]="time"
-                      [ngModelOptions]="{ standalone: true }" nzFormat="HH:mm" [nzDefaultOpenValue]="defaultOpenValue"
-                      nzSize="large"></nz-time-picker>
-                  </nz-form-item>
-                </nz-col>
-                <nz-col [nzXs]="24" [nzSm]="24" [nzMd]="12" [nzLg]="24" [nzXl]="24">
-                  <nz-form-item style="margin-right:0.5rem; margin-left:0.5rem">
-                    <nz-form-label><span>Số bản Snapshot lưu trữ (<span class="text-red">*</span>)
-                        <img  [nz-tooltip]="'Khi một bản Snapshot được tạo ra, hệ thống tự động ghi đè lên bản cũ nhất để đảm bảo số bản Snapshot tối đa được lưu trữ không vượt quá số lượng được cài đặt. Số lượng này chỉ tác động đến các bản Snapshot được cài đặt theo lịch mà không tác động đến các bản Snapshot được tạo thủ công.'" style="margin-left: 5px;" src="assets/imgs/pajamas_question.svg"
-                          alt="" /></span></nz-form-label>
-                    <nz-form-control>
-                      <nz-input-number [(ngModel)]="numOfVersion" (keydown)="checkPossiblePress($event)"
-                        style="width: 100%; margin-left: -1px" [ngModelOptions]="{standalone: true}" [nzMin]="0" [nzStep]="1"
-                        nzSize="large"></nz-input-number>
-                    </nz-form-control>
-                  </nz-form-item>
-                </nz-col>
-                <nz-col  [nzXs]="24" [nzSm]="24" [nzMd]="12" [nzLg]="24" [nzXl]="24">
-                  <nz-form-item style="margin-right:0.5rem; margin-left:0.5rem">
-                    <nz-form-label>Mô tả</nz-form-label>
-                    <nz-form-control >
-                      <nz-textarea-count [nzMaxCharacterCount]="255" >
-                        <textarea rows="4" nz-input [(ngModel)]="descSchedule" maxlength="255"  
-                          [ngModelOptions]="{ standalone: true }"></textarea>
-                      </nz-textarea-count>
-                    </nz-form-control>
-                  </nz-form-item>
-                </nz-col>
-              </nz-row>
-            </div>
+                  <nz-form-control>
+                    <nz-input-number [(ngModel)]="numOfVersion" (keydown)="checkPossiblePress($event)" (ngModelChange)="changeNumberVersion($event)"
+                      style="width: 100%; margin-left: -1px" [ngModelOptions]="{standalone: true}" [nzMin]="0"
+                      [nzStep]="1" nzSize="large"></nz-input-number>
+                  </nz-form-control>
+                </nz-form-item>
+              </nz-col>
+              <nz-col [nzXs]="24" [nzSm]="24" [nzMd]="12" [nzLg]="24" [nzXl]="24">
+                <nz-form-item style="margin-right:0.5rem; margin-left:0.5rem">
+                  <nz-form-label>Mô tả</nz-form-label>
+                  <nz-form-control>
+                    <nz-textarea-count [nzMaxCharacterCount]="255">
+                      <textarea rows="4" nz-input [(ngModel)]="descSchedule" maxlength="255"
+                        [ngModelOptions]="{ standalone: true }"></textarea>
+                    </nz-textarea-count>
+                  </nz-form-control>
+                </nz-form-item>
+              </nz-col>
+            </nz-row>
+          </div>
           <!-- </nz-spin> -->
         </nz-card>
       </nz-col>
@@ -561,16 +572,23 @@
               <span class="text-card-header">Thông số cấu hình</span>
             </div>
             <div style="margin-top: 10px" class="text-value">{{ 'app.snapshot.schedule.name' | i18n }}</div>
-            <div style="margin-top: 10px" class="text-label truncate" [nz-tooltip]="validateForm.value.name">{{ validateForm.value.name }}</div>
+            <div style="margin-top: 10px" class="text-label truncate" [nz-tooltip]="validateForm.value.name">{{
+              validateForm.value.name }}</div>
             <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
             <div *ngIf="snapshotTypeCreate == 0 ||  (snapshotTypeCreate == 2 && selectedSnapshotType == 0)">
-              <div  style="margin-top: 10px" class="text-value">Volume</div>
-              <div style="margin-top: 10px" class="text-label truncate" [nz-tooltip]="selectedVolume?.name ">{{ selectedVolume?.name }} {{quotaTypeSelected||quotaSelected ? '(' :'' }} {{quotaTypeSelected ? quotaTypeSelected.toUpperCase() :''}} {{quotaTypeSelected&&quotaSelected ? ',' :'' }} {{quotaSelected ? quotaSelected:''}} {{quotaTypeSelected||quotaSelected ? ')' :'' }}</div>
+              <div style="margin-top: 10px" class="text-value">Volume</div>
+              <div style="margin-top: 10px" class="text-label truncate" [nz-tooltip]="selectedVolume?.name ">{{
+                selectedVolume?.name }} {{quotaTypeSelected||quotaSelected ? '(' :'' }} {{quotaTypeSelected ?
+                quotaTypeSelected.toUpperCase() :''}} {{quotaTypeSelected&&quotaSelected ? ',' :'' }} {{quotaSelected ?
+                (quotaSelected +' GB'):''}} {{quotaTypeSelected||quotaSelected ? ')' :'' }}</div>
               <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
             </div>
             <div *ngIf="snapshotTypeCreate == 1 || (snapshotTypeCreate == 2 && selectedSnapshotType == 1)">
               <div style="margin-top: 10px" class="text-value">Máy ảo</div>
-              <div style="margin-top: 10px" class="text-label">{{ selectedVM?.name }} {{quotaTypeSelected||quotaSelected ? '(' :'' }} {{quotaTypeSelected ? quotaTypeSelected.toUpperCase() :''}} {{quotaTypeSelected&&quotaSelected ? ',' :'' }} {{quotaSelected ? quotaSelected:''}} {{quotaTypeSelected||quotaSelected ? ')' :'' }}</div>
+              <div style="margin-top: 10px" class="text-label">{{ selectedVM?.name }} {{quotaTypeSelected||quotaSelected
+                ? '(' :'' }} {{quotaTypeSelected ? quotaTypeSelected.toUpperCase() :''}}
+                {{quotaTypeSelected&&quotaSelected ? ',' :'' }} {{quotaSelected ? (quotaSelected+ ' GB'):''}}
+                {{quotaTypeSelected||quotaSelected ? ')' :'' }}</div>
               <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
             </div>
 
@@ -605,7 +623,9 @@
             </button> -->
             <button nz-button nzType="primary"
               style=" border: none;width: 100%;display: flex;align-items: center;gap: 5px;justify-content: center;"
-              nzSize="large" [disabled]="validateForm.invalid || (projectType !=1 && !selectedSnapshotPackage ||( this.selectedVolume==undefined ) && (this.selectedVM==undefined) ) || (projectType==1 && ( this.selectedVolume==undefined ) && ( this.selectedVM==undefined ))" (click)="create()">
+              nzSize="large"
+              [disabled]="validateForm.invalid || (projectType !=1 && !selectedSnapshotPackage ||( this.selectedVolume==undefined ) && (this.selectedVM==undefined) ) || (projectType==1 && ( this.selectedVolume==undefined ) && ( this.selectedVM==undefined ))"
+              (click)="create()">
               <img src="assets/imgs/wallet.svg" alt="" />
               <span class="button-text-primary">Khởi tạo</span>
             </button>
@@ -620,4 +640,5 @@
       </nz-col>
     </nz-row>
   </form>
+  
 </ng-container>

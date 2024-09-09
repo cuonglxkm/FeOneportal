@@ -97,29 +97,26 @@ export class SnapshotVolumeService extends BaseService {
     if (formSearch.regionId != undefined || formSearch.regionId != null) {
       params = params.append('regionId', formSearch.regionId)
     }
-    if (formSearch.name != undefined || formSearch.name != null) {
+    if (formSearch.name ) {
       params = params.append('name', formSearch.name.trim().toLowerCase())
     }
-    if (formSearch.volumeName != undefined || formSearch.volumeName != null) {
+    if (formSearch.volumeName ) {
         params = params.append('volumeName', formSearch.volumeName)
       }
-    if (formSearch.projectId != undefined || formSearch.projectId != null) {
+    if (formSearch.projectId ) {
       params = params.append('projectId', formSearch.projectId)
     }
-    if (formSearch.pageSize != undefined || formSearch.pageSize != null) {
+    if (formSearch.pageSize ) {
       params = params.append('pageSize', formSearch.pageSize)
     }
-    if (formSearch.pageNumber != undefined || formSearch.pageNumber != null) {
+    if (formSearch.pageNumber ) {
       params = params.append('pageNumber', formSearch.pageNumber)
     }
-    if (formSearch.ssPackageId != undefined || formSearch.ssPackageId != null) {
+    if (formSearch.ssPackageId ) {
       params = params.append('ssPackageId', formSearch.ssPackageId)
     }
-    if (formSearch.state && Array.isArray(formSearch.state)) {
-      params = params.append('state', formSearch.state[0]);
-      // formSearch.state.forEach((stateValue: string) => {
-      //   params = params.append('state', stateValue);
-      // });
+    if (formSearch.state != undefined && formSearch.state != null && formSearch.state !='') {
+      params = params.append('state',formSearch.state)
     }
     return this.http.get<BaseResponse<ScheduleSnapshotVL[]>>(this.baseUrl + this.ENDPOINT.provisions + '/vlsnapshots/schedule', {
       headers: this.getHeaders().headers,

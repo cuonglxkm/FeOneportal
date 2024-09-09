@@ -57,14 +57,22 @@ export class HeaderUserComponent {
   get user(): User {
     return this.settings.user;
   }
-
   constructor(
     private settings: SettingsService,
     private router: Router,
     private cookieService: CookieService,
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
     private httpClient: HttpClient
-  ) {}
+  ) {
+    const langCookie = this.cookieService.get('ui.language') ?? ''
+    let language = '';
+    if(langCookie === 'en') {
+      language = 'en-US';
+    }else if(langCookie === 'vi') {
+      language = 'vi-VI';
+    }
+  }
+
 
   private readonly mh = inject(ModalHelper);
 
@@ -76,7 +84,8 @@ export class HeaderUserComponent {
     let id_token = this.tokenService.get()!['id_token'];
     console.log('logout host');
     sessionStorage.clear();
-    this.cookieService.deleteAll( "/",environment.sso.domain,true,"None");
+    this.cookieService.delete("TOKEN_USER", '/', environment.sso.domain,true,"None");
+    this.cookieService.delete("ui.language", '/', environment.sso.issuerDomain,true,"None");
     this.tokenService.clear();
 
     localStorage.removeItem('UserRootId');

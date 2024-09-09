@@ -15,14 +15,15 @@
   </div>
   <div *nzModalContent>
     <div *ngIf="isMultiple && instanceInVolume.length > 1">
-      <nz-form-label>{{ 'volume.modal.attach.title' | i18n }}</nz-form-label>
+      <div style="font-size: 16px;">{{ 'volume.table.title.instance' | i18n }}</div>
+      <!-- <nz-form-label>{{ 'volume.table.title.instance' | i18n }}</nz-form-label> -->
       <nz-select nzSize="default"
                  [nzLoading]="isLoading"
                  [nzPlaceHolder]="'volume.modal.attach.title'|i18n"
                  [(ngModel)]="instanceInVolumeSelected"
                  (ngModelChange)="onChange($event)"
                  nzShowSearch
-                 style="width: 300px;">
+                 style="width: 100%;">
         <nz-option *ngFor="let item of listInstanceInVolume" [nzLabel]="item.instanceName"
                    [nzValue]="item.instanceId"></nz-option>
       </nz-select>

@@ -1089,7 +1089,7 @@
                   />
                   <nz-option
                     *ngFor="let i of listVlanNetwork"
-                    [nzLabel]="i.name"
+                    [nzLabel]="i.name + ' (' + i.subnetAddressRequired + ')'"
                     [nzValue]="i.cloudId"
                   />
                 </nz-select>

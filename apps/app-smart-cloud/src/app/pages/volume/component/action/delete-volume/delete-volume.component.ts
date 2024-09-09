@@ -42,8 +42,18 @@ export class DeleteVolumeComponent implements AfterViewInit{
   }
 
   showModal() {
-    this.isVisible = true;
-    setTimeout(() => {this.volumeInputName?.nativeElement.focus()}, 1000)
+    this.volumeService.getSnapshotsByVolume(this.volumeId).subscribe(data => {
+      console.log('first',data)
+      if(data?.length){
+        const listSnapshotName = data.map(snapshot => snapshot.name).join(", ")
+        this.notification.warning(this.i18n.fanyi('app.status.warning'), `Vui lòng xóa Snapshot ${listSnapshotName}`)
+      }else{
+        this.isVisible = true;
+        setTimeout(() => {
+          this.volumeInputName?.nativeElement.focus();
+        }, 1000);
+      }
+    })
   }
 
   handleCancel() {

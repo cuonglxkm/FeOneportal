@@ -143,6 +143,7 @@ export class CreateVolumeVpcComponent implements OnInit {
   }
 
   checkQuota(control) {
+    console.log('remaining: ', this.remaining)
     const value = control.value;
     if (this.remaining < value) {
       return { notEnough: true };
@@ -485,6 +486,24 @@ export class CreateVolumeVpcComponent implements OnInit {
     }
   }
 
+  // onSwitchSnapshot(value) {
+  //   this.isInitSnapshot = value;
+  //   console.log('snap shot', this.isInitSnapshot);
+  //   if (this.isInitSnapshot) {
+  //     this.disableHDD = true;
+  //     this.disableSSD = true
+  //     this.validateForm.controls.snapshot.setValidators(Validators.required);
+  //   } else {
+  //     this.disableHDD = false;
+  //     this.disableSSD = false
+  //     this.validateForm.controls.snapshot.clearValidators();
+  //     this.validateForm.controls.snapshot.updateValueAndValidity();
+
+  //     this.validateForm.controls.storage.clearValidators();
+  //     this.validateForm.controls.storage.updateValueAndValidity();
+  //   }
+  // }
+
   onSwitchSnapshot(value) {
     this.isInitSnapshot = value;
     console.log('snap shot', this.isInitSnapshot);
@@ -492,13 +511,16 @@ export class CreateVolumeVpcComponent implements OnInit {
       this.disableHDD = true;
       this.disableSSD = true
       this.validateForm.controls.snapshot.setValidators(Validators.required);
+      
+      this.validateForm.controls.storage.clearValidators();
+      this.validateForm.controls.storage.updateValueAndValidity();
     } else {
       this.disableHDD = false;
       this.disableSSD = false
       this.validateForm.controls.snapshot.clearValidators();
       this.validateForm.controls.snapshot.updateValueAndValidity();
 
-      this.validateForm.controls.storage.clearValidators();
+      this.validateForm.controls.storage.setValidators([Validators.required, Validators.pattern(/^[0-9]*$/), this.checkQuota.bind(this)]);
       this.validateForm.controls.storage.updateValueAndValidity();
     }
   }
@@ -637,6 +659,8 @@ export class CreateVolumeVpcComponent implements OnInit {
               if (data != null) {
                 if (data.code == 200) {
                   this.isLoadingAction = false;
+                  this.isLoadingCreate = false
+                  this.isVisibleCreate = false
                   this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('volume.notification.require.create.success'));
                   setTimeout(() => {
                     this.navigateToVolume()
@@ -644,6 +668,7 @@ export class CreateVolumeVpcComponent implements OnInit {
                 }
               } else {
                 this.isLoadingAction = false;
+                this.isLoadingCreate = false
               }
             },
             error => {

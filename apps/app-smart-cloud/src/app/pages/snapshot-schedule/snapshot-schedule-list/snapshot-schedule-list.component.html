@@ -4,10 +4,10 @@
     <nz-breadcrumb [nzSeparator]="iconTemplate">
       <ng-template #iconTemplate><one-portal-svg-icon [icon]="'icon_breadcrumb'"></one-portal-svg-icon></ng-template>
       <nz-breadcrumb-item><a [routerLink]="['/']">{{ 'app.breadcrumb.home' | i18n }}</a></nz-breadcrumb-item>
-      <nz-breadcrumb-item>{{'app.breadcrumb.infrastructure.service' | i18n }}</nz-breadcrumb-item>
+      <nz-breadcrumb-item>{{titleBreadcrumb }}</nz-breadcrumb-item>
       <nz-breadcrumb-item>Block Storage</nz-breadcrumb-item>
-      <nz-breadcrumb-item><a routerLink="/app-smart-cloud/schedule/snapshot">{{'app.snapshot.schedule.label.name' |
-          i18n}}</a></nz-breadcrumb-item>
+      <nz-breadcrumb-item>{{'app.snapshot.schedule.label.name' |
+          i18n}}</nz-breadcrumb-item>
     </nz-breadcrumb>
     <ng-template #separatorTemplate><img src="assets/imgs/arrow-square-right.svg" alt="" />
     </ng-template>
@@ -29,6 +29,7 @@
         <nz-row nzJustify="space-between">
           <nz-col nzSpan="12">
             <nz-select [nzPlaceHolder]="'Trạng thái'" [ngModel]="searchStatus" (ngModelChange)="onChangeStatus($event)"  [nzLabel]="getDisplayText()"  
+          
               nzSize="large" style="margin-right: 15px; width: 170px;" nzPlaceHolder="Tất cả trạng thái"
               nzTooltipTitle="Tìm kiếm theo trạng thái" nzTooltipPlacement="bottom" nz-tooltip>
               <nz-option nzValue="" nzLabel="Tất cả trạng thái"></nz-option>
@@ -73,10 +74,10 @@
               <td style="max-width:180px"><a (click)="navigateToDetail(data.id)">{{data.name}}</a></td>
               <td style="max-width:180px"><a
                   (click)="navigateToPackageDetail(data.snapshotPackageId)">{{data.packageName}}</a></td>
-              <td>{{data.snapshotType == 1 ? 'VM (Máy ảo)' : 'Volume'}}</td>
+              <td>{{data.snapshotType == 1 ? 'Snapshot máy ảo' : 'Snapshot Volume'}}</td>
               <td style="max-width:180px">{{data.serviceName}}</td>
               <td style="text-align: end;">{{data.maxSnapshot}}</td>
-              <td>{{data.nextRuntime | date : 'HH:mm:ss dd/MM/yyyy'}}</td>
+              <td>{{data.nextRuntime | date : 'HH:mm dd/MM/yyyy'}}</td>
               <ng-container *ngIf="data.status | ServiceStatusPipe as statusModel" >
                 <td nzBreakWord nzAlign="left" [ngStyle]="{ color: statusModel.color }">
                   <img *ngIf="data.status == 'DISABLED'" nz-tooltip
@@ -88,15 +89,23 @@
                   {{ statusModel.status }}
                 </td>
               </ng-container>
-              <td class="flex" style="align-items: center;">
-                <img *ngIf="data.status == 'ACTIVE' && ('volumesnapshotschedule:Update' | IsPermissionPipe)"
-                  (click)="enableEdit(data)" src="assets/imgs/edit-2.svg" alt=""
-                  nzTooltipTitle="{{'app.text.edit' | i18n}}"
+              <td class="" style="align-items: center;">
+  
+                  <img *ngIf="data.status == 'ACTIVE' && ('volumesnapshotschedule:Update' | IsPermissionPipe)"
+                  (click)="enableEdit(data)" src="assets/imgs/edit-2.svg" nz-tooltip nzTooltipTitle="Chỉnh sửa" nzTooltipPlacement="bottom" alt=""
+                 
                   style="cursor: pointer; width: 20px; height: 20px; margin-bottom: 3px;" />
+                  <img src="assets/imgs/khoiphuc.svg" nz-tooltip nzTooltipTitle="Khôi phục" nzTooltipPlacement="bottom" style="width: 22px;height: 22px; cursor: pointer;" *ngIf="data.status == 'DISABLED' || data.status == 'SUSPENDED' && ('volumesnapshotschedule:VolumeSnapshotScheduleAction' | IsPermissionPipe)" (click)="enableRestart(data)" />
+                  <img src="assets/imgs/delete.svg"
+                  *ngIf="('volumesnapshotschedule:Delete' | IsPermissionPipe)"
+                  style="width: 30px;height: 30px; cursor: pointer;" nz-tooltip
+                  nzTooltipTitle="{{'app.delete' | i18n}}" nzTooltipPlacement="bottom"   (click)="showDelete(data)" />
+    
+                
                 <!-- <img nz-dropdown [nzDropdownMenu]="opMenu" src="assets/imgs/more1.svg" alt=""
                   style="margin-left: 5px; cursor:pointer;" /> -->
 
-                  <img src="assets/imgs/khoiphuc.svg"  style="width: 22px;height: 22px; cursor: pointer;" *ngIf="data.status == 'DISABLED' || data.status == 'SUSPENDED' && ('volumesnapshotschedule:VolumeSnapshotScheduleAction' | IsPermissionPipe)" (click)="enableRestart(data)" />
+                 
                   <!-- <li
                   *ngIf="data.status == 'DISABLED' || data.status == 'SUSPENDED' && ('volumesnapshotschedule:VolumeSnapshotScheduleAction' | IsPermissionPipe)"
                   nz-menu-item (click)="enableRestart(data)">
@@ -107,10 +116,7 @@
                 <!-- <li *ngIf="('volumesnapshotschedule:Delete' | IsPermissionPipe)" nz-menu-item
                   (click)="showDelete(data)" style="color: red">{{ 'app.delete' | i18n}}</li> -->
 
-                  <img src="assets/imgs/delete.svg"
-                  *ngIf="('volumesnapshotschedule:Delete' | IsPermissionPipe)"
-                  style="width: 30px;height: 30px; cursor: pointer;" nz-tooltip
-                  nzTooltipTitle="{{'app.delete' | i18n}}" nzTooltipPlacement="bottom"   (click)="showDelete(data)" />
+                 
 
                 <!-- <nz-dropdown-menu #opMenu="nzDropdownMenu">
                   <ul nz-menu>
@@ -156,7 +162,7 @@
   </nz-card>
 </nz-content>
 
-<nz-modal [(nzVisible)]="isVisibleDelete" nzTitle="{{'app.snapshot.schedule.delete' | i18n}} "
+<nz-modal [(nzVisible)]="isVisibleDelete" nzTitle="Xóa lịch Snapshot "
   (nzOnCancel)="handleCancel()" [nzStyle]="modalStyle">
   <ng-container *nzModalContent>
     <nz-alert nzBanner style="margin-bottom: 10px;"

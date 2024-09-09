@@ -19,10 +19,19 @@
   </ng-template>
   <ng-template #action>
     <div class="alain-custom-action text-right">
+      <share-users-combobox></share-users-combobox>
       <region-select-dropdown
         (valueChanged)="onRegionChange($event)"
         (regionChange)="onRegionChanged($event)"
       ></region-select-dropdown>
+      <div style="visibility: hidden">
+        <project-select-dropdown
+          #projectCombobox
+          (valueChanged)="projectChanged($event)"
+          (userChanged)="projectChanged($event)"
+          [regionId]="region"
+        ></project-select-dropdown>
+      </div>
     </div>
   </ng-template>
 </page-header>
@@ -51,22 +60,39 @@
       [nzXs]="24"
       [nzXXl]="12"
     >
-      <button nz-button nzType="primary" (click)="extendObjectStorage()">
-        <img src="assets/imgs/calendar-tick2.svg" alt="" style="cursor: pointer;margin-bottom: 3px;" />
+      <button
+        *ngIf="isExtendOrder"
+        nz-button
+        nzType="primary"
+        (click)="extendObjectStorage()"
+      >
+        <img
+          src="assets/imgs/calendar-tick2.svg"
+          alt=""
+          style="cursor: pointer; margin-bottom: 3px"
+        />
         {{ 'app.button.extend' | i18n }}
       </button>
-      <button nz-button nzType="primary" nz-dropdown [nzDropdownMenu]="opMenu">
+      <button
+        *ngIf="
+          (objectStorage?.status !== 'TAMNGUNG' && isResizeOrder) || isDeleteOS
+        "
+        nz-button
+        nzType="primary"
+        nz-dropdown
+        [nzDropdownMenu]="opMenu"
+      >
         <img src="assets/imgs/dots.svg" alt="" />
         <nz-dropdown-menu #opMenu="nzDropdownMenu">
           <ul nz-menu>
             <li
-              *ngIf="objectStorage?.status !== 'TAMNGUNG'"
+              *ngIf="isResizeOrder"
               nz-menu-item
               (click)="resizeObjectStorage()"
             >
               {{ 'app.button.resize' | i18n }}
             </li>
-            <li nz-menu-item (click)="deleteObjectStorage()">
+            <li *ngIf="isDeleteOS" nz-menu-item (click)="deleteObjectStorage()">
               {{ 'app.text.delete' | i18n }}
             </li>
           </ul>
@@ -107,32 +133,34 @@
       objectStorage.expiredDate | date : 'dd/MM/yyyy'
     }}</span>
   </div>
- <ng-container *ngIf="objectStorage">
-   <div
-     *ngIf="
-     objectStorage?.status !== 'TAMNGUNG'"
-     style="margin-bottom: 10px"
-     class="text-label"
-   >
-     {{ 'app.payment.status' | i18n }}:
-     <span class="text-value">
-       {{ objectStorage.statusDisplay }}
-     </span>
-   </div>
-   <div
-     *ngIf="
-     objectStorage?.status === 'TAMNGUNG'"
-     style="margin-bottom: 10px"
-     class="text-label"
-   >
-     {{ 'app.payment.status' | i18n }}:
-     <span class="text-value">
-       {{ 'app.suspend' | i18n }}
-     </span>
-   </div>
- </ng-container> 
+  <ng-container *ngIf="objectStorage">
+    <div
+      *ngIf="objectStorage?.status !== 'TAMNGUNG'"
+      style="margin-bottom: 10px"
+      class="text-label"
+    >
+      {{ 'app.payment.status' | i18n }}:
+      <span class="text-value">
+        {{ objectStorage.statusDisplay }}
+      </span>
+    </div>
+    <div
+      *ngIf="objectStorage?.status === 'TAMNGUNG'"
+      style="margin-bottom: 10px"
+      class="text-label"
+    >
+      {{ 'app.payment.status' | i18n }}:
+      <span class="text-value">
+        {{ 'app.suspend' | i18n }}
+      </span>
+    </div>
+  </ng-container>
 </nz-card>
-<nz-card *ngIf="hasOS && objectStorage?.status !== 'TAMNGUNG'" style="border-radius: 4px" [nzBordered]="false">
+<nz-card
+  *ngIf="hasOS && objectStorage?.status !== 'TAMNGUNG'"
+  style="border-radius: 4px"
+  [nzBordered]="false"
+>
   <div nz-row [nzGutter]="24">
     <div
       nz-col
@@ -177,6 +205,7 @@
         nz-button
         nzType="primary"
         (click)="createBucket()"
+        *ngIf="isCreateBucket"
       >
         <img
           style="padding-right: 10px; margin-top: -4px"
@@ -215,10 +244,16 @@
     </thead>
     <tbody>
       <tr *ngFor="let data of listBucket">
-        <td title="{{ data.bucketName }}" nzLeft style="overflow: hidden;
-        font-weight: normal;
-        white-space: nowrap;
-        text-overflow: ellipsis;">
+        <td
+          title="{{ data.bucketName }}"
+          nzLeft
+          style="
+            overflow: hidden;
+            font-weight: normal;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+          "
+        >
           <a
             nz-tooltip
             nzTooltipPlacement="bottom"
@@ -243,19 +278,25 @@
         <td nzBreakWord>{{ data.createdDate | date : 'dd/MM/yyyy' }}</td>
         <td nzBreakWord>
           <ng-container *ngIf="data.status | ServiceStatusPipe as statusModel">
-<!--            <td *ngIf="!!data.suspendReason"> -->
-<!--              <span [ngStyle]="{color: statusModel.color}">-->
-<!--                <img src="assets/imgs/warning-message.svg" alt="" style="cursor: pointer; margin-bottom: 4px;"-->
-<!--                     nzTooltipTitle="{{ item.suspendReason | SuspendStatusPipe }}"-->
-<!--                     nzTooltipPlacement="bottom"-->
-<!--                     nz-tooltip>-->
-<!--                {{ statusModel.status }}</span>-->
-<!--            </td>-->
-              <span [ngStyle]="{color: statusModel.color}">{{ statusModel.status }}</span>
+            <!--            <td *ngIf="!!data.suspendReason"> -->
+            <!--              <span [ngStyle]="{color: statusModel.color}">-->
+            <!--                <img src="assets/imgs/warning-message.svg" alt="" style="cursor: pointer; margin-bottom: 4px;"-->
+            <!--                     nzTooltipTitle="{{ item.suspendReason | SuspendStatusPipe }}"-->
+            <!--                     nzTooltipPlacement="bottom"-->
+            <!--                     nz-tooltip>-->
+            <!--                {{ statusModel.status }}</span>-->
+            <!--            </td>-->
+            <span [ngStyle]="{ color: statusModel.color }">{{
+              statusModel.status
+            }}</span>
           </ng-container>
         </td>
         <td nzRight>
           <img
+            *ngIf="
+              ('objectstorages:GetBucketPolicy' | IsPermissionPipe) &&
+              ('objectstorages:GetBucket' | IsPermissionPipe)
+            "
             src="assets/imgs/uil_setting.svg"
             alt=""
             (click)="configure(data.bucketName)"
@@ -263,6 +304,7 @@
             [nz-tooltip]="'app.config' | i18n"
           />
           <img
+            *ngIf="'objectstorages:DeleteBucket' | IsPermissionPipe"
             src="assets/imgs/delete.svg"
             alt=""
             (click)="modalDeleteBucket(data.bucketName)"
@@ -282,44 +324,50 @@
   [nzTitle]="titleModalDeleteBucket"
   (nzOnCancel)="handleCancelDeleteBucket()"
 >
-    <ng-container *nzModalContent>
-
-      <span
+  <ng-container *nzModalContent>
+    <span
       class="text-label"
       [innerHTML]="
         'app.alert.delete.bucket' | i18n : { name: bucketDeleteName }
       "
     ></span>
-        <input
-        style="margin-top: 5px"
-        class="input-custom"
-        name="name"
-        nz-input
-        (keydown.enter)="focusOkButton($event)"
-        (ngModelChange)="onInputChange($event)"
-        #bucketInputName
-        [(ngModel)]="codeVerify"
-      />
-      <span *ngIf="isInput" style="color: red;">Vui lòng nhập đúng tên Bucket</span>
+    <input
+      style="margin-top: 5px"
+      class="input-custom"
+      name="name"
+      nz-input
+      (keydown.enter)="focusOkButton($event)"
+      (ngModelChange)="onInputChange($event)"
+      #bucketInputName
+      [(ngModel)]="codeVerify"
+    />
+    <span *ngIf="isInput" style="color: red"
+      >Vui lòng nhập đúng tên Bucket</span
+    >
   </ng-container>
-    <div *nzModalFooter>
-      <button nz-button (click)="handleCancelDeleteBucket()">
-        <img
-          style="padding-right: 10px; margin-top: -4px"
-          src="assets/imgs/cancel.svg"
-          alt=""
-        />{{ 'app.button.cancel' | i18n }}
-      </button>
-      <button [nzLoading]="isLoadingDeleteBucket" nz-button nzType="primary" (click)="handleOkDeleteBucket()">
-        <img
-          *ngIf="isLoadingDeleteBucket === false"
-          style="padding-right: 10px; margin-top: -4px"
-          src="assets/imgs/confirm.svg"
-          alt=""
-        />
-        {{ 'app.button.confirm' | i18n }}
-      </button>
-    </div>
+  <div *nzModalFooter>
+    <button nz-button (click)="handleCancelDeleteBucket()">
+      <img
+        style="padding-right: 10px; margin-top: -4px"
+        src="assets/imgs/cancel.svg"
+        alt=""
+      />{{ 'app.button.cancel' | i18n }}
+    </button>
+    <button
+      [nzLoading]="isLoadingDeleteBucket"
+      nz-button
+      nzType="primary"
+      (click)="handleOkDeleteBucket()"
+    >
+      <img
+        *ngIf="isLoadingDeleteBucket === false"
+        style="padding-right: 10px; margin-top: -4px"
+        src="assets/imgs/confirm.svg"
+        alt=""
+      />
+      {{ 'app.button.confirm' | i18n }}
+    </button>
+  </div>
 </nz-modal>
 
 <nz-modal

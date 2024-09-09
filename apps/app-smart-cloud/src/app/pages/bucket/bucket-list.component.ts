@@ -22,11 +22,21 @@ import { ObjectStorage } from 'src/app/shared/models/object-storage.model';
 import { BucketService } from 'src/app/shared/services/bucket.service';
 import { ObjectStorageService } from 'src/app/shared/services/object-storage.service';
 import { TimeCommon } from 'src/app/shared/utils/common';
-import {  NotificationService, RegionModel } from '../../../../../../libs/common-utils/src';
+import {
+  NotificationService,
+  ProjectModel,
+  RegionModel,
+} from '../../../../../../libs/common-utils/src';
 import { RegionSelectDropdownComponent } from 'src/app/shared/components/region-select-dropdown/region-select-dropdown.component';
 import { RegionID } from 'src/app/shared/enums/common.enum';
 import { size } from 'lodash';
-import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
+import {
+  FormControl,
+  FormGroup,
+  NonNullableFormBuilder,
+  Validators,
+} from '@angular/forms';
+import { PolicyService } from 'src/app/shared/services/policy.service';
 
 @Component({
   selector: 'one-portal-bucket-list',
@@ -48,7 +58,7 @@ export class BucketListComponent implements OnInit {
   searchDelay = new Subject<boolean>();
   user: any;
   usage: any;
-  userinfo: any
+  userinfo: any;
   url = window.location.pathname;
   isLoadingDeleteBucket: boolean = false;
   constructor(
@@ -62,11 +72,15 @@ export class BucketListComponent implements OnInit {
     private message: NzMessageService,
     private loadingSrv: LoadingService,
     private notificationService: NotificationService,
-    private fb: NonNullableFormBuilder
+    private fb: NonNullableFormBuilder,
+    private policyService: PolicyService
   ) {}
   hasOS: boolean = undefined;
   region: number;
-
+  isExtendOrder: boolean = false;
+  isResizeOrder: boolean = false;
+  isDeleteOS: boolean = false;
+  isCreateBucket: boolean = false;
 
   ngOnInit(): void {
     if (!this.url.includes('advance')) {
@@ -83,26 +97,52 @@ export class BucketListComponent implements OnInit {
     this.notificationService.connection.on('UpdateOSBucket', (data) => {
       if (data) {
         let actionType = data.actionType;
-          switch (actionType) {
-            case 'DELETING':
-              this.reloadTable();
-            case 'DELETED':
-              this.reloadTable();
-          }
+        switch (actionType) {
+          case 'DELETING':
+            this.reloadTable();
+          case 'DELETED':
+            this.reloadTable();
         }
+      }
     });
+
     this.searchDelay
       .pipe(debounceTime(TimeCommon.timeOutSearch))
       .subscribe(() => {
-        this.refreshParams()
+        this.refreshParams();
         this.search();
       });
+  }
+
+  checkPermissionExtend() {
+    this.isExtendOrder =
+      this.policyService.hasPermission('order:Create') &&
+      this.policyService.hasPermission('objectstorages:ObjectStorageUser') &&
+      this.policyService.hasPermission('order:GetOrderAmount');
+  }
+
+  checkPermissionResize() {
+    this.isResizeOrder =
+      this.policyService.hasPermission('order:Create') &&
+      this.policyService.hasPermission('objectstorages:ObjectStorageUser') &&
+      this.policyService.hasPermission('order:GetOrderAmount') &&
+      this.policyService.hasPermission('configuration:Get');
+  }
+
+  checkPermissionDeleteOS() {
+    this.isDeleteOS = this.policyService.hasPermission('objectstorages:Delete');
+  }
+
+  checkPermissionCreateBucket() {
+    this.isCreateBucket = this.policyService.hasPermission(
+      'objectstorages:CreateBucket'
+    );
   }
 
   nameBucketValidator(control: FormControl): { [key: string]: any } | null {
     const name = control.value;
     if (name !== this.bucketDeleteName) {
-      return { 'nameMismatch': true };
+      return { nameMismatch: true };
     }
     return null;
   }
@@ -125,14 +165,12 @@ export class BucketListComponent implements OnInit {
       .subscribe({
         next: (data) => {
           if (data) {
-            this.userinfo = data
+            this.userinfo = data;
             this.hasObjectStorage();
             this.getUsageOfUser();
-            this.search();
           } else {
             this.hasOS = false;
           }
-          
         },
         error: (e) => {
           this.notification.error(
@@ -149,10 +187,9 @@ export class BucketListComponent implements OnInit {
       .subscribe({
         next: (data) => {
           console.log(data);
-            this.hasOS = true;
-            this.user = data;
-            this.getUserById(this.user.id);
-            
+          this.hasOS = true;
+          this.user = data;
+          this.getUserById(this.user.id);
         },
         error: (e) => {
           this.notification.error(
@@ -171,7 +208,6 @@ export class BucketListComponent implements OnInit {
       .subscribe({
         next: (data) => {
           this.usage = data;
-          
         },
         // error: (e) => {
         //   this.notification.error(
@@ -185,10 +221,10 @@ export class BucketListComponent implements OnInit {
   onRegionChange(region: RegionModel) {
     this.region = region.regionId;
     console.log(this.region);
-    
-    if(this.region === RegionID.ADVANCE){
+
+    if (this.region === RegionID.ADVANCE) {
       this.router.navigate(['/app-smart-cloud/object-storage-advance/bucket']);
-    }else{
+    } else {
       this.router.navigate(['/app-smart-cloud/object-storage/bucket']);
     }
   }
@@ -200,7 +236,21 @@ export class BucketListComponent implements OnInit {
   refreshParams() {
     this.pageNumber = 1;
     this.pageSize = 10;
-}
+  }
+
+  projectChanged(project: ProjectModel) {
+    this.policyService
+      .getUserPermissions()
+      .pipe()
+      .subscribe((permission) => {
+        localStorage.setItem('PermissionOPA', JSON.stringify(permission));
+        this.search();
+        this.checkPermissionExtend();
+        this.checkPermissionCreateBucket();
+        this.checkPermissionDeleteOS();
+        this.checkPermissionResize();
+      });
+  }
 
   getUserById(id: number) {
     this.loadingSrv.open({ type: 'spin', text: 'Loading...' });
@@ -209,12 +259,11 @@ export class BucketListComponent implements OnInit {
       .pipe(finalize(() => this.loadingSrv.close()))
       .subscribe({
         next: (data) => {
-          if(data.status !== 'LOI' && data.status !== 'HUY'){
-          this.hasOS = true;
-          this.objectStorage = data;
-          console.log(this.objectStorage);
-          
-          }else{
+          if (data.status !== 'LOI' && data.status !== 'HUY') {
+            this.hasOS = true;
+            this.objectStorage = data;
+            console.log(this.objectStorage);
+          } else {
             this.notification.error(
               this.i18n.fanyi('app.status.fail'),
               this.i18n.fanyi('Không tìm thấy tài nguyên')
@@ -244,12 +293,11 @@ export class BucketListComponent implements OnInit {
           this.loading = false;
           this.listBucket = data.records;
           this.total = data.totalCount;
-          
         },
         error: (e) => {
           this.loading = false;
           this.listBucket = [];
-          if(e.status == 403){
+          if (e.status == 403) {
             this.notification.error(
               e.statusText,
               this.i18n.fanyi('app.non.permission')
@@ -260,7 +308,6 @@ export class BucketListComponent implements OnInit {
               this.i18n.fanyi('app.bucket.getBucket.fail')
             );
           }
-          
         },
       });
   }
@@ -269,7 +316,7 @@ export class BucketListComponent implements OnInit {
   }
   searchBucket(search: string) {
     this.value = search.trim();
-    this.refreshParams()
+    this.refreshParams();
     this.search();
   }
 
@@ -302,25 +349,17 @@ export class BucketListComponent implements OnInit {
 
   extendObjectStorage() {
     if (this.region === RegionID.ADVANCE) {
-      this.router.navigate([
-        `/app-smart-cloud/object-storage-advance/extend`,
-      ]);
+      this.router.navigate([`/app-smart-cloud/object-storage-advance/extend`]);
     } else {
-      this.router.navigate([
-        `/app-smart-cloud/object-storage/extend`,
-      ]);
+      this.router.navigate([`/app-smart-cloud/object-storage/extend`]);
     }
   }
 
   resizeObjectStorage() {
     if (this.region === RegionID.ADVANCE) {
-      this.router.navigate([
-        `/app-smart-cloud/object-storage-advance/edit`,
-      ]);
+      this.router.navigate([`/app-smart-cloud/object-storage-advance/edit`]);
     } else {
-      this.router.navigate([
-        `/app-smart-cloud/object-storage/edit`,
-      ]);
+      this.router.navigate([`/app-smart-cloud/object-storage/edit`]);
     }
   }
 
@@ -359,44 +398,42 @@ export class BucketListComponent implements OnInit {
   }
 
   handleOkDeleteBucket() {
-      this.isLoadingDeleteBucket = true;
-      if(this.codeVerify == this.bucketDeleteName){
-        this.isInput = false;
-        this.bucketService
+    this.isLoadingDeleteBucket = true;
+    if (this.codeVerify == this.bucketDeleteName) {
+      this.isInput = false;
+      this.bucketService
         .deleteBucket(this.bucketDeleteName, this.region)
         .subscribe({
           next: (data) => {
-            this.isLoadingDeleteBucket = false
-            this.isVisibleDeleteBucket = false
+            this.isLoadingDeleteBucket = false;
+            this.isVisibleDeleteBucket = false;
             this.codeVerify = '';
             this.notification.success(
               this.i18n.fanyi('app.status.success'),
               this.i18n.fanyi('app.bucket.delete.bucket.success')
             );
-            this.search()
-            
+            this.search();
           },
           error: (error) => {
-            this.isLoadingDeleteBucket = false
+            this.isLoadingDeleteBucket = false;
             this.notification.error(
               this.i18n.fanyi('app.status.fail'),
               this.i18n.fanyi('app.bucket.delete.bucket.fail')
             );
-            
           },
         });
-      }else{
-        this.isLoadingDeleteBucket = false
-        this.isInput = true;
-      }
+    } else {
+      this.isLoadingDeleteBucket = false;
+      this.isInput = true;
     }
+  }
 
-    focusOkButton(event: KeyboardEvent): void {
-      if (event.key === 'Enter') {
-        event.preventDefault();
-        this.handleOkDeleteBucket();
-      }
+  focusOkButton(event: KeyboardEvent): void {
+    if (event.key === 'Enter') {
+      event.preventDefault();
+      this.handleOkDeleteBucket();
     }
+  }
 
   isVisibleDeleteOS: boolean = false;
   modalDeleteOS() {
@@ -419,7 +456,6 @@ export class BucketListComponent implements OnInit {
         this.isVisibleDeleteOS = false;
         this.isLoadingDeleteOS = false;
         this.hasObjectStorageInfo();
-        
       },
       error: (error) => {
         console.log(error.error);
@@ -428,11 +464,9 @@ export class BucketListComponent implements OnInit {
           'Xóa Object Storage không thành công'
         );
         this.isLoadingDeleteOS = false;
-        
       },
     });
   }
 
   protected readonly size = size;
-
 }

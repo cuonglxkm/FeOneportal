@@ -4,9 +4,9 @@
     <nz-breadcrumb [nzSeparator]="iconTemplate">
       <ng-template #iconTemplate><one-portal-svg-icon [icon]="'icon_breadcrumb'"></one-portal-svg-icon></ng-template>
       <nz-breadcrumb-item><a [routerLink]="['/']">{{ 'app.breadcrumb.home' | i18n }}</a></nz-breadcrumb-item>
-      <nz-breadcrumb-item>{{'app.breadcrumb.infrastructure.service' | i18n }}</nz-breadcrumb-item>
+      <nz-breadcrumb-item>{{titleBreadcrumb }}</nz-breadcrumb-item>
       <nz-breadcrumb-item>Block Storage</nz-breadcrumb-item>
-      <nz-breadcrumb-item><a routerLink="/app-smart-cloud/snapshot">Snapshot Volume</a></nz-breadcrumb-item>
+      <nz-breadcrumb-item><a [routerLink]="navigateToSnapshot()">Snapshot Volume</a></nz-breadcrumb-item>
       <nz-breadcrumb-item>Khởi tạo Snapshot</nz-breadcrumb-item>
 
     </nz-breadcrumb>
@@ -846,7 +846,7 @@
               class="text-label truncate" [nz-tooltip]="selectedVM?.name">{{selectedVM?.name}}</div>
             <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
             <div style="margin-top: 10px" class="text-value">{{'app.capacity' | i18n}}</div>
-            <div style="margin-top: 10px" class="text-label">{{quotaSelected}}</div>
+            <div style="margin-top: 10px" class="text-label">{{quotaSelected}} GB</div>
             <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
 
             <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>

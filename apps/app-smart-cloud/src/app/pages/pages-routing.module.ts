@@ -575,9 +575,6 @@ const routes: Routes = [
     path: 'schedule/backup/list',
     component: ListScheduleBackupComponent,
     canActivate: [PermissionGuard],
-    data: {
-      permission: 'backupschedule:Search'
-    }
   },
   {
     path: 'schedule/backup/create',
@@ -942,18 +939,10 @@ const routes: Routes = [
   {
     path: 'object-storage-advance/sub-user',
     component: ListSubUserComponent,
-    canActivate: [PermissionGuard],
-    data: {
-      permission: 'objectstorages:ObjectStorageUser'
-    }
   },
   {
     path: 'object-storage/sub-user',
     component: ListSubUserComponent,
-    canActivate: [PermissionGuard],
-    data: {
-      permission: 'objectstorages:ObjectStorageUser'
-    }
   },
   {
     path: 'object-storage/sub-user/create',
@@ -974,18 +963,10 @@ const routes: Routes = [
   {
     path: 'object-storage/dashboard',
     component: DashboardObjectStorageComponent,
-    canActivate: [PermissionGuard],
-    data: {
-      permission: 'objectstorages:ObjectStorageMonitor'
-    }
   },
   {
     path: 'object-storage-advance/dashboard',
     component: DashboardObjectStorageComponent,
-    canActivate: [PermissionGuard],
-    data: {
-      permission: 'objectstorages:ObjectStorageMonitor'
-    }
   },
   {
     path: 'networks/ip-floating/list',
@@ -1058,18 +1039,10 @@ const routes: Routes = [
   {
     path: 'object-storage/bucket',
     component: BucketListComponent,
-    canActivate: [PermissionGuard],
-    data: {
-      permission: 'objectstorages:ObjectStorageUser'
-    }
   },
   {
     path: 'object-storage-advance/bucket',
     component: BucketListComponent,
-    canActivate: [PermissionGuard],
-    data: {
-      permission: 'objectstorages:ObjectStorageUser'
-    }
   },
   {
     path: 'object-storage/bucket/create',
@@ -1183,18 +1156,10 @@ const routes: Routes = [
   {
     path: 'object-storage/s3-key',
     component: S3KeyComponent,
-    canActivate: [PermissionGuard],
-    data: {
-      permission: 'objectstorages:Search'
-    }
   },
   {
     path: 'object-storage-advance/s3-key',
     component: S3KeyComponent,
-    canActivate: [PermissionGuard],
-    data: {
-      permission: 'objectstorages:Search'
-    }
   },
   {
     path: 'snapshot/packages',

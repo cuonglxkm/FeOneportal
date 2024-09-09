@@ -28,8 +28,8 @@ export class SnapshotScheduleListComponent implements OnInit {
   region: number;
   project: number;
 
-  // searchStatus: string = '';
-  searchStatus: string[] = [];
+  searchStatus: string = '';
+  // searchStatus: string[] = [];
   searchName: string = '';
 
   validateForm: FormGroup<{
@@ -75,6 +75,7 @@ export class SnapshotScheduleListComponent implements OnInit {
   isCreateOrder: boolean = false;
   scheduleName:string;
   isInput: boolean = false;
+  titleBreadcrumb:string;
   @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
   searchSnapshotScheduleList(checkBegin: any) {
     this.getSnapSchedules(checkBegin);
@@ -142,8 +143,10 @@ export class SnapshotScheduleListComponent implements OnInit {
       } else {
         this.region = Number(localStorage.getItem('regionId'));
       }
+       this.titleBreadcrumb ='Dịch vụ hạ tầng'
     } else {
       this.region = RegionID.ADVANCE;
+       this.titleBreadcrumb ='Dịch vụ nâng cao'
     }
     this.searchDelay.pipe(debounceTime(TimeCommon.timeOutSearch)).subscribe((checkBegin: boolean) => {
       this.searchSnapshotScheduleList(checkBegin);
@@ -240,10 +243,10 @@ export class SnapshotScheduleListComponent implements OnInit {
   // search theo status snapshot schedule
   onChangeStatus(value) {
    
-    this.searchStatus = [value]
+    this.searchStatus = value
     console.log(" this.searchStatus", this.searchStatus)
     if (value === '') {
-      this.searchStatus = [];
+      this.searchStatus = '';
     }
     this.getSnapSchedules(false)
   }
@@ -554,4 +557,13 @@ export class SnapshotScheduleListComponent implements OnInit {
   //         this.notification.error(this.i18n.fanyi('app.status.fail'), error.error.message);
   //       });
   // }
+
+  // navigateToBreadcrumb
+  navigateToBreadcrumb(){
+    if (this.region === RegionID.ADVANCE) {
+      this.router.navigate(['/app-smart-cloud/schedule/snapshot-advance']);
+    } else {
+      this.router.navigate(['/app-smart-cloud/schedule/snapshot' ]);
+    }
+  }
 }

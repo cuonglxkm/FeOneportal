@@ -4,7 +4,7 @@ import { DA_SERVICE_TOKEN, ITokenService } from "@delon/auth";
 import { NzNotificationService } from "ng-zorro-antd/notification";
 import { PackageBackupService } from "../../../shared/services/package-backup.service";
 import { FormUpdate, PackageBackupModel, ServiceInPackage } from "../../../shared/models/package-backup.model";
-import { BaseResponse, ProjectModel, RegionModel } from "../../../../../../../libs/common-utils/src";
+import { BaseResponse, NotificationService, ProjectModel, RegionModel } from "../../../../../../../libs/common-utils/src";
 import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from "@angular/forms";
 import { getCurrentRegionAndProject } from "@shared";
 import { FormSearchPackageSnapshot, PackageSnapshotModel } from 'src/app/shared/models/package-snapshot.model';
@@ -82,6 +82,7 @@ export class ListPackagesSnapshotComponent implements OnInit {
   isLoadingSnapshotSchedule = false;
   isUpdateName: boolean = false;
   isCreateOrder: boolean = false;
+  titleBreadcrumb: string;
   @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
   constructor(private router: Router,
     private packageSnapshotService: PackageSnapshotService,
@@ -90,7 +91,7 @@ export class ListPackagesSnapshotComponent implements OnInit {
     private notification: NzNotificationService,
     private fb: NonNullableFormBuilder,
     private vlService: VolumeService,
-   
+    private notificationService: NotificationService,
     private snapshotVolumeService: SnapshotVolumeService,
     private projectService: ProjectService,
     private policyService: PolicyService) {
@@ -114,7 +115,7 @@ export class ListPackagesSnapshotComponent implements OnInit {
     if (project?.type == 1) {
       this.isBegin = true;
     }
-    this.isCreateOrder = this.policyService.hasPermission("configuration:Get") && 
+    this.isCreateOrder = this.policyService.hasPermission("configuration:Get") &&
       this.policyService.hasPermission("order:GetOrderAmount") &&
       this.policyService.hasPermission("order:Create");
   }
@@ -175,7 +176,7 @@ export class ListPackagesSnapshotComponent implements OnInit {
           }
         }
       }, error => {
-        if(error.status == 403) {
+        if (error.status == 403) {
           this.notification.error(
             error.statusText,
             this.i18n.fanyi('app.non.permission')
@@ -262,9 +263,28 @@ export class ListPackagesSnapshotComponent implements OnInit {
       } else {
         this.region = Number(localStorage.getItem('regionId'));
       }
+       this.titleBreadcrumb ='Dịch vụ hạ tầng'
     } else {
       this.region = RegionID.ADVANCE;
+      this.titleBreadcrumb ='Dịch vụ nâng cao'
     }
+
+    this.notificationService.connection.on('UpdateStateSnapshotPackage', (message) => {
+      if (message) {
+        switch (message.actionType) {
+          case 'CREATING':
+          case 'CREATED':
+          case 'RESIZING':
+          case 'RESIZED':
+          case 'EXTENDING':
+          case 'EXTENDED':
+          case 'DELETED':
+          case 'DELETING':
+            this.getListPackageSnapshot(true);
+            break;
+        }
+      }
+    });
   }
 
   navigateToPackageDetail(id) {
@@ -331,26 +351,6 @@ export class ListPackagesSnapshotComponent implements OnInit {
         }
       );
   }
-
-  // private loadingSnapshotSchedule() {
-  //   this.isLoadingSnapshotSchedule = true;
-  //   this.snapshotVolumeService.getListSchedule(99999, 1, this.region, this.project, '', '', this.dataAction.id)
-  //     .pipe(finalize(() => {
-  //       this.isLoadingSnapshotSchedule = false;
-  //     }))
-  //     .subscribe({
-  //       next: (next) => {
-  //         this.snapshotSchefuleArray = next.records;
-  //         console.log("snapshotSchefuleArray", this.snapshotSchefuleArray)
-  //       },
-  //       error: (error) => {
-  //         this.notification.error(
-  //           'Có lỗi xảy ra',
-  //           'Lấy danh sách lịch Snapshot thất bại'
-  //         );
-  //       },
-  //     });
-  // }
   private loadingSnapshotSchedule() {
     this.isLoadingSnapshotSchedule = true;
     this.formSearchScheduleSnapshot.projectId = this.project
@@ -364,7 +364,7 @@ export class ListPackagesSnapshotComponent implements OnInit {
       .subscribe({
         next: (next) => {
           this.snapshotSchefuleArray = next.records;
-          
+
         },
         error: (error) => {
           if (error.status == 403) {
@@ -378,7 +378,7 @@ export class ListPackagesSnapshotComponent implements OnInit {
               'Lấy danh sách lịch Snapshot thất bại'
             );
           }
-          
+
         }
       });
   }

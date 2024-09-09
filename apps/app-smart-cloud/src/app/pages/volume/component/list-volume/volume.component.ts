@@ -23,6 +23,7 @@ import { ScheduleService } from '../../../../shared/services/schedule.service';
 import { BackupSchedule, FormSearchScheduleBackup } from '../../../../shared/models/schedule.model';
 import { CatalogService } from '../../../../shared/services/catalog.service';
 import { PolicyService } from 'src/app/shared/services/policy.service';
+import { PackageSnapshotService } from 'src/app/shared/services/package-snapshot.service';
 
 @Component({
   selector: 'app-volume',
@@ -71,6 +72,8 @@ export class VolumeComponent implements OnInit, OnDestroy {
 
   isBegin: boolean = false;
 
+  dataVolumeExisted: number[] = []
+
   dataSubjectInputSearch: Subject<any> = new Subject<any>();
   private searchSubscription: Subscription;
   private enterPressed: boolean = false;
@@ -86,6 +89,7 @@ export class VolumeComponent implements OnInit, OnDestroy {
               private notification: NzNotificationService,
               private scheduleBackupService: ScheduleService,
               private catalogService: CatalogService,
+              private packageSnapshotService: PackageSnapshotService,
               @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
               private policyService: PolicyService) {
   }
@@ -120,6 +124,19 @@ export class VolumeComponent implements OnInit, OnDestroy {
     if (this.searchSubscription) {
       this.searchSubscription.unsubscribe();
     }
+  }
+
+  //Lấy các máy ảo đã có lịch snapshot
+  getExistedSnapshotScheduleVolume(){
+    this.packageSnapshotService.getExistedSchedule(this.project).subscribe(data => {
+      for (let item of data) {
+        console.log("data dataInstanceExisted", data)
+        if (item.snapshotType == 0) {
+          this.dataVolumeExisted.push(item.serviceInstanceId)
+        }
+      }
+      this.cdr.detectChanges()
+    })
   }
 
   // Tìm kiếm theo tên
@@ -439,7 +456,6 @@ export class VolumeComponent implements OnInit, OnDestroy {
     let regionAndProject = getCurrentRegionAndProject();
     this.region = regionAndProject.regionId;
     this.project = regionAndProject.projectId;
-    this.getCatalog();
     if (!this.url.includes('advance')) {
       if (Number(localStorage.getItem('regionId')) === RegionID.ADVANCE) {
         this.region = RegionID.NORMAL;
@@ -465,6 +481,8 @@ export class VolumeComponent implements OnInit, OnDestroy {
     if (!this.region && !this.project) {
       this.router.navigate(['/exception/500']);
     }
+    this.getCatalog();
+    this.getExistedSnapshotScheduleVolume()
 
     //thông báo signalR tự động reload khi trạng thái thay đổi
     this.notificationService.connection.on('UpdateVolume', (message) => {

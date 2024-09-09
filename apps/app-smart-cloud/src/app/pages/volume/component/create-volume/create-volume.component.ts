@@ -597,7 +597,7 @@ export class CreateVolumeComponent implements OnInit {
       this.onChangeStatusEncrypt(data.isEncryption);
       this.onChangeStatusMultiAttach(data.isMultiAttach);
       console.log('instance', data?.attachedInstances[0]?.instanceId);
-      this.instanceSelectedChange(data?.attachedInstances[0]?.instanceId);
+      // this.instanceSelectedChange(data?.attachedInstances[0]?.instanceId);
       // this.validateForm.controls.instanceId.setValue(data?.attachedInstances[0]?.instanceId);
     });
   }
@@ -628,10 +628,27 @@ export class CreateVolumeComponent implements OnInit {
     });
   }
 
+  onKeyDownStorage(event: KeyboardEvent) {
+    // Lấy giá trị của phím được nhấn
+    const key = event.key;
+    // Kiểm tra xem phím nhấn có phải là một số hoặc phím di chuyển không
+    if (
+      (isNaN(Number(key)) &&
+        key !== 'Backspace' &&
+        key !== 'Delete' &&
+        key !== 'ArrowLeft' &&
+        key !== 'ArrowRight') ||
+      key === '.' || key === '-'
+    ) {
+      // Nếu không phải số hoặc đã nhập dấu chấm và đã có dấu chấm trong giá trị hiện tại
+      event.preventDefault(); // Hủy sự kiện để ngăn người dùng nhập ký tự đó
+    }
+  }
+
   onKeyDown(event: KeyboardEvent) {
     console.log('event', event)
     console.log('event 2', event)
-    if (event.key === 'Enter' &&
+    if (isNaN(Number(event.key)) && event.key === 'Enter' &&
       (this.isLoadingAction
         || this.validateForm.invalid
         || this.validateForm.controls.storage.value == 0

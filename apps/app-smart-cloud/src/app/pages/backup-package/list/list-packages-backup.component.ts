@@ -111,6 +111,8 @@ export class ListPackagesBackupComponent implements OnInit, OnDestroy {
       this.policyService.hasPermission("configuration:Get") && 
       this.policyService.hasPermission("order:GetOrderAmount") &&
       this.policyService.hasPermission("order:Create");
+    console.log(this.isCreateOrder);
+      
   }
 
   onInputChange(value: string) {
