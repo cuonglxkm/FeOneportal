@@ -14,6 +14,7 @@ import {
 } from '../models/volume.model';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { BaseResponse } from '../../../../../../libs/common-utils/src';
+import { SnapshotVolumeDto } from '../dto/snapshot-volume.dto';
 
 @Injectable({
   providedIn: 'root'
@@ -201,5 +202,9 @@ export class VolumeService extends BaseService {
 
   getDetailPackageSnapshot(snapshotPackageId) {
     return this.http.get<any>(this.baseUrl + this.ENDPOINT.provisions + '/snapshots/packages/'+snapshotPackageId);
+  }
+
+  getSnapshotsByVolume(id: string | number){
+    return this.http.get<SnapshotVolumeDto[]>(this.baseUrl + this.ENDPOINT.provisions + '/vlsnapshots/getbyvolume/' +  id, {headers: this.getHeaders().headers})
   }
 }
