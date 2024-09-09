@@ -61,6 +61,8 @@ export class SnapshotListComponent implements OnInit {
   loadingDelete = false;
   isVisibleEdit: boolean;
   isCreateOrder: boolean = false;
+  titleBreadcrumb:string;
+
   @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
   constructor(private router: Router,
     private fb: NonNullableFormBuilder,
@@ -83,8 +85,10 @@ export class SnapshotListComponent implements OnInit {
       } else {
         this.region = Number(localStorage.getItem('regionId'));
       }
+       this.titleBreadcrumb ='Dịch vụ hạ tầng'
     } else {
       this.region = RegionID.ADVANCE;
+       this.titleBreadcrumb ='Dịch vụ nâng cao'
     }
     this.searchDelay.pipe(debounceTime(TimeCommon.timeOutSearch)).subscribe(() => {
       this.search(false);
@@ -337,4 +341,5 @@ export class SnapshotListComponent implements OnInit {
     ];
     return processingStatuses.includes(status);
   }
+
 }

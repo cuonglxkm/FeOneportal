@@ -37,6 +37,8 @@ export class SnapshotScheduleDetailComponent implements OnInit {
   typeSnapshot: any;
   typeProject: number;
   labelMode = 'Hằng ngày';
+  titleBreadcrumb:string;
+
   @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
   url = window.location.pathname;
   ngOnInit(): void {
@@ -46,8 +48,11 @@ export class SnapshotScheduleDetailComponent implements OnInit {
       } else {
         this.region = Number(localStorage.getItem('regionId'));
       }
+       this.titleBreadcrumb ='Dịch vụ hạ tầng'
     } else {
       this.region = RegionID.ADVANCE;
+      this.titleBreadcrumb ='Dịch vụ nâng cao'
+        
     }
     const id = Number.parseInt(this.activatedRoute.snapshot.paramMap.get('id'));
     this.customerID = this.tokenService.get()?.userId;
@@ -140,5 +145,13 @@ export class SnapshotScheduleDetailComponent implements OnInit {
 
   onUserProjectChange($event: any) {
     this.navigateToSnapshotSchedule()
+  }
+   // navigateToBreadcrumb
+   navigateToBreadcrumb(){
+    if (this.region === RegionID.ADVANCE) {
+      this.router.navigate(['/app-smart-cloud/schedule/snapshot-advance']);
+    } else {
+      this.router.navigate(['/app-smart-cloud/schedule/snapshot' ]);
+    }
   }
 }

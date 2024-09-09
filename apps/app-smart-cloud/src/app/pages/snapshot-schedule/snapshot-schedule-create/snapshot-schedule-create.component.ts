@@ -104,6 +104,7 @@ export class SnapshotScheduleCreateComponent implements OnInit {
   vmArray: any;
   numOfVersion = 1;
   disableCreate = true;
+  titleBreadcrumb:string;
 
 
   @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
@@ -157,11 +158,15 @@ export class SnapshotScheduleCreateComponent implements OnInit {
     if (!this.url.includes('advance')) {
       if (Number(localStorage.getItem('regionId')) === RegionID.ADVANCE) {
         this.region = RegionID.NORMAL;
+       
       } else {
         this.region = Number(localStorage.getItem('regionId'));
       }
+      this.titleBreadcrumb ='Dịch vụ hạ tầng'
+      
     } else {
       this.region = RegionID.ADVANCE;
+        this.titleBreadcrumb ='Dịch vụ nâng cao'
     }
     this.doGetListSnapshotPackage();
     this.loadSnapshotPackage();
@@ -321,7 +326,7 @@ export class SnapshotScheduleCreateComponent implements OnInit {
 
   navigateToSnapshotSchedule() {
     if (this.region === RegionID.ADVANCE) {
-      this.router.navigate(['/app-smart-cloud/schedule-advance/snapshot']);
+      this.router.navigate(['/app-smart-cloud/schedule/snapshot-advance']);
     } else {
       this.router.navigate(['/app-smart-cloud/schedule/snapshot']);
     }
@@ -1121,5 +1126,13 @@ export class SnapshotScheduleCreateComponent implements OnInit {
 
     // Trả về định dạng ngày
     return `${day}/${month}/${year}`;
+  }
+   // navigateToBreadcrumb
+   navigateToBreadcrumb(){
+    if (this.region === RegionID.ADVANCE) {
+      this.router.navigate(['/app-smart-cloud/schedule/snapshot-advance']);
+    } else {
+      this.router.navigate(['/app-smart-cloud/schedule/snapshot' ]);
+    }
   }
 }

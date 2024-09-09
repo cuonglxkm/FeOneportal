@@ -98,6 +98,9 @@ export class SnapshotCreateComponent implements OnInit, OnChanges {
   idSnapshotPackage: number;
   packageTotalHdd: number;
   packageTotalSsd: number;
+
+  titleBreadcrumb:string;
+
   @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
 
   constructor(private router: Router,
@@ -125,8 +128,10 @@ export class SnapshotCreateComponent implements OnInit, OnChanges {
       } else {
         this.region = Number(localStorage.getItem('regionId'));
       }
+       this.titleBreadcrumb ='Dịch vụ hạ tầng'
     } else {
       this.region = RegionID.ADVANCE;
+      this.titleBreadcrumb ='Dịch vụ nâng cao'
     }
     this.loadSnapshotPackage();
     this.loadVolumeList();
@@ -730,4 +735,5 @@ export class SnapshotCreateComponent implements OnInit, OnChanges {
         );
     }
   }
+    
 }

@@ -26,6 +26,7 @@ export class SnapshotDetailComponent implements OnInit{
   typeProject: any;
   packageSnap: any;
   packageSize:number;
+  titleBreadcrumb:string;
 
   validateForm: FormGroup<{
     description: FormControl<string>
@@ -49,8 +50,10 @@ export class SnapshotDetailComponent implements OnInit{
       } else {
         this.region = Number(localStorage.getItem('regionId'));
       }
+       this.titleBreadcrumb ='Dịch vụ hạ tầng'
     } else {
       this.region = RegionID.ADVANCE;
+       this.titleBreadcrumb ='Dịch vụ nâng cao'
     }
     const id = this.activatedRoute.snapshot.paramMap.get('id');
     this.id = id;
@@ -109,6 +112,13 @@ export class SnapshotDetailComponent implements OnInit{
   }
 
   userChanged($event: any) {
+    if (this.region === RegionID.ADVANCE) {
+      this.router.navigate(['/app-smart-cloud/snapshot-advance'])
+    } else {
+      this.router.navigate(['/app-smart-cloud/snapshot'])
+    }
+  }
+  navigateToSnapshot() {
     if (this.region === RegionID.ADVANCE) {
       this.router.navigate(['/app-smart-cloud/snapshot-advance'])
     } else {
