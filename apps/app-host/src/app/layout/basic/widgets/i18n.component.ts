@@ -39,7 +39,14 @@ export class HeaderI18nComponent {
   }
 
   get curLangCode(): string {
-    return this.settings.layout.lang;
+    const langCookie = this.cookieService.get('ui.language') ?? ''
+    let language = '';
+    if(langCookie === 'en') {
+      language = 'en-US';
+    }else if(langCookie === 'vi') {
+      language = 'vi-VI';
+    }
+    return language !== '' ? language : this.settings.layout.lang;
   }
 
   constructor(
