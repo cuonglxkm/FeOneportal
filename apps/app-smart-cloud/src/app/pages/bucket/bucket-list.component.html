@@ -295,7 +295,9 @@
           <img
             *ngIf="
               ('objectstorages:GetBucketPolicy' | IsPermissionPipe) &&
-              ('objectstorages:GetBucket' | IsPermissionPipe)
+              ('objectstorages:GetBucket' | IsPermissionPipe) &&
+              ('objectstorages:OSListBucketCORS' | IsPermissionPipe) &&
+              ('objectstorages:OSListBucketLifeCycle' | IsPermissionPipe)
             "
             src="assets/imgs/uil_setting.svg"
             alt=""

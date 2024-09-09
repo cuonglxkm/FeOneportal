@@ -27,10 +27,19 @@
   </ng-template>
   <ng-template #action>
     <div class="alain-custom-action text-right">
+      <share-users-combobox></share-users-combobox>
       <region-select-dropdown
-        (valueChanged)="regionChanged($event)"
+        (valueChanged)="onRegionChange($event)"
         (regionChange)="onRegionChanged($event)"
       ></region-select-dropdown>
+      <div style="visibility: hidden">
+        <project-select-dropdown
+          #projectCombobox
+          (valueChanged)="projectChanged($event)"
+          (userChanged)="projectChanged($event)"
+          [regionId]="region"
+        ></project-select-dropdown>
+    </div>
     </div>
   </ng-template>
 </page-header>
@@ -55,6 +64,7 @@
               nz-button
               nzType="primary"
               nzSize="large"
+              *ngIf="isPermissionCreate"
               (click)="navigateToCreateSubUser()">
         <img style="padding-right: 10px; margin-top: -4px"
              src="assets/imgs/add-circle.svg"

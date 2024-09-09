@@ -12,6 +12,7 @@ import { I18NService } from '@core';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { RegionID } from 'src/app/shared/enums/common.enum';
 import { TimeCommon } from 'src/app/shared/utils/common';
+import { PolicyService } from 'src/app/shared/services/policy.service';
 
 @Component({
   selector: 'one-portal-list-sub-user',
@@ -36,7 +37,7 @@ export class ListSubUserComponent implements OnInit {
   listSubuser: any;
   url = window.location.pathname;
   isExpand: number | null = null;
-
+  isPermissionCreate: boolean = false;
   searchDelay = new Subject<boolean>();
 
   constructor(
@@ -48,6 +49,7 @@ export class ListSubUserComponent implements OnInit {
     private notification: NzNotificationService,
     private clipboardService: ClipboardService,
     private renderer: Renderer2,
+    private policyService: PolicyService,
     @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService
   ) {
     this.rowCount = this.response?.records.reduce(
@@ -111,6 +113,11 @@ export class ListSubUserComponent implements OnInit {
   calculateRowCount() {
   }
 
+  checkPermissionCreate() {
+    this.isPermissionCreate = this.policyService.hasPermission('OSCreateSubUser') &&
+    this.policyService.hasPermission('OSGetSubUser')
+  }
+
   regionChanged(region: RegionModel) {
     this.region = region.regionId;
     if(this.region === RegionID.ADVANCE){
@@ -125,8 +132,14 @@ export class ListSubUserComponent implements OnInit {
   }
 
   projectChanged(project: ProjectModel) {
-    this.project = project?.id;
-    this.getListSubUsers(true);
+    this.policyService
+      .getUserPermissions()
+      .pipe()
+      .subscribe((permission) => {
+        localStorage.setItem('PermissionOPA', JSON.stringify(permission));
+        this.getListSubUsers(false);
+        this.checkPermissionCreate();
+      });
   }
 
   onPageSizeChange(value) {

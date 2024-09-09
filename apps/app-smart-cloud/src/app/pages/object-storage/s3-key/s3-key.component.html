@@ -25,10 +25,19 @@
   </ng-template>
   <ng-template #action>
     <div class="alain-custom-action text-right">
+      <share-users-combobox></share-users-combobox>
       <region-select-dropdown
-      (valueChanged)="onRegionChange($event)"
+        (valueChanged)="onRegionChange($event)"
         (regionChange)="onRegionChanged($event)"
       ></region-select-dropdown>
+      <div style="visibility: hidden">
+        <project-select-dropdown
+          #projectCombobox
+          (valueChanged)="projectChanged($event)"
+          (userChanged)="projectChanged($event)"
+          [regionId]="region"
+        ></project-select-dropdown>
+    </div>
     </div>
   </ng-template>
 </page-header>
@@ -59,7 +68,7 @@
           [nz-tooltip]="'app.button.search' | i18n"
         />
       </ng-template>
-      <button nz-button nzType="primary" (click)="createS3Key()" nzSize="large">
+      <button *ngIf="isPermissionCreate" nz-button nzType="primary" (click)="createS3Key()" nzSize="large">
         <img
           style="padding-right: 10px"
           src="assets/imgs/add-circle.svg"
