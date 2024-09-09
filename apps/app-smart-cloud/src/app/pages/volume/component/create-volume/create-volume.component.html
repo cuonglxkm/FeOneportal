@@ -11,7 +11,7 @@
         {{isAdvance ? ('app.breadcrumb.block.storage.advance' | i18n) : 'app.breadcrumb.block.storage' | i18n }}
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>
-        <a routerLink="/app-smart-cloud/volumes">Volume</a>
+        <a [routerLink]="isAdvance ? '/app-smart-cloud/volumes-advance' : '/app-smart-cloud/volumes'">Volume</a>
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>
         <a routerLink="/app-smart-cloud/volumes/create">{{ 'volume.button.create' | i18n }}</a>
