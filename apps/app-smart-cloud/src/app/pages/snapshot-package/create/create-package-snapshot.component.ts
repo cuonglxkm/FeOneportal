@@ -238,6 +238,13 @@ export class CreatePackageSnapshotComponent implements OnInit {
       this.router.navigate(['/app-smart-cloud/snapshot/packages']);
     }
   }
+  navigateToBreadcrumb() {
+    if (this.region === 7) {
+      this.router.navigate(['/app-smart-cloud/snapshot-advance/packages']);
+    } else {
+      this.router.navigate(['/app-smart-cloud/snapshot/packages']);
+    }
+  }
 
   navigateToPaymentSummary() {
     this.loadingCalculate = true;

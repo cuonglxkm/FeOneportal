@@ -25,6 +25,11 @@
               (input)="onInput($event)"
               nzSize="large"
             ></nz-input-number>
+            <ng-template #timeErrorTpl let-control>
+              <div class="mt-1" *ngIf="control.hasError('required')">{{
+                'validation.kafka.duration-required' | i18n
+              }}</div>
+            </ng-template>
           </nz-col>
           <nz-col style="margin-top: -3px" nzSpan="12">
             <div style="margin-left: 20px">
@@ -38,12 +43,7 @@
               </span>
             </div>
           </nz-col>
-        </nz-row>
-        <ng-template #timeErrorTpl let-control>
-          <ng-container *ngIf="control.hasError('required')">{{
-            'validation.kafka.duration-required' | i18n
-          }}</ng-container>
-        </ng-template>
+        </nz-row>  
       </nz-form-control>
     </nz-form-item>
   </form>

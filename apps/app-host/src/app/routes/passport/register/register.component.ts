@@ -27,6 +27,7 @@ import { noAllWhitespace } from '../../user-profile/user-profile.component';
 import { I18NService } from '@core';
 import { DOCUMENT } from '@angular/common';
 import { BooleanInput, InputBoolean } from '@delon/util/decorator';
+import { CookieService } from 'ngx-cookie-service';
 
 export interface UserCreateDto {
   email: string;
@@ -60,7 +61,8 @@ export class UserRegisterComponent implements OnInit, OnDestroy {
     @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
     @Inject(DOCUMENT) private doc: any,
     private activatedRoute: ActivatedRoute,
-    private appRef: ApplicationRef
+    private appRef: ApplicationRef,
+    private cookieService: CookieService
   ) {
   }
 
@@ -107,6 +109,7 @@ export class UserRegisterComponent implements OnInit, OnDestroy {
   visible = false;
   status = 'pool';
   progress = 0;
+  language = ''
   passwordProgressMap: { [key: string]: 'success' | 'normal' | 'exception' } = {
     ok: 'success',
     pass: 'normal',
@@ -132,21 +135,33 @@ export class UserRegisterComponent implements OnInit, OnDestroy {
   }
 
   private updateLanguage(): void {
-    const lang = this.activatedRoute.snapshot.paramMap.get('lang') || null;
+    let lang = this.activatedRoute.snapshot.paramMap.get('lang') || null;
+    if(lang === 'en') {
+      this.cookieService.set('ui.language', 'en', 1000000, '/',  environment.sso.issuerDomain, false);   
+    }else{
+      this.cookieService.set('ui.language', 'vi', 1000000, '/',  environment.sso.issuerDomain, false);
+    }
+    
+    const langCookie = this.cookieService.get('ui.language') ?? ''
+    if(langCookie === 'en') {
+      this.language = 'en-US';
+    }else if(langCookie === 'vi') {
+      this.language = 'vi-VI';
+    }
     const previousLang = localStorage.getItem('lang');
-    this.langRegister = lang === 'vi' ? 'vi-VI' : lang === 'en' ? 'en-US' : lang === null && localStorage.getItem('lang') == null ? this.i18n.defaultLang : lang === null && localStorage.getItem('lang') !== null ? localStorage.getItem('lang') : this.i18n.defaultLang;
+    this.langRegister = lang === 'vi' ? 'vi-VI' : lang === 'en' ? 'en-US' : lang === null && localStorage.getItem('lang') == null ? this.language : lang === null && localStorage.getItem('lang') !== null ? localStorage.getItem('lang') : this.i18n.defaultLang;
 
     localStorage.setItem('lang', this.langRegister);
-
+    lang = this.language;
     if (lang !== null && lang !== '') {
       this.i18n.loadLangData(this.langRegister).subscribe(res => {
         this.i18n.use(this.langRegister, res);
         this.settings.setLayout('lang', this.langRegister);
+        
         if (this.langRegister === 'vi-VI' && previousLang !== 'vi-VI' || this.langRegister === 'en-US' && previousLang !== 'en-US') {
           setTimeout(() => this.doc.location.reload());
         }
       });
-
     }
   }
 
@@ -287,6 +302,15 @@ export class UserRegisterComponent implements OnInit, OnDestroy {
     //     setTimeout(() => this.doc.location.reload());
     //   });
     // }
+    console.log(this.langRegister);
+    if(this.langRegister === 'en-US'){
+      this.cookieService.set('ui.language', 'en', 1000000, '/',  environment.sso.issuerDomain, false);     
+    }else{
+      this.cookieService.set('ui.language', 'vi', 1000000, '/',  environment.sso.issuerDomain, false); 
+    }
+    
+    console.log(this.langRegister);
+    
     if(this.langRegister === 'en-US'){
       this.i18n.loadLangData(this.langRegister).subscribe(res => {
         this.i18n.use(this.langRegister, res);

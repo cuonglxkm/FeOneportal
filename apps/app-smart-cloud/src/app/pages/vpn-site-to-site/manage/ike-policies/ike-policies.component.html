@@ -24,7 +24,7 @@
       </ng-template>
     </nz-col>
     <nz-col>
-      <button
+      <button *ngIf="isCreatePermission"
         [routerLink]="['/app-smart-cloud/vpn-site-to-site/ike-policies/create']"
         nz-button
         nzType="primary"
@@ -77,7 +77,7 @@
       <td>{{ data.perfectForwardSecrey }}</td>
       <td>
         <div class="d-flex gap-2 justify-content-center align-items-center">
-          <img
+          <img *ngIf="('vpnsitetosites:VPNUpdateIKEPolicy' | IsPermissionPipe)"
             style="cursor: pointer; margin-right: 16px"
             src="assets/imgs/edit-2.svg"
             nzTheme="outline"
@@ -89,7 +89,7 @@
             nz-popover
             nzPopoverPlacement="bottom"
           />
-          <one-portal-delete-ike-policies
+          <one-portal-delete-ike-policies *ngIf="('vpnsitetosites:VPNDeleteIKEPolicy' | IsPermissionPipe)"
             [region]="region"
             [project]="project"
             [ikepolicyid]="data.cloudId"

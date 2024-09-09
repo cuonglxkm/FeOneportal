@@ -6,6 +6,9 @@ import { BaseResponse, ProjectModel, RegionModel } from '../../../../../../../..
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { debounceTime, Subject } from 'rxjs';
 import { getCurrentRegionAndProject } from '@shared';
+import { PolicyService } from 'src/app/shared/services/policy.service';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
+import { I18NService } from '@core';
 
 @Component({
   selector: 'one-portal-ike-policies',
@@ -31,9 +34,12 @@ export class IkePoliciesComponent {
   formSearchIkePolicy: FormSearchIKEPolicy = new FormSearchIKEPolicy()
 
   searchDelay = new Subject<boolean>();
-
+  isCreatePermission: boolean = false;
   constructor(private ikePolicyService: IkePolicyService,
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
+    private notification: NzNotificationService,
+    @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
+    private policyService: PolicyService
     ) {
 }
 
@@ -75,7 +81,19 @@ export class IkePoliciesComponent {
       .subscribe(data => {
       this.isLoading = false
         console.log('data- IKE---', data)
-      this.response = data
+      this.response = data;
+      this.isCreatePermission = this.policyService.hasPermission("vpnsitetosites:VPNCreateIKEPolicy");
+    }, error => {
+      this.isLoading = false;
+      this.response = null;
+      console.log(error);
+      if(error.status == 403){
+        this.notification.error(
+          error.statusText,
+          this.i18n.fanyi('app.non.permission')
+        );
+      }
+      this.isCreatePermission = this.policyService.hasPermission("vpnsitetosites:VPNCreateIKEPolicy");
     })
   }
 

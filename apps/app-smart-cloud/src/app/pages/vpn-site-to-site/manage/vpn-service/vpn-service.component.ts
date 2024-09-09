@@ -5,6 +5,10 @@ import { FormSearchVpnService, VpnServiceDTO } from 'src/app/shared/models/vpn-s
 import { VpnServiceService } from 'src/app/shared/services/vpn-service.service';
 import { BaseResponse } from '../../../../../../../../libs/common-utils/src';
 import { TimeCommon } from 'src/app/shared/utils/common';
+import { NzNotificationService } from 'ng-zorro-antd/notification';
+import { PolicyService } from 'src/app/shared/services/policy.service';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
+import { I18NService } from '@core';
 
 @Component({
   selector: 'one-portal-vpn-service',
@@ -29,9 +33,12 @@ export class VpnService {
   formSearchVpnService: FormSearchVpnService = new FormSearchVpnService()
 
   searchDelay = new Subject<boolean>();
-
+  isCreatePermission: boolean = false;
   constructor(private vpnServiceService: VpnServiceService,
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
+    private notification: NzNotificationService,
+    @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
+    private policyService: PolicyService
     ) {
 }
 
@@ -68,8 +75,18 @@ export class VpnService {
     this.vpnServiceService.getVpnService(this.formSearchVpnService)
       .pipe(debounceTime(500))
       .subscribe(data => {
-      this.isLoading = false
-      this.response = data
+      this.isLoading = false;
+      this.response = data;
+    }, error => {
+      this.isLoading = false;
+      this.response = null;
+      console.log(error);
+      if(error.status == 403){
+        this.notification.error(
+          error.statusText,
+          this.i18n.fanyi('app.non.permission')
+        );
+      }
     })
   }
 
@@ -85,6 +102,7 @@ export class VpnService {
     if (changes.project && !changes.project.firstChange) {
 
       this.getData();
+      this.isCreatePermission = this.policyService.hasPermission("vpnsitetosites:VPNCreateVpnService");
     }
     if (changes.region && !changes.region.firstChange) {
 
@@ -98,6 +116,7 @@ export class VpnService {
       this.searchDelay.pipe(debounceTime(TimeCommon.timeOutSearch)).subscribe(() => {     
         this.refreshParams()
         this.getData();
+        this.isCreatePermission = this.policyService.hasPermission("vpnsitetosites:VPNCreateVpnService");
       });
   }
 }

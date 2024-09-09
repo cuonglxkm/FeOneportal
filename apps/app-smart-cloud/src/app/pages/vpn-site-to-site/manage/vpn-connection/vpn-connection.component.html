@@ -22,7 +22,7 @@
       </ng-template>
     </nz-col>
     <nz-col>
-      <button
+      <button *ngIf="isCreatePermission"
         [routerLink]="[
           '/app-smart-cloud/vpn-site-to-site/vpn-connection/create'
         ]"
@@ -117,7 +117,7 @@
       </td>
       <td>
         <div class="d-flex gap-2 justify-content-center align-items-center">
-          <img
+          <img *ngIf="('vpnsitetosites:VPNUpdateVpnConnection' | IsPermissionPipe)"
             [ngStyle]="{
               filter:
                 data.status === 'PENDING_CREATE'
@@ -134,7 +134,7 @@
             nz-popover
             nzPopoverPlacement="bottom"
           />
-          <one-portal-delete-vpn-connection
+          <one-portal-delete-vpn-connection *ngIf="('vpnsitetosites:VPNDeleteVpnConnection' | IsPermissionPipe)"
             [region]="region"
             [project]="project"
             [vpnconnectionid]="data.id"

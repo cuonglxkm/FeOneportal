@@ -637,7 +637,7 @@ export class CreateVolumeComponent implements OnInit {
         key !== 'Backspace' &&
         key !== 'Delete' &&
         key !== 'ArrowLeft' &&
-        key !== 'ArrowRight') ||
+        key !== 'ArrowRight' && key !== 'Tab') ||
       key === '.' || key === '-'
     ) {
       // Nếu không phải số hoặc đã nhập dấu chấm và đã có dấu chấm trong giá trị hiện tại
@@ -648,7 +648,7 @@ export class CreateVolumeComponent implements OnInit {
   onKeyDown(event: KeyboardEvent) {
     console.log('event', event)
     console.log('event 2', event)
-    if (isNaN(Number(event.key)) && event.key === 'Enter' &&
+    if (isNaN(Number(event.key)) && event.key === 'Enter' && 
       (this.isLoadingAction
         || this.validateForm.invalid
         || this.validateForm.controls.storage.value == 0
