@@ -659,6 +659,8 @@ export class CreateVolumeVpcComponent implements OnInit {
               if (data != null) {
                 if (data.code == 200) {
                   this.isLoadingAction = false;
+                  this.isLoadingCreate = false
+                  this.isVisibleCreate = false
                   this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('volume.notification.require.create.success'));
                   setTimeout(() => {
                     this.navigateToVolume()
@@ -666,6 +668,7 @@ export class CreateVolumeVpcComponent implements OnInit {
                 }
               } else {
                 this.isLoadingAction = false;
+                this.isLoadingCreate = false
               }
             },
             error => {
