@@ -35,6 +35,7 @@ import { PhoneValidatorDirective } from './directive/PhoneValidatorDirective';
 import { ServiceTaskStatePipe } from './pipes/task-state.pipe';
 import { SuspendStatusPipe } from './pipes/suspend-status.pipe';
 import { CDNStatusPipe } from './pipes/cdnetwork-status.pipe';
+import { ServiceUsagePeriodYearComponent } from './components/service-usage-period-year/service-usage-period-year.component';
 
 const antDesignIcons = AllIcons as {
   [key: string]: any;
@@ -54,6 +55,7 @@ const COMPONENTS: Array<Type<any>> = [
   RegionSelectDropdownComponent,
   ProjectSelectDropdownComponent,
   ServiceUsagePeriodComponent,
+  ServiceUsagePeriodYearComponent,
   GuideFormulaComponent,
   PopupListErrorComponent,
   FlavorSelectComponent,
