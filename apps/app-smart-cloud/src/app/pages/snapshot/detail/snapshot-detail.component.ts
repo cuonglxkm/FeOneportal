@@ -81,7 +81,7 @@ export class SnapshotDetailComponent implements OnInit{
   }
 
   private loadData(id: string) {
-    this.service.getDetailSnapshot(id)
+    this.service.getDetailSnapshot(id, this.project)
       .pipe(finalize(() => {
         this.loadPackageSnapshot(this.data.snapshotPackageId);
       }))
