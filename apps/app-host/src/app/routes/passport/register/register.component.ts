@@ -137,9 +137,9 @@ export class UserRegisterComponent implements OnInit, OnDestroy {
   private updateLanguage(): void {
     let lang = this.activatedRoute.snapshot.paramMap.get('lang') || null;
     if(lang === 'en') {
-      this.cookieService.set('ui.language', 'en', 1000000, '/',  environment.sso.issuerDomain, false);   
+      this.cookieService.set('ui.language', 'en', 1000000, '/',  environment.sso.domain, false);   
     }else{
-      this.cookieService.set('ui.language', 'vi', 1000000, '/',  environment.sso.issuerDomain, false);
+      this.cookieService.set('ui.language', 'vi', 1000000, '/',  environment.sso.domain, false);
     }
     
     const langCookie = this.cookieService.get('ui.language') ?? ''
@@ -302,14 +302,12 @@ export class UserRegisterComponent implements OnInit, OnDestroy {
     //     setTimeout(() => this.doc.location.reload());
     //   });
     // }
-    console.log(this.langRegister);
     if(this.langRegister === 'en-US'){
-      this.cookieService.set('ui.language', 'en', 1000000, '/',  'localhost', false);     
+      this.cookieService.set('ui.language', 'en', 1000000, '/',  environment.sso.domain, false);     
     }else{
-      this.cookieService.set('ui.language', 'vi', 1000000, '/',  'localhost', false); 
+      this.cookieService.set('ui.language', 'vi', 1000000, '/',  environment.sso.domain, false); 
     }
     
-    console.log(this.langRegister);
     
     if(this.langRegister === 'en-US'){
       this.i18n.loadLangData(this.langRegister).subscribe(res => {
