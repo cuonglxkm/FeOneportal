@@ -169,7 +169,7 @@
           </div>
           <nz-row class="right-form-content-month" nzGutter="16">
             <nz-col nzSpan="16">
-              <span class="text-value">Chi phí {{form.controls.time.value}} năm</span>
+              <span class="text-value">Chi phí {{form.controls.time.value}} tháng</span>
             </nz-col>
             <nz-col class="text-right" nzSpan="8">
               <span class="text-value month-money" nzAlign="right">
@@ -244,7 +244,7 @@
           <nz-row>
             <nz-col style="width: 100%" class="text-right">
               <button
-                [disabled]="form.get('name').invalid  || isInvalid  || isExistName"
+                [disabled]="form.invalid  || isInvalid  || isExistName || isExistUsername"
                 style="width: 100%"
                 nz-button
                 nzSize="large"

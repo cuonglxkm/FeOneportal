@@ -30,7 +30,6 @@ export class ServiceUsagePeriodYearComponent implements OnInit {
     }),
   });
 
-
   onKeyDown(event: KeyboardEvent) {
     const inputElement = event.target as HTMLInputElement;
     const key = event.key;
@@ -56,22 +55,22 @@ export class ServiceUsagePeriodYearComponent implements OnInit {
 
     const target = event.target as HTMLInputElement;
     const value = parseInt(target.value + event.key);
-    if (value < 1 && event.key !== 'Backspace' && event.key !== 'Delete') {
+    if (value < 12 && event.key !== 'Backspace' && event.key !== 'Delete') {
       event.preventDefault();
     }
 
-    // Kiểm tra nếu nhập vượt quá 10
+    // Kiểm tra nếu nhập vượt quá 100 và không phải bội của 12
     const newValue = currentValue + key;
-    if (Number(newValue) > 100) {
+    if (Number(newValue) > 100 || Number(newValue) % 12 != 0) {
       event.preventDefault(); // Hủy sự kiện để ngăn người dùng nhập ký tự đó
     }
   }
 
   onInput(event: any) {
     if (event.target.value === '0') {
-      this.numberYear = 1;
-      event.target.value = 1;
-      this.dataSubjectTime.next(this.numberYear);
+      this.numberMonth = 12;
+      event.target.value = 12;
+      this.dataSubjectTime.next(this.numberMonth);
     }
   }
 
@@ -87,19 +86,18 @@ export class ServiceUsagePeriodYearComponent implements OnInit {
   }
 
   today: Date = new Date();
-  numberYear: number = 1;
-  expiredDate: Date = addDays(this.today, 30);
+  numberMonth: number = 12;
+  expiredDate: Date = addDays(this.today, 30*12);
   dataSubjectTime: Subject<any> = new Subject<any>();
   changeTime(value) {
     if (value == '') {
-      this.numberYear = undefined;
-    } else if (value < 1) {
-      this.numberYear = 1;
+      this.numberMonth = undefined;
+    } else if (value < 12) {
+      this.numberMonth = 12;
     } else {
-      this.numberYear = value;
+      this.numberMonth = value;
     }
-    console.log('year', this.numberYear);
-    this.dataSubjectTime.next(this.numberYear);
+    this.dataSubjectTime.next(this.numberMonth);
   }
 
   onChangeTime() {
@@ -110,7 +108,7 @@ export class ServiceUsagePeriodYearComponent implements OnInit {
       .subscribe((res) => {
         this.valueChanged.emit(res);
         let currentDate = new Date();
-        currentDate.setFullYear(currentDate.getFullYear() + this.numberYear);
+        currentDate.setDate(currentDate.getDate() + this.numberMonth * 30);
         this.expiredDate = currentDate;
         this.cdr.detectChanges();
       });
