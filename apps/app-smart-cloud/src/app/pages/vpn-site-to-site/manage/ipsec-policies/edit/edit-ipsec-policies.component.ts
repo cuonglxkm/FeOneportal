@@ -54,6 +54,7 @@ export class EditIpsecPoliciesComponent implements OnInit {
   lifetimeUnits = [{ label: 'seconds', value: 'seconds' }];
 
   perfectForwardSecrecy = [
+    { label: 'group2', value: 'group2' },
     { label: 'group5', value: 'group5' },
     { label: 'group14 ', value: 'group14' },
   ];
@@ -116,7 +117,8 @@ export class EditIpsecPoliciesComponent implements OnInit {
     .subscribe((data) => {
         data.records.forEach((item) => {
           if (this.nameList.length > 0) {
-            this.nameList.push(item.name);
+            const filterName = item.name.filter((name) => name !== this.ipsecPolicy.name);
+            this.nameList.push(filterName);
           } else {
             this.nameList = [item.name];
           }

@@ -113,11 +113,9 @@ export class VpnConnection {
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes.project && !changes.project.firstChange) {
-
       this.getData();
     }
     if (changes.region && !changes.region.firstChange) {
-
       this.refreshParams();
     }
   }
