@@ -5,6 +5,10 @@ import { debounceTime, Subject } from 'rxjs';
 import { FormSearchVpnConnection, VpnConnectionDTO } from 'src/app/shared/models/vpn-connection';
 import { VpnConnectionService } from 'src/app/shared/services/vpn-connection.service';
 import { TimeCommon } from 'src/app/shared/utils/common';
+import { NzNotificationService } from 'ng-zorro-antd/notification';
+import { PolicyService } from 'src/app/shared/services/policy.service';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
+import { I18NService } from '@core';
 
 @Component({
   selector: 'one-portal-vpn-connection',
@@ -29,9 +33,12 @@ export class VpnConnection {
   formSearchVpnConnection: FormSearchVpnConnection = new FormSearchVpnConnection()
 
   searchDelay = new Subject<boolean>();
-
+  isCreatePermission: boolean = false;
   constructor(private vpnConnection: VpnConnectionService,
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
+    private notification: NzNotificationService,
+    @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
+    private policyService: PolicyService
     ) {
 }
 
@@ -85,7 +92,18 @@ export class VpnConnection {
       this.response = transformedData
 
       console.log(this.response);
-      
+      this.isCreatePermission = this.policyService.hasPermission("vpnsitetosites:VPNCreateVpnConnection");
+    }, error => {
+      this.isLoading = false;
+      this.response = null;
+      console.log(error);
+      if(error.status == 403){
+        this.notification.error(
+          error.statusText,
+          this.i18n.fanyi('app.non.permission')
+        );
+      }
+      this.isCreatePermission = this.policyService.hasPermission("vpnsitetosites:VPNCreateVpnConnection");
     })
   }
 
@@ -95,11 +113,9 @@ export class VpnConnection {
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes.project && !changes.project.firstChange) {
-
       this.getData();
     }
     if (changes.region && !changes.region.firstChange) {
-
       this.refreshParams();
     }
   }

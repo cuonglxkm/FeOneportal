@@ -13,7 +13,7 @@
       [ngModelOptions]="{ standalone: true }"
       nzPlaceHolder="{{ 'app.register.project' | i18n }}"
       style="width: 110px"
-      [nzCustomTemplate]="langRegister === 'en-US' ? customSelectLanguageEng : customSelectLanguageVi"
+      [nzCustomTemplate]="language === 'en-US' ? customSelectLanguageEng : customSelectLanguageVi"
     >
       <nz-option nzCustomContent nzValue="en-US" nzLabel="ENG">
         <div class="d-flex align-items-center gap-2">

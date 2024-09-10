@@ -13,3 +13,5 @@ export const FILE_REGEX = /^[a-zA-Z0-9]+(?:\.[a-zA-Z]{2,})+/;
 export const WEB_REGEX = /^(?:(?:https?|ftp):\/\/)?(?:www\.)?[a-z0-9-]+(?:\.[a-z0-9-]+)+[^\s]*$/i
 export const NAME_CERT_REGEX = /^[a-zA-Z0-9][a-zA-Z0-9-]+$/;
 export const NAME_CONTAIN_NUMBERIC_ALPHABET = /^[a-z0-9]+$/;
+export const USERNAME_REGEX = /^(?=.{8,20}$)(?![_.])(?!.*[_.]{2})[a-zA-Z0-9._]+(?<![_.])$/;
+

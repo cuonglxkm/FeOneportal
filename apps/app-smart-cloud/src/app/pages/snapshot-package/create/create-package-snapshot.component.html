@@ -6,10 +6,11 @@
        {{titleBreadcrumb}}
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>
-        Block Storage
+      {{breadcrumbBlockStorage}}
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>
-        <a [routerLink]="navigateToSnapshotPackage()">Gói Snapshot</a>
+        <!-- <a routerLink="/app-smart-cloud/snapshot/packages">Gói Snapshot</a> -->
+        <a (click)="navigateToSnapshotPackage()">Gói Snapshot</a>
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>
         Khởi tạo gói Snapshot

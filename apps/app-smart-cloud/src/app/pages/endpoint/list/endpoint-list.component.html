@@ -1,0 +1,112 @@
+<page-header [breadcrumb]="breadcrumb" title="{{ 'endpoint.list' | i18n }}">
+  <ng-template #breadcrumb>
+    <nz-breadcrumb [nzSeparator]="iconTemplate">
+      <nz-breadcrumb-item>
+        <a routerLink="/">{{ 'app.breadcrumb.home' | i18n }}</a>
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item>
+        {{ 'app.breadcrumb.infrastructure.service' | i18n }}
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item>
+        <a routerLink="/app-smart-cloud/endpoint">Endpoint</a>
+      </nz-breadcrumb-item>
+    </nz-breadcrumb>
+    <ng-template #iconTemplate>
+      <one-portal-svg-icon [icon]="'icon_breadcrumb'"></one-portal-svg-icon>
+    </ng-template>
+  </ng-template>
+</page-header>
+
+<nz-content>
+  <nz-card>
+    <nz-row nzJustify="space-between">
+      <nz-col nzSpan="16">
+        <nz-select [(ngModel)]="selectedValue"
+                    nzSize="large"
+                    style="margin-right: 10px; width: 200px;"
+                    (ngModelChange)="onChange($event)"
+                    nzPlaceHolder="{{ 'volume.placeholder.filter.status' | i18n }}"
+                    nzTooltipTitle="{{ 'volume.tooltip.title.filter.status' | i18n }}"
+                    nzTooltipPlacement="bottom"
+                    nz-tooltip>
+          <nz-option *ngFor="let item of options" [nzValue]="item.value" [nzLabel]="item.label"></nz-option>
+        </nz-select>
+        <nz-input-group style="width: 300px;"
+                        [nzPrefix]="prefixIconSearch"
+                        nzSize="large">
+          <input name="name"
+                  nz-input
+                  placeholder="{{ 'endpoint.placeholder.filter.name' | i18n }}"
+                  [(ngModel)]="value"
+                  (input)="changeInputChange($event)"
+                  (keydown.enter)="onEnter($event)" />
+        </nz-input-group>
+        <ng-template #prefixIconSearch>
+          <img src="assets/imgs/search.svg" alt="" />
+        </ng-template>
+      </nz-col>
+      <nz-col nzSpan="8" style="flex:none;">
+        <button nz-button
+                nzType="primary"
+                nzSize="large"
+                (click)="navigateToCreateEndpoint()">
+          <img style="padding-right: 10px; margin-top: -4px"
+                src="assets/imgs/add-circle.svg"
+                alt="" />
+          <span class="button-text-primary">{{ 'endpoint.button.create' | i18n }}</span>
+        </button>
+      </nz-col>
+    </nz-row>
+    <nz-table #fixedTable
+              style="margin-top: 20px;"
+              nzShowSizeChanger
+              [nzData]="response?.records || []"
+              [nzPageSize]="response?.pageSize"
+              (nzPageSizeChange)="onPageSizeChange($event)"
+              [nzPageIndex]="response?.currentPage"
+              (nzPageIndexChange)="onPageIndexChange($event)"
+              [nzTotal]="response?.totalCount"
+              [nzFrontPagination]="false"
+              [nzLoading]="isLoading">
+      <thead>
+      <tr>
+        <th nzLeft>{{ 'endpoint.table.title.name' | i18n }}</th>
+        <th nzBreakWord>{{ 'endpoint.table.title.username' | i18n }}</th>
+        <th nzBreakWord>{{ 'endpoint.table.title.email' | i18n }}</th>
+        <th nzBreakWord>{{ 'endpoint.table.title.numberofdevices' | i18n }}</th>
+        <th nzBreakWord>{{ 'endpoint.table.title.enddate' | i18n }}</th>
+        <th nzBreakWord>{{ 'endpoint.table.title.status' | i18n }}</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr *ngFor="let data of fixedTable.data">
+        <td nzLeft>{{ data.name }}</td>
+        <td nzBreakWord nzAlign="left">{{ data.offerName }}</td>
+        <td nzBreakWord nzAlign="left">{{ data.createdDate | date : "dd/MM/yyyy"}}</td>
+        <td nzBreakWord nzAlign="left">{{ data.expiredDate | date : "dd/MM/yyyy"}}</td>
+        <ng-container  *ngIf="data.status | ServiceStatusPipe as statusModel">
+          <td
+              nzBreakWord
+              nzAlign="left"
+              [ngStyle]="{color: statusModel.color}">{{ statusModel.status }}
+          </td>
+        </ng-container>
+        <td nzBreakWord nzAlign="center">
+          <div>
+            <img  src="assets/imgs/add.svg" (click)="navigateToAddDomain()" nz-popover
+              [nzPopoverContent]="'waf.domain.button.create' | i18n"
+              nzPopoverPlacement="bottom" 
+              (click)="navigateToAddDomain(data)"
+              [style.filter]="data.status=='ACTIVE' && data.quotaDomain > data.domainTotal ? null : 'opacity(0.25) drop-shadow(0 0 0 rgba(0, 0, 0, 1))'" 
+              [style.cursor]="data.status=='ACTIVE' && data.quotaDomain > data.domainTotal ? 'pointer' : 'not-allowed'"/>
+            <one-portal-delete-waf [canClick]="data.status=='ACTIVE'" [wafId]="data.id"
+                                    [wafName]="data.name"
+                                    (onOk)="handleOkDelete()" />
+          </div>
+        </td>
+      </tr>
+      </tbody>
+    </nz-table>
+  </nz-card>
+</nz-content>
+

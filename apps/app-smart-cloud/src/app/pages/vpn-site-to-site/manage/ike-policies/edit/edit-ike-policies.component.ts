@@ -205,15 +205,14 @@ export class EditIkePoliciesComponent implements OnInit {
     this.formSearchIkePolicy.projectId = this.project
     this.formSearchIkePolicy.regionId = this.region
     this.formSearchIkePolicy.searchValue = ''
-    console.log("get data");
-    console.log(this.formSearchIkePolicy);
     this.formSearchIkePolicy.pageSize = 99999
     this.formSearchIkePolicy.pageNumber = 1
   this.ikePolicyService.getIKEpolicy(this.formSearchIkePolicy)
     .subscribe((data) => {
         data.records.forEach((item) => {
           if (this.nameList.length > 0) {
-            this.nameList.push(item.name);
+            const filterName = item.name.filter((name) => name !== this.ikePolicy.name);
+            this.nameList.push(filterName);
           } else {
             this.nameList = [item.name];
           }

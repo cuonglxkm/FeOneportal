@@ -46,6 +46,7 @@ export class CreateIpsecPoliciesComponent implements OnInit{
   ];
 
   perfectForwardSecrecy = [
+    { label: 'group2', value: 'group2' },
     { label: 'group5', value: 'group5' },
     { label: 'group14 ', value: 'group14' },
   ];

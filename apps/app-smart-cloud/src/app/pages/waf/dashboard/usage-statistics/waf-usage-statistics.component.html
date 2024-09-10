@@ -42,7 +42,7 @@
           <span *ngIf="this.selectedTypeDate=='fiveminutes' || this.currentTab=='requests'" class="peak">
             {{this.currentTab=='bandwidth'?'Peak Bandwidth':'Total Requests'}} :
             <ng-container *ngIf="this.currentTab=='bandwidth';else elseBlock1">
-              <span style="color: #512DA8; font-weight: bold">{{this.peakEdge?.bandwidth?.toFixed(2) ?? 0}} Mbps </span>{{this.bandwidth?.timestamp ? '('+this.bandwidth?.timestamp+')':''}}
+              <span style="color: #512DA8; font-weight: bold">{{this.peakEdge?.bandwidth?.toFixed(2) ?? 0}} Mbps </span>{{this.peakEdge?.timestamp ? '('+this.peakEdge?.timestamp+')':''}}
             </ng-container> 
             <ng-template #elseBlock1>
               <span style="color: #512DA8; font-weight: bold">{{this.totalEdgeNumberRequest}} </span>

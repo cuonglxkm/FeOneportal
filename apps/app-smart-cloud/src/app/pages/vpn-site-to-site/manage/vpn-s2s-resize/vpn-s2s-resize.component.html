@@ -24,15 +24,13 @@
   </ng-template>
   <ng-template #action>
     <div class="alain-custom-action text-right">
-      <share-users-combobox [isDisable]="true"></share-users-combobox>
+      <share-users-combobox></share-users-combobox>
       <region-select-dropdown
-        [isDetail]="true"
         (regionChange)="onRegionChanged($event)"
         (valueChanged)="regionChanged($event)"
       ></region-select-dropdown>
       <project-select-dropdown
         #projectCombobox
-        [isDetail]="true"
         (valueChanged)="projectChanged($event)"
         (userChanged)="userChangeProject($event)"
         [regionId]="region"

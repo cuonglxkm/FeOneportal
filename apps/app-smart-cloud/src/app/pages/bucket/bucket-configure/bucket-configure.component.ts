@@ -16,6 +16,7 @@ import { BucketDetail } from 'src/app/shared/models/bucket.model';
 import { BucketService } from 'src/app/shared/services/bucket.service';
 import { RegionModel } from '../../../../../../../libs/common-utils/src';
 import { RegionID } from 'src/app/shared/enums/common.enum';
+import { ObjectStorageService } from 'src/app/shared/services/object-storage.service';
 
 @Component({
   selector: 'one-portal-bucket-configure',
@@ -28,6 +29,7 @@ export class BucketConfigureComponent implements OnInit {
   bucketDetail: BucketDetail = new BucketDetail();
   isLoading: boolean = false;
   isLoadingVersion: boolean = false;
+  usage: any
   region = JSON.parse(localStorage.getItem('regionId'));
   constructor(
     private bucketService: BucketService,
@@ -35,6 +37,7 @@ export class BucketConfigureComponent implements OnInit {
     private activatedRoute: ActivatedRoute,
     private notification: NzNotificationService,
     private loadingSrv: LoadingService,
+    private objectSevice: ObjectStorageService,
     private cdr: ChangeDetectorRef,
     @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService
   ) {}
@@ -45,6 +48,7 @@ export class BucketConfigureComponent implements OnInit {
     this.region = regionAndProject.regionId;
     this.bucketName = this.activatedRoute.snapshot.paramMap.get('bucketName');
     this.getBucketDetail();
+    this.getUsageOfBucket()
   }
 
   getBucketDetail() {
@@ -107,6 +111,29 @@ export class BucketConfigureComponent implements OnInit {
 
   onRegionChanged(region: RegionModel) {
     this.region = region.regionId;
+  }
+
+  getUsageOfBucket() {
+    this.loadingSrv.open({ type: 'spin', text: 'Loading...' });
+    this.objectSevice
+      .getUsageOfBucket(
+        this.activatedRoute.snapshot.paramMap.get('bucketName'),
+        this.region
+      )
+      .pipe(finalize(() => this.loadingSrv.close()))
+      .subscribe({
+        next: (data) => {
+          console.log(data);
+
+          this.usage = data;
+        },
+        error: (e) => {
+          // this.notification.error(
+          //   this.i18n.fanyi('app.status.fail'),
+          //   this.i18n.fanyi('app.bucket.getObject.fail')
+          // );
+        },
+      });
   }
 
   setBucketVersioning() {

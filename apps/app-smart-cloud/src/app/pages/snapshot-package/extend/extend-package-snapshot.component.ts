@@ -52,6 +52,8 @@ export class ExtendPackageSnapshotComponent implements OnInit{
   errorList: string[] = [];
 
   packageName:string;
+  titleBreadcrumb:string;
+  breadcrumbBlockStorage:string;
 
   closePopupError() {
     this.isVisiblePopupError = false;
@@ -254,8 +256,12 @@ export class ExtendPackageSnapshotComponent implements OnInit{
       } else {
         this.region = Number(localStorage.getItem('regionId'));
       }
+       this.titleBreadcrumb ='Dịch vụ hạ tầng'
+          this.breadcrumbBlockStorage ='Block Storage'
     } else {
       this.region = RegionID.ADVANCE;
+      this.titleBreadcrumb ='Dịch vụ nâng cao'
+        this.breadcrumbBlockStorage ='Block Storage nâng cao'
     }
     // this.customerId = this.tokenService.get()?.userId
     if (this.project && this.region) {

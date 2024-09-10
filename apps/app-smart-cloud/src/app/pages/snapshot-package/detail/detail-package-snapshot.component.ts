@@ -35,6 +35,7 @@ export class DetailSnapshotComponent implements OnInit{
   typeSnapshotHdd:boolean;
   typeSnapshotSsd:boolean;
   titleBreadcrumb:string;
+  breadcrumbBlockStorage:string;
   @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
   constructor(private router: Router,
               private packageBackupService: PackageBackupService,
@@ -136,9 +137,11 @@ export class DetailSnapshotComponent implements OnInit{
         this.region = Number(localStorage.getItem('regionId'));
       }
       this.titleBreadcrumb ='Dịch vụ hạ tầng'
+       this.breadcrumbBlockStorage ='Block Storage'
     } else {
       this.region = RegionID.ADVANCE;
       this.titleBreadcrumb ='Dịch vụ nâng cao'
+         this.breadcrumbBlockStorage ='Block Storage nâng cao'
     }
     if (this.project && this.region) {
       this.loadProjects();

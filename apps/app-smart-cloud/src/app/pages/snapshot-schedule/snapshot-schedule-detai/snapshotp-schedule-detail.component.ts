@@ -38,6 +38,7 @@ export class SnapshotScheduleDetailComponent implements OnInit {
   typeProject: number;
   labelMode = 'Hằng ngày';
   titleBreadcrumb:string;
+  breadcrumbBlockStorage:string;
 
   @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
   url = window.location.pathname;
@@ -49,9 +50,11 @@ export class SnapshotScheduleDetailComponent implements OnInit {
         this.region = Number(localStorage.getItem('regionId'));
       }
        this.titleBreadcrumb ='Dịch vụ hạ tầng'
+            this.breadcrumbBlockStorage ='Block Storage'
     } else {
       this.region = RegionID.ADVANCE;
       this.titleBreadcrumb ='Dịch vụ nâng cao'
+           this.breadcrumbBlockStorage ='Block Storage nâng cao'
         
     }
     const id = Number.parseInt(this.activatedRoute.snapshot.paramMap.get('id'));

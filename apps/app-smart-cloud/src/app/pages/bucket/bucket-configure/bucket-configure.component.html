@@ -19,10 +19,19 @@
   </ng-template>
   <ng-template #action>
     <div class="alain-custom-action text-right">
+      <share-users-combobox></share-users-combobox>
       <region-select-dropdown
         (valueChanged)="onRegionChange($event)"
         (regionChange)="onRegionChanged($event)"
       ></region-select-dropdown>
+      <div style="visibility: hidden">
+        <project-select-dropdown
+          #projectCombobox
+          (valueChanged)="projectChanged($event)"
+          (userChanged)="projectChanged($event)"
+          [regionId]="region"
+        ></project-select-dropdown>
+    </div>
     </div>
   </ng-template>
 </page-header>
@@ -45,7 +54,7 @@
       {{ 'app.used.capacity' | i18n }}:
     </div>
     <div style="font-weight: bold">
-      {{ bucketDetail ? bucketDetail.bucketSize : '' }} Bytes
+      {{usage}}
     </div>
   </nz-row>
     

@@ -16,6 +16,7 @@ import { TimeCommon } from 'src/app/shared/utils/common';
 import { getCurrentRegionAndProject } from '@shared';
 import { RegionID } from 'src/app/shared/enums/common.enum';
 import { Router } from '@angular/router';
+import { PolicyService } from 'src/app/shared/services/policy.service';
 
 @Component({
   selector: 'one-portal-s3-key',
@@ -46,6 +47,7 @@ export class S3KeyComponent implements OnInit {
   searchDelay = new Subject<boolean>();
   region = JSON.parse(localStorage.getItem('regionId'));
   url = window.location.pathname;
+  isPermissionCreate: boolean = false;
   constructor(
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
     @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
@@ -56,6 +58,7 @@ export class S3KeyComponent implements OnInit {
     private notification: NzNotificationService,
     private loadingSrv: LoadingService,
     private subUserService: SubUserService,
+    private policyService: PolicyService,
     private router: Router
   ) {}
 
@@ -76,6 +79,11 @@ export class S3KeyComponent implements OnInit {
     });
   }
 
+  checkPermissionCreate() {
+    this.isPermissionCreate = this.policyService.hasPermission('objectstorages:OSCreateS3Key') &&
+    this.policyService.hasPermission('OSGetSubUser')
+  }
+
   refreshParams() {
     this.index = 1;
     this.size = 10;
@@ -94,6 +102,17 @@ export class S3KeyComponent implements OnInit {
     this.value = search.trim();
     this.refreshParams()
     this.getData()
+  }
+
+  projectChanged() {
+    this.policyService
+      .getUserPermissions()
+      .pipe()
+      .subscribe((permission) => {
+        localStorage.setItem('PermissionOPA', JSON.stringify(permission));
+        this.getData();
+        this.checkPermissionCreate();
+      });
   }
 
   hasOS: boolean = undefined;

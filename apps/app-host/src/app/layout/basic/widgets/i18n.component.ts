@@ -39,7 +39,14 @@ export class HeaderI18nComponent {
   }
 
   get curLangCode(): string {
-    return this.settings.layout.lang;
+    const langCookie = this.cookieService.get('ui.language') ?? ''
+    let language = '';
+    if(langCookie === 'en') {
+      language = 'en-US';
+    }else if(langCookie === 'vi') {
+      language = 'vi-VI';
+    }
+    return language !== '' ? language : this.settings.layout.lang;
   }
 
   constructor(
@@ -53,7 +60,7 @@ export class HeaderI18nComponent {
     localStorage.setItem('lang',lang)
     console.log(lang);
     const langCookie = lang === 'vi-VI' ? 'vi' : lang === 'en-US' ? 'en' : '';
-    this.cookieService.set('ui.language', langCookie, 1000000, '/',  environment.sso.issuerDomain, false);
+    this.cookieService.set('ui.language', langCookie, 1000000, '/',  environment.sso.domain, false);
     const spinEl = this.doc.createElement('div');
     spinEl.setAttribute('class', `page-loading ant-spin ant-spin-lg ant-spin-spinning`);
     spinEl.innerHTML = `<span class="ant-spin-dot ant-spin-dot-spin"><i></i><i></i><i></i><i></i></span>`;

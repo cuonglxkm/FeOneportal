@@ -105,6 +105,7 @@ export class SnapshotScheduleCreateComponent implements OnInit {
   numOfVersion = 1;
   disableCreate = true;
   titleBreadcrumb:string;
+  breadcrumbBlockStorage:string;
 
 
   @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
@@ -163,10 +164,12 @@ export class SnapshotScheduleCreateComponent implements OnInit {
         this.region = Number(localStorage.getItem('regionId'));
       }
       this.titleBreadcrumb ='Dịch vụ hạ tầng'
+            this.breadcrumbBlockStorage ='Block Storage'
       
     } else {
       this.region = RegionID.ADVANCE;
         this.titleBreadcrumb ='Dịch vụ nâng cao'
+          this.breadcrumbBlockStorage ='Block Storage nâng cao'
     }
     this.doGetListSnapshotPackage();
     this.loadSnapshotPackage();

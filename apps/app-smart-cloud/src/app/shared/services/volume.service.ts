@@ -196,12 +196,12 @@ export class VolumeService extends BaseService {
     return this.http.put<any>(this.baseUrl + this.ENDPOINT.provisions + '/vlsnapshots', Object.assign(data));
   }
 
-  getDetailSnapshot(id: string) {
-    return this.http.get<any>(this.baseUrl + this.ENDPOINT.provisions + '/vlsnapshots/'+id);
+  getDetailSnapshot(id: string, projectId:number) {
+    return this.http.get<any>(this.baseUrl + this.ENDPOINT.provisions + '/vlsnapshots/'+id+"?projectId="+projectId,{headers: this.getHeaders().headers});
   }
 
   getDetailPackageSnapshot(snapshotPackageId) {
-    return this.http.get<any>(this.baseUrl + this.ENDPOINT.provisions + '/snapshots/packages/'+snapshotPackageId);
+    return this.http.get<any>(this.baseUrl + this.ENDPOINT.provisions + '/snapshots/packages/'+snapshotPackageId,{headers: this.getHeaders().headers});
   }
 
   getSnapshotsByVolume(id: string | number){
