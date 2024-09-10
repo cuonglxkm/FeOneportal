@@ -228,7 +228,7 @@
       <label
         class="text-label"
         style="margin-top: 16px"
-        nz-checkbox
+        nz-checkbox [nzDisabled]="lifecycleCreate.isSetExpiration_Day === true"
         [(ngModel)]="lifecycleCreate.isSetNoncurrentVersionExpiration_Day"
         formControlName="isSetNoncurrentVersionExpiration_Day"
         [ngModelOptions]="{ standalone: true }"
