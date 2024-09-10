@@ -304,9 +304,9 @@ export class UserRegisterComponent implements OnInit, OnDestroy {
     // }
     console.log(this.langRegister);
     if(this.langRegister === 'en-US'){
-      this.cookieService.set('ui.language', 'en', 1000000, '/',  environment.sso.issuerDomain, false);     
+      this.cookieService.set('ui.language', 'en', 1000000, '/',  'localhost', false);     
     }else{
-      this.cookieService.set('ui.language', 'vi', 1000000, '/',  environment.sso.issuerDomain, false); 
+      this.cookieService.set('ui.language', 'vi', 1000000, '/',  'localhost', false); 
     }
     
     console.log(this.langRegister);
