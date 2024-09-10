@@ -1381,6 +1381,13 @@ const routes: Routes = [
         (m) => m.WAFModule
       ),
   },
+  {
+    path: 'endpoint',
+    loadChildren: () =>
+      import('../pages/endpoint/endpoint.module').then(
+        (m) => m.EndpointModule
+      )
+  }
 ];
 
 @NgModule({
