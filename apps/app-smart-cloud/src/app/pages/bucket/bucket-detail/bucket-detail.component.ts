@@ -82,6 +82,11 @@ export class BucketDetailComponent extends BaseService implements OnInit {
     'border-radius': '10px',
     width: '55%',
   };
+  modalStyleUpload = {
+    padding: '20px',
+    'border-radius': '10px',
+    width: '68%',
+  };
   uploadFailed: boolean = false;
 
   lstFileUpdate: NzUploadFile[] = [];

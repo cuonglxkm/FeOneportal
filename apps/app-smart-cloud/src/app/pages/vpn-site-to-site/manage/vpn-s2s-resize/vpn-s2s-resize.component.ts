@@ -27,6 +27,7 @@ export class VpnS2sResizeComponent implements OnInit{
   totalincludesVAT: number = 0;
   unitOfMeasure: string = "";
   offerDatas: any;
+  offerDatasClone: any;
   loading = false;
   offer: any;
   dateString = new Date();
@@ -108,7 +109,14 @@ export class VpnS2sResizeComponent implements OnInit{
         }
       }
     }, error => {
-      this.loading = false;
+      this.loading = false; 
+      if (error.error.detail.includes('made requires authentication')|| error.error.detail.includes('could not be found')) {
+        this.notification.error(
+          this.i18n.fanyi('app.status.fail'),
+          'Bản ghi không tồn tại'
+        );
+        this.router.navigateByUrl('/app-smart-cloud/vpn-site-to-site')
+      }
     });
   }
   
@@ -120,13 +128,15 @@ export class VpnS2sResizeComponent implements OnInit{
         .subscribe((data) => {
           if (data && data.length > 0) {
             this.offerDatas = [];
+            this.offerDatasClone = [];
             this.currentOffer = data.find(
               (e) => e.offerName === this.vpn.offerName
             );
   
             if (this.currentOffer) {
               const currentOfferPrice = this.currentOffer.price.fixedPrice.amount;
-              const filterOffers = data.filter(
+              const cloneData = [...data]
+              const filterOffers = cloneData.filter(
                 (e) => e.price.fixedPrice.amount > currentOfferPrice
               );
   
@@ -139,11 +149,27 @@ export class VpnS2sResizeComponent implements OnInit{
                   'Price': item['price']['fixedPrice']['amount'],
                 });
               });
-              this.offer = this.offerDatas.find(x => x['OfferName'] === this.vpn.offerName && x['Bandwidth'] === this.vpn.bandwidth);
+
+              data.forEach(item => {
+                let bandwidth = item['characteristicValues'].find(x => x['charName'] === 'Bandwidth');
+                this.offerDatasClone.push({
+                  'Id': item['id'],
+                  'OfferName': item['offerName'],
+                  'Bandwidth': bandwidth['charOptionValues'][0],
+                  'Price': item['price']['fixedPrice']['amount'],
+                });
+              });
+              
               if (this.offer) {
                 this.oldOfferId = this.offer['Id'];
-                let element = this.el.nativeElement.querySelector(`#offer-title-${this.offer['Id']}`);
-                this.renderer.addClass(element.parentNode, 'tr-selected');
+                const element = this.el.nativeElement.querySelector(`#offer-title-${this.offer['Id']}`);
+                
+                if (element && element.parentNode) {
+                  this.renderer.addClass(element.parentNode, 'tr-selected');
+                } else {
+                  console.error('Element or parentNode not found.');
+                }
+                
                 this.specChange();
                 this.priceChange();
               }

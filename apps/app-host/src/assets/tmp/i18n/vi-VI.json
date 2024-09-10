@@ -3353,7 +3353,7 @@
   "app.ike.policy-create.Authorization.tooltip": "Thuật toán xác thực danh tính cho IKE Policy bao gồm các lựa chọn: sha1, sha256, sha384, sha512 (dựa trên thuật toán băm mã hóa dựa theo số bit) mặc định sha1.",
   "app.ike.policy-create.Encryption.tooltip": "Thuật toán mã hóa đối xứng sử dụng cho IKE Policy bao gồm các lựa chọn: 3des, aes-128, aes-192, aes-256 ( dựa theo thuật toán mã hóa đối xứng  với độ dài khóa tương đương với số bit) mặc định aes-128.",
   "app.ike.policy-create.version.tooltip": "Là một giao thức được sử dụng để thiết lập liên lạc an toàn giữa hai thiết bị qua internet. Có 2 lựa chọn v1 và v2.",
-  "app.ike.policy-create.lifetime.tooltip": "Đơn vị đo thời gian tồn tại của IKE Policy key (mặc định là giây).",
+  "app.ike.policy-create.lifetime.tooltip": "Đơn vị đo thời gian tồn tại của IKE key (mặc định là giây).",
   "app.ike.policy-create.lifetime.value.tooltip": "Giá trị của Lifetime units for IKE keys, có thể nhập tùy ý lớn 60 ( mặc địch là 3600).",
   "app.ike.policy-create.pfs.tooltip": "Perfect Forward Secrecy (PFS) là một tính năng bảo mật đảm bảo rằng ngay cả khi kẻ tấn công giành được quyền truy cập vào thông tin liên lạc được mã hóa, thì chúng cũng không thể giải mã các phiên liên lạc trước đây nếu chúng không có quyền truy cập vào các khóa mã hóa được sử dụng trong các phiên đó. Có các lựa chọn là group2, group5, group14 (mặc định là group5).",
   "app.ike.policy-create.Negotiation.tooltip": "Có 2 lựa chọn là Main và aggressive ( mặc định là main sẽ đảm bảo mật hơn)",
@@ -3431,7 +3431,7 @@
   "app.ike.policy-delete.title": "Thao tác này sẽ không thể thực hiện với các IKE Policies đang kết nối",
   "app.ike.policy-delete.des": "Đế thực hiện xoá IKE Policies <b>{{name}}</b>, vui lòng nhập tên IKE Policies để xác nhận.",
   "app.ike.policy-delete.input": "Nhập tên IKE Policies",
-  "app.ike.policy-delete.alert1": "Tên IKE Policy không được để trống",
+  "app.ike.policy-delete.alert1": "Tên IKE Policies không được để trống",
 
   "app.vpn.service-delete.title": "Để xoá được VPN Services, quý khách lưu ý không được xoá VPN Services đang có kết nối (đang có VPN Connection)!",
   "app.vpn.service-delete.des": "Đế thực hiện xoá VPN Service <b>{{name}}</b>, vui lòng nhập tên VPN Service để xác nhận.",

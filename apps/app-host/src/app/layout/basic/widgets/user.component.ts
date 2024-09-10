@@ -85,7 +85,7 @@ export class HeaderUserComponent {
     console.log('logout host');
     sessionStorage.clear();
     this.cookieService.delete("TOKEN_USER", '/', environment.sso.domain,true,"None");
-    this.cookieService.delete("ui.language", '/', environment.sso.issuerDomain,true,"None");
+    this.cookieService.delete("ui.language", '/', environment.sso.domain,true,"None");
     this.tokenService.clear();
 
     localStorage.removeItem('UserRootId');

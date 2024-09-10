@@ -90,6 +90,7 @@ export class ResizeSnapshotPackageComponent implements OnInit {
   orderItem: OrderItem = new OrderItem();
   unitPrice = 0;
   titleBreadcrumb:string;
+  breadcrumbBlockStorage:string;
   closePopupError() {
     this.isVisiblePopupError = false;
   }
@@ -330,7 +331,7 @@ export class ResizeSnapshotPackageComponent implements OnInit {
         specification: JSON.stringify(data),
         specificationType: 'snapshotpackage_resize',
         price:this.orderItem?.totalAmount?.amount,
-        serviceDuration: 0
+        serviceDuration: 1
       }
     ];
     this.orderService.validaterOrder(request).subscribe(
@@ -380,9 +381,11 @@ export class ResizeSnapshotPackageComponent implements OnInit {
         this.region = Number(localStorage.getItem('regionId'));
       }
        this.titleBreadcrumb ='Dịch vụ hạ tầng'
+           this.breadcrumbBlockStorage ='Block Storage'
     } else {
       this.region = RegionID.ADVANCE;
        this.titleBreadcrumb ='Dịch vụ nâng cao'
+       this.breadcrumbBlockStorage ='Block Storage nâng cao'
     }
     // this.customerId = this.tokenService.get()?.userId
     if (this.project && this.region) {

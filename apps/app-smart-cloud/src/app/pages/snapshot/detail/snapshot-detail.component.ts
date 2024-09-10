@@ -27,6 +27,7 @@ export class SnapshotDetailComponent implements OnInit{
   packageSnap: any;
   packageSize:number;
   titleBreadcrumb:string;
+  breadcrumbBlockStorage:string;
 
   validateForm: FormGroup<{
     description: FormControl<string>
@@ -51,9 +52,11 @@ export class SnapshotDetailComponent implements OnInit{
         this.region = Number(localStorage.getItem('regionId'));
       }
        this.titleBreadcrumb ='Dịch vụ hạ tầng'
+        this.breadcrumbBlockStorage ='Block Storage'
     } else {
       this.region = RegionID.ADVANCE;
        this.titleBreadcrumb ='Dịch vụ nâng cao'
+        this.breadcrumbBlockStorage ='Block Storage nâng cao'
     }
     const id = this.activatedRoute.snapshot.paramMap.get('id');
     this.id = id;

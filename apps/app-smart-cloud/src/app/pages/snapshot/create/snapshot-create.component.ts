@@ -100,6 +100,7 @@ export class SnapshotCreateComponent implements OnInit, OnChanges {
   packageTotalSsd: number;
 
   titleBreadcrumb:string;
+  breadcrumbBlockStorage:string;
 
   @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
 
@@ -129,9 +130,11 @@ export class SnapshotCreateComponent implements OnInit, OnChanges {
         this.region = Number(localStorage.getItem('regionId'));
       }
        this.titleBreadcrumb ='Dịch vụ hạ tầng'
+        this.breadcrumbBlockStorage ='Block Storage'
     } else {
       this.region = RegionID.ADVANCE;
       this.titleBreadcrumb ='Dịch vụ nâng cao'
+      this.breadcrumbBlockStorage ='Block Storage nâng cao'
     }
     this.loadSnapshotPackage();
     this.loadVolumeList();
