@@ -83,6 +83,7 @@ export class ListPackagesSnapshotComponent implements OnInit {
   isUpdateName: boolean = false;
   isCreateOrder: boolean = false;
   titleBreadcrumb: string;
+  breadcrumbBlockStorage:string;
   @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
   constructor(private router: Router,
     private packageSnapshotService: PackageSnapshotService,
@@ -264,9 +265,11 @@ export class ListPackagesSnapshotComponent implements OnInit {
         this.region = Number(localStorage.getItem('regionId'));
       }
        this.titleBreadcrumb ='Dịch vụ hạ tầng'
+       this.breadcrumbBlockStorage ='Block Storage'
     } else {
       this.region = RegionID.ADVANCE;
       this.titleBreadcrumb ='Dịch vụ nâng cao'
+      this.breadcrumbBlockStorage ='Block Storage nâng cao'
     }
 
     this.notificationService.connection.on('UpdateStateSnapshotPackage', (message) => {
@@ -306,7 +309,7 @@ export class ListPackagesSnapshotComponent implements OnInit {
   handleUpdateOk() {
     if (this.validateForm.valid) {
       this.isLoadingUpdate = true;
-      const description = this.validateForm.controls['description'].value || '';
+      const description = this.validateForm.controls['description'].value.trim() || '';
       let data = {
         newPackageName: this.validateForm.controls['namePackage'].value,
         id: this.dataAction.id,
