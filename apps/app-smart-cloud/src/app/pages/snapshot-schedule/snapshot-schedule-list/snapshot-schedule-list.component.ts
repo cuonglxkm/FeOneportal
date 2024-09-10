@@ -76,6 +76,7 @@ export class SnapshotScheduleListComponent implements OnInit {
   scheduleName:string;
   isInput: boolean = false;
   titleBreadcrumb:string;
+  breadcrumbBlockStorage:string;
   @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
   searchSnapshotScheduleList(checkBegin: any) {
     this.getSnapSchedules(checkBegin);
@@ -144,9 +145,11 @@ export class SnapshotScheduleListComponent implements OnInit {
         this.region = Number(localStorage.getItem('regionId'));
       }
        this.titleBreadcrumb ='Dịch vụ hạ tầng'
+          this.breadcrumbBlockStorage ='Block Storage'
     } else {
       this.region = RegionID.ADVANCE;
        this.titleBreadcrumb ='Dịch vụ nâng cao'
+          this.breadcrumbBlockStorage ='Block Storage nâng cao'
     }
     this.searchDelay.pipe(debounceTime(TimeCommon.timeOutSearch)).subscribe((checkBegin: boolean) => {
       this.searchSnapshotScheduleList(checkBegin);

@@ -62,8 +62,10 @@ export class SnapshotListComponent implements OnInit {
   isVisibleEdit: boolean;
   isCreateOrder: boolean = false;
   titleBreadcrumb:string;
+  breadcrumbBlockStorage:string;
 
   @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
+
   constructor(private router: Router,
     private fb: NonNullableFormBuilder,
     @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
@@ -86,9 +88,11 @@ export class SnapshotListComponent implements OnInit {
         this.region = Number(localStorage.getItem('regionId'));
       }
        this.titleBreadcrumb ='Dịch vụ hạ tầng'
+       this.breadcrumbBlockStorage ='Block Storage'
     } else {
       this.region = RegionID.ADVANCE;
        this.titleBreadcrumb ='Dịch vụ nâng cao'
+         this.breadcrumbBlockStorage ='Block Storage nâng cao'
     }
     this.searchDelay.pipe(debounceTime(TimeCommon.timeOutSearch)).subscribe(() => {
       this.search(false);

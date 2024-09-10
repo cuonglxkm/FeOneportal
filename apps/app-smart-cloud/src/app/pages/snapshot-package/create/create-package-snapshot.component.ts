@@ -79,6 +79,7 @@ export class CreatePackageSnapshotComponent implements OnInit {
   typeSnapshotHdd: boolean;
   typeSnapshotSsd: boolean;
   titleBreadcrumb:string;
+  breadcrumbBlockStorage:string;
   nameList: string[] = [];
   formSearchPackageSnapshot: FormSearchPackageSnapshot = new FormSearchPackageSnapshot()
   closePopupError() {
@@ -115,9 +116,11 @@ export class CreatePackageSnapshotComponent implements OnInit {
         this.region = Number(localStorage.getItem('regionId'));
       }
        this.titleBreadcrumb ='Dịch vụ hạ tầng'
+        this.breadcrumbBlockStorage ='Block Storage'
     } else {
       this.region = RegionID.ADVANCE;
        this.titleBreadcrumb ='Dịch vụ nâng cao'
+       this.breadcrumbBlockStorage ='Block Storage nâng cao'
     }
     // this.customerId = this.tokenService.get()?.userId
     console.log(this.tokenService.get());
@@ -295,6 +298,7 @@ export class CreatePackageSnapshotComponent implements OnInit {
     this.formCreateSnapshotPackage.quotaHddSizeInGB = this.numberHDD;
     this.formCreateSnapshotPackage.quotaSsdSizeInGB = this.numberSSD;
     this.formCreateSnapshotPackage.description = this.validateForm.get('description').value;
+    // this.formCreateSnapshotPackage.description = this.validateForm.get('description').value;
     this.formCreateSnapshotPackage.projectId = this.project;
     this.formCreateSnapshotPackage.vpcId = this.project?.toString();
     this.formCreateSnapshotPackage.oneSMEAddonId = null;
@@ -321,6 +325,7 @@ export class CreatePackageSnapshotComponent implements OnInit {
     this.formCreateSnapshotPackage.actionType = ServiceActionType.CREATE;
     this.formCreateSnapshotPackage.regionId = this.region;
     this.formCreateSnapshotPackage.serviceName = this.validateForm.controls.namePackage.value;
+    this.formCreateSnapshotPackage.description = this.validateForm.controls.description.value.trim();
     this.formCreateSnapshotPackage.typeName =
       'SharedKernel.IntegrationEvents.Orders.Specifications.SnapshotPackageCreateSpecification,SharedKernel.IntegrationEvents,Version=1.0.0.0,Culture=neutral,PublicKeyToken=null';
     this.formCreateSnapshotPackage.userEmail = this.tokenService.get()?.email;

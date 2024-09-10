@@ -3,7 +3,7 @@
     <nz-breadcrumb [nzSeparator]="separatorTemplate">
       <nz-breadcrumb-item><a [routerLink]="['/']">{{ 'app.breadcrumb.home' | i18n }}</a></nz-breadcrumb-item>
       <nz-breadcrumb-item>{{titleBreadcrumb}}</nz-breadcrumb-item>
-      <nz-breadcrumb-item>Block Storage</nz-breadcrumb-item>
+      <nz-breadcrumb-item>{{breadcrumbBlockStorage}} </nz-breadcrumb-item>
       <nz-breadcrumb-item>
         <a (click)="navigateToBreadcrumb()">Lịch Snapshot</a>
         <!-- <a routerLink="/app-smart-cloud/schedule/snapshot">Lịch Snapshot</a> -->
