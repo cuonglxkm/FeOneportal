@@ -62,6 +62,7 @@ import { VolumeService } from 'src/app/shared/services/volume.service';
 import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
 import { RegionID } from 'src/app/shared/enums/common.enum';
 import { CommonService } from 'src/app/shared/services/common.service';
+import { SshKeyService } from '../../ssh-key/ssh-key.service';
 
 class ConfigCustom {
   //cấu hình tùy chỉnh
@@ -180,6 +181,7 @@ export class InstancesCreateComponent implements OnInit {
     private regionService: RegionCoreService,
     private volumeService: VolumeService,
     private commonService: CommonService,
+    private sshKeyService: SshKeyService
   ) {}
 
   @ViewChild('nameInput') firstInput: ElementRef;
@@ -1429,8 +1431,8 @@ export class InstancesCreateComponent implements OnInit {
 
   getAllSSHKey() {
     this.listSSHKey = [];
-    this.dataService
-      .getAllSSHKey(this.region, this.userId, 999999, 1)
+    this.sshKeyService
+      .getSshKeys(this.userId, '',this.region,1, 999999, '')
       .subscribe((data: any) => {
         data.records.forEach((e) => {
           const itemMapper = new SHHKeyModel();
