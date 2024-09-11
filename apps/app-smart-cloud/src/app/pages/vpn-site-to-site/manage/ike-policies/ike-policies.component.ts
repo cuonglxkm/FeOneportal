@@ -57,7 +57,6 @@ export class IkePoliciesComponent {
 
   onPageSizeChange(event) {
     this.pageSize = event
-    this.refreshParams();
     this.getData();
   }
 

@@ -77,6 +77,7 @@
               <ng-container *ngIf="control.hasError('pattern')"
                 >{{'app.vpn.connection-create.name.alert1' |i18n}}</ng-container
               >
+              <ng-container *ngIf="control.hasError('duplicateName')">Tên VPN Connection đã tồn tại. Vui lòng nhập tên khác</ng-container>
             </ng-template>
           </nz-form-control>
           </nz-form-item>
@@ -223,7 +224,7 @@
             />
             <ng-template #peerIdErrorTpl let-control>
               <ng-container *ngIf="control.hasError('required')">{{'app.vpns2s.name.error.tooltip' |i18n}}</ng-container>
-              <ng-container *ngIf="control.hasError('pattern')">{{'app.vpn.connection-create.peerId.alert2' |i18n}}</ng-container>
+              <ng-container *ngIf="control.hasError('invalidHost')">{{'app.vpn.connection-create.peerId.alert2' |i18n}}</ng-container>
             </ng-template> 
           </nz-form-control>
           </nz-form-item>
@@ -300,26 +301,15 @@
                 alt=""
               />
             </nz-form-label>
-            <nz-input-group style="width: 100%; border-radius: 4px;" nzSearch [nzSuffix]="suffixTemplate">
               <input
                 nz-input
-                [type]="preSharedKeyVisible ? 'text' : 'password'"
-                style="height: 30px;"
+                type="text"
                 required
                 appTrim
                 [value]="vpnConnection.preSharedKey"
                 formControlName="preSharedKey"
                 class="input-custom"
               />
-            </nz-input-group>
-            <ng-template #suffixTemplate>
-              <span
-                nz-icon
-                [nzType]="preSharedKeyVisible ? 'eye-invisible' : 'eye'"
-                (click)="preSharedKeyVisible = !preSharedKeyVisible"
-                style="cursor: pointer;"
-              ></span>
-            </ng-template>
             <ng-template #preShareKeyErrorTpl let-control>
               <ng-container *ngIf="control.hasError('required')">{{'app.vpns2s.name.error.tooltip' |i18n}}</ng-container>
             </ng-template>
@@ -336,7 +326,7 @@
       <div>
         <div style="margin-bottom: 12px">
           <h3 class="custom-subtitle">Name</h3>
-          <span class="text-break text-label">{{vpnConnection.name}}</span>
+          <span class="text-break text-label">{{form.value.name}}</span>
         </div>
         <div style="margin-bottom: 20px">
           <h3 class="custom-subtitle">IKE Policy</h3>
@@ -370,11 +360,16 @@
           <h3 class="custom-subtitle">Pre - Shared Key (PSK) string</h3>
           <span class="text-break text-label">{{form.value.preSharedKey}}</span>
         </div>
+        <div style="margin-bottom: 20px">
+          <h3 class="custom-subtitle">Pre - Shared Key (PSK) string</h3>
+          <span class="text-label">{{ form.value.preSharedKey }}</span>
+        </div>
       </div>
       <button
         (click)="handleEdit()"
         nz-button
         nzType="primary" 
+        class="highlight-button-form"
         [nzLoading]="isLoading"
         style="
           border: none;

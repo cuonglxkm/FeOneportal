@@ -95,28 +95,23 @@ export class RouterDetailComponent implements OnInit {
   ) {
     this.formRouterInterface = this.fb.group({
       subnetId: ['', Validators.required],
-      ipAddress: [
-        '',Validators.required,
-      ],
+      ipAddress: ['', Validators.required],
     });
-
-    this.formRouterInterface
-      .get('subnetId')
-      .valueChanges.subscribe((selectedSubnetId) => {
-        const selectedSubnet = this.listSubnet.find(
-          (subnet) => subnet.id === parseInt(selectedSubnetId)
-        );
-        if (selectedSubnet) {
-          const networkAddress = selectedSubnet.networkAddress;
-          this.formRouterInterface
-            .get('ipAddress')
-            .setValidators([
-              Validators.required,
-              ipAddressValidatorRouter(networkAddress),
-            ]);
-          this.formRouterInterface.get('ipAddress').updateValueAndValidity();
-        }
-      });
+  
+    this.formRouterInterface.get('subnetId').valueChanges.subscribe((selectedSubnetId) => {
+      const selectedSubnet = this.listSubnet.find(
+        (subnet) => subnet.id === parseInt(selectedSubnetId)
+      );
+      if (selectedSubnet) {
+        const networkAddress = selectedSubnet.networkAddress; 
+  
+        this.formRouterInterface.get('ipAddress').setValidators([
+          Validators.required,
+          ipAddressValidatorRouter(networkAddress),
+        ]);
+        this.formRouterInterface.get('ipAddress').updateValueAndValidity();
+      }
+    });
   }
 
   ngOnInit(): void {

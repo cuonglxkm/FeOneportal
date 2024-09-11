@@ -509,28 +509,85 @@ export const fileValidator: ValidatorFn = (control: AbstractControl): Validation
   return error;
 };
 
+export function cidrValidator(control: AbstractControl): ValidationErrors | null {
+  const cidrPattern = /^(25[0-5]|2[0-4][0-9]|[0-1]?[1-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[0-1]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[0-1]?[0-9][0-9]?)\.0\/24$/;
+  const value = control.value?.trim();
 
-export function ipAddressValidatorRouter(subnetIP: string): ValidatorFn {
+  if (!value) {
+    return null;
+  }
+
+  if (value.includes(';') || value.includes('-') || value.includes('+') || value.includes('=') || value.includes('_') ||value.includes(':') || value.includes('"') || value.includes("'") || value.includes('?') || value.includes('>') ||value.includes('<') || value.includes('`') ||value.includes('~') || value.includes('!') || value.includes('@') ||value.includes('#') ||value.includes('$') || value.includes('%') ||value.includes('^') ||value.includes('&')) {
+    return { spaceAfterComma: true };
+  }
+
+  const cidrBlocks = value.split(',').map(cidr => cidr.trim());
+
+  if (cidrBlocks.length > 64) {
+    return { maxCIDRs: true };
+  }
+
+  if (value.includes(', ') || value.includes(' ')) {
+    return { wrongFormat: true };
+  }
+
+  const uniqueCidrs = new Set<string>();
+
+  // Validate each CIDR block
+  for (let cidr of cidrBlocks) {
+    if (!cidrPattern.test(cidr)) {
+      return { invalidCidrFormat: true };
+    }
+    if (uniqueCidrs.has(cidr)) {
+      return { duplicateCIDR: true };
+    }
+    uniqueCidrs.add(cidr);
+  }
+
+  return null;
+}
+
+
+
+
+export function ipAddressValidatorRouter(subnetIPWithMask: string): ValidatorFn {
   return (control: AbstractControl): { [key: string]: any } | null => {
     const ipAddress = control.value;
     if (!ipAddress) {
       return null;
     }
+    const [subnetIP, maskString] = subnetIPWithMask.split('/');
+    const mask = parseInt(maskString, 10);
 
-    const networkPart = subnetIP.split('.').slice(0, 3).join('.');
-    if (!ipAddress.startsWith(networkPart)) {
-      return { 'invalidSubnetIP': true };
+    const ipOctets = ipAddress.split('.');
+    const subnetOctets = subnetIP.split('.');
+
+    if (mask === 16) {
+      if (ipOctets[0] !== subnetOctets[0] || ipOctets[1] !== subnetOctets[1]) {
+        return { 'invalidSubnetIP': true };
+      }
+    } else if (mask === 24) {
+      if (
+        ipOctets[0] !== subnetOctets[0] ||
+        ipOctets[1] !== subnetOctets[1] ||
+        ipOctets[2] !== subnetOctets[2]
+      ) {
+        return { 'invalidSubnetIP': true };
+      }
+    } else {
+      return { 'unsupportedMask': true };
     }
 
-    const lastNumber = parseInt(ipAddress.split('.')[3], 10);
-    if (!lastNumber || lastNumber < 0 || lastNumber > 255) {
+    const lastNumber = parseInt(ipOctets[3], 10);
+    if (isNaN(lastNumber) || lastNumber < 0 || lastNumber > 255) {
       return { 'invalidLastNumber': true };
     }
 
     return null;
   };
-
 }
+
+
 
 
 
@@ -573,8 +630,6 @@ export function ipValidatorVlan(): ValidatorFn {
     //   return { invalidIp: true };
     // }
 
-    // Kiểm tra các khoảng hợp lệ
-    debugger;
     if (cidr === '16') {
       if (
         (a === 10 && b >= 10 && b <= 100) ||
@@ -624,6 +679,34 @@ export function hostValidator(control: AbstractControl): ValidationErrors | null
   if (!isValidDomain && !isValidIp) {
     return { invalidHost: true };
   }
+
+  return null; 
+}
+
+export function peerIdValidator(control: AbstractControl): ValidationErrors | null {
+  if (!control.value) {
+    return null;
+  }
+
+  const ipPattern = /^(?:[1-9]\d{0,2}|1\d{2}|2[0-4]\d|25[0-5])\.(?:\d{1,2}|1\d{2}|2[0-4]\d|25[0-5])\.(?:\d{1,2}|1\d{2}|2[0-4]\d|25[0-5])\.(?:\d{1,2}|1\d{2}|2[0-4]\d|25[0-5])$/;
+
+  const domainPattern = /^(?![-.])[a-zA-Z0-9-]{1,63}(?:\.[a-zA-Z0-9-]{1,63})*(?<![-.])\.[a-zA-Z]{2,63}$/;
+  const emailPattern = /^[a-zA-Z0-9]+([._-]?[a-zA-Z0-9]+)*@[a-zA-Z0-9-]+(\.[a-zA-Z]{2,})+$/;
+
+  const value = control.value.trim();
+
+  const isValidDomain = domainPattern.test(value);
+  const isValidIp = ipPattern.test(value);
+  const isValidEmail = emailPattern.test(value);
+
+  if (isValidDomain && isValidIp && isValidEmail) {
+    return { invalidHost: true }
+  }
+
+  if (!isValidDomain && !isValidIp && !isValidEmail) {
+    return { invalidHost: true };
+  }
+
 
   return null; 
 }

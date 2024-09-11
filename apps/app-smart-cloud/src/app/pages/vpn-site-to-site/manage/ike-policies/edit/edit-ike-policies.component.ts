@@ -209,10 +209,10 @@ export class EditIkePoliciesComponent implements OnInit {
     this.formSearchIkePolicy.pageNumber = 1
   this.ikePolicyService.getIKEpolicy(this.formSearchIkePolicy)
     .subscribe((data) => {
-        data.records.forEach((item) => {
+        const filterName = data.records.filter((item) => item.name !== this.ikePolicy.name) 
+        filterName.forEach((item) => {
           if (this.nameList.length > 0) {
-            const filterName = item.name.filter((name) => name !== this.ikePolicy.name);
-            this.nameList.push(filterName);
+            this.nameList.push(item.name);
           } else {
             this.nameList = [item.name];
           }

@@ -82,6 +82,7 @@
                   <ng-container *ngIf="control.hasError('pattern')">{{
                     'app.vpn.connection-create.name.alert1' | i18n
                   }}</ng-container>
+                   <ng-container *ngIf="control.hasError('duplicateName')">Tên VPN Connection đã tồn tại. Vui lòng nhập tên khác</ng-container>
                 </ng-template>
               </nz-form-control>
             </nz-form-item>
@@ -109,6 +110,7 @@
                   [ngModelOptions]="{ standalone: true }"
                   class="input-select-custom"
                   [nzLoading]="isLoadingIpsecPolicy"
+                  (ngModelChange)="onIpsecPolicyChange($event)"
                   [nzDisabled]="disableIpsecpolicy"
                 >
                   <nz-option
@@ -215,6 +217,7 @@
                   [ngModelOptions]="{ standalone: true }"
                   class="input-select-custom"
                   [nzLoading]="isLoadingEndpointGroup"
+                  (ngModelChange)="onLocalEndpointGroupChange($event)"
                   [nzDisabled]="disableEndpointGroup"
                 >
                   <nz-option
@@ -257,7 +260,7 @@
                   <ng-container *ngIf="control.hasError('required')">{{
                     'app.vpns2s.name.error.tooltip' | i18n
                   }}</ng-container>
-                  <ng-container *ngIf="control.hasError('pattern')">{{
+                  <ng-container *ngIf="control.hasError('invalidHost')">{{
                     'app.vpn.connection-create.peerId.alert2' | i18n
                   }}</ng-container>
                 </ng-template>
@@ -287,6 +290,7 @@
                   [ngModelOptions]="{ standalone: true }"
                   class="input-select-custom"
                   [nzLoading]="isLoadingIkePolicy"
+                  (ngModelChange)="onIkePolicyChange($event)"
                   [nzDisabled]="disableIkepolicy"
                 >
                   <nz-option
@@ -321,6 +325,7 @@
                   [ngModelOptions]="{ standalone: true }"
                   class="input-select-custom"
                   [nzLoading]="isLoadingEndpointGroup"
+                  (ngModelChange)="onRemoteEndpointGroupChange($event)"
                   [nzDisabled]="disableEndpointGroup"
                 >
                   <nz-option
@@ -349,15 +354,9 @@
                       alt=""
                     />
                 </nz-form-label>
-                <nz-input-group
-                  style="width: 100%; border-radius: 4px"
-                  nzSearch
-                  [nzSuffix]="suffixTemplate"
-                >
                   <input
                     nz-input
-                    [type]="preSharedKeyVisible ? 'text' : 'password'"
-                    style="height: 30px"
+                    type="text"
                     required
                     appTrim
                     [placeholder]="
@@ -366,16 +365,6 @@
                     formControlName="preSharedKey"
                     class="input-custom"
                   />
-                </nz-input-group>
-
-                <ng-template #suffixTemplate>
-                  <span
-                    nz-icon
-                    [nzType]="preSharedKeyVisible ? 'eye-invisible' : 'eye'"
-                    (click)="preSharedKeyVisible = !preSharedKeyVisible"
-                    style="cursor: pointer"
-                  ></span>
-                </ng-template>
                 <ng-template #preShareKeyErrorTpl let-control>
                   <ng-container *ngIf="control.hasError('required')">{{
                     'app.vpns2s.name.error.tooltip' | i18n
@@ -570,11 +559,16 @@
           <h3 class="custom-subtitle">Remote Local Subnet</h3>
           <span class="text-label">{{ selectedRemoteEndpointGroupName }}</span>
         </div>
+        <div style="margin-bottom: 20px">
+          <h3 class="custom-subtitle">Pre - Shared Key (PSK) string</h3>
+          <span class="text-label">{{ form.value.preSharedKey }}</span>
+        </div>
       </div>
       <button
         (click)="handleCreate()"
         nz-button
         nzType="primary"
+        class="highlight-button-form"
         style="
           border: none;
           width: 100%;
