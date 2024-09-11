@@ -90,8 +90,6 @@ export class EndpointCreateComponent implements OnInit {
     this.checkExistUsername();
   }
 
-
-
   dataSubjectName: Subject<string> = new Subject<string>();
   dataSubjectUserame: Subject<string> = new Subject<string>();
   changeName(value: string) {
@@ -130,15 +128,6 @@ export class EndpointCreateComponent implements OnInit {
       });
   }
 
-  dataSubjectDomain: Subject<{ value: string, index: number }> = new Subject<{ value: string, index: number }>();
-
-  changeDomain(value: string, index: number) {
-  this.dataSubjectDomain.next({ value, index });
-  }
-
-  isExistDomain: boolean = false;
-  
-
   initEndpoint() {
     this.EndpointCreate.customerId = this.tokenService.get()?.userId;
     this.EndpointCreate.userEmail = this.tokenService.get()?.email;
@@ -155,12 +144,12 @@ export class EndpointCreateComponent implements OnInit {
     this.EndpointCreate.typeName = "SharedKernel.IntegrationEvents.Orders.Specifications.Waf.WafCreateSpecification,SharedKernel.IntegrationEvents, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null"
   }
   isInvalid: boolean = false
-  onChangeTime(numberYear: number) {
-    if(numberYear === undefined){
+  onChangeTime(numberMonth: number) {
+    if(numberMonth === undefined){
       this.isInvalid = true
     }else{
       this.isInvalid = false
-      this.timeSelected = numberYear;
+      this.timeSelected = numberMonth;
       this.form.controls.time.setValue(this.timeSelected);
       this.getTotalAmount();
     }
@@ -169,7 +158,7 @@ export class EndpointCreateComponent implements OnInit {
   getTotalAmount() {
     this.initEndpoint();
     let itemPayment: ItemPayment = new ItemPayment();
-    itemPayment.orderItemQuantity = 1;
+    itemPayment.orderItemQuantity = this.form.controls.number.value;
     itemPayment.specificationString = JSON.stringify(this.EndpointCreate);
     itemPayment.specificationType = 'endpoint_create';
     itemPayment.serviceDuration = this.form.controls.time.value;
