@@ -49,7 +49,7 @@
               Dung lượng còn lại của gói Snapshot {{namePackage}} ({{quotaTypeSelected=='hdd' ? 'HDD':'SSD'}}) là
               {{quotaTypeSelected=='hdd'? availableSizeHDD :availableSizeSSD}} GB. Vui lòng thực hiện điều chỉnh Gói
               Snapshot
-              <a [href]="'/app-smart-cloud/snapshot/packages/edit/'+idSnapshotPackage">{{namePackage}} </a>
+              <a (click)="navigateToPackageSnapshot(idSnapshotPackage)">{{namePackage}} </a>
               ({{quotaTypeSelected=='hdd' ? 'HDD':'SSD'}}) để có thể tiếp tục sử dụng dịch vụ.
             </div>
           </ng-template>
@@ -59,7 +59,7 @@
           <ng-template #nzMessageNoData>
             <div>
               Quý khách chưa có gói Snapshot nào, để có thể sử dụng dịch vụ Snapshot, vui lòng tạo gói Snapshot
-              <a (click)="navigateToCreateVolume()" [routerLink]="'/app-smart-cloud/snapshot/packages/create'">tại
+              <a (click)="navigateToCreatePackage()" >tại
                 đây</a>
             </div>
           </ng-template>
@@ -73,7 +73,7 @@
               dung lượng.
             </div>
           </ng-template>
-          <!-- VPC chưa mua snapshot theo loại của volume/máy ảo -->
+          <!-- VPC chưa mua snapshot theo loại của volume/máy ảo HDD -->
           <nz-alert nzBanner *ngIf="projectType==1 && quotaTypeSelected=='hdd' && projectTotalHdd==0 "
             style="margin-bottom: 10px;margin-top: 15px" [nzMessage]="isVPCNotQuotaTypeHdd" nzShowIcon></nz-alert>
           <ng-template #isVPCNotQuotaTypeHdd>
@@ -83,7 +83,7 @@
               sung.
             </div>
           </ng-template>
-          <!-- VPC chưa mua snapshot theo loại của volume/máy ảo -->
+          <!-- VPC chưa mua snapshot theo loại của volume/máy ảo SSD -->
           <nz-alert nzBanner *ngIf="projectType==1 && quotaTypeSelected=='ssd' && projectTotalSsd==0 "
             style="margin-bottom: 10px;margin-top: 15px" [nzMessage]="isVPCNotQuotaTypeSsd" nzShowIcon></nz-alert>
           <ng-template #isVPCNotQuotaTypeSsd>
@@ -130,7 +130,7 @@
                 <ng-container *ngIf="control.hasError('pattern')">Tên chỉ có thể chứa các ký tự chữ và số (a-z, A-Z, 0-9, '_')
                 </ng-container>
                 <ng-container *ngIf="control.hasError('maxLength')">{{ 'volume.notification.input.name.maxLength' | i18n}}</ng-container>
-                <ng-container *ngIf="control.hasError('duplicateName')">Tên Snapshot đã tồn tại. Vui lòng nhập tên khác</ng-container>
+                <ng-container *ngIf="control.hasError('duplicateName')">Tên Snapshot này đã được sử dụng, vui lòng chọn tên khác</ng-container>
               </ng-template>
             </nz-form-control>
           </nz-form-item>

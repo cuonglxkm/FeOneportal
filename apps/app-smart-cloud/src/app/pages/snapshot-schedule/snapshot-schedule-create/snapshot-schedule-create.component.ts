@@ -106,6 +106,8 @@ export class SnapshotScheduleCreateComponent implements OnInit {
   disableCreate = true;
   titleBreadcrumb:string;
   breadcrumbBlockStorage:string;
+  namePackage:string;
+  idSnapshotPackage: number;
 
 
   @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
@@ -363,12 +365,7 @@ export class SnapshotScheduleCreateComponent implements OnInit {
           this.projectRemainingHdd = this.projectTotalHdd - this.projectUsedHdd;
           this.projectRemainingSsd = this.projectTotalSsd - this.projectUsedSsd;
 
-          // let total = data.cloudProject;
-          // let used = data.cloudProjectResourceUsed;
-          // this.quotaHDDUsed = used.volumeSnapshotHddInGb;
-          // this.quotaHDDTotal = total.quotaVolumeSnapshotHddInGb;
-          // this.quotaSSDUsed = used.volumeSnapshotSsdInGb;
-          // this.quotaSSDTotal = total.quotaVolumeSnapshotSsdInGb;
+         
         });
     }
   }
@@ -415,24 +412,7 @@ export class SnapshotScheduleCreateComponent implements OnInit {
 
     return label;
   }
-  // changePackageSnapshot() {
-  //   if (this.projectType != 1 && this.selectedSnapshotPackage != undefined) {
-  //     this.packageSnapshotService.detail(this.selectedSnapshotPackage.id, this.project)
-  //       .pipe(finalize(() => {
-  //         this.checkDisable();
-  //       }))
-  //       .subscribe(data => {
-  //         this.quotaHDDTotal = data.totalSizeHDD;
-  //         this.quotaHDDUsed = data.usedSizeHDD;
-  //         this.quotaSSDTotal = data.totalSizeSSD;
-  //         this.quotaSSDUsed = data.usedSizeSSD;
-  //       });
-  //   }
-  //   if (this.selectedSnapshotPackage == undefined) {
-  //     this.disableByQuota = false;
-  //     this.disableCreate = true;
-  //   }
-  // }
+  
   changePackageSnapshot() {
     // dự án thường
     if (this.projectType != 1 && this.selectedSnapshotPackage) {
@@ -448,6 +428,8 @@ export class SnapshotScheduleCreateComponent implements OnInit {
           this.packageUsedSsd = data.usedSizeSSD;
           this.availableSizeSSD = data.availableSizeSSD;
           this.availableSizeHDD = data.availableSizeHDD;
+          this.namePackage = data.packageName;
+          this.idSnapshotPackage = data.id;
 
           if (this.selectedVM || this.selectedVolume) {
             this.changeNumberVersion(this.numOfVersion);
@@ -1061,24 +1043,7 @@ export class SnapshotScheduleCreateComponent implements OnInit {
     }
 
   }
-  // D_package:number, D_quotaSelected:number, numberVersion:number
-  // getInterruptionDay(D_package:number, D_quotaSelected:number, numberVersion:number){
-  //   console.log("timeeeee", this.time)
-  //   console.log("timeeeee", new Date (this.time))
-  //   console.log("object, ", new Date())
-  //   const currentTime=new Date()
-  //   // Tính số ngày tối đa có thể lưu trữ
-  //   const soNgayLuuTru = Math.floor(D_package / D_quotaSelected);
-  //   if(this.time>= currentTime){
-  //     console.log("1")
-
-  //   }
-  //   else{
-  //     console.log("2")
-  //   }
-
-
-  // }
+ 
   getInterruptionDay(D_package: number, D_quotaSelected: number, numberVersion: number): Date {
     // Lấy giờ và phút từ đối tượng Date
     const gioChon = this.time.getHours();
@@ -1130,6 +1095,11 @@ export class SnapshotScheduleCreateComponent implements OnInit {
     // Trả về định dạng ngày
     return `${day}/${month}/${year}`;
   }
+  changeTimeNotification(time:any){
+    console.log("timeeeee", time)
+    this.changeNumberVersion(this.numOfVersion)
+  }
+
    // navigateToBreadcrumb
    navigateToBreadcrumb(){
     if (this.region === RegionID.ADVANCE) {
@@ -1138,4 +1108,21 @@ export class SnapshotScheduleCreateComponent implements OnInit {
       this.router.navigate(['/app-smart-cloud/schedule/snapshot' ]);
     }
   }
+  // navigate form điều chỉnh gói snapshot 
+  navigateToPackageDetail(id:number){
+    if (this.region === RegionID.ADVANCE) {
+      this.router.navigate(['/app-smart-cloud/snapshot-advance/packages/edit/' + id]);
+    } else {
+      this.router.navigate(['/app-smart-cloud/snapshot/packages/edit/' + id]);
+    }
+  }
+   // navigate form tạo gói snapshot 
+  navigateToCreatePackage() {
+    if (this.region === RegionID.ADVANCE) {
+      this.router.navigate([`/app-smart-cloud/snapshot-advance/packages/create`])
+    } else {
+      this.router.navigate([`/app-smart-cloud/snapshot/packages/create`])
+    }
+  }
+
 }
