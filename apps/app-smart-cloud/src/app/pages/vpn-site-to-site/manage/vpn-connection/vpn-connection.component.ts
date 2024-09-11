@@ -27,6 +27,7 @@ export class VpnConnection {
   value: string = ''
 
   response: BaseResponse<VpnConnectionDTO>
+  responseData: BaseResponse<VpnConnectionDTO>
 
   isLoading: boolean = false
 
@@ -56,7 +57,6 @@ export class VpnConnection {
 
   onPageSizeChange(event) {
     this.pageSize = event
-    this.refreshParams();
     this.getData();
   }
 
@@ -76,6 +76,7 @@ export class VpnConnection {
       .pipe(debounceTime(500))
       .subscribe(data => {
       this.isLoading = false
+      this.responseData = data
       const transformedData = data.records.map(record => {  
         const [firstNetWork, ...remainingNetWorks] = record.localNetwork;
         console.log(firstNetWork);

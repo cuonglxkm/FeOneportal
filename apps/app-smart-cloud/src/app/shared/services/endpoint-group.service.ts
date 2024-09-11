@@ -20,6 +20,7 @@ export class EndpointGroupService extends BaseService {
   }
 
   getListEndpointGroup(formSearch: FormSearchEndpointGroup) {
+    
     let params = new HttpParams()
     if (formSearch.vpcId != undefined || formSearch.vpcId != null) {
       params = params.append('vpcId', formSearch.vpcId)

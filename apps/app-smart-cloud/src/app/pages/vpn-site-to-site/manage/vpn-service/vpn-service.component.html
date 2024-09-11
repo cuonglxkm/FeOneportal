@@ -24,9 +24,10 @@
       </ng-template>
     </nz-col>
     <nz-col *ngIf="response?.records.length === 0">
-      <button *ngIf="isCreatePermission"
+      <button
         [routerLink]="['/app-smart-cloud/vpn-site-to-site/vpn-service/create']"
         nz-button
+        class="highlight-button"
         nzType="primary"
         nzSize="large"
       >
@@ -49,10 +50,11 @@
   [nzPageSizeOptions]="[pageSizeFixed, 10, 20, 30, 40, 50]"
   [nzFrontPagination]="false"
   [nzLoading]="isLoading"
+  nzTableLayout="fixed"
 >
   <thead>
     <tr>
-      <th>Name</th>
+      <th style="width: 260px">Name</th>
       <th>IP VPN Gateway</th>
       <th>Router</th>
       <th>{{'app.payment.status' |i18n}}</th>
@@ -61,7 +63,7 @@
   </thead>
   <tbody>
     <tr *ngFor="let data of fixedTable.data; index as i">
-      <td>
+      <td class="text-hidden" title="{{ data.name }}">
         <a
           [routerLink]="[
             '/app-smart-cloud/vpn-site-to-site/vpn-service/' + data.id
