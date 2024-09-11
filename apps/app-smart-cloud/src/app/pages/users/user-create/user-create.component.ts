@@ -95,9 +95,10 @@ export class UserCreateComponent implements OnInit {
   }
 
   handleOkCreate(): void {
+    const submitSelectedProject = this.listProjectSelected.length === this.listProject.length ? [0] : this.listProjectSelected
     this.userCreate.groupNames = this.groupNames;
     this.userCreate.policyNames = this.policyNames;
-    this.userCreate.projectIds = this.listProjectSelected;
+    this.userCreate.projectIds = submitSelectedProject;
     this.isVisibleCreate = false;
     console.log('user create', this.userCreate);
     this.service
@@ -147,7 +148,20 @@ export class UserCreateComponent implements OnInit {
   }
 
   onSelectedProject(value: number[]) {
+    console.log('value', value)
+    if(value.includes(0)){
+      return this.selectAllOptions()
+    }
     this.listProjectSelected = value;
+  }
+
+  selectAllOptions(){
+    const filterSelectAllOption = this.listProjectSelected.filter(project => project !== 0)
+    if(filterSelectAllOption.length === this.listProject.length){
+      this.listProjectSelected = []
+    }else{
+      this.listProjectSelected = this.listProject.map(project => project.id)
+    }
   }
 
   //Router

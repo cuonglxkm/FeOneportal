@@ -8,13 +8,15 @@ import {
 import { Router } from '@angular/router';
 import { getCurrentRegionAndProject } from '@shared';
 import {
+  EndpointGroupDTO,
   FormCreateEndpointGroup,
   FormListSubnetResponse,
+  FormSearchEndpointGroup,
 } from 'src/app/shared/models/endpoint-group';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { EndpointGroupService } from 'src/app/shared/services/endpoint-group.service';
-import { RegionModel, ProjectModel } from '../../../../../../../../../libs/common-utils/src';
+import { RegionModel, ProjectModel, cidrValidator, BaseResponse } from '../../../../../../../../../libs/common-utils/src';
 import { VpnSiteToSiteService } from 'src/app/shared/services/vpn-site-to-site.service';
 import { I18NService } from '@core';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
@@ -41,7 +43,11 @@ export class CreateEndpointGroupComponent implements OnInit {
   selectedType = 'cidr';
   isLoading: boolean = false;
   routerId: string
+  response: BaseResponse<EndpointGroupDTO>;
   routerName: string
+  nameList: string[] = [];
+  formSearchEnpointGroup: FormSearchEndpointGroup =
+    new FormSearchEndpointGroup();
   @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
   formCreateEndpointGroup: FormCreateEndpointGroup =
     new FormCreateEndpointGroup();
@@ -55,17 +61,15 @@ export class CreateEndpointGroupComponent implements OnInit {
       [
         Validators.required,
         Validators.pattern(/^[a-zA-Z0-9][a-zA-Z0-9-_ ]{0,49}$/),
+        this.duplicateNameValidator.bind(this)
       ],
     ],
     endpointsCidr: [
       '',
       [
         Validators.required,
-        Validators.pattern(
-          new RegExp(
-            CIDR_REGEX
-        )
-        ),
+        cidrValidator
+        
       ],
     ],
   });
@@ -106,6 +110,7 @@ export class CreateEndpointGroupComponent implements OnInit {
     this.project = regionAndProject.projectId;
     this.getListSubnet();
     this.getVpns2s()
+    this.getListEndPoint()
   }
 
   constructor(
@@ -138,6 +143,37 @@ export class CreateEndpointGroupComponent implements OnInit {
       ]);
       this.form.controls.endpointsCidr.updateValueAndValidity();
     }
+  }
+
+  duplicateNameValidator(control) {
+    const value = control.value;
+    // Check if the input name is already in the list
+    if (this.nameList && this.nameList.includes(value)) {
+      return { duplicateName: true }; // Duplicate name found
+    } else {
+      return null; // Name is unique
+    }
+  }
+
+  getListEndPoint() {
+    this.formSearchEnpointGroup.vpcId = this.project;
+    this.formSearchEnpointGroup.regionId = this.region;
+    this.formSearchEnpointGroup.name = ''
+    this.formSearchEnpointGroup.pageSize = 99999
+    this.formSearchEnpointGroup.currentPage = 1
+    this.endpointGroupService
+      .getListEndpointGroup(this.formSearchEnpointGroup)
+      .subscribe((data) => {
+        data.records.forEach((item) => {
+          if (this.nameList.length > 0) {
+            this.nameList.push(item.name);
+          } else {
+            this.nameList = [item.name];
+          }
+        });
+      }, error => {
+        this.nameList = null;
+      });
   }
 
   handleCreate() {

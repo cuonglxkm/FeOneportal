@@ -27,6 +27,7 @@
       <button *ngIf="isCreatePermission"
         [routerLink]="['/app-smart-cloud/vpn-site-to-site/ike-policies/create']"
         nz-button
+        class="highlight-button"
         nzType="primary"
         nzSize="large"
       >
@@ -49,11 +50,12 @@
   [nzTotal]="response?.totalCount"
   [nzFrontPagination]="false"
   [nzLoading]="isLoading"
+  nzTableLayout="fixed"
 >
   <thead>
     <tr>
-      <th>Name</th>
-      <th>VPN Connection</th>
+      <th style="width: 260px">Name</th>
+      <th style="width: 260px">VPN Connection</th>
       <th>Authorization Algorithm</th>
       <th>Encryption Algorithm</th>
       <th>PFS</th>
@@ -62,7 +64,7 @@
   </thead>
   <tbody>
     <tr *ngFor="let data of fixedTable.data; index as i">
-      <td>
+      <td class="text-hidden" title="{{ data.name }}">
         <a
           [routerLink]="[
             '/app-smart-cloud/vpn-site-to-site/ike-policies/' + data.cloudId
@@ -71,7 +73,7 @@
         >
       </td>
 
-      <td>{{ data.vpnConnection === null ? '' : data.vpnConnection  }}</td>
+      <td class="text-hidden" title="{{ data.vpnConnection }}">{{ data.vpnConnection === null ? '' : data.vpnConnection  }}</td>
       <td>{{ data.authorizationAlgorithm }}</td>
       <td>{{ data.encryptionAlgorithm }}</td>
       <td>{{ data.perfectForwardSecrey }}</td>

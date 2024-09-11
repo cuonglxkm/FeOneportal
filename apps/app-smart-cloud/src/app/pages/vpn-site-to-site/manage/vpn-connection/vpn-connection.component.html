@@ -26,6 +26,7 @@
         [routerLink]="[
           '/app-smart-cloud/vpn-site-to-site/vpn-connection/create'
         ]"
+        class="highlight-button"
         nz-button
         nzType="primary"
         nzSize="large"
@@ -37,18 +38,19 @@
   </nz-row>
 </div>
 <nz-table
-  #fixedTable
-  style="margin-top: 20px"
-  [nzData]="response"
-  [nzPageSize]="response?.pageSize"
-  (nzPageSizeChange)="onPageSizeChange($event)"
-  [nzPageIndex]="response?.currentPage"
-  (nzPageIndexChange)="onPageIndexChange($event)"
-  [nzTotal]="response?.totalCount"
-  nzShowSizeChanger
-  [nzPageSizeOptions]="[pageSizeFixed, 10, 20, 30, 40, 50]"
-  [nzFrontPagination]="false"
-  [nzLoading]="isLoading"
+#fixedTable
+style="margin-top: 20px"
+[nzData]="response"
+[nzPageSize]="responseData?.pageSize"
+nzShowSizeChanger
+[nzPageSizeOptions]="[pageSizeFixed, 10, 20, 30, 40, 50]"
+(nzPageSizeChange)="onPageSizeChange($event)"
+[nzPageIndex]="responseData?.currentPage"
+(nzPageIndexChange)="onPageIndexChange($event)"
+[nzTotal]="responseData?.totalCount"
+[nzFrontPagination]="false"
+[nzLoading]="isLoading"
+nzTableLayout="fixed"
 >
   <thead>
     <tr>
@@ -59,12 +61,12 @@
       <th>IKE Policy</th>
       <th>IPsec Policy</th>
       <th>{{'app.payment.status' |i18n}}</th>
-      <th nzAlign="center">{{'app.action-history.operation' |i18n}}</th>
+      <th style="width: 100px" nzAlign="center">{{'app.action-history.operation' |i18n}}</th>
     </tr>
   </thead>
   <tbody>
     <tr *ngFor="let data of fixedTable.data">
-      <td>
+      <td class="text-hidden" title="{{ data.name }}">
         <a
           [routerLink]="[
             '/app-smart-cloud/vpn-site-to-site/vpn-connection/' + data.id
@@ -103,11 +105,11 @@
           {{ data }}
         </div>
       </td>
-      <td>
+      <td class="text-hidden" title="{{ data.vpnService }}">
         {{ data.vpnService }}
       </td>
-      <td>{{ data.ikepolicy }}</td>
-      <td>{{ data.ipSecPolicy }}</td>
+      <td class="text-hidden" title="{{ data.ikepolicy }}">{{ data.ikepolicy }}</td>
+      <td class="text-hidden" title="{{ data.ipSecPolicy }}">{{ data.ipSecPolicy }}</td>
       <td>
         {{
           data.status === 'PENDING_CREATE'

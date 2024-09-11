@@ -9,13 +9,14 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { getCurrentRegionAndProject } from '@shared';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
-import { FormEditVpnConnection, VpnConnectionDetail } from 'src/app/shared/models/vpn-connection';
+import { FormEditVpnConnection, FormSearchVpnConnection, VpnConnectionDetail } from 'src/app/shared/models/vpn-connection';
 import { VpnConnectionService } from 'src/app/shared/services/vpn-connection.service';
-import { RegionModel, ProjectModel } from '../../../../../../../../../libs/common-utils/src';
+import { RegionModel, ProjectModel, peerIdValidator } from '../../../../../../../../../libs/common-utils/src';
 import { I18NService } from '@core';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { NAME_SPECIAL_REGEX, PEER_VPN_REGEX } from 'src/app/shared/constants/constants';
 import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
+import { debounceTime } from 'rxjs';
 
 @Component({
   selector: 'one-portal-edit-vpn-connection',
@@ -28,8 +29,9 @@ export class EditVpnConnectionComponent implements OnInit {
 
   formEditVpnConnection: FormEditVpnConnection = new FormEditVpnConnection();
   vpnConnection: VpnConnectionDetail = new VpnConnectionDetail();
-
+  formSearchVpnConnection: FormSearchVpnConnection = new FormSearchVpnConnection()
   preSharedKeyVisible: boolean = false;
+  nameList: string[] = [];
   isLoading: boolean = false
   @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
   form: FormGroup<{
@@ -38,7 +40,7 @@ export class EditVpnConnectionComponent implements OnInit {
     peerId: FormControl<string>;
     preSharedKey: FormControl<string>;
   }> = this.fb.group({
-    name: ['', [Validators.required, Validators.pattern(NAME_SPECIAL_REGEX)]],
+    name: ['', [Validators.required, Validators.pattern(NAME_SPECIAL_REGEX), this.duplicateNameValidator.bind(this)]],
     peerRemoteIp: [
       '',
       [
@@ -52,9 +54,7 @@ export class EditVpnConnectionComponent implements OnInit {
       '',
       [
         Validators.required,
-        Validators.pattern(
-          PEER_VPN_REGEX
-        ),
+        peerIdValidator
       ],
     ],
     preSharedKey: ['', [Validators.required]],
@@ -67,6 +67,7 @@ export class EditVpnConnectionComponent implements OnInit {
         (data) => {
           this.vpnConnection = data;
 
+          this.form.controls.name.setValue(data.name);
           this.form.controls.peerRemoteIp.setValue(data.peerRemoteIp);
           this.form.controls.peerId.setValue(data.peerId);
           this.form.controls.preSharedKey.setValue(data.preSharedKey);
@@ -88,6 +89,7 @@ export class EditVpnConnectionComponent implements OnInit {
     this.region = regionAndProject.regionId;
     this.project = regionAndProject.projectId;
     this.getVpnConnectionById(this.activatedRoute.snapshot.paramMap.get('id'));
+    this.getListVPN()
   }
 
   constructor(
@@ -126,6 +128,38 @@ export class EditVpnConnectionComponent implements OnInit {
     this.formEditVpnConnection.deadPeerDetectionTimeout = 120;
     this.formEditVpnConnection.initiatorState = 'bi-directional';
     return this.formEditVpnConnection;
+  }
+
+  duplicateNameValidator(control) {
+    const value = control.value;
+    // Check if the input name is already in the list
+    if (this.nameList && this.nameList.includes(value)) {
+      return { duplicateName: true }; // Duplicate name found
+    } else {
+      return null; // Name is unique
+    }
+  }
+
+  getListVPN() {
+    this.formSearchVpnConnection.projectId = this.project
+    this.formSearchVpnConnection.regionId = this.region
+    this.formSearchVpnConnection.searchValue = ''
+    this.formSearchVpnConnection.pageSize = 9999999
+    this.formSearchVpnConnection.currentPage = 1
+    this.vpnConnectionService.getVpnConnection(this.formSearchVpnConnection)
+      .pipe(debounceTime(500))
+      .subscribe(data => {
+        const filterName = data.records.filter((item) => item.name !== this.vpnConnection.name) 
+        filterName.forEach((item) => {
+          if (this.nameList.length > 0) {
+            this.nameList.push(item.name);
+          } else {
+            this.nameList = [item.name];
+          }
+        });
+    }, error => {
+      this.nameList = null;
+    })
   }
 
   handleEdit() {

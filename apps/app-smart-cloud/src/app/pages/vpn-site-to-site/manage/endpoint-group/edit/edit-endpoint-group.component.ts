@@ -1,10 +1,10 @@
-import { Component, EventEmitter, Inject, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Inject, Input, OnInit, Output } from '@angular/core';
 import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
 import { I18NService } from '@core';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
-import { FormDetailEndpointGroup, FormEditEndpointGroup } from 'src/app/shared/models/endpoint-group';
+import { FormDetailEndpointGroup, FormEditEndpointGroup, FormSearchEndpointGroup } from 'src/app/shared/models/endpoint-group';
 import { EndpointGroupService } from 'src/app/shared/services/endpoint-group.service';
 
 @Component({
@@ -12,25 +12,24 @@ import { EndpointGroupService } from 'src/app/shared/services/endpoint-group.ser
   templateUrl: './edit-endpoint-group.component.html',
   styleUrls: ['./edit-endpoint-group.component.less'],
 })
-export class EditEndpointGroupComponent{
+export class EditEndpointGroupComponent implements OnInit{
   @Input() region: number
   @Input() project: number
   @Input() id: string
   @Input() type: string
   @Input() endpoints: string
   @Output() onOk = new EventEmitter()
-
+  nameList: string[] = [];
   isVisible: boolean = false
   isLoading: boolean = false
 
   endpointGroup: FormDetailEndpointGroup = new FormDetailEndpointGroup()
-
+  formSearchEnpointGroup: FormSearchEndpointGroup =
+    new FormSearchEndpointGroup();
   validateForm: FormGroup<{
     nameEndpointGroup: FormControl<string>
-    description: FormControl<string>
   }> = this.fb.group({
-    nameEndpointGroup: ['', [Validators.required, Validators.pattern(/^[a-zA-Z0-9][a-zA-Z0-9-_ ]{0,254}$/)]],
-    description: ['', [Validators.pattern(/^[a-zA-Z0-9][a-zA-Z0-9-_ ]{0,254}$/)]]
+    nameEndpointGroup: ['', [Validators.required, Validators.pattern(/^[a-zA-Z0-9][a-zA-Z0-9-_ ]{0,49}$/), this.duplicateNameValidator.bind(this)]],
   });
 
   constructor(@Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
@@ -41,6 +40,32 @@ export class EditEndpointGroupComponent{
               ) {
   }
 
+  ngOnInit(){
+    this.getEndpointGroupById(this.id);
+  }
+
+  getListEndPoint() {
+    this.formSearchEnpointGroup.vpcId = this.project;
+    this.formSearchEnpointGroup.regionId = this.region;
+    this.formSearchEnpointGroup.name = ''
+    this.formSearchEnpointGroup.pageSize = 99999
+    this.formSearchEnpointGroup.currentPage = 1   
+    this.endpointGroupService
+      .getListEndpointGroup(this.formSearchEnpointGroup)
+      .subscribe((data) => {
+        const filterName = data.records.filter((item) => item.name !== this.endpointGroup.name) 
+        filterName.forEach((item) => {
+          if (this.nameList.length > 0) {
+            this.nameList.push(item.name);
+          } else {
+            this.nameList = [item.name];
+          }
+        });
+      }, error => {
+        this.nameList = null;
+      });
+  }
+
   getEndpointGroupById(id) {
     this.endpointGroupService
       .getEndpointGroupById(id, this.project, this.region)
@@ -48,12 +73,22 @@ export class EditEndpointGroupComponent{
         (data) => {
           this.endpointGroup = data;
           this.validateForm.controls.nameEndpointGroup.setValue(data.name);
-          this.validateForm.controls.description.setValue(data.description);
+          this.getListEndPoint()
         },
         (error) => {
           this.endpointGroup = null;
         }
       );
+  }
+
+  duplicateNameValidator(control) {
+    const value = control.value;
+    // Check if the input name is already in the list
+    if (this.nameList && this.nameList.includes(value)) {
+      return { duplicateName: true }; // Duplicate name found
+    } else {
+      return null; 
+    }
   }
 
   showModal(){
@@ -72,7 +107,6 @@ export class EditEndpointGroupComponent{
     formEdit.regionId = this.region
     formEdit.vpcId = this.project
     formEdit.name = this.validateForm.controls.nameEndpointGroup.value
-    formEdit.description = this.validateForm.controls.description.value
 
     if(this.validateForm.valid){
       this.endpointGroupService.editEndpoinGroup(formEdit).subscribe(data => {
@@ -90,8 +124,5 @@ export class EditEndpointGroupComponent{
     }
   }
 
-  ngOnInit(){
-    this.getEndpointGroupById(this.id);
-  }
 
 }

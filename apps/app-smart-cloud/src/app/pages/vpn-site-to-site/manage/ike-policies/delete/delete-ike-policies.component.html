@@ -27,7 +27,7 @@
         >
         </nz-alert>
         <nz-form-label>
-          <div>
+          <div style="overflow: hidden;">
             <span [innerHTML]="'app.ike.policy-delete.des' |i18n : {name: nameIkePolicy}"></span
               >          
           </div>
@@ -56,7 +56,7 @@
             nz-button
             nzType="default"
             (click)="handleCancel()"
-            class="button-back"
+            class="highlight-button button-back"
           >
             <img
               style="padding-right: 10px; margin-top: -4px"
@@ -69,7 +69,7 @@
               nz-button
               nzType="primary"
               [nzLoading]="isLoading"
-              class="button-new"
+              class="highlight-button button-new"
               (click)="handleOk()"
               [disabled]="validateForm.invalid"
             >

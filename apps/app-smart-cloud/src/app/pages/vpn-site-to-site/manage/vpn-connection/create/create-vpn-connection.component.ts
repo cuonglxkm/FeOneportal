@@ -10,6 +10,7 @@ import { getCurrentRegionAndProject } from '@shared';
 import {
   RegionModel,
   ProjectModel,
+  peerIdValidator,
 } from '../../../../../../../../../libs/common-utils/src';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { VpnConnectionService } from 'src/app/shared/services/vpn-connection.service';
@@ -25,7 +26,7 @@ import {
   ipAddressValidator,
 } from '../../../../../../../../../libs/common-utils/src';
 import { NzSelectOptionInterface } from 'ng-zorro-antd/select';
-import { FormCreateVpnConnection } from 'src/app/shared/models/vpn-connection';
+import { FormCreateVpnConnection, FormSearchVpnConnection } from 'src/app/shared/models/vpn-connection';
 import { FormSearchIKEPolicy } from 'src/app/shared/models/vpns2s.model';
 import { IkePolicyService } from 'src/app/shared/services/ike-policy.service';
 import { FormSearchEndpointGroup } from 'src/app/shared/models/endpoint-group';
@@ -74,7 +75,7 @@ export class CreateVpnConnectionComponent implements OnInit {
   disableIkepolicy: boolean = true;
   disableVpnService: boolean = true;
   disableEndpointGroup: boolean = true;
-
+  nameList: string[] = [];
   preSharedKeyVisible: boolean = false;
 
   FormCreateVpnConnection: FormCreateVpnConnection =
@@ -84,7 +85,7 @@ export class CreateVpnConnectionComponent implements OnInit {
   formSearchEnpointGroup: FormSearchEndpointGroup =
     new FormSearchEndpointGroup();
   formSearchVpnService: FormSearchVpnService = new FormSearchVpnService();
-
+  formSearchVpnConnection: FormSearchVpnConnection = new FormSearchVpnConnection()
   form: FormGroup<{
     name: FormControl<string>;
     peerRemoteIp: FormControl<string>;
@@ -138,6 +139,12 @@ export class CreateVpnConnectionComponent implements OnInit {
       });
   }
 
+  onIpsecPolicyChange(selectedValue: string): void {
+    this.selectedIpsecPolicyName = this.ipsecPoliciesList.find(
+      (policy) => policy.value === selectedValue
+    )?.label;
+  }
+
   getDataIkePolices() {
     this.isLoadingIkePolicy = true;
     this.formSearchIkePolicy.projectId = this.project;
@@ -163,6 +170,12 @@ export class CreateVpnConnectionComponent implements OnInit {
           )?.label;
         }
       });
+  }
+
+  onIkePolicyChange(selectedValue: string): void {
+    this.selectedIkePolicyName = this.ikePoliciesList.find(
+      (policy) => policy.value === selectedValue
+    )?.label;
   }
 
   // getSelectedIkePolicyName(): string {
@@ -222,6 +235,18 @@ export class CreateVpnConnectionComponent implements OnInit {
       });
   }
 
+  onLocalEndpointGroupChange(selectedValue: string): void {
+    this.selectedLocalEndpointGroupName = this.localEndpointGroupList.find(
+      (policy) => policy.value === selectedValue
+    )?.label;
+  }
+
+  onRemoteEndpointGroupChange(selectedValue: string): void {
+    this.selectedRemoteEndpointGroupName = this.remoteEndpointGroupList.find(
+      (policy) => policy.value === selectedValue
+    )?.label;
+  }
+
   getDataVpnService() {
     this.isLoadingVpnService = true;
     this.formSearchVpnService.projectId = this.project;
@@ -260,6 +285,7 @@ export class CreateVpnConnectionComponent implements OnInit {
         [
           Validators.required,
           Validators.pattern(NAME_SPECIAL_REGEX),
+          this.duplicateNameValidator.bind(this)
         ],
       ],
       peerRemoteIp: [
@@ -275,9 +301,7 @@ export class CreateVpnConnectionComponent implements OnInit {
         '',
         [
           Validators.required,
-          Validators.pattern(
-            PEER_VPN_REGEX
-          ),
+          peerIdValidator
         ],
       ],
       preSharedKey: ['', [Validators.required]],
@@ -291,6 +315,7 @@ export class CreateVpnConnectionComponent implements OnInit {
     this.getDataIkePolices();
     this.getDataEndPointGroup();
     this.getDataVpnService();
+    this.getListVPN()
   }
 
   getData(): any {
@@ -318,6 +343,37 @@ export class CreateVpnConnectionComponent implements OnInit {
     return this.FormCreateVpnConnection;
   }
 
+  duplicateNameValidator(control) {
+    const value = control.value;
+    // Check if the input name is already in the list
+    if (this.nameList && this.nameList.includes(value)) {
+      return { duplicateName: true }; // Duplicate name found
+    } else {
+      return null; // Name is unique
+    }
+  }
+
+  getListVPN() {
+    this.formSearchVpnConnection.projectId = this.project
+    this.formSearchVpnConnection.regionId = this.region
+    this.formSearchVpnConnection.searchValue = ''
+    this.formSearchVpnConnection.pageSize = 9999999
+    this.formSearchVpnConnection.currentPage = 1
+    this.vpnConnectionService.getVpnConnection(this.formSearchVpnConnection)
+      .pipe(debounceTime(500))
+      .subscribe(data => {
+        data.records.forEach((item) => {
+          if (this.nameList.length > 0) {
+            this.nameList.push(item.name);
+          } else {
+            this.nameList = [item.name];
+          }
+        });
+    }, error => {
+      this.nameList = null;
+    })
+  }
+
   handleCreate() {
     this.isLoading = true;
     if (this.form.valid) {
@@ -334,7 +390,7 @@ export class CreateVpnConnectionComponent implements OnInit {
         },
         (error) => {
           this.isLoading = false;
-          if (error.error.detail.includes('giống trong Endpoint')) {
+          if (error.error.message.includes('giống trong Endpoint')) {
             this.notification.error(
               this.i18n.fanyi('app.status.fail'),
               this.i18n.fanyi('app.vpn-connection.create.fail')

@@ -27,7 +27,7 @@ style="cursor: pointer; width: 28px; height: 28px"
         >
         </nz-alert>
         <nz-form-label>
-          <div>
+          <div style="overflow: hidden;">
             <span [innerHTML]="'app.endpoint-delete.des' |i18n : {name: name}"></span
               > 
           </div>
@@ -51,8 +51,9 @@ style="cursor: pointer; width: 28px; height: 28px"
             *nzSpaceItem
             nz-button
             nzType="default"
+            tabindex="0"
             (click)="handleCancel()"
-            class="button-back"
+            class="highlight-button button-back"
           >
           <img
           style="padding-right: 10px; margin-top: -4px"
@@ -65,7 +66,8 @@ style="cursor: pointer; width: 28px; height: 28px"
               nz-button
               nzType="primary"
               [nzLoading]="isLoading"
-              class="button-new"
+              tabindex="0"
+              class="highlight-button button-new"
               (click) = "handleOk()"
               [disabled]="validateForm.invalid"
             >

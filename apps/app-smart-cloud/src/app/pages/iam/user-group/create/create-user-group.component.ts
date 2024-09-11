@@ -134,7 +134,19 @@ export class CreateUserGroupComponent implements OnInit {
   }
 
   onSelectedProject(value: number[]) {
+    if(value.includes(0)){
+      return this.selectAllOptions()
+    }
     this.listProjectSelected = value;
+  }
+
+  selectAllOptions(){
+    const filterSelectAllOption = this.listProjectSelected.filter(project => project !== 0)
+    if(filterSelectAllOption.length === this.listProject.length){
+      this.listProjectSelected = []
+    }else{
+      this.listProjectSelected = this.listProject.map(project => project.id)
+    }
   }
 
   submitForm(): void {
@@ -170,7 +182,8 @@ export class CreateUserGroupComponent implements OnInit {
       // if(this.validateForm.value.parentName != null) {
       //   this.formCreate.parentName = this.validateForm.value.parentName.toString()
       // }
-      this.formCreate.projectIds = this.listProjectSelected;
+      const submitSelectedProject = this.listProjectSelected.length === this.listProject.length ? [0] : this.listProjectSelected
+      this.formCreate.projectIds = submitSelectedProject;
       this.formCreate.policyNames = this.validateForm.value.policyNames;
       this.formCreate.users = this.validateForm.value.userNames;
       this.isLoadingConfirm = true;

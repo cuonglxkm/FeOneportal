@@ -26,6 +26,7 @@
         [routerLink]="[
           '/app-smart-cloud/vpn-site-to-site/ipsec-policies/create'
         ]"
+        class="highlight-button"
         nz-button
         nzType="primary"
         nzSize="large"
@@ -49,11 +50,12 @@
   [nzPageSizeOptions]="[pageSizeFixed, 10, 20, 30, 40, 50]"
   [nzFrontPagination]="false"
   [nzLoading]="isLoading"
+  nzTableLayout="fixed"
 >
   <thead>
     <tr>
-      <th>Name</th>
-      <th>VPN Connection</th>
+      <th style="width: 260px">Name</th>
+      <th style="width: 260px">VPN Connection</th>
       <th>Authorization algorithm</th>
       <th>Encryption algorithm</th>
       <th>PFS</th>
@@ -62,13 +64,13 @@
   </thead>
   <tbody>
     <tr *ngFor="let data of fixedTable.data; index as i">
-      <td>
+      <td class="text-hidden" title="{{ data.name }}">
         <a
           [routerLink]="['/app-smart-cloud/vpn-site-to-site/ipsec-policies/' + data.id]"
           >{{ data.name }}</a
         >
       </td>
-      <td>{{ data.vpnConnection === null ? '' : data.vpnConnection }}</td>
+      <td class="text-hidden" title="{{ data.vpnConnection }}">{{ data.vpnConnection === null ? '' : data.vpnConnection }}</td>
       <td>{{ data.authorizationAlgorithm }}</td>
       <td>{{ data.encryptionAlgorithm }}</td>
       <td>{{ data.perfectForwardSecrecy }}</td>

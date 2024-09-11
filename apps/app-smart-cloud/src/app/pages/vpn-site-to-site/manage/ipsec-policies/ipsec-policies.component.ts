@@ -57,7 +57,6 @@ export class IpsecPoliciesComponent {
 
   onPageSizeChange(event) {
     this.pageSize = event
-    this.refreshParams();
     this.getData();
   }
 
