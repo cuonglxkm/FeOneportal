@@ -109,9 +109,10 @@
                        [nzLoading]="isLoadingProject"
                        [(ngModel)]="listProjectSelected"
                        (ngModelChange)="onSelectedProject($event)">
-                      <nz-option *ngFor="let item of listProject"
-                                 [nzLabel]="item.projectName + ' (' + item.projectRegionText + ')'"
-                                 [nzValue]="item.id"></nz-option>
+                      <nz-option [nzLabel]="'Chọn tất cả'" [nzValue]="0" (click)="selectAllOptions()">
+                      </nz-option>
+                      <nz-option *ngFor="let item of listProject" [nzLabel]="item.projectName + ' (' + item.projectRegionText + ')'"
+                        [nzValue]="item.id"></nz-option>
             </nz-select>
           </nz-form-control>
         </nz-form-item>

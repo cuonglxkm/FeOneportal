@@ -259,6 +259,7 @@ export class InstancesCreateComponent implements OnInit {
   url = window.location.pathname;
   packageId: number;
   hasRoleSI: boolean;
+  idSnapshot: string | null
   isAdvance: boolean
   ngOnInit(): void {
     this.userId = this.tokenService.get()?.userId;
@@ -317,7 +318,6 @@ export class InstancesCreateComponent implements OnInit {
         );
         this.changeSelectedSnapshot();
       });
-      this.changeSelectedSnapshot();
     }
 
     this.getActiveServiceByRegion();
@@ -329,6 +329,7 @@ export class InstancesCreateComponent implements OnInit {
     this.getListOptionGpuValue();
     this.checkOfferIpv6();
     this.hasRoleSI = localStorage.getItem('role').includes('SI');
+    this.idSnapshot = this.activatedRoute.snapshot.paramMap.get('idSnapshot')
 
     this.breakpointObserver
       .observe([

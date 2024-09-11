@@ -121,7 +121,7 @@ export class CreateVolumeComponent implements OnInit {
     private notification: NzNotificationService,
     private configurationsService: ConfigurationsService,
     private orderService: OrderService,
-    private activatedRoute: ActivatedRoute
+    private activatedRoute: ActivatedRoute,
   ) {
     this.validateForm.get('isMultiAttach').valueChanges.subscribe((value) => {
       this.multipleVolume = value;
@@ -573,7 +573,7 @@ export class CreateVolumeComponent implements OnInit {
       this.isLoadingAction = false;
       console.log('data vl snapshot', data.records);
       data?.records.forEach(item => {
-        if ((['AVAILABLE', 'KHOITAO'].includes(item.resourceStatus) || ['AVAILABLE', 'KHOITAO'].includes(item.serviceStatus)) && !item.fromRootVolume) {
+        if ((['AVAILABLE', 'KHOITAO'].includes(item.resourceStatus) || ['AVAILABLE', 'KHOITAO'].includes(item.serviceStatus))) {
           this.snapshotList?.push(item);
         }
       });
@@ -661,6 +661,7 @@ export class CreateVolumeComponent implements OnInit {
   hasRoleSI: boolean;
   url = window.location.pathname;
   isAdvance: boolean
+  idSnapshot: string | null
   ngOnInit() {
     let regionAndProject = getCurrentRegionAndProject();
     this.region = regionAndProject.regionId;
@@ -681,7 +682,7 @@ export class CreateVolumeComponent implements OnInit {
     this.onChangeValueStorage();
     this.getTotalAmount();
     this.hasRoleSI = localStorage.getItem('role').includes('SI');
-
+    this.idSnapshot = this.activatedRoute.snapshot.paramMap.get('idSnapshot')
   }
 
   //
