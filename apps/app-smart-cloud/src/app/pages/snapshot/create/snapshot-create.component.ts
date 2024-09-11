@@ -216,6 +216,13 @@ export class SnapshotCreateComponent implements OnInit, OnChanges {
       this.router.navigate([`/app-smart-cloud/volumes/create`])
     }
   }
+  navigateToCreatePackage() {
+    if (this.region === RegionID.ADVANCE) {
+      this.router.navigate([`/app-smart-cloud/snapshot-advance/packages/create`])
+    } else {
+      this.router.navigate([`/app-smart-cloud/snapshot/packages/create`])
+    }
+  }
 
   navigateToPaymentSummary() {
     this.loadingCreate = true;
@@ -474,6 +481,8 @@ export class SnapshotCreateComponent implements OnInit, OnChanges {
           this.packageUsedSsd = data.usedSizeSSD;
           this.availableSizeSSD = data.availableSizeSSD;
           this.availableSizeHDD = data.availableSizeHDD;
+          this.namePackage = data.packageName;
+          this.idSnapshotPackage = data.id;
 
           // this.quotaHDDTotal = data.totalSizeHDD;
           // this.quotaHDDUsed = data.usedSizeHDD;
@@ -736,6 +745,14 @@ export class SnapshotCreateComponent implements OnInit, OnChanges {
             }
           }
         );
+    }
+  }
+  // navigate form điều chỉnh gói snapshot 
+  navigateToPackageSnapshot(id:number){
+    if (this.region === RegionID.ADVANCE) {
+      this.router.navigate(['/app-smart-cloud/snapshot-advance/packages/edit/' + id]);
+    } else {
+      this.router.navigate(['/app-smart-cloud/snapshot/packages/edit/' + id]);
     }
   }
     
