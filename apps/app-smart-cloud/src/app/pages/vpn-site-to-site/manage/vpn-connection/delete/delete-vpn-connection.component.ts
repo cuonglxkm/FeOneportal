@@ -77,6 +77,7 @@ export class DeleteVpnConnectionComponent{
             this.onOk.emit(data)
           }
         }, error => {
+          this.validateForm.reset()
           this.isVisible = false
           this.isLoading =  false
           this.notification.error(this.i18n.fanyi('app.status.fail'),

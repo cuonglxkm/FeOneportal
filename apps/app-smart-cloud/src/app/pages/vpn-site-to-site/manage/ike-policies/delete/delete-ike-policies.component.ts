@@ -87,6 +87,7 @@ export class DeleteIkePoliciesComponent {
             }
           },
           (error) => {
+            this.validateForm.reset()
             if (error.status === 500) {
               this.isVisible = false;
               this.isLoading = false;

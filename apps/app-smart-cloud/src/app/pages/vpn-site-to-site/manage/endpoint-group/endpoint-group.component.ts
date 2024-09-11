@@ -63,7 +63,6 @@ export class EndpointGroupComponent {
 
   onPageSizeChange(event) {
     this.pageSize = event;
-    this.refreshParams();
     this.getData();
   }
 

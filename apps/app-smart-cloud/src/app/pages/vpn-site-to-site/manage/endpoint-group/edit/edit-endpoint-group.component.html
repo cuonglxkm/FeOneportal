@@ -54,6 +54,7 @@
             <ng-container *ngIf="control.hasError('pattern')"
               >{{'app.endpoint-create.name.tooltip' |i18n}}</ng-container
             >
+            <ng-container *ngIf="control.hasError('duplicateName')">Tên Endpoint Group đã tồn tại. Vui lòng nhập tên khác</ng-container>
           </ng-template>
         </nz-form-control>
       </nz-form-item>
@@ -92,7 +93,7 @@
             >Subnet:</nz-form-label
           >
           <nz-form-label *ngIf="type == 'cidr'" nzFor="name"
-            >Cidr:</nz-form-label
+            >CIDR:</nz-form-label
           >
           <div
             *ngFor="let item of endpoints"
@@ -104,7 +105,7 @@
         </nz-form-control>
       </nz-form-item>
       <div class="d-flex justify-content-end">
-        <button nz-button nzType="default" (click)="handleCancel()">
+        <button class="highlight-button" nz-button nzType="default" (click)="handleCancel()">
           <img
             style="padding-right: 10px; margin-top: -4px"
             src="assets/imgs/cancel.svg"
@@ -117,7 +118,7 @@
           [disabled]="!validateForm.valid"
           (click)="handleOk()"
           [nzLoading]="isLoading"
-          class="button-ok"
+          class="highlight-button button-ok"
         >
           <img
             *ngIf="isLoading === false"

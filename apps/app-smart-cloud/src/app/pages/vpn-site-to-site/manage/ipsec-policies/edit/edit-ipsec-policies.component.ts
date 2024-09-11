@@ -115,14 +115,14 @@ export class EditIpsecPoliciesComponent implements OnInit {
     this.formSearchIpsecPolicy.currentPage = 1
   this.ipsecPolicyService.getIpsecpolicy(this.formSearchIpsecPolicy)
     .subscribe((data) => {
-        data.records.forEach((item) => {
-          if (this.nameList.length > 0) {
-            const filterName = item.name.filter((name) => name !== this.ipsecPolicy.name);
-            this.nameList.push(filterName);
-          } else {
-            this.nameList = [item.name];
-          }
-        });
+      const filterName = data.records.filter((item) => item.name !== this.ipsecPolicy.name) 
+      filterName.forEach((item) => {
+        if (this.nameList.length > 0) {
+          this.nameList.push(item.name);
+        } else {
+          this.nameList = [item.name];
+        }
+      });
       },
       (error) => {
         this.nameList = null;

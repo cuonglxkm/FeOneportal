@@ -77,6 +77,7 @@ export class VpnService {
       .subscribe(data => {
       this.isLoading = false;
       this.response = data;
+      this.isCreatePermission = this.policyService.hasPermission("vpnsitetosites:VPNCreateVpnService");
     }, error => {
       this.isLoading = false;
       this.response = null;
@@ -87,6 +88,7 @@ export class VpnService {
           this.i18n.fanyi('app.non.permission')
         );
       }
+      this.isCreatePermission = this.policyService.hasPermission("vpnsitetosites:VPNCreateVpnService");
     })
   }
 
@@ -102,7 +104,6 @@ export class VpnService {
     if (changes.project && !changes.project.firstChange) {
 
       this.getData();
-      this.isCreatePermission = this.policyService.hasPermission("vpnsitetosites:VPNCreateVpnService");
     }
     if (changes.region && !changes.region.firstChange) {
 
@@ -116,7 +117,6 @@ export class VpnService {
       this.searchDelay.pipe(debounceTime(TimeCommon.timeOutSearch)).subscribe(() => {     
         this.refreshParams()
         this.getData();
-        this.isCreatePermission = this.policyService.hasPermission("vpnsitetosites:VPNCreateVpnService");
       });
   }
 }

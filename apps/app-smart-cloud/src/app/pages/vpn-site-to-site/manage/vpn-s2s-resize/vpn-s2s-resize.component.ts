@@ -97,9 +97,9 @@ export class VpnS2sResizeComponent implements OnInit{
         if(data.body.status === 'TAMNGUNG' || data.body.serviceStatus === 'TAMNGUNG'){
           this.notification.error(
             this.i18n.fanyi('app.status.fail'),
-            'VPN Site To Site đã hết hạn, vui lòng gia hạn thêm'
+            'VPN Site To Site đang ở trạng thái tạm ngưng. Không thể vào trang này'
           );
-            this.router.navigateByUrl('/app-smart-cloud/vpn-site-to-site/extend');
+            this.router.navigateByUrl('/app-smart-cloud/vpn-site-to-site');
         }else{
           this.vpn = data.body;
           this.dateString = new Date(this.vpn['createdDate']);

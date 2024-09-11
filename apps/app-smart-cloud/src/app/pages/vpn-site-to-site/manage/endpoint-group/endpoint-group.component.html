@@ -11,7 +11,7 @@
       </ng-template>
     </nz-col>
     <nz-col>
-      <button *ngIf="isCreatePermission" [routerLink]="['/app-smart-cloud/vpn-site-to-site/endpoint-group/create']" nz-button nzType="primary"
+      <button *ngIf="isCreatePermission" class="highlight-button" [routerLink]="['/app-smart-cloud/vpn-site-to-site/endpoint-group/create']" nz-button nzType="primary"
         nzSize="large">
         <i nz-icon nzType="plus"></i>
         <span class="button-text-primary">{{'app.label.create' |i18n}} Endpoint Group</span>
@@ -23,19 +23,19 @@
 [nzPageSizeOptions]="[pageSizeFixed, 10, 20, 30, 40, 50]" style="margin-top: 20px;" style="margin-top: 20px" [nzData]="response?.records"
   [nzPageSize]="response?.pageSize" (nzPageSizeChange)="onPageSizeChange($event)" [nzPageIndex]="response?.currentPage"
   (nzPageIndexChange)="onPageIndexChange($event)" [nzTotal]="response?.totalCount" [nzFrontPagination]="false"
-  [nzLoading]="isLoading">
+  [nzLoading]="isLoading" nzTableLayout="fixed">
   <thead>
     <tr>
-      <th>Name</th>
+      <th style="width: 260px">Name</th>
       <!-- <th>VPN Connection</th> -->
       <th>{{'app.bucket.detail.type' |i18n}}</th>
-      <th>Enpoints</th>
+      <th>Endpoint</th>
       <th nzAlign="center">{{'app.action-history.operation' |i18n}}</th>
     </tr>
   </thead>
   <tbody>
     <tr *ngFor="let data of fixedTable.data; index as i">
-      <td>
+      <td class="text-hidden" title="{{ data.name }}">
         <a [routerLink]="['/app-smart-cloud/vpn-site-to-site/endpoint-group/' + data.id]">{{ data.name }}</a>
       </td>
       <!-- <td>{{ data.type }}</td> -->
@@ -50,7 +50,7 @@
       <td>
         <div class="d-flex gap-2 justify-content-center align-items-center">
           <one-portal-edit-endpoint-group *ngIf="('vpnsitetosites:UpdateEndpointGroups' | IsPermissionPipe)" [region]="region" [project]="project" [id]="data.id" [name]="data.name"
-            [type]="data.type" [endpoints]="data.endpoints" (onOk)="handleOkEdit()"></one-portal-edit-endpoint-group>
+            [type]="data.type" [endpoints]="data.endpoints" [data]="response" (onOk)="handleOkEdit()"></one-portal-edit-endpoint-group>
 
           <one-portal-delete-endpoint-group *ngIf="('vpnsitetosites:DeleteEndpointGroups' | IsPermissionPipe)" [region]="region" [project]="project" [id]="data.id" [name]="data.name"
             (onOk)="handleOkDelete()"></one-portal-delete-endpoint-group>
