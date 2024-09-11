@@ -60,7 +60,7 @@ export class EndpointService extends BaseService {
 
   checkExitName(name: string): Observable<boolean> {
     return this.http.get<boolean>(
-      this.baseUrl + this.ENDPOINT.provisions + `/endpoint/checknameexist?name=${name}`,
+      this.baseUrl + this.ENDPOINT.provisions + `/endpoint/check-name-exist?name=${name}`,
       {
         headers: this.getHeaders().headers,
       }
@@ -68,7 +68,7 @@ export class EndpointService extends BaseService {
   }
   checkExitUsername(username: string): Observable<boolean> {
     return this.http.get<boolean>(
-      this.baseUrl + this.ENDPOINT.provisions + `/endpoint/checkusernameexist/username=${username}`,
+      this.baseUrl + this.ENDPOINT.provisions + `/endpoint/check-username-exist?username=${username}`,
       { headers: this.getHeaders().headers }
     );
   }

@@ -3687,5 +3687,16 @@
   "validation.waf.domain.delete.name.required": "Vui lòng nhập tên domain",
   "validation.waf.ssl.delete.name.invalid": "Vui lòng nhập đúng tên SSL Cert",
   "validation.waf.ssl.delete.name.required": "Vui lòng nhập tên SSL Cert",
-  "app.create-policy.name":"Policy Name"
+  "app.create-policy.name":"Policy Name",
+
+  "endpoint.list":"Endpoint List",
+  "endpoint.placeholder.filter.name": "Search by endpoint name",
+  "endpoint.button.create":"Create Endpoint",
+  "endpoint.table.title.name": "Endpoint Name",
+  "endpoint.table.title.username": "Username",
+  "endpoint.table.title.email": "Email",
+  "endpoint.table.title.numberofdevices": "Number of devices",
+  "endpoint.table.title.enddate": "Expiration Date",
+  "endpoint.table.title.status": "Status",
+  "app.year": "Year"
 }
