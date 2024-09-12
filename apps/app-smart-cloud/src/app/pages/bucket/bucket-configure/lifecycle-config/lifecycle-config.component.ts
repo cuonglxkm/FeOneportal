@@ -208,6 +208,14 @@ export class LifecycleConfigComponent implements OnInit {
     }
   }
 
+  onChangeExpirationDay(event){
+    if(event){
+      this.lifecycleCreate.isSetNoncurrentVersionExpiration_Day = true
+    }else{
+      this.lifecycleCreate.isSetNoncurrentVersionExpiration_Day = false
+    }
+  }
+
   resetForm() {
     this.formCreate.reset();
     this.lifecycleCreate.lifecycleRuleExpiration_Day = 1;

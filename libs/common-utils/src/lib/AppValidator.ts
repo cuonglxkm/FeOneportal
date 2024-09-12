@@ -523,7 +523,7 @@ export function cidrValidator(control: AbstractControl): ValidationErrors | null
 
   const cidrBlocks = value.split(',').map(cidr => cidr.trim());
 
-  if (cidrBlocks.length > 64) {
+  if (cidrBlocks.length > 20) {
     return { maxCIDRs: true };
   }
 
