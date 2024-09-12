@@ -30,4 +30,10 @@ export class EndpointCreate {
   oneSME_SubscriptionId: string
   isSendMail: boolean
   typeName: string
+  name: string
+  username: string
+  email: string
+  quantity: string
+  duration: number
+  endDatePeriod: Date
 }

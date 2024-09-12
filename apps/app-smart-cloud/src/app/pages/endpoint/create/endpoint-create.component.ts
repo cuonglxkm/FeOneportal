@@ -24,23 +24,10 @@ import { slider } from '../../../../../../../libs/common-utils/src';
   animations: [slider]
 })
 export class EndpointCreateComponent implements OnInit {
-  public carouselTileConfig: NguCarouselConfig = {
-    grid: { xs: 1, sm: 2, md: 3, lg: 4, all: 0 },
-    speed: 250,
-    point: {
-      visible: true
-    },
-    touch: true,
-    loop: true,
-    animation: 'lazy'
-  };
 
   listOffers: OfferItem[] = [];
-  offerFlavor: OfferItem;
-  selectedElementFlavor: any;
   today = new Date();
   expiredDate = new Date();
-
   numOfMonth: number;
   total: any;
   totalAmount = 0;
@@ -48,14 +35,12 @@ export class EndpointCreateComponent implements OnInit {
   totalVAT = 0;
 
   selectedOfferId: number = 0;
-  listOfDomain: any = [];
 
   EndpointCreate: EndpointCreate = new EndpointCreate();
   totalincludesVAT: number = 0;
  
   isVisiblePopupError: boolean = false;
   errorList: string[] = [];
-  timeSelected: any
   closePopupError() {
     this.isVisiblePopupError = false;
   }
@@ -64,10 +49,9 @@ export class EndpointCreateComponent implements OnInit {
     name: ['', [Validators.required, Validators.pattern(NAME_REGEX)]],
     username: ['', [Validators.required, Validators.pattern(USERNAME_REGEX)]],
     email: ['', [Validators.required, Validators.email]],
-    number: [1, Validators.required],
+    numberOfLicense: [1, Validators.required],
     time: [1]
   });
-  private inputChangeSubject = new Subject<{ value: number, name: string }>();
 
   orderObject: OrderItemObject = new OrderItemObject();
   constructor(@Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
@@ -97,6 +81,9 @@ export class EndpointCreateComponent implements OnInit {
   }
   changeUsername(value: string) {
     this.dataSubjectUserame.next(value);
+  }
+  changeNumberOfLincense(value: number){
+    this.getTotalAmount();
   }
 
   isExistName: boolean = false;
@@ -132,25 +119,34 @@ export class EndpointCreateComponent implements OnInit {
     this.EndpointCreate.customerId = this.tokenService.get()?.userId;
     this.EndpointCreate.userEmail = this.tokenService.get()?.email;
     this.EndpointCreate.actorEmail = this.tokenService.get()?.email;
-    this.EndpointCreate.projectId = null;
-    this.EndpointCreate.regionId = 0;
+    // this.EndpointCreate.projectId = null;
+    // this.EndpointCreate.regionId = 0;
+    // this.EndpointCreate.serviceType = 0;
+    // this.EndpointCreate.actionType = 0;
+    // this.EndpointCreate.serviceInstanceId = 0;
+    this.EndpointCreate.createDate = this.today;
+    this.EndpointCreate.serviceName = "Endpoint";
     this.EndpointCreate.serviceType = 0;
-    this.EndpointCreate.actionType = 0;
-    this.EndpointCreate.serviceInstanceId = 0;
-    this.EndpointCreate.createDate = this.today
-    this.EndpointCreate.expireDate = this.expiredDate
+    this.EndpointCreate.expireDate = this.expiredDate;
     this.EndpointCreate.offerId = this.selectedOfferId;
-    this.EndpointCreate.isSendMail = true
-    this.EndpointCreate.typeName = "SharedKernel.IntegrationEvents.Orders.Specifications.Waf.WafCreateSpecification,SharedKernel.IntegrationEvents, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null"
+    this.EndpointCreate.isSendMail = true;
+    this.EndpointCreate.name = this.form.controls.name.value;
+    this.EndpointCreate.username = this.form.controls.username.value;
+    this.EndpointCreate.email = this.form.controls.email.value;
+    this.EndpointCreate.quantity = this.form.controls.numberOfLicense.value;
+    this.EndpointCreate.duration = this.numOfMonth;
+    this.EndpointCreate.endDatePeriod = this.expiredDate;
   }
   isInvalid: boolean = false
   onChangeTime(numberMonth: number) {
     if(numberMonth === undefined){
       this.isInvalid = true
     }else{
-      this.isInvalid = false
-      this.timeSelected = numberMonth;
-      this.form.controls.time.setValue(this.timeSelected);
+      this.isInvalid = false;
+      this.numOfMonth = numberMonth;
+      this.expiredDate =  new Date(this.today);
+      this.expiredDate.setMonth(this.today.getMonth() + numberMonth);
+      this.form.controls.time.setValue(numberMonth);
       this.getTotalAmount();
     }
   }
@@ -158,7 +154,7 @@ export class EndpointCreateComponent implements OnInit {
   getTotalAmount() {
     this.initEndpoint();
     let itemPayment: ItemPayment = new ItemPayment();
-    itemPayment.orderItemQuantity = this.form.controls.number.value;
+    itemPayment.orderItemQuantity = this.form.controls.numberOfLicense.value;
     itemPayment.specificationString = JSON.stringify(this.EndpointCreate);
     itemPayment.specificationType = 'endpoint_create';
     itemPayment.serviceDuration = this.form.controls.time.value;
@@ -175,22 +171,6 @@ export class EndpointCreateComponent implements OnInit {
       this.cdr.detectChanges();
     });
   }
-
-  onInputChange(value: number, name: string): void {
-    console.log("object value", value)
-    this.inputChangeSubject.next({ value, name });
-  }
-
-  selectPackge = '';
-
-  getNumberOfDomains(characteristicValues: any[]): number {
-    const domainCharacteristic = characteristicValues.find(ch => ch.charName === 'Domain');
-    if (domainCharacteristic && domainCharacteristic.charOptionValues) {
-      return parseInt(domainCharacteristic.charOptionValues[0], 10);
-    }
-    return 0;
-  }
-
   getOffers(): void {
     this.instancesService.getDetailProductByUniqueName('endpoint')
       .subscribe(
@@ -202,6 +182,7 @@ export class EndpointCreateComponent implements OnInit {
                 (e: OfferItem) => e.status.toUpperCase() == 'ACTIVE'
               );
               this.selectedOfferId = this.listOffers[0].id;
+              this.getTotalAmount();
             });
         }
       );

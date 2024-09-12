@@ -3618,5 +3618,17 @@
   "validation.waf.domain.delete.name.required": "Vui lòng nhập tên domain",
    "validation.waf.ssl.delete.name.invalid": "Vui lòng nhập đúng tên SSL Cert",
   "validation.waf.ssl.delete.name.required": "Vui lòng nhập tên SSL Cert",
-  "app.create-policy.name":"Tên Policy"
+  "app.create-policy.name":"Tên Policy",
+
+  "endpoint.list":"Danh sách Endpoint",
+  "endpoint.placeholder.filter.name": "Tìm kiếm theo tên Endpoint",
+  "endpoint.button.create":"Tạo mới Endpoint",
+  "endpoint.table.title.name": "Tên Endpoint",
+  "endpoint.table.title.username": "Username",
+  "endpoint.table.title.email": "Email",
+  "endpoint.table.title.numberofdevices": "Số lượng máy đăng ký",
+  "endpoint.table.title.enddate": "Ngày hết hạn",
+  "endpoint.table.title.status": "Trạng thái đăng ký",
+  "app.year": "Năm",
+  "app.tooltip.usage.time.year": "Thời gian khách hàng mua {{name}} để sử dụng, tính theo năm"
 }
