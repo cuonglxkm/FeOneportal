@@ -408,11 +408,10 @@ export class UserProfileComponent implements OnInit {
 
   loadUserProfile() {
     // @ts-ignore
-    let email = this.tokenService.get()['email'];
-
+    const userId = this.tokenService.get()['userId'];
     const baseUrl = environment['baseUrl'];
     this.http
-      .get<UserModel>(`${baseUrl}/users/${email}`, {
+      .get<UserModel>(`${baseUrl}/users/${userId}`, {
         headers: this.httpOptions.headers,
       })
       .subscribe(
