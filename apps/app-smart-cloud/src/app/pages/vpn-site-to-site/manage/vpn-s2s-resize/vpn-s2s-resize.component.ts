@@ -89,25 +89,32 @@ export class VpnS2sResizeComponent implements OnInit{
   }
 
   getVpnAndOffers() {
-    this.loading = true;
-    
+    this.loading = true;  
     this.vpnSiteToSiteService.getVpnSiteToSite(0).pipe().subscribe(data => {
+      console.log(data);
+      
       this.loading = false;  
-      if (data) {
-        if(data.body.status === 'TAMNGUNG' || data.body.serviceStatus === 'TAMNGUNG'){
+        if(data.body === null || data.body === undefined) {
           this.notification.error(
             this.i18n.fanyi('app.status.fail'),
-            'VPN Site To Site đang ở trạng thái tạm ngưng. Không thể vào trang này'
+            'Bản ghi không tồn tại'
           );
-            this.router.navigateByUrl('/app-smart-cloud/vpn-site-to-site');
+          this.router.navigateByUrl('/app-smart-cloud/vpn-site-to-site');
         }else{
-          this.vpn = data.body;
-          this.dateString = new Date(this.vpn['createdDate']);
-          this.expiredDate = new Date(this.vpn['expiredDate']);
-          this.numberMonth = Math.round((this.expiredDate.getTime() - this.dateString.getTime()) / 86400000 / 30);
-          this.getOffers(); 
+          if(data.body.status === 'TAMNGUNG' || data.body.serviceStatus === 'TAMNGUNG'){
+            this.notification.error(
+              this.i18n.fanyi('app.status.fail'),
+              'VPN Site To Site đang ở trạng thái tạm ngưng. Không thể vào trang này'
+            );
+              this.router.navigateByUrl('/app-smart-cloud/vpn-site-to-site');
+          }else{
+            this.vpn = data.body;
+            this.dateString = new Date(this.vpn['createdDate']);
+            this.expiredDate = new Date(this.vpn['expiredDate']);
+            this.numberMonth = Math.round((this.expiredDate.getTime() - this.dateString.getTime()) / 86400000 / 30);
+            this.getOffers(); 
+          }
         }
-      }
     }, error => {
       this.loading = false; 
       if (error.error.detail.includes('made requires authentication')|| error.error.detail.includes('could not be found')) {
