@@ -23,6 +23,8 @@ import { ProjectSelectDropdownComponent } from 'src/app/shared/components/projec
 import { RegionID } from 'src/app/shared/enums/common.enum';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from '@core';
+import { CatalogService } from 'src/app/shared/services/catalog.service';
+import { SupportService } from 'src/app/shared/models/catalog.model';
 
 @Component({
   selector: 'one-portal-extend-package-snapshot',
@@ -54,6 +56,9 @@ export class ExtendPackageSnapshotComponent implements OnInit{
   packageName:string;
   titleBreadcrumb:string;
   breadcrumbBlockStorage:string;
+  serviceActiveByRegion: SupportService[] = [];
+  typeSnapshotHdd:boolean;
+  typeSnapshotSsd:boolean;
 
   closePopupError() {
     this.isVisiblePopupError = false;
@@ -67,6 +72,7 @@ export class ExtendPackageSnapshotComponent implements OnInit{
               private route: ActivatedRoute,
               private fb: NonNullableFormBuilder,
               private orderService: OrderService,
+              private catalogService: CatalogService,
               private projectService: ProjectService,  @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,) {
   }
 
@@ -244,6 +250,7 @@ export class ExtendPackageSnapshotComponent implements OnInit{
     });
   }
   url = window.location.pathname;
+
   ngOnInit() {
     this.validateForm.controls['description'].disable();
     this.idSnapshotPackage = Number.parseInt(this.route.snapshot.paramMap.get('id'));
@@ -268,6 +275,7 @@ export class ExtendPackageSnapshotComponent implements OnInit{
       this.loadProjects();
     }
     this.getDetailPackageSnapshot(this.route.snapshot.paramMap.get('id'));
+    this.getProductActivebyregion();
   }
 
   checkPossiblePress($event: KeyboardEvent) {
@@ -280,5 +288,20 @@ export class ExtendPackageSnapshotComponent implements OnInit{
   onChangeTime($event: any) {
     this.numOfMonth = $event;
     this.getTotalAmount();
+  }
+  // check các dịch vụ theo region
+  getProductActivebyregion() {
+    const catalogs = ['ip', 'ipv6', 'volume-snapshot-hdd', 'volume-snapshot-ssd', 'backup-volume', 'loadbalancer-sdn', 'file-storage', 'file-storage-snapshot', 'vpns2s', 'vm-gpu']
+    this.catalogService.getActiveServiceByRegion(catalogs, this.region).subscribe(data => {
+      this.serviceActiveByRegion = data;
+      this.serviceActiveByRegion.forEach((item: any) => {
+        if (['volume-snapshot-hdd'].includes(item.productName)) {
+          this.typeSnapshotHdd = item.isActive;
+        }
+        if (['volume-snapshot-ssd'].includes(item.productName)) {
+          this.typeSnapshotSsd = item.isActive;
+        }
+      });
+    });
   }
 }

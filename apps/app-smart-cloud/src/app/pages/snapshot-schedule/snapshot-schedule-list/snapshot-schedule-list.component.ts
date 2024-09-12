@@ -27,6 +27,9 @@ import { PolicyService } from 'src/app/shared/services/policy.service';
 export class SnapshotScheduleListComponent implements OnInit {
   region: number;
   project: number;
+  projectType:number;
+  packageName:string;
+  snapshotPackageId:number;
 
   searchStatus: string = '';
   // searchStatus: string[] = [];
@@ -303,27 +306,6 @@ export class SnapshotScheduleListComponent implements OnInit {
    
   }
 
-  // DeleteSchedule() {
-  //   this.loadingDelete = true;
-  //   this.snapshotVolumeService.deleteSnapshotSchedule(this.dataAction.id, this.customerId, this.region, this.project)
-  //     .pipe(finalize(() => {
-  //       this.loadingDelete = false;
-  //       this.handleCancel();
-  //       this.getSnapSchedules(true)
-  //     }))
-  //     .subscribe((result: any) => {
-  //       if (result == true) {
-  //         this.notification.success('', 'Xóa lịch Snapshot thành công');
-  //         this.getSnapSchedules(true)
-  //         // this.getSnapSchedules(this.pageSize, this.pageNumber, this.region, this.project, this.searchName, '', true);
-  //       } else {
-  //         this.notification.error(
-  //           '',
-  //           'Xóa lịch Snapshot không thành công'
-  //         );
-  //       }
-  //     });
-  // }
   DeleteSchedule() {
     this.loadingDelete = true;
     if (this.nameDelete === this.scheduleName) {
@@ -395,6 +377,8 @@ export class SnapshotScheduleListComponent implements OnInit {
 
   onProjectChange(project: ProjectModel) {
     this.project = project?.id;
+    this.projectType = project?.type;
+    console.log("uu",project)
     this.searchSnapshotScheduleList(true);
     this.isCreateOrder = this.policyService.hasPermission("snapshotpackage:ListSnapshotPackage") &&
       this.policyService.hasPermission("volumesnapshotschedule:Get") &&
@@ -420,19 +404,28 @@ export class SnapshotScheduleListComponent implements OnInit {
     this.validateForm.controls['description'].setValue(data.description)
     this.time = data.nextRuntime;
   }
-
+isEnableRestart: boolean = false
   enableRestart(data: any) {
-
-    // this.isVisibleRestart = true;
-    // this.dataAction = data;
-
+console.log("restart", data)
+   this.packageName = data.packageName
+   this.snapshotPackageId= data.snapshotPackageId;
     this.snapshotVolumeService.checkValidSchedule(data.id)
     .pipe(finalize(() => {}))
     .subscribe(
       result => {
         if(result.success){
           this.isVisibleRestart = true;
-          this.dataAction = data;
+          if(result.data[0]="Gói snapshot không đủ dung lượng HDD"){
+            this.isEnableRestart=true
+
+           
+          }
+          else{
+            this.isEnableRestart=false
+           
+            this.dataAction = data;
+          }
+         
         }
         else{
           this.notification.error(this.i18n.fanyi('app.status.fail'), result.message);
@@ -448,6 +441,8 @@ export class SnapshotScheduleListComponent implements OnInit {
     this.isVisibleDelete = false;
     this.isVisibleRestart = false;
     this.isVisibleUpdate = false;
+    this.isInput = false;
+    // console.log(" this.isInput = false;",this.isInput)
   }
 
   // confirmNameDelete($event: any) {
@@ -540,26 +535,7 @@ export class SnapshotScheduleListComponent implements OnInit {
         break;
     }
   }
-  // checkValidSchedule(data:any){
-  //   this.snapshotVolumeService.checkValidSchedule(this.dataAction.id)
-  //     .pipe(finalize(() => {
-  //       this.loadingRestart = false;
-  //       this.handleCancel();
-  //     }))
-  //     .subscribe(
-  //       result => {
-  //         this.isVisibleRestart = true;
-  //   this.dataAction = data;
-  //         // this.enableRestart();
-  //         // this.notification.success(this.i18n.fanyi('app.status.success'), 'Khôi phục lịch Snapshot thành công');
-  //         // this.getSnapSchedules(true)
-  //         // this.getSnapSchedules(this.pageSize, this.pageNumber, this.region, this.project, this.searchName, '', true);
-
-  //       },
-  //       error => {
-  //         this.notification.error(this.i18n.fanyi('app.status.fail'), error.error.message);
-  //       });
-  // }
+ 
 
   // navigateToBreadcrumb
   navigateToBreadcrumb(){
@@ -568,5 +544,9 @@ export class SnapshotScheduleListComponent implements OnInit {
     } else {
       this.router.navigate(['/app-smart-cloud/schedule/snapshot' ]);
     }
+  }
+  // 
+  findPackageByName(name:string){
+    
   }
 }
