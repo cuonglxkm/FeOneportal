@@ -714,7 +714,7 @@
     dataAction.objectType != 'folder' ? 'File' : 'Object'
   }}?"
   (nzOnCancel)="handleCancel()"
-  [nzStyle]="modalStyle"
+  [nzStyle]="modalStyleCreateObject"
 >
   <ng-container *nzModalContent>
     <nz-alert
@@ -771,7 +771,7 @@
   [(nzVisible)]="isVisibleCopy"
   [nzTitle]="'Sao chép Object : ' + bucket.bucketName + '/' + dataAction.key"
   (nzOnCancel)="handleCancel()"
-  [nzStyle]="modalStyle"
+  [nzStyle]="modalStyleCreateObject"
 >
   <ng-container *nzModalContent>
     <div class="text-label">
@@ -1064,7 +1064,7 @@
   (nzOnCancel)="handleCancel()"
   (nzOnOk)="editPermission()"
   [nzOkText]="null"
-  [nzStyle]="modalStyle"
+  [nzStyle]="modalStyleCreateObject"
 >
   <ng-container *nzModalContent>
     <nz-table
@@ -1185,7 +1185,7 @@
   [nzTitle]="'app.bucket.detail.version.restore' | i18n"
   (nzOnCancel)="isVisibleRestoreVersion = false"
   (nzOnOk)="restoreObjectVersion()"
-  [nzStyle]="modalStyle"
+  [nzStyle]="modalStyleCreateObject"
 >
   <ng-container *nzModalContent>
     <nz-alert
