@@ -161,7 +161,7 @@ export class SnapshotListComponent implements OnInit {
       }))
       .subscribe(
         data => {
-          this.index = 1
+          // this.index = 1
           this.response = data
           if (isBegin) {
             if (this.response.records.length <= 0) {
@@ -181,6 +181,11 @@ export class SnapshotListComponent implements OnInit {
       );
   }
 
+  onInputChange(value: string) {
+    this.index = 1;
+    this.value = value;
+    this.search(false)
+  }
 
   onPageIndexChange($event: number) {
     this.index = $event;
@@ -233,6 +238,7 @@ export class SnapshotListComponent implements OnInit {
     this.nameDelete = '';
     this.dataSelected = null;
     this.isInput = false;
+    console.log(" this.isInput = false;",this.isInput)
   }
 
   enableDelete(data: any) {

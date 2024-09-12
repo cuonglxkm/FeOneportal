@@ -364,6 +364,9 @@ export class ListPackagesSnapshotComponent implements OnInit {
     this.formSearchScheduleSnapshot.volumeName = ''
     this.formSearchScheduleSnapshot.ssPackageId = ''
     this.snapshotVolumeService.getListSchedule(this.formSearchScheduleSnapshot)
+    .pipe(finalize(() => {
+      this.isLoadingSnapshotSchedule = false;
+    }))
       .subscribe({
         next: (next) => {
           this.snapshotSchefuleArray = next.records;
