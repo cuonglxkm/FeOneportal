@@ -78,7 +78,11 @@ export class EditVpnConnectionComponent implements OnInit {
               this.i18n.fanyi('app.status.fail'),
               'Bản ghi không tồn tại'
             );
-            this.router.navigateByUrl('/app-smart-cloud/vpn-site-to-site')
+            this.router.navigate(['/app-smart-cloud/vpn-site-to-site'], {
+              queryParams: {
+                tab: 4,
+              },
+            });
           }
         }
       );
@@ -176,7 +180,11 @@ export class EditVpnConnectionComponent implements OnInit {
               this.i18n.fanyi('app.status.success'),
               this.i18n.fanyi('app.vpn-connection-edit.success')
             );
-            this.router.navigate(['/app-smart-cloud/vpn-site-to-site']);
+            this.router.navigate(['/app-smart-cloud/vpn-site-to-site'], {
+              queryParams: {
+                tab: 4,
+              },
+            });
           },
           (error) => {
             this.isLoading = false

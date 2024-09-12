@@ -195,7 +195,11 @@ export class CreateEndpointGroupComponent implements OnInit {
             this.i18n.fanyi('app.status.success'),
               this.i18n.fanyi('app.endpoint-create.success')
           );
-          this.router.navigate(['/app-smart-cloud/vpn-site-to-site']);
+          this.router.navigate(['/app-smart-cloud/vpn-site-to-site'], {
+            queryParams: {
+              tab: 3,
+            },
+          });
         },
         (error) => {
           this.isLoading = false;

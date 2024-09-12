@@ -386,7 +386,11 @@ export class CreateVpnConnectionComponent implements OnInit {
             this.i18n.fanyi('app.status.success'),
             this.i18n.fanyi('app.vpn-connection-create.success')
           );
-          this.router.navigate(['/app-smart-cloud/vpn-site-to-site']);
+          this.router.navigate(['/app-smart-cloud/vpn-site-to-site'], {
+            queryParams: {
+              tab: 4,
+            },
+          });
         },
         (error) => {
           this.isLoading = false;

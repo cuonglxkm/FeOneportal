@@ -1,5 +1,5 @@
 import { Component, Inject, QueryList, ViewChildren } from '@angular/core';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { getCurrentRegionAndProject } from '@shared';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
@@ -26,10 +26,12 @@ export class VpnSiteToSiteManage {
   isLoadingDelete: boolean = false;
   isCreateOrder: boolean = false;
   isDetelePermission: boolean = false;
+  selectedIndex = 0;
   @ViewChildren('projectCombobox') projectComboboxs:  QueryList<ProjectSelectDropdownComponent>;
   constructor(
     private vpnSiteToSiteService: VpnSiteToSiteService, 
     private router: Router, 
+    private route: ActivatedRoute,
     private notification: NzNotificationService,
     @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
     private policyService: PolicyService
@@ -69,6 +71,10 @@ export class VpnSiteToSiteManage {
     if(this.project && !this.projectObject && localStorage.getItem('projects') ){
       this.projectObject = JSON.parse(localStorage.getItem('projects')).find(x => Number(x.id) == Number(this.project)) ? JSON.parse(localStorage.getItem('projects')).find(x => Number(x.id) == Number(this.project)) : null;
     }
+    this.route.queryParams.subscribe(params => {
+      const tab = params['tab'];
+      this.selectedIndex = tab ? +tab : 0;
+    });
   }
 
   getData(isBegin) {
@@ -116,6 +122,11 @@ export class VpnSiteToSiteManage {
 
   handleCancelDelete() {
     this.isVisibleDelete = false;
+  }
+
+  handleTabChange(event){
+    this.router.navigate([`/app-smart-cloud/vpn-site-to-site`], {queryParams: {tab: event}});
+    
   }
 
   handleOkDelete() {

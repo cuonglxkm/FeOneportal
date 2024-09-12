@@ -75,7 +75,11 @@ export class DetailEndpointGroupComponent implements OnInit {
               this.i18n.fanyi('app.status.fail'),
               'Bản ghi không tồn tại'
             );
-            this.router.navigateByUrl('/app-smart-cloud/vpn-site-to-site')
+            this.router.navigate(['/app-smart-cloud/vpn-site-to-site'], {
+              queryParams: {
+                tab: 3,
+              },
+            });
           }
         }
       );
