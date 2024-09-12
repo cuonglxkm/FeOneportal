@@ -88,13 +88,13 @@
               </tr>
             </thead>
             <tbody>
-              <tr>
+              <tr *ngIf="typeSnapshotHdd">
                 <td>Dung lượng HDD (GB)</td>
                 <td class="text-right">{{ packageSnapshotModel?.totalSizeHDD }}</td>
                 <td class="text-right">{{ packageSnapshotModel?.usedSizeHDD }}</td>
                 <td class="text-right">{{ packageSnapshotModel?.availableSizeHDD }}</td>
               </tr>
-              <tr>
+              <tr *ngIf="typeSnapshotSsd">
                 <td>Dung lượng SSD (GB)</td>
                 <td class="text-right">{{ packageSnapshotModel?.totalSizeSSD }}</td>
                 <td class="text-right">{{ packageSnapshotModel?.usedSizeSSD }}</td>

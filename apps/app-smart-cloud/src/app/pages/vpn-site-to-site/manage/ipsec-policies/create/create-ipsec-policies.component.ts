@@ -162,7 +162,11 @@ export class CreateIpsecPoliciesComponent implements OnInit{
               this.i18n.fanyi('app.status.success'),
               this.i18n.fanyi('app.ipsec.policy-create.success')
             );
-            this.router.navigate(['/app-smart-cloud/vpn-site-to-site']);
+            this.router.navigate(['/app-smart-cloud/vpn-site-to-site'], {
+              queryParams: {
+                tab: 1
+              }
+            });
           },
           (error) => {
             this.isLoading = false

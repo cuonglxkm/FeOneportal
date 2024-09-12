@@ -138,7 +138,7 @@ export class UserRegisterComponent implements OnInit, OnDestroy {
     let lang = this.activatedRoute.snapshot.paramMap.get('lang') || null;
     if(lang === 'en') {
       this.cookieService.set('ui.language', 'en', 1000000, '/',  environment.sso.domain, false);   
-    }else{
+    }else if(lang === 'vi'){
       this.cookieService.set('ui.language', 'vi', 1000000, '/',  environment.sso.domain, false);
     }
     
@@ -304,7 +304,7 @@ export class UserRegisterComponent implements OnInit, OnDestroy {
     // }
     if(this.langRegister === 'en-US'){
       this.cookieService.set('ui.language', 'en', 1000000, '/',  environment.sso.domain, false);     
-    }else{
+    }else if(this.langRegister === 'vi-VI'){
       this.cookieService.set('ui.language', 'vi', 1000000, '/',  environment.sso.domain, false); 
     }
     

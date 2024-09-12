@@ -309,7 +309,7 @@ export class ListPackagesSnapshotComponent implements OnInit {
   handleUpdateOk() {
     if (this.validateForm.valid) {
       this.isLoadingUpdate = true;
-      const description = this.validateForm.controls['description'].value.trim() || '';
+      const description =this.validateForm.controls['description'].value? this.validateForm.controls['description'].value.trim() : '';
       let data = {
         newPackageName: this.validateForm.controls['namePackage'].value,
         id: this.dataAction.id,
@@ -336,6 +336,7 @@ export class ListPackagesSnapshotComponent implements OnInit {
         )
     }
     else {
+      console.log("5555")
       this.validateForm.markAllAsTouched();
     }
 
@@ -364,6 +365,9 @@ export class ListPackagesSnapshotComponent implements OnInit {
     this.formSearchScheduleSnapshot.volumeName = ''
     this.formSearchScheduleSnapshot.ssPackageId = ''
     this.snapshotVolumeService.getListSchedule(this.formSearchScheduleSnapshot)
+    .pipe(finalize(() => {
+      this.isLoadingSnapshotSchedule = false;
+    }))
       .subscribe({
         next: (next) => {
           this.snapshotSchefuleArray = next.records;

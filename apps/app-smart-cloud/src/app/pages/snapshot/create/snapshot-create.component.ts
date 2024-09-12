@@ -436,32 +436,6 @@ export class SnapshotCreateComponent implements OnInit, OnChanges {
     }
   }
 
-  // changePackageSnapshot() {
-  //   if (this.projectType != 1 && this.selectedSnapshotPackage != undefined) {
-  //     // TODO get quota
-  //     this.packageSnapshotService.detail(this.selectedSnapshotPackage.id, this.project)
-  //       .pipe(finalize(() => {
-  //         this.checkDisable();
-  //       }))
-  //       .subscribe(data => {
-  //         let quota =Number(this.validateForm.controls['quota'].value.replace('GB', '')) 
-  //         console.log("quota123",quota)
-
-
-  //         console.log("selectedSnapshotPackage", data)
-  //         this.quotaHDDTotal = data.totalSizeHDD;
-  //         this.quotaHDDUsed = data.usedSizeHDD;
-  //         this.quotaSSDTotal = data.totalSizeSSD;
-  //         this.quotaSSDUsed = data.usedSizeSSD;
-  //         this.namePackage = data.packageName;
-  //         this.idSnapshotPackage = data.id;
-  //       });
-  //   }
-  //   if (this.selectedSnapshotPackage == undefined) {
-  //     this.disableByQuota = false;
-  //     this.disableCreate = true;
-  //   }
-  // }
   changePackageSnapshot() {
     console.log("this.projectType", this.projectType)
     console.log("this.selectedSnapshotPackage 23", this.selectedSnapshotPackage)
@@ -493,11 +467,11 @@ export class SnapshotCreateComponent implements OnInit, OnChanges {
 
           if (this.selectedVM || this.selectedVolume) {
             if (this.quotaTypeSelected == 'hdd') {
-              if (this.packageSnapshotHdd >= this.quotaSelected) {
+              if (this.availableSizeHDD >= this.quotaSelected) {
 
                 this.isQuota = true;
                 this.isNotEnoughQuota = false;
-                this.messageQuota = `Dung lượng Snapshot volume HDD  đã dùng: ${this.packageUsedHdd} GB / ${this.packageSnapshotHdd} GB. Quý khách còn lại ${this.availableSizeHDD} GB dung lượng Snapshot HDD`;
+                // this.messageQuota = `Dung lượng Snapshot volume HDD  đã dùng: ${this.packageUsedHdd} GB / ${this.packageSnapshotHdd} GB. Quý khách còn lại ${this.availableSizeHDD} GB dung lượng Snapshot HDD`;
                 this.messageNotEnoughtQuota = '';
               }
               else {
@@ -509,8 +483,8 @@ export class SnapshotCreateComponent implements OnInit, OnChanges {
 
             }
             else if (this.quotaTypeSelected == 'ssd') {
-              if (this.packageSnapshotSsd >= this.quotaSelected) {
-                this.messageQuota = `Dung lượng Snapshot volume SSD  đã dùng: ${this.packageUsedSsd} GB / ${this.packageSnapshotSsd} GB. Quý khách còn lại ${this.availableSizeSSD} GB dung lượng Snapshot SSD`;
+              if (this.availableSizeSSD >= this.quotaSelected) {
+                // this.messageQuota = `Dung lượng Snapshot volume SSD  đã dùng: ${this.packageUsedSsd} GB / ${this.packageSnapshotSsd} GB. Quý khách còn lại ${this.availableSizeSSD} GB dung lượng Snapshot SSD`;
                 this.isQuota = true;
                 this.isNotEnoughQuota = false;
               }
@@ -612,10 +586,10 @@ export class SnapshotCreateComponent implements OnInit, OnChanges {
             if (this.projectType == 2) {
               if (this.selectedSnapshotPackage) {
                 if (this.quotaTypeSelected == 'hdd') {
-                  if (this.packageSnapshotHdd >= this.quotaSelected) {
+                  if (this.availableSizeHDD >= this.quotaSelected) {
                     this.isQuota = true;
                     this.isNotEnoughQuota = false;
-                    this.messageQuota = `Dung lượng Snapshot volume HDD  đã dùng: ${this.packageUsedHdd} GB / ${this.packageSnapshotHdd} GB. Quý khách còn lại ${this.availableSizeHDD} GB dung lượng Snapshot HDD`;
+                    // this.messageQuota = `Dung lượng Snapshot volume HDD  đã dùng: ${this.packageUsedHdd} GB / ${this.packageSnapshotHdd} GB. Quý khách còn lại ${this.availableSizeHDD} GB dung lượng Snapshot HDD`;
                     this.messageNotEnoughtQuota = '';
                   }
                   else {
@@ -626,8 +600,8 @@ export class SnapshotCreateComponent implements OnInit, OnChanges {
                   }
                 }
                 else if (this.quotaTypeSelected == 'ssd') {
-                  if (this.packageSnapshotSsd >= this.quotaSelected) {
-                    this.messageQuota = `Dung lượng Snapshot volume SSD  đã dùng: ${this.packageUsedSsd} GB / ${this.packageSnapshotSsd} GB. Quý khách còn lại ${this.availableSizeSSD} GB dung lượng Snapshot SSD`;
+                  if (this.availableSizeSSD >= this.quotaSelected) {
+                    // this.messageQuota = `Dung lượng Snapshot volume SSD  đã dùng: ${this.packageUsedSsd} GB / ${this.packageSnapshotSsd} GB. Quý khách còn lại ${this.availableSizeSSD} GB dung lượng Snapshot SSD`;
                     this.isQuota = true;
                     this.isNotEnoughQuota = false;
                   }
@@ -648,7 +622,7 @@ export class SnapshotCreateComponent implements OnInit, OnChanges {
                 if (this.projectRemainingHdd >= this.quotaSelected) {
                   this.isQuota = true;
                   this.isNotEnoughQuota = false;
-                  this.messageQuota = `Dung lượng Snapshot volume HDD  đã dùng: ${this.projectUsedHdd} GB / ${this.projectTotalHdd} GB. Quý khách còn lại ${this.projectRemainingHdd} GB dung lượng Snapshot HDD`;
+                  // this.messageQuota = `Dung lượng Snapshot volume HDD  đã dùng: ${this.projectUsedHdd} GB / ${this.projectTotalHdd} GB. Quý khách còn lại ${this.projectRemainingHdd} GB dung lượng Snapshot HDD`;
                 }
                 else {
                   this.isQuota = false;
@@ -659,7 +633,7 @@ export class SnapshotCreateComponent implements OnInit, OnChanges {
                 if (this.projectRemainingSsd >= this.quotaSelected) {
                   this.isQuota = true;
                   this.isNotEnoughQuota = false;
-                  this.messageQuota = `Dung lượng Snapshot volume SSD  đã dùng: ${this.projectUsedSsd} GB / ${this.projectTotalSsd} GB. Quý khách còn lại ${this.projectRemainingSsd} GB dung lượng Snapshot SSD`;
+                  // this.messageQuota = `Dung lượng Snapshot volume SSD  đã dùng: ${this.projectUsedSsd} GB / ${this.projectTotalSsd} GB. Quý khách còn lại ${this.projectRemainingSsd} GB dung lượng Snapshot SSD`;
                 }
                 else {
                   this.isQuota = false;
@@ -688,10 +662,10 @@ export class SnapshotCreateComponent implements OnInit, OnChanges {
             if (this.projectType == 2) {
               if (this.selectedSnapshotPackage) {
                 if (this.quotaTypeSelected == 'hdd') {
-                  if (this.packageSnapshotHdd >= this.quotaSelected) {
+                  if (this.availableSizeHDD >= this.quotaSelected) {
                     this.isQuota = true;
                     this.isNotEnoughQuota = false;
-                    this.messageQuota = `Dung lượng Snapshot máy ảo HDD  đã dùng: ${this.packageUsedHdd} GB / ${this.packageSnapshotHdd} GB. Quý khách còn lại ${this.availableSizeHDD} GB dung lượng Snapshot HDD`;
+                    // this.messageQuota = `Dung lượng Snapshot máy ảo HDD  đã dùng: ${this.packageUsedHdd} GB / ${this.packageSnapshotHdd} GB. Quý khách còn lại ${this.availableSizeHDD} GB dung lượng Snapshot HDD`;
                     this.messageNotEnoughtQuota = '';
                   }
                   else {
@@ -702,8 +676,8 @@ export class SnapshotCreateComponent implements OnInit, OnChanges {
                   }
                 }
                 else if (this.quotaTypeSelected == 'ssd') {
-                  if (this.packageSnapshotSsd >= this.quotaSelected) {
-                    this.messageQuota = `Dung lượng Snapshot máy ảo SSD  đã dùng: ${this.packageUsedSsd} GB / ${this.packageSnapshotSsd} GB. Quý khách còn lại ${this.availableSizeSSD} GB dung lượng Snapshot SSD`;
+                  if (this.availableSizeSSD >= this.quotaSelected) {
+                    // this.messageQuota = `Dung lượng Snapshot máy ảo SSD  đã dùng: ${this.packageUsedSsd} GB / ${this.packageSnapshotSsd} GB. Quý khách còn lại ${this.availableSizeSSD} GB dung lượng Snapshot SSD`;
                     this.isQuota = true;
                     this.isNotEnoughQuota = false;
                   }
@@ -724,7 +698,7 @@ export class SnapshotCreateComponent implements OnInit, OnChanges {
                 if (this.projectRemainingHdd >= this.quotaSelected) {
                   this.isQuota = true;
                   this.isNotEnoughQuota = false;
-                  this.messageQuota = `Dung lượng Snapshot máy ảo HDD  đã dùng: ${this.projectUsedHdd} GB / ${this.projectTotalHdd} GB. Quý khách còn lại ${this.projectRemainingHdd} GB dung lượng Snapshot HDD`;
+                  // this.messageQuota = `Dung lượng Snapshot máy ảo HDD  đã dùng: ${this.projectUsedHdd} GB / ${this.projectTotalHdd} GB. Quý khách còn lại ${this.projectRemainingHdd} GB dung lượng Snapshot HDD`;
                 }
                 else {
                   this.isQuota = false;
@@ -735,7 +709,7 @@ export class SnapshotCreateComponent implements OnInit, OnChanges {
                 if (this.projectRemainingSsd >= this.quotaSelected) {
                   this.isQuota = true;
                   this.isNotEnoughQuota = false;
-                  this.messageQuota = `Dung lượng Snapshot máy ảo SSD  đã dùng: ${this.projectUsedSsd} GB / ${this.projectTotalSsd} GB. Quý khách còn lại ${this.projectRemainingSsd} GB dung lượng Snapshot SSD`;
+                  // this.messageQuota = `Dung lượng Snapshot máy ảo SSD  đã dùng: ${this.projectUsedSsd} GB / ${this.projectTotalSsd} GB. Quý khách còn lại ${this.projectRemainingSsd} GB dung lượng Snapshot SSD`;
                 }
                 else {
                   this.isQuota = false;
