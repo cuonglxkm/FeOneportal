@@ -265,7 +265,7 @@
               data.taskState.toUpperCase() != 'REBOOT_STARTED' &&
               data.taskState.toUpperCase() != 'ERROR' &&
               data.taskState.toUpperCase() != 'DELETED' &&
-              isBackupVm && isCreateOrder
+              isBackupVm && isCreateBackup
             "
             src="assets/imgs/create-backup.svg"
             alt=""
@@ -296,7 +296,7 @@
               data.taskState.toUpperCase() != 'ERROR' &&
               data.taskState.toUpperCase() != 'DELETED' &&
               isBackupVm && 
-              ('backupschedule:Create' | IsPermissionPipe)
+              isCreateBackupSchedule
             "
             src="assets/imgs/calendar-tick.svg"
             alt=""

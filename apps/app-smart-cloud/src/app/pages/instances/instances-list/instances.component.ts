@@ -82,6 +82,8 @@ export class InstancesComponent implements OnInit {
   isVisibleGanVLAN: boolean = false;
   isVisibleGoKhoiVLAN: boolean = false;
   isCreateOrder: boolean = false;
+  isCreateBackup: boolean = false;
+  isCreateBackupSchedule: boolean = false;
   dataInstanceExisted: number[] = []
   @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
   typeVpc: number;
@@ -293,7 +295,36 @@ export class InstancesComponent implements OnInit {
     this.projectId = project?.id;
     this.typeVpc = project?.type;
     this.getDataList();
-    this.isCreateOrder = this.policyService.hasPermission("order:Create");
+    this.isCreateOrder = this.policyService.hasPermission("order:Create") &&
+      this.policyService.hasPermission("order:GetOrderAmount") &&
+      this.policyService.hasPermission("payment:Get") &&
+      this.policyService.hasPermission("configuration:Get") &&
+      this.policyService.hasPermission("ippublic:IpPublicListSubnet") &&
+      this.policyService.hasPermission("offer:Search") &&
+      this.policyService.hasPermission("image:List") &&
+      this.policyService.hasPermission("ippublic:List") &&
+      this.policyService.hasPermission("network:Get") &&
+      this.policyService.hasPermission("securitygroup:List") &&
+      this.policyService.hasPermission("keypair:List") &&
+      this.policyService.hasPermission("order:Get");
+    this.isCreateBackup = this.policyService.hasPermission("backup:List") && 
+      this.policyService.hasPermission("backup:ListBackupPacket") &&
+      this.policyService.hasPermission("offer:Search") && 
+      this.policyService.hasPermission("instance:List") && 
+      this.policyService.hasPermission("backup:GetBackupPacket") &&
+      this.policyService.hasPermission("offer:Get") && 
+      this.policyService.hasPermission("instance:Get") && 
+      this.policyService.hasPermission("securitygroup:GetSecurityGroupByInstance") && 
+      this.policyService.hasPermission("instance:InstanceListVolume") && 
+      this.policyService.hasPermission("order:Create");
+    this.isCreateBackupSchedule = this.policyService.hasPermission("instance:List") && 
+      this.policyService.hasPermission("volume:List") && 
+      this.policyService.hasPermission("backup:ListBackupPacket") &&
+      this.policyService.hasPermission("backup:GetBackupPacket") &&
+      this.policyService.hasPermission("backupschedule:Search") && 
+      this.policyService.hasPermission("instance:Get") && 
+      this.policyService.hasPermission("instance:InstanceListVolume") && 
+      this.policyService.hasPermission("backupschedule:Create");
   }
 
   doSearch() {
