@@ -106,7 +106,7 @@
       </div>
     </nz-card>
     <nz-card *ngIf="response?.serviceStatus !== 'TAMNGUNG'" class="custom-tab" style="border-radius: 8px">
-      <nz-tabset nzSelectedIndex nzSize="large">
+      <nz-tabset [nzSelectedIndex]="selectedIndex" nzSize="large" (nzSelectedIndexChange)="handleTabChange($event)">
         <nz-tab nzTitle="IKE Policies" class="label-fontsize">
           <ng-template nz-tab>
             <one-portal-ike-policies [region]="region"
