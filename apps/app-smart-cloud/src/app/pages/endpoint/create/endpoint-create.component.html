@@ -71,12 +71,12 @@
                 <input
                   nz-input
                   placeholder="Nhập username đăng nhập"
-                  [ngStyle]="isExistName ? { borderColor: '#ff4d4f' } : {}"
+                  [ngStyle]="isExistUsername ? { borderColor: '#ff4d4f' } : {}"
                   formControlName="username"
-                  (ngModelChange)="changeName($event)"
+                  (ngModelChange)="changeUsername($event)"
                   class="custom-input"
                 />
-                <div *ngIf="isExistName" style="color: #ff4d4f">
+                <div *ngIf="isExistUsername" style="color: #ff4d4f">
                   Username đã tồn tại
                 </div>
                 <ng-template #usernameErrorTpl let-control>
@@ -97,9 +97,7 @@
                 <input
                   nz-input
                   placeholder="Nhập email"
-                  [ngStyle]="isExistName ? { borderColor: '#ff4d4f' } : {}"
                   formControlName="email"
-                  (ngModelChange)="changeName($event)"
                   class="custom-input"
                 />
                 <ng-template #emailErrorTpl let-control>
@@ -123,8 +121,8 @@
                   [nzMin]="1"
                   [nzMax]="30000"
                   placeholder="Nhập số lượng"
-                  formControlName="number"
-                  (ngModelChange)="changeName($event)"
+                  formControlName="numberOfLicense"
+                  (ngModelChange)="changeNumberOfLincense($event)"
                   maxlength="50"
                   class="custom-input"
                   nzSize="large"
@@ -165,7 +163,7 @@
           </div>
           <div class="text-label" style="margin-bottom: 12px">
             <h3 class="custom-subtitle">Số lượng máy đăng ký cài đặt</h3>
-            <span>{{form.get('number').value}}</span>
+            <span>{{form.get('numberOfLicense').value}}</span>
           </div>
           <nz-row class="right-form-content-month" nzGutter="16">
             <nz-col nzSpan="16">
