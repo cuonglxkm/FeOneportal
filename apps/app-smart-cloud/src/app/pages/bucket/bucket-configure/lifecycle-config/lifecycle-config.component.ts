@@ -490,6 +490,12 @@ export class LifecycleConfigComponent implements OnInit {
     ) {
       this.lifecycleUpdate.lifecycleRuleExpiration_Day = 1;
       this.cdr.detectChanges();
+    }else if(!this.lifecycleUpdate.isSetExpiration_Day){
+      this.lifecycleUpdate.isSetNoncurrentVersionExpiration_Day = false
+      this.cdr.detectChanges();
+    }else if(this.lifecycleUpdate.isSetExpiration_Day){
+      this.lifecycleUpdate.isSetNoncurrentVersionExpiration_Day = true
+      this.cdr.detectChanges();
     }
   }
 
