@@ -202,6 +202,7 @@
         [(ngModel)]="lifecycleCreate.isSetExpiration_Day"
         formControlName="isSetExpiration_Day"
         [ngModelOptions]="{ standalone: true }"
+        (ngModelChange)="onChangeExpirationDay($event)"
         >{{ 'app.delete.file.current.version' | i18n }}</label
       >
       <div style="display: flex; margin-top: 5px">
@@ -228,7 +229,8 @@
       <label
         class="text-label"
         style="margin-top: 16px"
-        nz-checkbox [nzDisabled]="lifecycleCreate.isSetExpiration_Day === true"
+        nz-checkbox 
+        [nzDisabled]="lifecycleCreate.isSetExpiration_Day === true"
         [(ngModel)]="lifecycleCreate.isSetNoncurrentVersionExpiration_Day"
         formControlName="isSetNoncurrentVersionExpiration_Day"
         [ngModelOptions]="{ standalone: true }"
@@ -243,7 +245,7 @@
             [nzMax]="1000"
             (keydown)="onKeyDown($event)"
             [nzDisabled]="
-              lifecycleCreate.isSetNoncurrentVersionExpiration_Day === false
+              lifecycleCreate.isSetExpiration_Day === true ? true : lifecycleCreate.isSetNoncurrentVersionExpiration_Day === false
             "
             [(ngModel)]="
               lifecycleCreate.lifecycleRuleNoncurrentVersionExpiration_Day

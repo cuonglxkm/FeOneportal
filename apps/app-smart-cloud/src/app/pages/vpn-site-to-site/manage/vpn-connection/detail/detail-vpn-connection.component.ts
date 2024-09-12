@@ -20,7 +20,8 @@ export class DetailVpnConnectionComponent implements OnInit {
   project = JSON.parse(localStorage.getItem('projectId'));
 
   isLoading: boolean = false;
-
+  localEndpointGroup: string = ''
+  remoteEndpointGroup: string = ''
   vpnConnection: VpnConnectionDetail = new VpnConnectionDetail();
   @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
   ngOnInit(): void {
@@ -65,7 +66,15 @@ export class DetailVpnConnectionComponent implements OnInit {
       .subscribe(
         (data) => {
           this.vpnConnection = data;
+          const listLocalNetwork = data.localNetwork.map((item) => {
+            return item
+          }).join(' , ')
+          const listRemoteNetwork = data.remoteNetwork.map((item) => {
+            return item
+          }).join(' , ')
           
+          this.localEndpointGroup = data.localEndpointGroup + ' (' + listLocalNetwork + ')'
+          this.remoteEndpointGroup = data.remoteEnpointGroup + ' (' + listRemoteNetwork + ')'
 
           this.isLoading = false;
         },

@@ -78,6 +78,8 @@ export class VpnConnectionDetail {
   deadPeerDetectionTimeout: number;
   initiatorState: string;
   status: string
+  localNetwork: []
+  remoteNetwork: []
 }
 
 export class FormEditVpnConnection{
