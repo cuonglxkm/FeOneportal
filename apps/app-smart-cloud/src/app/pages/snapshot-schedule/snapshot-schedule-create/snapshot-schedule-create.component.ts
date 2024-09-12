@@ -109,6 +109,7 @@ export class SnapshotScheduleCreateComponent implements OnInit {
   namePackage: string;
   idSnapshotPackage: number;
   isQuotaVPC: boolean = false;
+  isVisibleCreate: boolean = false;
 
 
   @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
@@ -276,49 +277,88 @@ export class SnapshotScheduleCreateComponent implements OnInit {
   }
 
 
+  // create() {
+  //   const modal: NzModalRef = this.modalService.create({
+  //     nzTitle: 'Tạo lịch Snapshot',
+  //     // nzContent: this.modalContent,
+  //     nzContent: `<div style="font-size: 20px">Quý khách muốn thực hiện tạo lịch Snapshot?</div> <p>Vui lòng cân nhắc thật kỹ trước khi click nút <b>Xác nhận</b>.</p>`,
+  //     nzFooter: [
+  //       {
+  //         label: 'Hủy',
+  //         type: 'default',
+  //         onClick: () => modal.destroy(),
+  //       },
+  //       {
+  //         label: 'Xác nhận',
+  //         type: 'primary',
+  //         onClick: () => {
+  //           this.isLoading = true;
+  //           this.request.description = this.descSchedule;
+  //           this.request.mode = 1; //fix cứng chế độ = theo tuần ;
+  //           this.request.runtime = new Date();
+  //           this.request.snapshotPacketId = this.projectType == 1 ? null : this.selectedSnapshotPackage?.id;
+  //           this.request.serviceInstanceId = ((this.selectedSnapshotType == 1 && this.snapshotTypeCreate == 2) || this.snapshotTypeCreate == 1) ? this.selectedVM.id : this.selectedVolume.id;
+  //           this.request.maxSnapshot = this.numOfVersion
+  //           this.request.snapshotType = ((this.selectedSnapshotType == 1 && this.snapshotTypeCreate == 2) || this.snapshotTypeCreate == 1) ? 1 : 0;
+  //           this.request.customerId = this.userId;
+  //           this.request.projectId = this.project;
+  //           this.request.regionId = this.region;
+  //           this.snapshotService.createSnapshotSchedule(this.request).subscribe(
+  //             data => {
+  //               console.log(data);
+  //               this.isLoading = false;
+  //               this.notification.success('Thành công', 'Tạo lịch thành công');
+  //               this.navigateToSnapshotSchedule();
+  //             },
+  //             error => {
+  //               this.notification.error(this.i18n.fanyi("app.status.fail"), error.error.message);
+  //               this.isLoading = false;
+  //             }
+  //           );
+  //           modal.destroy();
+  //         },
+  //       },
+  //     ],
+  //   });
+  // }
+  createModalSchedule() {
+    this.isVisibleCreate = true;
+  }
   create() {
-    const modal: NzModalRef = this.modalService.create({
-      nzTitle: 'Tạo lịch Snapshot',
-      // nzContent: this.modalContent,
-      nzContent: `<div style="font-size: 20px">Quý khách muốn thực hiện tạo lịch Snapshot?</div> <p>Vui lòng cân nhắc thật kỹ trước khi click nút <b>Xác nhận</b>.</p>`,
-      nzFooter: [
-        {
-          label: 'Hủy',
-          type: 'default',
-          onClick: () => modal.destroy(),
+    console.log("timeebbb", this.time)
+    this.isLoading = true;
+    this.request.description = this.descSchedule;
+    this.request.mode = 1; //fix cứng chế độ = theo tuần ;
+    this.request.runtime = this.time
+
+    console.log(" this.request.runtime ",  this.request.runtime )
+    this.request.snapshotPacketId = this.projectType == 1 ? null : this.selectedSnapshotPackage?.id;
+    this.request.serviceInstanceId = ((this.selectedSnapshotType == 1 && this.snapshotTypeCreate == 2) || this.snapshotTypeCreate == 1) ? this.selectedVM.id : this.selectedVolume.id;
+    this.request.maxSnapshot = this.numOfVersion
+    this.request.snapshotType = ((this.selectedSnapshotType == 1 && this.snapshotTypeCreate == 2) || this.snapshotTypeCreate == 1) ? 1 : 0;
+    this.request.customerId = this.userId;
+    this.request.projectId = this.project;
+    this.request.regionId = this.region;
+    this.snapshotService.createSnapshotSchedule(this.request)
+      .pipe(finalize(() => {
+        this.isVisibleCreate = false;
+      }))
+      .subscribe(
+        data => {
+          console.log(data);
+          this.isLoading = false;
+          this.notification.success('Thành công', 'Tạo lịch thành công');
+          this.navigateToSnapshotSchedule();
         },
-        {
-          label: 'Xác nhận',
-          type: 'primary',
-          onClick: () => {
-            this.isLoading = true;
-            this.request.description = this.descSchedule;
-            this.request.mode = 1; //fix cứng chế độ = theo tuần ;
-            this.request.runtime = new Date();
-            this.request.snapshotPacketId = this.projectType == 1 ? null : this.selectedSnapshotPackage?.id;
-            this.request.serviceInstanceId = ((this.selectedSnapshotType == 1 && this.snapshotTypeCreate == 2) || this.snapshotTypeCreate == 1) ? this.selectedVM.id : this.selectedVolume.id;
-            this.request.maxSnapshot = this.numOfVersion
-            this.request.snapshotType = ((this.selectedSnapshotType == 1 && this.snapshotTypeCreate == 2) || this.snapshotTypeCreate == 1) ? 1 : 0;
-            this.request.customerId = this.userId;
-            this.request.projectId = this.project;
-            this.request.regionId = this.region;
-            this.snapshotService.createSnapshotSchedule(this.request).subscribe(
-              data => {
-                console.log(data);
-                this.isLoading = false;
-                this.notification.success('Thành công', 'Tạo lịch thành công');
-                this.navigateToSnapshotSchedule();
-              },
-              error => {
-                this.notification.error(this.i18n.fanyi("app.status.fail"), error.error.message);
-                this.isLoading = false;
-              }
-            );
-            modal.destroy();
-          },
-        },
-      ],
-    });
+        error => {
+          this.notification.error(this.i18n.fanyi("app.status.fail"), error.error.message);
+          this.isLoading = false;
+        }
+      );
+
+  }
+  handleCancel() {
+    this.isVisibleCreate = false
   }
 
   navigateToSnapshotSchedule() {
@@ -434,33 +474,7 @@ export class SnapshotScheduleCreateComponent implements OnInit {
               this.isNotEnoughQuota = true;
             }
 
-            // if (this.quotaTypeSelected == 'hdd') {
-            //   if (this.availableSizeHDD >= this.quotaSelected) {
-
-            //     this.isQuota = true;
-            //     this.isNotEnoughQuota = false;
-            //     this.messageQuota = `Dung lượng Snapshot volume HDD  đã dùng: ${this.packageUsedHdd} GB / ${this.packageSnapshotHdd} GB. Quý khách còn lại ${this.availableSizeHDD} GB dung lượng Snapshot HDD`;
-
-            //   }
-            //   else {
-            //     this.isQuota = false;
-            //     this.isNotEnoughQuota = true;
-            //     this.messageQuota = '';
-
-            //   }
-
-            // }
-            // else if (this.quotaTypeSelected == 'ssd') {
-            //   if (this.availableSizeSSD >= this.quotaSelected) {
-            //     this.messageQuota = `Dung lượng Snapshot volume SSD  đã dùng: ${this.packageUsedSsd} GB / ${this.packageSnapshotSsd} GB. Quý khách còn lại ${this.availableSizeSSD} GB dung lượng Snapshot SSD`;
-            //     this.isQuota = true;
-            //     this.isNotEnoughQuota = false;
-            //   }
-            //   else {
-            //     this.isQuota = false;
-            //     this.isNotEnoughQuota = true;
-            //   }
-            // }
+            
           }
           else {
             this.isQuota = false;
@@ -902,7 +916,11 @@ export class SnapshotScheduleCreateComponent implements OnInit {
     // Lấy giờ và phút từ đối tượng Date
     const gioChon = this.time.getHours();
     const phutChon = this.time.getMinutes();
-    const thoiGianChon = new Date();
+    // const thoiGianChon = new Date();
+    const thoiGianChon =this.time;
+    console.log("gioChon",gioChon)
+    console.log("phutChon",phutChon)
+    console.log("thoiGianChon",thoiGianChon)
     thoiGianChon.setHours(gioChon, phutChon, 0, 0);
 
     const currentTime = new Date(); // Thời gian hiện tại
@@ -978,7 +996,7 @@ export class SnapshotScheduleCreateComponent implements OnInit {
       this.router.navigate([`/app-smart-cloud/snapshot/packages/create`])
     }
   }
-  navigateToPackageUpdate(id:number){
+  navigateToPackageUpdate(id: number) {
     if (this.region === RegionID.ADVANCE) {
       this.router.navigate([`/app-smart-cloud/snapshot/packages/edit/` + id])
     } else {
