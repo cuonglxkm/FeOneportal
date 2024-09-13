@@ -36,6 +36,7 @@ import { ServiceTaskStatePipe } from './pipes/task-state.pipe';
 import { SuspendStatusPipe } from './pipes/suspend-status.pipe';
 import { CDNStatusPipe } from './pipes/cdnetwork-status.pipe';
 import { ServiceUsagePeriodYearComponent } from './components/service-usage-period-year/service-usage-period-year.component';
+import { EndpointStatusPipe } from './pipes/endpoint-status.pipe';
 
 const antDesignIcons = AllIcons as {
   [key: string]: any;
@@ -97,6 +98,7 @@ const DIRECTIVES: Array<Type<any>> = [];
     IsPermissionPipe,
     ServiceStatusPipe,
     CDNStatusPipe,
+    EndpointStatusPipe,
     SuspendStatusPipe,
     ServiceTaskStatePipe,
     formatPrice,
@@ -120,6 +122,7 @@ const DIRECTIVES: Array<Type<any>> = [];
     IsPermissionPipe,
     ServiceStatusPipe,
     CDNStatusPipe,
+    EndpointStatusPipe,
     SuspendStatusPipe,
     ServiceTaskStatePipe,
     formatPrice,
