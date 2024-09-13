@@ -28,6 +28,7 @@ export class SnapshotScheduleListComponent implements OnInit {
   region: number;
   project: number;
   projectType: number;
+  projectName:string;
   packageName: string;
   snapshotPackageId: number;
 
@@ -378,6 +379,7 @@ export class SnapshotScheduleListComponent implements OnInit {
   onProjectChange(project: ProjectModel) {
     this.project = project?.id;
     this.projectType = project?.type;
+    this.projectName=project?.projectName
     console.log("uu",project)
     this.searchSnapshotScheduleList(true);
     this.isCreateOrder = this.policyService.hasPermission("snapshotpackage:ListSnapshotPackage") &&
@@ -406,35 +408,68 @@ export class SnapshotScheduleListComponent implements OnInit {
     this.time = data.nextRuntime;
   }
   isEnableRestart: boolean = false
+  isEnableRestartVpc:boolean=false
   enableRestart(data: any) {
-    console.log("restart", data)
-    this.packageName = data.packageName
-    this.snapshotPackageId = data.snapshotPackageId;
-    this.snapshotVolumeService.checkValidSchedule(data.id)
-      .pipe(finalize(() => { }))
-      .subscribe(
-        result => {
-          if (result.success) {
-            this.isVisibleRestart = true;
-            // Kiểm tra xem mảng result.data có chứa bất kỳ chuỗi nào liên quan đến dung lượng không đủ
-            const isStorageError = result.data.some(item => item.includes("Gói snapshot không đủ dung lượng"));
-
-            if (isStorageError) {
-              this.isEnableRestart = true;
-            } else {
-              this.isEnableRestart = false;
-              this.dataAction = data;
+    if(this.projectType !=1){
+      console.log("restart", data)
+      this.packageName = data.packageName
+      this.snapshotPackageId = data.snapshotPackageId;
+      this.snapshotVolumeService.checkValidSchedule(data.id)
+        .pipe(finalize(() => { }))
+        .subscribe(
+          result => {
+            if (result.success) {
+              this.isVisibleRestart = true;
+              this.isEnableRestartVpc = false;
+              // Kiểm tra xem mảng result.data có chứa bất kỳ chuỗi nào liên quan đến dung lượng không đủ
+              const isStorageError = result.data.some(item => item.includes("Gói snapshot không đủ dung lượng"));
+  
+              if (isStorageError) {
+                this.isEnableRestart = true;
+               
+              } else {
+                this.isEnableRestart = false;
+                this.dataAction = data;
+              }
+  
             }
-
-          }
-          else {
-            const errorMessage = result.data.join(', ');
-            this.notification.error(this.i18n.fanyi('app.status.fail'), errorMessage);
-          }
-        },
-        error => {
-          this.notification.error(this.i18n.fanyi('app.status.fail'), error.error.message);
-        });
+            else {
+              const errorMessage = result.data.join(', ');
+              this.notification.error(this.i18n.fanyi('app.status.fail'), errorMessage);
+            }
+          },
+          error => {
+            this.notification.error(this.i18n.fanyi('app.status.fail'), error.error.message);
+          });
+    }
+    else{
+      this.snapshotVolumeService.checkValidSchedule(data.id)
+        .pipe(finalize(() => { }))
+        .subscribe(
+          result => {
+            if (result.success) {
+              this.isVisibleRestart = true;
+              this.isEnableRestart = false;
+              const isStorageError = result.data.some(item => item.includes("Gói snapshot không đủ dung lượng"));
+  
+              if (isStorageError) {
+                this.isEnableRestartVpc = true;
+              } else {
+                this.isEnableRestartVpc = false;
+                this.dataAction = data;
+              }
+  
+            }
+            else {
+              const errorMessage = result.data.join(', ');
+              this.notification.error(this.i18n.fanyi('app.status.fail'), errorMessage);
+            }
+          },
+          error => {
+            this.notification.error(this.i18n.fanyi('app.status.fail'), error.error.message);
+          });
+    }
+    
   }
 
   handleCancel() {
