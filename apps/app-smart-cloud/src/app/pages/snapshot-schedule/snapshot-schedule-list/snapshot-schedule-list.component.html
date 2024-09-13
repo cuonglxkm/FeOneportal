@@ -60,7 +60,7 @@
           <thead>
             <tr>
               <th nzLeft>{{'app.snapshot.schedule.name' | i18n}}</th>
-              <th nzLeft>Gói Snapshot</th>
+              <th nzLeft *ngIf="projectType!=1">Gói Snapshot</th>
               <th nzLeft>{{'app.snapshot.schedule.label.type' | i18n}}</th>
               <th nzLeft>Volume/VM</th>
               <th nzLeft>Bản ghi tối đa</th>
@@ -72,7 +72,7 @@
           <tbody>
             <tr *ngFor="let data of fixedTable.data">
               <td style="max-width:180px"><a (click)="navigateToDetail(data.id)">{{data.name}}</a></td>
-              <td style="max-width:180px"><a
+              <td style="max-width:180px" *ngIf="projectType!=1"><a
                   (click)="navigateToPackageDetail(data.snapshotPackageId)">{{data.packageName}}</a></td>
               <td>{{data.snapshotType == 1 ? 'Snapshot máy ảo' : 'Snapshot Volume'}}</td>
               <td style="max-width:180px">{{data.serviceName}}</td>
@@ -204,21 +204,21 @@
        </div>
      </ng-template>
      <!-- Vui lòng điều chỉnh dương lượng Snapshot (@type) VPC [Tên VPC] Tại đây (Điều hướng đến điều chỉnh VPC) để dịch vụ không bị gián đoạn -->
-     <!-- <nz-alert nzBanner
-      *ngIf="isEnableRestart && projectType ==1"
+     <nz-alert nzBanner
+      *ngIf="isEnableRestartVpc && projectType ==1"
        style="margin-bottom: 10px;margin-top: 15px" [nzMessage]="nzrestartVpc" nzShowIcon></nz-alert>
      <ng-template #nzrestartVpc>
-       <div>
-        Vui lòng điều chỉnh dung lượng Snapshot (type)VPC [Tên VPC] <a (click)="navigateToPackageDetail(snapshotPackageId)" style="text-decoration: underline;">Tại đây </a>  để dịch vụ không bị gián đoạn 
+       <div >
+        Vui lòng điều chỉnh dung lượng Snapshot () VPC {{projectName}} <a [routerLink]="['/app-smart-cloud/project/update/' + project]" style="text-decoration: underline;">Tại đây </a>  để dịch vụ không bị gián đoạn 
        </div>
-     </ng-template> -->
+     </ng-template>
   </ng-container>
   <div *nzModalFooter>
     <button nz-button (click)="handleCancel()">
       <img style="padding-right: 10px; margin-top: -4px" src="assets/imgs/cancel.svg" alt="" />{{'app.button.cancel' |
       i18n}}
     </button>
-    <button nz-button nzType="primary" [disabled]="isEnableRestart" (click)="restartSnapshot()" [nzLoading]="loadingRestart">
+    <button nz-button nzType="primary" [disabled]="isEnableRestart|| isEnableRestartVpc" (click)="restartSnapshot()" [nzLoading]="loadingRestart">
       <img style="padding-right: 10px; margin-top: -4px" src="assets/imgs/confirm.svg" alt="" />{{'app.button.confirm' |
       i18n}}
     </button>

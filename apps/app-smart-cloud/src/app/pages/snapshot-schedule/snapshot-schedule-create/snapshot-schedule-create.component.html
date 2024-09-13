@@ -54,16 +54,16 @@
             <nz-alert nzBanner *ngIf="isNotEnoughQuota" style="margin-bottom: 10px;margin-top: 15px"
               [nzMessage]="nzMessageNotSize" nzShowIcon></nz-alert>
             <ng-template #nzMessageNotSize>
-              <!-- <div>
+              <div>
                 Dung lượng còn lại của gói Snapshot {{namePackage}} ({{quotaTypeSelected=='hdd' ? 'HDD':'SSD'}}) là
                 {{quotaTypeSelected=='hdd'? availableSizeHDD :availableSizeSSD}} GB. Vui lòng thực hiện điều chỉnh Gói
                 Snapshot
                 <a (click)="navigateToPackageDetail(idSnapshotPackage)">{{namePackage}} </a>
                 ({{quotaTypeSelected=='hdd' ? 'HDD':'SSD'}}) để có thể tiếp tục sử dụng dịch vụ.
-              </div> -->
-              <div>
-                Dung lượng còn lại của gói Snapshot {{namePackage}} không đủ. Vui lòng thực hiện điều chỉnh Gói Snapshot <a (click)="navigateToPackageUpdate(idSnapshotPackage)">{{namePackage}} </a> để có thể tiếp tục sử dụng dịch vụ
               </div>
+              <!-- <div>
+                Dung lượng còn lại của gói Snapshot {{namePackage}} không đủ. Vui lòng thực hiện điều chỉnh Gói Snapshot <a (click)="navigateToPackageUpdate(idSnapshotPackage)">{{namePackage}} </a> để có thể tiếp tục sử dụng dịch vụ
+              </div> -->
             </ng-template>
             <!-- Chưa có gói nào -->
             <nz-alert *ngIf=" this.snapshotPackageArray?.length == 0  && projectType !=1" nzBanner
