@@ -48,7 +48,7 @@ export class EndpointCreateComponent implements OnInit {
   form: FormGroup = this.fb.group({
     name: ['', [Validators.required, Validators.pattern(NAME_REGEX)]],
     username: ['', [Validators.required, Validators.pattern(USERNAME_REGEX)]],
-    email: ['', [Validators.required, Validators.email]],
+    email: [this.tokenService.get()?.email, [Validators.required, Validators.email]],
     numberOfLicense: [1, Validators.required],
     time: [1]
   });
@@ -69,6 +69,7 @@ export class EndpointCreateComponent implements OnInit {
   
   }
   ngOnInit() {
+    this.form.controls.email.disable();
     this.getOffers();
     this.checkExistName();
     this.checkExistUsername();
@@ -122,11 +123,11 @@ export class EndpointCreateComponent implements OnInit {
     // this.EndpointCreate.projectId = null;
     // this.EndpointCreate.regionId = 0;
     // this.EndpointCreate.serviceType = 0;
-    // this.EndpointCreate.actionType = 0;
+    this.EndpointCreate.actionType = 0;
     // this.EndpointCreate.serviceInstanceId = 0;
     this.EndpointCreate.createDate = this.today;
     this.EndpointCreate.serviceName = "Endpoint";
-    this.EndpointCreate.serviceType = 0;
+    this.EndpointCreate.serviceType = 29;
     this.EndpointCreate.expireDate = this.expiredDate;
     this.EndpointCreate.offerId = this.selectedOfferId;
     this.EndpointCreate.isSendMail = true;
@@ -195,7 +196,7 @@ export class EndpointCreateComponent implements OnInit {
     this.initEndpoint();
     let specification = JSON.stringify(this.EndpointCreate);
     let orderItemOS = new OrderItem();
-    orderItemOS.orderItemQuantity = 1;
+    orderItemOS.orderItemQuantity = this.form.controls.numberOfLicense.value;
     orderItemOS.specification = specification;
     orderItemOS.specificationType = 'endpoint_create';
     orderItemOS.price = this.totalAmount;

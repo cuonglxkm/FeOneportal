@@ -8,7 +8,8 @@ import { I18NService } from '@core';
 import { debounceTime, Subject, Subscription } from 'rxjs';
 import { BaseResponse, NotificationService } from '../../../../../../../libs/common-utils/src';
 import { WafService } from 'src/app/shared/services/waf.service';
-import { WafDetailDTO } from '../endpoint.model';
+import { EndpointSmartIR } from '../endpoint.model';
+import { EndpointService } from 'src/app/shared/services/endpoint.service';
 
 @Component({
   selector: 'app-endpoint-list',
@@ -23,14 +24,14 @@ export class EndpointListComponent implements OnInit, OnDestroy {
 
   options = [
     { label: this.i18n.fanyi('app.status.all'), value: '' },
-    { label: this.i18n.fanyi('service.status.active'), value: 'ACTIVE' },
-    { label: this.i18n.fanyi('app.suspend'), value: 'SUSPENDED' },
+    { label: this.i18n.fanyi('service.status.success'), value: 'ACTIVE' },
+    { label: this.i18n.fanyi('service.status.fail'), value: 'ERROR' },
   ];
 
   pageSize: number = 10;
   pageIndex: number = 1;
 
-  response: BaseResponse<WafDetailDTO[]>;
+  response: BaseResponse<EndpointSmartIR[]>;
 
   isBegin: boolean = false;
 
@@ -41,9 +42,7 @@ export class EndpointListComponent implements OnInit, OnDestroy {
 
   constructor(@Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
               private router: Router,
-              private wafService: WafService,
-              private fb: NonNullableFormBuilder,
-              private cdr: ChangeDetectorRef,
+              private endpointService: EndpointService,
               private notificationService: NotificationService,
               private notification: NzNotificationService,
               @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService) {
@@ -69,7 +68,7 @@ export class EndpointListComponent implements OnInit, OnDestroy {
     ).subscribe(res => {
       if (!this.enterPressed) {
         this.value = res.trim();
-        this.getListWaf();
+        this.getListEndpoint();
       }
     });
   }
@@ -79,30 +78,29 @@ export class EndpointListComponent implements OnInit, OnDestroy {
     this.enterPressed = true;
     const value = (event.target as HTMLInputElement).value;
     this.value = value.trim();
-    this.getListWaf();
+    this.getListEndpoint();
   }
 
   onChange(value) {
     this.selectedValue = value;
-    this.getListWaf();
+    this.getListEndpoint();
   }
 
   onPageSizeChange(value) {
     this.pageSize = value;
-    this.getListWaf();
+    this.getListEndpoint();
   }
 
   onPageIndexChange(value) {
     this.pageIndex = value;
-    this.getListWaf();
+    this.getListEndpoint();
   }
 
   wafInstance: string = '';
 
-  getListWaf() {
+  getListEndpoint() {
     this.isLoading = true;
-
-    this.wafService.getWafs(this.pageSize, this.pageIndex, this.selectedValue, this.value, null)
+    this.endpointService.getEndpoints(this.pageSize, this.pageIndex, this.selectedValue, this.value)
       .pipe(debounceTime(500))
       .subscribe({
         next: data => {
@@ -129,20 +127,20 @@ export class EndpointListComponent implements OnInit, OnDestroy {
   }
   
   
-  navigateToAddDomain(data: WafDetailDTO) {
-    if(data.status === 'ACTIVE' && data.quotaDomain > data.domainTotal) {
-      return this.router.navigate([`/app-smart-cloud/waf/add-domain`], {queryParams: {wafId: data.id}});
-    }
-  }
+  // navigateToAddDomain(data: WafDetailDTO) {
+  //   if(data.status === 'ACTIVE' && data.quotaDomain > data.domainTotal) {
+  //     return this.router.navigate([`/app-smart-cloud/waf/add-domain`], {queryParams: {wafId: data.id}});
+  //   }
+  // }
 
   //delete
   handleOkDelete() {
-    this.getListWaf();
+    this.getListEndpoint();
   }
 
   //update
   handleOkUpdate() {
-    this.getListWaf();
+    this.getListEndpoint();
   }
 
   //create schedule snapshot
@@ -154,8 +152,8 @@ export class EndpointListComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.selectedValue = this.options[0].value;
     this.onChangeInputChange();
-    this.getListWaf();
-    this.notificationService.connection.on('UpdateWafDomain', (message) => {
+    this.getListEndpoint();
+    this.notificationService.connection.on('UpdateEndpoint', (message) => {
       if (message) {
         switch (message.actionType) {
           case 'CREATING':
@@ -166,7 +164,7 @@ export class EndpointListComponent implements OnInit, OnDestroy {
           case 'EXTENDED':
           case 'DELETED':
           case 'DELETING':
-            this.getListWaf();
+            this.getListEndpoint();
             break;
         }
       }
