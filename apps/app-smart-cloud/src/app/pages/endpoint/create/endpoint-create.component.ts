@@ -28,7 +28,7 @@ export class EndpointCreateComponent implements OnInit {
   listOffers: OfferItem[] = [];
   today = new Date();
   expiredDate = new Date();
-  numOfMonth: number;
+  numOfYear: number;
   total: any;
   totalAmount = 0;
   totalPayment = 0;
@@ -126,8 +126,8 @@ export class EndpointCreateComponent implements OnInit {
     this.EndpointCreate.actionType = 0;
     // this.EndpointCreate.serviceInstanceId = 0;
     this.EndpointCreate.createDate = this.today;
-    this.EndpointCreate.serviceName = "Endpoint";
-    this.EndpointCreate.serviceType = 29;
+    // this.EndpointCreate.serviceName = "Endpoint";
+    // this.EndpointCreate.serviceType = 29;
     this.EndpointCreate.expireDate = this.expiredDate;
     this.EndpointCreate.offerId = this.selectedOfferId;
     this.EndpointCreate.isSendMail = true;
@@ -135,19 +135,19 @@ export class EndpointCreateComponent implements OnInit {
     this.EndpointCreate.username = this.form.controls.username.value;
     this.EndpointCreate.email = this.form.controls.email.value;
     this.EndpointCreate.quantity = this.form.controls.numberOfLicense.value;
-    this.EndpointCreate.duration = this.numOfMonth;
+    this.EndpointCreate.duration = this.numOfYear;
     this.EndpointCreate.endDatePeriod = this.expiredDate;
   }
   isInvalid: boolean = false
-  onChangeTime(numberMonth: number) {
-    if(numberMonth === undefined){
+  onChangeTime(numberYear: number) {
+    if(numberYear === undefined){
       this.isInvalid = true
     }else{
       this.isInvalid = false;
-      this.numOfMonth = numberMonth;
+      this.numOfYear = numberYear;
       this.expiredDate =  new Date(this.today);
-      this.expiredDate.setMonth(this.today.getMonth() + numberMonth);
-      this.form.controls.time.setValue(numberMonth);
+      this.expiredDate.setDate(this.today.getDate() + numberYear * 365);
+      this.form.controls.time.setValue(numberYear);
       this.getTotalAmount();
     }
   }
