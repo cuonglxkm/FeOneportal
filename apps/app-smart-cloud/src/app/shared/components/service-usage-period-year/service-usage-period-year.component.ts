@@ -55,22 +55,22 @@ export class ServiceUsagePeriodYearComponent implements OnInit {
 
     const target = event.target as HTMLInputElement;
     const value = parseInt(target.value + event.key);
-    if (value < 12 && event.key !== 'Backspace' && event.key !== 'Delete') {
+    if (value < 1 && event.key !== 'Backspace' && event.key !== 'Delete') {
       event.preventDefault();
     }
 
     // Kiểm tra nếu nhập vượt quá 100 và không phải bội của 12
     const newValue = currentValue + key;
-    if (Number(newValue) > 100 || Number(newValue) % 12 != 0) {
+    if (Number(newValue) > 100) {
       event.preventDefault(); // Hủy sự kiện để ngăn người dùng nhập ký tự đó
     }
   }
 
   onInput(event: any) {
     if (event.target.value === '0') {
-      this.numberMonth = 12;
-      event.target.value = 12;
-      this.dataSubjectTime.next(this.numberMonth);
+      this.numberYear = 1;
+      event.target.value = 1;
+      this.dataSubjectTime.next(this.numberYear);
     }
   }
 
@@ -86,18 +86,18 @@ export class ServiceUsagePeriodYearComponent implements OnInit {
   }
 
   today: Date = new Date();
-  numberMonth: number = 12;
-  expiredDate: Date = addDays(this.today, 30*12);
+  numberYear: number = 1;
+  expiredDate: Date = addDays(this.today, 365);
   dataSubjectTime: Subject<any> = new Subject<any>();
   changeTime(value) {
     if (value == '') {
-      this.numberMonth = undefined;
-    } else if (value < 12) {
-      this.numberMonth = 12;
+      this.numberYear = undefined;
+    } else if (value < 1) {
+      this.numberYear = 1;
     } else {
-      this.numberMonth = value;
+      this.numberYear = value;
     }
-    this.dataSubjectTime.next(this.numberMonth);
+    this.dataSubjectTime.next(this.numberYear);
   }
 
   onChangeTime() {
@@ -108,7 +108,7 @@ export class ServiceUsagePeriodYearComponent implements OnInit {
       .subscribe((res) => {
         this.valueChanged.emit(res);
         let currentDate = new Date();
-        currentDate.setDate(currentDate.getDate() + this.numberMonth * 30);
+        currentDate.setDate(currentDate.getDate() + this.numberYear * 365);
         this.expiredDate = currentDate;
         this.cdr.detectChanges();
       });

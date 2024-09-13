@@ -3,7 +3,7 @@
     <nz-form-item style="margin-bottom: 5px">
       <nz-form-label
         >{{ 'app.service.used' | i18n }} (<span class="text-red">*</span>) -
-        {{ 'app.Month' | i18n
+        {{ 'app.year' | i18n
         }}<img
           style="margin-left: 10px"
           [nz-tooltip]="'app.tooltip.usage.time' | i18n : { name: name }"
@@ -16,10 +16,10 @@
             <nz-input-number
               formControlName="time"
               style="width: 100%; margin-left: 0px"
-              [nzMin]="12"
+              [nzMin]="1"
               [nzMax]="100"
-              [nzStep]="12"
-              [(ngModel)]="numberMonth"
+              [nzStep]="1"
+              [(ngModel)]="numberYear"
               (keydown)="onKeyDown($event)"
               (ngModelChange)="changeTime($event)"
               (input)="onInput($event)"
