@@ -92,7 +92,6 @@ export class EditIpsecPoliciesComponent implements OnInit {
     this.project = regionAndProject.projectId;
 
     this.getIpsecPolicyById(this.activatedRoute.snapshot.paramMap.get('id'));
-    this.getListIPsecPolicies()
   }
 
   duplicateNameValidator(control) {
@@ -150,6 +149,7 @@ export class EditIpsecPoliciesComponent implements OnInit {
           this.form.controls.name.setValue(data.name);
           this.form.controls.lifeTimeValue.setValue(data.lifetimeValue);
           this.isLoading = false;
+          this.getListIPsecPolicies()
         },
         (error) => {
           this.ipsecPolicy = null;

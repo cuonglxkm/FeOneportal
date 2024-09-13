@@ -89,7 +89,6 @@ export class EditIkePoliciesComponent implements OnInit {
     this.project = regionAndProject.projectId;
 
     this.getIkePolicyById(this.activatedRoute.snapshot.paramMap.get('id'));
-    this.getListIKEPolicies()
   }
 
   getIkePolicyById(id) {
@@ -112,6 +111,7 @@ export class EditIkePoliciesComponent implements OnInit {
           this.form.controls.name.setValue(data.name);
           this.form.controls.lifeTimeValue.setValue(data.lifetimeValue);
           this.isLoading = false;
+          this.getListIKEPolicies()
         },
         (error) => {
           this.ikePolicy = null;

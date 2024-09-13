@@ -103,7 +103,7 @@ export class BucketLifecycleCreate {
   customerId: number;
   bucketName: string;
   id: string;
-  prefix: string;
+  prefix: string = '';
   lifecycleTagPredicate: LifecycleTagPredicate[] = [];
   isSetExpiration_Day: boolean = false;
   lifecycleRuleExpiration_Day: number = 1;

@@ -124,11 +124,11 @@
             />
           </div>
           <input
+            nz-input  
             style="margin-top: 5px"
             class="input-custom"
-            nz-input
             [placeholder]="'app.input.prefix' | i18n"
-            [(ngModel)]="lifecycleCreate.prefix"
+            [(ngModel)]="lifecycleCreate.prefix" 
             formControlName="prefix"
             [ngModelOptions]="{ standalone: true }"
           />
@@ -137,10 +137,12 @@
       <div class="text-label">
         {{ 'app.filter.by.tag' | i18n
         }}<img
-          style="margin-left: 5px"
+          style="margin-left: 5px; vertical-align: bottom;"
           src="assets/imgs/ei_plus.svg"
           alt=""
           (click)="addTag()"
+          [class.disabled]="lifecycleCreate.prefix !== ''"
+          [ngStyle]="{ filter: lifecycleCreate.prefix !== '' ? 'grayscale(100%)' : '' }"
         />
       </div>
       <div
@@ -401,14 +403,17 @@
         nz-input
         [placeholder]="'app.input.prefix' | i18n"
         [(ngModel)]="lifecycleUpdate.prefix"
+        [disabled]="listTag.length > 0"
         [ngModelOptions]="{ standalone: true }"
       />
       <div class="text-label">
         {{ 'app.filter.by.tag' | i18n
         }}<img
-          style="margin-left: 5px"
+          style="margin-left: 5px; vertical-align: bottom;"
           src="assets/imgs/ei_plus.svg"
           alt=""
+          [class.disabled]="lifecycleUpdate.prefix !== ''"
+          [ngStyle]="{ filter: lifecycleUpdate.prefix !== '' ? 'grayscale(100%)' : '' }"
           (click)="addTag()"
         />
       </div>
