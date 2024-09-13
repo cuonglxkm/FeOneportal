@@ -54,7 +54,8 @@
   "service.status.cancel": "Hủy",
   "service.status.normal": "Bình thường",
   "service.status.pending.expired": "Chờ hết hạn",
-
+  "service.status.success": "Thành công",
+  "service.status.fail": "Thất bại",
 
   "form.clear.local.storage": "Làm sạch Local Storage",
   "form.account.information": "Thông tin cá nhân",

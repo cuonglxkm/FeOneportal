@@ -351,6 +351,10 @@ export class PaymentSummaryComponent implements OnInit {
             serviceItem.name = `Load Balancer SDN - ${specificationObj.serviceName}`;
             serviceItem.type = this.i18n.fanyi('app.button.extend');
             break;
+          case 'endpoint_create':
+            serviceItem.name = `Endpoint - ${specificationObj.serviceName}`;
+            serviceItem.type = this.i18n.fanyi('app.label.create');
+            break;
           default:
             serviceItem.name = '';
             break;

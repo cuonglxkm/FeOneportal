@@ -11,6 +11,7 @@ import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { BaseResponse } from '../../../../../../libs/common-utils/src';
 import { AddDomainRequest, HttpsSettingRequest, SslCertDTO, SslCertRequest, WafDetailDTO, WafDomain, WafDTO, UpdatePolicies, QueryRequesBandwidthtSavingRatioRequestDto, QueryBacktoOriginTrafficAndRequestRequestDto, QueryTrafficRequestInTotalAndPeakValueRequestDto, QueryRequestHitRatioRequestDto, QueryStatusCodeDistributionRequestDto, QueryOriginStatusCodeDistributionRequestDto, QueryEventTrendRequestDto, QueryRequesBandwidthtSavingRatioResponse, QueryRequestHitRatioResponse } from 'src/app/pages/waf/waf.model';
 import { OfferItem } from 'src/app/pages/instances/instances.model';
+import { EndpointSmartIR } from 'src/app/pages/endpoint/endpoint.model';
 
 @Injectable({
   providedIn: 'root',
@@ -38,8 +39,8 @@ export class EndpointService extends BaseService {
       param = param.append('currentPage', currentPage);
 
     return this.http
-      .get<BaseResponse<WafDetailDTO[]>>(
-        this.baseUrl + this.ENDPOINT.provisions + '/waf/package',
+      .get<BaseResponse<EndpointSmartIR[]>>(
+        this.baseUrl + this.ENDPOINT.provisions + '/endpoint/endpoints',
         {
           params: param,
           headers: this.getHeaders().headers,

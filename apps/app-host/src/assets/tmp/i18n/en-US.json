@@ -452,6 +452,8 @@
   "service.status.cancel": "Cancel",
   "service.status.normal": "Normal",
   "service.status.pending.expired": "Pending Expired",
+  "service.status.success": "Success",
+  "service.status.fail": "Fail",
 
 
   "app.breadcrumb.home": "Home",

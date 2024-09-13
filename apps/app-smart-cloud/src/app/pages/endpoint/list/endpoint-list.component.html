@@ -70,40 +70,28 @@
               [nzLoading]="isLoading">
       <thead>
       <tr>
-        <th nzLeft>{{ 'endpoint.table.title.name' | i18n }}</th>
-        <th nzBreakWord>{{ 'endpoint.table.title.username' | i18n }}</th>
-        <th nzBreakWord>{{ 'endpoint.table.title.email' | i18n }}</th>
-        <th nzBreakWord>{{ 'endpoint.table.title.numberofdevices' | i18n }}</th>
-        <th nzBreakWord>{{ 'endpoint.table.title.enddate' | i18n }}</th>
+        <th  nzLeft>{{ 'endpoint.table.title.name' | i18n }}</th>
+        <th nzLeft nzBreakWord>{{ 'endpoint.table.title.username' | i18n }}</th>
+        <th nzCenter nzBreakWord>{{ 'endpoint.table.title.email' | i18n }}</th>
+        <th style="width: 12%;" nzBreakWord>{{ 'endpoint.table.title.numberofdevices' | i18n }}</th>
+        <th nzCenter nzBreakWord>{{ 'endpoint.table.title.enddate' | i18n }}</th>
         <th nzBreakWord>{{ 'endpoint.table.title.status' | i18n }}</th>
       </tr>
       </thead>
       <tbody>
       <tr *ngFor="let data of fixedTable.data">
         <td nzLeft>{{ data.name }}</td>
-        <td nzBreakWord nzAlign="left">{{ data.offerName }}</td>
-        <td nzBreakWord nzAlign="left">{{ data.createdDate | date : "dd/MM/yyyy"}}</td>
-        <td nzBreakWord nzAlign="left">{{ data.expiredDate | date : "dd/MM/yyyy"}}</td>
-        <ng-container  *ngIf="data.status | ServiceStatusPipe as statusModel">
+        <td nzBreakWord nzAlign="left">{{ data.username }}</td>
+        <td nzBreakWord nzAlign="left">{{ data.email }}</td>
+        <td nzBreakWord nzAlign="right">{{ data.quantity }}</td>
+        <td nzBreakWord nzAlign="left">{{ data.endDatePeriod | date : "dd/MM/yyyy"}}</td>
+        <ng-container  *ngIf="data.status | EndpointStatusPipe as statusModel">
           <td
               nzBreakWord
               nzAlign="left"
               [ngStyle]="{color: statusModel.color}">{{ statusModel.status }}
           </td>
         </ng-container>
-        <td nzBreakWord nzAlign="center">
-          <div>
-            <img  src="assets/imgs/add.svg" (click)="navigateToAddDomain()" nz-popover
-              [nzPopoverContent]="'waf.domain.button.create' | i18n"
-              nzPopoverPlacement="bottom" 
-              (click)="navigateToAddDomain(data)"
-              [style.filter]="data.status=='ACTIVE' && data.quotaDomain > data.domainTotal ? null : 'opacity(0.25) drop-shadow(0 0 0 rgba(0, 0, 0, 1))'" 
-              [style.cursor]="data.status=='ACTIVE' && data.quotaDomain > data.domainTotal ? 'pointer' : 'not-allowed'"/>
-            <one-portal-delete-waf [canClick]="data.status=='ACTIVE'" [wafId]="data.id"
-                                    [wafName]="data.name"
-                                    (onOk)="handleOkDelete()" />
-          </div>
-        </td>
       </tr>
       </tbody>
     </nz-table>
