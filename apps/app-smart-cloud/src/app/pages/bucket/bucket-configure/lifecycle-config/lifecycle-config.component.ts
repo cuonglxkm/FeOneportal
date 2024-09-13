@@ -305,6 +305,7 @@ export class LifecycleConfigComponent implements OnInit {
   addTag() {
     let tag = new Tag();
     tag.id = this.idTag++;
+    this.formCreate.get('prefix')?.disable();
     this.listTag.push(tag);
     this.lifecycleUpdate.isSetAbortIncompleteMultipartUpload_Day = false;
     this.formCreate.controls.isSetAbortIncompleteMultipartUpload_Day.setValue(
@@ -339,6 +340,8 @@ export class LifecycleConfigComponent implements OnInit {
     this.checkTags(this.listTag);
     if (this.listTag?.length != 0) {
       this.lifecycleUpdate.isSetAbortIncompleteMultipartUpload_Day = false;
+    }else{
+      this.formCreate.get('prefix').enable()
     }
   }
 

@@ -71,6 +71,7 @@ export class EditVpnConnectionComponent implements OnInit {
           this.form.controls.peerRemoteIp.setValue(data.peerRemoteIp);
           this.form.controls.peerId.setValue(data.peerId);
           this.form.controls.preSharedKey.setValue(data.preSharedKey);
+          this.getListVPN()
         },
         (error) => {
           if (error.error.message.includes('made requires authentication') || error.error.message.includes('could not be found')) {
@@ -93,7 +94,7 @@ export class EditVpnConnectionComponent implements OnInit {
     this.region = regionAndProject.regionId;
     this.project = regionAndProject.projectId;
     this.getVpnConnectionById(this.activatedRoute.snapshot.paramMap.get('id'));
-    this.getListVPN()
+
   }
 
   constructor(
@@ -112,7 +113,7 @@ export class EditVpnConnectionComponent implements OnInit {
       this.activatedRoute.snapshot.paramMap.get('id');
     this.formEditVpnConnection.regionId = this.region;
     this.formEditVpnConnection.projectId = this.project;
-    this.formEditVpnConnection.name = this.vpnConnection?.name;
+    this.formEditVpnConnection.name = this.form.controls.name.value
     this.formEditVpnConnection.ipSecPolicyId =
       this.vpnConnection?.ipSecPolicyId;
     this.formEditVpnConnection.vpnServiceId = this.vpnConnection?.vpnServiceId;
@@ -153,7 +154,7 @@ export class EditVpnConnectionComponent implements OnInit {
     this.vpnConnectionService.getVpnConnection(this.formSearchVpnConnection)
       .pipe(debounceTime(500))
       .subscribe(data => {
-        const filterName = data.records.filter((item) => item.name !== this.vpnConnection.name) 
+        const filterName = data.records.filter((item) => item.name !== this.vpnConnection.name)         
         filterName.forEach((item) => {
           if (this.nameList.length > 0) {
             this.nameList.push(item.name);
