@@ -52,7 +52,7 @@ export class InstancesBtnComponent implements OnInit {
   }
 
   openConsole(): void {
-    if(this.region === RegionID.ADVANCE){
+    if (this.region === RegionID.ADVANCE) {
       this.route.navigateByUrl(
         '/app-smart-cloud/instances/instances-console/' + this.instancesId,
         {
@@ -61,9 +61,10 @@ export class InstancesBtnComponent implements OnInit {
           },
         }
       );
-    }else{
+    } else {
       this.route.navigateByUrl(
-        '/app-smart-cloud/instances-advance/instances-console/' + this.instancesId,
+        '/app-smart-cloud/instances-advance/instances-console/' +
+          this.instancesId,
         {
           state: {
             vmId: this.instancesId,
@@ -71,7 +72,6 @@ export class InstancesBtnComponent implements OnInit {
         }
       );
     }
-    
   }
 
   //#region Xóa máy ảo
@@ -79,14 +79,28 @@ export class InstancesBtnComponent implements OnInit {
   checkInputConfirm: boolean = false;
   checkInputEmpty: boolean = false;
   showModalDelete() {
-    this.isVisibleDelete = true;
-    this.inputConfirm = '';
-    if (this.isViLanguage) {
-      this.titleDeleteInstance = 'Xóa máy ảo ' + this.instancesModel.name;
-    } else {
-      this.titleDeleteInstance =
-        'Delete the ' + this.instancesModel.name + ' instance';
-    }
+    this.dataService
+      .getSnapshotsByInstance(this.instancesId)
+      .subscribe((data) => {
+        if (data?.length) {
+          const listSnapshotName = data
+            .map((snapshot) => snapshot.name)
+            .join(', ');
+          this.notification.warning(
+            this.i18n.fanyi('app.status.warning'),
+            `Vui lòng xóa Snapshot ${listSnapshotName}`
+          );
+        } else {
+          this.isVisibleDelete = true;
+          this.inputConfirm = '';
+          if (this.isViLanguage) {
+            this.titleDeleteInstance = 'Xóa máy ảo ' + this.instancesModel.name;
+          } else {
+            this.titleDeleteInstance =
+              'Delete the ' + this.instancesModel.name + ' instance';
+          }
+        }
+      });
   }
 
   handleOkDelete() {
@@ -137,14 +151,14 @@ export class InstancesBtnComponent implements OnInit {
 
   //#region Gia hạn máy ảo
   continue(): void {
-    if(this.region === RegionID.ADVANCE){
+    if (this.region === RegionID.ADVANCE) {
       this.route.navigate([
         '/app-smart-cloud/instances/instances-extend/' + this.instancesId,
       ]);
-    }
-    else{
+    } else {
       this.route.navigate([
-        '/app-smart-cloud/instances-advance/instances-extend/' + this.instancesId,
+        '/app-smart-cloud/instances-advance/instances-extend/' +
+          this.instancesId,
       ]);
     }
   }

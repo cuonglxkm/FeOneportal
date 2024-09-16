@@ -228,7 +228,7 @@ duplicateNameValidator(control) {
         if (this.region === RegionID.ADVANCE) {
           this.router.navigate(['/app-smart-cloud/volumes-advance/vpc/create',{ idSnapshot: idSnapshot }])
         } else {
-          this.router.navigate(['/app-smart-cloud/volume/vpc/create',{ idSnapshot: idSnapshot }])
+          this.router.navigate(['/app-smart-cloud/volumes/vpc/create',{ idSnapshot: idSnapshot }])
         }
       } else {
         if (this.region === RegionID.ADVANCE) {
