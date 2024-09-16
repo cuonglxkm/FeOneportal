@@ -60,7 +60,7 @@ export class ListPackagesSnapshotComponent implements OnInit {
     namePackage: FormControl<string>
     description: FormControl<string>
   }> = this.fb.group({
-    namePackage: ['', [Validators.required, Validators.pattern(/^[a-zA-Z0-9_]*$/), Validators.maxLength(50)]],
+    namePackage: ['', [Validators.required, Validators.pattern(/^[a-zA-Z0-9_]*$/), Validators.maxLength(50),this.duplicateNameValidator.bind(this)]],
     description: ['', [Validators.maxLength(255)]]
   })
 
@@ -84,6 +84,9 @@ export class ListPackagesSnapshotComponent implements OnInit {
   isCreateOrder: boolean = false;
   titleBreadcrumb: string;
   breadcrumbBlockStorage:string;
+
+  nameList: string[] = [];
+
   @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
   constructor(private router: Router,
     private packageSnapshotService: PackageSnapshotService,
@@ -97,7 +100,16 @@ export class ListPackagesSnapshotComponent implements OnInit {
     private projectService: ProjectService,
     private policyService: PolicyService) {
   }
-
+  // validate name khi nhap trung
+  duplicateNameValidator(control) {
+    const value = control.value;
+    // Check if the input name is already in the list
+    if (this.nameList && this.nameList.includes(value)) {
+      return { duplicateName: true }; 
+    } else {
+      return null; 
+    }
+  }
   regionChanged(region: RegionModel) {
     this.region = region.regionId;
     if (this.projectCombobox) {
@@ -167,6 +179,15 @@ export class ListPackagesSnapshotComponent implements OnInit {
     this.packageSnapshotService.getPackageSnapshot(this.formSearchPackageSnapshot)
       .pipe(debounceTime(500))
       .subscribe(data => {
+        data.records.forEach((item) => {
+         
+          if (this.nameList.length > 0) {
+            this.nameList.push(item.packageName);
+          } else {
+            this.nameList = [item.packageName];
+          }
+        });
+
         this.isLoading = false
         this.response = data
         if (checkBegin) {
@@ -177,6 +198,7 @@ export class ListPackagesSnapshotComponent implements OnInit {
           }
         }
       }, error => {
+        this.nameList = null;
         if (error.status == 403) {
           this.notification.error(
             error.statusText,
