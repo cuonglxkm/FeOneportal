@@ -40,7 +40,7 @@ export class SnapshotScheduleListComponent implements OnInit {
     name: FormControl<string>
     description: FormControl<string>
   }> = this.fb.group({
-    name: ['', [Validators.required, Validators.pattern(/^[\w\d]{1,64}$/)]],
+    name: ['', [Validators.required, Validators.pattern(/^[\w\d]{1,64}$/),this.duplicateNameValidator.bind(this)]],
     description: ['', [Validators.maxLength(255)]]
   })
   formSearchScheduleSnapshot: FormSearchScheduleSnapshot = new FormSearchScheduleSnapshot()
@@ -81,6 +81,7 @@ export class SnapshotScheduleListComponent implements OnInit {
   isInput: boolean = false;
   titleBreadcrumb: string;
   breadcrumbBlockStorage: string;
+  nameList: string[] = [];
   @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
   searchSnapshotScheduleList(checkBegin: any) {
     this.getSnapSchedules(checkBegin);
@@ -160,6 +161,15 @@ export class SnapshotScheduleListComponent implements OnInit {
     });
     this.VMsnap = this.i18n.fanyi('app.vm.snapshot')
   }
+  duplicateNameValidator(control) {
+    const value = control.value;
+    // Check if the input name is already in the list
+    if (this.nameList && this.nameList.includes(value)) {
+      return { duplicateName: true };
+    } else {
+      return null;
+    }
+  }
 
   // private doGetSnapSchedules(pageSize: number, pageNumber: number, regionId: number, projectId: number, name: string, volumeName: string, checkBegin: boolean) {
   //   this.isLoadingEntities = true;
@@ -216,7 +226,15 @@ export class SnapshotScheduleListComponent implements OnInit {
           this.totalData = next.totalCount;
           this.listOfData = next.records;
           this.isLoadingEntities = false;
-          console.log("this.response?.records", this.response?.records)
+          next.records.forEach((item) => {
+           
+            if (this.nameList.length > 0) {
+              this.nameList.push(item.name);
+            } else {
+              this.nameList = [item.name];
+            }
+          });
+        
           if (checkBegin) {
             if (this.response?.records == undefined || this.response?.records.length <= 0) {
               this.isBegin = true;
@@ -226,6 +244,7 @@ export class SnapshotScheduleListComponent implements OnInit {
           }
         },
         error: (error) => {
+          this.nameList = null;
           if (error.status == 403) {
             this.notification.error(
               error.statusText,
@@ -410,65 +429,66 @@ export class SnapshotScheduleListComponent implements OnInit {
   isEnableRestart: boolean = false
   isEnableRestartVpc:boolean=false
   enableRestart(data: any) {
-    if(this.projectType !=1){
+    // if(this.projectType !=1){
       console.log("restart", data)
       this.packageName = data.packageName
       this.snapshotPackageId = data.snapshotPackageId;
-      this.snapshotVolumeService.checkValidSchedule(data.id)
-        .pipe(finalize(() => { }))
-        .subscribe(
-          result => {
-            if (result.success) {
-              this.isVisibleRestart = true;
-              this.isEnableRestartVpc = false;
-              // Kiểm tra xem mảng result.data có chứa bất kỳ chuỗi nào liên quan đến dung lượng không đủ
-              const isStorageError = result.data.some(item => item.includes("Gói snapshot không đủ dung lượng"));
+      this.isVisibleRestart = true;
+    //   this.snapshotVolumeService.checkValidSchedule(data.id)
+    //     .pipe(finalize(() => { }))
+    //     .subscribe(
+    //       result => {
+    //         if (result.success) {
+    //           this.isVisibleRestart = true;
+    //           this.isEnableRestartVpc = false;
+           
+    //           const isStorageError = result.data.some(item => item.includes("Gói snapshot không đủ dung lượng"));
   
-              if (isStorageError) {
-                this.isEnableRestart = true;
+    //           if (isStorageError) {
+    //             this.isEnableRestart = true;
                
-              } else {
-                this.isEnableRestart = false;
-                this.dataAction = data;
-              }
+    //           } else {
+    //             this.isEnableRestart = false;
+    //             this.dataAction = data;
+    //           }
   
-            }
-            else {
-              const errorMessage = result.data.join(', ');
-              this.notification.error(this.i18n.fanyi('app.status.fail'), errorMessage);
-            }
-          },
-          error => {
-            this.notification.error(this.i18n.fanyi('app.status.fail'), error.error.message);
-          });
-    }
-    else{
-      this.snapshotVolumeService.checkValidSchedule(data.id)
-        .pipe(finalize(() => { }))
-        .subscribe(
-          result => {
-            if (result.success) {
-              this.isVisibleRestart = true;
-              this.isEnableRestart = false;
-              const isStorageError = result.data.some(item => item.includes("Gói snapshot không đủ dung lượng"));
+    //         }
+    //         else {
+    //           const errorMessage = result.data.join(', ');
+    //           this.notification.error(this.i18n.fanyi('app.status.fail'), errorMessage);
+    //         }
+    //       },
+    //       error => {
+    //         this.notification.error(this.i18n.fanyi('app.status.fail'), error.error.message);
+    //       });
+    // }
+    // else{
+    //   this.snapshotVolumeService.checkValidSchedule(data.id)
+    //     .pipe(finalize(() => { }))
+    //     .subscribe(
+    //       result => {
+    //         if (result.success) {
+    //           this.isVisibleRestart = true;
+    //           this.isEnableRestart = false;
+    //           const isStorageError = result.data.some(item => item.includes("Gói snapshot không đủ dung lượng"));
   
-              if (isStorageError) {
-                this.isEnableRestartVpc = true;
-              } else {
-                this.isEnableRestartVpc = false;
-                this.dataAction = data;
-              }
+    //           if (isStorageError) {
+    //             this.isEnableRestartVpc = true;
+    //           } else {
+    //             this.isEnableRestartVpc = false;
+    //             this.dataAction = data;
+    //           }
   
-            }
-            else {
-              const errorMessage = result.data.join(', ');
-              this.notification.error(this.i18n.fanyi('app.status.fail'), errorMessage);
-            }
-          },
-          error => {
-            this.notification.error(this.i18n.fanyi('app.status.fail'), error.error.message);
-          });
-    }
+    //         }
+    //         else {
+    //           const errorMessage = result.data.join(', ');
+    //           this.notification.error(this.i18n.fanyi('app.status.fail'), errorMessage);
+    //         }
+    //       },
+    //       error => {
+    //         this.notification.error(this.i18n.fanyi('app.status.fail'), error.error.message);
+    //       });
+    // }
     
   }
 

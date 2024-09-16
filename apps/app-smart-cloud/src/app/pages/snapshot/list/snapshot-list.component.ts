@@ -48,7 +48,7 @@ export class SnapshotListComponent implements OnInit {
   }> = this.fb.group({
     name: ['', [Validators.required,
     Validators.pattern(/^[a-zA-Z0-9_]*$/),
-    Validators.maxLength(50)]],
+    Validators.maxLength(50),this.duplicateNameValidator.bind(this)]],
     description: ['', Validators.maxLength(255)],
   });
 
@@ -63,6 +63,8 @@ export class SnapshotListComponent implements OnInit {
   isCreateOrder: boolean = false;
   titleBreadcrumb:string;
   breadcrumbBlockStorage:string;
+  projectType:number;
+  nameList: string[] = [];
 
   @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
 
@@ -99,7 +101,16 @@ export class SnapshotListComponent implements OnInit {
     });
     this.search(true);
   }
-
+// validate name khi nhap trung
+duplicateNameValidator(control) {
+  const value = control.value;
+  // Check if the input name is already in the list
+  if (this.nameList && this.nameList.includes(value)) {
+    return { duplicateName: true };
+  } else {
+    return null;
+  }
+}
   regionChanged(region: RegionModel) {
     if (this.projectCombobox) {
       this.projectCombobox.loadProjects(true, region.regionId);
@@ -112,7 +123,9 @@ export class SnapshotListComponent implements OnInit {
   }
 
   projectChanged(project: ProjectModel) {
+    console.log("mm", project)
     this.project = project?.id;
+    this.projectType=project?.type;
     this.search(true);
     this.typeVpc = project?.type;
     this.isCreateOrder = this.policyService.hasPermission("snapshotpackage:ListSnapshotPackage") && 
@@ -161,16 +174,26 @@ export class SnapshotListComponent implements OnInit {
       }))
       .subscribe(
         data => {
+          data.records.forEach((item) => {
+            if (this.nameList.length > 0) {
+              this.nameList.push(item.name);
+            } else {
+              this.nameList = [item.name];
+            }
+          });
           // this.index = 1
           this.response = data
           if (isBegin) {
             if (this.response.records.length <= 0) {
               this.isBegin = true;
+              
             } else {
               this.isBegin = false;
+              
             }
           }
         }, error => {
+          this.nameList = null;
           if(error.status == 403) {
             this.notification.error(
               error.statusText,

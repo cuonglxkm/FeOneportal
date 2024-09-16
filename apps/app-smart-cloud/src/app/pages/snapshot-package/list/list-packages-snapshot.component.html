@@ -42,12 +42,7 @@
               <!-- <nz-option nzValue="DELETEING" nzLabel="Đang xóa"></nz-option> -->
               <!-- <nz-option nzValue="DELETEING" nzLabel="Lỗi"></nz-option> -->
             </nz-select>
-            <!--        <nz-input-group [nzSuffix]="suffixIconSearch" style="margin-left: 15px; width: 250px; border-radius: 8px;">-->
-            <!--          <input nz-input-->
-            <!--                 [(ngModel)]="value"-->
-            <!--                 (input)="onInputChange($event.target['value'])"-->
-            <!--                 [placeholder]="'Tìm kiếm'"/>-->
-            <!--        </nz-input-group>-->
+           
             <nz-input-group style="width: 300px;" [nzPrefix]="prefixIconSearch" nzSize="large">
               <input name="name" nz-input placeholder="Tìm kiếm theo tên" [(ngModel)]="value"
                 (keyup.enter)="onInputChange(value)" (input)="onInputChange($event.target['value'])" />
@@ -145,7 +140,7 @@
           <button *ngIf="projectType != 1 && isCreateOrder" style="margin-top: 20px" nz-button [nzType]="'primary'"
             (click)="navigateToCreate()" nzSize="large">
             <img style="padding-right: 10px; margin-top: -4px" src="assets/imgs/cloud-plus-bold.svg" alt="" />
-            Khởi tạo gói snapshot
+            Khởi tạo gói Snapshot
           </button>
         </result>
       </ng-container>
@@ -252,6 +247,7 @@
                 0-9,'_')</ng-container>
               <ng-container *ngIf="control.hasError('maxLength')">{{'app.backup.package.name.maxLength' |
                 i18n}}</ng-container>
+                 <ng-container *ngIf="control.hasError('duplicateName')">Tên gói Snapshot này đã được sử dụng, vui lòng chọn tên khác</ng-container>
             </ng-template>
           </nz-form-control>
         </nz-form-item>

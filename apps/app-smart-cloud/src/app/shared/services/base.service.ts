@@ -56,6 +56,7 @@ export abstract class BaseService {
             ? Number(localStorage.getItem('UserRootId'))
             : this.tokenService.get()?.userId,
         'Project-Id': localStorage.getItem('projectId') && Number(localStorage.getItem('projectId')) > 0 ? Number(localStorage.getItem('projectId')) : 0,
+        'RegionId': localStorage.getItem('regionId') && Number(localStorage.getItem('regionId')) > 0 ? Number(localStorage.getItem('regionId')) : 0,
       }),
     };
   }
