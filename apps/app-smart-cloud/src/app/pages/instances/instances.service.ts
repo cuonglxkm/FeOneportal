@@ -10,6 +10,7 @@ import { BaseService } from 'src/app/shared/services/base.service';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { Router } from '@angular/router';
 import { OfferDetail } from '../../shared/models/catalog.model';
+import { SnapshotVolumeDto } from 'src/app/shared/dto/snapshot-volume.dto';
 
 @Injectable({
   providedIn: 'root',
@@ -413,5 +414,9 @@ export class InstancesService extends BaseService {
       data,
       this.getHeaders()
     );
+  }
+
+  getSnapshotsByInstance(id: string | number){
+    return this.http.get<SnapshotVolumeDto[]>(this.baseUrl + this.ENDPOINT.provisions + '/vlsnapshots/getbyinstance/' +  id, {headers: this.getHeaders().headers})
   }
 }

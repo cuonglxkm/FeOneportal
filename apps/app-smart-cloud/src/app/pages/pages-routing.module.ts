@@ -782,7 +782,7 @@ const routes: Routes = [
     component: PaymentSummaryComponent
   },
   {
-    path: 'volume/vpc/create',
+    path: 'volumes/vpc/create',
     component: CreateVolumeVpcComponent,
     canActivate: [PermissionGuard],
     data: {

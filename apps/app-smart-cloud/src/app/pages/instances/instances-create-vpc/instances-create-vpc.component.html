@@ -139,7 +139,7 @@
               >
                 <nz-option
                   *ngFor="let i of listSnapshot"
-                  [nzLabel]="i.name"
+                  [nzLabel]="i.name + ' (' + i.sizeInGB +' GB)'"
                   [nzValue]="i.id"
                 />
               </nz-select>
@@ -343,6 +343,7 @@
                           [ngModelOptions]="{ standalone: true }"
                           (click)="initSSD()"
                           (keyup.enter)="initSSD()"
+                          [disabled]="disableSSD"
                         ></label>
                       </ng-template>
                       <ng-template #nzTitleselectedHDDorSSD2>
@@ -426,6 +427,7 @@
                         >
                         {{ 'app.alert.quota.vpc.next' | i18n }}
                       </div>
+                      <!-- <div *ngIf="isSmallThanSnapshotSize">{{'app.notify.amount.capacity.snapshot' | i18n:{num: sizeSnapshotVL} }}</div> -->
                     </td>
                     <td>
                       <nz-input-number

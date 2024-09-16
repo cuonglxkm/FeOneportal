@@ -138,7 +138,7 @@
               >
                 <nz-option
                   *ngFor="let i of listSnapshot"
-                  [nzLabel]="i.name"
+                  [nzLabel]="i.name + ' (' + i.sizeInGB +' GB)'"
                   [nzValue]="i.id"
                 />
               </nz-select>
