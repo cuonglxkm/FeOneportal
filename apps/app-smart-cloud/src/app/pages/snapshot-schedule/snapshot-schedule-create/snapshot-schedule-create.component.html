@@ -33,114 +33,44 @@
             <div style="margin-bottom: 20px" class="text-card-header">
               {{'app.snapshot.schedule.info' | i18n}}
             </div>
-            <!-- đủ quota -->
-            <!-- <nz-alert nzBanner *ngIf="isQuota " style="margin-bottom: 10px;margin-top: 15px" [nzMessage]="nzMessage"
-              nzShowIcon></nz-alert>
-            <ng-template #nzMessage>
-              <div>
-                {{messageQuota}}
-              </div>
-            </ng-template> -->
 
-            <nz-alert nzBanner *ngIf="isQuota " style="margin-bottom: 10px;margin-top: 15px" [nzMessage]="nzMessage"
-              nzShowIcon></nz-alert>
-            <ng-template #nzMessage>
-              <div>
-                Dung lượng gói Snapshot  đã dùng: {{quotaTypeSelected=='hdd' ? this.packageUsedHdd:this.packageUsedSsd}}  GB ({{quotaTypeSelected=='hdd' ? 'HDD':'SSD'}}) / {{quotaTypeSelected=='hdd' ? this.packageSnapshotHdd:this.packageSnapshotSsd}} GB. Quý khách còn lại {{quotaTypeSelected=='hdd' ? this.availableSizeHDD:this.availableSizeSSD}} GB dung lượng Snapshot
-              </div>
-            </ng-template>
-
-            <!-- không đủ quota gói cho dự án thường -->
-            <nz-alert nzBanner *ngIf="isNotEnoughQuota" style="margin-bottom: 10px;margin-top: 15px"
-              [nzMessage]="nzMessageNotSize" nzShowIcon></nz-alert>
-            <ng-template #nzMessageNotSize>
-              <div>
-                Dung lượng còn lại của gói Snapshot {{namePackage}} ({{quotaTypeSelected=='hdd' ? 'HDD':'SSD'}}) là
-                {{quotaTypeSelected=='hdd'? availableSizeHDD :availableSizeSSD}} GB. Vui lòng thực hiện điều chỉnh Gói
-                Snapshot
-                <a (click)="navigateToPackageDetail(idSnapshotPackage)">{{namePackage}} </a>
-                ({{quotaTypeSelected=='hdd' ? 'HDD':'SSD'}}) để có thể tiếp tục sử dụng dịch vụ.
-              </div>
-              <!-- <div>
-                Dung lượng còn lại của gói Snapshot {{namePackage}} không đủ. Vui lòng thực hiện điều chỉnh Gói Snapshot <a (click)="navigateToPackageUpdate(idSnapshotPackage)">{{namePackage}} </a> để có thể tiếp tục sử dụng dịch vụ
-              </div> -->
-            </ng-template>
-            <!-- Chưa có gói nào -->
-            <nz-alert *ngIf=" this.snapshotPackageArray?.length == 0  && projectType !=1" nzBanner
-              style="margin-bottom: 10px;margin-top: 15px" [nzMessage]="nzMessageNoData" nzShowIcon></nz-alert>
-            <ng-template #nzMessageNoData>
-              <div>
-                Quý khách chưa có gói Snapshot nào, để có thể sử dụng dịch vụ lịch Snapshot, vui lòng tạo gói Snapshot
-                <a (click)="navigateToCreatePackage()">tại
-                  đây</a>
-              </div>
-            </ng-template>
-            <!-- dung lượng không đủ khi bản lưu trữ vượt quá dung lượng volume/vm -->
-            <nz-alert nzBanner *ngIf="isMessageArchivedVersion " style="margin-bottom: 10px;margin-top: 15px"
-              [nzMessage]="isArchivedVersion" nzShowIcon></nz-alert>
-            <ng-template #isArchivedVersion>
-              <div>
-                {{messageArchivedVersion}}
-              </div>
-            </ng-template>
-           
-            <!-- VPC chưa mua snapshot -->
-            <nz-alert nzBanner *ngIf="projectType==1 && projectTotalHdd==0 && projectTotalSsd==0"
-              style="margin-bottom: 10px;margin-top: 15px" [nzMessage]="isVPCNotQuota" nzShowIcon></nz-alert>
-            <ng-template #isVPCNotQuota>
-              <div>
-                Quý khách chưa mua dung lượng Snapshot, vui lòng truy cập điều chỉnh VPC <a style="font-size:16px"
-                  [href]="'/app-smart-cloud/project/update/'+ projectId">{{projectName}} </a> tại đây để thực hiện bổ
-                sung
-                dung lượng.
-              </div>
-            </ng-template>
-            <!-- VPC du quota -->
-            <nz-alert nzBanner *ngIf="isQuotaVPC " style="margin-bottom: 10px;margin-top: 15px" [nzMessage]="nzQuotaVPC"
-            nzShowIcon></nz-alert>
-          <ng-template #nzQuotaVPC>
-            <div>
-              Dung lượng Snapshot đã dùng: {{quotaTypeSelected=='hdd' ? projectUsedHdd : projectUsedSsd}} GB ({{quotaTypeSelected=='hdd' ? 'HDD':'SSD'}}) / {{quotaTypeSelected=='hdd' ? projectTotalHdd: projectTotalSsd}} GB. Quý khách còn lại {{quotaTypeSelected=='hdd' ? projectRemainingHdd: projectRemainingSsd}} GB dung lượng  Snapshot
-            </div>
-          </ng-template>
-            <!-- VPC chưa mua snapshot theo loại của volume/máy ảo -->
-            <nz-alert nzBanner *ngIf="projectType==1 && quotaTypeSelected=='hdd' && projectTotalHdd==0 "
-              style="margin-bottom: 10px;margin-top: 15px" [nzMessage]="isVPCNotQuotaTypeHdd" nzShowIcon></nz-alert>
-            <ng-template #isVPCNotQuotaTypeHdd>
-              <div>
-                Quý khách chưa mua dung lượng Snapshot HDD, vui lòng truy cập điều chỉnh VPC <a style="font-size:16px"
-                  [href]="'/app-smart-cloud/project/update/'+ projectId">{{projectName}} </a> tại đây để thực hiện bổ
-                sung.
-              </div>
-            </ng-template>
-            <!-- VPC chưa mua snapshot theo loại của volume/máy ảo -->
-            <nz-alert nzBanner *ngIf="projectType==1 && quotaTypeSelected=='ssd' && projectTotalSsd==0 "
-              style="margin-bottom: 10px;margin-top: 15px" [nzMessage]="isVPCNotQuotaTypeSsd" nzShowIcon></nz-alert>
-            <ng-template #isVPCNotQuotaTypeSsd>
-              <div>
-                Quý khách chưa mua dung lượng Snapshot SSD, vui lòng truy cập điều chỉnh VPC <a style="font-size:16px"
-                  [href]="'/app-smart-cloud/project/update/'+ projectId">{{projectName}} </a> tại đây để thực hiện bổ
-                sung.
-              </div>
-            </ng-template>
-            <!-- VPC không đủ quota SSD-->
+            <!-- gói đủ quota cho dự án thường -->
             <nz-alert nzBanner
-              *ngIf="projectType==1 && quotaTypeSelected=='ssd'&& projectTotalSsd > 0  && projectRemainingSsd< quotaSelected  "
-              style="margin-bottom: 10px;margin-top: 15px" [nzMessage]="isVPCNoQuotaSsd" nzShowIcon></nz-alert>
-            <ng-template #isVPCNoQuotaSsd>
+              *ngIf="isPackageQuota && projectType!=1  && quotaTypeSelected && ( quotaTypeSelected=='hdd' ? availableSizeHDD >= quotaSelected : availableSizeSSD >= quotaSelected ) "
+              style="margin-bottom: 10px;margin-top: 15px" [nzMessage]="nzPackageQuota" nzShowIcon></nz-alert>
+            <ng-template #nzPackageQuota>
               <div>
-                Quý khách đã sử dụng hết quota Snapshot (SSD). Vui lòng bấm vào đây ( <a style="font-size:16px"
-                  [href]="'/app-smart-cloud/project/update/'+ projectId">{{projectName}} </a>) để mở rộng quota.
+                Dung lượng còn lại của gói Snapshot {{namePackage}} là {{quotaTypeSelected=='hdd'? availableSizeHDD :availableSizeSSD}} GB {{quotaTypeSelected=='hdd' ? 'HDD':'SSD'}}/ {{quotaTypeSelected=='hdd' ? this.packageSnapshotHdd:this.packageSnapshotSsd}} GB, chỉ đủ cho {{getInterruptionDay(quotaTypeSelected=='hdd'? availableSizeHDD :availableSizeSSD,quotaSelected)}} bản ghi Snapshot.             
               </div>
             </ng-template>
-            <!-- VPC không đủ quota HDD-->
+            <!-- gói không đủ quota cho dự án thường -->
             <nz-alert nzBanner
-              *ngIf="projectType==1 && quotaTypeSelected=='hdd' && projectTotalHdd > 0 && projectRemainingHdd< quotaSelected  "
-              style="margin-bottom: 10px;margin-top: 15px" [nzMessage]="isVPCNoQuotaHdd" nzShowIcon></nz-alert>
-            <ng-template #isVPCNoQuotaHdd>
+              *ngIf="isNotPackageQuota && projectType!=1  && quotaTypeSelected && (quotaTypeSelected=='hdd' ? availableSizeHDD < quotaSelected : availableSizeSSD < quotaSelected ) "
+              style="margin-bottom: 10px;margin-top: 15px" [nzMessage]="nzNotPackageQuota" nzShowIcon></nz-alert>
+            <ng-template #nzNotPackageQuota>
               <div>
-                Quý khách đã sử dụng hết quota Snapshot (HDD). Vui lòng bấm vào đây ( <a style="font-size:16px"
-                  [href]="'/app-smart-cloud/project/update/'+ projectId">{{projectName}} </a>) để mở rộng quota.
+                Dung lượng còn lại của gói Snapshot {{namePackage}} ({{quotaTypeSelected=='hdd' ? 'HDD':'SSD'}}) không đủ. Vui lòng thực hiện điều chỉnh Gói Snapshot <a (click)="navigateToPackageSnapshot(idSnapshotPackage)">{{namePackage}}</a> ({{quotaTypeSelected=='hdd' ? 'HDD':'SSD'}}) để có thể tiếp tục sử dụng dịch vụ   
+              </div>
+            </ng-template>
+            <!-- VPC  đủ quota -->
+            <nz-alert nzBanner
+              *ngIf="isVPCQuota && projectType ==1  && quotaTypeSelected && (quotaTypeSelected=='hdd' ? projectRemainingHdd >= quotaSelected : projectRemainingSsd >= quotaSelected ) "
+              style="margin-bottom: 10px;margin-top: 15px" [nzMessage]="nzVPCQuota" nzShowIcon></nz-alert>
+            <ng-template #nzVPCQuota>
+              <div>
+                Dung lượng còn lại của VPC {{projectName}} là {{quotaTypeSelected=='hdd' ? projectRemainingHdd : projectRemainingSsd}} GB {{quotaTypeSelected=='hdd' ? 'HDD':'SSD'}}/ {{quotaTypeSelected=='hdd' ?
+                projectTotalHdd : projectTotalSsd}} GB, chỉ đủ cho {{getInterruptionDay(quotaTypeSelected=='hdd'? projectRemainingHdd :projectRemainingSsd,quotaSelected)}} bản ghi Snapshot.
+              </div>
+            </ng-template>
+            <!-- VPC không đủ quota -->
+            <nz-alert nzBanner
+              *ngIf="isNotVPCQuota && projectType==1  && quotaTypeSelected && (quotaTypeSelected=='hdd' ? projectRemainingHdd < quotaSelected : projectRemainingSsd < quotaSelected ) "
+              style="margin-bottom: 10px;margin-top: 15px" [nzMessage]="nzNotVPCQuota" nzShowIcon></nz-alert>
+            <ng-template #nzNotVPCQuota>
+              <div>
+                Dung lượng còn lại của VPC {{projectName}}  là {{quotaTypeSelected=='hdd' ? projectRemainingHdd : projectRemainingSsd}} GB {{quotaTypeSelected=='hdd' ? 'HDD':'SSD'}}/ {{quotaTypeSelected=='hdd' ?
+                projectTotalHdd : projectTotalSsd}} GB. Vui lòng thực hiện điều chỉnh VPC <a  [href]="'/app-smart-cloud/project/update/'+ projectId">{{projectName}}</a> ({{quotaTypeSelected=='hdd'
+                ? 'HDD':'SSD'}}) để có thể tiếp tục sử dụng dịch vụ
               </div>
             </ng-template>
 
@@ -301,11 +231,13 @@
                         alt="" /></span></nz-form-label>
                   <nz-form-control>
                     <nz-input-number [(ngModel)]="numOfVersion" (keydown)="checkPossiblePress($event)"
-                      (ngModelChange)="changeNumberVersion($event)" style="width: 100%; margin-left: -1px"
+                       style="width: 100%; margin-left: -1px"
                       [ngModelOptions]="{standalone: true}" [nzMin]="0" [nzStep]="1" nzSize="large"></nz-input-number>
                   </nz-form-control>
                 </nz-form-item>
               </nz-col>
+
+
               <nz-col [nzXs]="24" [nzSm]="24" [nzMd]="12" [nzLg]="24" [nzXl]="24">
                 <nz-form-item style="margin-right:0.5rem; margin-left:0.5rem">
                   <nz-form-label>Mô tả</nz-form-label>
@@ -318,6 +250,16 @@
                 </nz-form-item>
               </nz-col>
             </nz-row>
+
+            <!-- Chưa có gói nào -->
+            <nz-alert *ngIf=" this.snapshotPackageArray?.length == 0  && projectType !=1" nzBanner
+              style="margin-bottom: 10px;margin-top: 15px" [nzMessage]="nzMessageNoData" nzShowIcon></nz-alert>
+            <ng-template #nzMessageNoData>
+              <div>
+                Quý khách chưa có gói Snapshot nào, để có thể sử dụng dịch vụ Snapshot, vui lòng tạo gói Snapshot
+                <a (click)="navigateToCreatePackage()">tại đây </a>
+              </div>
+            </ng-template>
           </div>
           <!-- </nz-spin> -->
         </nz-card>
@@ -334,7 +276,8 @@
             <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
             <div *ngIf="snapshotTypeCreate == 0 ||  (snapshotTypeCreate == 2 && selectedSnapshotType == 0)">
               <div style="margin-top: 10px" class="text-value">Volume</div>
-              <div style="margin-top: 10px" class="text-label truncate" [nz-tooltip]="selectedVolume?.name " *ngIf="selectedVolume">{{
+              <div style="margin-top: 10px" class="text-label truncate" [nz-tooltip]="selectedVolume?.name "
+                *ngIf="selectedVolume">{{
                 selectedVolume?.name }} {{quotaTypeSelected||quotaSelected ? '(' :'' }} {{quotaTypeSelected ?
                 quotaTypeSelected.toUpperCase() :''}} {{quotaTypeSelected&&quotaSelected ? ',' :'' }} {{quotaSelected ?
                 (quotaSelected +' GB'):''}} {{quotaTypeSelected||quotaSelected ? ')' :'' }}</div>
@@ -342,7 +285,8 @@
             </div>
             <div *ngIf="snapshotTypeCreate == 1 || (snapshotTypeCreate == 2 && selectedSnapshotType == 1)">
               <div style="margin-top: 10px" class="text-value">Máy ảo</div>
-              <div style="margin-top: 10px" class="text-label truncate" [nz-tooltip]="selectedVM?.name "  *ngIf="selectedVM">{{ selectedVM?.name }} {{quotaTypeSelected||quotaSelected
+              <div style="margin-top: 10px" class="text-label truncate" [nz-tooltip]="selectedVM?.name "
+                *ngIf="selectedVM">{{ selectedVM?.name }} {{quotaTypeSelected||quotaSelected
                 ? '(' :'' }} {{quotaTypeSelected ? quotaTypeSelected.toUpperCase() :''}}
                 {{quotaTypeSelected&&quotaSelected ? ',' :'' }} {{quotaSelected ? (quotaSelected+ ' GB'):''}}
                 {{quotaTypeSelected||quotaSelected ? ')' :'' }}</div>
@@ -384,28 +328,29 @@
     </nz-row>
   </form>
 
-  <nz-modal [(nzVisible)]="isVisibleCreate" nzTitle="Tạo lịch Snapshot"
-  (nzOnCancel)="handleCancel()" [nzStyle]="">
-  <ng-container *nzModalContent>
-    <div>
-      <div class="text-label" style=" margin-bottom: 10px; font-size:18px; text-align:center">Quý khách muốn thực hiện tạo lịch Snapshot?
+  <nz-modal [(nzVisible)]="isVisibleCreate" nzTitle="Tạo lịch Snapshot" (nzOnCancel)="handleCancel()" [nzStyle]="">
+    <ng-container *nzModalContent>
+      <div>
+        <div class="text-label" style=" margin-bottom: 10px; font-size:18px; text-align:center">Quý khách muốn thực hiện
+          tạo lịch Snapshot?
+        </div>
+        <p style="font-size:14px;color:#6c7093;text-align:center">Vui lòng cân nhắc thật kỹ trước khi click nút <b>Xác
+            nhận</b></p>
+
       </div>
-      <p style="font-size:14px;color:#6c7093;text-align:center">Vui lòng cân nhắc thật kỹ trước khi click nút <b>Xác nhận</b></p>
-      
+
+    </ng-container>
+    <div *nzModalFooter>
+      <button nz-button (click)="handleCancel()">
+        <img style="padding-right: 10px; margin-top: -4px" src="assets/imgs/cancel.svg" alt="" />{{'app.button.cancel' |
+        i18n}}
+      </button>
+      <!--  [disabled]="disableDelete" -->
+      <button nz-button nzType="primary" (click)="create()" [nzLoading]="loadingDelete">
+        <img style="padding-right: 10px; margin-top: -4px" src="assets/imgs/confirm.svg" alt="" />{{'app.button.confirm'
+        |
+        i18n}}
+      </button>
     </div>
-    
-  </ng-container>
-  <div *nzModalFooter>
-    <button nz-button (click)="handleCancel()">
-      <img style="padding-right: 10px; margin-top: -4px" src="assets/imgs/cancel.svg" alt="" />{{'app.button.cancel' |
-      i18n}}
-    </button>
-    <!--  [disabled]="disableDelete" -->
-    <button nz-button nzType="primary" (click)="create()" [nzLoading]="loadingDelete"
-     >
-      <img style="padding-right: 10px; margin-top: -4px" src="assets/imgs/confirm.svg" alt="" />{{'app.button.confirm' |
-      i18n}}
-    </button>
-  </div>
-</nz-modal>
+  </nz-modal>
 </ng-container>

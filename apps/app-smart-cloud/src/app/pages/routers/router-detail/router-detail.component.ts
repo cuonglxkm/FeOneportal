@@ -416,6 +416,13 @@ export class RouterDetailComponent implements OnInit {
               this.i18n.fanyi('app.status.fail'),
               this.i18n.fanyi('router.nofitacation.interface.remove.fail1')
             );
+          } else if (
+            e.error.detail.includes('vì đang được sử dụng trong VPN Connections')
+          ) {
+            this.notification.error(
+              this.i18n.fanyi('app.status.fail'),
+              this.i18n.fanyi('router.nofitacation.interface.remove.fail2')
+            );
           } else {
             this.notification.error(
               this.i18n.fanyi('app.status.fail'),
@@ -423,6 +430,7 @@ export class RouterDetailComponent implements OnInit {
             );
           }
           this.isLoadingDeleteRouterInterface = false;
+          this.cdr.detectChanges();
         },
       });
   }
@@ -464,6 +472,7 @@ export class RouterDetailComponent implements OnInit {
             this.i18n.fanyi('router.nofitacation.static.remove.fail')
           );
           this.isLoadingDeleteRouterStatic = false;
+          this.cdr.detectChanges();
         },
       });
   }

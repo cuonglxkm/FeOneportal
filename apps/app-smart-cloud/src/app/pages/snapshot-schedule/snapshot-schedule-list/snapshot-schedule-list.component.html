@@ -7,7 +7,7 @@
       <nz-breadcrumb-item>{{titleBreadcrumb }}</nz-breadcrumb-item>
       <nz-breadcrumb-item>{{breadcrumbBlockStorage}} </nz-breadcrumb-item>
       <nz-breadcrumb-item>{{'app.snapshot.schedule.label.name' |
-          i18n}}</nz-breadcrumb-item>
+        i18n}}</nz-breadcrumb-item>
     </nz-breadcrumb>
     <ng-template #separatorTemplate><img src="assets/imgs/arrow-square-right.svg" alt="" />
     </ng-template>
@@ -28,10 +28,10 @@
       <ng-container *ngSwitchCase="false">
         <nz-row nzJustify="space-between">
           <nz-col nzSpan="12">
-            <nz-select [nzPlaceHolder]="'Trạng thái'" [ngModel]="searchStatus" (ngModelChange)="onChangeStatus($event)"  [nzLabel]="getDisplayText()"  
-          
-              nzSize="large" style="margin-right: 15px; width: 170px;" nzPlaceHolder="Tất cả trạng thái"
-              nzTooltipTitle="Tìm kiếm theo trạng thái" nzTooltipPlacement="bottom" nz-tooltip>
+            <nz-select [nzPlaceHolder]="'Trạng thái'" [ngModel]="searchStatus" (ngModelChange)="onChangeStatus($event)"
+              [nzLabel]="getDisplayText()" nzSize="large" style="margin-right: 15px; width: 170px;"
+              nzPlaceHolder="Tất cả trạng thái" nzTooltipTitle="Tìm kiếm theo trạng thái" nzTooltipPlacement="bottom"
+              nz-tooltip>
               <nz-option nzValue="" nzLabel="Tất cả trạng thái"></nz-option>
               <nz-option nzValue="ACTIVE" nzLabel="Đang hoạt động"></nz-option>
               <nz-option nzValue="DISABLED" nzLabel="Gián đoạn"></nz-option>
@@ -78,8 +78,11 @@
               <td style="max-width:180px">{{data.serviceName}}</td>
               <td style="text-align: end;">{{data.maxSnapshot}}</td>
               <td>{{data.nextRuntime | date : 'HH:mm dd/MM/yyyy'}}</td>
-              <ng-container *ngIf="data.status | ServiceStatusPipe as statusModel" >
+              <ng-container *ngIf="data.status | ServiceStatusPipe as statusModel">
                 <td nzBreakWord nzAlign="left" [ngStyle]="{ color: statusModel.color }">
+                  <img *ngIf="data.status == 'ACTIVE' && data.warningMessage " nz-tooltip
+                    [nzTooltipTitle]="data.warningMessage | SuspendStatusPipe" src="assets/imgs/warning-message2.svg"
+                    style="margin-bottom: 5px">
                   <img *ngIf="data.status == 'DISABLED'" nz-tooltip
                     [nzTooltipTitle]="data.warningMessage | SuspendStatusPipe" src="assets/imgs/warning-message2.svg"
                     style="margin-bottom: 5px">
@@ -90,45 +93,18 @@
                 </td>
               </ng-container>
               <td class="" style="align-items: center;">
-  
-                  <img *ngIf="data.status == 'ACTIVE' && ('volumesnapshotschedule:Update' | IsPermissionPipe)"
-                  (click)="enableEdit(data)" src="assets/imgs/edit-2.svg" nz-tooltip nzTooltipTitle="Chỉnh sửa" nzTooltipPlacement="bottom" alt=""
-                 
+
+                <img *ngIf="data.status == 'ACTIVE' && ('volumesnapshotschedule:Update' | IsPermissionPipe)"
+                  (click)="enableEdit(data)" src="assets/imgs/edit-2.svg" nz-tooltip nzTooltipTitle="Chỉnh sửa"
+                  nzTooltipPlacement="bottom" alt=""
                   style="cursor: pointer; width: 20px; height: 20px; margin-bottom: 3px;" />
-                  <img src="assets/imgs/khoiphuc.svg" nz-tooltip nzTooltipTitle="Khôi phục" nzTooltipPlacement="bottom" style="width: 22px;height: 22px; cursor: pointer;" *ngIf="data.status == 'DISABLED' || data.status == 'SUSPENDED' && ('volumesnapshotschedule:VolumeSnapshotScheduleAction' | IsPermissionPipe)" (click)="enableRestart(data)" />
-                  <img src="assets/imgs/delete.svg"
-                  *ngIf="('volumesnapshotschedule:Delete' | IsPermissionPipe)"
-                  style="width: 30px;height: 30px; cursor: pointer;" nz-tooltip
-                  nzTooltipTitle="{{'app.delete' | i18n}}" nzTooltipPlacement="bottom"   (click)="showDelete(data)" />
-    
-                
-                <!-- <img nz-dropdown [nzDropdownMenu]="opMenu" src="assets/imgs/more1.svg" alt=""
-                  style="margin-left: 5px; cursor:pointer;" /> -->
-
-                 
-                  <!-- <li
+                <img src="assets/imgs/khoiphuc.svg" nz-tooltip nzTooltipTitle="Khôi phục" nzTooltipPlacement="bottom"
+                  style="width: 22px;height: 22px; cursor: pointer;"
                   *ngIf="data.status == 'DISABLED' || data.status == 'SUSPENDED' && ('volumesnapshotschedule:VolumeSnapshotScheduleAction' | IsPermissionPipe)"
-                  nz-menu-item (click)="enableRestart(data)">
-                  {{'app.restore' | i18n}}
-                </li> -->
-
-
-                <!-- <li *ngIf="('volumesnapshotschedule:Delete' | IsPermissionPipe)" nz-menu-item
-                  (click)="showDelete(data)" style="color: red">{{ 'app.delete' | i18n}}</li> -->
-
-                 
-
-                <!-- <nz-dropdown-menu #opMenu="nzDropdownMenu">
-                  <ul nz-menu>
-                    <li
-                      *ngIf="data.status == 'DISABLED' || data.status == 'SUSPENDED' && ('volumesnapshotschedule:VolumeSnapshotScheduleAction' | IsPermissionPipe)"
-                      nz-menu-item (click)="enableRestart(data)">
-                      {{'app.restore' | i18n}}
-                    </li>
-                    <li *ngIf="('volumesnapshotschedule:Delete' | IsPermissionPipe)" nz-menu-item
-                      (click)="showDelete(data)" style="color: red">{{ 'app.delete' | i18n}}</li>
-                  </ul>
-                </nz-dropdown-menu> -->
+                  (click)="enableRestart(data)" />
+                <img src="assets/imgs/delete.svg" *ngIf="('volumesnapshotschedule:Delete' | IsPermissionPipe)"
+                  style="width: 30px;height: 30px; cursor: pointer;" nz-tooltip nzTooltipTitle="{{'app.delete' | i18n}}"
+                  nzTooltipPlacement="bottom" (click)="showDelete(data)" />
               </td>
             </tr>
           </tbody>
@@ -148,7 +124,8 @@
           </nz-row>
           <nz-row style="margin-top: 20px">
             <nz-col class="text-center" style="width: 100%">
-              <span class="text-intro-desc">Giúp người dùng lưu lại trạng thái hiện tại của Volume/VM. Người dùng có thể sử dụng để sao lưu volume trước khi thực hiện 1 thao tác rủi ro đến dữ liệu trên VM.</span>
+              <span class="text-intro-desc">Giúp người dùng lưu lại trạng thái hiện tại của Volume/VM. Người dùng có thể
+                sử dụng để sao lưu volume trước khi thực hiện 1 thao tác rủi ro đến dữ liệu trên VM.</span>
             </nz-col>
           </nz-row>
           <button *ngIf="isCreateOrder" style="margin-top: 20px" nz-button [nzType]="'primary'"
@@ -168,13 +145,15 @@
     <nz-alert nzBanner style="margin-bottom: 10px;"
       nzMessage="{{ 'app.snapshot.schedule.descriptio.1' | i18n : { actionName: dataAction.name } }}"
       nzShowIcon></nz-alert>
-    <div class="text-label" style="margin-bottom: 3px; margin-top: 10px">Đế thực hiện xoá lịch Snapshot {{dataAction.name}}, vui lòng nhập tên lịch Snapshot để xác nhận.
+    <div class="text-label" style="margin-bottom: 3px; margin-top: 10px">Đế thực hiện xoá lịch Snapshot
+      {{dataAction.name}}, vui lòng nhập tên lịch Snapshot để xác nhận.
     </div>
     <input nz-input nzSize="large" style="margin-left: -3px" placeholder="{{dataAction.name}}" [(ngModel)]="nameDelete"
       (ngModelChange)="confirmNameDelete($event)" type="text" />
 
     <span *ngIf="isInput && nameDelete == ''" style="color: red;">Vui lòng nhập tên lịch Snapshot muốn xóa</span>
-    <span *ngIf="isInput && nameDelete != scheduleName && nameDelete != ''" style="color: red;">Vui lòng nhập đúng tên lịch Snapshot</span>
+    <span *ngIf="isInput && nameDelete != scheduleName && nameDelete != ''" style="color: red;">Vui lòng nhập đúng tên
+      lịch Snapshot</span>
   </ng-container>
   <div *nzModalFooter>
     <button nz-button (click)="handleCancel()">
@@ -182,8 +161,7 @@
       i18n}}
     </button>
     <!--  [disabled]="disableDelete" -->
-    <button nz-button nzType="primary" (click)="DeleteSchedule()" [nzLoading]="loadingDelete"
-     >
+    <button nz-button nzType="primary" (click)="DeleteSchedule()" [nzLoading]="loadingDelete">
       <img style="padding-right: 10px; margin-top: -4px" src="assets/imgs/confirm.svg" alt="" />{{'app.button.confirm' |
       i18n}}
     </button>
@@ -193,32 +171,35 @@
 <nz-modal [(nzVisible)]="isVisibleRestart" nzTitle="{{'app.snapshot.schedule.restore' | i18n}}"
   (nzOnCancel)="handleCancel()" [nzStyle]="modalStyle">
   <ng-container *nzModalContent>
-    <div  class="text-label" style="margin-bottom: 3px; margin-top: 10px">{{'app.snapshot.schedule.restore.confirm' |
+    <div class="text-label" style="margin-bottom: 3px; margin-top: 10px">{{'app.snapshot.schedule.restore.confirm' |
       i18n}}</div>
-       <nz-alert nzBanner
-      *ngIf="isEnableRestart && projectType !=1"
-       style="margin-bottom: 10px;margin-top: 15px" [nzMessage]="nzrestart" nzShowIcon></nz-alert>
-     <ng-template #nzrestart>
-       <div>
-        Vui lòng điều chỉnh dung lượng gói Snapshot {{packageName}} <a (click)="navigateToPackageDetail(snapshotPackageId)" style="text-decoration: underline;">Tại đây </a> để dịch vụ không bị gián đoạn
-       </div>
-     </ng-template>
-     <!-- Vui lòng điều chỉnh dương lượng Snapshot (@type) VPC [Tên VPC] Tại đây (Điều hướng đến điều chỉnh VPC) để dịch vụ không bị gián đoạn -->
-     <nz-alert nzBanner
-      *ngIf="isEnableRestartVpc && projectType ==1"
-       style="margin-bottom: 10px;margin-top: 15px" [nzMessage]="nzrestartVpc" nzShowIcon></nz-alert>
-     <ng-template #nzrestartVpc>
-       <div >
-        Vui lòng điều chỉnh dung lượng Snapshot () VPC {{projectName}} <a [routerLink]="['/app-smart-cloud/project/update/' + project]" style="text-decoration: underline;">Tại đây </a>  để dịch vụ không bị gián đoạn 
-       </div>
-     </ng-template>
+    <nz-alert nzBanner *ngIf="isEnableRestart && projectType !=1" style="margin-bottom: 10px;margin-top: 15px"
+      [nzMessage]="nzrestart" nzShowIcon></nz-alert>
+    <ng-template #nzrestart>
+      <div>
+        Vui lòng điều chỉnh dung lượng gói Snapshot {{packageName}} <a
+          (click)="navigateToPackageDetail(snapshotPackageId)" style="text-decoration: underline;">Tại đây </a> để dịch
+        vụ không bị gián đoạn
+      </div>
+    </ng-template>
+    <!-- Vui lòng điều chỉnh dương lượng Snapshot (@type) VPC [Tên VPC] Tại đây (Điều hướng đến điều chỉnh VPC) để dịch vụ không bị gián đoạn -->
+    <nz-alert nzBanner *ngIf="isEnableRestartVpc && projectType ==1" style="margin-bottom: 10px;margin-top: 15px"
+      [nzMessage]="nzrestartVpc" nzShowIcon></nz-alert>
+    <ng-template #nzrestartVpc>
+      <div>
+        Vui lòng điều chỉnh dung lượng Snapshot () VPC {{projectName}} <a
+          [routerLink]="['/app-smart-cloud/project/update/' + project]" style="text-decoration: underline;">Tại đây </a>
+        để dịch vụ không bị gián đoạn
+      </div>
+    </ng-template>
   </ng-container>
   <div *nzModalFooter>
     <button nz-button (click)="handleCancel()">
       <img style="padding-right: 10px; margin-top: -4px" src="assets/imgs/cancel.svg" alt="" />{{'app.button.cancel' |
       i18n}}
     </button>
-    <button nz-button nzType="primary" [disabled]="isEnableRestart|| isEnableRestartVpc" (click)="restartSnapshot()" [nzLoading]="loadingRestart">
+    <button nz-button nzType="primary" [disabled]="isEnableRestart|| isEnableRestartVpc" (click)="restartSnapshot()"
+      [nzLoading]="loadingRestart">
       <img style="padding-right: 10px; margin-top: -4px" src="assets/imgs/confirm.svg" alt="" />{{'app.button.confirm' |
       i18n}}
     </button>
@@ -247,17 +228,19 @@
             [maxLength]="50" />
           <ng-template #nameErrorTpl let-control>
             <ng-container *ngIf="control.hasError('required')">Vui lòng nhập tên lịch Snapshot</ng-container>
-            <ng-container *ngIf="control.hasError('pattern')">Tên chỉ có thể chứa các ký tự chữ và số (a-z, A-Z, 0-9, '_')</ng-container>
+            <ng-container *ngIf="control.hasError('pattern')">Tên chỉ có thể chứa các ký tự chữ và số (a-z, A-Z, 0-9,
+              '_')</ng-container>
             <ng-container *ngIf="control.hasError('maxLength')">{{'app.backup.package.name.maxLength' |
               i18n}}</ng-container>
+               <ng-container *ngIf="control.hasError('duplicateName')">Tên lịch Snapshot này đã được sử dụng, vui
+                lòng chọn tên khác</ng-container>
           </ng-template>
         </nz-form-control>
       </nz-form-item>
       <nz-form-item>
         <nz-form-label><span>{{ 'app.choose.perform.snapshot.time' | i18n }} (<span class="text-red">*</span>)
-            <img [nz-tooltip]="'Thời gian trong ngày Snapshot sẽ được thực hiện'"
-              style="margin-left: 5px;" src="assets/imgs/pajamas_question.svg"
-              alt="" /></span></nz-form-label>
+            <img [nz-tooltip]="'Thời gian trong ngày Snapshot sẽ được thực hiện'" style="margin-left: 5px;"
+              src="assets/imgs/pajamas_question.svg" alt="" /></span></nz-form-label>
         <nz-time-picker style="width: 100%; border-radius: 8px" [(ngModel)]="time"
           [ngModelOptions]="{ standalone: true }" nzFormat="HH:mm" nzSize="large"></nz-time-picker>
       </nz-form-item>
@@ -283,11 +266,9 @@
     <button nz-button nzType="default" (click)="handleCancel()" class="button-cancel">
       <span nz-icon nzType="close" nzTheme="outline"></span>{{'app.button.cancel' | i18n}}
     </button>
-    
-    <button nz-button nzType="primary"  (click)="handleUpdateOk()"
-      [nzLoading]="isLoadingUpdate" class="button-ok">
+
+    <button nz-button nzType="primary" (click)="handleUpdateOk()" [nzLoading]="isLoadingUpdate" class="button-ok">
       <span nz-icon nzType="check" nzTheme="outline"></span>{{'app.button.confirm' | i18n}}
     </button>
   </div>
 </nz-modal>
-

@@ -17,6 +17,7 @@ export class DeleteVpnConnectionComponent{
   @Input() region; number
   @Input() project: number
   @Input() vpnconnectionid: string
+  @Input() status: string
   @Input() nameVpnconnection: string
   @Output() onOk = new EventEmitter()
   @Output() onCancel = new EventEmitter()

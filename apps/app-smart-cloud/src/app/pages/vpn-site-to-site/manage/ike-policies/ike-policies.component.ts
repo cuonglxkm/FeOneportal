@@ -4,7 +4,7 @@ import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { IkePolicyService } from 'src/app/shared/services/ike-policy.service';
 import { BaseResponse, ProjectModel, RegionModel } from '../../../../../../../../libs/common-utils/src';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
-import { debounceTime, Subject } from 'rxjs';
+import { debounceTime, Subject, take } from 'rxjs';
 import { getCurrentRegionAndProject } from '@shared';
 import { PolicyService } from 'src/app/shared/services/policy.service';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
@@ -71,15 +71,13 @@ export class IkePoliciesComponent {
     this.formSearchIkePolicy.projectId = this.project
     this.formSearchIkePolicy.regionId = this.region
     this.formSearchIkePolicy.searchValue =this.value.trim()
-    console.log("get data");
-    console.log(this.formSearchIkePolicy);
     this.formSearchIkePolicy.pageSize = this.pageSize
     this.formSearchIkePolicy.pageNumber = this.pageIndex
     this.ikePolicyService.getIKEpolicy(this.formSearchIkePolicy)
       .pipe(debounceTime(500))
+      .pipe(take(1))
       .subscribe(data => {
       this.isLoading = false
-        console.log('data- IKE---', data)
       this.response = data;
       this.isCreatePermission = this.policyService.hasPermission("vpnsitetosites:VPNCreateIKEPolicy");
     }, error => {

@@ -27,15 +27,14 @@
       <ng-container *ngSwitchCase="false">
         <nz-row nzJustify="space-between">
           <nz-col nzSpan="12">
- 
+
             <nz-select [(ngModel)]="status" (ngModelChange)="search(false)" nzSize="large" style="width: 200px">
               <nz-option *ngFor="let p of listStatus" [nzValue]="p.value" [nzLabel]="p.label"></nz-option>
-            </nz-select>          
+            </nz-select>
             <nz-input-group style="width: 350px; margin-left: 15px;" [nzPrefix]="prefixIconSearch" nzSize="large">
-              <input name="name" nz-input [(ngModel)]="value"
-              (keyup.enter)="onInputChange(value)" (input)="onInputChange($event.target['value'])"
-                placeholder="Tìm kiếm theo tên"  />
-              </nz-input-group>
+              <input name="name" nz-input [(ngModel)]="value" (keyup.enter)="onInputChange(value)"
+                (input)="onInputChange($event.target['value'])" placeholder="Tìm kiếm theo tên" />
+            </nz-input-group>
 
 
             <ng-template #prefixIconSearch>
@@ -56,7 +55,7 @@
           <thead>
             <tr>
               <th nzLeft>{{ 'app.snapshot.name' | i18n }}</th>
-              <th nzLeft>Gói Snapshot</th>
+              <th nzLeft *ngIf="projectType !=1">Gói Snapshot</th>
               <th nzLeft>{{ 'app.capacity' | i18n }} (GB)</th>
               <th nzLeft>Volume/VM</th>
               <th nzLeft>Loại Snapshot</th>
@@ -68,10 +67,11 @@
           <tbody>
             <tr *ngFor="let data of fixedTable.data">
               <td style="max-width:180px">
-                <a *ngIf="!isProcessingStatus(data.resourceStatus)" (click)="navigateToDetail(data.id)">{{data.name}}</a>
+                <a *ngIf="!isProcessingStatus(data.resourceStatus)"
+                  (click)="navigateToDetail(data.id)">{{data.name}}</a>
                 <a *ngIf="isProcessingStatus(data.resourceStatus)" style="cursor: text;">{{data.name}}</a>
               </td>
-              <td style="max-width:180px"><a
+              <td *ngIf="projectType !=1" style="max-width:180px"><a
                   (click)="navigateToPackageDetail(data.snapshotPackageId)">{{data.packageName}}</a></td>
               <td style="text-align: right">{{data.sizeInGB}}</td>
               <td style="max-width:180px">{{data.fromRootVolume == true ? data.instanceName : data.volumeName}}</td>
@@ -94,8 +94,8 @@
               <td>
                 <img
                   *ngIf="data.status != 'CREATING' && data.status != 'RESIZING'&& data.status != 'DELETING' && data.status!='SUSPENDED' && data.status !='ERROR_DELETING' && ('volumesnapshot:Update' | IsPermissionPipe)"
-                  (click)="enableEdit(data)" src="assets/imgs/edit-2.svg" alt=""
-                 nz-tooltip nzTooltipTitle="{{'app.text.edit' | i18n}}"
+                  (click)="enableEdit(data)" src="assets/imgs/edit-2.svg" alt="" nz-tooltip
+                  nzTooltipTitle="{{'app.text.edit' | i18n}}"
                   style="cursor: pointer; width: 20px; height: 20px; margin-bottom: 3px;" />
                 <img nz-dropdown [nzDropdownMenu]="opMenu" src="assets/imgs/more1.svg" alt=""
                   style="margin-left: 5px; cursor:pointer;" />
@@ -141,9 +141,10 @@
                 thể sử dụng để sao lưu volume trước khi thực hiện 1 thao tác rủi ro đến dữ liệu trên VM.</span>
             </nz-col>
           </nz-row>
-          <button *ngIf="isCreateOrder" style="margin-top: 20px" nz-button [nzType]="'primary'" (click)="navigateToCreate()" nzSize="large">
+          <button *ngIf="isCreateOrder" style="margin-top: 20px" nz-button [nzType]="'primary'"
+            (click)="navigateToCreate()" nzSize="large">
             <img style="padding-right: 10px; margin-top: -4px" src="assets/imgs/cloud-plus-bold.svg" alt="" />
-            Khởi tạo snapshot
+            Khởi tạo Snapshot
           </button>
         </result>
       </ng-container>
@@ -200,6 +201,8 @@
                 </ng-container>
                 <ng-container *ngIf="control.hasError('maxLength')">{{ 'volume.notification.input.name.maxLength' | i18n
                   }}</ng-container>
+                <ng-container *ngIf="control.hasError('duplicateName')">Tên Snapshot này đã được sử dụng, vui lòng chọn
+                  tên khác</ng-container>
               </ng-template>
             </nz-form-control>
 

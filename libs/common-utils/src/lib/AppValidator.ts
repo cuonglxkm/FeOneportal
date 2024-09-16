@@ -510,7 +510,7 @@ export const fileValidator: ValidatorFn = (control: AbstractControl): Validation
 };
 
 export function cidrValidator(control: AbstractControl): ValidationErrors | null {
-  const cidrPattern = /^(25[0-5]|2[0-4][0-9]|[0-1]?[1-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[0-1]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[0-1]?[0-9][0-9]?)\.0\/24$/;
+  const cidrPattern = /^(25[0-5]|2[0-4][0-9]|[0-1]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[0-1]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[0-1]?[0-9][0-9]?)\.0\/(24)$|^(25[0-5]|2[0-4][0-9]|[0-1]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[0-1]?[0-9][0-9]?)\.0\.0\/(16)$/;
   const value = control.value?.trim();
 
   if (!value) {
