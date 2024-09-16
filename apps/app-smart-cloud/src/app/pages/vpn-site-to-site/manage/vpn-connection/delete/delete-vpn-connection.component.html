@@ -5,6 +5,13 @@ style="cursor: pointer; width: 28px; height: 28px"
   [nzPopoverContent]="'app.text.delete' |i18n"
   nzPopoverPlacement="bottom"
   (click)="showModal()"
+  [ngStyle]="{
+    filter:
+      status === 'PENDING_CREATE'
+        ? 'grayscale(100%)'
+        : ''
+  }"
+  [class.disabled]="status === 'PENDING_CREATE'" 
 />
 <nz-modal
   [(nzVisible)]="isVisible"
