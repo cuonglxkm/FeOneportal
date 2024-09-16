@@ -124,10 +124,8 @@ export class EndpointCreateComponent implements OnInit {
     // this.EndpointCreate.regionId = 0;
     // this.EndpointCreate.serviceType = 0;
     this.EndpointCreate.actionType = 0;
-    // this.EndpointCreate.serviceInstanceId = 0;
     this.EndpointCreate.createDate = this.today;
-    // this.EndpointCreate.serviceName = "Endpoint";
-    // this.EndpointCreate.serviceType = 29;
+    this.EndpointCreate.serviceName = this.form.controls.name.value;
     this.EndpointCreate.expireDate = this.expiredDate;
     this.EndpointCreate.offerId = this.selectedOfferId;
     this.EndpointCreate.isSendMail = true;
