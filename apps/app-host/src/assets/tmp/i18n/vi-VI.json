@@ -2343,6 +2343,17 @@
   "app.version.current": "Đang dùng",
   "app.version.arrangement": "Điều khoản dịch vụ",
   "app.version.note-title": "Quý khách lưu ý",
+  "app.cluster.day-of-month": "Ngày trong tháng",
+  "app.cluster.auto-update-version": "Tự động cập nhật phiên bản Kubernetes",
+  "app.day.now": "Bây giờ",
+
+  "app.day.monday": "Thứ 2",
+  "app.day.tuesday": "Thứ 3",
+  "app.day.wednesday": "Thứ 4",
+  "app.day.thursday": "Thứ 5",
+  "app.day.friday": "Thứ 6",
+  "app.day.saturday": "Thứ 7",
+  "app.day.sunday": "Chủ nhật",
 
   "cluster.validate.required": "Không được để trống!",
   "cluster.placeholder.cluster-name": "Nhập tên cluster",
