@@ -104,6 +104,9 @@ export class SnapshotListComponent implements OnInit {
 // validate name khi nhap trung
 duplicateNameValidator(control) {
   const value = control.value;
+  if (!this.dataSelected || value==this.dataSelected.name) {
+    return null;
+  }
   // Check if the input name is already in the list
   if (this.nameList && this.nameList.includes(value)) {
     return { duplicateName: true };
@@ -370,7 +373,8 @@ duplicateNameValidator(control) {
       'EXTENDING',
       'RESIZING',
       'ERROR_DELETING',
-      'PROCESSING'
+      'PROCESSING',
+      'DISABLED'
     ];
     return processingStatuses.includes(status);
   }

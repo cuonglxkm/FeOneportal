@@ -39,6 +39,8 @@ export class SnapshotScheduleDetailComponent implements OnInit {
   labelMode = 'Hằng ngày';
   titleBreadcrumb:string;
   breadcrumbBlockStorage:string;
+  description:string;
+  snapshotPackageId:number;
 
   @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
   url = window.location.pathname;
@@ -67,7 +69,7 @@ export class SnapshotScheduleDetailComponent implements OnInit {
     this.dateList.set('5', 'Thứ sáu');
     this.dateList.set('6', 'Thứ bảy');
 
-    this.doGetDetailSnapshotSchedule(id, this.customerID);
+    this.doGetDetailSnapshotSchedule(id, this.customerID, this.project, this.region);
   }
   constructor(
     private router: Router,
@@ -78,7 +80,7 @@ export class SnapshotScheduleDetailComponent implements OnInit {
     private notification: NzNotificationService
   ) {}
 
-  doGetDetailSnapshotSchedule(id: number, userId: number) {
+  doGetDetailSnapshotSchedule(id: number, userId: number, projectId:number, regionId:number ) {
     this.isLoading = true;
     this.snapshotService
       .getDetailSnapshotSchedule(id)
@@ -87,6 +89,8 @@ export class SnapshotScheduleDetailComponent implements OnInit {
           this.isLoading = false;
           this.data = data;
           this.scheduleName = data.name;
+          this.description = data.description
+          this.snapshotPackageId=data.snapshotPackageId
           this.volumeId = data.serviceId;
           this.volumeName = data.volumeName;
           this.timeString = Date.parse(data.runtime);
@@ -114,15 +118,15 @@ export class SnapshotScheduleDetailComponent implements OnInit {
         }
       },error =>{      
         if(error.status===500){
-          this.router.navigate(['/app-smart-cloud/schedule/snapshot']);
-          this.notification.error('Thất bại',error.error.title );
+          this.navigateToBreadcrumb();
+          this.notification.error('Thất bại',error.error.message );
         }
         
       });
   }
   navigateToSnapshotSchedule() {
     if (this.region === RegionID.ADVANCE) {
-      this.router.navigate(['/app-smart-cloud/schedule-advance/snapshot']);
+      this.router.navigate(['/app-smart-cloud/schedule/snapshot-advance']);
     } else {
       this.router.navigate(['/app-smart-cloud/schedule/snapshot']);
     }

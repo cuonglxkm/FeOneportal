@@ -98,7 +98,7 @@
         <nz-col nzSpan="12">
           <nz-row style="padding: 12px 0 12px 0">
             <span *ngIf="typeProject != 1" class="text-label customSpan" style="width: 35%">Gói Snapshot:</span>
-            <a *ngIf="typeProject != 1" class="text-value-detail-href customSpan truncate" href="/app-smart-cloud/snapshot/packages/detail/{{data.snapshotPackageId}}" [nz-tooltip]="data.packageName">{{data.packageName}}</a>
+            <a *ngIf="typeProject != 1" class="text-value-detail-href customSpan truncate" href="/app-smart-cloud/snapshot/packages/detail/{{data?.snapshotPackageId}}" [nz-tooltip]="data?.packageName">{{data?.packageName}}</a>
           </nz-row>
         </nz-col>
       </nz-row>
@@ -107,15 +107,22 @@
       <nz-form-item>
         <nz-form-label>Mô tả</nz-form-label>
         <nz-form-control>
-          <nz-textarea-count [nzMaxCharacterCount]="255">
-          <textarea
+          <!-- <nz-textarea-count [nzMaxCharacterCount]="255"> -->
+          <!-- <textarea
             rows="4"
             nz-input
             [(ngModel)]="data.description"
             disabled="true"
             [ngModelOptions]="{ standalone: true }"
+          ></textarea> -->
+          <textarea
+            rows="4"
+            nz-input
+            [placeholder]="description"
+            disabled="true"
+         
           ></textarea>
-          </nz-textarea-count>
+          <!-- </nz-textarea-count> -->
         </nz-form-control>
       </nz-form-item>
     </form>

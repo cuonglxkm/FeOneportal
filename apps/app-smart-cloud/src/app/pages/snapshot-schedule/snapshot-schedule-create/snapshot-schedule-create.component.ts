@@ -409,7 +409,7 @@ export class SnapshotScheduleCreateComponent implements OnInit {
     // dự án thường
     if (this.projectType != 1 && this.selectedSnapshotPackage) {
 
-      this.packageSnapshotService.detail(this.selectedSnapshotPackage.id, this.project)
+      this.packageSnapshotService.detail(this.selectedSnapshotPackage.id)
         .pipe(finalize(() => {
           // this.checkDisable();
         }))
