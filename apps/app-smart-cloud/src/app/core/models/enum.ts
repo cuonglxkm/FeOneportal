@@ -42,3 +42,9 @@ export enum LazySelPeopleEnum {
 export enum SignInProvider {
     PASSWORD = 'password'
 }
+
+export enum PriceType {
+    PerDay = 1,
+    PerMonth = 2,
+    PerYear = 3,
+}

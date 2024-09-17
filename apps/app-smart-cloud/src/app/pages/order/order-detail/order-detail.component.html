@@ -218,8 +218,8 @@
           <tr>
             <th style="width: 200px;">{{ 'app.order-detail.serviceName' | i18n }}</th>
             <th>{{ 'app.payment.service.type' | i18n }}</th>
-            <th>{{ 'app.order-detail.price' | i18n }}</th>
-            <th>{{ 'app.order-detail.remain' | i18n }}</th>
+            <th>{{ (this.priceType == PriceType.PerMonth ? 'app.order-detail.price' : 'app.order-detail.price.year') | i18n }}</th>
+            <th>{{ (this.priceType == PriceType.PerMonth ? 'app.order-detail.remain' : 'app.order-detail.remain.year') | i18n }}</th>
             <th>{{ 'app.order-detail.quantity' | i18n }}</th>
             <th>{{ 'app.order-detail.totalPrice' | i18n }}</th>
           </tr>

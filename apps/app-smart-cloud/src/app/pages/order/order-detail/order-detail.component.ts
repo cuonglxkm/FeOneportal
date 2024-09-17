@@ -16,6 +16,7 @@ import { DataPayment, ItemPayment } from '../../instances/instances.model';
 import { InstancesService } from '../../instances/instances.service';
 import { OrderItem } from 'src/app/shared/models/price';
 import { CommonService } from 'src/app/shared/services/common.service';
+import { PriceType } from 'src/app/core/models/enum';
 
 @Component({
   selector: 'one-portal-order-detail',
@@ -40,6 +41,8 @@ export class OrderDetailComponent {
   isLoadingTotalAmount: boolean = false
   isIppublic = true
   serviceSpec: any
+  priceType: PriceType;
+  PriceType = PriceType;
   constructor(
     private router: Router,
     private activatedRoute: ActivatedRoute,
@@ -124,7 +127,8 @@ export class OrderDetailComponent {
             })
 
             this.serviceSpec = JSON.parse(data?.orderItems[0]?.serviceDetail);
-
+            var offerPriceType = this.serviceSpec?.OfferPriceType ?? "PerMonth";
+            this.priceType = PriceType[offerPriceType as keyof typeof PriceType];
             if(data.statusCode == 1){
               data.statusCode = 6
             }else if(data.statusCode == 0){
@@ -172,6 +176,8 @@ export class OrderDetailComponent {
             })
 
             this.serviceSpec = JSON.parse(data?.orderItems[0]?.serviceDetail);
+            var offerPriceType = this.serviceSpec?.OfferPriceType ?? "PerMonth";
+            this.priceType = PriceType[offerPriceType as keyof typeof PriceType];
             console.log(this.serviceSpec);
             
 
