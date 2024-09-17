@@ -92,7 +92,7 @@
                   {{ statusModel.status }}
                 </td>
               </ng-container>
-              <td class="" style="align-items: center;">
+              <td class="" style="align-items: center;" *ngIf="data.status != 'SUSPENDED'">
 
                 <img *ngIf="data.status == 'ACTIVE' && ('volumesnapshotschedule:Update' | IsPermissionPipe)"
                   (click)="enableEdit(data)" src="assets/imgs/edit-2.svg" nz-tooltip nzTooltipTitle="Chỉnh sửa"
