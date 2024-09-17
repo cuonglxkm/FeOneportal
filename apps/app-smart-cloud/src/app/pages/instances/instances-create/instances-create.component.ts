@@ -1432,8 +1432,8 @@ export class InstancesCreateComponent implements OnInit {
 
   getAllSSHKey() {
     this.listSSHKey = [];
-    this.sshKeyService
-      .getSshKeys(this.userId, '',this.region,1, 999999, '')
+    this.dataService
+      .getAllSSHKey(this.region, this.userId, 999999, 1)
       .subscribe((data: any) => {
         data.records.forEach((e) => {
           const itemMapper = new SHHKeyModel();

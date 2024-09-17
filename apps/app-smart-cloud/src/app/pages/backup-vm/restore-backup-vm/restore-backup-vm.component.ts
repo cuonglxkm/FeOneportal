@@ -345,6 +345,10 @@ export class RestoreBackupVmComponent implements OnInit {
       )
       .subscribe((data) => {
         this.backupVmModel = data;
+        this.restoreInstanceBackup.encryption =
+          this.backupVmModel.volumeBackups.filter(
+            (e) => e.isBootable == true
+          )[0].isEncryption;
         this.dataService.getById(this.backupVmModel.instanceId).subscribe({
           next: (data) => {
             this.instanceModel = data;

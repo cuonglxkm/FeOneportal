@@ -569,7 +569,7 @@
               nz-checkbox
               [(ngModel)]="restoreInstanceBackup.encryption"
               [ngModelOptions]="{ standalone: true }"
-              [disabled]="isSnapshot"
+              [disabled]="true"
               >{{ 'volume.info.type.encrypt' | i18n }}
               <img
                 [nz-tooltip]="'volume.tooltip.type.encrypt' | i18n"
