@@ -39,9 +39,11 @@
             style="margin-bottom: 10px;margin-top: 15px" [nzMessage]="isPackageQuota" nzShowIcon></nz-alert>
           <ng-template #isPackageQuota>
             <div>
-              Dung lượng còn lại của gói Snapshot {{namePackage}} là {{quotaTypeSelected=='hdd'? availableSizeHDD
-              :availableSizeSSD}} GB {{quotaTypeSelected=='hdd' ? 'HDD':'SSD'}}/ {{quotaTypeSelected=='hdd' ?
-              this.packageSnapshotHdd:this.packageSnapshotSsd}} GB
+              Dung lượng gói Snapshot đã dùng: {{quotaTypeSelected=='hdd' ? packageUsedHdd :packageUsedSsd}} GB {{quotaTypeSelected=='hdd' ? 'HDD':'SSD'}}/{{quotaTypeSelected=='hdd' ?
+              this.packageSnapshotHdd:this.packageSnapshotSsd}} GB. Quý khách còn lại {{quotaTypeSelected=='hdd'? availableSizeHDD
+              :availableSizeSSD}} GB dung lượng Snapshot
+
+             
             </div>
           </ng-template>
           <!-- gói không đủ quota cho dự án thường -->

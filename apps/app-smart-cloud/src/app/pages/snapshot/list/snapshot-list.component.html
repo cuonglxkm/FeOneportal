@@ -67,7 +67,7 @@
           <tbody>
             <tr *ngFor="let data of fixedTable.data">
               <td style="max-width:180px">
-                <a *ngIf="!isProcessingStatus(data.resourceStatus)"
+                <a *ngIf="!isProcessingStatus(data.resourceStatus) "
                   (click)="navigateToDetail(data.id)">{{data.name}}</a>
                 <a *ngIf="isProcessingStatus(data.resourceStatus)" style="cursor: text;">{{data.name}}</a>
               </td>
@@ -93,11 +93,11 @@
               <td>{{data.startDate | date: 'HH:mm:ss dd/MM/yyyy'}}</td>
               <td>
                 <img
-                  *ngIf="data.status != 'CREATING' && data.status != 'RESIZING'&& data.status != 'DELETING' && data.status!='SUSPENDED' && data.status !='ERROR_DELETING' && ('volumesnapshot:Update' | IsPermissionPipe)"
+                  *ngIf="!isProcessingStatus(data.resourceStatus) && ('volumesnapshot:Update' | IsPermissionPipe) && (data?.resourceStatus!='SUSPENDED' && data?.serviceStatus!='SUSPENDED')"
                   (click)="enableEdit(data)" src="assets/imgs/edit-2.svg" alt="" nz-tooltip
                   nzTooltipTitle="{{'app.text.edit' | i18n}}"
                   style="cursor: pointer; width: 20px; height: 20px; margin-bottom: 3px;" />
-                <img nz-dropdown [nzDropdownMenu]="opMenu" src="assets/imgs/more1.svg" alt=""
+                <img *ngIf="!isProcessingStatus(data.resourceStatus) && (data?.resourceStatus!='SUSPENDED' && data?.serviceStatus!='SUSPENDED')" nz-dropdown [nzDropdownMenu]="opMenu" src="assets/imgs/more1.svg" alt=""
                   style="margin-left: 5px; cursor:pointer;" />
                 <nz-dropdown-menu #opMenu="nzDropdownMenu">
                   <ul nz-menu>

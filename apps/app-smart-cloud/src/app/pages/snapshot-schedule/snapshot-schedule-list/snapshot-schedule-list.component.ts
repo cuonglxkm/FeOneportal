@@ -12,7 +12,7 @@ import { TimeCommon } from '../../../shared/utils/common';
 import { size } from 'lodash';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from '@core';
-import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
+import { AbstractControl, FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
 import { time } from 'echarts';
 import { DatePipe } from '@angular/common';
 import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
@@ -160,16 +160,23 @@ export class SnapshotScheduleListComponent implements OnInit {
       this.searchSnapshotScheduleList(checkBegin);
     });
     this.VMsnap = this.i18n.fanyi('app.vm.snapshot')
+    this.getSnapSchedules(true)
   }
   duplicateNameValidator(control) {
+    console.log("controllll", control)
     const value = control.value;
+    if (!this.dataAction || value==this.dataAction.name) {
+      return null;
+    }
     // Check if the input name is already in the list
     if (this.nameList && this.nameList.includes(value)) {
       return { duplicateName: true };
-    } else {
+    } 
+    else {
       return null;
     }
   }
+  
 
   // private doGetSnapSchedules(pageSize: number, pageNumber: number, regionId: number, projectId: number, name: string, volumeName: string, checkBegin: boolean) {
   //   this.isLoadingEntities = true;
@@ -220,6 +227,9 @@ export class SnapshotScheduleListComponent implements OnInit {
     this.formSearchScheduleSnapshot.volumeName = ''
     this.formSearchScheduleSnapshot.ssPackageId = ''
     this.snapshot.getListSchedule(this.formSearchScheduleSnapshot)
+    .pipe(finalize(() => {
+      this.isLoadingEntities = false;
+    }))
       .subscribe({
         next: (next) => {
           this.response = next;
