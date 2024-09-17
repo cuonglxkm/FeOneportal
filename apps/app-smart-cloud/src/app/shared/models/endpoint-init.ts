@@ -22,6 +22,7 @@ export class EndpointCreate {
   note: string
   isTrial: boolean
   offerId: number
+  offerPriceType: string
   couponCode: string
   dhsxkd_SubscriptionId: string
   dSubscriptionNumber: string
@@ -33,7 +34,7 @@ export class EndpointCreate {
   name: string
   username: string
   email: string
-  quantity: string
+  quantity: number
   duration: number
   endDatePeriod: Date
 }

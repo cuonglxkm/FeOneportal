@@ -16,6 +16,7 @@ import { InstancesService } from '../../instances/instances.service';
 import { EndpointService } from 'src/app/shared/services/endpoint.service';
 import { EndpointCreate } from 'src/app/shared/models/endpoint-init';
 import { slider } from '../../../../../../../libs/common-utils/src';
+import { PriceType } from 'src/app/core/models/enum';
 
 @Component({
   selector: 'one-portal-endpoint-create',
@@ -35,6 +36,7 @@ export class EndpointCreateComponent implements OnInit {
   totalVAT = 0;
 
   selectedOfferId: number = 0;
+  priceType: number = 0;
 
   EndpointCreate: EndpointCreate = new EndpointCreate();
   totalincludesVAT: number = 0;
@@ -128,6 +130,7 @@ export class EndpointCreateComponent implements OnInit {
     this.EndpointCreate.serviceName = this.form.controls.name.value;
     this.EndpointCreate.expireDate = this.expiredDate;
     this.EndpointCreate.offerId = this.selectedOfferId;
+    this.EndpointCreate.offerPriceType = PriceType[this.priceType];
     this.EndpointCreate.isSendMail = true;
     this.EndpointCreate.name = this.form.controls.name.value;
     this.EndpointCreate.username = this.form.controls.username.value;
@@ -153,7 +156,7 @@ export class EndpointCreateComponent implements OnInit {
   getTotalAmount() {
     this.initEndpoint();
     let itemPayment: ItemPayment = new ItemPayment();
-    itemPayment.orderItemQuantity = this.form.controls.numberOfLicense.value;
+    itemPayment.orderItemQuantity = 1;//this.form.controls.numberOfLicense.value;
     itemPayment.specificationString = JSON.stringify(this.EndpointCreate);
     itemPayment.specificationType = 'endpoint_create';
     itemPayment.serviceDuration = this.form.controls.time.value;
@@ -181,6 +184,7 @@ export class EndpointCreateComponent implements OnInit {
                 (e: OfferItem) => e.status.toUpperCase() == 'ACTIVE'
               );
               this.selectedOfferId = this.listOffers[0].id;
+              this.priceType = this.listOffers[0].price.priceType;
               this.getTotalAmount();
             });
         }
@@ -194,10 +198,11 @@ export class EndpointCreateComponent implements OnInit {
     this.initEndpoint();
     let specification = JSON.stringify(this.EndpointCreate);
     let orderItemOS = new OrderItem();
-    orderItemOS.orderItemQuantity = this.form.controls.numberOfLicense.value;
+    orderItemOS.orderItemQuantity = 1;//this.form.controls.numberOfLicense.value;
     orderItemOS.specification = specification;
     orderItemOS.specificationType = 'endpoint_create';
     orderItemOS.price = this.totalAmount;
+    orderItemOS.priceType = this.priceType;
     orderItemOS.serviceDuration = this.form.controls.time.value;
     this.orderItem.push(orderItemOS);
 

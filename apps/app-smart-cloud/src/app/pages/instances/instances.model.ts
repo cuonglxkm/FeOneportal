@@ -347,6 +347,7 @@ export class OrderItem {
   specification: string;
   specificationType: string;
   price: number;
+  priceType: number;
   serviceDuration: number;
   orderItemPrices?: OrderItemPrices[];
 }
