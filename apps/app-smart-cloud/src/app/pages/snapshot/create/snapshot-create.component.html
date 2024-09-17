@@ -64,7 +64,8 @@
             style="margin-bottom: 10px;margin-top: 15px" [nzMessage]="isVPCQuota" nzShowIcon></nz-alert>
           <ng-template #isVPCQuota>
             <div>
-              Dung lượng còn lại của VPC {{projectName}} là {{quotaTypeSelected=='hdd' ? projectRemainingHdd : projectRemainingSsd}} GB {{quotaTypeSelected=='hdd' ? 'HDD':'SSD'}}/ {{quotaTypeSelected=='hdd' ? projectTotalHdd : projectTotalSsd}} GB.
+              Dung lượng Snapshot đã dùng: {{quotaTypeSelected=='hdd' ? projectUsedHdd : projectUsedSsd}} GB {{quotaTypeSelected=='hdd' ? 'HDD':'SSD'}}/{{quotaTypeSelected=='hdd' ? projectTotalHdd : projectTotalSsd}} GB. Quý khách còn lại {{quotaTypeSelected=='hdd' ? projectRemainingHdd : projectRemainingSsd}} GB dung lượng Snapshot
+              <!-- Dung lượng còn lại của VPC {{projectName}} là {{quotaTypeSelected=='hdd' ? projectRemainingHdd : projectRemainingSsd}} GB {{quotaTypeSelected=='hdd' ? 'HDD':'SSD'}}/ {{quotaTypeSelected=='hdd' ? projectTotalHdd : projectTotalSsd}} GB. -->
             </div>
           </ng-template>
           <!-- VPC không đủ quota -->

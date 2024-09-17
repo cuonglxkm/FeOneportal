@@ -60,7 +60,7 @@ export class SnapshotDetailComponent implements OnInit{
     }
     const id = this.activatedRoute.snapshot.paramMap.get('id');
     this.id = id;
-    this.loadData(id);
+    this.loadData(id, this.project, this.region);
     let regionAndProject = getCurrentRegionAndProject()
     this.region = regionAndProject.regionId
     this.project = regionAndProject.projectId
@@ -83,7 +83,7 @@ export class SnapshotDetailComponent implements OnInit{
     this.typeProject = project?.type;
   }
 
-  private loadData(id: string) {
+  private loadData(id: string,projectId:number, regionId:number ) {
     this.service.getDetailSnapshot(id, this.project)
       .pipe(finalize(() => {
         this.loadPackageSnapshot(this.data.snapshotPackageId);
@@ -99,7 +99,8 @@ export class SnapshotDetailComponent implements OnInit{
         this.validateForm.controls['description'].setValue(data.description);
       },error =>{      
         if(error.status===500){
-          this.router.navigate(['/app-smart-cloud/snapshot']);
+          this.navigateToSnapshot();
+          // this.router.navigate(['/app-smart-cloud/snapshot']);
           this.notification.error('Thất bại',error.error.message );
         }
         
@@ -130,7 +131,7 @@ export class SnapshotDetailComponent implements OnInit{
   }
 
   private loadPackageSnapshot(snapshotPackageId) {
-    this.packageSnapshotService.detail(snapshotPackageId, this.project).subscribe(data => {
+    this.packageSnapshotService.detail(snapshotPackageId).subscribe(data => {
     
       this.packageSnap = data;
       console.log('packageSnap', this.packageSnap);

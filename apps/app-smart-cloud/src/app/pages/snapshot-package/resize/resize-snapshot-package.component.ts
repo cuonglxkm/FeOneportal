@@ -203,9 +203,9 @@ export class ResizeSnapshotPackageComponent implements OnInit {
     this.project = project?.id;
   }
 
-  getDetailPackageSnapshot(id) {
+  getDetailPackageSnapshot(id, projectId:number, regionId:number) {
     this.loadingCalculate = true;
-    this.packageSnapshotService.detail(id, this.project)
+    this.packageSnapshotService.detail(id)
       .pipe(finalize(() => {
         this.loadingCalculate = false;
       }))
@@ -221,7 +221,8 @@ export class ResizeSnapshotPackageComponent implements OnInit {
         this.getTotalAmount();
       }, error => {
         if (error.status === 500) {
-          this.router.navigate(['/app-smart-cloud/snapshot/packages']);
+          this.navigateToSnapshotPackage();
+          // this.router.navigate(['/app-smart-cloud/snapshot/packages']);
           this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi(error.error.detail));
         }
 
@@ -392,7 +393,7 @@ export class ResizeSnapshotPackageComponent implements OnInit {
       this.loadProjects();
     }
     if (this.idSnapshotPackage) {
-      this.getDetailPackageSnapshot(this.idSnapshotPackage);
+      this.getDetailPackageSnapshot(this.idSnapshotPackage,this.project,this.region);
 
       this.resizeDate = new Date();
     }

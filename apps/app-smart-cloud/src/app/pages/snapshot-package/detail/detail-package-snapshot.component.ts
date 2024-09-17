@@ -1,11 +1,11 @@
-import {Component, Inject, OnInit, ViewChild} from '@angular/core';
-import {ActivatedRoute, Router} from "@angular/router";
-import {PackageBackupService} from "../../../shared/services/package-backup.service";
-import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
-import {NzNotificationService} from "ng-zorro-antd/notification";
-import {NonNullableFormBuilder} from "@angular/forms";
-import {PackageBackupModel} from "../../../shared/models/package-backup.model";
-import {getCurrentRegionAndProject} from "@shared";
+import { Component, Inject, OnInit, ViewChild } from '@angular/core';
+import { ActivatedRoute, Router } from "@angular/router";
+import { PackageBackupService } from "../../../shared/services/package-backup.service";
+import { DA_SERVICE_TOKEN, ITokenService } from "@delon/auth";
+import { NzNotificationService } from "ng-zorro-antd/notification";
+import { NonNullableFormBuilder } from "@angular/forms";
+import { PackageBackupModel } from "../../../shared/models/package-backup.model";
+import { getCurrentRegionAndProject } from "@shared";
 import { RegionModel, ProjectModel } from '../../../../../../../libs/common-utils/src';
 import { ProjectService } from 'src/app/shared/services/project.service';
 import { PackageSnapshotModel } from '../../../shared/models/package-snapshot.model';
@@ -22,7 +22,7 @@ import { CatalogService } from 'src/app/shared/services/catalog.service';
   templateUrl: './detail-package-snapshot.component.html',
   styleUrls: ['./detail-package-snapshot.component.less'],
 })
-export class DetailSnapshotComponent implements OnInit{
+export class DetailSnapshotComponent implements OnInit {
   region = JSON.parse(localStorage.getItem('regionId'));
   project = JSON.parse(localStorage.getItem('projectId'));
 
@@ -32,24 +32,24 @@ export class DetailSnapshotComponent implements OnInit{
 
   typeVPC: number
   serviceActiveByRegion: SupportService[] = [];
-  typeSnapshotHdd:boolean;
-  typeSnapshotSsd:boolean;
-  titleBreadcrumb:string;
-  breadcrumbBlockStorage:string;
+  typeSnapshotHdd: boolean;
+  typeSnapshotSsd: boolean;
+  titleBreadcrumb: string;
+  breadcrumbBlockStorage: string;
   @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
   constructor(private router: Router,
-              private packageBackupService: PackageBackupService,
-              @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
-              private packageSnapshotService: PackageSnapshotService,
-              private notification: NzNotificationService,
-              private route: ActivatedRoute,
-              private fb: NonNullableFormBuilder,
-              private projectService: ProjectService,
-              private catalogService: CatalogService,
-              @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService) {
+    private packageBackupService: PackageBackupService,
+    @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
+    private packageSnapshotService: PackageSnapshotService,
+    private notification: NzNotificationService,
+    private route: ActivatedRoute,
+    private fb: NonNullableFormBuilder,
+    private projectService: ProjectService,
+    private catalogService: CatalogService,
+    @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService) {
   }
 
-  navigateToSnapshotPackage(){
+  navigateToSnapshotPackage() {
     if (this.region === RegionID.ADVANCE) {
       this.router.navigate(['/app-smart-cloud/snapshot-advance/packages']);
     } else {
@@ -59,7 +59,7 @@ export class DetailSnapshotComponent implements OnInit{
 
   regionChanged(region: RegionModel) {
     this.region = region.regionId
-    if(this.projectCombobox){
+    if (this.projectCombobox) {
       this.projectCombobox.loadProjects(true, region.regionId);
     }
     this.projectService.getByRegion(this.region).subscribe(data => {
@@ -85,17 +85,17 @@ export class DetailSnapshotComponent implements OnInit{
   //   })
   // }
 
-  getDetailPackageSnapshot(id) {
-    this.packageSnapshotService.detail(id, this.project).subscribe(data => {
+  getDetailPackageSnapshot(id:number,projectId:number, regionId:number) {
+    this.packageSnapshotService.detail(id).subscribe(data => {
       console.log('data', data);
       this.packageSnapshotModel = data;
-    },error =>{      
-      if(error.status===500){
+    }, error => {
+      if (error.status === 500) {
         // this.router.navigate(['/app-smart-cloud/snapshot/packages']);
         this.navigateToSnapshotPackage();
         this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi(error.error.detail));
       }
-      
+
     });
   }
 
@@ -105,7 +105,7 @@ export class DetailSnapshotComponent implements OnInit{
     } else {
       this.router.navigate(['/app-smart-cloud/snapshot/packages/extend/' + this.idPackageBackup])
     }
-    
+
   }
 
   navigateToEdit() {
@@ -136,24 +136,23 @@ export class DetailSnapshotComponent implements OnInit{
       } else {
         this.region = Number(localStorage.getItem('regionId'));
       }
-      this.titleBreadcrumb ='Dịch vụ hạ tầng'
-       this.breadcrumbBlockStorage ='Block Storage'
+      this.titleBreadcrumb = 'Dịch vụ hạ tầng'
+      this.breadcrumbBlockStorage = 'Block Storage'
     } else {
       this.region = RegionID.ADVANCE;
-      this.titleBreadcrumb ='Dịch vụ nâng cao'
-         this.breadcrumbBlockStorage ='Block Storage nâng cao'
+      this.titleBreadcrumb = 'Dịch vụ nâng cao'
+      this.breadcrumbBlockStorage = 'Block Storage nâng cao'
     }
     if (this.project && this.region) {
       this.loadProjects();
     }
     if (this.idPackageBackup) {
-      // this.getDetailPackageBackup(this.idPackageBackup);
-      this.getDetailPackageSnapshot(this.idPackageBackup);
+      this.getDetailPackageSnapshot(this.idPackageBackup, this.project,this.region);
     }
     this.getProductActivebyregion();
   }
-   // check các dịch vụ theo region
-   getProductActivebyregion() {
+  // check các dịch vụ theo region
+  getProductActivebyregion() {
     const catalogs = ['ip', 'ipv6', 'volume-snapshot-hdd', 'volume-snapshot-ssd', 'backup-volume', 'loadbalancer-sdn', 'file-storage', 'file-storage-snapshot', 'vpns2s', 'vm-gpu']
     this.catalogService.getActiveServiceByRegion(catalogs, this.region).subscribe(data => {
       this.serviceActiveByRegion = data;
