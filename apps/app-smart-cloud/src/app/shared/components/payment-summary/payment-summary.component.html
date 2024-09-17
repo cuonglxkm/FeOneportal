@@ -329,8 +329,8 @@
             <tr>
               <th>{{ 'app.action-history.serviceName' | i18n }}</th>
               <th>{{ 'app.payment.service.type' | i18n }}</th>
-              <th nzAlign="right">{{ 'app.payment-detail.price' | i18n }}</th>
-              <th nzAlign="right">{{ 'app.payment-detail.remain' | i18n }}</th>
+              <th nzAlign="right">{{ (this.priceType == PriceType.PerMonth? 'app.payment-detail.price': 'app.payment-detail.price.year') | i18n }}</th>
+              <th nzAlign="right">{{ (this.priceType == PriceType.PerMonth? 'app.payment-detail.remain': 'app.payment-detail.remain.year') | i18n }}</th>
               <th nzAlign="right">{{ 'app.amount' | i18n }}</th>
               <th nzAlign="right">
                 {{ 'app.payment-detail.totalPrice' | i18n }}

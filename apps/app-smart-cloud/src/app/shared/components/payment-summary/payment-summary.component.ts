@@ -34,6 +34,7 @@ import {
   FormInitUserInvoice,
 } from '../../models/invoice';
 import { TAX_CODE_REGEX } from '../../constants/constants';
+import { PriceType } from 'src/app/core/models/enum';
 
 class ServiceInfo {
   name: string;
@@ -78,6 +79,7 @@ export class PaymentSummaryComponent implements OnInit {
   email: string;
   totalPayment: number;
   totalVAT: number;
+  priceType: number;
   formCreatUserInvoice: FormCreateUserInvoice = new FormCreateUserInvoice();
   isExportInvoice: boolean = false;
   isCheckedExportInvoice: boolean = true;
@@ -88,7 +90,7 @@ export class PaymentSummaryComponent implements OnInit {
     { label: this.i18n.fanyi('app.invoice.export.customer1'), value: 1 },
     { label: this.i18n.fanyi('app.invoice.export.customer2'), value: 2 },
   ];
-
+  public PriceType = PriceType;
   constructor(
     private service: InstancesService,
     private psService: PaymentSummaryService,
@@ -117,6 +119,7 @@ export class PaymentSummaryComponent implements OnInit {
       this.order.orderItems = myOrder.orderItems;
       this.totalPayment = myOrder.totalPayment;
       this.totalVAT = myOrder.totalVAT;
+      this.priceType = myOrder.orderItems.length > 0 ? myOrder.orderItems[0].priceType ?? PriceType.PerMonth : PriceType.PerMonth;
       console.log('order summary', this.order);
       this.order.orderItems.forEach((e: OrderItem) => {
         var serviceItem = new ServiceInfo();
