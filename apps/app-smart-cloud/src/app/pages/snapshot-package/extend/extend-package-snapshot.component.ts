@@ -105,9 +105,9 @@ export class ExtendPackageSnapshotComponent implements OnInit{
     this.project = project?.id;
   }
 
-  getDetailPackageSnapshot(id) {
+  getDetailPackageSnapshot(id,projectId:number, regionId:number) {
     this.loadingCalculate = true;
-    this.packageSnapshotService.detail(id, this.project)
+    this.packageSnapshotService.detail(id)
       .pipe(finalize(() => {
         this.loadingCalculate = false
       }))
@@ -119,7 +119,7 @@ export class ExtendPackageSnapshotComponent implements OnInit{
       this.getTotalAmount();
     },error =>{      
       if(error.status===500){
-        this.router.navigate(['/app-smart-cloud/snapshot/packages']);
+        this.navigateToSnapshotPackage()
         this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi(error.error.detail));
       }
       
@@ -274,7 +274,7 @@ export class ExtendPackageSnapshotComponent implements OnInit{
     if (this.project && this.region) {
       this.loadProjects();
     }
-    this.getDetailPackageSnapshot(this.route.snapshot.paramMap.get('id'));
+    this.getDetailPackageSnapshot(this.route.snapshot.paramMap.get('id'),this.project,this.region);
     this.getProductActivebyregion();
   }
 
@@ -304,4 +304,5 @@ export class ExtendPackageSnapshotComponent implements OnInit{
       });
     });
   }
+ 
 }

@@ -2430,6 +2430,17 @@
   "app.version.current": "Current",
   "app.version.arrangement": "Terms of Service",
   "app.version.note-title": "Please note",
+  "app.cluster.day-of-month": "Day of month",
+  "app.cluster.auto-update-version": "Auto update Kubernetes version",
+  "app.day.now": "Now",
+
+  "app.day.monday": "Monday",
+  "app.day.tuesday": "Tuesday",
+  "app.day.wednesday": "Wednesday",
+  "app.day.thursday": "Thusday",
+  "app.day.friday": "Friday",
+  "app.day.saturday": "Saturday",
+  "app.day.sunday": "Sunday",
 
   "cluster.validate.required": "Cannot be left empty!",
   "cluster.placeholder.cluster-name": "Enter cluster name",

@@ -5,13 +5,13 @@
       <nz-breadcrumb-item>
         <a routerLink="/app-smart-cloud">Trang chủ</a></nz-breadcrumb-item>
       <nz-breadcrumb-item>
-       {{titleBreadcrumb}}
+        {{titleBreadcrumb}}
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>
         {{breadcrumbBlockStorage}}
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>
-       Gói Snapshot
+        Gói Snapshot
       </nz-breadcrumb-item>
     </nz-breadcrumb>
     <ng-template #separatorTemplate><img src="assets/imgs/arrow-square-right.svg" alt="" />
@@ -34,15 +34,12 @@
         <nz-row nzJustify="space-between" style="margin-top: 20px;">
           <nz-col nzSpan="16">
             <nz-select [nzPlaceHolder]="'Trạng thái'" [ngModel]="selected" (ngModelChange)="onChangeSelected($event)"
-              nzSize="large" style="margin-right: 15px; width: 170px;" nzPlaceHolder="Tất cả trạng thái"
-              nzTooltipTitle="Tìm kiếm theo trạng thái" nzTooltipPlacement="bottom" nz-tooltip>
+              nzSize="large" style="margin-right: 15px; width: 170px;" nzPlaceHolder="Tất cả trạng thái" nz-tooltip>
               <nz-option nzValue="" nzLabel="Tất cả trạng thái"></nz-option>
               <nz-option nzValue="AVAILABLE" nzLabel="Đang hoạt động"></nz-option>
               <nz-option nzValue="SUSPEND" nzLabel="Tạm ngưng"></nz-option>
-              <!-- <nz-option nzValue="DELETEING" nzLabel="Đang xóa"></nz-option> -->
-              <!-- <nz-option nzValue="DELETEING" nzLabel="Lỗi"></nz-option> -->
             </nz-select>
-           
+
             <nz-input-group style="width: 300px;" [nzPrefix]="prefixIconSearch" nzSize="large">
               <input name="name" nz-input placeholder="Tìm kiếm theo tên" [(ngModel)]="value"
                 (keyup.enter)="onInputChange(value)" (input)="onInputChange($event.target['value'])" />
@@ -77,7 +74,7 @@
             <tr *ngFor="let data of fixedTable.data">
               <td style="max-width: 300px;">
                 <a *ngIf="!isProcessingStatus(data.status)"
-                  (click)="navigateToPackageDetail(data.id)" >{{data.packageName}}</a>
+                  (click)="navigateToPackageDetail(data.id)">{{data.packageName}}</a>
                 <a *ngIf="isProcessingStatus(data.status)" style="cursor: text;">{{ data.packageName }}</a>
               </td>
               <td class='text-right'>{{data.totalSizeHDD}}</td>
@@ -100,11 +97,11 @@
               <td>
                 <div>
                   <img
-                    *ngIf="data.status != 'CREATING' && data.status != 'RESIZING'&& data.status != 'DELETING' && data.status!='SUSPENDED' && data.status !='ERROR_DELETING' && ('snapshotpackage:UpdateSnapshotPackage' | IsPermissionPipe)"
+                    *ngIf="!isProcessingStatus(data.status) && data.status!='SUSPENDED'  && ('snapshotpackage:UpdateSnapshotPackage' | IsPermissionPipe)"
                     src="assets/imgs/edit-2.svg" alt="" (click)="showUpdate(data)" nz-tooltip
                     nzTooltipTitle="{{'app.text.edit' | i18n}}" style="cursor: pointer; width: 20px; height: 20px;" />
                   <img src="assets/imgs/delete.svg"
-                    *ngIf="data.status != 'CREATING' && data.status != 'RESIZING'&& data.status != 'DELETING' && data.status!='SUSPENDED' && ('snapshotpackage:DeleteSnapshotPackage' | IsPermissionPipe)"
+                    *ngIf="!isProcessingStatus(data.status) && data.status!='SUSPENDED' && ('snapshotpackage:DeleteSnapshotPackage' | IsPermissionPipe)"
                     style="width: 28px;height: 28px; cursor: pointer;" nz-tooltip
                     nzTooltipTitle="{{'app.delete' | i18n}}" nzTooltipPlacement="bottom" (click)="showDelete(data)" />
 
@@ -172,18 +169,18 @@
       <div *ngIf="snapshotArray?.length>0">
         <nz-alert nzBanner style="margin-top: 15px;"
           [nzMessage]="'Các bản Snapshot của gói Snapshot này cũng sẽ bị xóa.'" nzShowIcon></nz-alert>
-        <nz-table #fixedTable1 style="margin-top: 5px;" nzHideOnSinglePage="true" [nzLoading]="isLoadingSnapshot" 
+        <nz-table #fixedTable1 style="margin-top: 5px;" nzHideOnSinglePage="true" [nzLoading]="isLoadingSnapshot"
           [nzData]="snapshotArray">
-          <thead >
+          <thead>
             <tr>
-              <th  nzLeft>Tên bản Snapshot</th>
-              <th  nzBreakWord>Dung lượng (GB)</th>
+              <th nzLeft>Tên bản Snapshot</th>
+              <th nzBreakWord>Dung lượng (GB)</th>
             </tr>
           </thead>
           <tbody>
             <tr *ngFor="let data of fixedTable1.data">
               <td style="max-width:250px"> {{data.name}}</td>
-              <td   class="text-right">{{data.sizeInGB}}</td>
+              <td class="text-right">{{data.sizeInGB}}</td>
             </tr>
           </tbody>
         </nz-table>
@@ -247,7 +244,8 @@
                 0-9,'_')</ng-container>
               <ng-container *ngIf="control.hasError('maxLength')">{{'app.backup.package.name.maxLength' |
                 i18n}}</ng-container>
-                 <ng-container *ngIf="control.hasError('duplicateName')">Tên gói Snapshot này đã được sử dụng, vui lòng chọn tên khác</ng-container>
+              <ng-container *ngIf="control.hasError('duplicateName')">Tên gói Snapshot này đã được sử dụng, vui lòng
+                chọn tên khác</ng-container>
             </ng-template>
           </nz-form-control>
         </nz-form-item>
@@ -273,9 +271,7 @@
         <span nz-icon nzType="close" nzTheme="outline"></span>Hủy
       </button>
 
-      <button nz-button nzType="primary"
-       
-        (click)="handleUpdateOk()" [nzLoading]="isLoadingUpdate" class="button-ok">
+      <button nz-button nzType="primary" (click)="handleUpdateOk()" [nzLoading]="isLoadingUpdate" class="button-ok">
         <span nz-icon nzType="check" nzTheme="outline"></span>Xác nhận
       </button>
     </div>
