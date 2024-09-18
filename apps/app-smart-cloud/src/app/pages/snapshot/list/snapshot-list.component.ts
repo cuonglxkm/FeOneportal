@@ -48,7 +48,7 @@ export class SnapshotListComponent implements OnInit {
   }> = this.fb.group({
     name: ['', [Validators.required,
     Validators.pattern(/^[a-zA-Z0-9_]*$/),
-    Validators.maxLength(50),this.duplicateNameValidator.bind(this)]],
+    Validators.maxLength(50), this.duplicateNameValidator.bind(this)]],
     description: ['', Validators.maxLength(255)],
   });
 
@@ -61,9 +61,9 @@ export class SnapshotListComponent implements OnInit {
   loadingDelete = false;
   isVisibleEdit: boolean;
   isCreateOrder: boolean = false;
-  titleBreadcrumb:string;
-  breadcrumbBlockStorage:string;
-  projectType:number;
+  titleBreadcrumb: string;
+  breadcrumbBlockStorage: string;
+  projectType: number;
   nameList: string[] = [];
 
   @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
@@ -89,31 +89,31 @@ export class SnapshotListComponent implements OnInit {
       } else {
         this.region = Number(localStorage.getItem('regionId'));
       }
-       this.titleBreadcrumb ='Dịch vụ hạ tầng'
-       this.breadcrumbBlockStorage ='Block Storage'
+      this.titleBreadcrumb = 'Dịch vụ hạ tầng'
+      this.breadcrumbBlockStorage = 'Block Storage'
     } else {
       this.region = RegionID.ADVANCE;
-       this.titleBreadcrumb ='Dịch vụ nâng cao'
-         this.breadcrumbBlockStorage ='Block Storage nâng cao'
+      this.titleBreadcrumb = 'Dịch vụ nâng cao'
+      this.breadcrumbBlockStorage = 'Block Storage nâng cao'
     }
     this.searchDelay.pipe(debounceTime(TimeCommon.timeOutSearch)).subscribe(() => {
       this.search(false);
     });
     this.search(true);
   }
-// validate name khi nhap trung
-duplicateNameValidator(control) {
-  const value = control.value;
-  if (!this.dataSelected || value==this.dataSelected.name) {
-    return null;
+  // validate name khi nhap trung
+  duplicateNameValidator(control) {
+    const value = control.value;
+    if (!this.dataSelected || value == this.dataSelected.name) {
+      return null;
+    }
+    // Check if the input name is already in the list
+    if (this.nameList && this.nameList.includes(value)) {
+      return { duplicateName: true };
+    } else {
+      return null;
+    }
   }
-  // Check if the input name is already in the list
-  if (this.nameList && this.nameList.includes(value)) {
-    return { duplicateName: true };
-  } else {
-    return null;
-  }
-}
   regionChanged(region: RegionModel) {
     if (this.projectCombobox) {
       this.projectCombobox.loadProjects(true, region.regionId);
@@ -128,12 +128,12 @@ duplicateNameValidator(control) {
   projectChanged(project: ProjectModel) {
     console.log("mm", project)
     this.project = project?.id;
-    this.projectType=project?.type;
+    this.projectType = project?.type;
     this.search(true);
     this.typeVpc = project?.type;
-    this.isCreateOrder = this.policyService.hasPermission("snapshotpackage:ListSnapshotPackage") && 
-      this.policyService.hasPermission("volume:List") && 
-      this.policyService.hasPermission("instance:List") && 
+    this.isCreateOrder = this.policyService.hasPermission("snapshotpackage:ListSnapshotPackage") &&
+      this.policyService.hasPermission("volume:List") &&
+      this.policyService.hasPermission("instance:List") &&
       this.policyService.hasPermission("volumesnapshot:Create");
   }
 
@@ -189,15 +189,15 @@ duplicateNameValidator(control) {
           if (isBegin) {
             if (this.response.records.length <= 0) {
               this.isBegin = true;
-              
+
             } else {
               this.isBegin = false;
-              
+
             }
           }
         }, error => {
           this.nameList = null;
-          if(error.status == 403) {
+          if (error.status == 403) {
             this.notification.error(
               error.statusText,
               this.i18n.fanyi('app.non.permission')
@@ -229,30 +229,30 @@ duplicateNameValidator(control) {
     if (type == 0) {
       if (this.typeVpc == 1) {
         if (this.region === RegionID.ADVANCE) {
-          this.router.navigate(['/app-smart-cloud/volumes-advance/vpc/create',{ idSnapshot: idSnapshot }])
+          this.router.navigate(['/app-smart-cloud/volumes-advance/vpc/create', { idSnapshot: idSnapshot }])
         } else {
-          this.router.navigate(['/app-smart-cloud/volumes/vpc/create',{ idSnapshot: idSnapshot }])
+          this.router.navigate(['/app-smart-cloud/volumes/vpc/create', { idSnapshot: idSnapshot }])
         }
       } else {
         if (this.region === RegionID.ADVANCE) {
-          this.router.navigate(['/app-smart-cloud/volumes-advance/create',{ idSnapshot: idSnapshot }])
+          this.router.navigate(['/app-smart-cloud/volumes-advance/create', { idSnapshot: idSnapshot }])
         } else {
-          this.router.navigate(['/app-smart-cloud/volumes/create',{ idSnapshot: idSnapshot }])
+          this.router.navigate(['/app-smart-cloud/volumes/create', { idSnapshot: idSnapshot }])
         }
       }
     } else if (type == 1) {
       if (this.typeVpc == 1) {
         if (this.region === RegionID.ADVANCE) {
-          this.router.navigate(['/app-smart-cloud/instances-advance/instances-create-vpc',{ idSnapshot: idSnapshot }])
+          this.router.navigate(['/app-smart-cloud/instances-advance/instances-create-vpc', { idSnapshot: idSnapshot }])
         } else {
-          this.router.navigate(['/app-smart-cloud/instances/instances-create-vpc',{ idSnapshot: idSnapshot }])
+          this.router.navigate(['/app-smart-cloud/instances/instances-create-vpc', { idSnapshot: idSnapshot }])
         }
 
       } else {
         if (this.region === RegionID.ADVANCE) {
-          this.router.navigate(['/app-smart-cloud/instances-advance/instances-create',{ idSnapshot: idSnapshot }])
+          this.router.navigate(['/app-smart-cloud/instances-advance/instances-create', { idSnapshot: idSnapshot }])
         } else {
-          this.router.navigate(['/app-smart-cloud/instances/instances-create',{ idSnapshot: idSnapshot }])
+          this.router.navigate(['/app-smart-cloud/instances/instances-create', { idSnapshot: idSnapshot }])
         }
       }
     }
@@ -264,7 +264,7 @@ duplicateNameValidator(control) {
     this.nameDelete = '';
     this.dataSelected = null;
     this.isInput = false;
-    console.log(" this.isInput = false;",this.isInput)
+    console.log(" this.isInput = false;", this.isInput)
   }
 
   enableDelete(data: any) {
