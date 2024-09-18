@@ -2435,8 +2435,10 @@
   "app.version.arrangement": "Terms of Service",
   "app.version.note-title": "Please note",
   "app.cluster.day-of-month": "Day of month",
-  "app.cluster.auto-update-version": "Auto update Kubernetes version",
-  "app.cluster.edit-auto-upgrade-verison": "Edit auto update Kubernetes version",
+  "app.cluster.auto-update-version": "Automatic Kubernetes version upgrade",
+  "app.cluster.edit-auto-upgrade-verison": "Change the automatic Kubernetes version upgrade",
+  "app.cluster.auto-update-os": "Automatic OS update",
+  "app.cluster.edit-auto-upgrade-os": "Change the automatic OS update",
   "app.day.now": "Now",
 
   "app.day.monday": "Monday",

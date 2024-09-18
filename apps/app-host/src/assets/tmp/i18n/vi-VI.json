@@ -2350,6 +2350,8 @@
   "app.cluster.day-of-month": "Ngày trong tháng",
   "app.cluster.auto-update-version": "Tự động cập nhật phiên bản Kubernetes",
   "app.cluster.edit-auto-upgrade-verison": "Chỉnh sửa lịch tự động cập nhật phiên bản Kubernetes",
+  "app.cluster.auto-update-os": "",
+  "app.cluster.edit-auto-upgrade-os": "",
   "app.day.now": "Bây giờ",
 
   "app.day.monday": "Thứ 2",
