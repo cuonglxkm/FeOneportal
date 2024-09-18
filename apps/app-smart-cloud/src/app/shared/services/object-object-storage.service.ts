@@ -23,11 +23,11 @@ export class ObjectObjectStorageService extends BaseService {
     return this.http.get<any>(this.baseUrl + this.ENDPOINT.provisions + '/object-storage/ListObject?bucketName=' + bucketName +
       '&folderName=' + folderName + '&customerId=' + customerId +
       '&regionId=' + regionId + '&filterQuery=' + filterQuery +
-      '&pageSize=' + pageSize + '&currentPage=' + currentPage + '&keySearch=' + keySearch);
+      '&pageSize=' + pageSize + '&currentPage=' + currentPage + '&keySearch=' + keySearch, this.getHeaders());
   }
 
   getDataS3Key(search: string, pageSize: number, currentPage: number, regionId: number): Observable<any> {
-    return this.http.get<any>(this.baseUrl + this.ENDPOINT.provisions + '/object-storage/keys/getpaging?pageSize=' + pageSize + '&pageNumber=' + currentPage + '&regionId=' + regionId + '&searchValueUser=' + search);
+    return this.http.get<any>(this.baseUrl + this.ENDPOINT.provisions + '/object-storage/keys/getpaging?pageSize=' + pageSize + '&pageNumber=' + currentPage + '&regionId=' + regionId + '&searchValueUser=' + search, this.getHeaders());
   }
 
   createS3Key(subUser: string, regionId: number) {

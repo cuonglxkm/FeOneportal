@@ -35,6 +35,7 @@ class Tag {
 })
 export class LifecycleConfigComponent implements OnInit {
   @Input() bucketName: string;
+  @Input() isCreateBucketLifeCyclePermission: boolean;
   value: string = '';
   listLifecycle: BucketLifecycle[] = [];
   listAllLC: BucketLifecycle[] = [];

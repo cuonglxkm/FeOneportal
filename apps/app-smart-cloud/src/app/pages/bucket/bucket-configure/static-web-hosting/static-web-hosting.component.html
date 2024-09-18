@@ -165,7 +165,7 @@
       alt=""
     />{{ 'app.button.back' | i18n }}
   </button>
-  <button nz-button nzType="primary" [disabled]="formUpdate.invalid" [nzLoading]="isLoading" (click)="update()">
+  <button *ngIf="isUpdateStaticWebPermission" nz-button nzType="primary" [disabled]="formUpdate.invalid" [nzLoading]="isLoading" (click)="update()">
     <img
       *ngIf="isLoading === false"
       style="padding-right: 10px; margin-top: -4px"

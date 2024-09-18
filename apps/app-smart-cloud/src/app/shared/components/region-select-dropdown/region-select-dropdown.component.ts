@@ -49,8 +49,7 @@ export class RegionSelectDropdownComponent implements OnInit {
      }else{
       this.listRegion = JSON.parse(localStorage.getItem('regions'));
       if (
-        localStorage.getItem('regionId') != null &&
-        !this.url.includes('advance')
+        localStorage.getItem('regionId') != null && !this.url.includes('advance')
       ) {
         this.selectedRegion = this.listRegion.find(
           (item) =>
@@ -66,8 +65,7 @@ export class RegionSelectDropdownComponent implements OnInit {
           this.setRegionNormal()
         }
       } else if (
-        localStorage.getItem('regionId') != null &&
-        this.url.includes('advance')
+        localStorage.getItem('regionId') != null && this.url.includes('advance')
       ) {
         this.setRegionAdvance()
       }

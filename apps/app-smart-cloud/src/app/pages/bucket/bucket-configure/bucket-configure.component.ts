@@ -4,6 +4,7 @@ import {
   Component,
   Inject,
   OnInit,
+  ViewChild,
 } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { I18NService } from '@core';
@@ -17,6 +18,8 @@ import { BucketService } from 'src/app/shared/services/bucket.service';
 import { RegionModel } from '../../../../../../../libs/common-utils/src';
 import { RegionID } from 'src/app/shared/enums/common.enum';
 import { ObjectStorageService } from 'src/app/shared/services/object-storage.service';
+import { PolicyService } from 'src/app/shared/services/policy.service';
+import { BucketPolicyComponent } from './bucket-policy/bucket-policy.component';
 
 @Component({
   selector: 'one-portal-bucket-configure',
@@ -31,6 +34,15 @@ export class BucketConfigureComponent implements OnInit {
   isLoadingVersion: boolean = false;
   usage: any
   region = JSON.parse(localStorage.getItem('regionId'));
+
+  isUpdatePermission: boolean = false
+  isUpdateVersionPermission: boolean = false
+  isCreateBucketPolicyPermission: boolean = false
+  isCreateBucketCORSPermission: boolean = false
+  isCreateBucketLifeCyclePermission: boolean = false
+  isUpdateStaticWebPermission: boolean = false
+
+  @ViewChild('bucketPolicy') bucketPolicy: BucketPolicyComponent;
   constructor(
     private bucketService: BucketService,
     private router: Router,
@@ -39,7 +51,8 @@ export class BucketConfigureComponent implements OnInit {
     private loadingSrv: LoadingService,
     private objectSevice: ObjectStorageService,
     private cdr: ChangeDetectorRef,
-    @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService
+    @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
+    private policyService: PolicyService
   ) {}
 
   ngOnInit(): void {
@@ -109,9 +122,40 @@ export class BucketConfigureComponent implements OnInit {
     }
   }
 
+  
+
   onRegionChanged(region: RegionModel) {
     this.region = region.regionId;
   }
+
+  projectChanged() {
+    this.policyService
+      .getUserPermissions()
+      .pipe()
+      .subscribe((permission) => {
+        localStorage.setItem('PermissionOPA', JSON.stringify(permission));
+        
+        // Update ACL permissions
+        this.isUpdatePermission = this.policyService.hasPermission("objectstorages:SetBucketACL");
+  
+        // Update Versioning permissions
+        this.isUpdateVersionPermission = this.policyService.hasPermission("objectstorages:SetBucketVersioning");
+  
+        // Create Bucket Policy permission
+        this.isCreateBucketPolicyPermission = this.policyService.hasPermission("objectstorages:CreateBucketPolicy") && this.policyService.hasPermission("objectstorages:OSGetSubUser");
+  
+        // Create Bucket CORS permission
+        this.isCreateBucketCORSPermission = this.policyService.hasPermission("objectstorages:OSPutBucketCORS");
+  
+        // Create Bucket LifeCycle permission
+        this.isCreateBucketLifeCyclePermission = this.policyService.hasPermission("objectstorages:OSPutBucketLifeCycle");
+  
+        // Update Static Web permission
+        this.isUpdateStaticWebPermission = this.policyService.hasPermission("objectstorages:OSPutBucketWebsite");
+      });
+  }
+  
+
 
   getUsageOfBucket() {
     this.loadingSrv.open({ type: 'spin', text: 'Loading...' });
