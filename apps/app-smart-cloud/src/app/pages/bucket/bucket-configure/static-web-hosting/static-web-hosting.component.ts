@@ -32,6 +32,7 @@ import { BucketService } from 'src/app/shared/services/bucket.service';
 
 export class StaticWebHostingComponent implements OnInit {
   @Input() bucketName: string;
+  @Input() isUpdateStaticWebPermission: boolean;
   @Input() bucketDetail: BucketDetail = new BucketDetail();
   bucketWebsitecreate: BucketWebsite = new BucketWebsite();
   isLoading: boolean = false;

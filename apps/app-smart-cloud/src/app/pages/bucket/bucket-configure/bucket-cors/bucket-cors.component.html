@@ -21,7 +21,7 @@
   <ng-template #prefixIconSearch>
     <img src="assets/imgs/search.svg" alt="" (click)="searchBucketCors()" />
   </ng-template>
-  <button nz-button nzType="primary" (click)="modalCreate()">
+  <button *ngIf="isCreateBucketCORSPermission" nz-button nzType="primary" (click)="modalCreate()">
     <img
       style="padding-right: 10px; margin-top: -4px"
       src="assets/imgs/add-circle.svg"
@@ -64,6 +64,7 @@
         <td>{{ item.maxAgeSeconds }}</td>
         <td nzRight>
           <img
+          *ngIf="('objectstorages:OSUpdateBucketCORS' | IsPermissionPipe)"
             src="assets/imgs/edit-2.svg"
             alt=""
             (click)="modalUpdate(item)"
@@ -71,6 +72,7 @@
             [nz-tooltip]="'app.text.edit' | i18n"
           />
           <img
+          *ngIf="('objectstorages:OSDeleteBucketCORS' | IsPermissionPipe)"
             src="assets/imgs/delete.svg"
             alt=""
             (click)="modalDelete(item)"

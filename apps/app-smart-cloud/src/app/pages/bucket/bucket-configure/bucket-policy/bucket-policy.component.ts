@@ -28,6 +28,7 @@ import { SubUser } from 'src/app/shared/models/sub-user.model';
 import { BucketService } from 'src/app/shared/services/bucket.service';
 import { TimeCommon } from 'src/app/shared/utils/common';
 import { AppValidator } from '../../../../../../../../libs/common-utils/src';
+import { PolicyService } from 'src/app/shared/services/policy.service';
 
 @Component({
   selector: 'one-portal-bucket-policy',
@@ -37,6 +38,7 @@ import { AppValidator } from '../../../../../../../../libs/common-utils/src';
 })
 export class BucketPolicyComponent implements OnInit {
   @Input() bucketName: string;
+  @Input() isCreateBucketPolicyPermission: boolean;
   value: string = '';
   listBucketPolicy: BucketPolicy[] = [];
   pageSize: number = 10;
@@ -47,6 +49,7 @@ export class BucketPolicyComponent implements OnInit {
   isLoadingUpdate: boolean = false;
   isLoadingDelete: boolean = false;
   listPermission = [{ name: 'Allow' }, { name: 'Deny' }];
+  isCreatePermission: boolean = false
   @ViewChild(JsonEditorComponent) editor: JsonEditorComponent;
   public optionJsonEditor: JsonEditorOptions;
   searchDelay = new Subject<boolean>();
@@ -57,7 +60,8 @@ export class BucketPolicyComponent implements OnInit {
     private cdr: ChangeDetectorRef,
     private activatedRoute: ActivatedRoute,
     private fb: NonNullableFormBuilder,
-    @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService
+    @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
+    private policyService: PolicyService
   ) {
     this.optionJsonEditor = new JsonEditorOptions();
     this.optionJsonEditor.mode = 'text';
@@ -103,11 +107,9 @@ export class BucketPolicyComponent implements OnInit {
       .subscribe({
         next: (data) => {
           this.listBucketPolicy = data.records;
-          console.log(this.listBucketPolicy);
-
           this.total = data.totalCount;
         },
-        error: (e) => {
+        error: (e) => { 
           this.listBucketPolicy = [];
         },
       });

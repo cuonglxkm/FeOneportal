@@ -58,7 +58,7 @@ export class BucketListComponent implements OnInit {
   searchDelay = new Subject<boolean>();
   user: any;
   usage: any;
-  userinfo: any;
+  userinfo: any = null;
   url = window.location.pathname;
   isLoadingDeleteBucket: boolean = false;
   constructor(
@@ -159,6 +159,7 @@ export class BucketListComponent implements OnInit {
 
   hasObjectStorageInfo() {
     this.loadingSrv.open({ type: 'spin', text: 'Loading...' });
+    console.log(this.objectStorage);
     this.objectSevice
       .getUserInfo(this.region)
       .pipe(finalize(() => this.loadingSrv.close()))
@@ -173,14 +174,23 @@ export class BucketListComponent implements OnInit {
           }
         },
         error: (e) => {
-          this.notification.error(
-            e.error.detail,
-            this.i18n.fanyi('app.notification.object.storage.fail')
-          );
+          if (e.status == 403) {
+            this.notification.error(
+              e.statusText,
+              this.i18n.fanyi('app.non.permission')
+            );
+            this.hasOS = true;
+          }else{
+            this.notification.error(
+              e.error.detail,
+              this.i18n.fanyi('app.notification.object.storage.fail')
+            );
+          }
         },
       });
   }
   hasObjectStorage() {
+    
     this.objectSevice
       .getObjectStorage(this.region)
 
@@ -275,6 +285,8 @@ export class BucketListComponent implements OnInit {
             this.i18n.fanyi('app.status.fail'),
             this.i18n.fanyi('app.bucket.getObject.fail')
           );
+          this.objectStorage = null
+          console.log(this.objectStorage);
         },
       });
   }

@@ -38,6 +38,7 @@ class HeaderName {
 })
 export class BucketCorsComponent implements OnInit {
   @Input() bucketName: string;
+  @Input() isCreateBucketCORSPermission: boolean;
   value: string = '';
   region = JSON.parse(localStorage.getItem('regionId'));
   listBucketCors: BucketCors[] = [];

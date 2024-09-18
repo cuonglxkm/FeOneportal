@@ -25,7 +25,7 @@
   <ng-template #prefixIconSearch>
     <img src="assets/imgs/search.svg" alt="" (click)="searchLifeCycle()" />
   </ng-template>
-  <button nz-button nzType="primary" (click)="modalCreate()">
+  <button *ngIf="isCreateBucketLifeCyclePermission" nz-button nzType="primary" (click)="modalCreate()">
     <img
       style="padding-right: 10px; margin-top: -4px"
       src="assets/imgs/add-circle.svg"
@@ -78,6 +78,7 @@
         <td>{{ item.abortIncompleteMultipartUpload_DayString }}</td>
         <td nzRight>
           <img
+            *ngIf="('objectstorages:OSUpdateBucketLifeCycle' | IsPermissionPipe)"
             src="assets/imgs/edit-2.svg"
             alt=""
             (click)="modalUpdate(item)"
@@ -85,6 +86,7 @@
             [nz-tooltip]="'app.text.edit' | i18n"
           />
           <img
+            *ngIf="('objectstorages:OSDeleteBucketLifeCycle' | IsPermissionPipe)"
             src="assets/imgs/delete.svg"
             alt=""
             (click)="modalDelete(item)"

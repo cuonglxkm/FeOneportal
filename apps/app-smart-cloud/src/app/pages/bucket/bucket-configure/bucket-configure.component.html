@@ -54,7 +54,7 @@
       {{ 'app.used.capacity' | i18n }}:
     </div>
     <div style="font-weight: bold">
-      {{usage}}
+      {{usage | isNull}}
     </div>
   </nz-row>
     
@@ -94,7 +94,7 @@
               alt=""
             />{{ 'app.button.back' | i18n }}
           </button>
-          <button nz-button nzType="primary" [nzLoading]="isLoading" (click)="setBucketACL()">
+          <button *ngIf="isUpdatePermission" nz-button nzType="primary" [nzLoading]="isLoading" (click)="setBucketACL()">
             <img
               *ngIf="isLoading === false"
               style="padding-right: 10px; margin-top: -4px"
@@ -139,7 +139,7 @@
               alt=""
             />{{ 'app.button.back' | i18n }}
           </button>
-          <button nz-button nzType="primary" [nzLoading]="isLoadingVersion" (click)="setBucketVersioning()">
+          <button *ngIf="isUpdateVersionPermission" nz-button nzType="primary" [nzLoading]="isLoadingVersion" (click)="setBucketVersioning()">
             <img
               *ngIf="isLoadingVersion === false"
               style="padding-right: 10px; margin-top: -4px"
@@ -153,11 +153,13 @@
     </nz-tab>
     <nz-tab nzTitle="Bucket Policy">
       <one-portal-bucket-policy
+        [isCreateBucketPolicyPermission]="isCreateBucketPolicyPermission"
         [bucketName]="bucketName"
       ></one-portal-bucket-policy>
     </nz-tab>
     <nz-tab nzTitle="Bucket CORS">
       <one-portal-bucket-cors
+      [isCreateBucketCORSPermission]="isCreateBucketCORSPermission"
         [bucketName]="bucketName"
       ></one-portal-bucket-cors>
     </nz-tab>
@@ -165,11 +167,13 @@
       <one-portal-static-web-hosting
         *ngIf="bucketDetail"
         [bucketName]="bucketName"
+        [isUpdateStaticWebPermission]="isUpdateStaticWebPermission"
         [bucketDetail]="bucketDetail"
       ></one-portal-static-web-hosting>
     </nz-tab>
     <nz-tab nzTitle="LifeCycle Config">
       <one-portal-lifecycle-config
+      [isCreateBucketLifeCyclePermission]="isCreateBucketLifeCyclePermission"
         [bucketName]="bucketName"
       ></one-portal-lifecycle-config>
     </nz-tab>

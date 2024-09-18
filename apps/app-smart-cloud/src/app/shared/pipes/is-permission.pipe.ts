@@ -9,6 +9,7 @@ export class IsPermissionPipe implements PipeTransform {
     constructor(private policyService: PolicyService) {}
 
     transform(action: string): boolean {
+        debugger
         return this.policyService.hasPermission(action);
     }
 }
