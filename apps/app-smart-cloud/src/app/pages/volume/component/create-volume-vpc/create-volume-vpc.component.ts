@@ -163,6 +163,15 @@ export class CreateVolumeVpcComponent implements OnInit {
           this.notification.warning('', this.i18n.fanyi('app.notify.amount.capacity', { number: this.stepStorage }));
           this.validateForm.controls.storage.setValue(res - (res % this.stepStorage));
         }
+        if(this.isInitSnapshot && res < this.snapshot.sizeInGB){
+          this.notification.warning(
+            '',
+            this.i18n.fanyi('app.notify.amount.capacity.snapshot', {
+              num: this.snapshot.sizeInGB,
+            })
+          );
+          this.validateForm.controls.storage.setValue(this.snapshot.sizeInGB);
+        }
       });
   }
 
@@ -228,7 +237,7 @@ export class CreateVolumeVpcComponent implements OnInit {
     this.volumeService.getVolumeById(idVolume, this.project).subscribe(data => {
       this.onChangeStatusEncrypt(data.isEncryption);
       this.onChangeStatusMultiAttach(data.isMultiAttach);
-      console.log('instance', data?.attachedInstances[0].instanceId);
+      // console.log('instance', data?.attachedInstances[0].instanceId);
       // this.instanceSelectedChange(data?.attachedInstances[0].instanceId);
       // this.validateForm.controls.instanceId.setValue(data?.attachedInstances[0].instanceId);
     });
