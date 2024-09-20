@@ -42,7 +42,7 @@ export class SnapshotVolumeService extends BaseService {
 
   getSnapshotVolumeById(snapshotVlID: string): Observable<any> {
     return this.http.get<any>(
-      this.urlSnapshotVl + `/${snapshotVlID}`,
+      this.urlSnapshotVl + `/${snapshotVlID}` + '?isGetDetail=true',
       this.getHeaders()
     );
   }

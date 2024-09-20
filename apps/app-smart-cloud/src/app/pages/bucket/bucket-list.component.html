@@ -106,31 +106,26 @@
 >
   Uid:
   <span class="text-value"
-    >{{userinfo.user_id}}</span
+    >{{userinfo?.user_id | isNull}}</span
   >
 </div>
-  <div
-    style="margin-bottom: 10px"
-    class="text-label"
-  >
-    {{ 'app.capacity1' | i18n }}:
-    <span class="text-value"
-      >{{ usage?.usage }}/{{ usage?.total }} GB ({{
-        usage?.percentUsage
-      }})</span
-    >
-    <i> Dung lượng Object Storage sẽ được cập nhật sau khoảng 2 phút</i>
-  </div>
+<div style="margin-bottom: 10px" class="text-label">
+  {{ 'app.capacity1' | i18n }}:
+  <span class="text-value">
+    {{ usage ? (usage.usage + '/' + usage.total + ' GB (' + usage.percentUsage + ')') : '-' }}
+  </span>
+  <i *ngIf="usage"> Dung lượng Object Storage sẽ được cập nhật sau khoảng 2 phút</i>
+</div>
   <div style="margin-bottom: 10px" class="text-label">
     {{ 'app.service.creation-date' | i18n }}:
     <span class="text-value">{{
-      objectStorage.createdDate | date : 'dd/MM/yyyy'
+      objectStorage?.createdDate ? (objectStorage.createdDate | date : 'dd/MM/yyyy') : '-' 
     }}</span>
   </div>
   <div style="margin-bottom: 10px" class="text-label">
     {{ 'app.service.expiration-date' | i18n }}:
     <span class="text-value">{{
-      objectStorage.expiredDate | date : 'dd/MM/yyyy'
+       objectStorage?.expiredDate ? (objectStorage.expiredDate | date : 'dd/MM/yyyy') : '-'
     }}</span>
   </div>
   <ng-container *ngIf="objectStorage">
@@ -141,7 +136,7 @@
     >
       {{ 'app.payment.status' | i18n }}:
       <span class="text-value">
-        {{ objectStorage.statusDisplay }}
+      {{  objectStorage?.statusDisplay ? (objectStorage.statusDisplay) : '-'}}
       </span>
     </div>
     <div
@@ -245,7 +240,7 @@
     <tbody>
       <tr *ngFor="let data of listBucket">
         <td
-          title="{{ data.bucketName }}"
+          title="{{ data?.bucketName }}"
           nzLeft
           style="
             overflow: hidden;
@@ -257,27 +252,27 @@
           <a
             nz-tooltip
             nzTooltipPlacement="bottom"
-            (click)="handleGoToDetail(data.bucketName)"
-            >{{ data.bucketName }}</a
+            (click)="handleGoToDetail(data?.bucketName)"
+            >{{ data?.bucketName }}</a
           >
         </td>
         <td>
-          <span>{{ data.endPoints }}</span>
+          <span>{{ data?.endPoints }}</span>
           <img
             src="assets/imgs/icon_copy1.svg"
             alt=""
-            (click)="copyText(data.endPoints)"
+            (click)="copyText(data?.endPoints)"
             style="cursor: pointer; margin-left: 16px"
             nz-tooltip="Copy"
           />
         </td>
         <td nzBreakWord>
-          {{ data.aclType }}
+          {{ data?.aclType }}
         </td>
-        <td nzBreakWord>{{ data.isVersioning }}</td>
-        <td nzBreakWord>{{ data.createdDate | date : 'dd/MM/yyyy' }}</td>
+        <td nzBreakWord>{{ data?.isVersioning }}</td>
+        <td nzBreakWord>{{ data?.createdDate | date : 'dd/MM/yyyy' }}</td>
         <td nzBreakWord>
-          <ng-container *ngIf="data.status | ServiceStatusPipe as statusModel">
+          <ng-container *ngIf="data?.status | ServiceStatusPipe as statusModel">
             <!--            <td *ngIf="!!data.suspendReason"> -->
             <!--              <span [ngStyle]="{color: statusModel.color}">-->
             <!--                <img src="assets/imgs/warning-message.svg" alt="" style="cursor: pointer; margin-bottom: 4px;"-->
@@ -301,7 +296,7 @@
             "
             src="assets/imgs/uil_setting.svg"
             alt=""
-            (click)="configure(data.bucketName)"
+            (click)="configure(data?.bucketName)"
             style="cursor: pointer; margin-right: 16px"
             [nz-tooltip]="'app.config' | i18n"
           />
@@ -309,7 +304,7 @@
             *ngIf="'objectstorages:DeleteBucket' | IsPermissionPipe"
             src="assets/imgs/delete.svg"
             alt=""
-            (click)="modalDeleteBucket(data.bucketName)"
+            (click)="modalDeleteBucket(data?.bucketName)"
             style="cursor: pointer; margin-right: 16px"
             [nz-tooltip]="'app.text.delete' | i18n"
           />

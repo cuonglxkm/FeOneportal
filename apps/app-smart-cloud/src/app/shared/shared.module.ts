@@ -37,6 +37,7 @@ import { SuspendStatusPipe } from './pipes/suspend-status.pipe';
 import { CDNStatusPipe } from './pipes/cdnetwork-status.pipe';
 import { ServiceUsagePeriodYearComponent } from './components/service-usage-period-year/service-usage-period-year.component';
 import { EndpointStatusPipe } from './pipes/endpoint-status.pipe';
+import { isNullPipe } from './pipes/isNull.pipe';
 
 const antDesignIcons = AllIcons as {
   [key: string]: any;
@@ -102,7 +103,7 @@ const DIRECTIVES: Array<Type<any>> = [];
     SuspendStatusPipe,
     ServiceTaskStatePipe,
     formatPrice,
-
+    isNullPipe
   ],
   exports: [
     CommonModule,
@@ -126,6 +127,7 @@ const DIRECTIVES: Array<Type<any>> = [];
     SuspendStatusPipe,
     ServiceTaskStatePipe,
     formatPrice,
+    isNullPipe
   ],
   providers: [{ provide: NZ_ICONS, useValue: icons }],
 })

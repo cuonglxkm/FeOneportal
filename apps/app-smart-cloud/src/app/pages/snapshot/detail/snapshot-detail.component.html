@@ -82,17 +82,17 @@
           </nz-col>
           
         </nz-row>
-        <nz-row style="background-color: #e2e2e9">
+        <nz-row style="background-color: #e2e2e9" *ngIf="typeProject !=1">
           <nz-col nzSpan="12">
             <nz-row style="padding: 12px 0 12px 0">
               <span class="text-label customSpan" style="width: 35%">Gói Snapshot:</span>
-              <span *ngIf="typeProject != 1" class="text-value-detail customSpan truncate " [nz-tooltip]="packageSnap?.packageName">{{packageSnap?.packageName}}</span>
+              <span  class="text-value-detail customSpan truncate " [nz-tooltip]="packageSnap?.packageName">{{packageSnap?.packageName}}</span>
             </nz-row>
           </nz-col>
           <nz-col nzSpan="12">
             <nz-row style="padding: 12px 0 12px 0">
               <span class="text-label customSpan" style="width: 35%">Dung lượng gói:</span>
-              <span *ngIf="typeProject != 1" class="text-value-detail customSpan">{{packageSize}} GB</span>
+              <span  class="text-value-detail customSpan">{{packageSize}} GB</span>
             </nz-row>
           </nz-col>
           

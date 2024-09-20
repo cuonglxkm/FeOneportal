@@ -59,7 +59,7 @@
       {{ 'app.storage.usage' | i18n }}:
     </div>
     <div style="font-weight: bold">
-      {{usage}}
+      {{usage | isNull}}
     </div>
   </nz-row>
   <nz-row>
@@ -126,7 +126,7 @@
         {{ 'app.bucket.detail.select' | i18n : {countObjectSelected: countObjectSelected} }}
       </p>
       <img
-        *ngIf="setOfCheckedId.size > 0"
+        *ngIf="setOfCheckedId.size > 0 && isDeleteObjectsPermission"
         src="assets/imgs/delete.svg"
         alt=""
         style="cursor: pointer; margin-right: 16px"
@@ -147,6 +147,7 @@
         <span class="button-text-primary">{{ 'app.bucket.detail.downloadZip' | i18n }}</span>
       </button>
       <button
+        *ngIf="isCreateFolderPermission"
         nz-button
         nzType="primary"
         (click)="isVisibleCreateFolder = true"
@@ -156,6 +157,7 @@
         <span class="button-text-primary">{{ 'app.bucket.detail.createFolder' | i18n }}</span>
       </button>
       <button
+      *ngIf="isUploadPermission"
         nz-button
         nzType="primary"
         (click)="isVisibleUploadFile = true"
@@ -230,19 +232,19 @@
           [nzChecked]="setOfCheckedId.has(item)"
           (nzCheckedChange)="onItemChecked(item, $event)"
         ></td>
-        <td nzBreakWord="true" *ngIf="item.objectType != 'folder'">{{ item.keyName }}</td>
+        <td nzBreakWord="true" *ngIf="item?.objectType != 'folder'">{{ item?.keyName }}</td>
         <td
           *ngIf="item.objectType == 'folder'"
           style="color: #0074cc; cursor: pointer"
-          (click)="toFolder2(item.key + '/')"
+          (click)="toFolder2(item?.key + '/')"
         >
           <img style="padding-right: 5px" src="assets/imgs/folder.svg" alt="" />
           {{ item.key.split('/').pop() }}
         </td>
-        <td>{{ formatFileSize(item.size) }}</td>
-        <td nzBreakWord="true" style="text-transform: capitalize;">{{ item.objectType }}</td>
-        <td>{{ item.lastModified | date : 'dd/MM/yyyy HH:mm:ss' }}</td>
-        <td>{{ item.isPublic == true ? 'Public' : 'Private' }}</td>
+        <td>{{ formatFileSize(item?.size) }}</td>
+        <td nzBreakWord="true" style="text-transform: capitalize;">{{ item?.objectType }}</td>
+        <td>{{ item?.lastModified | date : 'dd/MM/yyyy HH:mm:ss' }}</td>
+        <td>{{ item?.isPublic == true ? 'Public' : 'Private' }}</td>
         <td>
           <div>
             <!--            <img  style="padding-right: 5px;" src="assets/imgs/document-download.svg" alt=""/>-->
@@ -253,35 +255,36 @@
             <img
               src="assets/imgs/download.svg"
               style="margin-right: 10px; height: 20px; cursor: pointer;"
-              *ngIf="item.objectType != 'folder'"
+              *ngIf="item?.objectType != 'folder'"
               nz-tooltip
               [nzTooltipTitle]="'app.payment.download' | i18n "
               nzTooltipPlacement="bottom"
               (click)="doAction('3', item)"
             />
             <a
-              *ngIf="item.objectType != 'folder'"
+              *ngIf="item?.objectType != 'folder'"
               nz-dropdown
               [nzDropdownMenu]="menu"
             >
               <img
                 src="assets/imgs/more.svg"
                 style="height: 20px"
-                *ngIf="item.objectType != 'folder'"
+                *ngIf="item?.objectType != 'folder'"
               />
             </a>
             <nz-dropdown-menu #menu="nzDropdownMenu">
               <ul nz-menu>
-                <li nz-menu-item (click)="doAction('7', item)">
-                  {{ 'app.bucket.detail.version' | i18n }} ({{ item.versionsCount }})
+                <li *ngIf="('objectstorages:OSGetObjectVersions' | IsPermissionPipe)" nz-menu-item (click)="doAction('7', item)">
+                  {{ 'app.bucket.detail.version' | i18n }} ({{ item?.versionsCount }})
                 </li>
-                <li nz-menu-item (click)="doAction('2', item)">{{ 'app.bucket.detail.copy' | i18n }}</li>
-                <li nz-menu-item (click)="doAction('6', item)">{{ 'app.bucket.detail.share' | i18n }}</li>
-                <li nz-menu-item (click)="doAction('1', item)">
+                <li *ngIf="('objectstorages:OSCopyObject' | IsPermissionPipe) && ('objectstorages:OSGetBucketTreeData' | IsPermissionPipe)" nz-menu-item (click)="doAction('2', item)">{{ 'app.bucket.detail.copy' | i18n }}</li>
+                <li *ngIf="('objectstorages:OSShareObject' | IsPermissionPipe)" nz-menu-item (click)="doAction('6', item)">{{ 'app.bucket.detail.share' | i18n }}</li>
+                <li *ngIf="('	objectstorages:OSObjectAcl' | IsPermissionPipe)" nz-menu-item (click)="doAction('1', item)">
                   {{ 'app.bucket.detail.authorize' | i18n }}
                 </li>
-                <li nz-menu-item (click)="doAction('4', item)">{{ 'app.bucket.detail.detail' | i18n }}</li>
+                <li *ngIf="('objectstorages:GetBucket' | IsPermissionPipe)" nz-menu-item (click)="doAction('4', item)">{{ 'app.bucket.detail.detail' | i18n }}</li>
                 <li
+                *ngIf="('objectstorages:OSDeleteObject' | IsPermissionPipe)"
                   nz-menu-item
                   (click)="doAction('5', item)"
                   style="color: red"
@@ -1113,6 +1116,7 @@
                   (click)="doActionVersion('2', item)"
                 />
                 <img
+                  *ngIf="('objectstorages:OSDeleteObject' | IsPermissionPipe)"
                   src="assets/imgs/delete.svg"
                   style="height: 25px; cursor: pointer;"
                   nz-tooltip

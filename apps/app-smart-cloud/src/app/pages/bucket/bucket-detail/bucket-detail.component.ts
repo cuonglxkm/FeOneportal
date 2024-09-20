@@ -32,6 +32,7 @@ import { LoadingService } from '@delon/abc/loading';
 import { ObjectStorageService } from 'src/app/shared/services/object-storage.service';
 import { FOLDER_NAME_REGEX, NAME_CONTAIN_NUMBERIC_ALPHABET } from 'src/app/shared/constants/constants';
 import { RegionID } from 'src/app/shared/enums/common.enum';
+import { PolicyService } from 'src/app/shared/services/policy.service';
 
 @Component({
   selector: 'one-portal-bucket-detail',
@@ -136,6 +137,11 @@ export class BucketDetailComponent extends BaseService implements OnInit {
   totalSize: number
   countSize: number = 0
   countSuccessUpload: number = 0;
+
+  //PERMISSION
+  isCreateFolderPermission: boolean = false;
+  isUploadPermission: boolean = false;
+  isDeleteObjectsPermission: boolean = false;
   constructor(
     private service: ObjectObjectStorageService,
     private objectSevice: ObjectStorageService,
@@ -149,7 +155,8 @@ export class BucketDetailComponent extends BaseService implements OnInit {
     private fb: NonNullableFormBuilder,
     private loadingSrv: LoadingService,
     private cdr: ChangeDetectorRef,
-    private router: Router
+    private router: Router,
+    private policyService: PolicyService
   ) {
     super(tokenService);
   }
@@ -338,6 +345,13 @@ export class BucketDetailComponent extends BaseService implements OnInit {
           //   this.i18n.fanyi('app.status.fail'),
           //   this.i18n.fanyi('app.bucket.getObject.fail')
           // );
+          if(e.status == 403){
+            this.notification.error(
+              e.statusText,
+              this.i18n.fanyi('app.non.permission')
+            );
+          }
+          this.usage = null;
         },
       });
   }
@@ -511,6 +525,27 @@ export class BucketDetailComponent extends BaseService implements OnInit {
           }
         });
         this.total = data.paginationObjectList.totalItems;
+        
+      });
+  }
+
+  projectChanged() {
+    this.policyService
+      .getUserPermissions()
+      .pipe()
+      .subscribe((permission) => {
+        localStorage.setItem('PermissionOPA', JSON.stringify(permission));
+        this.loadData();
+        //CREATE FOLDER
+        this.isCreateFolderPermission = this.policyService.hasPermission("objectstorages:OSCreateFolder");
+        //UPLOAD
+        this.isUploadPermission = this.policyService.hasPermission("objectstorages:OSGeneratePreSignedForUpload") && 
+        this.policyService.hasPermission("objectstorages:OSCreateMultipartUpload") && 
+        this.policyService.hasPermission("objectstorages:OSAbortMultipartUpload") && 
+        this.policyService.hasPermission("objectstorages:OSCompleteMultipartUpload")
+
+        //DELETE OBJECTS
+        this.isDeleteObjectsPermission = this.policyService.hasPermission("objectstorages:OSDeleteMultipleObject");
       });
   }
 
@@ -862,6 +897,7 @@ export class BucketDetailComponent extends BaseService implements OnInit {
       this.linkShare = data.publicURL;
     });
   }
+
 
   private loadDataVersion() {
     this.loadingVersion = true;

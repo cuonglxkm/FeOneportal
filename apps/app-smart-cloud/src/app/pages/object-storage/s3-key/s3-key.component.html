@@ -130,8 +130,9 @@
         width: 50px;">{{ item.subUser }}</td>
         <td>
           <div>
-            <!---Gỡ------>
+            <!---Tạo lại------>
             <span
+              *ngIf="('objectstorages:OSGenerateS3Key' | IsPermissionPipe)"
               style="color: #0066b3; margin-right: 10px; cursor: pointer"
               [nz-tooltip]="'app.recreate' | i18n"
               nz-icon
@@ -141,6 +142,7 @@
             ></span>
             <!----Xóa---->
             <img
+              *ngIf="('objectstorages:OSDeleteS3Key	' | IsPermissionPipe)"
               src="assets/imgs/delete.svg"
               alt=""
               (click)="openModelDelete(item.accessKey)"
