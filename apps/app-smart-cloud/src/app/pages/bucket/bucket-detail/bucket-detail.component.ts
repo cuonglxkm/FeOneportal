@@ -348,7 +348,7 @@ export class BucketDetailComponent extends BaseService implements OnInit {
           if(e.status == 403){
             this.notification.error(
               e.statusText,
-              this.i18n.fanyi('app.non.permission')
+              this.i18n.fanyi('app.non.permission', { serviceName: 'Dung lượng đã sử dụng' })
             );
           }
           this.usage = null;
@@ -526,15 +526,17 @@ export class BucketDetailComponent extends BaseService implements OnInit {
         });
         this.total = data.paginationObjectList.totalItems;
         
+      }, (e) => {
+        if (e.status == 403) {
+          this.notification.error(
+            e.statusText,
+            this.i18n.fanyi('app.non.permission', { serviceName: 'Danh sách Object' })
+          );
+        }
       });
   }
 
   projectChanged() {
-    this.policyService
-      .getUserPermissions()
-      .pipe()
-      .subscribe((permission) => {
-        localStorage.setItem('PermissionOPA', JSON.stringify(permission));
         this.loadData();
         //CREATE FOLDER
         this.isCreateFolderPermission = this.policyService.hasPermission("objectstorages:OSCreateFolder");
@@ -546,7 +548,6 @@ export class BucketDetailComponent extends BaseService implements OnInit {
 
         //DELETE OBJECTS
         this.isDeleteObjectsPermission = this.policyService.hasPermission("objectstorages:OSDeleteMultipleObject");
-      });
   }
 
   private loadBucket() {
@@ -563,9 +564,16 @@ export class BucketDetailComponent extends BaseService implements OnInit {
           this.navigateToBucketList()
         }
       },
-        error => {
-          this.notification.error(this.i18n.fanyi("app.status.fail"),this.i18n.fanyi("app.record.not.found"))
-          this.navigateToBucketList()
+        e => {
+          if (e.status == 403) {
+            this.notification.error(
+              e.statusText,
+              this.i18n.fanyi('app.non.permission', { serviceName: 'Chi tiết Bucket' })
+            );
+          }else{
+            this.notification.error(this.i18n.fanyi("app.status.fail"),this.i18n.fanyi("app.record.not.found"))
+            this.navigateToBucketList()
+          }
         });
 
   }

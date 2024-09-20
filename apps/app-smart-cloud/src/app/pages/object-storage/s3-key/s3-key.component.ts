@@ -105,14 +105,8 @@ export class S3KeyComponent implements OnInit {
   }
 
   projectChanged() {
-    this.policyService
-      .getUserPermissions()
-      .pipe()
-      .subscribe((permission) => {
-        localStorage.setItem('PermissionOPA', JSON.stringify(permission));
         this.getData();
         this.checkPermissionCreate();
-      });
   }
 
   hasOS: boolean = undefined;

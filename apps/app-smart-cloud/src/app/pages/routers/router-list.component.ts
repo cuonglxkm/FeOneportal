@@ -196,9 +196,10 @@ export class RouterListComponent implements OnInit {
       if(error.status == 403){
         this.notification.error(
           error.statusText,
-          this.i18n.fanyi('app.non.permission')
+          this.i18n.fanyi('app.non.permission', { serviceName: 'Danh sách Router' })
         );
       }
+      this.cdr.detectChanges();
     })
   }
 

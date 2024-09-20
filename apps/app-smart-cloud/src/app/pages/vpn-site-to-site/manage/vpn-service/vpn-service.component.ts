@@ -85,7 +85,7 @@ export class VpnService {
       if(error.status == 403){
         this.notification.error(
           error.statusText,
-          this.i18n.fanyi('app.non.permission')
+          this.i18n.fanyi('app.non.permission', { serviceName: 'Danh sách VPN Service' })
         );
       }
       this.isCreatePermission = this.policyService.hasPermission("vpnsitetosites:VPNCreateVpnService");

@@ -92,7 +92,7 @@ export class EndpointGroupComponent {
         if(error.status == 403){
           this.notification.error(
             error.statusText,
-            this.i18n.fanyi('app.non.permission')
+            this.i18n.fanyi('app.non.permission', { serviceName: 'Danh sách Endpoint Group' })
           );
         }
         this.isCreatePermission = this.policyService.hasPermission("vpnsitetosites:CreateEndpointGroups");

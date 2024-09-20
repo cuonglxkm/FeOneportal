@@ -1,7 +1,7 @@
 <page-header
   [breadcrumb]="breadcrumb"
   [action]="action"
-  [title]="('app.detail1' | i18n) + ' Router: ' + nameRouter"
+  [title]="('app.view.detail' | i18n) + ' Router: ' + nameRouter"
 >
   <ng-template #breadcrumb>
     <nz-breadcrumb [nzSeparator]="separatorTemplate">
@@ -45,7 +45,7 @@
   <nz-tabset nzSize="large">
     <nz-tab nzTitle="Router Interface">
       <div class="text-right">
-        <button *ngIf="('routerinterface:ListSubnetInRouterInterface' | IsPermissionPipe) && ('routerinterface:Create' | IsPermissionPipe)"
+        <button *ngIf="isPermissionCreateInterface"
           nz-button
           nzType="primary"
           nzSize="large"
@@ -86,6 +86,7 @@
               <td>{{ item.ipAddress }}</td>
               <td>
                 <img
+                  *ngIf="('routerinterface:Delete' | IsPermissionPipe)"
                   src="assets/imgs/delete.svg"
                   alt=""
                   (click)="modalDeleteInterface(item.subnetCloud)"
@@ -100,7 +101,7 @@
     </nz-tab>
     <nz-tab nzTitle="Static Route">
       <div class="text-right">
-        <button *ngIf="('routestatic:Create' | IsPermissionPipe)"
+        <button *ngIf="isPermissionCreateStatic"
           nz-button
           nzType="primary"
           nzSize="large"
@@ -138,6 +139,7 @@
             <td>{{ item.nextHop }}</td>
             <td>
               <img
+                *ngIf="('routestatic:Delete' | IsPermissionPipe)"
                 src="assets/imgs/delete.svg"
                 alt=""
                 (click)="modalDeleteStatic(item)"
