@@ -94,6 +94,10 @@ export class WafUsageStatistics implements OnInit {
         this.selectedDomain = res.map(x=>x.id);
         this.domains = res.map(x=>x.domain);
         this.isValid=this.selectedDomain.length>0;
+        if(!this.isValid){
+          this.notification.warning('',"Không có dữ liệu!");
+          return;
+        }
         this.getDataBandwidth();
         this.getDataTraffic();
         this.getDataBack2Origin();
@@ -1033,6 +1037,10 @@ export class WafUsageStatistics implements OnInit {
 
   changeTab(tabName){
     this.currentTab = tabName;
+    this.selectedTypeRequest = "EDGE";
+    if(!this.isValid){
+      return;
+    }
     if(tabName=="bandwidth"){
       this.getDataBandwidth();
       this.getDataTraffic();
@@ -1047,7 +1055,6 @@ export class WafUsageStatistics implements OnInit {
       this.getRequestHitRatio();
       this.getTop10HitRatio();
     }
-    this.selectedTypeRequest = "EDGE";
   }
   changeTypeRequest(){
     this.createDailyTableData();
