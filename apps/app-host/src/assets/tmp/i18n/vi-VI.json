@@ -3640,6 +3640,7 @@
   "validation.waf.ssl.delete.name.required": "Vui lòng nhập tên SSL Cert",
   "app.create-policy.name":"Tên Policy",
 
+  "app.Endpoint":"Endpoint",
   "endpoint.list":"Danh sách Endpoint",
   "endpoint.placeholder.filter.name": "Tìm kiếm theo tên Endpoint",
   "endpoint.button.create":"Tạo mới Endpoint",

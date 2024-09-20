@@ -17,6 +17,7 @@ import { EndpointService } from 'src/app/shared/services/endpoint.service';
 import { EndpointCreate } from 'src/app/shared/models/endpoint-init';
 import { slider } from '../../../../../../../libs/common-utils/src';
 import { PriceType } from 'src/app/core/models/enum';
+import { LoadingService } from '@delon/abc/loading';
 
 @Component({
   selector: 'one-portal-endpoint-create',
@@ -66,7 +67,7 @@ export class EndpointCreateComponent implements OnInit {
     private fb: FormBuilder,
     private service: ObjectStorageService,
     private endpointService: EndpointService,
-
+    private loadingSrv:LoadingService
   ) {
   
   }
@@ -154,6 +155,9 @@ export class EndpointCreateComponent implements OnInit {
   }
 
   getTotalAmount() {
+    if(!this.selectedOfferId){
+      return;
+    }
     this.initEndpoint();
     let itemPayment: ItemPayment = new ItemPayment();
     itemPayment.orderItemQuantity = 1;//this.form.controls.numberOfLicense.value;
@@ -174,6 +178,7 @@ export class EndpointCreateComponent implements OnInit {
     });
   }
   getOffers(): void {
+    this.loadingSrv.open({type:'spin',text:'Loading...'})
     this.instancesService.getDetailProductByUniqueName('endpoint')
       .subscribe(
         data => {
@@ -186,6 +191,7 @@ export class EndpointCreateComponent implements OnInit {
               this.selectedOfferId = this.listOffers[0].id;
               this.priceType = this.listOffers[0].price.priceType;
               this.getTotalAmount();
+              this.loadingSrv.close()
             });
         }
       );

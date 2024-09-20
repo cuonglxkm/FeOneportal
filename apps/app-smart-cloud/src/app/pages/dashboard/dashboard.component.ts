@@ -404,6 +404,9 @@ export class DashboardComponent implements OnInit, OnDestroy {
         //WAF
         return this.i18n.fanyi('app.WAF');
         break;
+      case 29:
+        //WAF
+        return this.i18n.fanyi('app.Endpoint');
       case 100:
         //OTHER
         return this.i18n.fanyi('app.other');
