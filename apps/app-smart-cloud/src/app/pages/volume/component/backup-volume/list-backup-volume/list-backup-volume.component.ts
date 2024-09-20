@@ -85,7 +85,7 @@ export class ListBackupVolumeComponent implements OnInit, OnDestroy{
     this.typeVpc = project?.type;
     setTimeout(() => {this.getListBackupVolumes(true)}, 1500);
     // this.getListVolume(true);
-    this.isCreateOrder = this.policyService.hasPermission("backup:List") && 
+    this.isCreateOrder = this.policyService.hasPermission("backup:VolumeBackupList") && 
       this.policyService.hasPermission("volume:List") && 
       this.policyService.hasPermission("backup:ListBackupPacket") &&
       this.policyService.hasPermission("backup:GetBackupPacket") &&
@@ -165,7 +165,7 @@ export class ListBackupVolumeComponent implements OnInit, OnDestroy{
       if(error.status == 403) {
         this.notification.error(
           error.statusText,
-          this.i18n.fanyi('app.non.permission')
+          this.i18n.fanyi('app.non.permission', { serviceName: 'Danh sách Backup Volume' })
         );
       } else {
         this.notification.error(error.statusText, this.i18n.fanyi('app.failData'));

@@ -3703,7 +3703,7 @@
   "waf.intro.title1":"Web Application Firewall",
   "app.non.vietnamese": "None vietnamese",
 
-  "app.non.permission": "User does not have this permission",
+  "app.non.permission": "User does not have this permission {{serviceName}}",
   "validation.waf.domain.delete.name.invalid": "Vui lòng nhập đúng tên máy domain",
   "validation.waf.domain.delete.name.required": "Vui lòng nhập tên domain",
   "validation.waf.ssl.delete.name.invalid": "Vui lòng nhập đúng tên SSL Cert",

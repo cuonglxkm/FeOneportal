@@ -132,14 +132,8 @@ export class ListSubUserComponent implements OnInit {
   }
 
   projectChanged(project: ProjectModel) {
-    this.policyService
-      .getUserPermissions()
-      .pipe()
-      .subscribe((permission) => {
-        localStorage.setItem('PermissionOPA', JSON.stringify(permission));
         this.getListSubUsers(false);
         this.checkPermissionCreate();
-      });
   }
 
   onPageSizeChange(value) {

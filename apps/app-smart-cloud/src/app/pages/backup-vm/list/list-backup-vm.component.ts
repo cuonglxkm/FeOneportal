@@ -97,7 +97,7 @@ export class ListBackupVmComponent implements OnInit, OnDestroy {
     this.formSearch.projectId = this.project;
     this.typeVPC = project?.type;
     this.getListBackupVM(true);
-    this.isCreateOrder = this.policyService.hasPermission("backup:List") && 
+    this.isCreateOrder = this.policyService.hasPermission("backup:InstanceBackupList") && 
       this.policyService.hasPermission("backup:ListBackupPacket") &&
       this.policyService.hasPermission("offer:Search") && 
       this.policyService.hasPermission("instance:List") && 
@@ -176,7 +176,7 @@ export class ListBackupVmComponent implements OnInit, OnDestroy {
       if(error.status == 403) {
         this.notification.error(
           error.statusText,
-          this.i18n.fanyi('app.non.permission')
+          this.i18n.fanyi('app.non.permission', { serviceName: 'Danh sách Backup VM' })
         );
       } else {
         this.notification.error(error.statusText, this.i18n.fanyi('app.failData'));

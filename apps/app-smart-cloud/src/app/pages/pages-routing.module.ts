@@ -574,7 +574,6 @@ const routes: Routes = [
   {
     path: 'schedule/backup/list',
     component: ListScheduleBackupComponent,
-    canActivate: [PermissionGuard],
   },
   {
     path: 'schedule/backup/create',
@@ -748,7 +747,7 @@ const routes: Routes = [
     component: DetailPackageBackupComponent,
     canActivate: [PermissionGuard],
     data: {
-      permission: 'backup:BackupPacketGet'
+      permission: 'backup:GetBackupPacket'
     }
   },
   {
