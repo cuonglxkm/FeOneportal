@@ -19,7 +19,7 @@ import { I18NService } from '@core';
 export class IkePoliciesComponent {
   @Input() project: number
   @Input() region: number
-
+  @Input() isBegin: boolean
   customerId: number
 
   pageSize: number = 5
@@ -87,7 +87,7 @@ export class IkePoliciesComponent {
       if(error.status == 403){
         this.notification.error(
           error.statusText,
-          this.i18n.fanyi('app.non.permission')
+          this.i18n.fanyi('app.non.permission', { serviceName: 'Danh sách IKE Policies' })
         );
       }
       this.isCreatePermission = this.policyService.hasPermission("vpnsitetosites:VPNCreateIKEPolicy");
@@ -120,7 +120,7 @@ export class IkePoliciesComponent {
     let regionAndProject = getCurrentRegionAndProject()
     this.region = regionAndProject.regionId
     this.project = regionAndProject.projectId
-      this.getData();
+    this.isBegin && this.getData();
     this.searchDelay.pipe(debounceTime(1200)).subscribe(() => {
       this.refreshParams()
       this.getData();

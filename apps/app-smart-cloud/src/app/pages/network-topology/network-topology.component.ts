@@ -174,7 +174,7 @@ export class NetworkTopologyComponent {
       if(error.status == 403){
         this.notification.error(
           error.statusText,
-          this.i18n.fanyi('app.non.permission')
+          this.i18n.fanyi('app.non.permission', { serviceName: 'Xem chi tiết Network Topology' })
         );
       }
       this.isLoading = false;

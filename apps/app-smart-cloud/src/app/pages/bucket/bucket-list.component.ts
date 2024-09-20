@@ -177,7 +177,7 @@ export class BucketListComponent implements OnInit {
           if (e.status == 403) {
             this.notification.error(
               e.statusText,
-              this.i18n.fanyi('app.non.permission')
+              this.i18n.fanyi('app.non.permission', { serviceName: 'Thông tin Object Storage' })
             );
             this.hasOS = true;
           }else{
@@ -202,10 +202,18 @@ export class BucketListComponent implements OnInit {
           this.getUserById(this.user.id);
         },
         error: (e) => {
-          this.notification.error(
-            this.i18n.fanyi('app.status.fail'),
-            this.i18n.fanyi('app.bucket.getObject.fail')
-          );
+          if (e.status == 403) {
+            this.notification.error(
+              e.statusText,
+              this.i18n.fanyi('app.non.permission', { serviceName: 'Thông tin User' })
+            );
+          }else{
+            this.notification.error(
+              this.i18n.fanyi('app.status.fail'),
+              this.i18n.fanyi('app.bucket.getObject.fail')
+            );
+          }
+          this.hasOS = true;
         },
       });
   }
@@ -249,17 +257,11 @@ export class BucketListComponent implements OnInit {
   }
 
   projectChanged(project: ProjectModel) {
-    this.policyService
-      .getUserPermissions()
-      .pipe()
-      .subscribe((permission) => {
-        localStorage.setItem('PermissionOPA', JSON.stringify(permission));
         this.search();
         this.checkPermissionExtend();
         this.checkPermissionCreateBucket();
         this.checkPermissionDeleteOS();
         this.checkPermissionResize();
-      });
   }
 
   getUserById(id: number) {
@@ -312,7 +314,7 @@ export class BucketListComponent implements OnInit {
           if (e.status == 403) {
             this.notification.error(
               e.statusText,
-              this.i18n.fanyi('app.non.permission')
+              this.i18n.fanyi('app.non.permission', { serviceName: 'Danh sách Bucket' })
             );
           } else {
             this.notification.error(

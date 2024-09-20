@@ -155,7 +155,7 @@ export class ListVlanComponent implements OnInit, OnDestroy {
         if(error.status == 403){
           this.notification.error(
             error.statusText,
-            this.i18n.fanyi('app.non.permission')
+            this.i18n.fanyi('app.non.permission', { serviceName: 'Danh sách Vlan' })
           );
         } else {
           this.notification.error(error.statusText, 'Lấy dữ liệu thất bại');

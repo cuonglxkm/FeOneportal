@@ -11,6 +11,7 @@ import { ProjectService } from 'src/app/shared/services/project.service';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from '@core';
 import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
+import { PolicyService } from 'src/app/shared/services/policy.service';
 
 @Component({
   selector: 'one-portal-detail-package-backup',
@@ -29,6 +30,9 @@ export class DetailPackageBackupComponent implements OnInit {
 
   isLoading: boolean = false;
 
+  isPermissionExtend: boolean = false;
+  isPermissionResize: boolean = false;
+
   @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
 
   constructor(private router: Router,
@@ -38,6 +42,7 @@ export class DetailPackageBackupComponent implements OnInit {
               private route: ActivatedRoute,
               private fb: NonNullableFormBuilder,
               private projectService: ProjectService,
+              private policyService: PolicyService,
               @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService) {
   }
 
@@ -54,6 +59,10 @@ export class DetailPackageBackupComponent implements OnInit {
 
   projectChanged(project: ProjectModel) {
     this.project = project?.id;
+
+    this.isPermissionExtend = this.policyService.hasPermission("backup:ExtendBackupPacket") && this.policyService.hasPermission("order:GetOrderAmount") && this.policyService.hasPermission("order:Create");
+
+    this.isPermissionResize = this.policyService.hasPermission("backup:ExtendBackupPacket") && this.policyService.hasPermission("order:GetOrderAmount") && this.policyService.hasPermission("order:Create") && this.policyService.hasPermission("configuration:Get");
   }
 
   userChanged(project: ProjectModel) {

@@ -207,7 +207,7 @@ export class ListScheduleBackupComponent implements OnInit, OnDestroy {
       if(error.status == 403) {
         this.notification.error(
           error.statusText,
-          this.i18n.fanyi('app.non.permission')
+          this.i18n.fanyi('app.non.permission', { serviceName: 'Danh sách lịch Backup' })
         );
       }
     });

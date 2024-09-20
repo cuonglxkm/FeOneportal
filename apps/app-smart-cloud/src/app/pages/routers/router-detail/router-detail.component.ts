@@ -36,6 +36,7 @@ import {
   RegionModel,
 } from '../../../../../../../libs/common-utils/src';
 import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
+import { PolicyService } from 'src/app/shared/services/policy.service';
 
 @Component({
   selector: 'one-portal-router-detail',
@@ -67,6 +68,9 @@ export class RouterDetailComponent implements OnInit {
   // isInvalidipAddress: boolean = false
   // invalidipAddress: string
 
+  isPermissionCreateInterface: boolean = false
+  isPermissionCreateStatic: boolean = false
+
   formRouterInterface: FormGroup<{
     subnetId: FormControl<string>;
     ipAddress: FormControl<string>;
@@ -91,7 +95,8 @@ export class RouterDetailComponent implements OnInit {
     private cdr: ChangeDetectorRef,
     private notification: NzNotificationService,
     private fb: NonNullableFormBuilder,
-    @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService
+    @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
+    private policyService: PolicyService
   ) {
     this.formRouterInterface = this.fb.group({
       subnetId: ['', Validators.required],
@@ -144,7 +149,7 @@ export class RouterDetailComponent implements OnInit {
           if(e.status == 403){
             this.notification.error(
               e.statusText,
-              this.i18n.fanyi('app.non.permission')
+              this.i18n.fanyi('app.non.permission', { serviceName: 'Danh sách Router Interface' })
             );
           }
           // this.notification.error(
@@ -173,15 +178,15 @@ export class RouterDetailComponent implements OnInit {
           if(e.status == 403){
             this.notification.error(
               e.statusText,
-              this.i18n.fanyi('app.non.permission')
+              this.i18n.fanyi('app.non.permission', { serviceName: 'Danh sách Router Static' })
             );
           } else {
             this.notification.error(
               this.i18n.fanyi('app.status.fail'),
               this.i18n.fanyi('router.alert.exist.router')
             );
+            this.router.navigate(['/app-smart-cloud/network/router']);
           }
-          this.router.navigate(['/app-smart-cloud/network/router']);
         },
       });
   }
@@ -494,6 +499,10 @@ export class RouterDetailComponent implements OnInit {
 
   onProjectChange(project: ProjectModel) {
     this.vpcId = project?.id;
+    this.isPermissionCreateInterface = this.policyService.hasPermission("routerinterface:ListSubnetInRouterInterface") &&
+    this.policyService.hasPermission("routerinterface:Create");
+
+    this.isPermissionCreateStatic = this.policyService.hasPermission("routestatic:Create")
   }
 
   userChangeProject(project: ProjectModel) {

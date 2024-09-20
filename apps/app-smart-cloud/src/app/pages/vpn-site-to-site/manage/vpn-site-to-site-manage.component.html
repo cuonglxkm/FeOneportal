@@ -58,7 +58,7 @@
           [nzXs]="24"
           [nzXXl]="12"
         >
-          <button nz-button nzType="primary" (click)="extendVpn()" *ngIf="isCreateOrder && (projectObject && (projectObject.type == 0 || projectObject.type == 2))">
+          <button nz-button nzType="primary" (click)="extendVpn()" *ngIf="isExtendOrder && (projectObject && (projectObject.type == 0 || projectObject.type == 2))">
             <img
               style="padding-right: 10px; margin-top: -4px"
               src="assets/imgs/calendar-tick2.svg"
@@ -71,12 +71,12 @@
             nzType="primary"
             nz-dropdown
             [nzDropdownMenu]="opMenu"
-            *ngIf="(isCreateOrder || isDetelePermission) && (projectObject && (projectObject.type == 0 || projectObject.type == 2))"
+            *ngIf="(isResizeOrder || isDetelePermission) && (projectObject && (projectObject.type == 0 || projectObject.type == 2))"
           >
             <img src="assets/imgs/dots.svg" alt="" />
             <nz-dropdown-menu #opMenu="nzDropdownMenu">
               <ul nz-menu>
-                <li nz-menu-item (click)="resizeVpn()" *ngIf="isCreateOrder && (projectObject && (projectObject.type == 0 || projectObject.type == 2)) && response?.serviceStatus !== 'TAMNGUNG'">{{'app.manage.site.to.site.Adjust' |i18n}}</li>
+                <li nz-menu-item (click)="resizeVpn()" *ngIf="isResizeOrder && (projectObject && (projectObject.type == 0 || projectObject.type == 2)) && response?.serviceStatus !== 'TAMNGUNG'">{{'app.manage.site.to.site.Adjust' |i18n}}</li>
                 <li nz-menu-item (click)="modalDelete()" *ngIf="isDetelePermission && (projectObject && (projectObject.type == 0 || projectObject.type == 2))">{{'app.manage.site.to.site.delete' |i18n}}</li>
               </ul>
             </nz-dropdown-menu>
@@ -109,7 +109,7 @@
       <nz-tabset [nzSelectedIndex]="selectedIndex" nzSize="large" (nzSelectedIndexChange)="handleTabChange($event)">
         <nz-tab nzTitle="IKE Policies" class="label-fontsize">
           <ng-template nz-tab>
-            <one-portal-ike-policies [region]="region"
+            <one-portal-ike-policies [region]="region" [isBegin]="isBegin"
             [project]="project"></one-portal-ike-policies
           ></ng-template>
         </nz-tab>

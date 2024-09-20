@@ -129,6 +129,12 @@ export class BucketCorsComponent implements OnInit {
           this.total = data.totalCount;
         },
         error: (e) => {
+          if (e.status == 403) {
+            this.notification.error(
+              e.statusText,
+              this.i18n.fanyi('app.non.permission', { serviceName: 'Danh sách Bucket CORS' })
+            );
+          }
           this.listBucketCors = [];
         },
       });

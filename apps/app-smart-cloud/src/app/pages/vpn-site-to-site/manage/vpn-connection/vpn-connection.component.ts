@@ -101,7 +101,7 @@ export class VpnConnection {
       if(error.status == 403){
         this.notification.error(
           error.statusText,
-          this.i18n.fanyi('app.non.permission')
+          this.i18n.fanyi('app.non.permission', { serviceName: 'Danh sách VPN Connection' })
         );
       }
       this.isCreatePermission = this.policyService.hasPermission("vpnsitetosites:VPNCreateVpnConnection");

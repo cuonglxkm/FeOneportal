@@ -114,7 +114,7 @@
                                                  (onOk)="handleOkUpdate()"/>
 
                 <!--Restore----!--->
-                <img *ngIf="('backup:VolumeBackupRestore' | IsPermissionPipe)" src="assets/imgs/rotate-right.svg" alt=""
+                <img *ngIf="('backup:VolumeBackupRestore' | IsPermissionPipe) && ('backup:VolumeBackupGet' | IsPermissionPipe) && ('instance:List' | IsPermissionPipe) && ('instance:List' | IsPermissionPipe) && ('configuration:Get' | IsPermissionPipe) && ('order:GetOrderAmount' | IsPermissionPipe) && ('cloudproject:Get' | IsPermissionPipe) && ('volume:List' | IsPermissionPipe) && ('offer:Search' | IsPermissionPipe) && ('volume:Get' | IsPermissionPipe) && ('backup:GetBackupPacket' | IsPermissionPipe)" src="assets/imgs/rotate-right.svg" alt=""
                      style="cursor: pointer; margin-left: 5px; width: 21px; height: 20px;"
                      nz-popover nzPopoverPlacement="bottom"
                      [nzPopoverContent]="'Restore'" (click)="navigateToRestore(data.id)"/>

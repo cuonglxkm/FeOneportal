@@ -124,7 +124,7 @@
                                                [backupName]="data.name"
                                                [backupVmInfo]="data"
                                                (onOk)="handleOkUpdate()" />
-                  <img *ngIf="('backup:InstanceBackupRestore' | IsPermissionPipe)" src="assets/imgs/rotate-right.svg" alt=""
+                  <img *ngIf="('backup:InstanceBackupRestore' | IsPermissionPipe) && ('configuration:Get' | IsPermissionPipe) && ('keypair:List' | IsPermissionPipe) && ('offer:Search' | IsPermissionPipe) && ('network:List' | IsPermissionPipe) && ('ippublic:List' | IsPermissionPipe) && ('order:GetOrderAmount' | IsPermissionPipe) && ('backup:InstanceBackupGet' | IsPermissionPipe) && ('instance:Get' | IsPermissionPipe) && ('	instance:InstanceNameExist' | IsPermissionPipe)" src="assets/imgs/rotate-right.svg" alt=""
                        style="cursor: pointer; margin-left: 5px;"
                        (click)="navigateToRestore(data.id)"
                        nz-popover nzPopoverPlacement="bottom"

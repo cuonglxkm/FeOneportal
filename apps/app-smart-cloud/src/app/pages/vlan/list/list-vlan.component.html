@@ -77,11 +77,11 @@
         <td *ngIf="data.status == 'KHOITAO'" style="color: #008D47;">{{ 'app.status.running'|i18n }}</td>
         <td>
           <div *ngIf="data.name.includes('pri_network')">
-            <img nz-popover src="assets/imgs/edit-2.svg" alt=""
+            <img *ngIf="('network:List' | IsPermissionPipe) && ('network:Update' | IsPermissionPipe)" nz-popover src="assets/imgs/edit-2.svg" alt=""
                  nzPopoverPlacement="bottom"
                  style="cursor: pointer; margin-right: 16px; opacity: 0.5; pointer-events: none; filter: grayscale(100%);"
                  [nzPopoverContent]="'app.text.edit'|i18n" disabled="true" />
-            <img src="assets/imgs/delete.svg"
+            <img *ngIf="('network:Delete' | IsPermissionPipe) && ('network:Get' | IsPermissionPipe)" src="assets/imgs/delete.svg"
                  style="height: 28px;width: 28px; cursor: pointer;opacity: 0.5; pointer-events: none; filter: grayscale(100%);"
                  nz-popover
                  [nzPopoverContent]="'app.text.delete'|i18n"

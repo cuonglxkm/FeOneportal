@@ -25,6 +25,8 @@ export class VpnSiteToSiteManage {
   isVisibleDelete: boolean = false;
   isLoadingDelete: boolean = false;
   isCreateOrder: boolean = false;
+  isExtendOrder: boolean = false;
+  isResizeOrder: boolean = false;
   isDetelePermission: boolean = false;
   selectedIndex = 0;
   @ViewChildren('projectCombobox') projectComboboxs:  QueryList<ProjectSelectDropdownComponent>;
@@ -59,6 +61,14 @@ export class VpnSiteToSiteManage {
     this.getData(true);
     this.isCreateOrder = this.policyService.hasPermission("order:Create") &&
     this.policyService.hasPermission("offer:Search") &&
+    this.policyService.hasPermission("order:GetOrderAmount");
+    this.isExtendOrder = this.policyService.hasPermission("order:Create") &&
+    this.policyService.hasPermission("offer:Search") &&
+    this.policyService.hasPermission("vpnsitetosites:Get") &&
+    this.policyService.hasPermission("order:GetOrderAmount");
+    this.isResizeOrder = this.policyService.hasPermission("order:Create") &&
+    this.policyService.hasPermission("offer:Search") &&
+    this.policyService.hasPermission("vpnsitetosites:Get") &&
     this.policyService.hasPermission("order:GetOrderAmount");
     this.isDetelePermission = this.policyService.hasPermission("vpnsitetosites:Delete");
   }
@@ -95,7 +105,7 @@ export class VpnSiteToSiteManage {
       if(error.status == 403){
         this.notification.error(
           error.statusText,
-          this.i18n.fanyi('app.non.permission')
+          this.i18n.fanyi('app.non.permission', { serviceName: 'Thông tin VPN Site to Site' })
         );
       }
       if (isBegin) {
@@ -125,8 +135,7 @@ export class VpnSiteToSiteManage {
   }
 
   handleTabChange(event){
-    this.router.navigate([`/app-smart-cloud/vpn-site-to-site`], {queryParams: {tab: event}});
-    
+    this.router.navigate([`/app-smart-cloud/vpn-site-to-site`], {queryParams: {tab: event}}); 
   }
 
   handleOkDelete() {

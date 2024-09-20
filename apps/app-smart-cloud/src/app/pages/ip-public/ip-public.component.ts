@@ -103,7 +103,7 @@ export class IpPublicComponent implements OnInit {
           if(e.status == 403){
             this.notification.error(
               e.statusText,
-              this.i18n.fanyi('app.non.permission')
+              this.i18n.fanyi('app.non.permission', { serviceName: 'Danh sách IP Public' })
             );
           } else {
             this.notification.error(

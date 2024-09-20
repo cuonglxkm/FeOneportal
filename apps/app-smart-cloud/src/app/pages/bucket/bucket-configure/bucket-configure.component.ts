@@ -83,8 +83,15 @@ export class BucketConfigureComponent implements OnInit {
           }
         },
         error: (e) => {
-          this.notification.error('', e.error.message);
-          this.navigateToBucketList();
+          if (e.status == 403) {
+            this.notification.error(
+              e.statusText,
+              this.i18n.fanyi('app.non.permission', { serviceName: 'Chi tiết Bucket' })
+            );
+          }else{
+            this.notification.error('', e.error.message);
+            this.navigateToBucketList();
+          }
         },
       });
 }
@@ -129,12 +136,6 @@ export class BucketConfigureComponent implements OnInit {
   }
 
   projectChanged() {
-    this.policyService
-      .getUserPermissions()
-      .pipe()
-      .subscribe((permission) => {
-        localStorage.setItem('PermissionOPA', JSON.stringify(permission));
-        
         // Update ACL permissions
         this.isUpdatePermission = this.policyService.hasPermission("objectstorages:SetBucketACL");
   
@@ -152,7 +153,6 @@ export class BucketConfigureComponent implements OnInit {
   
         // Update Static Web permission
         this.isUpdateStaticWebPermission = this.policyService.hasPermission("objectstorages:OSPutBucketWebsite");
-      });
   }
   
 
@@ -172,6 +172,12 @@ export class BucketConfigureComponent implements OnInit {
           this.usage = data;
         },
         error: (e) => {
+          if (e.status == 403) {
+            this.notification.error(
+              e.statusText,
+              this.i18n.fanyi('app.non.permission', { serviceName: 'Dung lượng đã sử dụng' })
+            );
+          }
           // this.notification.error(
           //   this.i18n.fanyi('app.status.fail'),
           //   this.i18n.fanyi('app.bucket.getObject.fail')
