@@ -18,6 +18,7 @@ import { EndpointCreate } from 'src/app/shared/models/endpoint-init';
 import { slider } from '../../../../../../../libs/common-utils/src';
 import { PriceType } from 'src/app/core/models/enum';
 import { LoadingService } from '@delon/abc/loading';
+import { DecimalPipe } from '@angular/common';
 
 @Component({
   selector: 'one-portal-endpoint-create',
@@ -67,7 +68,7 @@ export class EndpointCreateComponent implements OnInit {
     private fb: FormBuilder,
     private service: ObjectStorageService,
     private endpointService: EndpointService,
-    private loadingSrv:LoadingService
+    private loadingSrv:LoadingService,
   ) {
   
   }
@@ -77,13 +78,19 @@ export class EndpointCreateComponent implements OnInit {
     this.checkExistName();
     this.checkExistUsername();
   }
-
+  // Hàm để định dạng số với dấu phẩy
+  formatter = (value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
   dataSubjectName: Subject<string> = new Subject<string>();
   dataSubjectUserame: Subject<string> = new Subject<string>();
   changeName(value: string) {
     this.dataSubjectName.next(value);
   }
   changeUsername(value: string) {
+    this.form.controls.username.setValue(value.toLowerCase());// = event.target.value.toLowerCase();
+    if (!value) {
+      return;
+    }
+    
     this.dataSubjectUserame.next(value);
   }
   changeNumberOfLincense(value: number){

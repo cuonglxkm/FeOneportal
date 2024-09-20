@@ -70,7 +70,7 @@
               [nzLoading]="isLoading">
       <thead>
       <tr>
-        <th  nzLeft>{{ 'endpoint.table.title.name' | i18n }}</th>
+        <th nzLeft nzBreakWord>{{ 'endpoint.table.title.name' | i18n }}</th>
         <th nzLeft nzBreakWord>{{ 'endpoint.table.title.username' | i18n }}</th>
         <th nzCenter nzBreakWord>{{ 'endpoint.table.title.email' | i18n }}</th>
         <th style="width: 12%;" nzBreakWord>{{ 'endpoint.table.title.numberofdevices' | i18n }}</th>
@@ -80,7 +80,7 @@
       </thead>
       <tbody>
       <tr *ngFor="let data of fixedTable.data">
-        <td nzLeft>{{ data.name }}</td>
+        <td nzLeft nzBreakWord>{{ data.name }}</td>
         <td nzBreakWord nzAlign="left">{{ data.username }}</td>
         <td nzBreakWord nzAlign="left">{{ data.email }}</td>
         <td nzBreakWord nzAlign="right">{{ data.quantity }}</td>
