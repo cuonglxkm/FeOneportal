@@ -3720,5 +3720,9 @@
   "endpoint.table.title.numberofdevices": "Number of devices",
   "endpoint.table.title.enddate": "Expiration Date",
   "endpoint.table.title.status": "Status",
-  "app.year": "Year"
+  "app.year": "Year",
+  "app.tooltip.usage.time.year": "The period of time a customer purchases {{name}} for use, calculated on a yearly basis",
+  "endpoint.validate.name": "Enter the service name written continuously without spaces or diacritics, and without special characters except for underscores ‘_’, with a maximum of 50 characters.",
+  "endpoint.validate.username": "Username must be written continuously without spaces or diacritics, with no special characters, and a maximum of 30 characters.",
+  "endpoint.validate.numberOfLicense": "The minimum number of installations is 1 and the maximum is 30,000"
 }

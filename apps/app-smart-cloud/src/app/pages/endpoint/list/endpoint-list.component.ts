@@ -57,6 +57,7 @@ export class EndpointListComponent implements OnInit, OnDestroy {
   }
 
   changeInputChange(event: Event) {
+    this.pageIndex = 1;
     const value = (event.target as HTMLInputElement).value;
     this.enterPressed = false;
     this.dataSubjectInputSearch.next(value);
@@ -74,6 +75,7 @@ export class EndpointListComponent implements OnInit, OnDestroy {
   }
 
   onEnter(event: Event) {
+    this.pageIndex = 1;
     event.preventDefault();
     this.enterPressed = true;
     const value = (event.target as HTMLInputElement).value;
@@ -82,6 +84,7 @@ export class EndpointListComponent implements OnInit, OnDestroy {
   }
 
   onChange(value) {
+    this.pageIndex = 1;
     this.selectedValue = value;
     this.getListEndpoint();
   }

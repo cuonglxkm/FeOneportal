@@ -23,6 +23,7 @@ import { LoadingService } from '@delon/abc/loading';
 import { I18NService } from '@core';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
+import { PriceType } from 'src/app/core/models/enum';
 class ServiceInfo {
   name: string;
   price: number;
@@ -47,6 +48,8 @@ export class PaymentDetailComponent implements OnInit {
     orderNumber:string
     isLoading: boolean = false
     isPrint: boolean = false
+    priceType: PriceType;
+    PriceType = PriceType;
   constructor(
     private service: PaymentService,
     private router: Router,
@@ -113,10 +116,17 @@ export class PaymentDetailComponent implements OnInit {
     });
   }
 
+  getPriceType(){
+    var serviceSpec = JSON.parse(this.data?.orderItems[0]?.serviceDetail);
+    var offerPriceType = serviceSpec?.OfferPriceType ?? "PerMonth";
+    this.priceType = PriceType[offerPriceType as keyof typeof PriceType];
+  }
+
   getOrderDetail(id: string) {
     this.orderService.getOrderBycode(id).subscribe({
       next: (data) => {
-        this.data = data;   
+        this.data = data;
+        this.getPriceType();
         this.cdr.detectChanges()
       },
       error: (e) => {
