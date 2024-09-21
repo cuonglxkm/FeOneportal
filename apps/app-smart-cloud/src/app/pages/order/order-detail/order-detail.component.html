@@ -322,8 +322,11 @@
                 <a
                 *ngSwitchCase="'File system snapshot'"
                 [routerLink]="['/app-smart-cloud/file-system-snapshot']"
-                >{{ item?.serviceName }}</a
-              >
+                >{{ item?.serviceName }}</a>
+                <a
+                *ngSwitchCase="'Endpoint'"
+                [routerLink]="['/app-smart-cloud/endpoint']"
+                >{{ item?.serviceName }}</a>
                 <div *ngSwitchDefault>{{ item?.serviceName }}</div>
               </td>
             </ng-container>

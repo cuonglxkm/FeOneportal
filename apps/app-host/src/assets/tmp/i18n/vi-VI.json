@@ -3647,9 +3647,12 @@
   "endpoint.table.title.name": "Tên Endpoint",
   "endpoint.table.title.username": "Username",
   "endpoint.table.title.email": "Email",
-  "endpoint.table.title.numberofdevices": "Số lượng máy đăng ký",
+  "endpoint.table.title.numberofdevices": "Số máy đăng ký",
   "endpoint.table.title.enddate": "Ngày hết hạn",
   "endpoint.table.title.status": "Trạng thái đăng ký",
   "app.year": "Năm",
-  "app.tooltip.usage.time.year": "Thời gian khách hàng mua {{name}} để sử dụng, tính theo năm"
+  "app.tooltip.usage.time.year": "Thời gian khách hàng mua {{name}} để sử dụng, tính theo năm",
+  "endpoint.validate.name": "Tên dịch vụ viết liền không dấu cách, không ký tự đặc biệt ngoại trừ ‘_’, Tối đa 50 ký tự",
+  "endpoint.validate.username": "Username viết liền không dấu cách, không ký tự đặc biệt, Tối đa 30 ký tự",
+  "endpoint.validate.numberOfLicense": "Số lượng máy cài đặt tối thiểu là 1 và tối đa là 30,000"
 }
