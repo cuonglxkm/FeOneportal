@@ -79,7 +79,7 @@
       <td>{{ data.perfectForwardSecrey }}</td>
       <td>
         <div class="d-flex gap-2 justify-content-center align-items-center">
-          <img *ngIf="('vpnsitetosites:VPNUpdateIKEPolicy' | IsPermissionPipe)"
+          <img *ngIf="('vpnsitetosites:VPNUpdateIKEPolicy' | IsPermissionPipe) && ('vpnsitetosites:VPNGetIKEPolicy' | IsPermissionPipe)"
             style="cursor: pointer; margin-right: 16px"
             src="assets/imgs/edit-2.svg"
             nzTheme="outline"
