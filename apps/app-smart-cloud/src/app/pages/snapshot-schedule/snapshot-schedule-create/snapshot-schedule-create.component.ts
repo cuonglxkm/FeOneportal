@@ -1,4 +1,4 @@
-import { Component, Inject, Input, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, Inject, Input, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { SnapshotVolumeService } from '../../../shared/services/snapshot-volume.service';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
@@ -133,6 +133,7 @@ export class SnapshotScheduleCreateComponent implements OnInit {
     @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
     private vlService: VolumeService,
     private datepipe: DatePipe,
+    private cdr: ChangeDetectorRef
 
   ) { }
 
@@ -902,5 +903,31 @@ export class SnapshotScheduleCreateComponent implements OnInit {
       this.router.navigate([`/app-smart-cloud/snapshot/packages/edit/` + id])
     }
   }
-
+  onblur() {
+    setTimeout(() => {
+      if (!this.numOfVersion || this.numOfVersion < 1) {
+        this.numOfVersion = 1;
+      }
+    }, 5000);
+  }
+  changeNumber(value:number){
+   
+    const numericValue = Number(value);
+    console.log("type a", typeof (value))
+    console.log("aa", numericValue)
+    console.log("type numericValue", typeof (numericValue))
+    if (numericValue<1|| !numericValue  || numericValue===0) {
+      this.numOfVersion=1;
+    
+      this.cdr.detectChanges();
+    
+    }
+    else {
+      this.numOfVersion = numericValue;
+    }
+    console.log("this.numOfVersion=1",this.numOfVersion)
+    console.log("type numOfVersion2", typeof (this.numOfVersion))
+  }
+ 
+  
 }
