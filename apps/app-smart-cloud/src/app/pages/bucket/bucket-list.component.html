@@ -291,8 +291,8 @@
             *ngIf="
               ('objectstorages:GetBucketPolicy' | IsPermissionPipe) &&
               ('objectstorages:GetBucket' | IsPermissionPipe) &&
-              ('objectstorages:OSListBucketCORS' | IsPermissionPipe) &&
-              ('objectstorages:OSListBucketLifeCycle' | IsPermissionPipe)
+              ('objectstorages:OSBucketCORSPaging' | IsPermissionPipe) &&
+              ('objectstorages:OSBucketLifeCyclePaging' | IsPermissionPipe)
             "
             src="assets/imgs/uil_setting.svg"
             alt=""
