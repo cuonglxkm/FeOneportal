@@ -132,6 +132,7 @@ export class ListPackagesSnapshotComponent implements OnInit {
       this.isBegin = true;
     }
     this.isCreateOrder = this.policyService.hasPermission("configuration:Get") &&
+      this.policyService.hasPermission("snapshotpackage:ListSnapshotPackage") &&
       this.policyService.hasPermission("order:GetOrderAmount") &&
       this.policyService.hasPermission("order:Create");
   }
@@ -388,7 +389,7 @@ export class ListPackagesSnapshotComponent implements OnInit {
     this.formSearchScheduleSnapshot.pageNumber = 1
 
     this.formSearchScheduleSnapshot.volumeName = ''
-    this.formSearchScheduleSnapshot.ssPackageId = ''
+    this.formSearchScheduleSnapshot.ssPackageId = this.dataAction.id
     this.snapshotVolumeService.getListSchedule(this.formSearchScheduleSnapshot)
     .pipe(finalize(() => {
       this.isLoadingSnapshotSchedule = false;

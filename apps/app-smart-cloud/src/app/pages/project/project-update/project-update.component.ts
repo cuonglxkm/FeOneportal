@@ -67,6 +67,7 @@ export class ProjectUpdateComponent implements OnInit {
   ipConnectInternet = '';
   ipNetworkAddress: string = '';
   ipNetworkId: string = '';
+  rangeIpPublic='';
   numberIpFloating: number = 0;
   numberIpPublic: number = 0;
   numberIpv6: number = 0;
@@ -336,7 +337,7 @@ export class ProjectUpdateComponent implements OnInit {
         // newPublicNetworkAddress: this.ipConnectInternet ? ((ipName != '' && ipName != undefined) ? ipName : '') : this.ipNameOld,
         newPublicNetworkAddress: this.ipConnectInternet ? (ipName  ? ipName : '') : this.ipNameOld,
         newQuotaIpPublicCount: this.data?.offerDetail ? (this.numberIpPublic + this.ipPublicAddOld) : (this.numberIpPublic + this.ipPublicTotal),
-
+        IpPublicNetworkId:this.rangeIpPublic,
 
         newQuotaIpFloatingCount: this.numberIpFloating + this.ipFloatingOld,
         newQuotaIpv6Count: this.numberIpv6 + this.ipv6Old,
@@ -545,7 +546,7 @@ export class ProjectUpdateComponent implements OnInit {
         newQuotaIpPublicCount: this.data?.offerDetail ? (this.numberIpPublic + this.ipPublicAddOld) : (this.numberIpPublic + this.ipPublicTotal),
         newQuotaIpFloatingCount: this.numberIpFloating + this.ipFloatingOld,
         newQuotaIpv6Count: this.numberIpv6 + this.ipv6Old,
-
+        IpPublicNetworkId:this.rangeIpPublic,
         newQuotaVolumeSnapshotHddInGb: this.numberSnapshothdd + this.snapshothddOld,
         newQuotaVolumeSnapshotSsdInGb: this.numberSnapshotssd + this.snapshotssdOld,
 
@@ -1210,11 +1211,8 @@ export class ProjectUpdateComponent implements OnInit {
     this.numberIpv6 = 0;
     this.numberIpFloating = 0;
 
-    // if (this.data.publicNetworkAddress != '' && this.data.publicNetworkId != '') {
-    //   this.ipConnectInternet = this.data.publicNetworkId + '--' + this.data.publicNetworkAddress;
-    // }
-    // else {
-    //   this.ipConnectInternet = '';
+    // if(this.data.IpPublicNetworkId){
+    //   this.rangeIpPublic = this.data.IpPublicNetworkId
     // }
     if (this.data.publicNetworkAddress  && this.data.publicNetworkId ) {
       this.ipConnectInternet = this.data.publicNetworkId + '--' + this.data.publicNetworkAddress;
@@ -1309,5 +1307,11 @@ export class ProjectUpdateComponent implements OnInit {
   deleteSnapshot() {
     this.activeSnapshot = false;
     this.trashSnapshot = false;
+  }
+   // chon dai ip public
+   changeRangeIpPublic(value:any){
+    console.log("range ip public", value)
+    this.rangeIpPublic = value
+    this.calculate()
   }
 }

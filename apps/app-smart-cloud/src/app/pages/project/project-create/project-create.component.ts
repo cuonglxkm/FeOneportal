@@ -73,6 +73,10 @@ export class ProjectCreateComponent implements OnInit {
 
   numberSnapshothdd: number = 0;
   numberSnapshotssd: number = 0;
+  numberKubernetes:number=0;
+  numberKafka:number=0;
+  numberMongoDB:number=0;
+  numberKubernetesSSD:number=0;
 
 
   vCPU = 0;
@@ -111,6 +115,16 @@ export class ProjectCreateComponent implements OnInit {
 
   activeSnapshot = false;
   trashSnapshot = false;
+
+  activeKubernetes= false;
+  trashKubernetes = false;
+  activeKafka = false;
+  trashKafka = false;
+  activeMongoDB = false;
+  trashMongoDB = false;
+
+  rangeIpPublic='';
+  
 
   numOfMonth: number;
   total: any;
@@ -161,7 +175,9 @@ export class ProjectCreateComponent implements OnInit {
 
 
     siteToSite: 0,
-    siteToSiteUnit: 0
+    siteToSiteUnit: 0,
+
+
 
 
   };
@@ -342,6 +358,7 @@ export class ProjectCreateComponent implements OnInit {
           publicNetworkId: ip,
           publicNetworkAddress: ipName,
           quotaIPv6Count: IPV6,
+          IpPublicNetworkId:this.rangeIpPublic,
 
 
           gpuQuotas: this.gpuQuotasGobal,
@@ -529,6 +546,16 @@ export class ProjectCreateComponent implements OnInit {
       case "loadbalancer":
         this.numberLoadBalancer = number;
         break;
+        case "kubernetes":
+          this.numberKubernetes = number;
+          break;
+          case "kafka":
+            this.numberKafka = number;
+            break;
+            case "kubernetesSSD":
+            this.numberKubernetesSSD = number;
+            break;
+  
 
     }
 
@@ -664,6 +691,7 @@ export class ProjectCreateComponent implements OnInit {
           quotaShareSnapshotInGb: this.numberFileScnapsshot,
           publicNetworkId: ip,
           publicNetworkAddress: ipName,
+          IpPublicNetworkId:this.rangeIpPublic,
 
           gpuQuotas: this.gpuQuotasGobal,
           quotaVolumeSnapshotHddInGb: this.numberSnapshothdd,
@@ -847,6 +875,7 @@ export class ProjectCreateComponent implements OnInit {
     this.trashIP = false;
 
     this.ipConnectInternet = '';
+    this.rangeIpPublic ='';
 
 
     this.price.IpPublic = 0;
@@ -947,7 +976,30 @@ export class ProjectCreateComponent implements OnInit {
     this.numberSnapshothdd = 0;
     this.calculate(null)
   }
-
+  initKubernetes(){
+    this.activeKubernetes = true;
+    this.trashKubernetes= true;
+  }
+  deleteKubernetes(){
+    this.activeKubernetes = false;
+    this.trashKubernetes= false;
+  }
+  initKafka(){
+    this.activeKafka = true;
+    this.trashKafka= true;
+  }
+  deleteKafka(){
+    this.activeKafka = false;
+    this.trashKafka= false;
+  }
+  initMongoDB(){
+    this.activeMongoDB = true;
+    this.trashMongoDB= true;
+  }
+  deleteMongoDB(){
+    this.activeMongoDB = false;
+    this.trashMongoDB= false;
+  }
   openIpSubnet() {
     this.calculate(-1);
   }
@@ -972,6 +1024,7 @@ export class ProjectCreateComponent implements OnInit {
       .subscribe(
         data => {
           this.listIpConnectInternet = data;
+          console.log("dari subnet ip",this.listIpConnectInternet )
         }
       );
   }
@@ -1308,5 +1361,11 @@ export class ProjectCreateComponent implements OnInit {
         }
       });
     });
+  }
+  // chon dai ip public
+  changeRangeIpPublic(value:any){
+    console.log("range ip public", value)
+    this.rangeIpPublic = value
+    this.calculate(null)
   }
 }

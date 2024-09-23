@@ -11,6 +11,9 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { RegionModel, ProjectModel } from '../../../../../../../libs/common-utils/src';
 import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
+import { OrderService } from 'src/app/shared/services/order.service';
+import { I18NService } from '@core';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
 
 @Component({
   selector: 'one-portal-extend-ip-floating',
@@ -35,6 +38,8 @@ export class ExtendIpFloatingComponent implements OnInit{
   total: any;
   dateString: any;
   dateStringExpired: any;
+  isVisiblePopupError: boolean = false;
+  errorList: string[] = [];
   @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
   ngOnInit(): void {
     const id = this.activatedRoute.snapshot.paramMap.get('id');
@@ -83,7 +88,9 @@ export class ExtendIpFloatingComponent implements OnInit{
               private router: Router,
               private activatedRoute: ActivatedRoute,
               private modalService: NzModalService,
-              private notification: NzNotificationService) {
+              @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
+              private notification: NzNotificationService,
+              private orderService: OrderService) {
     this.volumeStatus = new Map<String, string>();
     this.volumeStatus.set('KHOITAO', 'Đang hoạt động');
     this.volumeStatus.set('ERROR', 'Lỗi');
@@ -135,8 +142,27 @@ export class ExtendIpFloatingComponent implements OnInit{
         }
       ]
     };
-    var returnPath: string = window.location.pathname;
-    this.router.navigate(['/app-smart-cloud/order/cart'], { state: { data: request, path: returnPath } });
+    this.orderService.validaterOrder(request).subscribe({
+      next: (data) => {
+        if (data.success) {
+          var returnPath: string = window.location.pathname;
+          this.router.navigate(['/app-smart-cloud/order/cart'], { state: { data: request, path: returnPath } });
+        } else {
+          this.isVisiblePopupError = true;
+          this.errorList = data.data;
+        }
+      },
+      error: (e) => {
+        this.notification.error(
+          this.i18n.fanyi('app.status.fail'),
+          e.error.detail
+        );
+      },
+    });
+  }
+
+  closePopupError() {
+    this.isVisiblePopupError = false;
   }
 
   caculator() {

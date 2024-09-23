@@ -32,9 +32,9 @@
           <div nz-col [nzSpan]="24">
             <nz-form-item >
               <nz-form-label
-                >Tên Endpoint(<span class="text-red">*</span>)<img
+                >Tên Endpoint (<span class="text-red">*</span>)<img
                   style="margin-left: 10px"
-                  nz-tooltip="{{ 'project.note16' | i18n }}"
+                  nz-tooltip="{{ 'endpoint.validate.name' | i18n }}"
                   src="assets/imgs/pajamas_question.svg"
                   alt=""
               /></nz-form-label>
@@ -56,7 +56,7 @@
                     >Tên Endpoint không được để trống
                   </ng-container>
                   <ng-container *ngIf="control.hasError('pattern')"
-                    >Tên Endpoint không đúng định dạng
+                    >Không bao gồm dấu tiếng Việt, dấu cách, ký tự đặc biệt (trừ_)
                   </ng-container>
                 </ng-template>
               </nz-form-control>
@@ -66,10 +66,16 @@
         <div nz-row [nzGutter]="24">
           <div nz-col [nzSpan]="12">
             <nz-form-item>
-              <nz-form-label>Username(<span class="text-red">*</span>)</nz-form-label>
+              <nz-form-label>Username (<span class="text-red">*</span>)<img
+                style="margin-left: 10px"
+                nz-tooltip="{{ 'endpoint.validate.username' | i18n }}"
+                src="assets/imgs/pajamas_question.svg"
+                alt=""
+                /></nz-form-label>
               <nz-form-control [nzErrorTip]="usernameErrorTpl">
                 <input
                   nz-input
+                  maxlength="30"
                   placeholder="Nhập username đăng nhập"
                   [ngStyle]="isExistUsername ? { borderColor: '#ff4d4f' } : {}"
                   formControlName="username"
@@ -84,7 +90,7 @@
                     >Username không được để trống
                   </ng-container>
                   <ng-container *ngIf="control.hasError('pattern')"
-                    >Username không đúng định dạng
+                    >Username không bao gồm dấu tiếng Việt, dấu cách, ký tự đặc biệt
                   </ng-container>
                 </ng-template>
               </nz-form-control>
@@ -92,7 +98,7 @@
           </div>
           <div nz-col [nzSpan]="12">
             <nz-form-item>
-              <nz-form-label>Email(<span class="text-red">*</span>)</nz-form-label>
+              <nz-form-label>Email (<span class="text-red">*</span>)</nz-form-label>
               <nz-form-control [nzErrorTip]="emailErrorTpl">
                 <input
                   nz-input
@@ -113,8 +119,8 @@
           </div>
           <div nz-col [nzSpan]="24">
             <nz-form-item>
-              <nz-form-label>Số lượng máy đăng ký cài đặt(<span class="text-red">*</span>)
-                <img style="margin-left: 10px" nz-tooltip="{{ 'project.note16' | i18n }}" src="assets/imgs/pajamas_question.svg" alt=""/>
+              <nz-form-label>Số lượng máy đăng ký cài đặt (<span class="text-red">*</span>)
+                <img style="margin-left: 10px" nz-tooltip="{{ 'endpoint.validate.numberOfLicense' | i18n }}" src="assets/imgs/pajamas_question.svg" alt=""/>
               </nz-form-label>
               <nz-form-control [nzErrorTip]="numberErrorTpl">
                 <nz-input-number
@@ -123,11 +129,13 @@
                   placeholder="Nhập số lượng"
                   formControlName="numberOfLicense"
                   (ngModelChange)="changeNumberOfLincense($event)"
-                  maxlength="50"
                   class="custom-input"
                   nzSize="large"
                   style="width: 100%; margin-left: 0px"
-                />
+                  [nzFormatter]="formatter"
+                  (keydown) = "onKeyDown($event)"
+                /> 
+
                 <ng-template #numberErrorTpl let-control>
                   <ng-container *ngIf="control.hasError('required')"
                     >Số lượng không được để trống
@@ -151,11 +159,11 @@
           </div>
           <div class="text-label" style="margin-bottom: 12px">
             <h3 class="custom-subtitle">Tên Endpoint</h3>
-            <span>{{form.get('name').value}}</span>
+            <span style="word-wrap: break-word;">{{form.get('name').value}}</span>
           </div>
           <div class="text-label" style="margin-bottom: 12px">
             <h3 class="custom-subtitle">Username</h3>
-            <span>{{form.get('username').value}}</span>
+            <span style="word-wrap: break-word;">{{form.get('username').value}}</span>
           </div>
           <div class="text-label" style="margin-bottom: 12px;">
             <h3 class="custom-subtitle">Email</h3>
@@ -163,7 +171,7 @@
           </div>
           <div class="text-label" style="margin-bottom: 12px">
             <h3 class="custom-subtitle">Số lượng máy đăng ký cài đặt</h3>
-            <span>{{form.get('numberOfLicense').value}}</span>
+            <span>{{soluong}}</span>
           </div>
           <nz-row class="right-form-content-month" nzGutter="16">
             <nz-col nzSpan="16">
@@ -249,7 +257,7 @@
                 nzType="primary"
                 (click)="handleSubmit()"
               >
-                <span nz-icon nzType="wallet" nzTheme="outline"></span>
+                <img src="assets/imgs/wallet.svg" style="margin-right: 5px; padding-bottom: 5px;" />
                 Khởi tạo
               </button>
             </nz-col>

@@ -18,6 +18,7 @@ import { EndpointCreate } from 'src/app/shared/models/endpoint-init';
 import { slider } from '../../../../../../../libs/common-utils/src';
 import { PriceType } from 'src/app/core/models/enum';
 import { LoadingService } from '@delon/abc/loading';
+import { DecimalPipe } from '@angular/common';
 
 @Component({
   selector: 'one-portal-endpoint-create',
@@ -67,7 +68,7 @@ export class EndpointCreateComponent implements OnInit {
     private fb: FormBuilder,
     private service: ObjectStorageService,
     private endpointService: EndpointService,
-    private loadingSrv:LoadingService
+    private loadingSrv:LoadingService,
   ) {
   
   }
@@ -77,13 +78,39 @@ export class EndpointCreateComponent implements OnInit {
     this.checkExistName();
     this.checkExistUsername();
   }
-
+  onKeyDown(event: KeyboardEvent) {
+    // Lấy giá trị của phím được nhấn
+    const key = event.key;
+    // Kiểm tra xem phím nhấn có phải là một số hoặc phím di chuyển không
+    if (
+      (isNaN(Number(key)) &&
+        key !== 'Backspace' &&
+        key !== 'Delete' &&
+        key !== 'ArrowLeft' &&
+        key !== 'ArrowRight' &&
+        key !== 'Tab') ||
+        key === '.'
+    ) {
+      // Nếu không phải số hoặc đã nhập dấu chấm và đã có dấu chấm trong giá trị hiện tại
+      event.preventDefault(); // Hủy sự kiện để ngăn người dùng nhập ký tự đó
+    }
+  }
+  get soluong() {
+    return this.formatter(this.form.get('numberOfLicense').value) ;
+  }
+  // Hàm để định dạng số với dấu phẩy
+  formatter = (value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
   dataSubjectName: Subject<string> = new Subject<string>();
   dataSubjectUserame: Subject<string> = new Subject<string>();
   changeName(value: string) {
     this.dataSubjectName.next(value);
   }
   changeUsername(value: string) {
+    this.form.controls.username.setValue(value.toLowerCase());// = event.target.value.toLowerCase();
+    if (!value) {
+      return;
+    }
+    
     this.dataSubjectUserame.next(value);
   }
   changeNumberOfLincense(value: number){

@@ -67,6 +67,7 @@ export class ListenerUpdateComponent implements OnInit, OnChanges {
   data: any;
   listCert: any = null;
   certId: any;
+  isAddHeader:boolean = false;
   @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
   constructor(private router: Router,
               private fb: NonNullableFormBuilder,
@@ -159,7 +160,18 @@ export class ListenerUpdateComponent implements OnInit, OnChanges {
         this.certId = data.certSSL;
         this.protocolListener = data.protocol;
         this.getPool(this.activatedRoute.snapshot.paramMap.get('id'));
+       
         this.getListL7Policy(this.activatedRoute.snapshot.paramMap.get('id'));
+      
+        if( this.protocolListener == 'TERMINATED_HTTPS' ||  this.protocolListener == 'HTTP'){
+          this.isAddHeader= true;
+        }
+        else{
+          this.isAddHeader= false;
+        }
+        // this.poolForListener= this.listPool.filter((item)=>!item.listener_id &&  item.protocol==this.protocolListener)
+
+      // console.log("poolForListener",this.listPool)
       }
     )
   }
@@ -188,9 +200,16 @@ export class ListenerUpdateComponent implements OnInit, OnChanges {
       })).subscribe(
       data => {
         this.listPool = data.records;
+        this.poolForListener= this.listPool.filter((item)=>!item.listener_id &&  item.protocol==this.protocolListener)
+        console.log("object33",this.listPool)
         this.loadingPool = false;
       }
     )
+  }
+  selectedPool:any;
+  changePoolForListener(value:any){
+    this.selectedPool = value;
+    
   }
 
   handleDeleteL7PolicyOk() {
@@ -219,4 +238,21 @@ export class ListenerUpdateComponent implements OnInit, OnChanges {
       }
     )
   }
+poolForListener:any;
+  // get lits pool for listener
+  // private getPoolForListener(id: string) {
+    
+  //   this.service.getPool(id, this.regionId, this.projectId)
+  //     .pipe(finalize(()=>{
+  //       // this.loadingPool = false;
+  //     })).subscribe(
+  //     data => {        
+  //       this.poolForListener = data.records.filter((item)=>{
+  //         !item.listener_id && item.protocol===this.protocolListener      
+  //       });
+      
+      
+  //     }
+  //   )
+  // }
 }

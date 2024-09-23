@@ -61,6 +61,8 @@ export class SnapshotListComponent implements OnInit {
   loadingDelete = false;
   isVisibleEdit: boolean;
   isCreateOrder: boolean = false;
+  isCreateVolume: boolean = false;
+  isCreateInstance: boolean = false;
   titleBreadcrumb: string;
   breadcrumbBlockStorage: string;
   projectType: number;
@@ -132,9 +134,36 @@ export class SnapshotListComponent implements OnInit {
     this.search(true);
     this.typeVpc = project?.type;
     this.isCreateOrder = this.policyService.hasPermission("snapshotpackage:ListSnapshotPackage") &&
+      this.policyService.hasPermission("snapshotpackage:GetBackupPacket") &&
       this.policyService.hasPermission("volume:List") &&
       this.policyService.hasPermission("instance:List") &&
+      this.policyService.hasPermission("volumesnapshot:Search") &&
+      this.policyService.hasPermission("volume:Get") &&
       this.policyService.hasPermission("volumesnapshot:Create");
+
+    this.isCreateVolume = this.policyService.hasPermission("volumesnapshot:Search") &&
+      this.policyService.hasPermission("configuration:Get") &&
+      this.policyService.hasPermission("order:GetOrderAmount") &&
+      this.policyService.hasPermission("order:Create") &&
+      this.policyService.hasPermission("instance:List") &&
+      this.policyService.hasPermission("volume:List") &&
+      this.policyService.hasPermission("volumesnapshot:Get") &&
+      this.policyService.hasPermission("volume:Get");
+
+    this.isCreateInstance = this.policyService.hasPermission("order:Create") &&
+      this.policyService.hasPermission("order:GetOrderAmount") &&
+      this.policyService.hasPermission("volumesnapshot:Search") &&
+      this.policyService.hasPermission("payment:Get") &&
+      this.policyService.hasPermission("configuration:Get") &&
+      this.policyService.hasPermission("ippublic:IpPublicListSubnet") &&
+      this.policyService.hasPermission("offer:Search") &&
+      this.policyService.hasPermission("image:List") &&
+      this.policyService.hasPermission("ippublic:List") &&
+      this.policyService.hasPermission("network:List") &&
+      this.policyService.hasPermission("securitygroup:List") &&
+      this.policyService.hasPermission("keypair:List") &&
+      this.policyService.hasPermission("volume:Get") &&
+      this.policyService.hasPermission("order:Get");
   }
 
   navigateToCreate() {

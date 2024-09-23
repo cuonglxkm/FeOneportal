@@ -332,9 +332,13 @@ export class SnapshotScheduleListComponent implements OnInit {
     console.log("uu", project)
     this.searchSnapshotScheduleList(true);
     this.isCreateOrder = this.policyService.hasPermission("snapshotpackage:ListSnapshotPackage") &&
+      this.policyService.hasPermission("snapshotpackage:GetBackupPacket") &&
       this.policyService.hasPermission("volumesnapshotschedule:Get") &&
+      this.policyService.hasPermission("volumesnapshotschedule:Search") &&
       this.policyService.hasPermission("volume:List") &&
       this.policyService.hasPermission("instance:List") &&
+      this.policyService.hasPermission("volume:Get") &&
+      this.policyService.hasPermission("instance:Get") &&
       this.policyService.hasPermission("volumesnapshotschedule:Create");
 
   }
