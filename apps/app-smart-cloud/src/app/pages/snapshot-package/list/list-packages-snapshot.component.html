@@ -80,15 +80,15 @@
               <td class='text-right'>{{data.totalSizeHDD}}</td>
               <td class='text-right'>{{data.totalSizeSSD}}</td>
               <ng-container *ngIf="data.status | ServiceStatusPipe as statusModel">
-                <td *ngIf="!!data.suspendType">
+                <td *ngIf="!!data.suspendReason">
                   <span [ngStyle]="{color: statusModel.color}">
                     <img src="assets/imgs/warning-message.svg" alt="" style="cursor: pointer; margin-bottom: 4px;"
-                      nzTooltipTitle="{{ data.suspendType | SuspendStatusPipe }}" nzTooltipPlacement="bottom"
+                      [nzTooltipTitle]=" data.suspendReason | SuspendStatusPipe " nzTooltipPlacement="bottom"
                       nz-tooltip>
                     {{ statusModel.status }}
                   </span>
                 </td>
-                <td *ngIf="data.suspendType == null || data.suspendType === ''">
+                <td *ngIf="data.suspendReason == null || data.suspendReason === ''">
                   <span [ngStyle]="{color: statusModel.color}">{{ statusModel.status }}</span>
                 </td>
               </ng-container>
@@ -101,7 +101,7 @@
                     src="assets/imgs/edit-2.svg" alt="" (click)="showUpdate(data)" nz-tooltip
                     nzTooltipTitle="{{'app.text.edit' | i18n}}" style="cursor: pointer; width: 20px; height: 20px;" />
                   <img src="assets/imgs/delete.svg"
-                    *ngIf="!isProcessingStatus(data.status) && data.status!='SUSPENDED' && ('snapshotpackage:DeleteSnapshotPackage' | IsPermissionPipe)"
+                    *ngIf="!isProcessingStatus(data.status) &&  ('snapshotpackage:DeleteSnapshotPackage' | IsPermissionPipe)"
                     style="width: 28px;height: 28px; cursor: pointer;" nz-tooltip
                     nzTooltipTitle="{{'app.delete' | i18n}}" nzTooltipPlacement="bottom" (click)="showDelete(data)" />
 

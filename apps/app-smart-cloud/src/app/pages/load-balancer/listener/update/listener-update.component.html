@@ -47,6 +47,13 @@
             </ng-template>
           </nz-form-control>
         </nz-form-item>
+        <nz-form-item>
+          <label>Pool</label>
+          <nz-select [ngModel]="selectedPool" (ngModelChange)="changePoolForListener($event)">
+            <nz-option *ngFor="let item of poolForListener" [nzValue]="item.id" [nzLabel]="item.name"></nz-option>
+           
+          </nz-select>
+        </nz-form-item>
 
         <nz-row>
           <nz-col nzSpan="16">
@@ -126,6 +133,17 @@
             </nz-form-item>
           </nz-col>
         </nz-row>
+        <div style="margin:1rem 0rem" *ngIf="isAddHeader">
+          <div style="font-size:16px">Thêm Headers</div>
+          <nz-checkbox-wrapper style="width: 100%;margin:1rem 0rem" >
+            <div nz-row>
+              <div nz-col nzSpan="8"><label nz-checkbox nzValue="A" [ngModel]="true">X-Forwarded-For</label></div>
+              <div nz-col nzSpan="8"><label nz-checkbox nzValue="B">X-Forwarded-Proto</label></div>
+              <div nz-col nzSpan="8"><label nz-checkbox nzValue="C">X-Forwarded-Port</label></div>
+             
+            </div>
+          </nz-checkbox-wrapper>
+        </div>
 
         <nz-form-item *ngIf="protocolListener == 'TERMINATED_HTTPS'">
           <nz-form-label>
