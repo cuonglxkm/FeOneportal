@@ -169,6 +169,17 @@
           </nz-form-item>
         </nz-col>
       </nz-row>
+      <div style="margin:1rem 0rem" *ngIf="isAddHeader">
+        <div style="font-size:16px">Thêm Headers</div>
+        <nz-checkbox-wrapper style="width: 100%;margin:1rem 0rem" >
+          <div nz-row>
+            <div nz-col nzSpan="8"><label nz-checkbox nzValue="A" [ngModel]="true">X-Forwarded-For</label></div>
+            <div nz-col nzSpan="8"><label nz-checkbox nzValue="B">X-Forwarded-Proto</label></div>
+            <div nz-col nzSpan="8"><label nz-checkbox nzValue="C">X-Forwarded-Port</label></div>
+           
+          </div>
+        </nz-checkbox-wrapper>
+      </div>
       <nz-form-item *ngIf="protocolListener == 'TERMINATED_HTTPS'">
         <nz-form-label>
           <span>SSL Cert (<span style="color: red;">*</span>) </span>

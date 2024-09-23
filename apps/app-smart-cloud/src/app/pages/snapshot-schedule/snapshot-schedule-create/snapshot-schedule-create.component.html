@@ -230,10 +230,14 @@
                         style="margin-left: 5px;" src="assets/imgs/pajamas_question.svg"
                         alt="" /></span></nz-form-label>
                   <nz-form-control>
-                    <nz-input-number [(ngModel)]="numOfVersion" (keydown)="checkPossiblePress($event)"    (ngModelChange)="changeNumber($event)"
+                    <!-- <nz-input-number [(ngModel)]="numOfVersion" (keydown)="checkPossiblePress($event)"    (ngModelChange)="changeNumber($event)"
                        style="width: 100%; margin-left: -1px"
-                      [ngModelOptions]="{standalone: true}" [nzMin]="1" [nzStep]="1" nzSize="large"></nz-input-number>
-                  </nz-form-control>
+                      [ngModelOptions]="{standalone: true}" [nzMin]="1" [nzStep]="1" nzSize="large"></nz-input-number> -->
+                  
+                      <nz-input-number [(ngModel)]="numOfVersion" (nzBlur)="onblur()" (ngModelChange)="changeNumber($event)"
+                      style="width: 100%; margin-left: -1px"
+                     [ngModelOptions]="{standalone: true}" [nzMin]="1" [nzStep]="1" nzSize="large"></nz-input-number>
+                    </nz-form-control>
                 </nz-form-item>
               </nz-col>
 

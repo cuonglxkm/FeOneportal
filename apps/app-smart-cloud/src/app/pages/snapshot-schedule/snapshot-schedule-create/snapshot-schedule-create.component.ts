@@ -903,31 +903,45 @@ export class SnapshotScheduleCreateComponent implements OnInit {
       this.router.navigate([`/app-smart-cloud/snapshot/packages/edit/` + id])
     }
   }
-  onblur() {
-    setTimeout(() => {
-      if (!this.numOfVersion || this.numOfVersion < 1) {
-        this.numOfVersion = 1;
-      }
-    }, 5000);
-  }
-  changeNumber(value:number){
+  // onblur() {
+  //   setTimeout(() => {
+  //     if (!this.numOfVersion || this.numOfVersion < 1) {
+  //       this.numOfVersion = 1;
+  //     }
+  //   }, 5000);
+  // }
+  // changeNumber(value:number){
    
-    const numericValue = Number(value);
-    console.log("type a", typeof (value))
-    console.log("aa", numericValue)
-    console.log("type numericValue", typeof (numericValue))
-    if (numericValue<1|| !numericValue  || numericValue===0) {
+  //   const numericValue = Number(value);
+  //   console.log("type a", typeof (value))
+  //   console.log("aa", numericValue)
+  //   console.log("type numericValue", typeof (numericValue))
+  //   if (numericValue<1|| !numericValue  || numericValue===0) {
+  //     this.numOfVersion=1;
+    
+  //     this.cdr.detectChanges();
+    
+  //   }
+  //   else {
+  //     this.numOfVersion = numericValue;
+  //   }
+  //   console.log("this.numOfVersion=1",this.numOfVersion)
+  //   console.log("type numOfVersion2", typeof (this.numOfVersion))
+  // }
+  onblur() {
+    if(this.isEmptyInput){
       this.numOfVersion=1;
-    
-      this.cdr.detectChanges();
-    
     }
-    else {
-      this.numOfVersion = numericValue;
-    }
-    console.log("this.numOfVersion=1",this.numOfVersion)
-    console.log("type numOfVersion2", typeof (this.numOfVersion))
   }
- 
+
+  isEmptyInput: boolean = false
+  changeNumber(value:number){
+    const numericValue = Number(value);
+    if (numericValue<1|| !numericValue  || numericValue===0) {
+      this.isEmptyInput = true
+    }else{
+      this.isEmptyInput = false
+    }
+  }
   
 }

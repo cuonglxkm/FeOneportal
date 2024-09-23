@@ -68,17 +68,17 @@
               <thead>
                 <tr>
                   <th nzLeft>{{ 'app.load.balancer.name' | i18n }}</th>
-                  <th nzBreakWord>VIP Address
-                    <img nz-popover [nzPopoverContent]="'app.tooltip.vip.address' | i18n" nzPopoverPlacement="bottom"
+                  <th nzBreakWord>VIP Address 
+                    <img nz-tooltip [nz-tooltip]="'app.tooltip.vip.address' | i18n" 
                       style="margin-bottom: 4px; margin-left: 5px;" src="assets/imgs/pajamas_question.svg" alt="" />
                   </th>
                   <th nzBreakWord>IP Floating
-                    <img nz-popover [nzPopoverContent]="'app.tooltip.internet.floating' | i18n"
-                      nzPopoverPlacement="bottom" style="margin-bottom: 4px; margin-left: 5px;"
+                    <img nz-tooltip [nz-tooltip]="'app.tooltip.internet.floating' | i18n"
+                      style="margin-bottom: 4px; margin-left: 5px;"
                       src="assets/imgs/pajamas_question.svg" alt="" />
                   </th>
                   <th nzBreakWord>{{ 'app.task.status' | i18n }}
-                    <img nz-popover [nzPopoverContent]="'app.tooltip.task.status.lb' | i18n" nzPopoverPlacement="bottom"
+                    <img nz-tooltip [nz-tooltip]="'app.tooltip.task.status.lb' | i18n" 
                       style="margin-bottom: 4px; margin-left: 5px;" src="assets/imgs/pajamas_question.svg" alt="" />
                   </th>
                   <th nzBreakWord>{{ 'app.activity.status' | i18n }}</th>
@@ -91,8 +91,12 @@
               <tbody>
                 <tr *ngFor="let data of fixedTable.data">
                   <td nzLeft>
-                    <span *ngIf="data.provisioningStatus === 'ERROR'">{{ data.name }}</span>
-                    <span *ngIf="data.provisioningStatus !== 'ERROR'">
+                    <!-- <span *ngIf="data.provisioningStatus === 'ERROR' || isProcessingStatus(data.provisioningStatus)">{{ data.name }}</span>
+                    <span *ngIf="data.provisioningStatus !== 'ERROR' && !isProcessingStatus(data.provisioningStatus)">
+                      <a [routerLink]="'/app-smart-cloud/load-balancer/detail/' + data.id">{{ data.name }}</a>
+                    </span> -->
+                    <span *ngIf="isProcessingStatus(data.provisioningStatus)">{{ data.name }}</span>
+                    <span *ngIf="!isProcessingStatus(data.provisioningStatus)">
                       <a [routerLink]="'/app-smart-cloud/load-balancer/detail/' + data.id">{{ data.name }}</a>
                     </span>
                   </td>
@@ -119,9 +123,9 @@
                       nzTooltipTitle="{{'app.extend' | i18n}} Load Balancer" nzTooltipPlacement="bottom"
                       (click)="navigateToExtend(data.id)" />
                   </td>
-                  <td *ngIf="data.provisioningStatus !== 'PENDING_CREATE' && data.provisioningStatus != 'TAMNGUNG'"
+                  <td *ngIf="data.provisioningStatus !== 'PENDING_CREATE' && data.provisioningStatus !== 'PENDING_DELETE'&& data.provisioningStatus !== 'PENDING_UPDATE' && data.provisioningStatus !== 'DELETED' "
                     nzBreakWord>
-                    <span *ngIf="data.provisioningStatus !== 'ERROR'">
+                    <span *ngIf="!isProcessingStatus(data.provisioningStatus)">
                       <one-portal-attach-ip-floating-lb [region]="region" (onOk)="search(false)" [project]="project"
                         [data]="data" />
                       <one-portal-detach-ip-floating-lb [region]="region" (onOk)="search(false)" [project]="project"
@@ -130,29 +134,19 @@
                     </span>
                     <!---Gia Han------>
                     <img
-                      *ngIf="typeVPC != 1 && ('loadbalancer:Get' | IsPermissionPipe) && ('order:GetOrderAmount' | IsPermissionPipe) && ('order:Create' | IsPermissionPipe)"
+                      *ngIf=" !isProcessingStatus(data.provisioningStatus) &&typeVPC != 1 && ('loadbalancer:Get' | IsPermissionPipe) && ('order:GetOrderAmount' | IsPermissionPipe) && ('order:Create' | IsPermissionPipe)"
                       style="padding-right: 10px;" src="assets/imgs/calendar-tick.svg" nz-tooltip
                       nzTooltipTitle="{{'app.extend' | i18n}} Load Balancer" nzTooltipPlacement="bottom"
                       (click)="navigateToExtend(data.id)" />
                     <one-portal-update-load-balancer-normal
-                      *ngIf="('loadbalancer:List' | IsPermissionPipe) && ('loadbalancer:Update' | IsPermissionPipe)"
+                      *ngIf="!isProcessingStatus(data.provisioningStatus) && ('loadbalancer:List' | IsPermissionPipe) && ('loadbalancer:Update' | IsPermissionPipe)"
                       [region]="region" [project]="project" [loadBalancer]="data"
                       (onOk)="search(false)"></one-portal-update-load-balancer-normal>
-                    <!--                  <span *ngIf="typeVPC == 1">-->
-                    <!--                  <img nz-popover src="assets/imgs/edit-2.svg"-->
-                    <!--                       alt=""-->
-                    <!--                       nzPopoverPlacement="bottom"-->
-                    <!--                       (click)="navigateToUpdateVpc(data.id)"-->
-                    <!--                       style="cursor: pointer; margin-right: 10px"-->
-                    <!--                       [nzPopoverContent]="'app.text.edit' | i18n" />-->
-                    <!--                </span>-->
-                    <!--                <img *ngIf="typeVPC == 0" style="padding-right: 10px; cursor: pointer;"-->
-                    <!--                     src="assets/imgs/calendar-tick.svg"-->
-                    <!--                     nz-popover [nzPopoverContent]="'app.load.balancer.extend' | i18n" nzPopoverPlacement="bottom" />-->
-                    <one-portal-delete-load-balancer *ngIf="('loadbalancer:Delete' | IsPermissionPipe)"
+                   
+                    <one-portal-delete-load-balancer *ngIf=" ('loadbalancer:Delete' | IsPermissionPipe)"
                       [idLoadBalancer]="data.id" [nameLoadBalancer]="data.name" [region]="region" [project]="project"
                       (onOk)="handleDeleteOk()" />
-                    <img nz-dropdown [nzDropdownMenu]="opMenu" src="assets/imgs/more1.svg" alt=""
+                    <img *ngIf="!isProcessingStatus(data.provisioningStatus) " nz-dropdown [nzDropdownMenu]="opMenu" src="assets/imgs/more1.svg" alt=""
                       style="margin-left: 5px; cursor:pointer;" />
                     <nz-dropdown-menu #opMenu="nzDropdownMenu">
                       <ul nz-menu>
