@@ -297,15 +297,17 @@ export class InstancesComponent implements OnInit {
     this.getDataList();
     this.isCreateOrder = this.policyService.hasPermission("order:Create") &&
       this.policyService.hasPermission("order:GetOrderAmount") &&
+      this.policyService.hasPermission("volumesnapshot:Search") &&
       this.policyService.hasPermission("payment:Get") &&
       this.policyService.hasPermission("configuration:Get") &&
       this.policyService.hasPermission("ippublic:IpPublicListSubnet") &&
       this.policyService.hasPermission("offer:Search") &&
       this.policyService.hasPermission("image:List") &&
       this.policyService.hasPermission("ippublic:List") &&
-      this.policyService.hasPermission("network:Get") &&
+      this.policyService.hasPermission("network:List") &&
       this.policyService.hasPermission("securitygroup:List") &&
       this.policyService.hasPermission("keypair:List") &&
+      this.policyService.hasPermission("volume:Get") &&
       this.policyService.hasPermission("order:Get");
     this.isCreateBackup = this.policyService.hasPermission("backup:List") && 
       this.policyService.hasPermission("backup:ListBackupPacket") &&

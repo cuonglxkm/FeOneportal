@@ -117,7 +117,14 @@ export class VolumeComponent implements OnInit, OnDestroy {
     this.typeVPC = project?.type;
     this.isLoading = true;
     this.getListVolume(true);
-    this.isCreateOrder = this.policyService.hasPermission("order:Create");
+    this.isCreateOrder = this.policyService.hasPermission("volumesnapshot:Search") &&
+      this.policyService.hasPermission("configuration:Get") &&
+      this.policyService.hasPermission("order:GetOrderAmount") &&
+      this.policyService.hasPermission("order:Create") &&
+      this.policyService.hasPermission("instance:List") &&
+      this.policyService.hasPermission("volume:List") &&
+      this.policyService.hasPermission("volumesnapshot:Get") &&
+      this.policyService.hasPermission("volume:Get");
   }
 
   ngOnDestroy(): void {

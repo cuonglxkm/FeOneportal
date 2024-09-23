@@ -102,15 +102,15 @@
                 <nz-dropdown-menu #opMenu="nzDropdownMenu">
                   <ul nz-menu>
                     <li
-                      *ngIf="data.fromRootVolume == false && (data.suspendReason == null || data.suspendReason === '') && ('order:Create' | IsPermissionPipe)"
+                      *ngIf="data.fromRootVolume == false && (data.suspendReason == null || data.suspendReason === '') && isCreateVolume"
                       nz-menu-item (click)="navigateToCreateVolumeVM(data.id,0)">{{ 'volume.notification.request.create'
                       | i18n}}</li>
                     <li
-                      *ngIf="data.fromRootVolume == true && (data.suspendReason == null || data.suspendReason === '') && ('order:Create' | IsPermissionPipe)"
+                      *ngIf="data.fromRootVolume == true && (data.suspendReason == null || data.suspendReason === '') && isCreateVolume"
                       nz-menu-item (click)="navigateToCreateVolumeVM(data.id,0)">{{ 'volume.notification.request.create'
                       | i18n}}</li>
                     <li
-                      *ngIf="data.fromRootVolume == true && (data.suspendReason == null || data.suspendReason === '') && ('order:Create' | IsPermissionPipe)"
+                      *ngIf="data.fromRootVolume == true && (data.suspendReason == null || data.suspendReason === '') && isCreateInstance"
                       nz-menu-item (click)="navigateToCreateVolumeVM(data.id,1)">{{ 'app.instances.create1' | i18n}}
                     </li>
                     <li nz-menu-item
