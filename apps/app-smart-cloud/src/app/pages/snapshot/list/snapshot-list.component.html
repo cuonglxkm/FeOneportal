@@ -93,11 +93,11 @@
               <td>{{data.startDate | date: 'HH:mm:ss dd/MM/yyyy'}}</td>
               <td>
                 <img
-                  *ngIf="!isProcessingStatus(data.resourceStatus) && ('volumesnapshot:Update' | IsPermissionPipe) && (data?.resourceStatus!='SUSPENDED' && data?.serviceStatus!='SUSPENDED')"
+                  *ngIf="!isProcessingStatus(data.resourceStatus) && ('volumesnapshot:Update' | IsPermissionPipe) && (data?.resourceStatus!='TAMNGUNG' && data?.serviceStatus!='TAMNGUNG')"
                   (click)="enableEdit(data)" src="assets/imgs/edit-2.svg" alt="" nz-tooltip
                   nzTooltipTitle="{{'app.text.edit' | i18n}}"
                   style="cursor: pointer; width: 20px; height: 20px; margin-bottom: 3px;" />
-                <img *ngIf="!isProcessingStatus(data.resourceStatus) && (data?.resourceStatus!='SUSPENDED' && data?.serviceStatus!='SUSPENDED')" nz-dropdown [nzDropdownMenu]="opMenu" src="assets/imgs/more1.svg" alt=""
+                <img *ngIf="!isProcessingStatus(data.resourceStatus) && (data?.resourceStatus!='TAMNGUNG' && data?.serviceStatus!='TAMNGUNG')" nz-dropdown [nzDropdownMenu]="opMenu" src="assets/imgs/more1.svg" alt=""
                   style="margin-left: 5px; cursor:pointer;" />
                 <nz-dropdown-menu #opMenu="nzDropdownMenu">
                   <ul nz-menu>

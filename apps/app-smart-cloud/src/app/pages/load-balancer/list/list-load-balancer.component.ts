@@ -278,4 +278,17 @@ export class ListLoadBalancerComponent implements OnInit {
       this.search(false);
     });
   }
+
+  // check thao tác theo trạng thái tác vụ
+  isProcessingStatus(status: string): boolean {
+    const processingStatuses = [
+      'ERROR',
+      'DELETED',  
+      'PENDING_CREATE',
+      'PENDING_DELETE',
+      'PENDING_UPDATE'
+    ];
+    return processingStatuses.includes(status);
+  }
+
 }

@@ -155,6 +155,7 @@ export class ListenerCreateComponent implements OnInit{
     this.changeKeySearchListner.pipe(debounceTime(700)).subscribe((key: string) => {
       this.callApiCheckListner(key);
     });
+    this.isAddHeader = true;
   }
 
   nextStep() {
@@ -335,7 +336,14 @@ export class ListenerCreateComponent implements OnInit{
   listCert: any = null;
   certId: any;
   sessionFix1 = 'HTTP_Cookies';
+  isAddHeader:boolean = false;
   changeProtocolListener(event: any) {
+   console.log("eventtt", event)
+   if(event == 'TERMINATED_HTTPS' || event == 'HTTP') {
+     this.isAddHeader = true;
+   }else{
+    this.isAddHeader = false;
+   }
     if (event == 'TERMINATED_HTTPS') {
       this.validateForm.controls['port'].setValue(443);
     } else {
