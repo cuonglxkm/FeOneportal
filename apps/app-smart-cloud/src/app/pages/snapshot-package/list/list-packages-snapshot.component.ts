@@ -132,6 +132,7 @@ export class ListPackagesSnapshotComponent implements OnInit {
       this.isBegin = true;
     }
     this.isCreateOrder = this.policyService.hasPermission("configuration:Get") &&
+      this.policyService.hasPermission("snapshotpackage:ListSnapshotPackage") &&
       this.policyService.hasPermission("order:GetOrderAmount") &&
       this.policyService.hasPermission("order:Create");
   }
