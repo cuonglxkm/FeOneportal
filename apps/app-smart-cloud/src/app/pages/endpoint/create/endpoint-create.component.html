@@ -133,7 +133,7 @@
                   nzSize="large"
                   style="width: 100%; margin-left: 0px"
                   [nzFormatter]="formatter"
-                  [nzPrecision]="0"
+                  (keydown) = "onKeyDown($event)"
                 /> 
 
                 <ng-template #numberErrorTpl let-control>
@@ -171,7 +171,7 @@
           </div>
           <div class="text-label" style="margin-bottom: 12px">
             <h3 class="custom-subtitle">Số lượng máy đăng ký cài đặt</h3>
-            <span>{{form.get('numberOfLicense').value}}</span>
+            <span>{{soluong}}</span>
           </div>
           <nz-row class="right-form-content-month" nzGutter="16">
             <nz-col nzSpan="16">
