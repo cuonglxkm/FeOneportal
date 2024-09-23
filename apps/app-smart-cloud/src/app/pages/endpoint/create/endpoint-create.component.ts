@@ -78,6 +78,26 @@ export class EndpointCreateComponent implements OnInit {
     this.checkExistName();
     this.checkExistUsername();
   }
+  onKeyDown(event: KeyboardEvent) {
+    // Lấy giá trị của phím được nhấn
+    const key = event.key;
+    // Kiểm tra xem phím nhấn có phải là một số hoặc phím di chuyển không
+    if (
+      (isNaN(Number(key)) &&
+        key !== 'Backspace' &&
+        key !== 'Delete' &&
+        key !== 'ArrowLeft' &&
+        key !== 'ArrowRight' &&
+        key !== 'Tab') ||
+        key === '.'
+    ) {
+      // Nếu không phải số hoặc đã nhập dấu chấm và đã có dấu chấm trong giá trị hiện tại
+      event.preventDefault(); // Hủy sự kiện để ngăn người dùng nhập ký tự đó
+    }
+  }
+  get soluong() {
+    return this.formatter(this.form.get('numberOfLicense').value) ;
+  }
   // Hàm để định dạng số với dấu phẩy
   formatter = (value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
   dataSubjectName: Subject<string> = new Subject<string>();
