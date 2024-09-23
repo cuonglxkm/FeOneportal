@@ -464,6 +464,15 @@ export class CreateVolumeComponent implements OnInit {
           this.notification.warning('', this.i18n.fanyi('app.notify.amount.capacity', { number: this.stepStorage }));
           this.validateForm.controls.storage.setValue(res - (res % this.stepStorage));
         }
+        if (this.isInitSnapshot && res < this.snapshot.sizeInGB) {
+          this.notification.warning(
+            '',
+            this.i18n.fanyi('app.notify.amount.capacity.snapshot', {
+              num: this.snapshot.sizeInGB,
+            })
+          );
+          this.validateForm.controls.storage.setValue(this.snapshot.sizeInGB);
+        }
         this.getTotalAmount();
       });
   }
