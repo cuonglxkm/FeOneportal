@@ -1386,6 +1386,13 @@ const routes: Routes = [
       import('../pages/endpoint/endpoint.module').then(
         (m) => m.EndpointModule
       )
+  },
+  {
+    path: 'cloud-backup',
+    loadChildren: () =>
+      import('../pages/cloud-backup/cloud-backup.module').then(
+        (m) => m.CloudBackupModule
+      )
   }
 ];
 
