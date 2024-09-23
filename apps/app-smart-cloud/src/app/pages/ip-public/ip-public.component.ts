@@ -80,7 +80,6 @@ export class IpPublicComponent implements OnInit {
     this.service.model.subscribe(data => {
       console.log(data)
     })
-    this.getData(true);
     this.searchDelay.pipe(debounceTime(TimeCommon.timeOutSearch)).subscribe((isStart: boolean) => {
       this.getData(isStart);
     });

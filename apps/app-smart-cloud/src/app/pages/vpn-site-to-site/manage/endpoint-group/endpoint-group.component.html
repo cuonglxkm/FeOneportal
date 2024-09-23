@@ -49,7 +49,7 @@
 
       <td>
         <div class="d-flex gap-2 justify-content-center align-items-center">
-          <one-portal-edit-endpoint-group *ngIf="('vpnsitetosites:UpdateEndpointGroups' | IsPermissionPipe)" [region]="region" [project]="project" [id]="data.id" [name]="data.name"
+          <one-portal-edit-endpoint-group *ngIf="('vpnsitetosites:UpdateEndpointGroups' | IsPermissionPipe) && ('vpnsitetosites:GetEndpointGroups' | IsPermissionPipe)" [region]="region" [project]="project" [id]="data.id" [name]="data.name"
             [type]="data.type" [endpoints]="data.endpoints" [data]="response" (onOk)="handleOkEdit()"></one-portal-edit-endpoint-group>
 
           <one-portal-delete-endpoint-group *ngIf="('vpnsitetosites:DeleteEndpointGroups' | IsPermissionPipe)" [region]="region" [project]="project" [id]="data.id" [name]="data.name"

@@ -120,7 +120,7 @@ export class IkePoliciesComponent {
     let regionAndProject = getCurrentRegionAndProject()
     this.region = regionAndProject.regionId
     this.project = regionAndProject.projectId
-    this.isBegin && this.getData();
+    this.getData();
     this.searchDelay.pipe(debounceTime(1200)).subscribe(() => {
       this.refreshParams()
       this.getData();
