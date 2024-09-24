@@ -229,7 +229,7 @@ export class PoolDetailComponent implements OnInit {
   isCreate: boolean;
   healthForm: any;
   form: FormGroup;
-  code: number;
+  code: string;
   modalHealth(checkCreate: boolean, data: m_LBSDNHealthMonitor) {
     if (checkCreate) {
       this.form = new FormGroup({
@@ -270,7 +270,7 @@ export class PoolDetailComponent implements OnInit {
       this.healthForm.maxRetries = 3;
       this.healthForm.delay = 5;
       this.healthForm.timeout = 5;
-      this.code = 200;
+      this.code = '200';
       this.healthForm.urlPath = '/';
       this.isCreate = true;
       this.titleModalHealth = this.i18n.fanyi('app.health.monitor.create');
@@ -314,7 +314,8 @@ export class PoolDetailComponent implements OnInit {
         }),
       });
       this.healthForm = data;
-      this.code = Number.parseInt(this.healthForm.expectedCodes);
+      // this.code = Number.parseInt(this.healthForm.expectedCodes);
+      this.code = this.healthForm.expectedCodes;
       this.isCreate = false;
       this.titleModalHealth = this.i18n.fanyi('app.health.monitor.edit');
     }

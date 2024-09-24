@@ -451,9 +451,13 @@
                  src="assets/imgs/pajamas_question.svg" alt="" />
           </nz-form-label>
           <nz-form-control nzDisableAutoTips>
-            <nz-input-number nz-input style="width: 100%; margin-left: -3px"
+            <!-- <nz-input-number nz-input style="width: 100%; margin-left: -3px"
                    class="input-custom"
-                   formControlName="sucessCode" [nzMax]="599" [nzMin]="100" (keydown)="checkPossiblePress($event)"/>
+                   formControlName="sucessCode" [nzMax]="599" [nzMin]="100" (keydown)="checkPossiblePress($event)"/> -->
+                   <input nz-input style="width: 100%; margin-left: -3px"
+                   class="input-custom"
+                   formControlName="sucessCode" 
+                  />
           </nz-form-control>
         </nz-form-item>
         <div class="text-right"

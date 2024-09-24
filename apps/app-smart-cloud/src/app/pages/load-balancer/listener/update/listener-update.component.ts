@@ -118,7 +118,8 @@ export class ListenerUpdateComponent implements OnInit, OnChanges {
       idleTimeOutMember: this.validateForm.controls['member'].value,
       sslCert: this.protocolListener == 'TERMINATED_HTTPS' ? this.certId : '',
       idleTimeOutClient: this.validateForm.controls['timeout'].value,
-      name: this.validateForm.controls['listenerName'].value
+      name: this.validateForm.controls['listenerName'].value,
+      DefaultPoolId: this.selectedPool
     };
     this.service.updateListener(data).subscribe(
       data => {
@@ -154,6 +155,7 @@ export class ListenerUpdateComponent implements OnInit, OnChanges {
       .subscribe(
       data => {
         this.data = data;
+        console.log("aa", this.data)
         this.validateForm.controls['listenerName'].setValue(data.name);
         this.validateForm.controls['port'].setValue(data.port);
         this.validateForm.controls['timeout'].setValue(data.timeoutClientData);
