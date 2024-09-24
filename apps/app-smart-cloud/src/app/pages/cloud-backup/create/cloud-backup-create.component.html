@@ -1,0 +1,167 @@
+<page-header [breadcrumb]="breadcrumb" title="{{'app.label.init' | i18n}} Cloud Backup">
+  <ng-template #breadcrumb>
+    <nz-breadcrumb [nzSeparator]="iconTemplate">
+      <nz-breadcrumb-item><a [routerLink]="['/']">{{
+          'app.breadcrumb.home' | i18n
+          }}</a></nz-breadcrumb-item>
+      <nz-breadcrumb-item> {{ 'app.breadcrumb.infrastructure.service' | i18n }} </nz-breadcrumb-item>
+      <nz-breadcrumb-item><a [routerLink]="['/app-smart-cloud/cloud-backup']">Cloud Backup</a></nz-breadcrumb-item>
+      <nz-breadcrumb-item>{{'app.label.create'| i18n}} Cloud Backup</nz-breadcrumb-item>
+    </nz-breadcrumb>
+    <ng-template #iconTemplate><one-portal-svg-icon [icon]="'icon_breadcrumb'"></one-portal-svg-icon></ng-template>
+  </ng-template>
+  <ng-template #action>
+    <div class="alain-custom-action text-right">
+      <share-users-combobox></share-users-combobox>
+    </div>
+  </ng-template>
+</page-header>
+<!---------------FORM-------------->
+<form nz-form [formGroup]="form" [nzLayout]="'vertical'">
+  <nz-row nzGutter="24">
+    <nz-col nzSpan="16">
+      <nz-card class="text-label" nzTitle="" style="border-radius: 8px">
+        <div style="margin-bottom: 20px">
+          <span class="text-card-header">{{'app.info'|i18n}} Cloud Backup</span>
+        </div>
+        <div nz-row [nzGutter]="24">
+          <div nz-col [nzSpan]="24">
+            <nz-form-item>
+              <nz-form-label>{{'app.name'| i18n}} Cloud Backup (<span class="text-red">*</span>)<img
+                  style="margin-left: 10px" nz-tooltip="{{ 'cloud-backup.validate.name' | i18n }}"
+                  src="assets/imgs/pajamas_question.svg" alt="" /></nz-form-label>
+              <nz-form-control [nzErrorTip]="nameErrorTpl">
+                <input nz-input placeholder="{{'app.input.name'| i18n}} Cloud Backup"
+                  [ngStyle]="isExistName ? { borderColor: '#ff4d4f' } : {}" formControlName="name"
+                  (ngModelChange)="changeName($event)" maxlength="50" class="custom-input" />
+                <div *ngIf="isExistName" style="color: #ff4d4f">
+                  {{'cloud-backup.validate.name.exist'| i18n}}
+                </div>
+                <ng-template #nameErrorTpl let-control>
+                  <ng-container *ngIf="control.hasError('required')">{{'cloud-backup.validate.name.null'| i18n}}
+                  </ng-container>
+                  <ng-container *ngIf="control.hasError('pattern')">{{'cloud-backup.validate.name'| i18n}}
+                  </ng-container>
+                </ng-template>
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+        </div>
+        <div nz-row [nzGutter]="24">
+          <div nz-col [nzSpan]="24">
+            <nz-form-item>
+              <nz-form-label>{{'app.capacity'| i18n}} backup (GB) (<span class="text-red">*</span>)
+                <img style="margin-left: 10px" nz-tooltip="{{ 'cloud-backup.validate.capacity' | i18n }}"
+                  src="assets/imgs/pajamas_question.svg" alt="" />
+              </nz-form-label>
+              <nz-form-control [nzErrorTip]="numberErrorTpl">
+                <nz-input-number [nzMin]="1" [nzMax]="30000" formControlName="capacity" [nzFormatter]="formatter"
+                  (keydown)="onKeyDown($event)" (ngModelChange)="changeCapacity($event)" class="custom-input"
+                  nzSize="large" style="width: 100%; margin-left: 0px" />
+                <ng-template #numberErrorTpl let-control>
+                  <ng-container *ngIf="control.hasError('required')">Số lượng không được để trống
+                  </ng-container>
+                </ng-template>
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+          <div nz-col [nzSpan]="24">
+            <nz-form-item>
+              <nz-form-label>{{'app.service.description'| i18n}}</nz-form-label>
+              <nz-form-control>
+                <textarea rows="3" nz-input formControlName="description" placeholder="{{'app.input.des'| i18n}}"
+                  [ngStyle]="isExistUsername ? { borderColor: '#ff4d4f' } : {}"></textarea>
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+        </div>
+      </nz-card>
+      <one-portal-service-usage-period nameService="cloud-backup"
+        (valueChanged)="onChangeTime($event)"></one-portal-service-usage-period>
+    </nz-col>
+    <nz-col nzSpan="8">
+      <nz-affix nzOffsetTop="72">
+        <nz-card class="right-form card-price">
+          <div class="right-title">
+            <span class="text-card-header">{{'app.estimated.cost'| i18n}}</span>
+          </div>
+          <div class="text-label" style="margin-bottom: 12px">
+            <h3 class="custom-subtitle">{{'app.name'| i18n}} Cloud Backup</h3>
+            <span style="word-wrap: break-word;">{{form.get('name').value}}</span>
+          </div>
+          <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
+          <div class="text-label" style="margin-bottom: 12px">
+            <h3 class="custom-subtitle">{{'app.capacity'| i18n}} backup (GB)</h3>
+            <span style="word-wrap: break-word;">{{form.get('capacity').value}}</span>
+          </div>
+          <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
+          <nz-row class="right-form-content-month" nzGutter="16">
+            <nz-col nzSpan="16">
+              <span class="text-value">{{'app.cost.n.month'| i18n:{numberMonth: form.controls.time.value} }}</span>
+            </nz-col>
+            <nz-col class="text-right" nzSpan="8">
+              <span class="text-value month-money" nzAlign="right">
+                <span *ngIf="orderObject?.orderItemPrices?.length <= 0" class="text-value" style="color: #0066b3"
+                  nzAlign="right">0 VNĐ</span>
+                <span *ngIf="orderObject?.orderItemPrices?.length > 0" class="text-value" style="color: #0066b3"
+                  nzAlign="right">
+                  {{
+                  orderObject?.orderItemPrices[0].totalAmount.amount | number
+                  }}
+                  {{ orderObject?.orderItemPrices[0].totalAmount.currency }}
+                </span>
+              </span>
+            </nz-col>
+          </nz-row>
+          <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
+          <nz-row style="margin-bottom: 10px" nzGutter="16">
+            <nz-col nzSpan="16">
+              <span class="text-value">{{ 'app.cost.vat' | i18n }}</span>
+            </nz-col>
+            <nz-col class="text-right" nzSpan="8">
+              <span class="text-value" style="color: #0066b3" nzAlign="right" *ngIf="orderObject == null">0 VND</span>
+              <span class="text-value" style="color: #0066b3" nzAlign="right" *ngIf="orderObject != undefined">
+                {{ orderObject?.totalVAT?.amount | number }}
+                {{ orderObject?.totalVAT?.currency }}
+              </span>
+            </nz-col>
+          </nz-row>
+          <nz-row style="
+              margin-bottom: 20px;
+              background-color: #cce9ff;
+              padding: 16px 0 16px 0;
+              border-radius: 8px;
+            " nzGutter="16">
+            <nz-col nzSpan="16">
+              <span class="text-label">{{ 'app.total.payment' | i18n }}</span><br />
+              <span class="text-note-italicized">({{ 'app.include.vat' | i18n : { vat: '10' } }})</span>
+            </nz-col>
+            <nz-col class="text-right" nzSpan="8">
+              <span class="text-value" style="color: #ea3829" nzAlign="right">
+                {{ totalincludesVAT | number }}
+                VND
+              </span>
+            </nz-col>
+          </nz-row>
+          <nz-row>
+            <nz-col style="width: 100%" class="text-right">
+              <button [disabled]="form.invalid  || isInvalid  || isExistName || isExistUsername" style="width: 100%"
+                nz-button nzSize="large" nzType="primary" (click)="handleSubmit()">
+                <img src="assets/imgs/wallet.svg" style="margin-right: 5px; padding-bottom: 5px;" />
+                {{'app.button.create'| i18n}}
+              </button>
+            </nz-col>
+          </nz-row>
+        </nz-card>
+      </nz-affix>
+    </nz-col>
+  </nz-row>
+
+
+  <!---------------CARD-THÀNH TIỀN-------------->
+  <!-- [nzLoading]="loadingCalculate" -->
+
+</form>
+
+<one-portal-popup-list-error [isVisible]="isVisiblePopupError" [errorList]="errorList"
+  (onCancel)="closePopupError()"></one-portal-popup-list-error>

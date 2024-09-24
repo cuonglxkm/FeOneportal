@@ -3724,5 +3724,23 @@
   "app.tooltip.usage.time.year": "The period of time a customer purchases {{name}} for use, calculated on a yearly basis",
   "endpoint.validate.name": "Enter the service name written continuously without spaces or diacritics, and without special characters except for underscores ‘_’, with a maximum of 50 characters.",
   "endpoint.validate.username": "Username must be written continuously without spaces or diacritics, with no special characters, and a maximum of 30 characters.",
-  "endpoint.validate.numberOfLicense": "The minimum number of installations is 1 and the maximum is 30,000"
+  "endpoint.validate.numberOfLicense": "The minimum number of installations is 1 and the maximum is 30,000",
+
+  "app.add":"Add",
+  "app.cloud-backup": "Cloud Backup",
+  "app.label.init": "Initialize",
+  "cloud-backup.validate.name": "Chưa đọc tài liệu",
+  "cloud-backup.validate.name.exist": "Cloud Backup name already exists",
+  "cloud-backup.validate.name.null": "Cloud Backup name cannot be empty",
+  "cloud-backup.validate.capacity": "Chưa đọc tài liệu",
+  "cloud-backup.validate.capacity.null": "Capacity cannot be empty",
+  "cloud-backup.placeholder.filter.name": "Search by IP/CIDR",
+  "cloud-backup.access-rule.validate.source": "Chưa đọc tài liệu",
+  "cloud-backup.access-rule.input.source": "Nhập IP/CIDR",
+  "cloud-backup.access-rule.delete.instance": "To delete the Access rule {{name}}, please enter the IP/CIDR to confirm.",
+  "cloud-backup.access-rule.delete.name.invalid": "Please enter the correct IP/CIDR",
+  "cloud-backup.access-rule.delete.name.required": "Please enter IP/CIDR",
+  "cloud-backup.delete.instance": "To delete the Cloud Backup {{name}}, please enter the Cloud Backup name to confirm.",
+  "cloud-backup.delete.name.invalid": "Please enter the correct  Cloud Backup name",
+  "cloud-backup.delete.name.required": "Please enter  Cloud Backup name"
 }

@@ -1,0 +1,65 @@
+<nz-content>
+  <nz-card>
+    <nz-row nzJustify="space-between">
+      <nz-col nzSpan="16">
+        <nz-input-group style="width: 300px;"
+                        [nzPrefix]="prefixIconSearch"
+                        nzSize="large">
+          <input name="name"
+                  nz-input
+                  placeholder="{{ 'cloud-backup.placeholder.filter.name' | i18n }}"
+                  [(ngModel)]="value"
+                  (input)="changeInputChange($event)"
+                  (keydown.enter)="onEnter($event)" />
+        </nz-input-group>
+        <ng-template #prefixIconSearch>
+          <img src="assets/imgs/search.svg" alt="" />
+        </ng-template>
+      </nz-col>
+      <nz-col nzSpan="8" style="flex:none;">
+        <button nz-button
+                nzType="primary"
+                nzSize="large"
+                (click)="openCreatePopup()">
+          <img style="padding-right: 10px; margin-top: -4px"
+                src="assets/imgs/add-circle.svg"
+                alt="" />
+          <span class="button-text-primary">{{ 'app.button.createNew' | i18n }} Access rule</span>
+        </button>
+      </nz-col>
+    </nz-row>
+    <nz-table #fixedTable
+              style="margin-top: 20px;"
+              nzShowSizeChanger
+              [nzData]="response?.records || []"
+              [nzPageSize]="response?.pageSize"
+              (nzPageSizeChange)="onPageSizeChange($event)"
+              [nzPageIndex]="response?.currentPage"
+              (nzPageIndexChange)="onPageIndexChange($event)"
+              [nzTotal]="response?.totalCount"
+              [nzFrontPagination]="false"
+              [nzLoading]="isLoading">
+      <thead>
+      <tr>
+        <th nzLeft nzBreakWord>{{ 'endpoint.table.title.source' | i18n }}</th>
+        <th nzLeft nzBreakWord>{{ 'endpoint.table.title.port' | i18n }}</th>
+        <th nzLeft nzBreakWord>{{ 'endpoint.table.title.enddate' | i18n }}</th>
+        <th nzBreakWord>{{ 'app.text.operation' | i18n }}</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr *ngFor="let data of fixedTable.data">
+        <td nzLeft nzBreakWord>{{ data.source }}</td>
+        <td nzLeft nzBreakWord>{{ data.port }}</td>
+        <td nzLeft nzBreakWord>{{ data.enddate | date : "dd/MM/yyyy" }}</td>
+        <td nzLeft nzBreakWord>
+          <one-portal-edit-access-rule [accessRule]="data"></one-portal-edit-access-rule>
+          <one-portal-delete-access-rule [accessRuleData]="data"></one-portal-delete-access-rule>
+        </td>
+      </tr>
+      </tbody>
+    </nz-table>
+  </nz-card>
+</nz-content>
+
+<one-portal-create-access-rule [isVisibleCreateAccessRule]="isVisibleCreateAccessRule" (onCancel)="closeCreatePopup()"></one-portal-create-access-rule>
