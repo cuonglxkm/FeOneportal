@@ -20,6 +20,7 @@ import { CloudBackupService } from 'src/app/shared/services/cloud-backup.service
   styleUrls: ['./delete-cloud-backup.component.less']
 })
 export class DeleteCloudBackupComponent implements OnInit{
+
   @Input() cloudBackupData: CloudBackup;
   @Input() isVisible: boolean;
   @Input() canClick: boolean = true;
