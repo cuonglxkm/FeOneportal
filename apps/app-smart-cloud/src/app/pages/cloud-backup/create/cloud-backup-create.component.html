@@ -59,7 +59,7 @@
                   (keydown)="onKeyDown($event)" (ngModelChange)="changeCapacity($event)" class="custom-input"
                   nzSize="large" style="width: 100%; margin-left: 0px" />
                 <ng-template #numberErrorTpl let-control>
-                  <ng-container *ngIf="control.hasError('required')">Số lượng không được để trống
+                  <ng-container *ngIf="control.hasError('required')">{{'cloud-backup.validate.capacity.null'| i18n}}
                   </ng-container>
                 </ng-template>
               </nz-form-control>
