@@ -127,6 +127,13 @@ export class ListenerCreateComponent implements OnInit{
   selectedHttpMethod = 'GET';
   loading= false;
   disableMember = false;
+
+
+  xFor: boolean = false;  
+  xProto: boolean = false;
+  xPort: boolean = false;
+
+
   @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
   @Input() lbCloundId = '';
   disableStep2: boolean = true;
@@ -191,6 +198,7 @@ export class ListenerCreateComponent implements OnInit{
         sslCert: this.protocolListener == 'TERMINATED_HTTPS' ? this.certId : null,
         allowedCIDR: this.validateForm.controls['allowCIRR'].value,
         description: this.validateForm.controls['description'].value,
+        // XFor:
       },
       pools : {
         name: this.validateForm.controls['poolName'].value,
@@ -459,5 +467,13 @@ export class ListenerCreateComponent implements OnInit{
         this.notification.error(this.i18n.fanyi('app.status.fail'),error.error.message);
       }
     )
+  }
+  onCheckboxChange(checkboxName: string, value: boolean) {
+    console.log(`${checkboxName} changed to: ${value}`);
+    console.log("objectvalue",value)
+    debugger
+  }
+  onCheckboxChange1(value:boolean) {
+    console.log("mmm", value)
   }
 }
