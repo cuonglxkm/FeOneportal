@@ -55,7 +55,9 @@
               <span class="label-fontsize">{{'app.activity.status' | i18n}}</span>
             </div>
             <div nz-col nzSm="12" nzMd="12" nzLg="12">
-              <span class="label-fontsize font-bold">{{ data.status }}</span>
+              <ng-container *ngIf="data.status | ServiceStatusPipe as statusModel">
+                <span class="label-fontsize font-bold" [ngStyle]="{color: statusModel.color}">{{statusModel.status}}</span>
+              </ng-container>
             </div>
           </div>
           <div nz-row [nzGutter]="24" class="row-bg content-items-center">

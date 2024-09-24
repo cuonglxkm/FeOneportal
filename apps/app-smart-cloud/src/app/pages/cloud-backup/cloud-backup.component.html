@@ -1,4 +1,4 @@
-<page-header [breadcrumb]="breadcrumb">
+<page-header [breadcrumb]="breadcrumb" [action]="action">
   <ng-template #breadcrumb>
     <nz-breadcrumb [nzSeparator]="iconTemplate">
       <nz-breadcrumb-item>
@@ -14,6 +14,18 @@
     <ng-template #iconTemplate>
       <one-portal-svg-icon [icon]="'icon_breadcrumb'"></one-portal-svg-icon>
     </ng-template>
+  </ng-template>
+  <ng-template #action>
+    <div class="alain-custom-action text-right">
+      <share-users-combobox></share-users-combobox>
+      <region-select-dropdown (regionChange)="onRegionChanged($event)"
+                              (valueChanged)="regionChanged($event)"></region-select-dropdown>
+      <project-select-dropdown #projectCombobox (valueChanged)="projectChanged($event)"
+                               (userChanged)="projectChanged($event)"
+                               [regionId]="region"
+                               [isFirstVisit]="isFirstVisit"
+                               [disabledProject]="isLoading"></project-select-dropdown>
+    </div>
   </ng-template>
 </page-header>
 

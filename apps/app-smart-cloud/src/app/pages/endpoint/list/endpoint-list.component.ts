@@ -55,7 +55,6 @@ export class EndpointListComponent implements OnInit, OnDestroy {
       this.searchSubscription.unsubscribe();
     }
   }
-
   changeInputChange(event: Event) {
     this.pageIndex = 1;
     const value = (event.target as HTMLInputElement).value;

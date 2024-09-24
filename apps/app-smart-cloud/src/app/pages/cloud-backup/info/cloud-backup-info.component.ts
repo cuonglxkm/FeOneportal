@@ -1,10 +1,12 @@
-import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
+import { Component, Inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from '@core';
 import { CloudBackup } from '../cloud-backup.model';
 import { CloudBackupService } from 'src/app/shared/services/cloud-backup.service';
+import { RegionModel } from '../../../../../../../libs/common-utils/src';
+import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
 
 @Component({
   selector: 'app-cloud-backup-info',
@@ -13,7 +15,6 @@ import { CloudBackupService } from 'src/app/shared/services/cloud-backup.service
 })
 
 export class CloudBackupInfoComponent implements OnInit {
-
   data: CloudBackup;
   isVisibleCreateAccessRule:boolean = false;
   isVisibleDeleteCloudBackup:boolean = false;
@@ -39,11 +40,12 @@ export class CloudBackupInfoComponent implements OnInit {
         }
       });
   }
+  
   extend(){
-
+    this.router.navigate(['/app-smart-cloud/cloud-backup/extend/' + this.data.id]);
   }
   resize(){
-
+    this.router.navigate(['/app-smart-cloud/cloud-backup/resize/' + this.data.id]);
   }
   openCreateAccessRule(){
     this.isVisibleCreateAccessRule = true;

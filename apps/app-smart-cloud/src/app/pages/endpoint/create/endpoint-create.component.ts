@@ -19,6 +19,7 @@ import { slider } from '../../../../../../../libs/common-utils/src';
 import { PriceType } from 'src/app/core/models/enum';
 import { LoadingService } from '@delon/abc/loading';
 import { DecimalPipe } from '@angular/common';
+import { tr } from 'date-fns/locale';
 
 @Component({
   selector: 'one-portal-endpoint-create',
@@ -45,6 +46,8 @@ export class EndpointCreateComponent implements OnInit {
  
   isVisiblePopupError: boolean = false;
   errorList: string[] = [];
+  standaloneUsername: string ='';
+  isUsernameChanged = false;
   closePopupError() {
     this.isVisiblePopupError = false;
   }
@@ -77,6 +80,7 @@ export class EndpointCreateComponent implements OnInit {
     this.getOffers();
     this.checkExistName();
     this.checkExistUsername();
+    this.debounceNumberOfLincense();
   }
   onKeyDown(event: KeyboardEvent) {
     // Lấy giá trị của phím được nhấn
@@ -102,24 +106,36 @@ export class EndpointCreateComponent implements OnInit {
   formatter = (value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
   dataSubjectName: Subject<string> = new Subject<string>();
   dataSubjectUserame: Subject<string> = new Subject<string>();
+  dataNumberOfLincese: Subject<number> = new Subject<number>();
   changeName(value: string) {
     this.dataSubjectName.next(value);
   }
   changeUsername(value: string) {
-    this.form.controls.username.setValue(value.toLowerCase());// = event.target.value.toLowerCase();
-    if (!value) {
-      return;
-    }
-    
-    this.dataSubjectUserame.next(value);
+    this.isUsernameChanged=true;
+    this.standaloneUsername = value.toLowerCase();
+    this.form.controls.username.setValue(this.standaloneUsername, {emitEvent: true});// = event.target.value.toLowerCase();
+    this.form.updateValueAndValidity();
+
+    this.dataSubjectUserame.next(this.standaloneUsername);
   }
   changeNumberOfLincense(value: number){
-    this.getTotalAmount();
+    this.dataNumberOfLincese.next(value);
+  }
+
+  debounceNumberOfLincense() {
+    this.dataNumberOfLincese
+      .pipe(
+        debounceTime(300)
+      )
+      .subscribe((res) => {
+        this.getTotalAmount();
+      });
   }
 
   isExistName: boolean = false;
   isExistUsername: boolean = false;
   checkExistName() {
+    
     this.dataSubjectName
       .pipe(
         debounceTime(300)
@@ -133,11 +149,16 @@ export class EndpointCreateComponent implements OnInit {
       });
   }
   checkExistUsername() {
+
     this.dataSubjectUserame
       .pipe(
         debounceTime(300)
       )
       .subscribe((res) => {
+        if(this.form.controls.username.invalid){
+          this.isExistUsername=false;
+          return;
+        }
         this.endpointService
           .checkExitUsername(res)
           .subscribe((data) => {
