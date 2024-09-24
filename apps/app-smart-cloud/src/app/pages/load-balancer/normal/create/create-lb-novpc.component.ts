@@ -270,6 +270,7 @@ export class CreateLbNovpcComponent implements OnInit {
         this.disabledFloating = false;}))
       .subscribe(data => {
       this.ipFloating = data;
+      console.log("object  this.ipFloating", this.ipFloating)
     });
   }
 
