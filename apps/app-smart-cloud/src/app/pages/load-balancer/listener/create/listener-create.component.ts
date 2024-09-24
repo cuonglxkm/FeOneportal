@@ -198,7 +198,9 @@ export class ListenerCreateComponent implements OnInit{
         sslCert: this.protocolListener == 'TERMINATED_HTTPS' ? this.certId : null,
         allowedCIDR: this.validateForm.controls['allowCIRR'].value,
         description: this.validateForm.controls['description'].value,
-        // XFor:
+        XFor: this.xFor,
+        XProto:this.xProto,
+        XPort:this.xPort
       },
       pools : {
         name: this.validateForm.controls['poolName'].value,
@@ -468,12 +470,8 @@ export class ListenerCreateComponent implements OnInit{
       }
     )
   }
-  onCheckboxChange(checkboxName: string, value: boolean) {
-    console.log(`${checkboxName} changed to: ${value}`);
-    console.log("objectvalue",value)
-    debugger
-  }
-  onCheckboxChange1(value:boolean) {
-    console.log("mmm", value)
+  // lấy trạng thái true/false của xFor, XPort, XProto
+  changeChecked(checkboxName:string,value: boolean) {
+   this[checkboxName]= value 
   }
 }
