@@ -43,7 +43,7 @@
             </ng-template>
           </nz-col>
           <nz-col nzSpan="8" style="flex:none;" *ngIf="!networkName?.includes('pri_network')">
-            <button nz-button nzType="primary" nzSize="large" (click)="navigateToCreateSubnet()">
+            <button *ngIf="isCreateSubnet" nz-button nzType="primary" nzSize="large" (click)="navigateToCreateSubnet()">
               <img style="padding-right: 10px; margin-top: -4px" src="assets/imgs/add-circle.svg" alt="" />
               <span class="button-text-primary">{{ 'app.vlan.note66' | i18n }}</span>
             </button>
@@ -72,11 +72,12 @@
             <td>{{ data.subnetAddressRequired }}</td>
             <td>{{ data.gatewayIp }}</td>
             <td *ngIf="data.usedBy">
-              <img nz-popover src="assets/imgs/edit-2.svg" alt=""
+              <img *ngIf="('network:VlanSubnetCalculateIpRange' | IsPermissionPipe) && ('network:GetVlanSubnet' | IsPermissionPipe) && ('network:UpdateVlanSubnet' | IsPermissionPipe)"
+                   nz-popover src="assets/imgs/edit-2.svg" alt=""
                    nzPopoverPlacement="bottom" (click)="navigateToEditSubnet(data.id)"
                    style="cursor: pointer; margin-right: 16px;"
                    nzPopoverContent="{{ 'app.text.edit' | i18n }}" disabled="true"/>
-              <img src="assets/imgs/delete.svg"
+              <img *ngIf="('network:DeleteVlanSubnet' | IsPermissionPipe)" src="assets/imgs/delete.svg"
                    style="height: 28px;width: 28px; cursor: pointer;opacity: 0.5; pointer-events: none; filter: grayscale(100%);"
                    nz-popover
                    [nzPopoverContent]="'app.text.delete'|i18n"
@@ -118,7 +119,7 @@
             </ng-template>
           </nz-col>
           <nz-col nzSpan="8" style="flex:none;">
-            <one-portal-vlan-create-port [region]="region"
+            <one-portal-vlan-create-port *ngIf="isCreatePort" [region]="region"
                                          [project]="project"
                                          [networkId]="idNetwork"
                                          [networkCloudId]="networkCloudId"
@@ -195,24 +196,25 @@
     || index.attachedDevice.includes('snat')
     || index.attachedDevice.includes('interface') || index.name.includes('octavia')">
               <div *ngIf="!(index.instanceName)">
-                <img src="assets/imgs/add.svg"
+                <img *ngIf="('network:VlanAttachPort' | IsPermissionPipe) && ('instance:List' | IsPermissionPipe)"
+                     src="assets/imgs/add.svg"
                      style="height: 20px; cursor: pointer;opacity: 0.5; pointer-events: none; filter: grayscale(100%); margin-right: 5px;"
                      nz-popover
                      nzPopoverContent="{{ 'app.attach' | i18n }}"
                      nzPopoverPlacement="bottom" disabled="true" />
-                <img src="assets/imgs/delete.svg"
+                <img *ngIf="('network:VlanDeletePort' | IsPermissionPipe)" src="assets/imgs/delete.svg"
                      style="height: 28px; width: 28px; cursor: pointer;opacity: 0.5; pointer-events: none; filter: grayscale(100%);"
                      nz-popover
                      nzPopoverContent="{{ 'app.delete' | i18n }}"
                      nzPopoverPlacement="bottom" disabled="true" />
               </div>
               <div *ngIf="(index.instanceName)">
-                <img src="assets/imgs/cancel.svg"
+                <img *ngIf="('network:VlanDetachPort' | IsPermissionPipe)" src="assets/imgs/cancel.svg"
                      style="height: 20px; cursor: pointer;opacity: 0.5; pointer-events: none; filter: grayscale(100%); margin-right: 5px;"
                      nz-popover
                      nzPopoverContent="{{ 'app.detach' | i18n }}"
                      nzPopoverPlacement="bottom" disabled="true" />
-                <img src="assets/imgs/delete.svg"
+                <img *ngIf="('network:VlanDeletePort' | IsPermissionPipe)" src="assets/imgs/delete.svg"
                      style="height: 28px; width: 28px; cursor: pointer;opacity: 0.5; pointer-events: none; filter: grayscale(100%);"
                      nz-popover
                      nzPopoverContent="{{ 'app.delete' | i18n }}"

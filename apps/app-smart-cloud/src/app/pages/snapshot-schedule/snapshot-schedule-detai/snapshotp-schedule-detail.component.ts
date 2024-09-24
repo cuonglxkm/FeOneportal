@@ -139,10 +139,12 @@ export class SnapshotScheduleDetailComponent implements OnInit {
     if(this.projectCombobox){
       this.projectCombobox.loadProjects(true, region.regionId);
     }
+    this.navigateToSnapshotSchedule()
   }
 
   onRegionChanged(region: RegionModel) {
     this.region = region.regionId;
+    // this.navigateToSnapshotSchedule()
   }
 
   onProjectChange(project: ProjectModel) {

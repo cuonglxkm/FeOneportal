@@ -10,6 +10,7 @@ import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from '@core';
 import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
+import { PolicyService } from 'src/app/shared/services/policy.service';
 
 @Component({
   selector: 'one-portal-vlan-detail',
@@ -46,6 +47,8 @@ export class VlanDetailComponent implements OnInit, OnChanges, OnDestroy {
   private searchSubscriptionSubnet: Subscription;
   private enterPressedSubnet: boolean = false;
 
+  isCreateSubnet: boolean = false
+  isCreatePort: boolean = false
   dataSubjectInputSearchPort: Subject<any> = new Subject<any>();
   private searchSubscriptionPort: Subscription;
   private enterPressedPort: boolean = false;
@@ -55,7 +58,8 @@ export class VlanDetailComponent implements OnInit, OnChanges, OnDestroy {
               private vlanService: VlanService,
               private notification: NzNotificationService,
               @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
-              @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService) {
+              @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
+              private policyService: PolicyService) {
     const navigation = this.router.getCurrentNavigation();
     const state = navigation?.extras.state as { selectedIndextab: number };
     if (state) {
@@ -95,6 +99,16 @@ export class VlanDetailComponent implements OnInit, OnChanges, OnDestroy {
   projectChanged(project: ProjectModel) {
     this.project = project?.id;
     // this.getVlanByNetworkId()
+
+    this.getVlanByNetworkId();
+    this.getPortByNetwork()
+    this.isCreateSubnet = this.policyService.hasPermission("network:CreateVlanSubnet") &&
+      this.policyService.hasPermission("network:ListVlanSubnet") &&
+      this.policyService.hasPermission("network:VlanSubnetCalculateIpRange")
+
+    this.isCreatePort = this.policyService.hasPermission("network:VlanCheckIpAvailable") &&
+    this.policyService.hasPermission("network:VlanCreatePort") &&
+    this.policyService.hasPermission("network:GetVlanSubnet")
   }
 
   userChanged(project: ProjectModel) {

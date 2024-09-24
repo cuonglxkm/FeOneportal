@@ -142,6 +142,7 @@
           </td>
           <td>
             <one-portal-edit-sub-user
+            *ngIf="('objectstorages:OSUpdateSubUser' | IsPermissionPipe)"
               [region]="region"
               [project]="project"
               [idSubUser]="data.subUserId"
@@ -150,6 +151,7 @@
               (onOk)="handleOkEdit()"
             />
             <one-portal-delete-sub-user
+            *ngIf="('objectstorages:OSDeleteSubUser' | IsPermissionPipe)"
               [region]="region"
               [project]="project"
               [idSubUser]="data.subUserId"

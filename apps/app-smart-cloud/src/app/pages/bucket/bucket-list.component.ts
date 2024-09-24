@@ -93,6 +93,7 @@ export class BucketListComponent implements OnInit {
       this.region = RegionID.ADVANCE;
     }
     this.hasObjectStorageInfo();
+    this.reloadTable()
     //connect hub
     this.notificationService.connection.on('UpdateOSBucket', (data) => {
       if (data) {
