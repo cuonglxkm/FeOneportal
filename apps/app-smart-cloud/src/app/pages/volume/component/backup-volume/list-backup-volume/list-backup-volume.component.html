@@ -119,7 +119,7 @@
                      nz-popover nzPopoverPlacement="bottom"
                      [nzPopoverContent]="'Restore'" (click)="navigateToRestore(data.id)"/>
                 <!--Xóa----!--->
-                <one-portal-delete-backup-volume *ngIf="('backup:Delete' | IsPermissionPipe)" [region]="region"
+                <one-portal-delete-backup-volume *ngIf="('backup:VolumeBackupDelete' | IsPermissionPipe)" [region]="region"
                                                  [project]="project"
                                                  [idBackup]="data.id"
                                                  [backupName]="data.name"
@@ -127,7 +127,7 @@
               </div>
               <div *ngIf="data.status == 'ERROR'">
               <!--Xóa----!--->
-              <one-portal-delete-backup-volume *ngIf="('backup:Delete' | IsPermissionPipe)" [region]="region"
+              <one-portal-delete-backup-volume *ngIf="('backup:VolumeBackupDelete' | IsPermissionPipe)" [region]="region"
                                                [project]="project"
                                                [idBackup]="data.id"
                                                [backupName]="data.name"

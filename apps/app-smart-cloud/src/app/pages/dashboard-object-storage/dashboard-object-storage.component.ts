@@ -81,7 +81,7 @@ export class DashboardObjectStorageComponent implements OnInit {
           if(e.status == 403){
             this.notification.error(
               e.statusText,
-              this.i18n.fanyi('app.non.permission')
+              this.i18n.fanyi('app.non.permission', { serviceName: 'Thông tin User' })
             );
           } else {
             this.notification.error(
@@ -130,7 +130,7 @@ export class DashboardObjectStorageComponent implements OnInit {
         if(error.status == 403){
           this.notification.error(
             error.statusText,
-            this.i18n.fanyi('app.non.permission')
+            this.i18n.fanyi('app.non.permission', { serviceName: 'Xem chi tiết dashboard Object Storage' })
           );
         }
       });
@@ -160,7 +160,7 @@ export class DashboardObjectStorageComponent implements OnInit {
       if(error.status == 403){
         this.notification.error(
           error.statusText,
-          this.i18n.fanyi('app.non.permission')
+          this.i18n.fanyi('app.non.permission', { serviceName: 'Danh sách Bucket' })
         );
       }
     });

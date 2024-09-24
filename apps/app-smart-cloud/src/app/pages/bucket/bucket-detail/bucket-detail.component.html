@@ -279,7 +279,7 @@
                 </li>
                 <li *ngIf="('objectstorages:OSCopyObject' | IsPermissionPipe) && ('objectstorages:OSGetBucketTreeData' | IsPermissionPipe)" nz-menu-item (click)="doAction('2', item)">{{ 'app.bucket.detail.copy' | i18n }}</li>
                 <li *ngIf="('objectstorages:OSShareObject' | IsPermissionPipe)" nz-menu-item (click)="doAction('6', item)">{{ 'app.bucket.detail.share' | i18n }}</li>
-                <li *ngIf="('	objectstorages:OSObjectAcl' | IsPermissionPipe)" nz-menu-item (click)="doAction('1', item)">
+                <li *ngIf="('objectstorages:OSObjectAcl' | IsPermissionPipe)" nz-menu-item (click)="doAction('1', item)">
                   {{ 'app.bucket.detail.authorize' | i18n }}
                 </li>
                 <li *ngIf="('objectstorages:GetBucket' | IsPermissionPipe)" nz-menu-item (click)="doAction('4', item)">{{ 'app.bucket.detail.detail' | i18n }}</li>
