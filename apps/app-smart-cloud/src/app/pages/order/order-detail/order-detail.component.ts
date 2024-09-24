@@ -17,6 +17,7 @@ import { InstancesService } from '../../instances/instances.service';
 import { OrderItem } from 'src/app/shared/models/price';
 import { CommonService } from 'src/app/shared/services/common.service';
 import { PriceType } from 'src/app/core/models/enum';
+import { RegionID } from 'src/app/shared/enums/common.enum';
 
 @Component({
   selector: 'one-portal-order-detail',
@@ -421,7 +422,16 @@ export class OrderDetailComponent {
     });
   }
 
-  navigateToInstanceList(){
-    this.commonService.navigateAdvance('/app-smart-cloud/instances', '/app-smart-cloud/instances-advance')
+  navigateToInstanceList(serviceDetail){
+    if(serviceDetail){
+      const parsedServiceDetail = JSON.parse(serviceDetail)
+      // console.log('first', parsedServiceDetail)
+      if(parsedServiceDetail?.RegionId === RegionID.ADVANCE){
+        this.router.navigate(['/app-smart-cloud/instances-advance'])
+      }else{
+        this.router.navigate(['/app-smart-cloud/instances'])
+      }
+    }
+    // this.commonService.navigateAdvance('/app-smart-cloud/instances', '/app-smart-cloud/instances-advance')
   }
 }
