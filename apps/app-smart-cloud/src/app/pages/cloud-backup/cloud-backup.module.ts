@@ -16,6 +16,8 @@ import { CreateAccessRulePopupComponent } from './access-rule/create/create-acce
 import { EditAccessRuleComponent } from './access-rule/edit/edit-access-rule.component';
 import { DeleteAccessRuleComponent } from './access-rule/delete/delete-access-rule.component';
 import { DeleteCloudBackupComponent } from './info/delete/delete-cloud-backup.component';
+import { CloudBackupExtendComponent } from './extend/cloud-backup-extend.component';
+import { CloudBackupResizeComponent } from './resize/cloud-backup-resize.component';
 
 @NgModule({
   declarations: [
@@ -26,7 +28,9 @@ import { DeleteCloudBackupComponent } from './info/delete/delete-cloud-backup.co
     CreateAccessRulePopupComponent,
     EditAccessRuleComponent,
     DeleteAccessRuleComponent,
-    DeleteCloudBackupComponent
+    DeleteCloudBackupComponent,
+    CloudBackupExtendComponent,
+    CloudBackupResizeComponent
   ],
   imports: [
     CommonModule,
