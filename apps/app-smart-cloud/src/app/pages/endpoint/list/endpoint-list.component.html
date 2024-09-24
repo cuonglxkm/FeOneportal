@@ -81,7 +81,7 @@
       <tbody>
       <tr *ngFor="let data of fixedTable.data">
         <td nzLeft nzBreakWord>{{ data.name }}</td>
-        <td nzBreakWord nzAlign="left">{{ data.username }}</td>
+        <td nzBreakWord nzAlign="left">smc.{{ data.username }}</td>
         <td nzBreakWord nzAlign="left">{{ data.email }}</td>
         <td nzBreakWord nzAlign="right">{{ data.quantity }}</td>
         <td nzBreakWord nzAlign="left">{{ data.endDatePeriod | date : "dd/MM/yyyy"}}</td>
