@@ -68,6 +68,10 @@ export class ListenerUpdateComponent implements OnInit, OnChanges {
   listCert: any = null;
   certId: any;
   isAddHeader:boolean = false;
+  xFor: boolean = false;  
+  xProto: boolean = false;
+  xPort: boolean = false;
+
   @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
   constructor(private router: Router,
               private fb: NonNullableFormBuilder,
@@ -114,7 +118,8 @@ export class ListenerUpdateComponent implements OnInit, OnChanges {
       idleTimeOutMember: this.validateForm.controls['member'].value,
       sslCert: this.protocolListener == 'TERMINATED_HTTPS' ? this.certId : '',
       idleTimeOutClient: this.validateForm.controls['timeout'].value,
-      name: this.validateForm.controls['listenerName'].value
+      name: this.validateForm.controls['listenerName'].value,
+      DefaultPoolId: this.selectedPool
     };
     this.service.updateListener(data).subscribe(
       data => {
@@ -150,6 +155,7 @@ export class ListenerUpdateComponent implements OnInit, OnChanges {
       .subscribe(
       data => {
         this.data = data;
+        console.log("aa", this.data)
         this.validateForm.controls['listenerName'].setValue(data.name);
         this.validateForm.controls['port'].setValue(data.port);
         this.validateForm.controls['timeout'].setValue(data.timeoutClientData);
@@ -157,11 +163,17 @@ export class ListenerUpdateComponent implements OnInit, OnChanges {
         this.validateForm.controls['connection'].setValue(data.timeoutMemberConnect);
         this.validateForm.controls['allowCIRR'].setValue(data.allowedCidrs[0]);
         this.validateForm.controls['description'].setValue(data.description);
+     
         this.certId = data.certSSL;
         this.protocolListener = data.protocol;
         this.getPool(this.activatedRoute.snapshot.paramMap.get('id'));
        
         this.getListL7Policy(this.activatedRoute.snapshot.paramMap.get('id'));
+
+        // this.xFor = data.XFor
+        // this.xProto = data.XProto
+        // this.xPort = data.XPort
+
       this.getListPoolForListener();
         if( this.protocolListener == 'TERMINATED_HTTPS' ||  this.protocolListener == 'HTTP'){
           this.isAddHeader= true;
@@ -234,13 +246,16 @@ export class ListenerUpdateComponent implements OnInit, OnChanges {
   private loadSSlCert() {
     this.service.loadSSlCert(this.tokenService.get()?.userId,this.regionId,this.projectId).subscribe(
       data => {
+        // debugger
         this.listCert = data;
+        console.log(" this.listCert", this.listCert)
       }
     )
   }
 poolForListener:any;
+// lấy ds pool chưa thuộc listenner nào
 getListPoolForListener() {
-// const id_lb = Number(this.activatedRoute.snapshot.paramMap.get('id'))
+
   this.loadBalancerService.getListPoolInLB(this.idLb).subscribe({
     next: (data) => {
       this.poolForListener = data.filter((item)=>!item.listener_id &&  item.protocol==this.protocolListener);
@@ -252,4 +267,8 @@ getListPoolForListener() {
     },
   });
 }
+// lấy trạng thái true/false của xFor, XPort, XProto
+changeChecked(checkboxName:string,value: boolean) {
+  this[checkboxName]= value 
+ }
 }

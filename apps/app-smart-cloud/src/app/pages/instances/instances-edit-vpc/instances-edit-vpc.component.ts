@@ -260,6 +260,9 @@ export class InstancesEditVpcComponent implements OnInit {
   purchasedGpu: number = 0;
   remainingVCPU: number = 0;
   remainingGpu: number = 0;
+  maxSizeVolume: number = 0;
+  maxSizeRam: number = 0;
+  maxSizeVCpu: number = 0
   getInfoVPC() {
     this.dataService.getById(this.id, true).subscribe({
       next: (ressultModel: any) => {
@@ -284,6 +287,13 @@ export class InstancesEditVpcComponent implements OnInit {
             this.remainingVCPU =
               this.infoVPC.cloudProject.quotavCpu -
               this.infoVPC.cloudProjectResourceUsed.cpu;
+            this.maxSizeVolume =
+              this.remainingVolume + this.instancesModel.storage;
+            this.maxSizeRam = this.remainingRAM + this.instancesModel.ram;
+            this.maxSizeVCpu = this.remainingVCPU + this.instancesModel.cpu;
+            this.ram = ressultModel.ram;
+            this.storage = ressultModel.storage;
+            this.vCPU = ressultModel.cpu;
             this.getListGpuType();
             this.getConfigurations();
           },
@@ -401,13 +411,13 @@ export class InstancesEditVpcComponent implements OnInit {
     this.instanceResize.description = null;
     this.instanceResize.currentFlavorId = this.instancesModel.flavorId;
     if (this.isCustomconfig) {
-      this.instanceResize.cpu = this.vCPU + this.instancesModel.cpu;
-      this.instanceResize.ram = this.ram + this.instancesModel.ram;
-      this.instanceResize.storage = this.storage + this.instancesModel.storage;
+      this.instanceResize.cpu = this.vCPU;
+      this.instanceResize.ram = this.ram;
+      this.instanceResize.storage = this.storage;
     } else if (this.isGpuConfig) {
-      this.instanceResize.cpu = this.vCPU + this.instancesModel.cpu;
-      this.instanceResize.ram = this.ram + this.instancesModel.ram;
-      this.instanceResize.storage = this.storage + this.instancesModel.storage;
+      this.instanceResize.cpu = this.vCPU;
+      this.instanceResize.ram = this.ram;
+      this.instanceResize.storage = this.storage;
       if (this.gpuOfferId) {
         this.instanceResize.gpuType = this.purchasedListGPUType.filter(
           (e) => e.id == this.gpuOfferId

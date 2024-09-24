@@ -517,7 +517,7 @@
               nzDisableAutoTips
               [nzErrorTip]="expectedCodeErrorTpl"
             >
-              <nz-input-number
+              <!-- <nz-input-number
                 style="width: 100%; margin-left: 0px"
                 [ngModel]="code"
                 (keydown)="onKeyDown($event)"
@@ -526,7 +526,12 @@
                 [nzMax]="599"
                 [nzStep]="1"
                 nzSize="large"
-              ></nz-input-number>
+              ></nz-input-number> -->
+              <input nz-input style="width: 100%; margin-left: -3px"
+              class="input-custom"
+              [ngModel]="code" 
+              formControlName="expectedCode"
+             />
               <ng-template #expectedCodeErrorTpl let-control>
                 <ng-container *ngIf="control.hasError('required')">{{
                   'validation.info.required' | i18n
