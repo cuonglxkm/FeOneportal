@@ -102,7 +102,7 @@
             <nz-col class="text-right" nzSpan="8">
               <span class="text-value month-money" nzAlign="right">
                 <span *ngIf="orderObject?.orderItemPrices?.length <= 0" class="text-value" style="color: #0066b3"
-                  nzAlign="right">0 VNĐ</span>
+                  nzAlign="right">0 VND</span>
                 <span *ngIf="orderObject?.orderItemPrices?.length > 0" class="text-value" style="color: #0066b3"
                   nzAlign="right">
                   {{
@@ -119,8 +119,8 @@
               <span class="text-value">{{ 'app.cost.vat' | i18n }}</span>
             </nz-col>
             <nz-col class="text-right" nzSpan="8">
-              <span class="text-value" style="color: #0066b3" nzAlign="right" *ngIf="orderObject == null">0 VND</span>
-              <span class="text-value" style="color: #0066b3" nzAlign="right" *ngIf="orderObject != undefined">
+              <span class="text-value" style="color: #0066b3" nzAlign="right" *ngIf="!orderObject?.totalVAT">0 VND</span>
+              <span class="text-value" style="color: #0066b3" nzAlign="right" *ngIf="orderObject?.totalVAT">
                 {{ orderObject?.totalVAT?.amount | number }}
                 {{ orderObject?.totalVAT?.currency }}
               </span>

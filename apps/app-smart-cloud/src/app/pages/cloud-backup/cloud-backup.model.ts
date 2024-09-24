@@ -2,7 +2,7 @@ export class CloudBackup {
   id: number;
   name: string;
   customerId: number;
-  capacity: number;
+  storage: number;
   status: string;
   createDate: Date;
   createdDate?: Date;

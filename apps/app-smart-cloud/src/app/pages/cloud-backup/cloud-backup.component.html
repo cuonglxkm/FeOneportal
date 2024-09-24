@@ -33,7 +33,7 @@
   <ng-container *ngSwitchCase="false">
     <nz-tabset>
       <nz-tab nzTitle="Cloud Backup">
-        <app-cloud-backup-info></app-cloud-backup-info>
+        <app-cloud-backup-info [data]="cloudBackup"></app-cloud-backup-info>
       </nz-tab>
       <nz-tab nzTitle="Access rule">
         <app-access-rule-list></app-access-rule-list>
@@ -45,24 +45,26 @@
       <result>
         <nz-row>
           <nz-col class="text-center" style="width: 100%">
-            <img src="/assets/imgs/waf.png" alt="" />
+            <img src="/assets/imgs/cloud-backup.png" alt="" />
           </nz-col>
         </nz-row>
         <nz-row style="margin-top: 20px">
           <nz-col class="text-center" style="width: 100%">
-            <span class="text-intro-title" style="color: #0066b3">{{ 'waf.intro.title1' | i18n }}
-              <br>{{ 'waf.intro.title2' | i18n }}</span>
+            <span class="text-intro-title" style="color: #0066b3">{{ 'cloud-backup.intro.title1' | i18n }}</span>
           </nz-col>
         </nz-row>
         <nz-row style="margin-top: 20px">
           <nz-col class="text-center" style="width: 100%">
-            <span class="text-intro-desc">{{ 'waf.intro.subtitle' | i18n }}</span>
+            <span class="text-intro-desc">{{ 'cloud-backup.intro.title2' | i18n }}</span>
+          </nz-col>
+          <nz-col class="text-center" style="width: 100%">
+            <span class="text-intro-desc">{{ 'cloud-backup.intro.subtitle' | i18n }}</span>
           </nz-col>
         </nz-row>
-        <button style="margin-top: 20px" nz-button [nzType]="'primary'" (click)="navigateToCreateWaf()"
+        <button style="margin-top: 20px" nz-button [nzType]="'primary'" (click)="navigateToCreateCloudBackup()"
                 nzSize="large">
           <img style="padding-right: 10px; margin-top: -4px" src="assets/imgs/cloud-plus-bold.svg" alt="" />
-          {{ 'waf.button.create' | i18n }}
+          {{ 'app.button.create' | i18n }} Cloud Backup
         </button>
       </result>
     </nz-card>
