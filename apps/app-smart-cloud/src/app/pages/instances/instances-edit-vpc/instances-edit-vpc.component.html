@@ -363,9 +363,9 @@
           <div style="margin-bottom: 20px">
             <span class="text-label"
               >{{ 'app.adjust.config' | i18n }}:
-              {{ vCPU + instancesModel.cpu }} vCPU,
-              {{ ram + instancesModel.ram }}GB RAM,
-              {{ storage + instancesModel.storage }}GB
+              {{ vCPU }} vCPU,
+              {{ ram }}GB RAM,
+              {{ storage }}GB
               <span *ngIf="instancesModel.volumeType == 0">HDD</span>
               <span *ngIf="instancesModel.volumeType == 1">SSD</span>
               <span *ngIf="instancesModel.volumeType != 0 && isGpuConfig"
@@ -404,7 +404,7 @@
                           (ngModelChange)="changeCapacity($event)"
                           [ngModelOptions]="{ standalone: true }"
                           [nzMin]="0"
-                          [nzMax]="remainingVolume"
+                          [nzMax]="maxSizeVolume"
                           [nzStep]="stepCapacity"
                         ></nz-slider>
                         <div
@@ -446,7 +446,7 @@
                           (ngModelChange)="checkChangeConfig()"
                           [ngModelOptions]="{ standalone: true }"
                           [nzMin]="0"
-                          [nzMax]="remainingRAM"
+                          [nzMax]="maxSizeRam"
                         ></nz-slider>
                         <div
                           *ngIf="remainingRAM == 0"
@@ -486,7 +486,7 @@
                           (ngModelChange)="checkChangeConfig()"
                           [ngModelOptions]="{ standalone: true }"
                           [nzMin]="0"
-                          [nzMax]="remainingVCPU"
+                          [nzMax]="maxSizeVCpu"
                         ></nz-slider>
                         <div
                           *ngIf="remainingVCPU == 0"
@@ -546,7 +546,7 @@
                           (ngModelChange)="changeCapacity($event)"
                           [ngModelOptions]="{ standalone: true }"
                           [nzMin]="0"
-                          [nzMax]="remainingVolume"
+                          [nzMax]="maxSizeVolume"
                           [nzStep]="stepCapacity"
                         ></nz-slider>
                         <div
@@ -588,7 +588,7 @@
                           (ngModelChange)="checkChangeConfig()"
                           [ngModelOptions]="{ standalone: true }"
                           [nzMin]="0"
-                          [nzMax]="remainingRAM"
+                          [nzMax]="maxSizeRam"
                         ></nz-slider>
                         <div
                           *ngIf="remainingRAM == 0"
@@ -628,7 +628,7 @@
                           (ngModelChange)="checkChangeConfig()"
                           [ngModelOptions]="{ standalone: true }"
                           [nzMin]="0"
-                          [nzMax]="remainingVCPU"
+                          [nzMax]="maxSizeVCpu"
                         ></nz-slider>
                         <div
                           *ngIf="remainingVCPU == 0"
@@ -772,13 +772,13 @@
           <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
           <div class="text-value">{{ 'app.text.package' | i18n }}</div>
           <div style="margin-top: 10px" class="text-label">
-            {{ vCPU + instancesModel.cpu }} vCPU
+            {{ vCPU }} vCPU
           </div>
           <div style="margin-top: 10px" class="text-label">
-            {{ ram + instancesModel.ram }} GB RAM
+            {{ ram }} GB RAM
           </div>
           <div style="margin-top: 10px" class="text-label">
-            {{ storage + instancesModel.storage }} GB Root Disk (<span
+            {{ storage }} GB Root Disk (<span
               *ngIf="instancesModel.volumeType == 0"
               >HDD</span
             >

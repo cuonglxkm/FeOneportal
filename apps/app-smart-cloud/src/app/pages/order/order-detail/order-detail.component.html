@@ -247,7 +247,7 @@
                 </div>
                 <a
                   *ngSwitchCase="'VM'"
-                  (click)="navigateToInstanceList()"
+                  (click)="navigateToInstanceList(item.serviceDetail)"
                   >{{ item?.serviceName }}</a
                 >
                 <a *ngSwitchCase="'K8s'" [routerLink]="['/app-kubernetes']">{{
