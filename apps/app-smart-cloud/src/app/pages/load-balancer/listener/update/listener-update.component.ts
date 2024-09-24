@@ -162,7 +162,7 @@ export class ListenerUpdateComponent implements OnInit, OnChanges {
         this.getPool(this.activatedRoute.snapshot.paramMap.get('id'));
        
         this.getListL7Policy(this.activatedRoute.snapshot.paramMap.get('id'));
-      
+      this.getListPoolForListener();
         if( this.protocolListener == 'TERMINATED_HTTPS' ||  this.protocolListener == 'HTTP'){
           this.isAddHeader= true;
         }
@@ -200,8 +200,8 @@ export class ListenerUpdateComponent implements OnInit, OnChanges {
       })).subscribe(
       data => {
         this.listPool = data.records;
-        this.poolForListener= this.listPool.filter((item)=>!item.listener_id &&  item.protocol==this.protocolListener)
-        console.log("object33",this.listPool)
+        // this.poolForListener= this.listPool.filter((item)=>!item.listener_id &&  item.protocol==this.protocolListener)
+        // console.log("object33",this.listPool)
         this.loadingPool = false;
       }
     )
@@ -239,20 +239,17 @@ export class ListenerUpdateComponent implements OnInit, OnChanges {
     )
   }
 poolForListener:any;
-  // get lits pool for listener
-  // private getPoolForListener(id: string) {
-    
-  //   this.service.getPool(id, this.regionId, this.projectId)
-  //     .pipe(finalize(()=>{
-  //       // this.loadingPool = false;
-  //     })).subscribe(
-  //     data => {        
-  //       this.poolForListener = data.records.filter((item)=>{
-  //         !item.listener_id && item.protocol===this.protocolListener      
-  //       });
-      
-      
-  //     }
-  //   )
-  // }
+getListPoolForListener() {
+// const id_lb = Number(this.activatedRoute.snapshot.paramMap.get('id'))
+  this.loadBalancerService.getListPoolInLB(this.idLb).subscribe({
+    next: (data) => {
+      this.poolForListener = data.filter((item)=>!item.listener_id &&  item.protocol==this.protocolListener);
+      console.log(" this.poolList 123", this.poolForListener)
+    },
+    error: (error) => {
+      this.isLoading = false;
+      this.poolForListener = null;
+    },
+  });
+}
 }

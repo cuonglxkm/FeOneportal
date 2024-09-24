@@ -1210,10 +1210,8 @@ export class ProjectUpdateComponent implements OnInit {
     this.numberIpPublic = 0;
     this.numberIpv6 = 0;
     this.numberIpFloating = 0;
-
-    // if(this.data.IpPublicNetworkId){
-    //   this.rangeIpPublic = this.data.IpPublicNetworkId
-    // }
+    this.rangeIpPublic ='';
+   
     if (this.data.publicNetworkAddress  && this.data.publicNetworkId ) {
       this.ipConnectInternet = this.data.publicNetworkId + '--' + this.data.publicNetworkAddress;
     }
