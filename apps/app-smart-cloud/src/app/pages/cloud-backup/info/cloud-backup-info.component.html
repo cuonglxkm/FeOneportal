@@ -1,0 +1,106 @@
+<nz-row nzJustify="space-between">
+  <nz-col nzSpan="24">
+    <button nz-button
+            nzType="primary"
+            nzSize="large"
+            (click)="extend()">
+      <img style="padding-right: 10px; margin-top: -4px"
+            src="assets/imgs/calendar-tick2.svg"
+            alt="" />
+      <span class="button-text-primary">{{ 'app.button.extend' | i18n }}</span>
+    </button>
+    <button nz-button
+            nzType="primary"
+            nzSize="large"
+            (click)="resize()">
+      <img style="padding-right: 10px; margin-top: -4px"
+            src="assets/imgs/edit-1.svg"
+            alt="" />
+      <span class="button-text-primary">{{ 'app.button.resize' | i18n }}</span>
+    </button>
+    <button nz-button
+            nzType="primary"
+            nzSize="large"
+            nz-dropdown
+            [nzDropdownMenu]="menu"
+            nzPlacement="bottomLeft">
+      <img style="padding-right: 10px; margin-top: -4px"
+            src="assets/imgs/arrow-down-white.svg"
+            alt="" />
+      <span class="button-text-primary">{{ 'menu.more' | i18n }}</span>
+    </button>
+    <nz-dropdown-menu #menu="nzDropdownMenu">
+      <ul nz-menu>
+        <li nz-menu-item (click)="openCreateAccessRule()">{{'app.create'| i18n}} Access rule</li>
+        <li nz-menu-item (click)="openDeleteCloudBackup()">{{'app.delete'| i18n}}</li>
+      </ul>
+    </nz-dropdown-menu>
+  </nz-col>
+</nz-row>
+<nz-content class="mt-3">
+  <nz-card>
+    <div nz-row [nzGutter]="24" class="info-project" >
+      <div nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="12">
+        <div>
+          <div nz-row [nzGutter]="24" class="row-bg content-items-center">
+            <div nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="12">
+              <span class="label-fontsize">{{'app.name' | i18n}} Cloud Backup</span>
+            </div>
+            <div nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="12">
+              <span class="label-fontsize font-bold">{{ data.name }}</span>
+            </div>
+          </div>
+          <div nz-row [nzGutter]="24" class="row-bg content-items-center">
+            <div nz-col nzSm="12" nzMd="12" nzLg="12">
+              <span class="label-fontsize">{{'app.activity.status' | i18n}}</span>
+            </div>
+            <div nz-col nzSm="12" nzMd="12" nzLg="12">
+              <ng-container *ngIf="data.status | ServiceStatusPipe as statusModel">
+                <span class="label-fontsize font-bold" [ngStyle]="{color: statusModel.color}">{{statusModel.status}}</span>
+              </ng-container>
+            </div>
+          </div>
+          <div nz-row [nzGutter]="24" class="row-bg content-items-center">
+            <div nz-col nzSm="12" nzMd="12" nzLg="12">
+              <span class="label-fontsize">{{'app.text.creation-time' | i18n}}</span>
+            </div>
+            <div nz-col nzSm="12" nzMd="12" nzLg="12">
+              <span class="label-fontsize font-bold">{{ data.createDate | date : "HH:mm:ss dd/MM/yyyy" }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="12">
+        <div>
+          <div nz-row [nzGutter]="24" class="row-bg content-items-center" >
+            <div nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="12">
+              <span class="label-fontsize">{{'app.capacity' | i18n}} Cloud Backup</span>
+            </div>
+            <div nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="12">
+              <span class="label-fontsize font-bold">{{ data.capacity }}</span> 
+            </div>
+          </div>
+          <div nz-row [nzGutter]="24" class="row-bg content-items-center">
+            <div nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="12">
+              <span class="label-fontsize">&nbsp;</span>
+            </div>
+            <div nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="12">
+              <span class="label-fontsize font-bold"></span>
+            </div>
+          </div>
+          <div nz-row [nzGutter]="24" class="row-bg content-items-center">
+            <div nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="12">
+              <span class="label-fontsize text-red" style="display: inline-block">{{'app.service.expiration-date'| i18n}}</span>
+            </div>
+            <div nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="12">
+              <span class="label-fontsize text-red font-bold">{{data.expiredDate | date : "HH:mm:ss dd/MM/yyyy" }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </nz-card>
+</nz-content>
+
+<one-portal-create-access-rule [isVisibleCreateAccessRule]="isVisibleCreateAccessRule" (onCancel)="closeCreateAccessRule()"></one-portal-create-access-rule>
+<one-portal-delete-cloud-backup [(isVisible)]="isVisibleDeleteCloudBackup" [cloudBackupData]="{name:'ahihi'}"></one-portal-delete-cloud-backup>

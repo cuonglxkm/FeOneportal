@@ -60,9 +60,9 @@ export class DetailPackageBackupComponent implements OnInit {
   projectChanged(project: ProjectModel) {
     this.project = project?.id;
 
-    this.isPermissionExtend = this.policyService.hasPermission("backup:ExtendBackupPacket") && this.policyService.hasPermission("order:GetOrderAmount") && this.policyService.hasPermission("order:Create");
+    this.isPermissionExtend = this.policyService.hasPermission("order:GetOrderAmount") && this.policyService.hasPermission("order:Create") && this.policyService.hasPermission("backup:GetBackupPacket");
 
-    this.isPermissionResize = this.policyService.hasPermission("backup:ExtendBackupPacket") && this.policyService.hasPermission("order:GetOrderAmount") && this.policyService.hasPermission("order:Create") && this.policyService.hasPermission("configuration:Get");
+    this.isPermissionResize = this.policyService.hasPermission("order:GetOrderAmount") && this.policyService.hasPermission("order:Create") && this.policyService.hasPermission("configuration:Get") && this.policyService.hasPermission("backup:GetBackupPacket");;
   }
 
   userChanged(project: ProjectModel) {

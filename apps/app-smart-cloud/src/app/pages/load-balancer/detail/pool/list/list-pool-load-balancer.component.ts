@@ -60,6 +60,7 @@ export class ListPoolLoadBalancerComponent implements OnInit, OnChanges {
         const startIndex = (this.pageIndex - 1) * this.pageSize;
         const endIndex = this.pageIndex * this.pageSize;
         this.poolList = data;
+        console.log(" this.poolList 123", this.poolList)
         this.currentPageData = this.poolList.slice(startIndex, endIndex);
         this.isLoading = false;
       },

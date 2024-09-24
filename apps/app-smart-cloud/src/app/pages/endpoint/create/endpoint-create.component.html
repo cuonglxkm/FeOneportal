@@ -72,26 +72,43 @@
                 src="assets/imgs/pajamas_question.svg"
                 alt=""
                 /></nz-form-label>
+              
               <nz-form-control [nzErrorTip]="usernameErrorTpl">
+                <input
+                  class="custom-input"
+                  formControlName="username"
+                  style="display: none;"
+                />
                 <input
                   nz-input
                   maxlength="30"
                   placeholder="Nhập username đăng nhập"
-                  [ngStyle]="isExistUsername ? { borderColor: '#ff4d4f' } : {}"
-                  formControlName="username"
+                  [nzStatus]="(isExistUsername
+                      || form.controls.username.hasError('pattern')
+                      || form.controls.username.hasError('required')) 
+                      && isUsernameChanged
+                      ? 'error' : ''"
+                  [(ngModel)]="standaloneUsername"
                   (ngModelChange)="changeUsername($event)"
                   class="custom-input"
+                  [ngModelOptions]="{standalone: true}"
                 />
                 <div *ngIf="isExistUsername" style="color: #ff4d4f">
                   Username đã tồn tại
                 </div>
+                <div *ngIf="form.controls.username.hasError('required') && isUsernameChanged" style="color: #ff4d4f">
+                  Username không được để trống
+                </div>
+                <div *ngIf="form.controls.username.hasError('pattern') && isUsernameChanged" style="color: #ff4d4f"> 
+                  Username không bao gồm dấu tiếng Việt, dấu cách, ký tự đặc biệt
+                </div>
                 <ng-template #usernameErrorTpl let-control>
-                  <ng-container *ngIf="control.hasError('required')"
+                  <!-- <ng-container *ngIf="form.controls.username.hasError('required')"
                     >Username không được để trống
                   </ng-container>
-                  <ng-container *ngIf="control.hasError('pattern')"
+                  <ng-container *ngIf="form.controls.username.hasError('pattern')"
                     >Username không bao gồm dấu tiếng Việt, dấu cách, ký tự đặc biệt
-                  </ng-container>
+                  </ng-container> -->
                 </ng-template>
               </nz-form-control>
             </nz-form-item>

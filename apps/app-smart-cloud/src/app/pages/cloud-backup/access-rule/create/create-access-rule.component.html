@@ -1,0 +1,49 @@
+<nz-modal [(nzVisible)]="isVisibleCreateAccessRule" [nzTitle]="modalTitle" [nzContent]="modalContent" [nzFooter]="null"
+  (nzOnCancel)="handleCancelCreateAccessRule()">
+  <ng-template #modalTitle>
+    <h4>
+      <b>{{'app.add'|i18n}} Access rule</b>
+    </h4>
+  </ng-template>
+  <ng-template #modalContent>
+    <form nz-form nzLayout="vertical" [formGroup]="form">
+      <nz-form-item>
+        <nz-form-label>Port</nz-form-label>
+        <nz-form-control>
+          <nz-input-number formControlName="port" 
+            class="custom-input"
+            nzSize="large" 
+            style="width: 100%; margin-left: 0px" />
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-label>Source (<span class="text-red">*</span>)
+          <img style="margin-left: 10px" nz-tooltip="{{ 'cloud-backup.access-rule.validate.source' | i18n }}"
+            src="assets/imgs/pajamas_question.svg" alt="" />
+        </nz-form-label>
+        <nz-form-control [nzErrorTip]="numberErrorTpl">
+          <input nz-input placeholder="{{'cloud-backup.access-rule.input.source'| i18n}}"
+              [ngStyle]="isExistName ? { borderColor: '#ff4d4f' } : {}" formControlName="source"
+              class="custom-input" />
+          <ng-template #nameErrorTpl let-control>
+            <ng-container *ngIf="control.hasError('required')">{{'cloud-backup.validate.name.null'| i18n}}
+            </ng-container>
+            <ng-container *ngIf="control.hasError('pattern')">{{'cloud-backup.validate.name'| i18n}}
+            </ng-container>
+          </ng-template>
+        </nz-form-control>
+      </nz-form-item>
+      <div class="d-flex justify-content-end">
+        <button nz-button (click)="handleCancelCreateAccessRule()">
+          <img style="padding-right: 10px; margin-top: -4px" src="assets/imgs/cancel.svg" alt="" />{{
+          'app.button.cancel' | i18n }}
+        </button>
+        <button nz-button (click)="handleCreate()" nzType="primary" [disabled]="form.invalid" [nzLoading]="isLoading">
+          <img *ngIf="isLoading === false" style="padding-right: 10px; margin-top: -4px" src="assets/imgs/confirm.svg"
+            alt="" />
+          {{ 'app.button.confirm' | i18n }}
+        </button>
+      </div>
+    </form>
+  </ng-template>
+</nz-modal>

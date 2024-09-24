@@ -101,7 +101,7 @@ export class SnapshotListComponent implements OnInit {
     this.searchDelay.pipe(debounceTime(TimeCommon.timeOutSearch)).subscribe(() => {
       this.search(false);
     });
-    this.search(true);
+    // this.search(true);
   }
   // validate name khi nhap trung
   duplicateNameValidator(control) {
@@ -119,8 +119,10 @@ export class SnapshotListComponent implements OnInit {
   regionChanged(region: RegionModel) {
     if (this.projectCombobox) {
       this.projectCombobox.loadProjects(true, region.regionId);
+      console.log("object xx", this.projectCombobox)
     }
     this.region = region.regionId;
+    console.log("projectttttt", this.project )
   }
 
   onRegionChanged(region: RegionModel) {
@@ -200,6 +202,7 @@ export class SnapshotListComponent implements OnInit {
 
   search(isBegin: boolean) {
     this.isLoading = true;
+    console.log("object this.project",this.project)
     this.service.serchSnapshot(this.size, this.index, this.region, this.project, this.value, this.status, '')
       .pipe(finalize(() => {
         this.isLoading = false;
@@ -207,7 +210,7 @@ export class SnapshotListComponent implements OnInit {
       .subscribe(
         data => {
           data.records.forEach((item) => {
-            if (this.nameList.length > 0) {
+            if (this.nameList?.length > 0) {
               this.nameList.push(item.name);
             } else {
               this.nameList = [item.name];
