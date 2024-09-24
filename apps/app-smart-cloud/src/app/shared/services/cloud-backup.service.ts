@@ -73,9 +73,15 @@ export class CloudBackupService extends BaseService {
   }
 
   hasCloudBackup(): Observable<boolean> {
-    return new BehaviorSubject<boolean>(true);
+    return new BehaviorSubject<boolean>(false);
   }
 
+  findCloudBackupByProject(regoin:number, project:number): Observable<CloudBackup> {
+    return this.http.get<CloudBackup>(
+      this.baseUrl + this.ENDPOINT.provisions + `/cloud-backup/find-by-project?regoinId=${regoin}&projectId=${project}`,
+      { headers: this.getHeaders().headers }
+    );
+  }
   createAccessRule(accessRule: CreateAccessRule): Observable<AccessRule> {
     return new BehaviorSubject<AccessRule>(null);
   }
@@ -92,10 +98,10 @@ export class CloudBackupService extends BaseService {
   }
 
   getCloudBackup(): Observable<CloudBackup> {
-    return new BehaviorSubject<CloudBackup>({name:"ahihi",status:"ACTIVE",id:1,customerId:1,createDate:new Date(),expiredDate:new Date(),capacity:1});
+    return new BehaviorSubject<CloudBackup>({name:"ahihi",status:"ACTIVE",id:1,customerId:1,createDate:new Date(),expiredDate:new Date(),storage:1});
   }
   getCloudBackupById(id: number): Observable<CloudBackup> {
-    return new BehaviorSubject<CloudBackup>({name:"ahihi",status:"ACTIVE",id:1,customerId:1,createDate:new Date(),createdDate:new Date(),expiredDate:new Date(),capacity:1});
+    return new BehaviorSubject<CloudBackup>({name:"ahihi",status:"ACTIVE",id:1,customerId:1,createDate:new Date(),createdDate:new Date(),expiredDate:new Date(),storage:1});
   }
 
   getOfferById(id: number): Observable<any> {

@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
 import { CloudBackupService } from 'src/app/shared/services/cloud-backup.service';
 import { ProjectModel, RegionModel } from '../../../../../../libs/common-utils/src';
+import { CloudBackup } from './cloud-backup.model';
 
 @Component({
   selector: 'app-cloud-backup',
@@ -10,7 +11,6 @@ import { ProjectModel, RegionModel } from '../../../../../../libs/common-utils/s
 })
 
 export class CloudBackupComponent implements OnInit {
-  
   region = JSON.parse(localStorage.getItem('regionId'));
   project = JSON.parse(localStorage.getItem('projectId'));
   @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
@@ -19,21 +19,26 @@ export class CloudBackupComponent implements OnInit {
   isFirstVisit: boolean = true;
   isBegin = true;
   isLoaded = false;
+  cloudBackup: CloudBackup;
   constructor(
     private cloudBackupService: CloudBackupService,
     private router: Router) {
     
   }
   ngOnInit() {
-    this.cloudBackupService.hasCloudBackup().subscribe({next:(data)=>{
-      if(data){
-        this.isBegin = false;
+    this.cloudBackupService.findCloudBackupByProject(this.region ,this.project)
+    .subscribe({
+      next:(data)=>{
+        if(data){
+          this.isBegin = false;
+          this.cloudBackup = data;
+        }
+        this.isLoaded = true;
+      },
+      error:(err)=>{
+        this.isLoaded = true;
       }
-      this.isLoaded = true;
-    },error:(err)=>{
-      this.isBegin = false;
-      this.isLoaded = true;
-    }})
+    })
   }
 
   
