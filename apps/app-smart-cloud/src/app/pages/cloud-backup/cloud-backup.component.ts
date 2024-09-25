@@ -26,13 +26,19 @@ export class CloudBackupComponent implements OnInit {
     
   }
   ngOnInit() {
+    this.getCloudBackup();
+  }
+
+  getCloudBackup(){
     this.cloudBackupService.findCloudBackupByProject(this.region ,this.project)
     .subscribe({
       next:(data)=>{
         if(data){
           this.isBegin = false;
-          this.cloudBackup = data;
+        }else{
+          this.isBegin = true;
         }
+        this.cloudBackup = data;
         this.isLoaded = true;
       },
       error:(err)=>{
@@ -40,7 +46,6 @@ export class CloudBackupComponent implements OnInit {
       }
     })
   }
-
   
   regionChanged(region: RegionModel) {
     this.region = region.regionId;
@@ -61,15 +66,7 @@ export class CloudBackupComponent implements OnInit {
     this.project = project?.id;
     this.typeVPC = project?.type;
     this.isLoading = true;
-    // this.getListVolume(true);
-    // this.isCreateOrder = this.policyService.hasPermission("volumesnapshot:Search") &&
-    //   this.policyService.hasPermission("configuration:Get") &&
-    //   this.policyService.hasPermission("order:GetOrderAmount") &&
-    //   this.policyService.hasPermission("order:Create") &&
-    //   this.policyService.hasPermission("instance:List") &&
-    //   this.policyService.hasPermission("volume:List") &&
-    //   this.policyService.hasPermission("volumesnapshot:Get") &&
-    //   this.policyService.hasPermission("volume:Get");
+    this.getCloudBackup();
   }
   navigateToCreateCloudBackup() {
     this.router.navigate(['/app-smart-cloud/cloud-backup/create']);
