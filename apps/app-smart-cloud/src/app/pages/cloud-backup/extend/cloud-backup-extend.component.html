@@ -21,6 +21,13 @@
   <ng-template #action>
     <div class="alain-custom-action text-right">
       <share-users-combobox></share-users-combobox>
+      <region-select-dropdown (regionChange)="onRegionChanged($event)"
+                              (valueChanged)="regionChanged($event)"></region-select-dropdown>
+      <project-select-dropdown #projectCombobox (valueChanged)="projectChanged($event)"
+                               (userChanged)="projectChanged($event)"
+                               [regionId]="region"
+                               [isFirstVisit]="isFirstVisit"
+                               [disabledProject]="isLoading"></project-select-dropdown>
     </div>
   </ng-template>
 </page-header>
@@ -40,15 +47,15 @@
                       <span class="label-fontsize">{{'app.name'| i18n}} Cloud Backup</span>
                     </div>
                     <div nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="12">
-                      <span class="label-fontsize font-bold ">{{CloudBackupDetail.name}}</span>
+                      <span class="label-fontsize font-bold ">{{cloudBackupDetail.name}}</span>
                     </div>
                   </div>
-                  <div nz-row [nzGutter]="24" class="row-white-bg content-items-center">
+                  <div nz-row [nzGutter]="24" class="row-gray-bg content-items-center">
                     <div nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="12">
                       <span class="label-fontsize">{{'app.activity.status'| i18n}}</span>
                     </div>
                     <div nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="12">
-                      <ng-container *ngIf="CloudBackupDetail.status | ServiceStatusPipe as statusModel">
+                      <ng-container *ngIf="cloudBackupDetail.status | ServiceStatusPipe as statusModel">
                         <span class="label-fontsize font-bold" [ngStyle]="{color: statusModel.color}">{{statusModel.status}}</span>
                       </ng-container>
                     </div>
@@ -62,10 +69,10 @@
                       <span class="label-fontsize">{{'app.capacity'|i18n}} backup (GB)</span>
                     </div>
                     <div nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="12">
-                      <span class="label-fontsize font-bold">{{CloudBackupDetail.storage}}</span>
+                      <span class="label-fontsize font-bold">{{cloudBackupDetail.storage | number:'1.0-0'}}</span>
                     </div>
                   </div>
-                  <div nz-row [nzGutter]="24" class="row-white-bg content-items-center">
+                  <div nz-row [nzGutter]="24" class="row-gray-bg content-items-center">
                     <div nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="12">
                       <span class="label-fontsize">&nbsp;</span>
                     </div>
@@ -80,8 +87,8 @@
   
         </div>
         <one-portal-service-time-extend
-          [createDate]=""
-          [expiredDate]="CloudBackupDetail.expiredDate"
+          [createDate]="cloudBackupDetail.creationDate"
+          [expiredDate]="cloudBackupDetail.expirationDate"
           (valueChanged)="onChangeTime($event)"
           [newExpiredDate]="newExpiredDate"
         />
@@ -96,11 +103,11 @@
             </div>
             <div style="margin-bottom: 10px">
               <span class="text-value">{{'app.name'| i18n}} Cloud Backup</span><br />
-              <span class="text-label">{{CloudBackupDetail.name}}</span>
+              <span class="text-label">{{cloudBackupDetail.name}}</span>
             </div>
             <div style="margin-bottom: 10px">
               <span class="text-value">{{'app.capacity'|i18n}} backup (GB)</span><br />
-              <span class="text-label">{{CloudBackupDetail.storage}}</span>
+              <span class="text-label">{{cloudBackupDetail.storage | number:'1.0-0'}}</span>
             </div>
             
             <nz-row

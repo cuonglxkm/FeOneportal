@@ -98,13 +98,17 @@ export class CloudBackupService extends BaseService {
   }
 
   getCloudBackup(): Observable<CloudBackup> {
-    return new BehaviorSubject<CloudBackup>({name:"ahihi",status:"ACTIVE",id:1,customerId:1,createDate:new Date(),expiredDate:new Date(),storage:1});
+    var a = {name:"ahihi",status:"ACTIVE",id:1,customerId:1,creationDate:new Date(),expirationDate:new Date(),storage:1};
+    return new BehaviorSubject<CloudBackup>(a as CloudBackup);
   }
   getCloudBackupById(id: number): Observable<CloudBackup> {
-    return new BehaviorSubject<CloudBackup>({name:"ahihi",status:"ACTIVE",id:1,customerId:1,createDate:new Date(),createdDate:new Date(),expiredDate:new Date(),storage:1});
+    return this.http.get<CloudBackup>(
+      this.baseUrl + this.ENDPOINT.provisions + `/cloud-backup/find-by-id?id=${id}`,
+      { headers: this.getHeaders().headers }
+    );
   }
 
-  getOfferById(id: number): Observable<any> {
+  getOfferByName(name: string): Observable<any> {
     return new BehaviorSubject<any>(null);
   }
 }

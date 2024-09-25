@@ -4,6 +4,7 @@ import { CloudBackupCreateComponent } from "./create/cloud-backup-create.compone
 import { CloudBackupComponent } from "./cloud-backup.component";
 import { CloudBackupResizeComponent } from "./resize/cloud-backup-resize.component";
 import { CloudBackupExtendComponent } from "./extend/cloud-backup-extend.component";
+import { CloudBackupCreateVpcComponent } from "./create-vpc/cloud-backup-create-vpc.component";
 const routes: Routes = [
   {
     path: '',
@@ -12,6 +13,10 @@ const routes: Routes = [
   {
     path: 'create',
     component: CloudBackupCreateComponent,
+  },
+  {
+    path: 'vpc/create',
+    component: CloudBackupCreateVpcComponent,
   },
   {
     path: 'extend/:id',

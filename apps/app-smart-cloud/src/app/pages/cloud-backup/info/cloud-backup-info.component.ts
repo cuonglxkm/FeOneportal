@@ -1,4 +1,4 @@
-import { Component, Inject, Input, OnInit } from '@angular/core';
+import { Component, Inject, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 import { Router } from '@angular/router';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
@@ -12,7 +12,7 @@ import { CloudBackupService } from 'src/app/shared/services/cloud-backup.service
   styleUrls: ['./cloud-backup-info.component.less']
 })
 
-export class CloudBackupInfoComponent implements OnInit {
+export class CloudBackupInfoComponent implements OnInit,OnChanges  {
   @Input() data: CloudBackup;
   isVisibleCreateAccessRule:boolean = false;
   isVisibleDeleteCloudBackup:boolean = false;
@@ -25,6 +25,13 @@ export class CloudBackupInfoComponent implements OnInit {
 
   ngOnInit() {
     this.getData();
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    
+    if (changes['data']) {
+        
+    }
   }
 
   private getData() {
