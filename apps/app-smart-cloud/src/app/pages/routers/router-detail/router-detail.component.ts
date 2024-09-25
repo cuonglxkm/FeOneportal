@@ -434,6 +434,7 @@ export class RouterDetailComponent implements OnInit {
               this.i18n.fanyi('router.nofitacation.interface.remove.fail')
             );
           }
+          this.isVisibleDeleteInterface = false
           this.isLoadingDeleteRouterInterface = false;
           this.cdr.detectChanges();
         },
