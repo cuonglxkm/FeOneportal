@@ -117,7 +117,7 @@ export class CloudBackupResizeComponent implements OnInit {
   }
 
   cloudBackupDetail: CloudBackup = new CloudBackup();
-  changeCapacity(value: number) {
+  changeStorage(value: number) {
     this.getTotalAmount();
   }
   getCloudBackupById(id) {

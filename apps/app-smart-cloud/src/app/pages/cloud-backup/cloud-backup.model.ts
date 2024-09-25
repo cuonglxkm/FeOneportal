@@ -1,12 +1,21 @@
+
+
 export class CloudBackup {
   id: number;
   name: string;
-  customerId: number;
-  storage: number;
+  storage: number | null;
+  lIC: string;
+  cloudIdVM: string;
+  cloudIdVolumeRoot: string;
+  cloudIdVolumeAttached: string;
+  iPPublic: string;
   status: string;
-  createDate: Date;
-  createdDate?: Date;
-  expiredDate: Date;
+  region: number | null;
+  project: number | null;
+  customerId: number | null;
+  description: string;
+  creationDate: Date;
+  expirationDate: Date;
 }
 
 export class CreateAccessRule {
@@ -30,6 +39,7 @@ export class CloudBackupExtend {
   serviceType: number
   actionType: number
   serviceInstanceId: number
+  offerId: number
   newExpireDate: string
   userEmail: string
   actorEmail: string

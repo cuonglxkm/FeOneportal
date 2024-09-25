@@ -18,11 +18,13 @@ import { DeleteAccessRuleComponent } from './access-rule/delete/delete-access-ru
 import { DeleteCloudBackupComponent } from './info/delete/delete-cloud-backup.component';
 import { CloudBackupExtendComponent } from './extend/cloud-backup-extend.component';
 import { CloudBackupResizeComponent } from './resize/cloud-backup-resize.component';
+import { CloudBackupCreateVpcComponent } from './create-vpc/cloud-backup-create-vpc.component';
 
 @NgModule({
   declarations: [
     CloudBackupInfoComponent,
     CloudBackupCreateComponent,
+    CloudBackupCreateVpcComponent,
     CloudBackupComponent,
     AccessRuleListComponent,
     CreateAccessRulePopupComponent,
