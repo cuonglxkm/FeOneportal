@@ -3659,11 +3659,12 @@
   "app.add":"Thêm",
   "app.cloud-backup": "Cloud Backup",
   "app.label.init": "Khởi tạo",
-  "cloud-backup.validate.name": "Chưa đọc tài liệu",
+  "cloud-backup.validate.name": "Chỉ cho phép các chữ cái (a-z, A-Z, 0-9, '_', '-'). Độ dài dữ liệu đầu vào của bạn phải nằm trong khoảng từ 5 đến 50.",
   "cloud-backup.validate.name.exist": "Tên Cloud Backup đã tồn tại",
   "cloud-backup.validate.name.null": "Tên Cloud Backup không được để trống",
-  "cloud-backup.validate.capacity": "Chưa đọc tài liệu",
+  "cloud-backup.validate.capacity": "Dung lượng tối đa là 40GB",
   "cloud-backup.validate.capacity.null": "Dung lượng backup không được để trống",
+  "cloud-backup.validate.description": "Chỉ cho phép các chữ cái (a-z, A-Z, 0-9, '@', '.' , '_' , '-' , ' '). Độ dài dữ liệu đầu vào của bạn phải nằm trong khoảng từ 0 đến 255.",
   "cloud-backup.placeholder.filter.name": "Tìm kiếm theo IP/CIDR",
   "cloud-backup.access-rule.validate.source": "Chưa đọc tài liệu",
   "cloud-backup.access-rule.input.source": "Input IP/CIDR",
@@ -3675,5 +3676,5 @@
   "cloud-backup.delete.name.required": "Vui lòng nhập tên Cloud Backup",
   "cloud-backup.intro.title1":"Cloud Backup - Sao lưu, bảo mật",
   "cloud-backup.intro.title2":"Giải pháp sao lưu dữ liệu lên hạ tầng VNPT Cloud với cơ chế backup incremental hoặc backup full",
-  "cloud-backup.intro.subtitle":"Đảm bảo dữ liệu được sao lưu an toàn với nhiều tính năng nâng cao, khả năng khôi phục nhanh trên hạ tầng VNPT Cloud."
+  "cloud-backup.intro.subtitle":"Đảm bảo dữ liệu được sao lưu an toàn với nhiều tính năng nâng cao, khả năng khôi phục nhanh trên hạ tầng VNPT Cloud.",
 }

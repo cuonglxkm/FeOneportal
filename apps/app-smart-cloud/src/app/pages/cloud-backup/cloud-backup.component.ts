@@ -62,14 +62,20 @@ export class CloudBackupComponent implements OnInit {
   }
 
   projectChanged(project: ProjectModel) {
+    console.log(project);
     this.isFirstVisit = false;
     this.project = project?.id;
     this.typeVPC = project?.type;
-    this.isLoading = true;
     this.getCloudBackup();
   }
   navigateToCreateCloudBackup() {
-    this.router.navigate(['/app-smart-cloud/cloud-backup/create']);
+    if(this.typeVPC==1){
+      this.router.navigate(['/app-smart-cloud/cloud-backup/vpc/create']);
+    }
+    else
+    {
+      this.router.navigate(['/app-smart-cloud/cloud-backup/create']);
+    }
   }
 
 }

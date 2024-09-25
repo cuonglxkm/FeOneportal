@@ -157,7 +157,7 @@ export class CloudBackupCreateVpcComponent implements OnInit {
     this.cloudBackupCreate.offerPriceType = PriceType[this.priceType];
     this.cloudBackupCreate.isSendMail = true;
     this.cloudBackupCreate.name = this.form.controls.name.value;
-    this.cloudBackupCreate.capacity = this.form.controls.capacity.value;
+    this.cloudBackupCreate.storage = this.form.controls.storage.value;
     this.cloudBackupCreate.description = this.form.controls.description.value;
   }
   isInvalid: boolean = false
@@ -182,7 +182,7 @@ export class CloudBackupCreateVpcComponent implements OnInit {
     let itemPayment: ItemPayment = new ItemPayment();
     itemPayment.orderItemQuantity = 1;//this.form.controls.capacity.value;
     itemPayment.specificationString = JSON.stringify(this.cloudBackupCreate);
-    itemPayment.specificationType = 'cloud-backup_create';
+    itemPayment.specificationType = 'cloudbackup_create';
     itemPayment.serviceDuration = this.form.controls.time.value;
     itemPayment.sortItem = 0;
     let dataPayment: DataPayment = new DataPayment();

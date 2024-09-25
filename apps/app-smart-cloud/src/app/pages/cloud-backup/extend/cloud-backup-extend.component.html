@@ -47,7 +47,7 @@
                       <span class="label-fontsize">{{'app.name'| i18n}} Cloud Backup</span>
                     </div>
                     <div nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="12">
-                      <span class="label-fontsize font-bold ">{{cloudBackupDetail.name}}</span>
+                      <span class="label-fontsize font-bold ">{{cloudBackupDetail?.name}}</span>
                     </div>
                   </div>
                   <div nz-row [nzGutter]="24" class="row-gray-bg content-items-center">
@@ -55,7 +55,7 @@
                       <span class="label-fontsize">{{'app.activity.status'| i18n}}</span>
                     </div>
                     <div nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="12">
-                      <ng-container *ngIf="cloudBackupDetail.status | ServiceStatusPipe as statusModel">
+                      <ng-container *ngIf="cloudBackupDetail?.status | ServiceStatusPipe as statusModel">
                         <span class="label-fontsize font-bold" [ngStyle]="{color: statusModel.color}">{{statusModel.status}}</span>
                       </ng-container>
                     </div>
@@ -69,7 +69,7 @@
                       <span class="label-fontsize">{{'app.capacity'|i18n}} backup (GB)</span>
                     </div>
                     <div nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="12">
-                      <span class="label-fontsize font-bold">{{cloudBackupDetail.storage | number:'1.0-0'}}</span>
+                      <span class="label-fontsize font-bold">{{cloudBackupDetail?.storage | number:'1.0-0'}}</span>
                     </div>
                   </div>
                   <div nz-row [nzGutter]="24" class="row-gray-bg content-items-center">
@@ -87,8 +87,8 @@
   
         </div>
         <one-portal-service-time-extend
-          [createDate]="cloudBackupDetail.creationDate"
-          [expiredDate]="cloudBackupDetail.expirationDate"
+          [createDate]="cloudBackupDetail?.creationDate"
+          [expiredDate]="cloudBackupDetail?.expirationDate"
           (valueChanged)="onChangeTime($event)"
           [newExpiredDate]="newExpiredDate"
         />
@@ -103,11 +103,11 @@
             </div>
             <div style="margin-bottom: 10px">
               <span class="text-value">{{'app.name'| i18n}} Cloud Backup</span><br />
-              <span class="text-label">{{cloudBackupDetail.name}}</span>
+              <span class="text-label">{{cloudBackupDetail?.name}}</span>
             </div>
             <div style="margin-bottom: 10px">
               <span class="text-value">{{'app.capacity'|i18n}} backup (GB)</span><br />
-              <span class="text-label">{{cloudBackupDetail.storage | number:'1.0-0'}}</span>
+              <span class="text-label">{{cloudBackupDetail?.storage | number:'1.0-0'}}</span>
             </div>
             
             <nz-row

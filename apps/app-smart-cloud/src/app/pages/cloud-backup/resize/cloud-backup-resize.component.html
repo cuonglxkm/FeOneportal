@@ -122,7 +122,7 @@
                   src="assets/imgs/pajamas_question.svg" alt="" />
               </nz-form-label>
               <nz-form-control [nzErrorTip]="numberErrorTpl">
-                <nz-input-number [nzMin]="1" [nzMax]="30000" formControlName="storage" [nzFormatter]="formatter"
+                <nz-input-number [nzMin]="1" [nzMax]="40" formControlName="storage" [nzFormatter]="formatter"
                   (keydown)="onKeyDown($event)" (ngModelChange)="changeStorage($event)" class="custom-input"
                   nzSize="large" style="width: 100%; margin-left: 0px" />
                 <ng-template #numberErrorTpl let-control>
