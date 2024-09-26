@@ -6,7 +6,7 @@ import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { NguCarouselConfig } from '@ngu/carousel';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
-import { Subject } from 'rxjs';
+import { debounceTime, Subject } from 'rxjs';
 import { OrderService } from 'src/app/shared/services/order.service';
 import { WafService } from 'src/app/shared/services/waf.service';
 import { slider } from '../../../../../../../libs/common-utils/src';
@@ -60,13 +60,14 @@ export class CloudBackupResizeComponent implements OnInit {
   isLoading = false;
   isVisiblePopupError: boolean = false;
   errorList: string[] = [];
+  dataSubjectStorage: Subject<number> = new Subject<number>();
   closePopupError() {
     this.isVisiblePopupError = false;
   }
 
   form = new FormGroup({
     storage: new FormControl(
-      { value: 1, disabled: false },
+      { value: 4, disabled: false },
       { validators: [Validators.required] }
     ),
   });
@@ -91,6 +92,7 @@ export class CloudBackupResizeComponent implements OnInit {
     this.getOffers();
     this.dateNow = new Date();
     this.calculate();
+    this.onChangeStorage();
   }
 
   onKeyDown(event: KeyboardEvent) {
@@ -118,8 +120,19 @@ export class CloudBackupResizeComponent implements OnInit {
 
   cloudBackupDetail: CloudBackup = new CloudBackup();
   changeStorage(value: number) {
-    this.getTotalAmount();
+    console.log('value', value);
+    this.dataSubjectStorage.next(value);
   }
+  onChangeStorage() {
+    this.dataSubjectStorage
+      .pipe(
+        debounceTime(300)
+      )
+      .subscribe((res) => {
+        this.getTotalAmount();
+      });
+  }
+
   getCloudBackupById(id) {
     this.isLoading = true
     this.service
@@ -139,13 +152,11 @@ export class CloudBackupResizeComponent implements OnInit {
         error: (error) => {
           this.isLoading = false
           this.cloudBackupDetail = null;
-          if(error.status == 500){
-            this.router.navigate(['/app-smart-cloud/cloud-backup']);
-            this.notification.error(
-              this.i18n.fanyi('app.status.fail'),
-              'Bản ghi không tồn tại'
-            );
-          }
+          this.router.navigate(['/app-smart-cloud/cloud-backup']);
+          this.notification.error(
+            this.i18n.fanyi('app.status.fail'),
+            'Bản ghi không tồn tại'
+          );
         }
       });
   }

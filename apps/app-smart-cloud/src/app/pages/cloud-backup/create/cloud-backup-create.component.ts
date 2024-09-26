@@ -36,7 +36,7 @@ export class CloudBackupCreateComponent implements OnInit {
   totalAmount = 0;
   totalPayment = 0;
   totalVAT = 0;
-
+  isLoading=false;
   selectedOfferId: number = 0;
   priceType: number = 0;
 
@@ -49,10 +49,11 @@ export class CloudBackupCreateComponent implements OnInit {
     this.isVisiblePopupError = false;
   }
 
+  
   form: FormGroup = this.fb.group({
-    name: ['', [Validators.required, Validators.pattern(NAME_REGEX)]],
-    capacity: [1, Validators.required],
-    description: [''],
+    name: ['', [Validators.required, Validators.pattern(/^[a-zA-Z0-9][a-zA-Z0-9_-]{5,49}$/)]],
+    storage: [4, Validators.required],
+    description: ['',[Validators.pattern(/^[a-zA-Z0-9@._\-\s]{0,255}$/)]],
     time: [1]
   });
 
@@ -72,10 +73,10 @@ export class CloudBackupCreateComponent implements OnInit {
 
   }
   ngOnInit() {
-    this.form.controls.email.disable();
     this.getOffers();
     this.checkExistName();
     this.checkExistUsername();
+    this.onChangeStorage();
   }
 
   onKeyDown(event: KeyboardEvent) {
@@ -99,12 +100,14 @@ export class CloudBackupCreateComponent implements OnInit {
   formatter = (value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
   dataSubjectName: Subject<string> = new Subject<string>();
   dataSubjectUserame: Subject<string> = new Subject<string>();
+  dataSubjectStorage: Subject<number> = new Subject<number>();
   changeName(value: string) {
     this.dataSubjectName.next(value);
   }
 
-  changeCapacity(value: number) {
-    this.getTotalAmount();
+  changeStorage(value: number) {
+    console.log('value', value);
+    this.dataSubjectStorage.next(value);
   }
 
   isExistName: boolean = false;
@@ -136,6 +139,16 @@ export class CloudBackupCreateComponent implements OnInit {
       });
   }
 
+  onChangeStorage() {
+    this.dataSubjectStorage
+      .pipe(
+        debounceTime(300)
+      )
+      .subscribe((res) => {
+        this.getTotalAmount();
+      });
+  }
+
   initCloudBackup() {
     this.cloudBackupCreate.customerId = this.tokenService.get()?.userId;
     this.cloudBackupCreate.userEmail = this.tokenService.get()?.email;
@@ -148,7 +161,7 @@ export class CloudBackupCreateComponent implements OnInit {
     this.cloudBackupCreate.offerPriceType = PriceType[this.priceType];
     this.cloudBackupCreate.isSendMail = true;
     this.cloudBackupCreate.name = this.form.controls.name.value;
-    this.cloudBackupCreate.capacity = this.form.controls.capacity.value;
+    this.cloudBackupCreate.storage = this.form.controls.storage.value;
     this.cloudBackupCreate.description = this.form.controls.description.value;
   }
   isInvalid: boolean = false
@@ -173,7 +186,7 @@ export class CloudBackupCreateComponent implements OnInit {
     let itemPayment: ItemPayment = new ItemPayment();
     itemPayment.orderItemQuantity = 1;//this.form.controls.capacity.value;
     itemPayment.specificationString = JSON.stringify(this.cloudBackupCreate);
-    itemPayment.specificationType = 'cloud-backup_create';
+    itemPayment.specificationType = 'cloudbackup_create';
     itemPayment.serviceDuration = this.form.controls.time.value;
     itemPayment.sortItem = 0;
     let dataPayment: DataPayment = new DataPayment();
@@ -189,22 +202,22 @@ export class CloudBackupCreateComponent implements OnInit {
     });
   }
   getOffers(): void {
-    this.loadingSrv.open({ type: 'spin', text: 'Loading...' })
+    this.isLoading=true;
     this.instancesService.getDetailProductByUniqueName('cloud-backup')
       .subscribe(
         data => {
-          // this.instancesService
-          //   .getListOffersByProductIdNoRegion(data[0].id)
-          //   .subscribe((data: any) => {
-          //     this.listOffers = data.filter(
-          //       (e: OfferItem) => e.status.toUpperCase() == 'ACTIVE'
-          //     );
-          //     this.selectedOfferId = this.listOffers[0].id;
-          //     this.priceType = this.listOffers[0].price.priceType;
-          //     this.getTotalAmount();
-          //     this.loadingSrv.close()
-          //   });
-          this.loadingSrv.close()
+          this.instancesService
+            .getListOffersByProductIdNoRegion(data[0].id)
+            .subscribe((data: any) => {
+              var offers = data.filter(
+                (e: OfferItem) => e.status.toUpperCase() == 'ACTIVE'
+              );
+              this.selectedOfferId = offers[0].id;
+              this.priceType = offers[0].price.priceType;
+              
+              this.isLoading=false;
+              this.getTotalAmount();
+            });
         }
       );
   }
@@ -218,7 +231,7 @@ export class CloudBackupCreateComponent implements OnInit {
     let orderItemOS = new OrderItem();
     orderItemOS.orderItemQuantity = 1;//this.form.controls.capacity.value;
     orderItemOS.specification = specification;
-    orderItemOS.specificationType = 'cloud_backup_create';
+    orderItemOS.specificationType = 'cloudbackup_create';
     orderItemOS.price = this.totalAmount;
     orderItemOS.priceType = this.priceType;
     orderItemOS.serviceDuration = this.form.controls.time.value;

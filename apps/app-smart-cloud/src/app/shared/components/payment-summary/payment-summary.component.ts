@@ -358,6 +358,18 @@ export class PaymentSummaryComponent implements OnInit {
             serviceItem.name = `Endpoint - ${specificationObj.serviceName}`;
             serviceItem.type = this.i18n.fanyi('app.label.create');
             break;
+          case 'cloudbackup_create':
+            serviceItem.name = `Cloud Backup - ${specificationObj.serviceName}`;
+            serviceItem.type = this.i18n.fanyi('app.label.create');
+            break;
+          case 'cloudbackup_resize':
+            serviceItem.name = `Cloud Backup - ${specificationObj.serviceName}`;
+            serviceItem.type = this.i18n.fanyi('app.label.resize');
+            break;
+          case 'cloudbackup_extend':
+            serviceItem.name = `Cloud Backup - ${specificationObj.serviceName}`;
+            serviceItem.type = this.i18n.fanyi('app.label.extend');
+            break;
           default:
             serviceItem.name = '';
             break;
