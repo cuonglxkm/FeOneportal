@@ -188,6 +188,7 @@ export class PolicyService extends BaseService {
 
 
   hasPermission(action: string): boolean {
+    debugger
     let permisionOPA = localStorage.getItem('PermissionOPA');   
     if (permisionOPA != null) {
       return this.isPermission(action, JSON.parse(permisionOPA));

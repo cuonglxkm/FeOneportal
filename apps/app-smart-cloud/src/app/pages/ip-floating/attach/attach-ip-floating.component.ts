@@ -60,7 +60,8 @@ export class AttachIpFloatingComponent implements OnInit {
 
   showModal() {
     this.isVisible = true
-    this.getListNetwork()
+
+    this.getSubnetAddInterface()
   }
 
   handleCancel() {
@@ -131,9 +132,6 @@ export class AttachIpFloatingComponent implements OnInit {
                 } 
             })
             .filter(record => record !== null);
-        
-        console.log(this.listNetwork);
-
         this.isLoadingVlan = false;
     }, error => {
         this.isLoadingVlan = false;
@@ -149,8 +147,7 @@ export class AttachIpFloatingComponent implements OnInit {
           this.subnetList = Object.entries(data)
           .map(([key, value]) => `${value}`)
           .join(',').split(',');   
-
-          console.log(this.subnetList);
+          this.getListNetwork()
           
       },
         error => {
