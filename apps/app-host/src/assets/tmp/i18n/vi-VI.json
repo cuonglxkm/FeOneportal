@@ -3672,5 +3672,8 @@
   "cloud-backup.access-rule.delete.name.required": "Vui lòng nhập IP/CIDR",
   "cloud-backup.delete.instance": "Để thực hiện xóa Cloud Backup {{name}}, vui lòng nhập tên Cloud Backup để xác nhận.",
   "cloud-backup.delete.name.invalid": "Vui lòng nhập đúng tên Cloud Backup",
-  "cloud-backup.delete.name.required": "Vui lòng nhập tên Cloud Backup"
+  "cloud-backup.delete.name.required": "Vui lòng nhập tên Cloud Backup",
+  "cloud-backup.intro.title1":"Cloud Backup - Sao lưu, bảo mật",
+  "cloud-backup.intro.title2":"Giải pháp sao lưu dữ liệu lên hạ tầng VNPT Cloud với cơ chế backup incremental hoặc backup full",
+  "cloud-backup.intro.subtitle":"Đảm bảo dữ liệu được sao lưu an toàn với nhiều tính năng nâng cao, khả năng khôi phục nhanh trên hạ tầng VNPT Cloud."
 }

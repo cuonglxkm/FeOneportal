@@ -21,6 +21,7 @@ import { VpcService } from 'src/app/shared/services/vpc.service';
 import { OrderService } from 'src/app/shared/services/order.service';
 import { LoadingService } from '@delon/abc/loading';
 import { RegionID } from 'src/app/shared/enums/common.enum';
+import { min } from 'lodash';
 
 
 
@@ -73,10 +74,18 @@ export class ProjectCreateComponent implements OnInit {
 
   numberSnapshothdd: number = 0;
   numberSnapshotssd: number = 0;
-  numberKubernetes:number=0;
-  numberKafka:number=0;
-  numberMongoDB:number=0;
-  numberKubernetesSSD:number=0;
+  
+
+  numberk8sCpu: number = 0;
+  numberk8sRam: number = 0;
+  numberk8sSsd: number = 0;
+  numberkafkaCpu: number = 0;
+  numberkafkaRam: number = 0;
+  numberkafkaStorage: number = 0;
+  numbermongoCpu: number = 0;
+  numbermongoRam: number = 0;
+  numbermongoStorage: number = 0;
+  numberCloudBackup:number=0;
 
 
   vCPU = 0;
@@ -116,15 +125,17 @@ export class ProjectCreateComponent implements OnInit {
   activeSnapshot = false;
   trashSnapshot = false;
 
-  activeKubernetes= false;
+  activeKubernetes = false;
   trashKubernetes = false;
   activeKafka = false;
   trashKafka = false;
   activeMongoDB = false;
   trashMongoDB = false;
+  activeCloudBackup=false;
+  trashCloudBackup=false;
 
-  rangeIpPublic='';
-  
+  rangeIpPublic = '';
+
 
   numOfMonth: number;
   total: any;
@@ -172,11 +183,29 @@ export class ProjectCreateComponent implements OnInit {
     filestorageSnapshot: 0,
     filestorageSnapshotUnit: 0,
 
-
-
     siteToSite: 0,
     siteToSiteUnit: 0,
 
+    k8sCpuUnit: 0,
+    k8sCpu: 0,
+    k8sRamUnit: 0,
+    k8sRam: 0,
+    k8sSsdUnit: 0,
+    k8sSsd: 0,
+    mongoCpuUnit: 0,
+    mongoCpu: 0,
+    mongoRamUnit: 0,
+    mongoRam: 0,
+    mongoStorageUnit: 0,
+    mongoStorage: 0,
+    kafkaCpuUnit: 0,
+    kafkaCpu: 0,
+    kafkaRamUnit: 0,
+    kafkaRam: 0,
+    kafkaStorageUnit: 0,
+    kafkaStorage: 0,
+    cloudBackup:0,
+    cloudBackupUnit:0
 
 
 
@@ -209,8 +238,8 @@ export class ProjectCreateComponent implements OnInit {
   }
   productByRegion: any
   // catalogStatus: { [key: string]: boolean } = {};
-  typeHdd:boolean;
-  typeSsd:boolean;
+  typeHdd: boolean;
+  typeSsd: boolean;
   typeIp: boolean;
   typeIpv6: boolean;
   typeVolume_snapshot_hdd: boolean;
@@ -238,6 +267,7 @@ export class ProjectCreateComponent implements OnInit {
   // private inputChangeSubject: Subject<number> = new Subject<number>();
   private inputChangeSubject = new Subject<{ value: number, name: string }>();
   private inputChangeMax = new Subject<{ value: number, max: number, name: string }>();
+  private inputChangeMinStepMax = new Subject<{ value: number, min: number, step: number, max: number, name: string }>();
   private inputGPUMax = new Subject<{ index: number, max: number, value: number }>();
 
   private searchSubject = new Subject<string>();
@@ -261,6 +291,7 @@ export class ProjectCreateComponent implements OnInit {
     ).subscribe(data => this.checkNumberInput(data.value, data.name));
 
     this.inputChangeMax.pipe(debounceTime(800)).subscribe(data => this.checkNumberInputNoBlock(data.value, data.max, data.name));
+    this.inputChangeMinStepMax.pipe(debounceTime(500)).subscribe(data => this.checkNumberInputStep(data.value, data.min, data.step, data.max, data.name));
     this.inputGPUMax.pipe(debounceTime(800)).subscribe(data => this.getValues(data.index, data.max, data.value));
 
   }
@@ -358,13 +389,23 @@ export class ProjectCreateComponent implements OnInit {
           publicNetworkId: ip,
           publicNetworkAddress: ipName,
           quotaIPv6Count: IPV6,
-          IpPublicNetworkId:this.rangeIpPublic,
+          IpPublicNetworkId: this.rangeIpPublic,
 
 
           gpuQuotas: this.gpuQuotasGobal,
           quotaVolumeSnapshotHddInGb: this.numberSnapshothdd,
           quotaVolumeSnapshotSsdInGb: this.numberSnapshotssd,
 
+          QuotaK8sCpu: this.numberk8sCpu,
+          QuotaK8sRam: this.numberk8sRam,
+          QuotaK8sStorage: this.numberk8sSsd,
+          QuotaMongoCpu: this.numbermongoCpu,
+          QuotaMongoRam: this.numbermongoRam,
+          QuotaMongoStorage: this.numbermongoStorage,
+          QuotaKafkaCpu: this.numberkafkaCpu,
+          QuotaKafkaRam: this.numberkafkaRam,
+          QuotaKafkaStorage: this.numberkafkaStorage,
+          QuotaCloudBackup:this.numberCloudBackup,
           // typeName: 'SharedKernel.IntegrationEvents.Orders.Specifications.VpcCreateSpecification,SharedKernel.IntegrationEvents, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null',
           // serviceType: 12,
           serviceInstanceId: 0,
@@ -422,7 +463,7 @@ export class ProjectCreateComponent implements OnInit {
     this.searchSubject.next('');
 
   }
- 
+
   getStepBlock(name: string) {
     this.vpc.getStepBlock(name).subscribe((res: any) => {
       const valuestring: any = res.valueString;
@@ -440,6 +481,9 @@ export class ProjectCreateComponent implements OnInit {
   }
   onInputMax(value: number, max: number, name: string): void {
     this.inputChangeMax.next({ value, max, name });
+  }
+  onChangeMinStepMax(value: number, min: number, step: number, max: number, name: string): void {
+    this.inputChangeMinStepMax.next({ value, min, step, max, name });
   }
   gpuMax(index: number, max: number, value: number) {
     this.inputGPUMax.next({ index, max, value })
@@ -546,16 +590,33 @@ export class ProjectCreateComponent implements OnInit {
       case "loadbalancer":
         this.numberLoadBalancer = number;
         break;
-        case "kubernetes":
-          this.numberKubernetes = number;
-          break;
-          case "kafka":
-            this.numberKafka = number;
-            break;
-            case "kubernetesSSD":
-            this.numberKubernetesSSD = number;
-            break;
-  
+      case "k8s-cpu":
+        this.numberk8sCpu = number;
+        break;
+      case "k8s-ram":
+        this.numberk8sRam = number;
+        break;
+      case "k8s-ssd":
+        this.numberk8sSsd = number;
+        break;
+      case "kafka-cpu":
+        this.numberkafkaCpu = number;
+        break;
+      case "kafka-ram":
+        this.numberkafkaRam = number;
+        break;
+      case "kafka-storage":
+        this.numberkafkaStorage = number;
+        break;
+      case "mongo-cpu":
+        this.numbermongoCpu = number;
+        break;
+      case "mongo-ram":
+        this.numbermongoRam = number;
+        break;
+      case "mongo-storage":
+        this.numbermongoStorage = number;
+        break;
 
     }
 
@@ -563,6 +624,64 @@ export class ProjectCreateComponent implements OnInit {
     this.calculate(null);
 
   }
+  checkNumberInputStep(value: number, min: number, step: number, max: number, name: string): void {
+    const messageStepNotification = `Số lượng phải chia hết cho ${step}`;
+    const messageMaxNotification = `Vượt quá số lượng max ${max}`;
+    const messageMinNotification = `Nhỏ hơn số lượng min ${min}`;
+
+    const numericValue = Number(value);
+    let number = value;
+
+    // Kiểm tra xem giá trị có nhỏ hơn min hay không
+    if (number < min) {
+      this.notification.warning('', messageMinNotification);
+      number = min;
+    }
+    // Kiểm tra xem giá trị có lớn hơn max hay không
+    else if (number > max) {
+      this.notification.warning('', messageMaxNotification);
+      number = max;
+    }
+    // Kiểm tra xem giá trị có chia hết cho step hay không
+    else if (number % step !== 0) {
+      this.notification.warning('', messageStepNotification);
+      number = Math.floor(number / step) * step;
+    }
+    switch (name) {
+      case "k8s-cpu":
+        this.numberk8sCpu = value;
+        break;
+      case "k8s-ram":
+        this.numberk8sRam = number;
+        break;
+      case "k8s-ssd":
+        this.numberk8sSsd = number;
+        break;
+      case "kafka-cpu":
+        this.numberkafkaCpu = number;
+        break;
+      case "kafka-ram":
+        this.numberkafkaRam = number;
+        break;
+      case "kafka-storage":
+        this.numberkafkaStorage = number;
+        break;
+      case "mongo-cpu":
+        this.numbermongoCpu = number;
+        break;
+      case "mongo-ram":
+        this.numbermongoRam = number;
+        break;
+      case "mongo-storage":
+        this.numbermongoStorage = number;
+        break;
+        case "cloud-backup":
+        this.numberCloudBackup = number;
+        break;
+    }
+    this.calculate(null);
+  }
+
   selectPackge = '';
   vpcType = '0';
   styleOk = {
@@ -691,12 +810,22 @@ export class ProjectCreateComponent implements OnInit {
           quotaShareSnapshotInGb: this.numberFileScnapsshot,
           publicNetworkId: ip,
           publicNetworkAddress: ipName,
-          IpPublicNetworkId:this.rangeIpPublic,
+          IpPublicNetworkId: this.rangeIpPublic,
 
           gpuQuotas: this.gpuQuotasGobal,
           quotaVolumeSnapshotHddInGb: this.numberSnapshothdd,
           quotaVolumeSnapshotSsdInGb: this.numberSnapshotssd,
 
+          QuotaK8sCpu: this.numberk8sCpu,
+          QuotaK8sRam: this.numberk8sRam,
+          QuotaK8sStorage: this.numberk8sSsd,
+          QuotaMongoCpu: this.numbermongoCpu,
+          QuotaMongoRam: this.numbermongoRam,
+          QuotaMongoStorage: this.numbermongoStorage,
+          QuotaKafkaCpu: this.numberkafkaCpu,
+          QuotaKafkaRam: this.numberkafkaRam,
+          QuotaKafkaStorage: this.numberkafkaStorage,
+          QuotaCloudBackup:this.numberCloudBackup,
           typeName: 'SharedKernel.IntegrationEvents.Orders.Specifications.VpcCreateSpecification,SharedKernel.IntegrationEvents, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null',
           serviceType: 12,
           serviceInstanceId: 0,
@@ -763,9 +892,9 @@ export class ProjectCreateComponent implements OnInit {
               this.vpc.createIpPublic(request).subscribe(
                 data => {
                   this.notification.success(this.i18n.fanyi('app.status.success'), this.i18n.fanyi('project.action.creating'));
-                  console.log("region aaa",this.region )
+                  console.log("region aaa", this.region)
                   // this.region = JSON.parse(localStorage.getItem('regionId'));
-                  const currentRegion =JSON.parse(localStorage.getItem('regionId'));
+                  const currentRegion = JSON.parse(localStorage.getItem('regionId'));
                   // localStorage.setItem('regionId', JSON.stringify(currentRegion));
                   this.region = currentRegion;
                   this.router.navigate(['/app-smart-cloud/project']);
@@ -848,7 +977,7 @@ export class ProjectCreateComponent implements OnInit {
     }
   }
 
-  navigateToVPC(){
+  navigateToVPC() {
     if (this.region === RegionID.ADVANCE) {
       this.router.navigate(['/app-smart-cloud/project-advance'])
     } else {
@@ -875,7 +1004,7 @@ export class ProjectCreateComponent implements OnInit {
     this.trashIP = false;
 
     this.ipConnectInternet = '';
-    this.rangeIpPublic ='';
+    this.rangeIpPublic = '';
 
 
     this.price.IpPublic = 0;
@@ -976,29 +1105,63 @@ export class ProjectCreateComponent implements OnInit {
     this.numberSnapshothdd = 0;
     this.calculate(null)
   }
-  initKubernetes(){
+  initKubernetes() {
     this.activeKubernetes = true;
-    this.trashKubernetes= true;
+    this.trashKubernetes = true;
+    this.numberk8sCpu = 2;
+    this.numberk8sRam = 4;
+    this.numberk8sSsd = 20;
+    this.calculate(null)
   }
-  deleteKubernetes(){
+  deleteKubernetes() {
     this.activeKubernetes = false;
-    this.trashKubernetes= false;
+    this.trashKubernetes = false;
+    this.numberk8sCpu = 0;
+    this.numberk8sRam = 0;
+    this.numberk8sSsd = 0;
+    this.calculate(null)
   }
-  initKafka(){
+  initKafka() {
     this.activeKafka = true;
-    this.trashKafka= true;
+    this.trashKafka = true;
+    this.numberkafkaCpu = 1;
+    this.numberkafkaRam = 1;
+    this.numberkafkaStorage = 1;
+    this.calculate(null)
   }
-  deleteKafka(){
+  deleteKafka() {
     this.activeKafka = false;
-    this.trashKafka= false;
+    this.trashKafka = false;
+    this.numberkafkaCpu = 0;
+    this.numberkafkaRam = 0;
+    this.numberkafkaStorage = 0;
+    this.calculate(null)
   }
-  initMongoDB(){
+  initMongoDB() {
     this.activeMongoDB = true;
-    this.trashMongoDB= true;
+    this.trashMongoDB = true;
+    this.numbermongoCpu = 2;
+    this.numbermongoRam = 4;
+    this.numbermongoStorage = 80;
+    this.calculate(null)
   }
-  deleteMongoDB(){
+  deleteMongoDB() {
     this.activeMongoDB = false;
-    this.trashMongoDB= false;
+    this.trashMongoDB = false;
+    this.numbermongoCpu = 0;
+    this.numbermongoRam = 0;
+    this.numbermongoStorage = 0;
+    this.calculate(null)
+  }
+  initCloudBackup(){
+    this.activeCloudBackup=true;
+    this.trashCloudBackup= true;
+  }
+  deleteCloudBackup(){
+    this.activeCloudBackup=false;
+    this.trashCloudBackup= false;
+    this.numberCloudBackup=0;
+    this.calculate(null)
   }
   openIpSubnet() {
     this.calculate(-1);
@@ -1024,7 +1187,7 @@ export class ProjectCreateComponent implements OnInit {
       .subscribe(
         data => {
           this.listIpConnectInternet = data;
-          console.log("dari subnet ip",this.listIpConnectInternet )
+          console.log("dari subnet ip", this.listIpConnectInternet)
         }
       );
   }
@@ -1133,6 +1296,46 @@ export class ProjectCreateComponent implements OnInit {
       else if (item.typeName == 'snapshot-ssd') {
         this.price.snapshotssd = item.totalAmount.amount;
         this.price.snapshotssdUnit = item.unitPrice.amount;
+      }
+      else if (item.typeName == 'k8s-cpu') {
+        this.price.k8sCpu = item.totalAmount.amount;
+        this.price.k8sCpuUnit = item.unitPrice.amount;
+      }
+      else if (item.typeName == 'k8s-ram') {
+        this.price.k8sRam = item.totalAmount.amount;
+        this.price.k8sRamUnit = item.unitPrice.amount;
+      }
+      else if (item.typeName == 'k8s-storage') {
+        this.price.k8sSsd = item.totalAmount.amount;
+        this.price.k8sSsdUnit = item.unitPrice.amount;
+      }
+      else if (item.typeName == 'mongodb-cpu') {
+        this.price.mongoCpu = item.totalAmount.amount;
+        this.price.mongoCpuUnit = item.unitPrice.amount;
+      }
+      else if (item.typeName == 'mongodb-ram') {
+        this.price.mongoRam = item.totalAmount.amount;
+        this.price.mongoRamUnit = item.unitPrice.amount;
+      }
+      else if (item.typeName == 'mongodb-storage') {
+        this.price.mongoStorage = item.totalAmount.amount;
+        this.price.mongoStorageUnit = item.unitPrice.amount;
+      }
+      else if (item.typeName == 'kafka-cpu') {
+        this.price.kafkaCpu = item.totalAmount.amount;
+        this.price.kafkaCpuUnit = item.unitPrice.amount;
+      }
+      else if (item.typeName == 'kafka-ram') {
+        this.price.kafkaRam = item.totalAmount.amount;
+        this.price.kafkaRamUnit = item.unitPrice.amount;
+      }
+      else if (item.typeName == 'kafka-storage') {
+        this.price.kafkaStorage = item.totalAmount.amount;
+        this.price.kafkaStorageUnit = item.unitPrice.amount;
+      }
+      else if (item.typeName == 'cloud-backup') {
+        this.price.cloudBackup = item.totalAmount.amount;
+        this.price.cloudBackupUnit = item.unitPrice.amount;
       }
     }
     // this.price.fileStorage = fileStorage;
@@ -1319,7 +1522,7 @@ export class ProjectCreateComponent implements OnInit {
   //   })
   // }
   getProductActivebyregion() {
-    const catalogs = ['volume-hdd','volume-ssd','ip', 'ipv6', 'volume-snapshot-hdd', 'volume-snapshot-ssd', 'backup-volume', 'loadbalancer-sdn', 'file-storage', 'file-storage-snapshot', 'vpns2s', 'vm-gpu']
+    const catalogs = ['volume-hdd', 'volume-ssd', 'ip', 'ipv6', 'volume-snapshot-hdd', 'volume-snapshot-ssd', 'backup-volume', 'loadbalancer-sdn', 'file-storage', 'file-storage-snapshot', 'vpns2s', 'vm-gpu']
     this.catalogService.getActiveServiceByRegion(catalogs, this.regionId).subscribe(data => {
       this.serviceActiveByRegion = data;
       this.serviceActiveByRegion.forEach((item: any) => {
@@ -1363,7 +1566,7 @@ export class ProjectCreateComponent implements OnInit {
     });
   }
   // chon dai ip public
-  changeRangeIpPublic(value:any){
+  changeRangeIpPublic(value: any) {
     console.log("range ip public", value)
     this.rangeIpPublic = value
     this.calculate(null)

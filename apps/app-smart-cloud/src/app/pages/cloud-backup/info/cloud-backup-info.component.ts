@@ -1,12 +1,10 @@
-import { Component, Inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, Inject, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 import { Router } from '@angular/router';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from '@core';
 import { CloudBackup } from '../cloud-backup.model';
 import { CloudBackupService } from 'src/app/shared/services/cloud-backup.service';
-import { RegionModel } from '../../../../../../../libs/common-utils/src';
-import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
 
 @Component({
   selector: 'app-cloud-backup-info',
@@ -14,8 +12,8 @@ import { ProjectSelectDropdownComponent } from 'src/app/shared/components/projec
   styleUrls: ['./cloud-backup-info.component.less']
 })
 
-export class CloudBackupInfoComponent implements OnInit {
-  data: CloudBackup;
+export class CloudBackupInfoComponent implements OnInit,OnChanges  {
+  @Input() data: CloudBackup;
   isVisibleCreateAccessRule:boolean = false;
   isVisibleDeleteCloudBackup:boolean = false;
   constructor(private service: CloudBackupService,
@@ -29,16 +27,14 @@ export class CloudBackupInfoComponent implements OnInit {
     this.getData();
   }
 
+  ngOnChanges(changes: SimpleChanges) {
+    
+    if (changes['data']) {
+        
+    }
+  }
+
   private getData() {
-    this.service.getCloudBackup()
-      .subscribe({
-        next: data => {
-          this.data = data;
-        },
-        error: error =>{
-          this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi(error.error.message));
-        }
-      });
   }
   
   extend(){

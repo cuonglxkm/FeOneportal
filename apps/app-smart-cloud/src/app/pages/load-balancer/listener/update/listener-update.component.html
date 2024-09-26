@@ -137,9 +137,9 @@
           <div style="font-size:16px">Thêm Headers</div>
           <nz-checkbox-wrapper style="width: 100%;margin:1rem 0rem" >
             <div nz-row>
-              <div nz-col nzSpan="8"><label nz-checkbox nzValue="A" [ngModel]="true">X-Forwarded-For</label></div>
-              <div nz-col nzSpan="8"><label nz-checkbox nzValue="B">X-Forwarded-Proto</label></div>
-              <div nz-col nzSpan="8"><label nz-checkbox nzValue="C">X-Forwarded-Port</label></div>
+              <div nz-col nzSpan="8"><label nz-checkbox nzValue="xFor" [nzChecked]="xFor" (nzCheckedChange)="changeChecked('xFor',$event)" (ngModel)="xFor" >X-Forwarded-For22</label></div>
+              <div nz-col nzSpan="8"><label nz-checkbox nzValue="xProto" [nzChecked]="xProto" (nzCheckedChange)="changeChecked('xProto', $event)" (ngModel)="xProto">X-Forwarded-Proto</label></div>
+              <div nz-col nzSpan="8"><label nz-checkbox nzValue="xPort" [nzChecked]="xPort" (nzCheckedChange)="changeChecked('xPort',$event)" (ngModel)="xPort">X-Forwarded-Port</label></div>
              
             </div>
           </nz-checkbox-wrapper>
@@ -152,16 +152,16 @@
                  nz-tooltip="" alt="" />
           </nz-form-label>
           <nz-form-control nzDisableAutoTips>
-            <div *ngIf="listCert == null || listCert.length <= 0">
+            <div *ngIf="listCert == null || listCert.records.length <= 0">
               <div class="text-label">Bạn chưa có Cert?</div>
               <a class="text-label" style="color: #0D67B1" [routerLink]="['/app-smart-cloud/object-storage/bucket']">Click để tạo mới</a>
             </div>
-            <div *ngIf="listCert != null && listCert.length > 0">
+            <div *ngIf="listCert != null && listCert.records.length > 0">
               <nz-select nzSize="large" [nzLoading]="false" [nzDisabled]="false"
-                         style="width: 100%; margin-left: -1px;border-radius: 10px;" [nzAllowClear]='true'
+                         style="width: 100%; margin-left: -1px;border-radius: 10px;" 
                          nzPlaceHolder="--Chọn SSL Cert--"
                          [(ngModel)]="certId" [ngModelOptions]="{ standalone: true }">
-                <nz-option *ngFor="let i of listCert" [nzLabel]="i.name"
+                <nz-option *ngFor="let i of listCert?.records" [nzLabel]="i.name"
                            [nzValue]="i.secret_ref" />
               </nz-select>
             </div>

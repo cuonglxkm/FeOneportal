@@ -4,6 +4,7 @@ import {
   Component,
   Inject,
   OnInit,
+  ViewChild,
 } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { I18NService } from '@core';
@@ -20,6 +21,9 @@ import { ObjectStorageService } from 'src/app/shared/services/object-storage.ser
 import { CloudBackup, CloudBackupExtend } from '../cloud-backup.model';
 import { CloudBackupService } from 'src/app/shared/services/cloud-backup.service';
 import { ServiceActionType } from 'src/app/shared/enums/common.enum';
+import { InstancesService } from '../../instances/instances.service';
+import { ProjectModel, RegionModel } from '../../../../../../../libs/common-utils/src';
+import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
 
 @Component({
   selector: 'one-portal-cloud-backup-extend',
@@ -28,6 +32,11 @@ import { ServiceActionType } from 'src/app/shared/enums/common.enum';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CloudBackupExtendComponent implements OnInit {
+  region = JSON.parse(localStorage.getItem('regionId'));
+  project = JSON.parse(localStorage.getItem('projectId'));
+  @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
+  typeVPC: number;
+  isFirstVisit: boolean = true;
   id: any;
   issuedDate: Date = new Date();
   numberMonth: number = 1;
@@ -37,6 +46,8 @@ export class CloudBackupExtendComponent implements OnInit {
   isVisiblePopupError: boolean = false;
   errorList: string[] = [];
   isLoading: boolean = false;
+  selectedOfferId: any;
+  priceType: any;
   closePopupError() {
     this.isVisiblePopupError = false;
   }
@@ -50,13 +61,14 @@ export class CloudBackupExtendComponent implements OnInit {
     private cdr: ChangeDetectorRef,
     private notification: NzNotificationService,
     private orderService: OrderService,
+    private instancesService: InstancesService,
   ) {}
 
   ngOnInit(): void {
     this.id = this.activatedRoute.snapshot.paramMap.get('id');
+    this.getOffers();
     this.getCloudBackupById(this.id);
-    this.getTotalAmount();
-    this.cdr.detectChanges();
+    
   }
 
   objectStorage: ObjectStorage = new ObjectStorage();
@@ -65,8 +77,6 @@ export class CloudBackupExtendComponent implements OnInit {
 
   invalid: boolean = false;
   onChangeTime(value) {
-    console.log(value);
-    
     if (value == 0 || value == undefined) {
       this.invalid = true;
       this.totalAmount = 0;
@@ -81,13 +91,13 @@ export class CloudBackupExtendComponent implements OnInit {
 
 
   CloudBackupExtend: CloudBackupExtend = new CloudBackupExtend();
-  CloudBackupDetail: CloudBackup = new CloudBackup();
+  cloudBackupDetail: CloudBackup = new CloudBackup();
 
 
   getCloudBackupById(id) {
     this.isLoading = true
     this.service
-      .getCloudBackupById(id)
+      .getCloudBackupById(id)//cần sửa lại sau có api get by id
       .subscribe({
         next: (data) => {
           if (data == undefined || data == null) {
@@ -98,11 +108,11 @@ export class CloudBackupExtendComponent implements OnInit {
             );
           }
           this.isLoading = false
-          this.CloudBackupDetail = data;
+          this.cloudBackupDetail = data;
         },
         error: (error) => {
           this.isLoading = false
-          this.CloudBackupDetail = null;
+          this.cloudBackupDetail = null;
           if(error.status == 500){
             this.router.navigate(['/app-smart-cloud/cloud-backup']);
             this.notification.error(
@@ -115,28 +125,36 @@ export class CloudBackupExtendComponent implements OnInit {
   }
 
 
-  getOfferById(id) {
-    this.service
-      .getOfferById(id)
-      .subscribe({
-        next: (data) => {
-          this.offerItem = data;
-          this.offerItem.description = '';
-        },
-        error: (error) => {
-          this.offerItem = null;
+  getOffers(): void {
+    this.isLoading=true;
+    this.instancesService.getDetailProductByUniqueName('cloud-backup')
+      .subscribe(
+        data => {
+          this.instancesService
+            .getListOffersByProductIdNoRegion(data[0].id)
+            .subscribe((data: any) => {
+              var offers = data.filter(
+                (e: OfferItem) => e.status.toUpperCase() == 'ACTIVE'
+              );
+              this.selectedOfferId = offers[0].id;
+              this.priceType = offers[0].price.priceType;
+              
+              this.isLoading=false;
+              this.getTotalAmount();
+            });
         }
-      });
+      );
   }
   initCloudBackupExtend() {
     this.CloudBackupExtend.newExpireDate = this.newExpiredDate;
     this.CloudBackupExtend.customerId = this.tokenService.get()?.userId;
     this.CloudBackupExtend.userEmail = this.tokenService.get()?.email;
     this.CloudBackupExtend.actorEmail = this.tokenService.get()?.email;
-    this.CloudBackupExtend.serviceName = this.CloudBackupDetail.name;
+    this.CloudBackupExtend.serviceName = this.cloudBackupDetail.name;
     //this.CloudBackupExtend.serviceType = ServiceType.CloudBackup;
     this.CloudBackupExtend.actionType = ServiceActionType.EXTEND;
     this.CloudBackupExtend.serviceInstanceId = this.id;
+    this.CloudBackupExtend.offerId = this.selectedOfferId;
   }
 
   totalAmount: number = 0;
@@ -146,7 +164,7 @@ export class CloudBackupExtendComponent implements OnInit {
     let itemPayment: ItemPayment = new ItemPayment();
     itemPayment.orderItemQuantity = 1;
     itemPayment.specificationString = JSON.stringify(this.CloudBackupExtend);
-    itemPayment.specificationType = 'cloud_backup_extend';
+    itemPayment.specificationType = 'cloudbackup_extend';
     itemPayment.serviceDuration = this.numberMonth;
     itemPayment.sortItem = 0;
     let dataPayment: DataPayment = new DataPayment();
@@ -172,7 +190,7 @@ export class CloudBackupExtendComponent implements OnInit {
     let orderItem = new OrderItem();
     orderItem.orderItemQuantity = 1;
     orderItem.specification = specification;
-    orderItem.specificationType = 'cloud_backup_extend';
+    orderItem.specificationType = 'cloudbackup_extend';
     orderItem.price = this.totalAmount;
     orderItem.serviceDuration = this.numberMonth;
     this.orderItems.push(orderItem);
@@ -200,5 +218,32 @@ export class CloudBackupExtendComponent implements OnInit {
         );
       },
     });
+  }
+
+
+  regionChanged(region: RegionModel) {
+    this.region = region.regionId;
+    if (this.projectCombobox) {
+      this.projectCombobox.loadProjects(true, region.regionId);
+    }
+    setTimeout(() => {
+      //this.getListVolume(true);
+    }, 2500);
+  }
+
+  onRegionChanged(region: RegionModel) {
+    this.region = region.regionId;
+  }
+
+  projectChanged(project: ProjectModel) {
+    this.isFirstVisit = false;
+    this.project = project?.id;
+    this.typeVPC = project?.type;
+    this.isLoading = true;
+    this.navigateToVolume();
+  }
+
+  navigateToVolume(){
+    //this.router.navigate(['/app-smart-cloud/cloud-backup']);
   }
 }

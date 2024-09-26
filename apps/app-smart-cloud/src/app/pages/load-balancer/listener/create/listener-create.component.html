@@ -173,9 +173,9 @@
         <div style="font-size:16px">Thêm Headers</div>
         <nz-checkbox-wrapper style="width: 100%;margin:1rem 0rem" >
           <div nz-row>
-            <div nz-col nzSpan="8"><label nz-checkbox nzValue="xFor" (ngModel)="true" (ngModelChange)="onCheckboxChange('xFor', $event)">X-Forwarded-For22</label></div>
-            <div nz-col nzSpan="8"><label nz-checkbox nzValue="xProto" [(ngModel)]="xProto" (ngModelChange)="onCheckboxChange('xProto', $event)">X-Forwarded-Proto</label></div>
-            <div nz-col nzSpan="8"><label nz-checkbox nzValue="xPort" [(ngModel)]="xPort" (ngModelChange)="onCheckboxChange1($event)">X-Forwarded-Port</label></div>
+            <div nz-col nzSpan="8"><label nz-checkbox nzValue="xFor" [nzChecked]="xFor" (nzCheckedChange)="changeChecked('xFor',$event)" (ngModel)="xFor" >X-Forwarded-For22</label></div>
+            <div nz-col nzSpan="8"><label nz-checkbox nzValue="xProto" [nzChecked]="xProto" (nzCheckedChange)="changeChecked('xProto', $event)" (ngModel)="xProto">X-Forwarded-Proto</label></div>
+            <div nz-col nzSpan="8"><label nz-checkbox nzValue="xPort" [nzChecked]="xPort" (nzCheckedChange)="changeChecked('xPort',$event)" (ngModel)="xPort">X-Forwarded-Port</label></div>
            
           </div>
         </nz-checkbox-wrapper>
@@ -451,9 +451,13 @@
                  src="assets/imgs/pajamas_question.svg" alt="" />
           </nz-form-label>
           <nz-form-control nzDisableAutoTips>
-            <nz-input-number nz-input style="width: 100%; margin-left: -3px"
+            <!-- <nz-input-number nz-input style="width: 100%; margin-left: -3px"
                    class="input-custom"
-                   formControlName="sucessCode" [nzMax]="599" [nzMin]="100" (keydown)="checkPossiblePress($event)"/>
+                   formControlName="sucessCode" [nzMax]="599" [nzMin]="100" (keydown)="checkPossiblePress($event)"/> -->
+                   <input nz-input style="width: 100%; margin-left: -3px"
+                   class="input-custom"
+                   formControlName="sucessCode" 
+                  />
           </nz-form-control>
         </nz-form-item>
         <div class="text-right"

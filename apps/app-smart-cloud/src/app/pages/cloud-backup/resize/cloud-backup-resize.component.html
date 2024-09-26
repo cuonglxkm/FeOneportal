@@ -61,7 +61,7 @@
                         <span class="label-fontsize">{{'app.text.creation-time' | i18n}}</span>
                       </div>
                       <div nz-col nzSm="12" nzMd="12" nzLg="12">
-                        <span class="label-fontsize font-bold">{{ cloudBackupDetail.createDate | date : "HH:mm:ss dd/MM/yyyy" }}</span>
+                        <span class="label-fontsize font-bold">{{ cloudBackupDetail.creationDate | date : "HH:mm:ss dd/MM/yyyy" }}</span>
                       </div>
                     </div>
                   </div>
@@ -73,7 +73,7 @@
                         <span class="label-fontsize">{{'app.capacity' | i18n}} Cloud Backup</span>
                       </div>
                       <div nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="12">
-                        <span class="label-fontsize font-bold">{{ cloudBackupDetail.capacity }}</span> 
+                        <span class="label-fontsize font-bold">{{ cloudBackupDetail.storage }}</span> 
                       </div>
                     </div>
                     <div nz-row [nzGutter]="24" class="row-bg content-items-center">
@@ -89,7 +89,7 @@
                         <span class="label-fontsize text-red" style="display: inline-block">{{'app.service.expiration-date'| i18n}}</span>
                       </div>
                       <div nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="12">
-                        <span class="label-fontsize text-red font-bold">{{cloudBackupDetail.expiredDate | date : "HH:mm:ss dd/MM/yyyy" }}</span>
+                        <span class="label-fontsize text-red font-bold">{{cloudBackupDetail.expirationDate | date : "HH:mm:ss dd/MM/yyyy" }}</span>
                       </div>
                     </div>
                   </div>
@@ -110,10 +110,10 @@
             </div>
             <nz-row class="mt-3">  
               <nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="12">
-                <span class="label-fontsize">Dung lượng backup hiện tại: {{cloudBackupDetail.capacity}} GB</span>
+                <span class="label-fontsize">Dung lượng backup hiện tại: {{cloudBackupDetail.storage}} GB</span>
               </nz-col>
               <nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="12">
-                <span class="label-fontsize">Dung lượng backup sau điều chỉnh: {{form.controls.capacity.value}} GB</span>
+                <span class="label-fontsize">Dung lượng backup sau điều chỉnh: {{form.controls.storage.value}} GB</span>
               </nz-col>
             </nz-row>
             <nz-form-item class="mt-3">
@@ -122,8 +122,8 @@
                   src="assets/imgs/pajamas_question.svg" alt="" />
               </nz-form-label>
               <nz-form-control [nzErrorTip]="numberErrorTpl">
-                <nz-input-number [nzMin]="1" [nzMax]="30000" formControlName="capacity" [nzFormatter]="formatter"
-                  (keydown)="onKeyDown($event)" (ngModelChange)="changeCapacity($event)" class="custom-input"
+                <nz-input-number [nzMin]="1" [nzMax]="30000" formControlName="storage" [nzFormatter]="formatter"
+                  (keydown)="onKeyDown($event)" (ngModelChange)="changeStorage($event)" class="custom-input"
                   nzSize="large" style="width: 100%; margin-left: 0px" />
                 <ng-template #numberErrorTpl let-control>
                   <ng-container *ngIf="control.hasError('required')">{{'cloud-backup.validate.capacity.null'| i18n}}
@@ -156,7 +156,7 @@
             <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
             <div class="text-label" style="margin-bottom: 12px">
               <h3 class="custom-subtitle">{{'app.capacity'| i18n}} backup (GB)</h3>
-              <span style="word-wrap: break-word;">{{form.get('capacity').value}}</span>
+              <span style="word-wrap: break-word;">{{form.get('storage').value}}</span>
             </div>
             <nz-divider></nz-divider>
             <div>

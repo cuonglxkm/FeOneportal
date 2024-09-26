@@ -598,6 +598,59 @@
             <nz-alert class="ant-alert-warning-custom" nzType="warning" nzDescription="{{'project.note47' | i18n}}"
               nzShowIcon></nz-alert>
           </div>
+          <div class="bonus-services" >
+            <div class="title-bonus-services">
+              <div><span class="text-card-header">VNPT Cloud Backup</span></div>
+              <one-portal-svg-icon *ngIf="trashCloudBackup" [icon]="'icon_trash'" class="icon-trash"
+                (click)="deleteCloudBackup()"></one-portal-svg-icon>
+            </div>
+            <div *ngIf="!activeCloudBackup">
+              <button class="h-btn" nz-button nzType="default" (click)="initCloudBackup()">
+                <img style="padding-right: 10px; margin-top: -4px" src="assets/imgs/add.svg" alt="" />{{ "app.bonus" |
+                i18n }} Cloud Backup
+              </button>
+            </div>
+            <div *ngIf="activeCloudBackup">
+              <div class="ant-table">
+                <table>
+                  <td style="width:60%">
+                    <nz-form-item>
+                      <nz-form-label class="custom-label">Dung lượng Backup (GB)
+                        </nz-form-label>
+                      <nz-form-control>
+
+                        <nz-input-number style="width: 100%; margin-left: -1px" [nzMin]="0"
+                          [nzStep]="1" [nzMax]="1000" name="backup" (keydown)="checkPossiblePress($event)"
+                          [(ngModel)]="numberCloudBackup" (ngModelChange)="onChangeMinStepMax($event,0,1,1000,'cloud-backup')"
+                          [ngModelOptions]="{ standalone: true }" nzSize="large"></nz-input-number>
+                      </nz-form-control>
+                    </nz-form-item>
+                  </td>
+                  <td style="width:40%">
+                    <nz-form-item>
+                      <nz-form-label class="custom-label" style="text-align: right">Thành tiền/Đơn giá (VND)
+
+                      </nz-form-label>
+                      <nz-form-control>
+                        <div class="centered">
+                          <p class="text-custom-price">
+                            {{ price.cloudBackup | formatPrice}}
+                          </p>
+                          <p class=" text-price-unit">
+                            {{ price.cloudBackupUnit | formatPrice}}
+                          </p>
+                        </div>
+                      </nz-form-control>
+                    </nz-form-item>
+                  </td>
+                </table>
+              </div>
+            </div>
+
+            <nz-alert class="ant-alert-warning-custom" nzType="warning" nzDescription="Với các hệ thống cần bảo vệ dữ liệu và duy trì hiệu suất hệ thống, nên sử dụng Backup - sao lưu định kỳ để đảm bảo an toàn và 
+            khả năng khôi phục nhanh chóng khi cần thiết"
+              nzShowIcon></nz-alert>
+          </div>
 
           <div class="bonus-services" *ngIf="typeLoadbalancer_sdn">
             <div class="title-bonus-services">
@@ -880,215 +933,369 @@
               nzDescription="Giải pháp giúp tăng tốc độ xử lý cho nhiều tác vụ tính toán và đồ họa phức tạp, đồng thời cung cấp khả năng xử lý hiệu quả cho hàng ngàn luồng dữ liệu cùng lúc."
               nzShowIcon></nz-alert>
           </div>
+          <!-- kubernetes -->
+          <div class="bonus-services" >
+            <div class="title-bonus-services">
+              <div><span class="text-card-header">VNPT Kubernetes Service </span></div>
+              <one-portal-svg-icon *ngIf="trashKubernetes" [icon]="'icon_trash'" class="icon-trash"
+                (click)="deleteKubernetes()"></one-portal-svg-icon>
+            </div>
+            <div *ngIf="!activeKubernetes">
+              <button class="h-btn" nz-button nzType="default" (click)="initKubernetes()">
+                <img style="padding-right: 10px; margin-top: -4px" src="assets/imgs/add.svg" alt="" />{{ "app.bonus" |
+                i18n }} Kubernetes
+              </button>
+            </div>
+            <div *ngIf="activeKubernetes">
+              <div class="ant-table">
+                <table >
+                  <td style="width:60%">
+                    <nz-form-item>
+                      <nz-form-label class="custom-label">vCPU (<span style="color:red">*</span>) </nz-form-label>
+                      <nz-form-control>
+                        <nz-row>
+                          
+                            <nz-input-number style="width: 100%; margin-left: -1px"  [nzMin]="2" 
+                            [nzMax]="1000" 
+                            [nzStep]="1"  [(ngModel)]="numberk8sCpu"
+                            (keydown)="checkPossiblePress($event)"
+                            (ngModelChange)="onChangeMinStepMax($event,2,1,1000,'k8s-cpu')"
+                            [ngModelOptions]="{ standalone: true }" nzSize="large"></nz-input-number>
+                        </nz-row>
+                      </nz-form-control>
+                    </nz-form-item>
+                  </td>
+                  <td style="width:40%">
+                    <nz-form-item>
+                      <nz-form-label class="custom-label" style="text-align: right">Thành tiền/Đơn giá (VND)
+
+                      </nz-form-label>
+                      <nz-form-control>
+                        <div class="centered">
+                          <p class="text-custom-price">
+                            {{ price.k8sCpu | formatPrice}}
+                          </p>
+                          <p class="text-price-unit">
+                            {{ price.k8sCpuUnit | formatPrice}}
+                          </p>
+                        </div>
+                      </nz-form-control>
+                    </nz-form-item>
+                  </td>
+                </table>
+                <table >
+                  <td style="width:60%">
+                    <nz-form-item>
+                      <nz-form-label class="custom-label">RAM (<span style="color:red">*</span>)</nz-form-label>
+                      <nz-form-control>
+                        <nz-row>
+                          <nz-input-number style="width: 100%; margin-left: -1px" [nzMin]="4"
+                            [nzMax]="1000" [nzStep]="1" [(ngModel)]="numberk8sRam"
+                            (keydown)="checkPossiblePress($event)"
+                            (ngModelChange)="onChangeMinStepMax($event,4,1,1000,'k8s-ram')"
+                            [ngModelOptions]="{ standalone: true }" nzSize="large"></nz-input-number>
+                        </nz-row>
+                      </nz-form-control>
+                    </nz-form-item>
+                  </td>
+                  <td style="width:40%">
+                    <nz-form-item>
+                      <nz-form-label class="custom-label" style="text-align: right">Thành tiền/Đơn giá (VND)
+
+                      </nz-form-label>
+                      <nz-form-control>
+                        <div class="centered">
+                          <p class="text-custom-price">
+                            {{price.k8sRam | formatPrice}}
+                          </p>
+                          <p class="text-price-unit">
+                            {{price.k8sRamUnit | formatPrice}}
+                          </p>
+                        </div>
+                      </nz-form-control>
+                    </nz-form-item>
+                  </td>
+                </table>
+                <table >
+                  <td style="width:60%">
+                    <nz-form-item>
+                      <nz-form-label class="custom-label">Dung lượng lưu trữ SSD (<span style="color:red">*</span>)</nz-form-label>
+                      <nz-form-control>
+                        <nz-row>
+                          <nz-input-number style="width: 100%; margin-left: -1px" [nzMin]="20"
+                            [nzMax]="4000" [nzStep]="10" [(ngModel)]="numberk8sSsd"
+                            (keydown)="checkPossiblePress($event)"
+                            (ngModelChange)="onChangeMinStepMax($event,20,1,4000,'k8s-ssd')"
+                            [ngModelOptions]="{ standalone: true }" nzSize="large"></nz-input-number>
+                        </nz-row>
+                      </nz-form-control>
+                    </nz-form-item>
+                  </td>
+                  <td style="width:40%">
+                    <nz-form-item>
+                      <nz-form-label class="custom-label" style="text-align: right">Thành tiền/Đơn giá (VND)
+
+                      </nz-form-label>
+                      <nz-form-control>
+                        <div class="centered">
+                          <p class="text-custom-price">
+                            {{price.k8sSsd | formatPrice}}
+                          </p>
+                          <p class="text-price-unit">
+                            {{price.k8sSsdUnit | formatPrice}}
+                          </p>
+                        </div>
+                      </nz-form-control>
+                    </nz-form-item>
+                  </td>
+                </table>
+              </div>
+            </div>
+            <nz-alert class="ant-alert-warning-custom" nzType="warning" nzDescription="Dịch vụ VNPT Kubernetes Service giúp  đơn giản hóa quá trình triển khai và quản lý các ứng dụng dựa trên container"
+              nzShowIcon></nz-alert>
+          </div>
+         
+          <div class="bonus-services" >
+            <div class="title-bonus-services">
+              <div><span class="text-card-header">VNPT Streaming For Kafka</span></div>
+              <one-portal-svg-icon *ngIf="trashKafka" [icon]="'icon_trash'" class="icon-trash"
+                (click)="deleteKafka()"></one-portal-svg-icon>
+            </div>
+            <div *ngIf="!activeKafka">
+              <button class="h-btn" nz-button nzType="default" (click)="initKafka()">
+                <img style="padding-right: 10px; margin-top: -4px" src="assets/imgs/add.svg" alt="" />{{ "app.bonus" |
+                i18n }} Kafka
+              </button>
+            </div>
+            <div *ngIf="activeKafka">
+              <div class="ant-table">
+                <table >
+                  <td style="width:60%">
+                    <nz-form-item>
+                      <nz-form-label class="custom-label">CPU (vCPU)(<span style="color:red">*</span>) </nz-form-label>
+                      <nz-form-control>
+                        <nz-row>
+                          <nz-input-number style="width: 100%;margin-left: -1px" [nzMin]="1"
+                          [nzStep]="1" [nzMax]="1000" (keydown)="checkPossiblePress($event)"
+                            [(ngModel)]="numberkafkaCpu" (ngModelChange)="onChangeMinStepMax($event,1,1,1000,'kafka-cpu')"
+                            [ngModelOptions]="{ standalone: true }" nzSize="large"></nz-input-number>
+                        </nz-row>
+                      </nz-form-control>
+                    </nz-form-item>
+                  </td>
+                  <td style="width:40%">
+                    <nz-form-item>
+                      <nz-form-label class="custom-label" style="text-align: right">Thành tiền/Đơn giá (VND)
+
+                      </nz-form-label>
+                      <nz-form-control>
+                        <div class="centered">
+                          <p class="text-custom-price">
+                            {{price.kafkaCpu | formatPrice}}
+                          </p>
+                          <p class="text-price-unit">
+                            {{price.kafkaCpuUnit | formatPrice}}
+                          </p>
+                        </div>
+                      </nz-form-control>
+                    </nz-form-item>
+                  </td>
+                </table>
+                <table >
+                  <td style="width:60%">
+                    <nz-form-item>
+                      <nz-form-label class="custom-label">RAM (GB) (<span style="color:red">*</span>)</nz-form-label>
+                      <nz-form-control>
+                        <nz-row>
+                          <nz-input-number style="width: 100%; margin-left: -1px" [nzMin]="1" [nzStep]="1"
+                            [nzMax]="1000"  [(ngModel)]="numberkafkaRam"
+                            (keydown)="checkPossiblePress($event)"
+                            (ngModelChange)="onChangeMinStepMax($event,1,1,1000,'kafka-ram')"
+                            [ngModelOptions]="{ standalone: true }" nzSize="large"></nz-input-number>
+                        </nz-row>
+                      </nz-form-control>
+                    </nz-form-item>
+                  </td>
+                  <td style="width:40%">
+                    <nz-form-item>
+                      <nz-form-label class="custom-label" style="text-align: right">Thành tiền/Đơn giá (VND)
+
+                      </nz-form-label>
+                      <nz-form-control>
+                        <div class="centered">
+                          <p class="text-custom-price">
+                            {{price.kafkaRam | formatPrice}}
+                          </p>
+                          <p class="text-price-unit">
+                            {{price.kafkaRamUnit | formatPrice}}
+                          </p>
+                        </div>
+                      </nz-form-control>
+                    </nz-form-item>
+                  </td>
+                </table>
+                <table >
+                  <td style="width:60%">
+                    <nz-form-item>
+                      <nz-form-label class="custom-label">Storage (GB) (<span style="color:red">*</span>)</nz-form-label>
+                      <nz-form-control>
+                        <nz-row>
+                          <nz-input-number style="width: 100%; margin-left: -1px" [nzMin]="1"
+                            [nzMax]="10240" [nzStep]="10" [(ngModel)]="numberkafkaStorage"
+                            (keydown)="checkPossiblePress($event)"
+                            (ngModelChange)="onChangeMinStepMax($event,1,10,10240,'kafka-storage')"
+                            [ngModelOptions]="{ standalone: true }" nzSize="large"></nz-input-number>
+                        </nz-row>
+                      </nz-form-control>
+                    </nz-form-item>
+                  </td>
+                  <td style="width:40%">
+                    <nz-form-item>
+                      <nz-form-label class="custom-label" style="text-align: right">Thành tiền/Đơn giá (VND)
+
+                      </nz-form-label>
+                      <nz-form-control>
+                        <div class="centered">
+                          <p class="text-custom-price">
+                            {{price.kafkaStorage | formatPrice}}
+                          </p>
+                          <p class="text-price-unit">
+                            {{price.kafkaStorageUnit | formatPrice}}
+                          </p>
+                        </div>
+                      </nz-form-control>
+                    </nz-form-item>
+                  </td>
+                </table>
+              </div>
+            </div>
+            <nz-alert class="ant-alert-warning-custom" nzType="warning" nzDescription="VNPT Kafka giúp quản lý luồng dữ liệu theo thời gian thực, giúp doanh nghiệp xử lý và truyền tải dữ liệu nhanh chóng, đáng tin cậy, và dễ dàng mở rộng."
+              nzShowIcon></nz-alert>
+          </div>
+         
+          <div class="bonus-services" >
+            <div class="title-bonus-services">
+              <div><span class="text-card-header">VNPT DocumentDB for MongoDB</span></div>
+              <one-portal-svg-icon *ngIf="trashMongoDB" [icon]="'icon_trash'" class="icon-trash"
+                (click)="deleteMongoDB()"></one-portal-svg-icon>
+            </div>
+            <div *ngIf="!activeMongoDB">
+              <button class="h-btn" nz-button nzType="default" (click)="initMongoDB()">
+                <img style="padding-right: 10px; margin-top: -4px" src="assets/imgs/add.svg" alt="" />{{ "app.bonus" |
+                i18n }} MongoDB
+              </button>
+            </div>
+            <div *ngIf="activeMongoDB">
+              <div class="ant-table">
+                <table >
+                  <td style="width:60%">
+                    <nz-form-item>
+                      <nz-form-label class="custom-label">CPU (vCPU)(<span style="color:red">*</span>) </nz-form-label>
+                      <nz-form-control>
+                        <nz-row>
+                          <nz-input-number style="width: 100%;margin-left: -1px" [nzMin]="2"
+                          [nzMax]="1000" [nzStep]="1" (keydown)="checkPossiblePress($event)"
+                            [(ngModel)]="numbermongoCpu" (ngModelChange)="onChangeMinStepMax($event,2,1,1000,'mongo-cpu')"
+                            [ngModelOptions]="{ standalone: true }" nzSize="large"></nz-input-number>
+                        </nz-row>
+                      </nz-form-control>
+                    </nz-form-item>
+                  </td>
+                  <td style="width:40%">
+                    <nz-form-item>
+                      <nz-form-label class="custom-label" style="text-align: right">Thành tiền/Đơn giá (VND)
+
+                      </nz-form-label>
+                      <nz-form-control>
+                        <div class="centered">
+                          <p class="text-custom-price">
+                            {{price.mongoCpu | formatPrice}}
+                          </p>
+                          <p class="text-price-unit">
+                            {{price.mongoCpuUnit | formatPrice}}
+                          </p>
+                        </div>
+                      </nz-form-control>
+                    </nz-form-item>
+                  </td>
+                </table>
+                <table >
+                  <td style="width:60%">
+                    <nz-form-item>
+                      <nz-form-label class="custom-label">RAM (GB) (<span style="color:red">*</span>)</nz-form-label>
+                      <nz-form-control>
+                        <nz-row>
+                          <nz-input-number style="width: 100%; margin-left: -1px" [nzMin]="4"
+                          [nzMax]="1000" [nzStep]="1" [(ngModel)]="numbermongoRam"
+                            (keydown)="checkPossiblePress($event)"
+                            (ngModelChange)="onChangeMinStepMax($event,4,1,1000,'mongo-ram')"
+                            [ngModelOptions]="{ standalone: true }" nzSize="large"></nz-input-number>
+                        </nz-row>
+                      </nz-form-control>
+                    </nz-form-item>
+                  </td>
+                  <td style="width:40%">
+                    <nz-form-item>
+                      <nz-form-label class="custom-label" style="text-align: right">Thành tiền/Đơn giá (VND)
+
+                      </nz-form-label>
+                      <nz-form-control>
+                        <div class="centered">
+                          <p class="text-custom-price">
+                            {{price.mongoRam | formatPrice}}
+                          </p>
+                          <p class="text-price-unit">
+                            {{price.mongoRamUnit | formatPrice}}
+                          </p>
+                        </div>
+                      </nz-form-control>
+                    </nz-form-item>
+                  </td>
+                </table>
+                <table >
+                  <td style="width:60%">
+                    <nz-form-item>
+                      <nz-form-label class="custom-label">Storage (GB) (<span style="color:red">*</span>)</nz-form-label>
+                      <nz-form-control>
+                        <nz-row>
+                          <nz-input-number style="width: 100%; margin-left: -1px" [nzMin]="80"
+                          [nzMax]="10240" [nzStep]="10" [(ngModel)]="numbermongoStorage"
+                            (keydown)="checkPossiblePress($event)"
+                            (ngModelChange)="onChangeMinStepMax($event,80,10,10240,'mongo-storage')"
+                            [ngModelOptions]="{ standalone: true }" nzSize="large"></nz-input-number>
+                        </nz-row>
+                      </nz-form-control>
+                    </nz-form-item>
+                  </td>
+                  <td style="width:40%">
+                    <nz-form-item>
+                      <nz-form-label class="custom-label" style="text-align: right">Thành tiền/Đơn giá (VND)
+
+                      </nz-form-label>
+                      <nz-form-control>
+                        <div class="centered">
+                          <p class="text-custom-price">
+                            {{price.mongoStorage | formatPrice}}
+                          </p>
+                          <p class="text-price-unit">
+                           {{price.mongoStorageUnit | formatPrice}}
+                          </p>
+                        </div>
+                      </nz-form-control>
+                    </nz-form-item>
+                  </td>
+                </table>
+              </div>
+            </div>
+            <nz-alert class="ant-alert-warning-custom" nzType="warning" nzDescription="VNPT DocumentDB for MongoDB tương thích với MongoDB, giúp doanh nghiệp dễ dàng quản lý, mở rộng và bảo mật dữ liệu mà không cần tự quản lý hạ tầng."
+              nzShowIcon></nz-alert>
+          </div>
         </div>
 
       </nz-card>
 
-      <!---------------CARD-BACKUP-------------->
-      <!-- <nz-card style="border-radius: 8px">
-        <div style="margin-bottom: 20px"><span class="text-card-header">Backup</span></div>
-        <div *ngIf="!activeBackup">
-          <button style="height: 32px" nz-button nzType="default" (click)="initBackup()">
-            <img style="padding-right: 10px; margin-top: -4px" src="assets/imgs/add.svg" alt="" />{{"app.bonus" | i18n}}
-            Backup
-          </button>
-        </div>
-        <div *ngIf="activeBackup">
-          <div class="ant-table">
-            <table>
-              <td style="width:80%">
-                <nz-form-item>
-                  <nz-form-label>{{"volume.table.title.storage" | i18n}} Backup Volume/VM (GB)</nz-form-label>
-                  <nz-form-control>
-                    <nz-input-number style="width: 96%; margin-left: -1px" [nzMin]="0" [nzStep]="20"
-                      (keydown)="checkPossiblePress($event)" [(ngModel)]="numberBackup" (ngModelChange)="calculate()"
-                      [ngModelOptions]="{ standalone: true }" nzSize="large"></nz-input-number>
-                  </nz-form-control>
-                </nz-form-item>
-              </td>
-              <td style="width:20%">
-                <nz-form-item>
-                  <nz-form-label style="text-align: right">{{"app.service.price-title" | i18n}}
-                    ({{"app.payment-detail.month" | i18n}})</nz-form-label>
-                  <nz-form-control>
-                    <div class="centered">
-                      <p class="text-custom-price" style="width: 90%;">
-                        {{ price.backup }} <span style="color: black;">đ</span>
-                      </p>
-                    </div>
-                  </nz-form-control>
-                </nz-form-item>
-              </td>
-            </table>
-          </div>
-        </div>
-        <nz-alert class="ant-alert-warning-custom" (click)="initBackup()" nzType="warning" nzDescription="Với các ứng dụng cần bảo vệ dữ liệu và duy trì hiệu suất hệ thống, nên sử dụng Backup - sao lưu định kỹ để đảm bảo an toàn và
-          khả năng khôi phục nhanh chóng khi cần thiết" nzShowIcon></nz-alert>
-      </nz-card> -->
-
-      <!---------------CARD-LOAD_BALANCER-------------->
-      <!-- <nz-card style="border-radius: 8px">
-        <div style="margin-bottom: 20px"><span class="text-card-header">Load Balancer</span></div>
-        <div *ngIf="!activeLoadBalancer">
-          <button style="height: 32px" nz-button nzType="default" (click)="initLoadBalancer()">
-            <img style="padding-right: 10px; margin-top: -4px" src="assets/imgs/add.svg" alt="" />{{"app.bonus" | i18n}}
-            Load
-            Balancer
-          </button>
-        </div>
-        <div *ngIf="activeLoadBalancer">
-          <div class="ant-table">
-            <table>
-              <td style="width:40%">
-                <nz-form-item>
-                  <nz-form-label>{{"app.order-detail.quantity" | i18n}}{{"app.order-detail.quantity" | i18n}} Load
-                    Balancer</nz-form-label>
-                  <nz-form-control>
-                    <nz-input-number style="width: 90%; margin-left: -1px" [nzMin]="0" [nzStep]="1"
-                      (keydown)="checkPossiblePress($event)" [(ngModel)]="numberLoadBalancer"
-                      (ngModelChange)="calculate()" [ngModelOptions]="{ standalone: true }"
-                      nzSize="large"></nz-input-number>
-                  </nz-form-control>
-                </nz-form-item>
-              </td>
-              <td style="width:40%">
-                <nz-form-item>
-                  <nz-form-label>{{'project.note49' | i18n}}</nz-form-label>
-                  <nz-form-control>
-                    <nz-input-group nzCompact>
-                      <nz-select nzSize="large" [nzLoading]="false" [nzDisabled]="false"
-                        style="width: 90%; margin-left: -1px;border-radius: 10px;"
-                        nzPlaceHolder="--{{'project.note49' | i18n}}--" [(ngModel)]="loadBalancerId"
-                        [ngModelOptions]="{standalone : true}" (nzOpenChange)="calculate()">
-                        <nz-option *ngFor="let i of listLoadbalancer" [nzLabel]="i.offerName" [nzValue]="i.id" />
-                      </nz-select>
-                    </nz-input-group>
-                  </nz-form-control>
-                </nz-form-item>
-              </td>
-              <td style="width:20%">
-                <nz-form-item>
-                  <nz-form-label style="text-align: right">{{"app.service.price-title" | i18n}}
-                    ({{"app.payment-detail.month" | i18n}})</nz-form-label>
-                  <nz-form-control>
-                    <div class="centered">
-                      <p class="text-custom-price" style="width: 90%;">
-                        {{ price.loadBalancer }} <span style="color: black;">đ</span>
-                      </p>
-                    </div>
-                  </nz-form-control>
-                </nz-form-item>
-              </td>
-            </table>
-          </div>
-        </div>
-        <nz-alert class="ant-alert-warning-custom" (click)="initLoadBalancer()" nzType="warning"
-          nzDescription="Load Balancer giúp nhân phối tải hiệu quả, nâng cao khả năng chịu tải của hệ thống và tăng trải nghiệm người dùng"
-          nzShowIcon></nz-alert>
-      </nz-card> -->
-
-      <!---------------CARD-FILE STORAGE-------------->
-      <!-- <nz-card style="border-radius: 8px">
-        <div style="margin-bottom: 20px"><span class="text-card-header">File Storage</span></div>
-        <div *ngIf="!activeFileStorage">
-          <button style="height: 32px" nz-button nzType="default" (click)="initFileStorage()">
-            <img style="padding-right: 10px; margin-top: -4px" src="assets/imgs/add.svg" alt="" />{{"app.bonus" | i18n}}
-            File Storage
-          </button>
-        </div>
-        <div *ngIf="activeFileStorage">
-          <div class="ant-table">
-            <table>
-              <td style="width:40%">
-                <nz-form-item>
-                  <nz-form-label>{{"volume.table.title.storage" | i18n}} File System (GB)</nz-form-label>
-                  <nz-form-control>
-                    <nz-row>
-                      <nz-input-number style="width: 90%;margin-left: -1px" [nzMin]="0" [nzStep]="1"
-                        (keydown)="checkPossiblePress($event)" [(ngModel)]="numberFileSystem"
-                        (ngModelChange)="calculate()" [ngModelOptions]="{ standalone: true }"
-                        nzSize="large"></nz-input-number>
-                    </nz-row>
-                  </nz-form-control>
-                </nz-form-item>
-              </td>
-              <td style="width:40%">
-                <nz-form-item>
-                  <nz-form-label>{{"volume.table.title.storage" | i18n}} File System Snapshot (GB)</nz-form-label>
-                  <nz-form-control>
-                    <nz-row>
-                      <nz-input-number style="width: 90%; margin-left: -1px" [nzMin]="1" [nzMax]="100" [nzStep]="1"
-                        (keydown)="checkPossiblePress($event)" [(ngModel)]="numberFileScnapsshot"
-                        (ngModelChange)="calculate()" [ngModelOptions]="{ standalone: true }"
-                        nzSize="large"></nz-input-number>
-                    </nz-row>
-                  </nz-form-control>
-                </nz-form-item>
-              </td>
-              <td style="width:20%">
-                <nz-form-item>
-                  <nz-form-label style="text-align: right">{{"app.service.price-title" | i18n}}
-                    ({{"app.payment-detail.month" | i18n}})</nz-form-label>
-                  <nz-form-control>
-                    <div class="centered">
-                      <p class="text-custom-price" style="width: 90%;">
-                        {{ price.fileStorage | number }} <span style="color: black;">đ</span>
-                      </p>
-                    </div>
-                  </nz-form-control>
-                </nz-form-item>
-              </td>
-            </table>
-          </div>
-        </div>
-        <nz-alert class="ant-alert-warning-custom" (click)="initFileStorage()" nzType="warning"
-          nzDescription="{{'project.note44' | i18n}}" nzShowIcon></nz-alert>
-      </nz-card> -->
-
-      <!---------------CARD-SITE-TO-SITE-------------->
-      <!-- <nz-card style="border-radius: 8px">
-        <div style="margin-bottom: 20px"><span class="text-card-header">VPC site to site</span></div>
-        <div *ngIf="!activeSiteToSite">
-          <button style="height: 32px" nz-button nzType="default" (click)="initVpnSiteToSite()">
-            <img style="padding-right: 10px; margin-top: -4px" src="assets/imgs/add.svg" alt="" />{{"app.bonus" | i18n}}
-            VPC site to
-            site
-          </button>
-        </div>
-        <div *ngIf="activeSiteToSite">
-          <div class="ant-table">
-            <table>
-              <td style="width:80%">
-                <nz-form-item>
-                  <nz-form-label>{{'project.note45' | i18n}}</nz-form-label>
-                  <nz-form-control>
-                    <nz-select nzSize="large" [nzLoading]="false" [nzDisabled]="false"
-                      style="width: 96%;border-radius: 10px;" nzPlaceHolder="--{{'project.note45' | i18n}}--"
-                      [(ngModel)]="siteToSiteId" [ngModelOptions]="{standalone:true}" (nzOpenChange)="calculate()">
-                      <nz-option *ngFor="let i of listSiteToSite" [nzLabel]="i.offerName" [nzValue]="i.id" />
-                    </nz-select>
-                  </nz-form-control>
-                </nz-form-item>
-              </td>
-              <td style="width:20%">
-                <nz-form-item>
-                  <nz-form-label style="text-align: right">{{"app.service.price-title" | i18n}}
-                    ({{"app.payment-detail.month" | i18n}})</nz-form-label>
-                  <nz-form-control>
-                    <div class="centered">
-                      <p class="text-custom-price" style="width: 90%;">
-                        {{ price.siteToSite }} <span style="color: black;">đ</span>
-                      </p>
-                    </div>
-                  </nz-form-control>
-                </nz-form-item>
-              </td>
-            </table>
-          </div>
-        </div>
-        <nz-alert class="ant-alert-warning-custom" (click)="initVpnSiteToSite()" nzType="warning"
-          nzDescription="{{ 'project.note46' | i18n }}" nzShowIcon></nz-alert>
-      </nz-card> -->
+      
+ 
       <!---------------CARD-CONG-THUC-------------->
       <nz-card>
         <one-portal-guide-formula></one-portal-guide-formula>

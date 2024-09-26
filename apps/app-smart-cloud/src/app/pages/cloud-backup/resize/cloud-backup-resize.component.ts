@@ -65,7 +65,7 @@ export class CloudBackupResizeComponent implements OnInit {
   }
 
   form = new FormGroup({
-    capacity: new FormControl(
+    storage: new FormControl(
       { value: 1, disabled: false },
       { validators: [Validators.required] }
     ),
@@ -117,7 +117,7 @@ export class CloudBackupResizeComponent implements OnInit {
   }
 
   cloudBackupDetail: CloudBackup = new CloudBackup();
-  changeCapacity(value: number) {
+  changeStorage(value: number) {
     this.getTotalAmount();
   }
   getCloudBackupById(id) {
