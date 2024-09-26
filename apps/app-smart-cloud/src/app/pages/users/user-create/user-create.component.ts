@@ -75,6 +75,7 @@ export class UserCreateComponent implements OnInit {
   }
 
   onChangeGroupNames(event: any[]) {
+    console.log('groupName', event)
     this.groupNames = event;
   }
 

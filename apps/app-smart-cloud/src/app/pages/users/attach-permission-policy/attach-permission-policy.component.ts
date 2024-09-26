@@ -169,11 +169,14 @@ export class AttachPermissionPolicyComponent implements OnInit {
   handleDataPicked() {
     if (this.activeBlockAddUsertoGroup) {
       this.groupNames = Array.from(this.mapOfCheckedGroup.keys());
+      console.log('groupNames_1',this.groupNames, this.mapOfCheckedGroup)
       this.policyNames.clear();
       this.mapOfCheckedGroup.forEach((e) => {
+       if(e?.length){
         e.forEach((item) => {
           this.policyNames.add(item);
         });
+       }
       });
       this.emitData();
     }
@@ -263,6 +266,7 @@ export class AttachPermissionPolicyComponent implements OnInit {
   }
 
   onItemCheckedGroup(item: UserGroup, checked: boolean): void {
+    console.log('item', item)
     this.updateCheckedSetGroup(item, checked);
     this.handleDataPicked();
     this.refreshCheckedStatusGroup();

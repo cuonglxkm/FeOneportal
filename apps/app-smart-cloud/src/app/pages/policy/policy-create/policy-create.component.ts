@@ -65,7 +65,7 @@ export class PolicyCreateComponent implements OnInit{
 
   form = new FormGroup({
     name: new FormControl('', {validators: [Validators.required, AppValidator.validPolicyName]}),
-    description: new FormControl('', {validators: [AppValidator.validPolicyDescription]}),
+    description: new FormControl('', {validators: [Validators.maxLength(1000)]}),
   });
   @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
   constructor(private service: PolicyService, private router: Router,
@@ -311,7 +311,7 @@ export class PolicyCreateComponent implements OnInit{
     this.isVisibleCreate = false;
     const request = {
       name: this.form.controls['name'].value,
-      description: this.form.controls['description'].value,
+      description: this.form.controls['description'].value?.trim(),
       actions: this.listOfPermissionSelectedViewStep2,
       resource : "*",
       effect: "allow",
