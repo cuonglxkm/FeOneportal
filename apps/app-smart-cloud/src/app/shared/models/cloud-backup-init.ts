@@ -32,6 +32,6 @@ export class CloudBackupCreate {
   isSendMail: boolean
   typeName: string
   name: string
-  capacity: number
+  storage: number
   description: string
 }

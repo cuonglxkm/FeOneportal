@@ -3730,11 +3730,12 @@
   "app.add":"Add",
   "app.cloud-backup": "Cloud Backup",
   "app.label.init": "Initialize",
-  "cloud-backup.validate.name": "Chưa đọc tài liệu",
+  "cloud-backup.validate.name": "Only allow letters (a-z, A-Z), numbers (0-9), '_', '-'. The length of your input data must be between 5 and 50 characters.",
   "cloud-backup.validate.name.exist": "Cloud Backup name already exists",
   "cloud-backup.validate.name.null": "Cloud Backup name cannot be empty",
-  "cloud-backup.validate.capacity": "Chưa đọc tài liệu",
+  "cloud-backup.validate.capacity": "Maximum capacity is 40GB",
   "cloud-backup.validate.capacity.null": "Capacity cannot be empty",
+  "cloud-backup.validate.description": "Only allow letters (a-z, A-Z), numbers (0-9), '@', '.', '_', '-', and ' '. The length of your input data must be between 0 and 255 characters.",
   "cloud-backup.placeholder.filter.name": "Search by IP/CIDR",
   "cloud-backup.access-rule.validate.source": "Chưa đọc tài liệu",
   "cloud-backup.access-rule.input.source": "Nhập IP/CIDR",
@@ -3743,5 +3744,5 @@
   "cloud-backup.access-rule.delete.name.required": "Please enter IP/CIDR",
   "cloud-backup.delete.instance": "To delete the Cloud Backup {{name}}, please enter the Cloud Backup name to confirm.",
   "cloud-backup.delete.name.invalid": "Please enter the correct  Cloud Backup name",
-  "cloud-backup.delete.name.required": "Please enter  Cloud Backup name"
+  "cloud-backup.delete.name.required": "Please enter Cloud Backup name"
 }

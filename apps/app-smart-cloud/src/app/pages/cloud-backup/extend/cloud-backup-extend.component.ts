@@ -91,7 +91,7 @@ export class CloudBackupExtendComponent implements OnInit {
 
 
   CloudBackupExtend: CloudBackupExtend = new CloudBackupExtend();
-  cloudBackupDetail: CloudBackup = new CloudBackup();
+  cloudBackupDetail: CloudBackup;
 
 
   getCloudBackupById(id) {
