@@ -131,7 +131,7 @@ export class ExtendIpFloatingComponent implements OnInit{
     const request = {
       customerId: this.tokenService.get()?.userId,
       createdByUserId: this.tokenService.get()?.userId,
-      note: 'Gia hạn IP Public',
+      note: 'Gia hạn IP Floating',
       orderItems: [
         {
           orderItemQuantity: 1,

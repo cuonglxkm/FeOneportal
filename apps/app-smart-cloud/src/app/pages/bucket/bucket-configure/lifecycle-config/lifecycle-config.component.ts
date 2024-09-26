@@ -215,13 +215,6 @@ export class LifecycleConfigComponent implements OnInit {
     }
   }
 
-  onChangeExpirationDay(event){
-    if(event){
-      this.lifecycleCreate.isSetNoncurrentVersionExpiration_Day = true
-    }else{
-      this.lifecycleCreate.isSetNoncurrentVersionExpiration_Day = false
-    }
-  }
 
   resetForm() {
     this.formCreate.reset();
@@ -254,6 +247,7 @@ export class LifecycleConfigComponent implements OnInit {
         }
       });
     } else {
+      debugger
       this.isLoadingCreate = true;
       this.lifecycleCreate.bucketName = this.bucketName;
       this.lifecycleCreate.prefix = this.lifecycleCreate.prefix?.trim();
@@ -269,7 +263,8 @@ export class LifecycleConfigComponent implements OnInit {
         lifecycleTagPredicate.metaValue = e.value.trim();
         this.lifecycleCreate.lifecycleTagPredicate.push(lifecycleTagPredicate);
       });
-
+      this.lifecycleCreate.lifecycleRuleNoncurrentVersionExpiration_Day = !this.lifecycleCreate.isSetNoncurrentVersionExpiration_Day ? 0 : 1
+      this.lifecycleCreate.lifecycleRuleAbortIncompleteMultipartUpload_Day = !this.lifecycleCreate.isSetAbortIncompleteMultipartUpload_Day ? 0 : 1
       this.bucketService
         .createBucketLifecycle(this.lifecycleCreate, this.region)
         .pipe(
@@ -396,6 +391,8 @@ export class LifecycleConfigComponent implements OnInit {
   isVisibleUpdate = false;
   lifecycleUpdate: BucketLifecycleUpdate = new BucketLifecycleUpdate();
   modalUpdate(data: BucketLifecycle) {
+    console.log(data);
+    
     this.isVisibleUpdate = true;
     this.listKeyError = [];
     this.listTag = [];
@@ -497,14 +494,8 @@ export class LifecycleConfigComponent implements OnInit {
     if (
       this.lifecycleUpdate.isSetExpiration_Day &&
       this.lifecycleUpdate.lifecycleRuleExpiration_Day == 0
-    ) {
+    ) { 
       this.lifecycleUpdate.lifecycleRuleExpiration_Day = 1;
-      this.cdr.detectChanges();
-    }else if(!this.lifecycleUpdate.isSetExpiration_Day){
-      this.lifecycleUpdate.isSetNoncurrentVersionExpiration_Day = false
-      this.cdr.detectChanges();
-    }else if(this.lifecycleUpdate.isSetExpiration_Day){
-      this.lifecycleUpdate.isSetNoncurrentVersionExpiration_Day = true
       this.cdr.detectChanges();
     }
   }
