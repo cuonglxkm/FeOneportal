@@ -2637,6 +2637,7 @@
   "router.nofitacation.interface.remove.fail": "Failed to delete the Router Interface.",
   "router.nofitacation.interface.remove.fail1": "Please do not delete the Router Interface because you are using the File Storage service",
   "router.nofitacation.interface.remove.fail2": "Cannot be deleted because it is being used in VPN Connections. Please remove VPN Connections before performing this operation!",
+  "router.nofitacation.interface.remove.fail3": "Cannot be deleted because it is being used in FloatingIP. Please remove FloatingIP before performing this operation!",
   "router.nofitacation.static.remove.success": "Successfully deleted the Static Route",
   "wan.label.ip.wan.management": "WAN connection IP management",
   "wan.alert.ip.wan": "WAN connection IP range",

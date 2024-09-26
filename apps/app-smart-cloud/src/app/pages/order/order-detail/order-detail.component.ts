@@ -107,6 +107,17 @@ export class OrderDetailComponent {
         .getOrderBycode(this.id)
         .subscribe({
           next: (data) => {
+            let obj = JSON.parse(data?.orderItems[0]?.serviceDetail);
+            if (obj != null && obj.IsFloating === true) {
+              this.isIppublic = false;
+            } else if(obj != null && obj.IsFloating === false) {
+              this.isIppublic = true;
+            }
+            if(data.note === 'Gia hạn IP Public'){
+              this.isIppublic = true
+            }else if(data.note === 'Gia hạn IP Floating'){
+              this.isIppublic = false;
+            }
             this.data = data;
             this.getSpecType()
             if(this.data.paymentUrl === '' && this.data.statusCode == 0 && this.specType !== undefined){
@@ -116,7 +127,6 @@ export class OrderDetailComponent {
             data?.orderItems?.forEach((item) => {
 
               this.serviceName = item.serviceName.split('-')[0].trim()
-              let serviceName1 = item.serviceName.split('-')[1]
               if(this.serviceName.includes('Máy ảo')){
                 item.serviceNameLink = 'VM'
               } else if(this.serviceName.includes('K8s Premium')) {
@@ -157,6 +167,11 @@ export class OrderDetailComponent {
             } else {
               this.isIppublic = true;
             }
+            if(data.note === 'Gia hạn IP Public'){
+              this.isIppublic = true
+            }else if(data.note === 'Gia hạn IP Floating'){
+              this.isIppublic = false;
+            }
             this.data = data;
             this.getSpecType()
             if(this.data.paymentUrl === '' && this.data.statusCode == 0  && this.specType !== undefined){
@@ -165,7 +180,6 @@ export class OrderDetailComponent {
             }
             data?.orderItems?.forEach((item) => {
               this.serviceName = item.serviceName.split('-')[0].trim()
-              let serviceName1 = item.serviceName.split('-')[1]
               if(this.serviceName.includes('Máy ảo')){
                 item.serviceNameLink = 'VM'
               } else if(this.serviceName.includes('K8s Premium')) {

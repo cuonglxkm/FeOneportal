@@ -647,7 +647,59 @@
               <nz-alert class="ant-alert-warning-custom" nzType="warning" nzDescription="{{'project.note47' | i18n}}"
                 nzShowIcon></nz-alert>
             </div>
+            <div class="bonus-services" >
+              <div class="title-bonus-services">
+                <div><span class="text-card-header">VNPT Cloud Backup</span></div>
+                <one-portal-svg-icon *ngIf="trashCloudBackup" [icon]="'icon_trash'" class="icon-trash"
+                  (click)="deleteCloudBackup()"></one-portal-svg-icon>
+              </div>
+              <div *ngIf="!activeCloudBackup">
+                <button class="h-btn" nz-button nzType="default" (click)="initCloudBackup()">
+                  <img style="padding-right: 10px; margin-top: -4px" src="assets/imgs/add.svg" alt="" />{{ "app.bonus" |
+                  i18n }} Cloud Backup
+                </button>
+              </div>
+              <div *ngIf="activeCloudBackup">
+                <div class="ant-table">
+                  <table>
+                    <td style="width:60%">
+                      <nz-form-item>
+                        <nz-form-label class="custom-label">Dung lượng Backup (GB)
+                          </nz-form-label>
+                        <nz-form-control>
 
+                          <nz-input-number style="width: 100%; margin-left: -1px" [nzMin]="0"
+                            [nzStep]="1" [nzMax]="1000" name="backup" (keydown)="checkPossiblePress($event)"
+                            [(ngModel)]="numberCloudBackup" (ngModelChange)="onChangeMinStepMax($event,0,1,1000,'cloud-backup')"
+                            [ngModelOptions]="{ standalone: true }" nzSize="large"></nz-input-number>
+                        </nz-form-control>
+                      </nz-form-item>
+                    </td>
+                    <td style="width:40%">
+                      <nz-form-item>
+                        <nz-form-label class="custom-label" style="text-align: right">Thành tiền/Đơn giá (VND)
+
+                        </nz-form-label>
+                        <nz-form-control>
+                          <div class="centered">
+                            <p class="text-custom-price">
+                              {{ price.cloudBackup | formatPrice}}
+                            </p>
+                            <p class=" text-price-unit">
+                              {{ price.cloudBackupUnit | formatPrice}}
+                            </p>
+                          </div>
+                        </nz-form-control>
+                      </nz-form-item>
+                    </td>
+                  </table>
+                </div>
+              </div>
+
+              <nz-alert class="ant-alert-warning-custom" nzType="warning" nzDescription="Với các hệ thống cần bảo vệ dữ liệu và duy trì hiệu suất hệ thống, nên sử dụng Backup - sao lưu định kỳ để đảm bảo an toàn và 
+              khả năng khôi phục nhanh chóng khi cần thiết"
+                nzShowIcon></nz-alert>
+            </div>
 
             <div class="bonus-services" *ngIf="typeLoadbalancer_sdn">
               <div class="title-bonus-services">
@@ -914,7 +966,7 @@
                 nzShowIcon></nz-alert>
             </div>
 <!-- kubernetes -->
-            <!-- <div class="bonus-services" >
+            <div class="bonus-services" >
               <div class="title-bonus-services">
                 <div><span class="text-card-header">VNPT Kubernetes Service </span></div>
                 <one-portal-svg-icon *ngIf="trashKubernetes" [icon]="'icon_trash'" class="icon-trash"
@@ -934,9 +986,12 @@
                         <nz-form-label class="custom-label">vCPU (<span style="color:red">*</span>) </nz-form-label>
                         <nz-form-control>
                           <nz-row>
-                            <nz-input-number style="width: 100%;margin-left: -1px" nzMin="0"
-                              nzStep="1" nzMax="1000" (keydown)="checkPossiblePress($event)"
-                              [(ngModel)]="numberKubernetes" (ngModelChange)="onInputMax($event,1000,'kubernetes')"
+                            
+                              <nz-input-number style="width: 100%; margin-left: -1px"  [nzMin]="2" 
+                              [nzMax]="1000" 
+                              [nzStep]="1"  [(ngModel)]="numberk8sCpu"
+                              (keydown)="checkPossiblePress($event)"
+                              (ngModelChange)="onChangeMinStepMax($event,2,1,1000,'k8s-cpu')"
                               [ngModelOptions]="{ standalone: true }" nzSize="large"></nz-input-number>
                           </nz-row>
                         </nz-form-control>
@@ -950,10 +1005,10 @@
                         <nz-form-control>
                           <div class="centered">
                             <p class="text-custom-price">
-                              0
+                              {{ price.k8sCpu | formatPrice}}
                             </p>
                             <p class="text-price-unit">
-                              0
+                              {{ price.k8sCpuUnit | formatPrice}}
                             </p>
                           </div>
                         </nz-form-control>
@@ -966,10 +1021,10 @@
                         <nz-form-label class="custom-label">RAM (<span style="color:red">*</span>)</nz-form-label>
                         <nz-form-control>
                           <nz-row>
-                            <nz-input-number style="width: 100%; margin-left: -1px" nzMin="0"
-                              nzMax="1000" nzStep="1" [(ngModel)]="numberKafka"
+                            <nz-input-number style="width: 100%; margin-left: -1px" [nzMin]="4"
+                              [nzMax]="1000" [nzStep]="1" [(ngModel)]="numberk8sRam"
                               (keydown)="checkPossiblePress($event)"
-                              (ngModelChange)="onInputMax($event,1000,'kafka')"
+                              (ngModelChange)="onChangeMinStepMax($event,4,1,1000,'k8s-ram')"
                               [ngModelOptions]="{ standalone: true }" nzSize="large"></nz-input-number>
                           </nz-row>
                         </nz-form-control>
@@ -983,10 +1038,10 @@
                         <nz-form-control>
                           <div class="centered">
                             <p class="text-custom-price">
-                             0
+                              {{price.k8sRam | formatPrice}}
                             </p>
                             <p class="text-price-unit">
-                              0
+                              {{price.k8sRamUnit | formatPrice}}
                             </p>
                           </div>
                         </nz-form-control>
@@ -999,10 +1054,10 @@
                         <nz-form-label class="custom-label">Dung lượng lưu trữ SSD (<span style="color:red">*</span>)</nz-form-label>
                         <nz-form-control>
                           <nz-row>
-                            <nz-input-number style="width: 100%; margin-left: -1px" nzMin="0"
-                              nzMax="4000" nzStep="10" [(ngModel)]="numberKubernetesSSD"
+                            <nz-input-number style="width: 100%; margin-left: -1px" [nzMin]="20"
+                              [nzMax]="4000" [nzStep]="10" [(ngModel)]="numberk8sSsd"
                               (keydown)="checkPossiblePress($event)"
-                              (ngModelChange)="onInputMax($event,4000,'kubernetesSSD')"
+                              (ngModelChange)="onChangeMinStepMax($event,20,1,4000,'k8s-ssd')"
                               [ngModelOptions]="{ standalone: true }" nzSize="large"></nz-input-number>
                           </nz-row>
                         </nz-form-control>
@@ -1016,10 +1071,10 @@
                         <nz-form-control>
                           <div class="centered">
                             <p class="text-custom-price">
-                             0
+                              {{price.k8sSsd | formatPrice}}
                             </p>
                             <p class="text-price-unit">
-                              0
+                              {{price.k8sSsdUnit | formatPrice}}
                             </p>
                           </div>
                         </nz-form-control>
@@ -1052,9 +1107,9 @@
                         <nz-form-label class="custom-label">CPU (vCPU)(<span style="color:red">*</span>) </nz-form-label>
                         <nz-form-control>
                           <nz-row>
-                            <nz-input-number style="width: 100%;margin-left: -1px" [nzMin]="minBlock"
-                              [nzStep]="stepBlock" [nzMax]="maxBlock" (keydown)="checkPossiblePress($event)"
-                              [(ngModel)]="numberFileSystem" (ngModelChange)="onInputChange($event, 'fileSystem')"
+                            <nz-input-number style="width: 100%;margin-left: -1px" [nzMin]="1"
+                            [nzStep]="1" [nzMax]="1000" (keydown)="checkPossiblePress($event)"
+                              [(ngModel)]="numberkafkaCpu" (ngModelChange)="onChangeMinStepMax($event,1,1,1000,'kafka-cpu')"
                               [ngModelOptions]="{ standalone: true }" nzSize="large"></nz-input-number>
                           </nz-row>
                         </nz-form-control>
@@ -1068,10 +1123,10 @@
                         <nz-form-control>
                           <div class="centered">
                             <p class="text-custom-price">
-                              0
+                              {{price.kafkaCpu | formatPrice}}
                             </p>
                             <p class="text-price-unit">
-                              0
+                              {{price.kafkaCpuUnit | formatPrice}}
                             </p>
                           </div>
                         </nz-form-control>
@@ -1084,10 +1139,10 @@
                         <nz-form-label class="custom-label">RAM (GB) (<span style="color:red">*</span>)</nz-form-label>
                         <nz-form-control>
                           <nz-row>
-                            <nz-input-number style="width: 100%; margin-left: -1px" [nzMin]="minBlock"
-                              [nzMax]="maxBlock" [nzStep]="stepBlock" [(ngModel)]="numberFileScnapsshot"
+                            <nz-input-number style="width: 100%; margin-left: -1px" [nzMin]="1" [nzStep]="1"
+                              [nzMax]="1000"  [(ngModel)]="numberkafkaRam"
                               (keydown)="checkPossiblePress($event)"
-                              (ngModelChange)="onInputChange($event, 'fileSnapshot')"
+                              (ngModelChange)="onChangeMinStepMax($event,1,1,1000,'kafka-ram')"
                               [ngModelOptions]="{ standalone: true }" nzSize="large"></nz-input-number>
                           </nz-row>
                         </nz-form-control>
@@ -1101,10 +1156,10 @@
                         <nz-form-control>
                           <div class="centered">
                             <p class="text-custom-price">
-                             0
+                              {{price.kafkaRam | formatPrice}}
                             </p>
                             <p class="text-price-unit">
-                              0
+                              {{price.kafkaRamUnit | formatPrice}}
                             </p>
                           </div>
                         </nz-form-control>
@@ -1117,10 +1172,10 @@
                         <nz-form-label class="custom-label">Storage (GB) (<span style="color:red">*</span>)</nz-form-label>
                         <nz-form-control>
                           <nz-row>
-                            <nz-input-number style="width: 100%; margin-left: -1px" [nzMin]="minBlock"
-                              [nzMax]="maxBlock" [nzStep]="stepBlock" [(ngModel)]="numberFileScnapsshot"
+                            <nz-input-number style="width: 100%; margin-left: -1px" [nzMin]="1"
+                              [nzMax]="10240" [nzStep]="10" [(ngModel)]="numberkafkaStorage"
                               (keydown)="checkPossiblePress($event)"
-                              (ngModelChange)="onInputChange($event, 'fileSnapshot')"
+                              (ngModelChange)="onChangeMinStepMax($event,1,10,10240,'kafka-storage')"
                               [ngModelOptions]="{ standalone: true }" nzSize="large"></nz-input-number>
                           </nz-row>
                         </nz-form-control>
@@ -1134,10 +1189,10 @@
                         <nz-form-control>
                           <div class="centered">
                             <p class="text-custom-price">
-                             0
+                              {{price.kafkaStorage | formatPrice}}
                             </p>
                             <p class="text-price-unit">
-                              0
+                              {{price.kafkaStorageUnit | formatPrice}}
                             </p>
                           </div>
                         </nz-form-control>
@@ -1170,9 +1225,9 @@
                         <nz-form-label class="custom-label">CPU (vCPU)(<span style="color:red">*</span>) </nz-form-label>
                         <nz-form-control>
                           <nz-row>
-                            <nz-input-number style="width: 100%;margin-left: -1px" [nzMin]="minBlock"
-                              [nzStep]="stepBlock" [nzMax]="maxBlock" (keydown)="checkPossiblePress($event)"
-                              [(ngModel)]="numberFileSystem" (ngModelChange)="onInputChange($event, 'fileSystem')"
+                            <nz-input-number style="width: 100%;margin-left: -1px" [nzMin]="2"
+                            [nzMax]="1000" [nzStep]="1" (keydown)="checkPossiblePress($event)"
+                              [(ngModel)]="numbermongoCpu" (ngModelChange)="onChangeMinStepMax($event,2,1,1000,'mongo-cpu')"
                               [ngModelOptions]="{ standalone: true }" nzSize="large"></nz-input-number>
                           </nz-row>
                         </nz-form-control>
@@ -1186,10 +1241,10 @@
                         <nz-form-control>
                           <div class="centered">
                             <p class="text-custom-price">
-                              0
+                              {{price.mongoCpu | formatPrice}}
                             </p>
                             <p class="text-price-unit">
-                              0
+                              {{price.mongoCpuUnit | formatPrice}}
                             </p>
                           </div>
                         </nz-form-control>
@@ -1202,10 +1257,10 @@
                         <nz-form-label class="custom-label">RAM (GB) (<span style="color:red">*</span>)</nz-form-label>
                         <nz-form-control>
                           <nz-row>
-                            <nz-input-number style="width: 100%; margin-left: -1px" [nzMin]="minBlock"
-                              [nzMax]="maxBlock" [nzStep]="stepBlock" [(ngModel)]="numberFileScnapsshot"
+                            <nz-input-number style="width: 100%; margin-left: -1px" [nzMin]="4"
+                            [nzMax]="1000" [nzStep]="1" [(ngModel)]="numbermongoRam"
                               (keydown)="checkPossiblePress($event)"
-                              (ngModelChange)="onInputChange($event, 'fileSnapshot')"
+                              (ngModelChange)="onChangeMinStepMax($event,4,1,1000,'mongo-ram')"
                               [ngModelOptions]="{ standalone: true }" nzSize="large"></nz-input-number>
                           </nz-row>
                         </nz-form-control>
@@ -1219,10 +1274,10 @@
                         <nz-form-control>
                           <div class="centered">
                             <p class="text-custom-price">
-                             0
+                              {{price.mongoRam | formatPrice}}
                             </p>
                             <p class="text-price-unit">
-                              0
+                              {{price.mongoRamUnit | formatPrice}}
                             </p>
                           </div>
                         </nz-form-control>
@@ -1235,10 +1290,10 @@
                         <nz-form-label class="custom-label">Storage (GB) (<span style="color:red">*</span>)</nz-form-label>
                         <nz-form-control>
                           <nz-row>
-                            <nz-input-number style="width: 100%; margin-left: -1px" [nzMin]="minBlock"
-                              [nzMax]="maxBlock" [nzStep]="stepBlock" [(ngModel)]="numberFileScnapsshot"
+                            <nz-input-number style="width: 100%; margin-left: -1px" [nzMin]="80"
+                            [nzMax]="10240" [nzStep]="10" [(ngModel)]="numbermongoStorage"
                               (keydown)="checkPossiblePress($event)"
-                              (ngModelChange)="onInputChange($event, 'fileSnapshot')"
+                              (ngModelChange)="onChangeMinStepMax($event,80,10,10240,'mongo-storage')"
                               [ngModelOptions]="{ standalone: true }" nzSize="large"></nz-input-number>
                           </nz-row>
                         </nz-form-control>
@@ -1252,10 +1307,10 @@
                         <nz-form-control>
                           <div class="centered">
                             <p class="text-custom-price">
-                             0
+                              {{price.mongoStorage | formatPrice}}
                             </p>
                             <p class="text-price-unit">
-                              0
+                             {{price.mongoStorageUnit | formatPrice}}
                             </p>
                           </div>
                         </nz-form-control>
@@ -1266,7 +1321,7 @@
               </div>
               <nz-alert class="ant-alert-warning-custom" nzType="warning" nzDescription="VNPT DocumentDB for MongoDB tương thích với MongoDB, giúp doanh nghiệp dễ dàng quản lý, mở rộng và bảo mật dữ liệu mà không cần tự quản lý hạ tầng."
                 nzShowIcon></nz-alert>
-            </div> -->
+            </div>
           </div>
         </nz-card>
       </div>

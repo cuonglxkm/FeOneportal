@@ -90,7 +90,7 @@
         </nz-row>
         <nz-row>
           <nz-col style="width: 100%">
-            <button style="width: 100%" nz-button nzSize="large" nzType="primary" (click)="createIpPublic()" [nzLoading]="loadingCalculate"
+            <button style="width: 100%" nz-button nzSize="large" nzType="primary" (click)="createIpFloating()" [nzLoading]="loadingCalculate"
                     [disabled]="form.invalid || loadingCalculate">
               <span nz-icon nzType="wallet" nzTheme="outline"></span>
               <span [style.color]="form.invalid || loadingCalculate? 'gray' : 'white'">{{'app.button.create' | i18n}}</span>

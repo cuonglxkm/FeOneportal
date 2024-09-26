@@ -93,7 +93,6 @@ export class BucketListComponent implements OnInit {
       this.region = RegionID.ADVANCE;
     }
     this.hasObjectStorageInfo();
-    this.reloadTable()
     //connect hub
     this.notificationService.connection.on('UpdateOSBucket', (data) => {
       if (data) {
@@ -316,11 +315,6 @@ export class BucketListComponent implements OnInit {
             this.notification.error(
               e.statusText,
               this.i18n.fanyi('app.non.permission', { serviceName: 'Danh sách Bucket' })
-            );
-          } else {
-            this.notification.error(
-              this.i18n.fanyi('app.status.fail'),
-              this.i18n.fanyi('app.bucket.getBucket.fail')
             );
           }
         },

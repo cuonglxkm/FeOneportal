@@ -84,6 +84,17 @@ export class ProjectUpdateComponent implements OnInit {
   numberFileSystem: number = 0;
   numberFileScnapsshot: number = 0;
 
+  numberk8sCpu: number = 0;
+  numberk8sRam: number = 0;
+  numberk8sSsd: number = 0;
+  numberkafkaCpu: number = 0;
+  numberkafkaRam: number = 0;
+  numberkafkaStorage: number = 0;
+  numbermongoCpu: number = 0;
+  numbermongoRam: number = 0;
+  numbermongoStorage: number = 0;
+  numberCloudBackup:number=0;
+
 
   siteToSiteId: number;
   sitetositeName: string;
@@ -112,6 +123,15 @@ export class ProjectUpdateComponent implements OnInit {
 
   activeSnapshot = false;
   trashSnapshot = false;
+
+  activeKubernetes = false;
+  trashKubernetes = false;
+  activeKafka = false;
+  trashKafka = false;
+  activeMongoDB = false;
+  trashMongoDB = false;
+  activeCloudBackup=false;
+  trashCloudBackup=false;
 
   offerIdOld: number = 0;
   vCPUOld = 0;
@@ -145,6 +165,18 @@ export class ProjectUpdateComponent implements OnInit {
 
   ipOld: string = '';
   ipNameOld: string = '';
+
+  numberk8sCpuOld: number = 0;
+  numberk8sRamOld: number = 0;
+  numberk8sSsdOld: number = 0;
+  numberkafkaCpuOld: number = 0;
+  numberkafkaRamOld: number = 0;
+  numberkafkaStorageOld: number = 0;
+  numbermongoCpuOld: number = 0;
+  numbermongoRamOld: number = 0;
+  numbermongoStorageOld: number = 0;
+  numberCloudBackupOld:number=0;
+
 
 
 
@@ -187,7 +219,28 @@ export class ProjectUpdateComponent implements OnInit {
     filestorageSnapshot: 0,
     filestorageSnapshotUnit: 0,
     siteToSite: 0,
-    siteToSiteUnit: 0
+    siteToSiteUnit: 0,
+
+    k8sCpuUnit: 0,
+    k8sCpu: 0,
+    k8sRamUnit: 0,
+    k8sRam: 0,
+    k8sSsdUnit: 0,
+    k8sSsd: 0,
+    mongoCpuUnit: 0,
+    mongoCpu: 0,
+    mongoRamUnit: 0,
+    mongoRam: 0,
+    mongoStorageUnit: 0,
+    mongoStorage: 0,
+    kafkaCpuUnit: 0,
+    kafkaCpu: 0,
+    kafkaRamUnit: 0,
+    kafkaRam: 0,
+    kafkaStorageUnit: 0,
+    kafkaStorage: 0,
+    cloudBackup:0,
+    cloudBackupUnit:0
   };
   newgpu: any
   checkPackage: boolean = true;
@@ -239,17 +292,13 @@ export class ProjectUpdateComponent implements OnInit {
     name: new FormControl({ value: 'loading data....', disabled: false }, { validators: [Validators.required, Validators.pattern(/^[A-Za-z0-9]+$/),] }),
     description: new FormControl({ value: 'loading data....', disabled: false }),
     numOfMonth: new FormControl({ value: 1, disabled: true }, { validators: [Validators.required] }),
-    //tab 1
-    //tab 2
-    // vCPU: new FormControl(1, {validators: this.selectIndexTab === 1 ? [Validators.required] : []}),
-    // ram: new FormControl(1, {validators: this.selectIndexTab === 1 ? [Validators.required] : []}),
-    // hhd: new FormControl(0),
-    // ssd: new FormControl(0),
+    
   });
   private readonly debounceTimeMs = 500;
   private inputChangeSubject = new Subject<{ value: number, name: string }>();
   private inputChangeMax = new Subject<{ value: number, max: number, name: string }>();
   private inputGPUMax = new Subject<{ index: number, max: number, value: number }>();
+  private inputChangeMinStepMax = new Subject<{ value: number, min: number, step: number, max: number, name: string }>();
   disisable = true;
 
   constructor(@Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
@@ -271,6 +320,7 @@ export class ProjectUpdateComponent implements OnInit {
       debounceTime(500)
     ).subscribe(data => this.checkNumberInput(data.value, data.name));
     this.inputChangeMax.pipe(debounceTime(800)).subscribe(data => this.checkNumberInputNoBlock(data.value, data.max, data.name));
+    this.inputChangeMinStepMax.pipe(debounceTime(500)).subscribe(data => this.checkNumberInputStep(data.value, data.min, data.step, data.max, data.name));
     this.inputGPUMax.pipe(debounceTime(800)).subscribe(data => this.getValues(data.index, data.max, data.value));
   }
 
@@ -359,7 +409,16 @@ export class ProjectUpdateComponent implements OnInit {
         // NewGpuQuotas: this.data?.gpuProjects ? this.gpuQuotasGobal : this.newgpu,
         gpuQuotas: this.isChangegpu ? this.newgpu : this.gpuOld,
 
-
+        NewQuotaK8sCpu: this.numberk8sCpu+ this.numberk8sCpuOld,
+        NewQuotaK8sRam: this.numberk8sRam + this.numberk8sRamOld,
+        NewQuotaK8sStorage: this.numberk8sSsd + this.numberk8sSsdOld,
+        NewQuotaMongoCpu: this.numbermongoCpu + this.numbermongoCpuOld,
+        NewQuotaMongoRam: this.numbermongoRam + this.numbermongoRamOld,
+        NewQuotaMongoStorage: this.numbermongoStorage + this.numbermongoStorageOld,
+        NewQuotaKafkaCpu:this.numberkafkaCpu + this.numberkafkaCpuOld,
+        NewQuotaKafkaRam:this.numberkafkaRam + this.numberkafkaRamOld,
+        NewQuotaKafkaStorage: this.numberkafkaStorage + this.numberkafkaStorageOld,
+        NewQuotaCloudBackup: this.numberCloudBackup + this.numberCloudBackupOld,
 
         newQuotaSecurityGroupCount: this.numberSecurityGroup,
         newQuotaNetworkCount: this.numberNetwork,
@@ -562,8 +621,16 @@ export class ProjectUpdateComponent implements OnInit {
 
         gpuQuotas: this.isChangegpu ? this.newgpu : this.gpuOld,
 
-        // gpuQuotas: this.newgpu  ?this.newgpu : this.gpuOld,
-        // gpuQuotas: (this.gpuQuotasGobal && this.gpuQuotasGobal.length > 0) ?this.newgpu : this.gpuOld,
+        NewQuotaK8sCpu: this.numberk8sCpu+ this.numberk8sCpuOld,
+        NewQuotaK8sRam: this.numberk8sRam + this.numberk8sRamOld,
+        NewQuotaK8sStorage: this.numberk8sSsd + this.numberk8sSsdOld,
+        NewQuotaMongoCpu: this.numbermongoCpu + this.numbermongoCpuOld,
+        NewQuotaMongoRam: this.numbermongoRam + this.numbermongoRamOld,
+        NewQuotaMongoStorage: this.numbermongoStorage + this.numbermongoStorageOld,
+        NewQuotaKafkaCpu:this.numberkafkaCpu + this.numberkafkaCpuOld,
+        NewQuotaKafkaRam:this.numberkafkaRam + this.numberkafkaRamOld,
+        NewQuotaKafkaStorage: this.numberkafkaStorage + this.numberkafkaStorageOld,
+        NewQuotaCloudBackup: this.numberCloudBackup + this.numberCloudBackupOld,
 
         newQuotaSecurityGroupCount: this.numberSecurityGroup,
         newQuotaNetworkCount: this.numberNetwork,
@@ -634,11 +701,7 @@ export class ProjectUpdateComponent implements OnInit {
             );
           },
         });
-      // var returnPath: string = window.location.pathname;
-      // this.router.navigate(['/app-smart-cloud/order/cart'], { state: { data: request, path: returnPath } });
-
-      // var returnPath: string = window.location.pathname;
-      // this.router.navigate(['/app-smart-cloud/order/cart'], { state: { data: request, path: returnPath } });
+     
     }
   }
   // openIpSubnet() {
@@ -708,6 +771,16 @@ export class ProjectUpdateComponent implements OnInit {
           this.gpuOld = data.gpuProjects;
           this.snapshothddOld = data.quotaVolumeSnapshotHddInGb;
           this.snapshotssdOld = data.quotaVolumeSnapshotSsdInGb;
+          this.numberCloudBackupOld = data.quotaCloudBackup;
+          this.numberk8sCpuOld = data.quotaK8sCpu;
+          this.numberk8sRamOld = data.quotaK8sRam;
+          this.numberk8sSsdOld = data.quotaK8sStorage;
+          this.numberkafkaCpuOld = data.quotaKafkaCpu;
+          this.numberkafkaRamOld = data.quotaKafkaRam;
+          this.numberkafkaStorageOld = data.quotaKafkaStorage;
+          this.numbermongoCpuOld = data.quotaMongoCpu;
+          this.numbermongoRamOld = data.quotaMongoRam;
+          this.numbermongoStorageOld = data.quotaMongoStorage;
 
           this.numberNetwork = data.quotaNetworkCount;
           this.numberRouter = data.quotaRouterCount;
@@ -873,6 +946,46 @@ export class ProjectUpdateComponent implements OnInit {
         this.price.snapshotssd = item.totalAmount.amount;
         this.price.snapshotssdUnit = item.unitPrice.amount;
       }
+      else if (item.typeName == 'k8s-cpu') {
+        this.price.k8sCpu = item.totalAmount.amount;
+        this.price.k8sCpuUnit = item.unitPrice.amount;
+      }
+      else if (item.typeName == 'k8s-ram') {
+        this.price.k8sRam = item.totalAmount.amount;
+        this.price.k8sRamUnit = item.unitPrice.amount;
+      }
+      else if (item.typeName == 'k8s-storage') {
+        this.price.k8sSsd = item.totalAmount.amount;
+        this.price.k8sSsdUnit = item.unitPrice.amount;
+      }
+      else if (item.typeName == 'mongodb-cpu') {
+        this.price.mongoCpu = item.totalAmount.amount;
+        this.price.mongoCpuUnit = item.unitPrice.amount;
+      }
+      else if (item.typeName == 'mongodb-ram') {
+        this.price.mongoRam = item.totalAmount.amount;
+        this.price.mongoRamUnit = item.unitPrice.amount;
+      }
+      else if (item.typeName == 'mongodb-storage') {
+        this.price.mongoStorage = item.totalAmount.amount;
+        this.price.mongoStorageUnit = item.unitPrice.amount;
+      }
+      else if (item.typeName == 'kafka-cpu') {
+        this.price.kafkaCpu = item.totalAmount.amount;
+        this.price.kafkaCpuUnit = item.unitPrice.amount;
+      }
+      else if (item.typeName == 'kafka-ram') {
+        this.price.kafkaRam = item.totalAmount.amount;
+        this.price.kafkaRamUnit = item.unitPrice.amount;
+      }
+      else if (item.typeName == 'kafka-storage') {
+        this.price.kafkaStorage = item.totalAmount.amount;
+        this.price.kafkaStorageUnit = item.unitPrice.amount;
+      }
+      else if (item.typeName == 'cloud-backup') {
+        this.price.cloudBackup = item.totalAmount.amount;
+        this.price.cloudBackupUnit = item.unitPrice.amount;
+      }
     }
     // this.price.fileStorage = fileStorage;
   }
@@ -944,6 +1057,9 @@ export class ProjectUpdateComponent implements OnInit {
   }
   onInputMax(value: number, max: number, name: string): void {
     this.inputChangeMax.next({ value, max, name });
+  }
+  onChangeMinStepMax(value: number, min: number, step: number, max: number, name: string): void {
+    this.inputChangeMinStepMax.next({ value, min, step, max, name });
   }
   gpuMax(index: number, max: number, value: number) {
     this.inputGPUMax.next({ index, max, value })
@@ -1045,6 +1161,61 @@ export class ProjectUpdateComponent implements OnInit {
         break;
       case "loadbalancer":
         this.numberLoadBalancer = number;
+        break;
+    }
+    this.calculate();
+  }
+  checkNumberInputStep(value: number, min: number, step: number, max: number, name: string): void {
+    const messageStepNotification = `Số lượng phải chia hết cho ${step}`;
+    const messageMaxNotification = `Vượt quá số lượng max ${max}`;
+    const messageMinNotification = `Nhỏ hơn số lượng min ${min}`;
+
+    const numericValue = Number(value);
+    let number = value;
+
+    if (number < min) {
+      this.notification.warning('', messageMinNotification);
+      number = min;
+    }
+
+    else if (number > max) {
+      this.notification.warning('', messageMaxNotification);
+      number = max;
+    }
+    else if (number % step !== 0) {
+      this.notification.warning('', messageStepNotification);
+      number = Math.floor(number / step) * step;
+    }
+    switch (name) {
+      case "k8s-cpu":
+        this.numberk8sCpu = value;
+        break;
+      case "k8s-ram":
+        this.numberk8sRam = number;
+        break;
+      case "k8s-ssd":
+        this.numberk8sSsd = number;
+        break;
+      case "kafka-cpu":
+        this.numberkafkaCpu = number;
+        break;
+      case "kafka-ram":
+        this.numberkafkaRam = number;
+        break;
+      case "kafka-storage":
+        this.numberkafkaStorage = number;
+        break;
+      case "mongo-cpu":
+        this.numbermongoCpu = number;
+        break;
+      case "mongo-ram":
+        this.numbermongoRam = number;
+        break;
+      case "mongo-storage":
+        this.numbermongoStorage = number;
+        break;
+        case "cloud-backup":
+        this.numberCloudBackup = number;
         break;
     }
     this.calculate();
@@ -1306,6 +1477,65 @@ export class ProjectUpdateComponent implements OnInit {
     this.activeSnapshot = false;
     this.trashSnapshot = false;
   }
+  initKubernetes() {
+    this.activeKubernetes = true;
+    this.trashKubernetes = true;
+    this.numberk8sCpu = 2;
+    this.numberk8sRam = 4;
+    this.numberk8sSsd = 20;
+    this.calculate()
+  }
+  deleteKubernetes() {
+    this.activeKubernetes = false;
+    this.trashKubernetes = false;
+    this.numberk8sCpu = 0;
+    this.numberk8sRam = 0;
+    this.numberk8sSsd = 0;
+    this.calculate()
+  }
+  initKafka() {
+    this.activeKafka = true;
+    this.trashKafka = true;
+    this.numberkafkaCpu = 1;
+    this.numberkafkaRam = 1;
+    this.numberkafkaStorage = 1;
+    this.calculate()
+  }
+  deleteKafka() {
+    this.activeKafka = false;
+    this.trashKafka = false;
+    this.numberkafkaCpu = 0;
+    this.numberkafkaRam = 0;
+    this.numberkafkaStorage = 0;
+    this.calculate()
+  }
+  initMongoDB() {
+    this.activeMongoDB = true;
+    this.trashMongoDB = true;
+    this.numbermongoCpu = 2;
+    this.numbermongoRam = 4;
+    this.numbermongoStorage = 80;
+    this.calculate()
+  }
+  deleteMongoDB() {
+    this.activeMongoDB = false;
+    this.trashMongoDB = false;
+    this.numbermongoCpu = 0;
+    this.numbermongoRam = 0;
+    this.numbermongoStorage = 0;
+    this.calculate()
+  }
+  initCloudBackup(){
+    this.activeCloudBackup=true;
+    this.trashCloudBackup= true;
+  }
+  deleteCloudBackup(){
+    this.activeCloudBackup=false;
+    this.trashCloudBackup= false;
+    this.numberCloudBackup=0;
+    this.calculate()
+  }
+
    // chon dai ip public
    changeRangeIpPublic(value:any){
     console.log("range ip public", value)

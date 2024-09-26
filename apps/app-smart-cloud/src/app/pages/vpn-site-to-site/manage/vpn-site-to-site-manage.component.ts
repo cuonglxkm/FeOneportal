@@ -4,7 +4,7 @@ import { getCurrentRegionAndProject } from '@shared';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
 import { VpnSiteToSiteService } from 'src/app/shared/services/vpn-site-to-site.service';
-import { ProjectModel, RegionModel } from '../../../../../../../libs/common-utils/src';
+import { NotificationService, ProjectModel, RegionModel } from '../../../../../../../libs/common-utils/src';
 import { PolicyService } from 'src/app/shared/services/policy.service';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from '@core';
@@ -36,7 +36,8 @@ export class VpnSiteToSiteManage {
     private route: ActivatedRoute,
     private notification: NzNotificationService,
     @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
-    private policyService: PolicyService
+    private policyService: PolicyService,
+    private notificationService: NotificationService,
   ) {
   }
 
@@ -84,6 +85,22 @@ export class VpnSiteToSiteManage {
     this.route.queryParams.subscribe(params => {
       const tab = params['tab'];
       this.selectedIndex = tab ? +tab : 0;
+    });
+    this.notificationService.connection.on('UpdateVolume', (message) => {
+      if (message) {
+        switch (message.actionType) {
+          case 'CREATING':
+          case 'CREATED':
+          case 'RESIZING':
+          case 'RESIZED':
+          case 'EXTENDING':
+          case 'EXTENDED':
+          case 'DELETED':
+          case 'DELETING':
+            this.getData(true);
+            break;
+        }
+      }
     });
   }
 
