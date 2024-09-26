@@ -35,6 +35,12 @@ export class ProjectDetailComponent implements OnInit {
   percentSSD: number = 0;
   percentIPFloating: number = 0;
   percentBackup: number = 0;
+  percentIpPublic: number = 0;
+  percentIpv6: number = 0;
+  percentNetwork: number = 0;
+  percentSecurityGroup: number = 0;
+  percentRouter: number = 0;
+  
   loading = true;
   todayNow: Date;
   totalUsed: TotalUsedModel;
@@ -138,7 +144,13 @@ export class ProjectDetailComponent implements OnInit {
           this.percentIPFloating = Math.round((this.totalUsed.ipFloatingCount / this.totalLimit.quotaIpFloatingCount) * 100)
           this.percentBackup = Math.round((this.totalUsed.backup / this.totalLimit.quotaBackupVolumeInGb) * 100)
 
+          this.percentIpPublic = Math.round((this.totalUsed.ipPublicCount / this.totalLimit.quotaIpPublicCount) * 100)
+          this.percentIpv6= Math.round((this.totalUsed.ipv6Count/this.totalLimit.quotaIpv6Count)*100)
+          this.percentNetwork = Math.round((this.totalUsed.networkCount / this.totalLimit.quotaNetworkCount) * 100)
+          this.percentSecurityGroup = Math.round((this.totalUsed.securityGroupCount / this.totalLimit.quotaSecurityGroupCount) * 100)
+          this.percentRouter = Math.round((this.totalUsed.routerCount / this.totalLimit.quotaRouterCount) * 100)
 
+          
           this.totalLimit?.gpuProjects.forEach((limitGpu: any) => {
             const matchingAvailableGpu = this.totalUsed.gpuUsages.find((availGpu: any) => availGpu.gpuOfferId == limitGpu.gpuOfferId);
             if (matchingAvailableGpu) {

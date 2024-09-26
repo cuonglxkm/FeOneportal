@@ -47,7 +47,17 @@ export class VpcModel {
     hdd: number,
     ssd: number,
     ipPublic: number
-  }
+  };
+  quotaCloudBackup:number;
+  quotaK8sCpu:number;
+  quotaK8sRam:number;
+  quotaK8sStorage:number;
+  quotaKafkaCpu:number;
+  quotaKafkaRam:number;
+  quotaKafkaStorage:number;
+  quotaMongoCpu:number;
+  quotaMongoRam:number;
+  quotaMongoStorage:number;
 }
 
 export class TotalVpcResource {
