@@ -119,7 +119,10 @@ export class ListenerUpdateComponent implements OnInit, OnChanges {
       sslCert: this.protocolListener == 'TERMINATED_HTTPS' ? this.certId : '',
       idleTimeOutClient: this.validateForm.controls['timeout'].value,
       name: this.validateForm.controls['listenerName'].value,
-      DefaultPoolId: this.selectedPool
+      DefaultPoolId: this.selectedPool,
+      XFor: this.xFor,
+        XProto:this.xProto,
+        XPort:this.xPort  ,
     };
     this.service.updateListener(data).subscribe(
       data => {
@@ -169,10 +172,10 @@ export class ListenerUpdateComponent implements OnInit, OnChanges {
         this.getPool(this.activatedRoute.snapshot.paramMap.get('id'));
        
         this.getListL7Policy(this.activatedRoute.snapshot.paramMap.get('id'));
-
-        // this.xFor = data.XFor
-        // this.xProto = data.XProto
-        // this.xPort = data.XPort
+        this.selectedPool= data.DefaultPoolId
+        this.xFor = data.XFor;
+        this.xProto = data.XProto;
+        this.xPort = data.XPort;
 
       this.getListPoolForListener();
         if( this.protocolListener == 'TERMINATED_HTTPS' ||  this.protocolListener == 'HTTP'){
