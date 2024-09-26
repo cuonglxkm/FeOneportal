@@ -38,7 +38,7 @@ export class ListenerUpdateComponent implements OnInit, OnChanges {
     poolName: FormControl<number>
   }> = this.fb.group({
     listenerName: ['', [Validators.required,
-      Validators.pattern(/^[a-zA-Z0-9_]*$/), Validators.maxLength(50)]],
+    Validators.pattern(/^[a-zA-Z0-9_]*$/), Validators.maxLength(50)]],
     port: [0, Validators.required],
     member: [1],
     connection: [1],
@@ -50,9 +50,9 @@ export class ListenerUpdateComponent implements OnInit, OnChanges {
   });
   protocolListener: any;
   listAlgorithm = [
-    {value:'ROUND_ROBIN',name:'Round robin'},
-    {value:'LEAST_CONNECTIONS',name:'Least connections'},
-    {value:'SOURCE_IP',name:'source ip'},
+    { value: 'ROUND_ROBIN', name: 'Round robin' },
+    { value: 'LEAST_CONNECTIONS', name: 'Least connections' },
+    { value: 'SOURCE_IP', name: 'source ip' },
   ];
 
   currentPageData: L7Policy[]
@@ -67,29 +67,35 @@ export class ListenerUpdateComponent implements OnInit, OnChanges {
   data: any;
   listCert: any = null;
   certId: any;
-  isAddHeader:boolean = false;
-  xFor: boolean = false;  
+  isAddHeader: boolean = false;
+  xFor: boolean = false;
   xProto: boolean = false;
   xPort: boolean = false;
-
+  // xFor: string;
+  // xProto: string;
+  // xPort: boolean = false;
+  selectedPool: string;
   @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
   constructor(private router: Router,
-              private fb: NonNullableFormBuilder,
-              private service: ListenerService,
-              private notification: NzNotificationService,
-              private activatedRoute: ActivatedRoute,
-              private cdr: ChangeDetectorRef,
-              @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
-              @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
-              private loadBalancerService: LoadBalancerService) {
+    private fb: NonNullableFormBuilder,
+    private service: ListenerService,
+    private notification: NzNotificationService,
+    private activatedRoute: ActivatedRoute,
+    private cdr: ChangeDetectorRef,
+    @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
+    @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
+    private loadBalancerService: LoadBalancerService) {
   }
 
   ngOnInit(): void {
     this.idLb = Number.parseInt(this.activatedRoute.snapshot.paramMap.get('lbId'));
     this.idListener = this.activatedRoute.snapshot.paramMap.get('id');
     this.loadSSlCert();
+    // 
     this.getData();
+    // this.getListPoolForListener();
     this.cdr.detectChanges();
+
   }
 
   ngOnChanges(changes: SimpleChanges) {
@@ -119,10 +125,13 @@ export class ListenerUpdateComponent implements OnInit, OnChanges {
       sslCert: this.protocolListener == 'TERMINATED_HTTPS' ? this.certId : '',
       idleTimeOutClient: this.validateForm.controls['timeout'].value,
       name: this.validateForm.controls['listenerName'].value,
-      DefaultPoolId: this.selectedPool,
-      XFor: this.xFor,
-        XProto:this.xProto,
-        XPort:this.xPort  ,
+      defaultPoolId: this.selectedPool,
+      // XFor: this.xFor,
+      // XProto: this.xProto,
+      // XPort: this.xPort,
+      xFor:   this.xFor,
+      xProto:this.xProto,
+      xPort:this.xPort
     };
     this.service.updateListener(data).subscribe(
       data => {
@@ -141,7 +150,7 @@ export class ListenerUpdateComponent implements OnInit, OnChanges {
 
   onRegionChange(region: RegionModel) {
     this.regionId = region.regionId;
-    if(this.projectCombobox){
+    if (this.projectCombobox) {
       this.projectCombobox.loadProjects(true, region.regionId);
     }
   }
@@ -151,44 +160,47 @@ export class ListenerUpdateComponent implements OnInit, OnChanges {
   }
 
   private getData() {
-    this.service.getDetail(this.activatedRoute.snapshot.paramMap.get('id'),this.activatedRoute.snapshot.paramMap.get('lbId'))
+    this.service.getDetail(this.activatedRoute.snapshot.paramMap.get('id'), this.activatedRoute.snapshot.paramMap.get('lbId'))
       .pipe(finalize(() => {
         this.loadingDetail = false;
       }))
       .subscribe(
-      data => {
-        this.data = data;
-        console.log("aa", this.data)
-        this.validateForm.controls['listenerName'].setValue(data.name);
-        this.validateForm.controls['port'].setValue(data.port);
-        this.validateForm.controls['timeout'].setValue(data.timeoutClientData);
-        this.validateForm.controls['member'].setValue(data.timeoutMemberData);
-        this.validateForm.controls['connection'].setValue(data.timeoutMemberConnect);
-        this.validateForm.controls['allowCIRR'].setValue(data.allowedCidrs[0]);
-        this.validateForm.controls['description'].setValue(data.description);
-     
-        this.certId = data.certSSL;
-        this.protocolListener = data.protocol;
-        this.getPool(this.activatedRoute.snapshot.paramMap.get('id'));
-       
-        this.getListL7Policy(this.activatedRoute.snapshot.paramMap.get('id'));
-        this.selectedPool= data.DefaultPoolId
-        this.xFor = data.XFor;
-        this.xProto = data.XProto;
-        this.xPort = data.XPort;
+        data => {
+          this.data = data;
+          console.log("aa", this.data)
+          this.validateForm.controls['listenerName'].setValue(data.name);
+          this.validateForm.controls['port'].setValue(data.port);
+          this.validateForm.controls['timeout'].setValue(data.timeoutClientData);
+          this.validateForm.controls['member'].setValue(data.timeoutMemberData);
+          this.validateForm.controls['connection'].setValue(data.timeoutMemberConnect);
+          this.validateForm.controls['allowCIRR'].setValue(data.allowedCidrs[0]);
+          this.validateForm.controls['description'].setValue(data.description);
 
-      this.getListPoolForListener();
-        if( this.protocolListener == 'TERMINATED_HTTPS' ||  this.protocolListener == 'HTTP'){
-          this.isAddHeader= true;
-        }
-        else{
-          this.isAddHeader= false;
-        }
-        // this.poolForListener= this.listPool.filter((item)=>!item.listener_id &&  item.protocol==this.protocolListener)
+          this.certId = data.certSSL;
+          this.protocolListener = data.protocol;
+          this.getPool(this.activatedRoute.snapshot.paramMap.get('id'));
 
-      // console.log("poolForListener",this.listPool)
-      }
-    )
+          this.getListL7Policy(this.activatedRoute.snapshot.paramMap.get('id'));
+
+         
+          this.selectedPool = this.data.defaultPoolId
+          console.log(" this.selectedPool", this.selectedPool)
+         
+        
+          this.xFor = data.xFor;
+          this.xProto = data.xPort;
+          this.xPort = data.xProto;
+          this.getListPoolForListener();
+
+          if (this.protocolListener == 'TERMINATED_HTTPS' || this.protocolListener == 'HTTP') {
+            this.isAddHeader = true;
+          }
+          else {
+            this.isAddHeader = false;
+          }
+          
+        }
+      )
   }
 
   private getListL7Policy(id: string) {
@@ -207,28 +219,28 @@ export class ListenerUpdateComponent implements OnInit, OnChanges {
       })
   }
 
+
   private getPool(id: string) {
     this.loadingPool = true;
     this.service.getPool(id, this.regionId, this.projectId)
-      .pipe(finalize(()=>{
+      .pipe(finalize(() => {
         this.loadingPool = false;
       })).subscribe(
-      data => {
-        this.listPool = data.records;
-        // this.poolForListener= this.listPool.filter((item)=>!item.listener_id &&  item.protocol==this.protocolListener)
-        // console.log("object33",this.listPool)
-        this.loadingPool = false;
-      }
-    )
+        data => {
+          this.listPool = data.records;
+          // this.poolForListener= this.listPool.filter((item)=>!item.listener_id &&  item.protocol==this.protocolListener)
+          // console.log("object33",this.listPool)
+          this.loadingPool = false;
+        }
+      )
   }
-  selectedPool:any;
-  changePoolForListener(value:any){
+
+  changePoolForListener(value: any) {
     this.selectedPool = value;
-    
   }
 
   handleDeleteL7PolicyOk() {
-    setTimeout(() => {this.getListL7Policy(this.idListener)}, 2500)
+    setTimeout(() => { this.getListL7Policy(this.idListener) }, 2500)
   }
 
   handleEditOk() {
@@ -247,7 +259,7 @@ export class ListenerUpdateComponent implements OnInit, OnChanges {
   }
 
   private loadSSlCert() {
-    this.service.loadSSlCert(this.tokenService.get()?.userId,this.regionId,this.projectId).subscribe(
+    this.service.loadSSlCert(this.tokenService.get()?.userId, this.regionId, this.projectId).subscribe(
       data => {
         // debugger
         this.listCert = data;
@@ -255,23 +267,19 @@ export class ListenerUpdateComponent implements OnInit, OnChanges {
       }
     )
   }
-poolForListener:any;
-// lấy ds pool chưa thuộc listenner nào
-getListPoolForListener() {
+  poolForListener: any;
+  // lấy ds pool chưa thuộc listenner nào
+  getListPoolForListener() {
+    this.loadBalancerService.getListPoolInLB(this.idLb).subscribe(
+      data => {
+        this.poolForListener = data.filter((item) => item.id == this.data.defaultPoolId || (!item.listener_id && item.protocol == this.protocolListener));
+        console.log(" this.poolList 123", this.poolForListener)
+     
+      })
 
-  this.loadBalancerService.getListPoolInLB(this.idLb).subscribe({
-    next: (data) => {
-      this.poolForListener = data.filter((item)=>!item.listener_id &&  item.protocol==this.protocolListener);
-      console.log(" this.poolList 123", this.poolForListener)
-    },
-    error: (error) => {
-      this.isLoading = false;
-      this.poolForListener = null;
-    },
-  });
-}
-// lấy trạng thái true/false của xFor, XPort, XProto
-changeChecked(checkboxName:string,value: boolean) {
-  this[checkboxName]= value 
- }
+  }
+  // lấy trạng thái true/false của xFor, XPort, XProto
+  changeChecked(checkboxName: string, value: boolean) {
+    this[checkboxName] = value
+  }
 }

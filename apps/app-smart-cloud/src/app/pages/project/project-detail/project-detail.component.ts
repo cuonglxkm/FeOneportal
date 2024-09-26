@@ -61,6 +61,11 @@ export class ProjectDetailComponent implements OnInit {
   typeVpns2s: boolean;
   typeVm_gpu: boolean;
   url = window.location.pathname;
+  selectedPlatform:string='k8s';
+  listPlatformService=[
+    {label:'VNPT Kubernetes Service',value:'k8s' },
+  {label:'VNPT Streaming For Kafka', value:'kafka'},
+{label:'VNPT DocumentDB for MongoDB', value:'mongodb'}]
 
   formatDone = (): string => `100%`;
   constructor(@Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
@@ -259,6 +264,9 @@ export class ProjectDetailComponent implements OnInit {
         }
       });
     });
+  }
+  changePlaftform(value:string){
+    this.selectedPlatform = value
   }
   // navigateToRegion(){
   //   if (this.region === RegionID.ADVANCE) {

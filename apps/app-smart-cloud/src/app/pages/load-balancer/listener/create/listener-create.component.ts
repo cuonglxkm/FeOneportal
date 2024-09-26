@@ -199,9 +199,9 @@ export class ListenerCreateComponent implements OnInit{
         sslCert: this.protocolListener == 'TERMINATED_HTTPS' ? this.certId : null,
         allowedCIDR: this.validateForm.controls['allowCIRR'].value,
         description: this.validateForm.controls['description'].value,
-        XFor: this.xFor,
-        XProto:this.xProto,
-        XPort:this.xPort
+        xFor: this.xFor,
+        xProto:this.xProto,
+        xPort:this.xPort
       },
       pools : {
         name: this.validateForm.controls['poolName'].value,
