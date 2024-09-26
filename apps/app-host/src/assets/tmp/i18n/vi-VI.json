@@ -3676,5 +3676,5 @@
   "cloud-backup.delete.name.required": "Vui lòng nhập tên Cloud Backup",
   "cloud-backup.intro.title1":"Cloud Backup - Sao lưu, bảo mật",
   "cloud-backup.intro.title2":"Giải pháp sao lưu dữ liệu lên hạ tầng VNPT Cloud với cơ chế backup incremental hoặc backup full",
-  "cloud-backup.intro.subtitle":"Đảm bảo dữ liệu được sao lưu an toàn với nhiều tính năng nâng cao, khả năng khôi phục nhanh trên hạ tầng VNPT Cloud.",
+  "cloud-backup.intro.subtitle":"Đảm bảo dữ liệu được sao lưu an toàn với nhiều tính năng nâng cao, khả năng khôi phục nhanh trên hạ tầng VNPT Cloud."
 }
