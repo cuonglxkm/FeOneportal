@@ -428,6 +428,13 @@ export class RouterDetailComponent implements OnInit {
               this.i18n.fanyi('app.status.fail'),
               this.i18n.fanyi('router.nofitacation.interface.remove.fail2')
             );
+          }else if (
+            e.error.detail.includes('Không thể xoá vì đang được sử dụng trong FloatingIP')
+          ) {
+            this.notification.error(
+              this.i18n.fanyi('app.status.fail'),
+              this.i18n.fanyi('router.nofitacation.interface.remove.fail3')
+            );
           } else {
             this.notification.error(
               this.i18n.fanyi('app.status.fail'),

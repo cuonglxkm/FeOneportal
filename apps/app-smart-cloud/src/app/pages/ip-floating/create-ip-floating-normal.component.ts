@@ -154,101 +154,85 @@ export class CreateIpFloatingNormalComponent implements OnInit {
     this.isVisiblePopupError = false;
   }
 
-  createIpPublic() {
-    this.service
-      .ValidateIpByNetwork(this.regionId, this.ipId)
-      .pipe()
-      .subscribe(
-        (data) => {
-          if (data) {
-            const expiredDate = new Date();
-            expiredDate.setMonth(
-              expiredDate.getMonth() +
-                Number(this.form.controls['numOfMonth'].value)
-            );
-            const requestBody = {
-              customerId: this.tokenService.get()?.userId,
-              vmToAttachId: this.VMId,
-              regionId: this.regionId,
-              projectId: this.projectId,
-              networkId: this.ipId,
-              useIpv6: this.checkIpv6,
-              id: 0,
-              duration: 0,
-              ipAddress: null,
-              offerId: 0,
-              IsFloating: true,
-              vpcId: this.projectId,
-              oneSMEAddonId: null,
-              serviceType: 4,
-              serviceInstanceId: 0,
-              createDate: new Date(),
-              expireDate: expiredDate,
-              saleDept: null,
-              saleDeptCode: null,
-              contactPersonEmail: null,
-              contactPersonPhone: null,
-              contactPersonName: null,
-              note: null,
-              createDateInContract: null,
-              am: null,
-              amManager: null,
-              isTrial: false,
-              couponCode: null,
-              dhsxkd_SubscriptionId: null,
-              dSubscriptionNumber: null,
-              dSubscriptionType: null,
-              oneSME_SubscriptionId: null,
-              actionType: 0,
-              serviceName: null,
-              typeName:
-                'SharedKernel.IntegrationEvents.Orders.Specifications.IPCreateSpecification,SharedKernel.IntegrationEvents, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null',
-              userEmail: null,
-              actorEmail: null,
-            };
-            const request = {
-              customerId: this.tokenService.get()?.userId,
-              createdByUserId: this.tokenService.get()?.userId,
-              note: 'Tạo IP Public',
-              orderItems: [
-                {
-                  orderItemQuantity: 1,
-                  specification: JSON.stringify(requestBody),
-                  specificationType: 'ip_create',
-                  price: this.total.data.totalAmount.amount,
-                  serviceDuration: this.form.controls['numOfMonth'].value,
-                },
-              ],
-            };
-
-            this.orderService.validaterOrder(request).subscribe({
-              next: (data) => {
-                if (data.success) {
-                  var returnPath: string = window.location.pathname;
-                  this.router.navigate(['/app-smart-cloud/order/cart'], {
-                    state: { data: request, path: returnPath },
-                  });
-                } else {
-                  this.isVisiblePopupError = true;
-                  this.errorList = data.data;
-                }
-              },
-              error: (e) => {
-                this.notification.error(
-                  this.i18n.fanyi('app.status.fail'),
-                  e.error.detail
-                );
-              },
-            });
-          } else {
-            this.notification.warning(
-              this.i18n.fanyi('app.status.warning'),
-              this.i18n.fanyi('app.ip.floating23')
-            );
-          }
+  createIpFloating() {
+    const expiredDate = new Date();
+    expiredDate.setMonth(
+      expiredDate.getMonth() + Number(this.form.controls['numOfMonth'].value)
+    );
+    const requestBody = {
+      customerId: this.tokenService.get()?.userId,
+      vmToAttachId: this.VMId,
+      regionId: this.regionId,
+      projectId: this.projectId,
+      networkId: this.ipId,
+      useIpv6: this.checkIpv6,
+      id: 0,
+      duration: 0,
+      ipAddress: null,
+      offerId: 0,
+      IsFloating: true,
+      vpcId: this.projectId,
+      oneSMEAddonId: null,
+      serviceType: 4,
+      serviceInstanceId: 0,
+      createDate: new Date(),
+      expireDate: expiredDate,
+      saleDept: null,
+      saleDeptCode: null,
+      contactPersonEmail: null,
+      contactPersonPhone: null,
+      contactPersonName: null,
+      note: null,
+      createDateInContract: null,
+      am: null,
+      amManager: null,
+      isTrial: false,
+      couponCode: null,
+      dhsxkd_SubscriptionId: null,
+      dSubscriptionNumber: null,
+      dSubscriptionType: null,
+      oneSME_SubscriptionId: null,
+      actionType: 0,
+      serviceName: null,
+      typeName:
+        'SharedKernel.IntegrationEvents.Orders.Specifications.IPCreateSpecification,SharedKernel.IntegrationEvents, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null',
+      userEmail: null,
+      actorEmail: null,
+    };
+    const request = {
+      customerId: this.tokenService.get()?.userId,
+      createdByUserId: this.tokenService.get()?.userId,
+      note: 'Tạo IP Public',
+      orderItems: [
+        {
+          orderItemQuantity: 1,
+          specification: JSON.stringify(requestBody),
+          specificationType: 'ip_create',
+          price: this.total.data.totalAmount.amount,
+          serviceDuration: this.form.controls['numOfMonth'].value,
         },
-        (error) => {}
-      );
+      ],
+    };
+
+    this.orderService.validaterOrder(request).subscribe({
+      next: (data) => {
+        if (data.success) {
+          var returnPath: string = window.location.pathname;
+          this.router.navigate(['/app-smart-cloud/order/cart'], {
+            state: { data: request, path: returnPath },
+          });
+        } else {
+          this.isVisiblePopupError = true;
+          this.errorList = data.data;
+        }
+      },
+      error: (e) => {
+        this.notification.error(
+          this.i18n.fanyi('app.status.fail'),
+          e.error.detail
+        );
+      },
+    });
   }
 
   caculator(event) {

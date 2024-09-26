@@ -10,6 +10,8 @@ import { FormSearchNetwork, NetWorkModel, Port } from '../../../shared/models/vl
 import { FormAction } from '../../../shared/models/ip-floating.model';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from '@core';
+import { LoadBalancerService } from 'src/app/shared/services/load-balancer.service';
+import { AnyARecord } from 'node:dns';
 
 @Component({
   selector: 'one-portal-attach-ip-floating',
@@ -30,7 +32,7 @@ export class AttachIpFloatingComponent implements OnInit {
   isLoadingVlan: boolean = false
   isLoadingPort: boolean = false
 
-  listNetwork: NetWorkModel[] = []
+  listNetwork: any
   listPort: Port[] = []
 
   networkId: string
@@ -43,6 +45,8 @@ export class AttachIpFloatingComponent implements OnInit {
     portId: [null as string, [Validators.required]]
   });
 
+  subnetList: string[]
+
   constructor(private router: Router,
               @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
               private notification: NzNotificationService,
@@ -50,7 +54,8 @@ export class AttachIpFloatingComponent implements OnInit {
               private vlanService: VlanService,
               private ipFloatingService: IpFloatingService,
               @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
-              private fb: NonNullableFormBuilder) {
+              private fb: NonNullableFormBuilder,
+              private loadBalancerService: LoadBalancerService) {
   }
 
   showModal() {
@@ -82,10 +87,9 @@ export class AttachIpFloatingComponent implements OnInit {
         this.isLoading = false;
         if(error && error.error && error.error.type && error.error.type == "Exception" && error.error.message){
           this.notification.error(this.i18n.fanyi('app.status.fail'), error.error.message);
-        } else if (error && error.error && error.error.message && error.error.message.contain("as that fixed IP already has a floating IP on external network")) {
+        } else if (error && error.error && error.error.message && error.error.message.includes("as that fixed IP already has a floating IP on external network")) {
           this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('ip.floating.attach.message'));
-        }
-        else {
+        }else {
           this.notification.error(this.i18n.fanyi('app.status.fail'), this.i18n.fanyi('ip.floating.nofitacation.attach.fail'));
         }
       })
@@ -102,24 +106,56 @@ export class AttachIpFloatingComponent implements OnInit {
   }
 
   getListNetwork() {
-    this.isLoadingVlan = true
+    this.isLoadingVlan = true;
 
-    let formSearchNetwork: FormSearchNetwork = new FormSearchNetwork()
-    formSearchNetwork.region = this.region
-    formSearchNetwork.pageSize = 9999
-    formSearchNetwork.pageNumber = 1
-    formSearchNetwork.networktAddress = null
-    formSearchNetwork.vlanName = null
-    formSearchNetwork.project = this.project
+    let formSearchNetwork: FormSearchNetwork = new FormSearchNetwork();
+    formSearchNetwork.region = this.region;
+    formSearchNetwork.pageSize = 9999;
+    formSearchNetwork.pageNumber = 1;
+    formSearchNetwork.networktAddress = null;
+    formSearchNetwork.vlanName = null;
+    formSearchNetwork.project = this.project;
 
     this.vlanService.getVlanNetworks(formSearchNetwork).subscribe(data => {
-      this.listNetwork = data.records
-      this.isLoadingVlan = false
-    }, error => {
-      this.isLoadingVlan = false
-      this.listNetwork = null
-    })
+        console.log(data.records);
 
+        this.listNetwork = data.records.map(item => {
+                const filteredSubnets = item.subnets.filter(subnet =>
+                    this.subnetList.map(subnetId => subnetId.trim()).includes(subnet.cloudId.trim())
+                );
+                
+                if (filteredSubnets.length > 0) {
+                    return { ...item, subnets: filteredSubnets };
+                } else {
+                    return null;
+                } 
+            })
+            .filter(record => record !== null);
+        
+        console.log(this.listNetwork);
+
+        this.isLoadingVlan = false;
+    }, error => {
+        this.isLoadingVlan = false;
+        this.listNetwork = null;
+    });
+}
+
+
+  getSubnetAddInterface() {
+    this.loadBalancerService.getListSubnetInternetFacing(this.project, this.region)
+      .subscribe(
+        data => {
+          this.subnetList = Object.entries(data)
+          .map(([key, value]) => `${value}`)
+          .join(',').split(',');   
+
+          console.log(this.subnetList);
+          
+      },
+        error => {
+          this.notification.error(this.i18n.fanyi('app.status.fail'), 'Lấy danh sách Subnet thất bại');
+        });
   }
 
   getPortByNetwork(idNetwork) {
@@ -143,5 +179,6 @@ export class AttachIpFloatingComponent implements OnInit {
     let regionAndProject = getCurrentRegionAndProject()
     this.region = regionAndProject.regionId
     this.project = regionAndProject.projectId
+    this.getSubnetAddInterface()
   }
 }

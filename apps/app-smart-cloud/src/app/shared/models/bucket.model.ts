@@ -107,7 +107,7 @@ export class BucketLifecycleCreate {
   lifecycleTagPredicate: LifecycleTagPredicate[] = [];
   isSetExpiration_Day: boolean = false;
   lifecycleRuleExpiration_Day: number = 1;
-  isSetNoncurrentVersionExpiration_Day: boolean = false;
+  isSetNoncurrentVersionExpiration_Day: boolean | number = false;
   lifecycleRuleNoncurrentVersionExpiration_Day: number = 1;
   isSetAbortIncompleteMultipartUpload_Day: boolean = false;
   lifecycleRuleAbortIncompleteMultipartUpload_Day: number = 1;

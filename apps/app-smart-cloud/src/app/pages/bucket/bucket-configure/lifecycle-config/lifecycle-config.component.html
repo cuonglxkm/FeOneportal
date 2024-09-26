@@ -107,9 +107,15 @@
 >
   <form nz-form [formGroup]="formCreate">
     <ng-container *nzModalContent>
+      <nz-alert
+          nzType="warning"
+          nzMessage='Bạn chỉ có thể áp dụng một bộ lọc "Tiền tố" hoặc "Tag", để sử dụng cả hai bạn phải tạo một bộ lọc mới.'
+          nzShowIcon
+        ></nz-alert>
       <label
         class="text-label"
         nz-checkbox
+        style="margin-top: 8px"
         [(ngModel)]="lifecycleCreate.enabled"
         [ngModelOptions]="{ standalone: true }"
         >{{ 'app.enable.filter' | i18n }}</label
@@ -206,7 +212,6 @@
         [(ngModel)]="lifecycleCreate.isSetExpiration_Day"
         formControlName="isSetExpiration_Day"
         [ngModelOptions]="{ standalone: true }"
-        (ngModelChange)="onChangeExpirationDay($event)"
         >{{ 'app.delete.file.current.version' | i18n }}</label
       >
       <div style="display: flex; margin-top: 5px">
@@ -235,7 +240,6 @@
         class="text-label"
         style="margin-top: 16px"
         nz-checkbox 
-        [nzDisabled]="lifecycleCreate.isSetExpiration_Day === true"
         [(ngModel)]="lifecycleCreate.isSetNoncurrentVersionExpiration_Day"
         formControlName="isSetNoncurrentVersionExpiration_Day"
         [ngModelOptions]="{ standalone: true }"
@@ -384,9 +388,15 @@
 >
   <form nz-form [formGroup]="formUpdate">
     <ng-container *nzModalContent>
+      <nz-alert
+          nzType="warning"
+          nzMessage='Bạn chỉ có thể áp dụng một bộ lọc "Tiền tố" hoặc "Tag", để sử dụng cả hai bạn phải tạo một bộ lọc mới.'
+          nzShowIcon
+        ></nz-alert>
       <label
         class="text-label"
         nz-checkbox
+        style="margin-top: 8px;"
         [(ngModel)]="lifecycleUpdate.enabled"
         [ngModelOptions]="{ standalone: true }"
         >{{ 'app.enable.filter' | i18n }}</label
@@ -508,7 +518,6 @@
         style="margin-top: 16px"
         nz-checkbox
         [(ngModel)]="lifecycleUpdate.isSetNoncurrentVersionExpiration_Day" 
-        [nzDisabled]="lifecycleUpdate.isSetExpiration_Day === true"
         (ngModelChange)="changeSetNoncurrentVersionExpiration_Day()"
         formControlName="isSetNoncurrentVersionExpiration_Day"
         [ngModelOptions]="{ standalone: true }"
@@ -522,9 +531,6 @@
             [nzStep]="1"
             [nzMax]="1000"
             (keydown)="onKeyDown($event)"
-            [nzDisabled]="
-              lifecycleUpdate.isSetNoncurrentVersionExpiration_Day === false || lifecycleUpdate.isSetExpiration_Day === true
-            "
             [(ngModel)]="
               lifecycleUpdate.lifecycleRuleNoncurrentVersionExpiration_Day
             "
