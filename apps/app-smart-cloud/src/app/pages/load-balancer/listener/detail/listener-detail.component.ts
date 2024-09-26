@@ -59,7 +59,9 @@ export class ListenerDetailComponent implements OnInit {
 
   pageSize: number = 10;
   pageIndex: number = 1;
-
+  xFor: boolean = false;
+  xProto: boolean = false;
+  xPort: boolean = false;
   currentPageData: L7Policy[];
   @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
   total: any;
@@ -113,6 +115,10 @@ export class ListenerDetailComponent implements OnInit {
           this.sslCert = data?.sslCertification[0]?.name;
           this.getPool(this.activatedRoute.snapshot.paramMap.get('id'));
           this.getListL7Policy(this.activatedRoute.snapshot.paramMap.get('id'));
+          this.xFor = data.xFor;
+          this.xProto = data.xPort;
+          this.xPort = data.xProto;
+        
         }
       );
   }

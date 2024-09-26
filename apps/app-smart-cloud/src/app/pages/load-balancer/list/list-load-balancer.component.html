@@ -113,7 +113,7 @@
                   <td nzBreakWord>{{ data.expiredDate | date: 'dd/MM/yyyy' }}</td>
                   <td nzBreakWord>{{ data.offerName }}</td>
                   <td *ngIf="data.provisioningStatus == 'PENDING_CREATE'" nzBreakWord></td>
-                  <td *ngIf="data.provisioningStatus == 'TAMNGUNG'" nzBreakWord>
+                  <!-- <td *ngIf="data.provisioningStatus == 'TAMNGUNG'" nzBreakWord>
                     <one-portal-delete-load-balancer *ngIf="('loadbalancer:Delete' | IsPermissionPipe)"
                       [idLoadBalancer]="data.id" [nameLoadBalancer]="data.name" [region]="region" [project]="project"
                       (onOk)="handleDeleteOk()" />
@@ -122,17 +122,17 @@
                       style="padding-right: 10px;" src="assets/imgs/calendar-tick.svg" nz-tooltip
                       nzTooltipTitle="{{'app.extend' | i18n}} Load Balancer" nzTooltipPlacement="bottom"
                       (click)="navigateToExtend(data.id)" />
-                  </td>
-                  <td *ngIf="data.provisioningStatus !== 'PENDING_CREATE' && data.provisioningStatus !== 'PENDING_DELETE'&& data.provisioningStatus !== 'PENDING_UPDATE' && data.provisioningStatus !== 'DELETED' "
+                  </td> -->
+                  <!-- <td *ngIf="data.provisioningStatus !== 'PENDING_CREATE' && data.provisioningStatus !== 'PENDING_DELETE'&& data.provisioningStatus !== 'PENDING_UPDATE' && data.provisioningStatus !== 'DELETED' "
                     nzBreakWord>
-                    <span *ngIf="!isProcessingStatus(data.provisioningStatus)">
+                    <span *ngIf="!isProcessingStatus(data.provisioningStatus) || data.provisioningStatus !== 'TAMNGUNG'">
                       <one-portal-attach-ip-floating-lb [region]="region" (onOk)="search(false)" [project]="project"
                         [data]="data" />
                       <one-portal-detach-ip-floating-lb [region]="region" (onOk)="search(false)" [project]="project"
                         [IsFloatingIP]="data.isFloatingIP" [vipPortIp]="data.vipPortId" [ipId]="data.ipId"
                         [idLb]="data.id" [ipFloatingAddress]="data.floatingIPAddress" />
                     </span>
-                    <!---Gia Han------>
+                  
                     <img
                       *ngIf=" !isProcessingStatus(data.provisioningStatus) &&typeVPC != 1 && ('loadbalancer:Get' | IsPermissionPipe) && ('order:GetOrderAmount' | IsPermissionPipe) && ('order:Create' | IsPermissionPipe)"
                       style="padding-right: 10px;" src="assets/imgs/calendar-tick.svg" nz-tooltip
@@ -147,6 +147,40 @@
                       [idLoadBalancer]="data.id" [nameLoadBalancer]="data.name" [region]="region" [project]="project"
                       (onOk)="handleDeleteOk()" />
                     <img *ngIf="!isProcessingStatus(data.provisioningStatus) " nz-dropdown [nzDropdownMenu]="opMenu" src="assets/imgs/more1.svg" alt=""
+                      style="margin-left: 5px; cursor:pointer;" />
+                    <nz-dropdown-menu #opMenu="nzDropdownMenu">
+                      <ul nz-menu>
+                        <li *ngIf="('instance:List' | IsPermissionPipe) && ('loadbalancer:Get' | IsPermissionPipe)"
+                          nz-menu-item (click)="navigateToCreateListener(data.id)">{{ 'app.listener.create' | i18n }}
+                        </li>
+                      </ul>
+                    </nz-dropdown-menu>
+
+                  </td> -->
+                  <td *ngIf="!isProcessingStatus(data.provisioningStatus)"
+                    nzBreakWord>
+                    <span *ngIf=" data.provisioningStatus != 'TAMNGUNG'">
+                      <one-portal-attach-ip-floating-lb [region]="region" (onOk)="search(false)" [project]="project"
+                        [data]="data" />
+                      <one-portal-detach-ip-floating-lb [region]="region" (onOk)="search(false)" [project]="project"
+                        [IsFloatingIP]="data.isFloatingIP" [vipPortIp]="data.vipPortId" [ipId]="data.ipId"
+                        [idLb]="data.id" [ipFloatingAddress]="data.floatingIPAddress" />
+                    </span>
+                  
+                    <img
+                      *ngIf="  ('loadbalancer:Get' | IsPermissionPipe) && ('order:GetOrderAmount' | IsPermissionPipe) && ('order:Create' | IsPermissionPipe)"
+                      style="padding-right: 10px;" src="assets/imgs/calendar-tick.svg" nz-tooltip
+                      nzTooltipTitle="{{'app.extend' | i18n}} Load Balancer" nzTooltipPlacement="bottom"
+                      (click)="navigateToExtend(data.id)" />
+                    <one-portal-update-load-balancer-normal
+                      *ngIf="data.provisioningStatus != 'TAMNGUNG'&& ('loadbalancer:List' | IsPermissionPipe) && ('loadbalancer:Update' | IsPermissionPipe)"
+                      [region]="region" [project]="project" [loadBalancer]="data"
+                      (onOk)="search(false)"></one-portal-update-load-balancer-normal>
+                   
+                    <one-portal-delete-load-balancer *ngIf=" data.provisioningStatus != 'TAMNGUNG'&& ('loadbalancer:Delete' | IsPermissionPipe)"
+                      [idLoadBalancer]="data.id" [nameLoadBalancer]="data.name" [region]="region" [project]="project"
+                      (onOk)="handleDeleteOk()" />
+                    <img *ngIf="data.provisioningStatus != 'TAMNGUNG'" nz-dropdown [nzDropdownMenu]="opMenu" src="assets/imgs/more1.svg" alt=""
                       style="margin-left: 5px; cursor:pointer;" />
                     <nz-dropdown-menu #opMenu="nzDropdownMenu">
                       <ul nz-menu>

@@ -604,6 +604,7 @@
               <one-portal-svg-icon *ngIf="trashCloudBackup" [icon]="'icon_trash'" class="icon-trash"
                 (click)="deleteCloudBackup()"></one-portal-svg-icon>
             </div>
+            <p class="label-fontsize label-color" *ngIf="numberCloudBackupOld!=0">Dung lượng Backup hiện tại: {{numberCloudBackupOld}} GB</p>
             <div *ngIf="!activeCloudBackup">
               <button class="h-btn" nz-button nzType="default" (click)="initCloudBackup()">
                 <img style="padding-right: 10px; margin-top: -4px" src="assets/imgs/add.svg" alt="" />{{ "app.bonus" |
@@ -620,8 +621,8 @@
                       <nz-form-control>
 
                         <nz-input-number style="width: 100%; margin-left: -1px" [nzMin]="0"
-                          [nzStep]="1" [nzMax]="1000" name="backup" (keydown)="checkPossiblePress($event)"
-                          [(ngModel)]="numberCloudBackup" (ngModelChange)="onChangeMinStepMax($event,0,1,1000,'cloud-backup')"
+                          [nzStep]="4" [nzMax]="40" name="backup" (keydown)="checkPossiblePress($event)"
+                          [(ngModel)]="numberCloudBackup" (ngModelChange)="onChangeMinStepMax($event,0,4,40,'cloud-backup')"
                           [ngModelOptions]="{ standalone: true }" nzSize="large"></nz-input-number>
                       </nz-form-control>
                     </nz-form-item>
@@ -940,6 +941,12 @@
               <one-portal-svg-icon *ngIf="trashKubernetes" [icon]="'icon_trash'" class="icon-trash"
                 (click)="deleteKubernetes()"></one-portal-svg-icon>
             </div>
+            <div class="flex">
+              <p class="label-fontsize label-color " > 
+                {{numberk8sCpuOld ?  'vCPU: ' + numberk8sCpuOld :''}} {{numberk8sRamOld? ' -  RAM: ' + numberk8sRamOld : ''}} {{numberk8sSsdOld? ' - Dung lượng SSD: ' + numberk8sSsdOld + ' GB':''}}</p>
+               
+            </div>
+            
             <div *ngIf="!activeKubernetes">
               <button class="h-btn" nz-button nzType="default" (click)="initKubernetes()">
                 <img style="padding-right: 10px; margin-top: -4px" src="assets/imgs/add.svg" alt="" />{{ "app.bonus" |
@@ -1061,6 +1068,11 @@
               <one-portal-svg-icon *ngIf="trashKafka" [icon]="'icon_trash'" class="icon-trash"
                 (click)="deleteKafka()"></one-portal-svg-icon>
             </div>
+            <div class="flex">
+              <p class="label-fontsize label-color " > vCPU:
+                {{numberkafkaCpuOld ?  numberkafkaCpuOld :''}} {{numberkafkaRamOld? ' -  RAM: ' + numberkafkaRamOld + ' GB': ''}} {{numberkafkaStorageOld? ' - Storage: ' + numberkafkaStorageOld + ' GB':''}}</p>
+               
+            </div>
             <div *ngIf="!activeKafka">
               <button class="h-btn" nz-button nzType="default" (click)="initKafka()">
                 <img style="padding-right: 10px; margin-top: -4px" src="assets/imgs/add.svg" alt="" />{{ "app.bonus" |
@@ -1178,6 +1190,11 @@
               <div><span class="text-card-header">VNPT DocumentDB for MongoDB</span></div>
               <one-portal-svg-icon *ngIf="trashMongoDB" [icon]="'icon_trash'" class="icon-trash"
                 (click)="deleteMongoDB()"></one-portal-svg-icon>
+            </div>
+            <div class="flex">
+              <p class="label-fontsize label-color " > vCPU:
+                {{numbermongoCpuOld ?   + numbermongoCpuOld  :''}} {{numbermongoRamOld? ' -  RAM: ' + numbermongoRamOld + ' GB': ''}} {{numbermongoStorageOld? ' - Storage: ' + numbermongoStorageOld + ' GB':''}}</p>
+               
             </div>
             <div *ngIf="!activeMongoDB">
               <button class="h-btn" nz-button nzType="default" (click)="initMongoDB()">

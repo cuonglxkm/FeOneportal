@@ -669,8 +669,8 @@
                         <nz-form-control>
 
                           <nz-input-number style="width: 100%; margin-left: -1px" [nzMin]="0"
-                            [nzStep]="1" [nzMax]="1000" name="backup" (keydown)="checkPossiblePress($event)"
-                            [(ngModel)]="numberCloudBackup" (ngModelChange)="onChangeMinStepMax($event,0,1,1000,'cloud-backup')"
+                            [nzStep]="4" [nzMax]="40" name="backup" (keydown)="checkPossiblePress($event)"
+                            [(ngModel)]="numberCloudBackup" (ngModelChange)="onChangeMinStepMax($event,0,4,40,'cloud-backup')"
                             [ngModelOptions]="{ standalone: true }" nzSize="large"></nz-input-number>
                         </nz-form-control>
                       </nz-form-item>

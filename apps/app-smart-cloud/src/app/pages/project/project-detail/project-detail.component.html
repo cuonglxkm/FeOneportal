@@ -284,7 +284,57 @@
         </div>
       </div>
     </nz-tab>
-    <nz-tab nzTitle="Dịch vụ nền tảng">Content of Tab Pane 3</nz-tab>
+    <nz-tab nzTitle="Dịch vụ nền tảng" *ngIf="data?.type == 'VPC'"><div>
+      <div style="margin-bottom: 20px"><span class="text-card-header" >Thông tin cấu hình</span></div>
+      <nz-select [(ngModel)]="selectedPlatform" (ngModelChange)="changePlaftform($event)" style="width:30%">
+        <nz-option *ngFor="let item of listPlatformService" [nzValue]="item.value" [nzLabel]="item.label"></nz-option>
+       
+      </nz-select>
+      <nz-row  style="margin: 30px 0px;text-align: center; display: flex; justify-content: space-between;" class="percent_vpc">
+        <div nz-col nzSpan="4"><nz-progress [nzPercent]= percentCpu nzType="circle" [nzWidth]="180"  [nzStrokeWidth]="15"></nz-progress><h3 style="margin-top: 14px;">CPU</h3></div>
+        <div nz-col nzSpan="4"><nz-progress [nzPercent]= percentRam nzType="circle" [nzWidth]="180"  [nzStrokeWidth]="15"></nz-progress><h3 style="margin-top: 14px;">RAM (GB)</h3></div>
+        <!-- <div nz-col nzSpan="4" *ngIf="typeHdd"><nz-progress [nzPercent]= percentHHD nzType="circle" [nzWidth]="180"  [nzStrokeWidth]="15"></nz-progress><h3 style="margin-top: 14px;">HDD (GB)</h3></div> -->
+        <div nz-col nzSpan="4" *ngIf="typeSsd"><nz-progress [nzPercent]= percentSSD nzType="circle" [nzWidth]="180"  [nzStrokeWidth]="15"></nz-progress><h3 style="margin-top: 14px;">SSD (GB)</h3></div>
+
+        <!-- <div nz-col nzSpan="4" *ngIf="typeBackup_volume"><nz-progress [nzPercent]= percentBackup nzType="circle" [nzWidth]="180"  [nzStrokeWidth]="15"></nz-progress><h3 style="margin-top: 14px;">BACKUP (GB)</h3></div> -->
+      </nz-row>
+      <div class="table-resource" >
+   
+        <nz-table [nzData]="listOfData" [nzLoading]="loading" [nzFrontPagination]="false" >
+          <thead>
+          <tr>
+            <th style="background: #F8F9FA;">{{ 'project.note28' | i18n }}</th>
+            <th style="background: #F8F9FA;">{{ 'project.note29' | i18n }}</th>
+            <th style="background: #F8F9FA;">{{ 'volume.used' | i18n }}</th>
+            <th style="background: #F8F9FA;">{{ 'volume.remaining' | i18n }}</th>
+          </tr>
+          </thead>
+          <tbody>
+          
+          <tr >
+            <td>CPU(vCPU)</td>
+            <td>{{totalLimit?.quotavCpu}} vcpu</td>
+            <td>{{totalUsed?.cpu}} vcpu</td>
+            <td>{{totalLimit?.quotavCpu-totalUsed?.cpu}} vcpu</td>
+          </tr>
+      
+          <tr   >
+            <td>RAM (GB)</td>
+            <td>{{totalLimit?.quotaRamInGb}} GB</td>
+            <td>{{totalUsed?.ram}} GB</td>
+            <td>{{totalLimit?.quotaRamInGb-totalUsed?.ram}} GB</td>
+          </tr>
+          <tr  *ngIf=" typeHdd">
+            <td>SSD (GB)</td>
+            <td>{{totalLimit?.quotaHddInGb}} GB</td>
+            <td>{{totalUsed?.hdd}} GB</td>
+            <td>{{totalLimit?.quotaHddInGb-totalUsed?.hdd}} GB</td>
+          </tr>
+          
+          </tbody>
+        </nz-table>
+      </div>
+    </div></nz-tab>
   </nz-tabset>
   <!-- <nz-row *ngIf="data?.type == 'VPC'" style="margin-bottom: 30px;text-align: center; display: flex; justify-content: space-between;" class="percent_vpc">
     <div nz-col nzSpan="4"><nz-progress [nzPercent]= percentCpu nzType="circle" [nzWidth]="180"  [nzStrokeWidth]="15"></nz-progress><h3 style="margin-top: 14px;">CPU</h3></div>
