@@ -282,4 +282,8 @@ export class ListenerUpdateComponent implements OnInit, OnChanges {
   changeChecked(checkboxName: string, value: boolean) {
     this[checkboxName] = value
   }
+  changeCert(value:string){
+    this.certId = value;
+    console.log("this.certId",this.certId)
+  }
 }
