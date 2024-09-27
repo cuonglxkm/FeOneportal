@@ -49,10 +49,12 @@
         </nz-form-item>
         <nz-form-item>
           <label>Pool</label>
-          <nz-select [ngModel]="selectedPool" (ngModelChange)="changePoolForListener($event)">
-            <nz-option *ngFor="let item of poolForListener" [nzValue]="item.id" [nzLabel]="item.name"></nz-option>
-           
-          </nz-select>
+          <nz-form-control nzDisableAutoTips>
+            <nz-select [(ngModel)]="selectedPool" (ngModelChange)="changePoolForListener($event)" [ngModelOptions]="{standalone: true}">
+              <nz-option *ngFor="let item of poolForListener;" [nzValue]="item.id" [nzLabel]="item.name"></nz-option>
+            </nz-select>
+          </nz-form-control>
+          
         </nz-form-item>
 
         <nz-row>
@@ -137,7 +139,7 @@
           <div style="font-size:16px">Thêm Headers</div>
           <nz-checkbox-wrapper style="width: 100%;margin:1rem 0rem" >
             <div nz-row>
-              <div nz-col nzSpan="8"><label nz-checkbox nzValue="xFor" [nzChecked]="xFor" (nzCheckedChange)="changeChecked('xFor',$event)" (ngModel)="xFor" >X-Forwarded-For22</label></div>
+              <div nz-col nzSpan="8"><label nz-checkbox nzValue="xFor" [nzChecked]="xFor" (nzCheckedChange)="changeChecked('xFor',$event)" (ngModel)="xFor" >X-Forwarded-For</label></div>
               <div nz-col nzSpan="8"><label nz-checkbox nzValue="xProto" [nzChecked]="xProto" (nzCheckedChange)="changeChecked('xProto', $event)" (ngModel)="xProto">X-Forwarded-Proto</label></div>
               <div nz-col nzSpan="8"><label nz-checkbox nzValue="xPort" [nzChecked]="xPort" (nzCheckedChange)="changeChecked('xPort',$event)" (ngModel)="xPort">X-Forwarded-Port</label></div>
              
@@ -160,7 +162,7 @@
               <nz-select nzSize="large" [nzLoading]="false" [nzDisabled]="false"
                          style="width: 100%; margin-left: -1px;border-radius: 10px;" 
                          nzPlaceHolder="--Chọn SSL Cert--"
-                         [(ngModel)]="certId" [ngModelOptions]="{ standalone: true }">
+                         [(ngModel)]="certId" (ngModelChange)="changeCert($event)" [ngModelOptions]="{ standalone: true }">
                 <nz-option *ngFor="let i of listCert?.records" [nzLabel]="i.name"
                            [nzValue]="i.secret_ref" />
               </nz-select>

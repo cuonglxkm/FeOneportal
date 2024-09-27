@@ -669,8 +669,8 @@
                         <nz-form-control>
 
                           <nz-input-number style="width: 100%; margin-left: -1px" [nzMin]="0"
-                            [nzStep]="1" [nzMax]="1000" name="backup" (keydown)="checkPossiblePress($event)"
-                            [(ngModel)]="numberCloudBackup" (ngModelChange)="onChangeMinStepMax($event,0,1,1000,'cloud-backup')"
+                            [nzStep]="4" [nzMax]="40" name="backup" (keydown)="checkPossiblePress($event)"
+                            [(ngModel)]="numberCloudBackup" (ngModelChange)="onChangeMinStepMax($event,0,4,40,'cloud-backup')"
                             [ngModelOptions]="{ standalone: true }" nzSize="large"></nz-input-number>
                         </nz-form-control>
                       </nz-form-item>
@@ -1018,7 +1018,7 @@
                   <table >
                     <td style="width:60%">
                       <nz-form-item>
-                        <nz-form-label class="custom-label">RAM (<span style="color:red">*</span>)</nz-form-label>
+                        <nz-form-label class="custom-label">RAM (GB) (<span style="color:red">*</span>)</nz-form-label>
                         <nz-form-control>
                           <nz-row>
                             <nz-input-number style="width: 100%; margin-left: -1px" [nzMin]="4"
@@ -1051,7 +1051,7 @@
                   <table >
                     <td style="width:60%">
                       <nz-form-item>
-                        <nz-form-label class="custom-label">Dung lượng lưu trữ SSD (<span style="color:red">*</span>)</nz-form-label>
+                        <nz-form-label class="custom-label">Dung lượng lưu trữ SSD (GB) (<span style="color:red">*</span>)</nz-form-label>
                         <nz-form-control>
                           <nz-row>
                             <nz-input-number style="width: 100%; margin-left: -1px" [nzMin]="20"
@@ -1104,7 +1104,7 @@
                   <table >
                     <td style="width:60%">
                       <nz-form-item>
-                        <nz-form-label class="custom-label">CPU (vCPU)(<span style="color:red">*</span>) </nz-form-label>
+                        <nz-form-label class="custom-label">vCPU(<span style="color:red">*</span>) </nz-form-label>
                         <nz-form-control>
                           <nz-row>
                             <nz-input-number style="width: 100%;margin-left: -1px" [nzMin]="1"
@@ -1222,7 +1222,7 @@
                   <table >
                     <td style="width:60%">
                       <nz-form-item>
-                        <nz-form-label class="custom-label">CPU (vCPU)(<span style="color:red">*</span>) </nz-form-label>
+                        <nz-form-label class="custom-label">vCPU (<span style="color:red">*</span>) </nz-form-label>
                         <nz-form-control>
                           <nz-row>
                             <nz-input-number style="width: 100%;margin-left: -1px" [nzMin]="2"
@@ -1319,7 +1319,7 @@
                   </table>
                 </div>
               </div>
-              <nz-alert class="ant-alert-warning-custom" nzType="warning" nzDescription="VNPT DocumentDB for MongoDB tương thích với MongoDB, giúp doanh nghiệp dễ dàng quản lý, mở rộng và bảo mật dữ liệu mà không cần tự quản lý hạ tầng."
+              <nz-alert class="ant-alert-warning-custom" nzType="warning" nzDescription="Dịch vụ VNPT DocumentDB for MongoDB giúp triển khai, giám sát, sao lưu, khôi phục và mở rộng cơ sở dữ liệu MongoDB trên nền tảng đám mây"
                 nzShowIcon></nz-alert>
             </div>
           </div>

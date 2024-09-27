@@ -1483,7 +1483,7 @@
   "app.button.continue": "Tiếp tục",
   "app.create-policy.alertNextStep": "Cảnh báo bước tiếp theo",
   "app.create-policy.alertNextStep.des": "Quý khách vui lòng chọn policy để đến bước tiếp theo",
-  "app.create-policy.confirm.des": "Đế thực hiện tạo mới Policy, vui lòng chọn “Đồng ý”để xác nhận.",
+  "app.create-policy.confirm.des": "Đế thực hiện tạo mới Policy, vui lòng chọn “Xác nhận” để xác nhận.",
 
   "app.breadcrumb.attach-policy": "Gắn Policy",
   "app.breadcrumb.attach-policy.title": "Thực hiện gắn policy",

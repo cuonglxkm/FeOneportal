@@ -86,7 +86,7 @@ export class VpnSiteToSiteManage {
       const tab = params['tab'];
       this.selectedIndex = tab ? +tab : 0;
     });
-    this.notificationService.connection.on('UpdateVolume', (message) => {
+    this.notificationService.connection.on('UpdateVpn', (message) => {
       if (message) {
         switch (message.actionType) {
           case 'CREATING':

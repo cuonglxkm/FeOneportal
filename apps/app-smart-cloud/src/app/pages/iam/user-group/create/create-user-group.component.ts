@@ -184,8 +184,8 @@ export class CreateUserGroupComponent implements OnInit {
       // }
       const submitSelectedProject = this.listProjectSelected.length === this.listProject.length ? [0] : this.listProjectSelected
       this.formCreate.projectIds = submitSelectedProject;
-      this.formCreate.policyNames = this.validateForm.value.policyNames;
-      this.formCreate.users = this.validateForm.value.userNames;
+      this.formCreate.policyNames = this.validateForm.value.policyNames ?? [];
+      this.formCreate.users = this.validateForm.value.userNames ?? [];
       this.isLoadingConfirm = true;
       this.userGroupService.createOrEdit(this.formCreate).subscribe(data => {
         console.log('data return', data);

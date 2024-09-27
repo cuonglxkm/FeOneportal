@@ -118,7 +118,7 @@ export class ProjectSelectDropdownComponent implements OnInit, OnChanges {
       (localStorage?.getItem('UserRootId') && Number(localStorage?.getItem('UserRootId')) > 0 
       && this.tokenService?.get()?.userId && Number(localStorage?.getItem('UserRootId')) == Number(this.tokenService?.get()?.userId));
     if(isAdmin) {
-      localStorage.setItem('PermissionOPA', JSON.stringify({"IsAdmin":true,"ProjectId": projectData.id}));
+      localStorage.setItem('PermissionOPA', JSON.stringify({"IsAdmin":true,"ProjectId": projectData?.id}));
     }
     if(isAdmin || 
       (localStorage?.getItem('PermissionOPA') && 

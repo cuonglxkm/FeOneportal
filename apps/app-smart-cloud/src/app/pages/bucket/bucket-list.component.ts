@@ -105,7 +105,7 @@ export class BucketListComponent implements OnInit {
         }
       }
     });
-
+    this.search();
     this.searchDelay
       .pipe(debounceTime(TimeCommon.timeOutSearch))
       .subscribe(() => {

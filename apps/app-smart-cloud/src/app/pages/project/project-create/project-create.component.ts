@@ -396,16 +396,16 @@ export class ProjectCreateComponent implements OnInit {
           quotaVolumeSnapshotHddInGb: this.numberSnapshothdd,
           quotaVolumeSnapshotSsdInGb: this.numberSnapshotssd,
 
-          QuotaK8sCpu: this.numberk8sCpu,
-          QuotaK8sRam: this.numberk8sRam,
-          QuotaK8sStorage: this.numberk8sSsd,
-          QuotaMongoCpu: this.numbermongoCpu,
-          QuotaMongoRam: this.numbermongoRam,
-          QuotaMongoStorage: this.numbermongoStorage,
-          QuotaKafkaCpu: this.numberkafkaCpu,
-          QuotaKafkaRam: this.numberkafkaRam,
-          QuotaKafkaStorage: this.numberkafkaStorage,
-          QuotaCloudBackup:this.numberCloudBackup,
+          quotaK8sCpu: this.numberk8sCpu,
+          quotaK8sRam: this.numberk8sRam,
+          quotaK8sStorage: this.numberk8sSsd,
+          quotaMongoCpu: this.numbermongoCpu,
+          quotaMongoRam: this.numbermongoRam,
+          quotaMongoStorage: this.numbermongoStorage,
+          quotaKafkaCpu: this.numberkafkaCpu,
+          quotaKafkaRam: this.numberkafkaRam,
+          quotaKafkaStorage: this.numberkafkaStorage,
+          quotaCloudBackup:this.numberCloudBackup,
           // typeName: 'SharedKernel.IntegrationEvents.Orders.Specifications.VpcCreateSpecification,SharedKernel.IntegrationEvents, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null',
           // serviceType: 12,
           serviceInstanceId: 0,
@@ -625,7 +625,7 @@ export class ProjectCreateComponent implements OnInit {
 
   }
   checkNumberInputStep(value: number, min: number, step: number, max: number, name: string): void {
-    const messageStepNotification = `Số lượng phải chia hết cho ${step}`;
+    // const messageStepNotification = `Số lượng phải chia hết cho ${step}`;
     const messageMaxNotification = `Vượt quá số lượng max ${max}`;
     const messageMinNotification = `Nhỏ hơn số lượng min ${min}`;
 
@@ -643,10 +643,10 @@ export class ProjectCreateComponent implements OnInit {
       number = max;
     }
     // Kiểm tra xem giá trị có chia hết cho step hay không
-    else if (number % step !== 0) {
-      this.notification.warning('', messageStepNotification);
-      number = Math.floor(number / step) * step;
-    }
+    // else if (number % step !== 0) {
+    //   this.notification.warning('', messageStepNotification);
+    //   number = Math.floor(number / step) * step;
+    // }
     switch (name) {
       case "k8s-cpu":
         this.numberk8sCpu = value;
@@ -816,16 +816,16 @@ export class ProjectCreateComponent implements OnInit {
           quotaVolumeSnapshotHddInGb: this.numberSnapshothdd,
           quotaVolumeSnapshotSsdInGb: this.numberSnapshotssd,
 
-          QuotaK8sCpu: this.numberk8sCpu,
-          QuotaK8sRam: this.numberk8sRam,
-          QuotaK8sStorage: this.numberk8sSsd,
-          QuotaMongoCpu: this.numbermongoCpu,
-          QuotaMongoRam: this.numbermongoRam,
-          QuotaMongoStorage: this.numbermongoStorage,
-          QuotaKafkaCpu: this.numberkafkaCpu,
-          QuotaKafkaRam: this.numberkafkaRam,
-          QuotaKafkaStorage: this.numberkafkaStorage,
-          QuotaCloudBackup:this.numberCloudBackup,
+          quotaK8sCpu: this.numberk8sCpu,
+          quotaK8sRam: this.numberk8sRam,
+          quotaK8sStorage: this.numberk8sSsd,
+          quotaMongoCpu: this.numbermongoCpu,
+          quotaMongoRam: this.numbermongoRam,
+          quotaMongoStorage: this.numbermongoStorage,
+          quotaKafkaCpu: this.numberkafkaCpu,
+          quotaKafkaRam: this.numberkafkaRam,
+          quotaKafkaStorage: this.numberkafkaStorage,
+          quotaCloudBackup:this.numberCloudBackup,
           typeName: 'SharedKernel.IntegrationEvents.Orders.Specifications.VpcCreateSpecification,SharedKernel.IntegrationEvents, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null',
           serviceType: 12,
           serviceInstanceId: 0,

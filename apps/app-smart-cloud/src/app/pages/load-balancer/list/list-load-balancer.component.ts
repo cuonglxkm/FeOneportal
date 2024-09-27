@@ -283,6 +283,7 @@ export class ListLoadBalancerComponent implements OnInit {
   isProcessingStatus(status: string): boolean {
     const processingStatuses = [
       'ERROR',
+      
       'DELETED',  
       'PENDING_CREATE',
       'PENDING_DELETE',

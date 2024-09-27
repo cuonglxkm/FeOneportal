@@ -283,7 +283,7 @@
               <div style="margin-top: 10px" class="text-label truncate" [nz-tooltip]="selectedVolume?.name "
                 *ngIf="selectedVolume">{{
                 selectedVolume?.name }} {{quotaTypeSelected||quotaSelected ? '(' :'' }}{{quotaTypeSelected ?
-                quotaTypeSelected.toUpperCase() :''}} {{quotaTypeSelected&&quotaSelected ? ',' :'' }} {{quotaSelected ?
+                quotaTypeSelected.toUpperCase() :''}}{{quotaTypeSelected&&quotaSelected ? ',' :'' }} {{quotaSelected ?
                 (quotaSelected +' GB'):''}}{{quotaTypeSelected||quotaSelected ? ')' :'' }}</div>
               <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
             </div>
@@ -291,9 +291,7 @@
               <div style="margin-top: 10px" class="text-value">Máy ảo</div>
               <div style="margin-top: 10px" class="text-label truncate" [nz-tooltip]="selectedVM?.name "
                 *ngIf="selectedVM">{{ selectedVM?.name }} {{quotaTypeSelected||quotaSelected
-                ? '(' :'' }} {{quotaTypeSelected ? quotaTypeSelected.toUpperCase() :''}}
-                {{quotaTypeSelected&&quotaSelected ? ',' :'' }} {{quotaSelected ? (quotaSelected+ ' GB'):''}}
-                {{quotaTypeSelected||quotaSelected ? ')' :'' }}</div>
+                ? '(' :'' }}{{quotaTypeSelected ? quotaTypeSelected.toUpperCase() :''}}{{quotaTypeSelected&&quotaSelected ? ',' :'' }} {{quotaSelected ? (quotaSelected+ ' GB'):''}}{{quotaTypeSelected||quotaSelected ? ')' :'' }}</div>
               <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
             </div>
 

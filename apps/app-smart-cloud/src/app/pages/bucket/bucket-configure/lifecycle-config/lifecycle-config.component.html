@@ -517,6 +517,7 @@
         class="text-label"
         style="margin-top: 16px"
         nz-checkbox
+
         [(ngModel)]="lifecycleUpdate.isSetNoncurrentVersionExpiration_Day" 
         (ngModelChange)="changeSetNoncurrentVersionExpiration_Day()"
         formControlName="isSetNoncurrentVersionExpiration_Day"
@@ -531,6 +532,7 @@
             [nzStep]="1"
             [nzMax]="1000"
             (keydown)="onKeyDown($event)"
+            [nzDisabled]="lifecycleUpdate.isSetNoncurrentVersionExpiration_Day === false"
             [(ngModel)]="
               lifecycleUpdate.lifecycleRuleNoncurrentVersionExpiration_Day
             "
