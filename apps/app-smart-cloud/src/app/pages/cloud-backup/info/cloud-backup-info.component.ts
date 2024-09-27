@@ -24,19 +24,13 @@ export class CloudBackupInfoComponent implements OnInit,OnChanges  {
   }
 
   ngOnInit() {
-    this.getData();
   }
 
   ngOnChanges(changes: SimpleChanges) {
     
-    if (changes['data']) {
-        
-    }
+    
   }
 
-  private getData() {
-  }
-  
   extend(){
     this.router.navigate(['/app-smart-cloud/cloud-backup/extend/' + this.data.id]);
   }

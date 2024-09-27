@@ -21,24 +21,22 @@ export class CloudBackupService extends BaseService {
   ) {
     super(tokenService);
   }
-  getCloudBackups(
+  getAccessRules(
+    cloudBackupId: number,
     pageSize: number,
     currentPage: number,
-    status: string,
     name: string
   ) {
     let param = new HttpParams();
-    if (status != undefined || status != null)
-      param = param.append('status', status);
-    if (name != undefined || name != null) param = param.append('name', name);
+    if (name != undefined || name != null) param = param.append('source', name);
     if (pageSize != undefined || pageSize != null)
       param = param.append('pageSize', pageSize);
     if (currentPage != undefined || currentPage != null)
-      param = param.append('currentPage', currentPage);
+      param = param.append('pageNumber', currentPage);
 
     return this.http
       .get<BaseResponse<CloudBackup[]>>(
-        this.baseUrl + this.ENDPOINT.provisions + '/endpoint/endpoints',
+        this.baseUrl + this.ENDPOINT.provisions + `/cloud-backup/${cloudBackupId}/pagingsgrule`,
         {
           params: param,
           headers: this.getHeaders().headers,
@@ -82,19 +80,37 @@ export class CloudBackupService extends BaseService {
       { headers: this.getHeaders().headers }
     );
   }
-  createAccessRule(accessRule: CreateAccessRule): Observable<AccessRule> {
-    return new BehaviorSubject<AccessRule>(null);
+  createAccessRule(cloudBackupId:number,accessRule: CreateAccessRule): Observable<AccessRule> {
+    return this.http.post<AccessRule>(this.baseUrl + this.ENDPOINT.provisions + `/cloud-backup/${cloudBackupId}/sgrule?port=${accessRule.port}&source=${accessRule.source}`, null, {headers: this.getHeaders().headers})
   }
   updateAccessRule(accessRule: AccessRule): Observable<AccessRule> {
     return new BehaviorSubject<AccessRule>(null);
   }
 
-  deleteAccessRule(id: number): Observable<AccessRule> {
-    return new BehaviorSubject<AccessRule>(null);
+  deleteAccessRule(id: number, ruleId:number): Observable<object> {
+    return this.http.delete(this.baseUrl + this.ENDPOINT.provisions + `/cloud-backup/${id}/sgrule/${ruleId}`, {headers: this.getHeaders().headers}).pipe(
+      catchError((error: HttpErrorResponse) => {
+        if (error.status === 401) {
+          console.error('login');
+        } else if (error.status === 404) {
+          // Handle 404 Not Found error
+          console.error('Resource not found');
+        }
+        return throwError(error);
+      }))
   }
 
-  deleteCloudBackup(id: number): Observable<AccessRule> {
-    return new BehaviorSubject<AccessRule>(null);
+  deleteCloudBackup(id: number): Observable<object> {
+    return this.http.delete(this.baseUrl + this.ENDPOINT.provisions + `/cloud-backup/${id}`, {headers: this.getHeaders().headers}).pipe(
+      catchError((error: HttpErrorResponse) => {
+        if (error.status === 401) {
+          console.error('login');
+        } else if (error.status === 404) {
+          // Handle 404 Not Found error
+          console.error('Resource not found');
+        }
+        return throwError(error);
+      }))
   }
 
   getCloudBackup(): Observable<CloudBackup> {

@@ -16,6 +16,7 @@ import { I18NService } from '@core';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { IP_ADDRESS_REGEX} from 'src/app/shared/constants/constants';
 import { CloudBackupService } from 'src/app/shared/services/cloud-backup.service';
+import { AccessRule, CloudBackup, CreateAccessRule } from '../../cloud-backup.model';
 
 @Component({
   selector: 'one-portal-create-access-rule',
@@ -24,6 +25,7 @@ import { CloudBackupService } from 'src/app/shared/services/cloud-backup.service
 })
 export class CreateAccessRulePopupComponent {
   @Input() isVisibleCreateAccessRule: boolean;
+  @Input() cloudBackup: CloudBackup;
   @Output() onOk = new EventEmitter();
   @Output() onCancel = new EventEmitter();
   isLoading: boolean = false;
@@ -54,13 +56,10 @@ export class CreateAccessRulePopupComponent {
     
   }
 
-  getData() {
-    
-  }
-
   async handleCreate() {
     this.isLoading = true;
-    this.cloudBackupService.createAccessRule(null).subscribe({
+    var accessRule = this.form.value as CreateAccessRule;
+    this.cloudBackupService.createAccessRule(this.cloudBackup.id, accessRule).subscribe({
       next: (data) => {
         this.isLoading = false;
         this.notification.success(

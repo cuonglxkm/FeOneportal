@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, Inject, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, Inject, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { I18NService } from '@core';
@@ -9,7 +9,7 @@ import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { debounceTime, Subject } from 'rxjs';
 import { OrderService } from 'src/app/shared/services/order.service';
 import { WafService } from 'src/app/shared/services/waf.service';
-import { slider } from '../../../../../../../libs/common-utils/src';
+import { RegionModel, slider } from '../../../../../../../libs/common-utils/src';
 import {
   DataPayment,
   ItemPayment,
@@ -27,6 +27,8 @@ import { OrderItemObject } from 'src/app/shared/models/price';
 import { CloudBackup, CloudBackupResize } from '../cloud-backup.model';
 import { LoadingService } from '@delon/abc/loading';
 import { CloudBackupService } from 'src/app/shared/services/cloud-backup.service';
+import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
+import { ConfigurationsService } from 'src/app/shared/services/configurations.service';
 
 @Component({
   selector: 'one-portal-cloud-backup-resize',
@@ -35,7 +37,9 @@ import { CloudBackupService } from 'src/app/shared/services/cloud-backup.service
   animations: [slider],
 })
 export class CloudBackupResizeComponent implements OnInit {
-
+  region = JSON.parse(localStorage.getItem('regionId'));
+  project = JSON.parse(localStorage.getItem('projectId'));
+  @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
   listOfferFlavors: OfferItem[] = [];
   offerFlavor: OfferItem;
   selectedElementFlavor: any;
@@ -61,13 +65,19 @@ export class CloudBackupResizeComponent implements OnInit {
   isVisiblePopupError: boolean = false;
   errorList: string[] = [];
   dataSubjectStorage: Subject<number> = new Subject<number>();
+  
+  minBlock: number = 0;
+  stepBlock: number = 0;
+  maxBlock: number = 0;
+  storage: number = 0;
+  priceType: any;
   closePopupError() {
     this.isVisiblePopupError = false;
   }
 
   form = new FormGroup({
     storage: new FormControl(
-      { value: 4, disabled: false },
+      { value: 0, disabled: false },
       { validators: [Validators.required] }
     ),
   });
@@ -84,17 +94,35 @@ export class CloudBackupResizeComponent implements OnInit {
     private catalogService: ObjectStorageService,
     private orderService: OrderService,
     private loadingSrv: LoadingService,
+    private configurationsService: ConfigurationsService,
   ) {}
 
   ngOnInit() {
     this.id = this.activatedRoute.snapshot.paramMap.get('id');
+    this.getStepBlock('CLOUDBACKUP');
     this.getCloudBackupById(this.id);
     this.getOffers();
     this.dateNow = new Date();
     this.calculate();
     this.onChangeStorage();
+    this.inputChangeBlock.pipe(
+      debounceTime(800)
+    ).subscribe(data => this.checkNumberBlock(data));
   }
 
+  getStepBlock(name: string) {
+    this.configurationsService.getConfigurations(name).subscribe((res: any) => {
+      const valuestring: any = res.valueString;
+      const parts = valuestring.split("#")
+      this.minBlock = 0; 
+      console.log("this.minBlock",this.minBlock)
+      this.stepBlock = parseInt(parts[1]);
+      console.log("this.stepBlock",this.stepBlock)
+      this.maxBlock = parseInt(parts[2]);
+      console.log("this.maxBlock",this.maxBlock)
+      this.storage = 0;
+    })
+  }
   onKeyDown(event: KeyboardEvent) {
     // Lấy giá trị của phím được nhấn
     const key = event.key;
@@ -170,22 +198,22 @@ export class CloudBackupResizeComponent implements OnInit {
   }
 
   getOffers(): void {
-    this.loadingSrv.open({ type: 'spin', text: 'Loading...' })
+    this.isLoading=true;
     this.instancesService.getDetailProductByUniqueName('cloud-backup')
       .subscribe(
         data => {
-          // this.instancesService
-          //   .getListOffersByProductIdNoRegion(data[0].id)
-          //   .subscribe((data: any) => {
-          //     this.listOffers = data.filter(
-          //       (e: OfferItem) => e.status.toUpperCase() == 'ACTIVE'
-          //     );
-          //     this.selectedOfferId = this.listOffers[0].id;
-          //     this.priceType = this.listOffers[0].price.priceType;
-          //     this.getTotalAmount();
-          //     this.loadingSrv.close()
-          //   });
-          this.loadingSrv.close()
+          this.instancesService
+            .getListOffersByProductIdNoRegion(data[0].id)
+            .subscribe((data: any) => {
+              var offers = data.filter(
+                (e: OfferItem) => e.status.toUpperCase() == 'ACTIVE'
+              );
+              this.selectedOfferId = offers[0].id;
+              this.priceType = offers[0].price.priceType;
+              
+              this.isLoading=false;
+              this.getTotalAmount();
+            });
         }
       );
   }
@@ -194,12 +222,16 @@ export class CloudBackupResizeComponent implements OnInit {
     this.cloudBackupResize.customerId = this.tokenService.get()?.userId;
     this.cloudBackupResize.userEmail = this.tokenService.get()?.email;
     this.cloudBackupResize.actorEmail = this.tokenService.get()?.email;
-    this.cloudBackupResize.regionId = 0;
     //this.CloudBackupResize.serviceType = ServiceType.CloudBackup;
     this.cloudBackupResize.actionType = ServiceActionType.RESIZE;
     this.cloudBackupResize.serviceInstanceId = this.id;
-    this.cloudBackupResize.newOfferId = this.selectedOfferId;
+    this.cloudBackupResize.offerId = this.selectedOfferId;
     this.cloudBackupResize.serviceName = this.cloudBackupDetail?.name;
+    this.cloudBackupResize.projectId = this.project;
+    this.cloudBackupResize.vpcId = this.project;
+    this.cloudBackupResize.regionId = this.region;
+    this.cloudBackupResize.currentSize = this.cloudBackupDetail?.storage;
+    this.cloudBackupResize.newSize = this.form.controls.storage.value+this.cloudBackupDetail?.storage;
   }
 
   orderObject: OrderItemObject = new OrderItemObject();
@@ -209,7 +241,7 @@ export class CloudBackupResizeComponent implements OnInit {
     let itemPayment: ItemPayment = new ItemPayment();
     itemPayment.orderItemQuantity = 1;
     itemPayment.specificationString = JSON.stringify(this.cloudBackupResize);
-    itemPayment.specificationType = 'cloud_backup_resize';
+    itemPayment.specificationType = 'cloudbackup_resize';
     itemPayment.sortItem = 0;
     let dataPayment: DataPayment = new DataPayment();
     dataPayment.orderItems = [itemPayment];
@@ -234,7 +266,7 @@ export class CloudBackupResizeComponent implements OnInit {
     let orderItemOS = new OrderItem();
     orderItemOS.orderItemQuantity = 1;
     orderItemOS.specification = specification;
-    orderItemOS.specificationType = 'cloud_backup_resize';
+    orderItemOS.specificationType = 'cloudbackup_resize';
     orderItemOS.price = this.totalAmount;
     orderItemOS.serviceDuration = 1;
     this.orderItem.push(orderItemOS);
@@ -262,5 +294,50 @@ export class CloudBackupResizeComponent implements OnInit {
         );
       },
     });
+  }
+
+  checkNumberBlock(value: number): void {
+    const messageStepNotification = `Số lượng phải chia hết cho  ${this.stepBlock} `;
+    const numericValue = Number(value);
+    if (isNaN(numericValue)) {
+      this.notification.warning('', messageStepNotification);
+      return;
+    }
+    let adjustedValue = Math.floor(numericValue / this.stepBlock) * this.stepBlock;
+    if (adjustedValue > this.maxBlock) {
+      adjustedValue = Math.floor(this.maxBlock / this.stepBlock) * this.stepBlock;
+    } else if (adjustedValue < this.minBlock) {
+      this.notification.warning('', messageStepNotification);
+      adjustedValue = this.minBlock;
+    }
+    if (numericValue !== adjustedValue) {
+      this.notification.warning('', messageStepNotification);
+    }
+    this.storage = adjustedValue;
+    this.form.controls.storage.setValue(adjustedValue);
+    this.getTotalAmount();
+  }
+  private inputChangeBlock = new Subject<number>();
+  onInputChange(value: number): void {
+    this.inputChangeBlock.next(value);
+  }
+  checkPossiblePress(event: KeyboardEvent) {
+    const key = event.key;
+    if (isNaN(Number(key)) && key !== 'Backspace' && key !== 'Delete' && key !== 'ArrowLeft' && key !== 'ArrowRight' && key !== 'Tab') {
+      event.preventDefault();
+    }
+  }
+  regionChanged(region: RegionModel) {
+    this.region = region.regionId;
+    if (this.projectCombobox) {
+      this.projectCombobox.loadProjects(true, region.regionId);
+    }
+    setTimeout(() => {
+      //this.getListVolume(true);
+    }, 2500);
+  }
+
+  onRegionChanged(region: RegionModel) {
+    this.region = region.regionId;
   }
 }

@@ -1,4 +1,4 @@
-<page-header [breadcrumb]="breadcrumb" title="{{'app.label.init' | i18n}} Cloud Backup">
+<page-header [breadcrumb]="breadcrumb" title="{{'app.label.init' | i18n}} Cloud Backup"  [action]="action">
   <ng-template #breadcrumb>
     <nz-breadcrumb [nzSeparator]="iconTemplate">
       <nz-breadcrumb-item><a [routerLink]="['/']">{{
@@ -13,6 +13,13 @@
   <ng-template #action>
     <div class="alain-custom-action text-right">
       <share-users-combobox></share-users-combobox>
+        <region-select-dropdown (regionChange)="onRegionChanged($event)"
+                                (valueChanged)="regionChanged($event)"></region-select-dropdown>
+        <project-select-dropdown #projectCombobox (valueChanged)="projectChanged($event)"
+                                 (userChanged)="projectChanged($event)"
+                                 [regionId]="region"
+                                 [isFirstVisit]="isFirstVisit"
+                                 [disabledProject]="isLoading"></project-select-dropdown>
     </div>
   </ng-template>
 </page-header>
@@ -35,7 +42,7 @@
                 <nz-form-control [nzErrorTip]="nameErrorTpl">
                   <input nz-input placeholder="{{'app.input.name'| i18n}} Cloud Backup"
                     [ngStyle]="isExistName ? { borderColor: '#ff4d4f' } : {}" formControlName="name"
-                    (ngModelChange)="changeName($event)" minlength="5" maxlength="50" class="custom-input" />
+                    (ngModelChange)="changeName($event)" maxlength="50" class="custom-input" />
                   <div *ngIf="isExistName" style="color: #ff4d4f">
                     {{'cloud-backup.validate.name.exist'| i18n}}
                   </div>
@@ -57,11 +64,14 @@
                     src="assets/imgs/pajamas_question.svg" alt="" />
                 </nz-form-label>
                 <nz-form-control [nzErrorTip]="numberErrorTpl">
-                  <nz-input-number [nzMin]="1" [nzMax]="40" formControlName="storage" [nzFormatter]="formatter"
+                  <!-- <nz-input-number [nzMin]="1" [nzMax]="40" formControlName="storage" [nzFormatter]="formatter"
                     (keydown)="onKeyDown($event)" (ngModelChange)="changeStorage($event)" class="custom-input"
-                    nzSize="large" style="width: 100%; margin-left: 0px" />
+                    nzSize="large" style="width: 100%; margin-left: 0px" /> -->
+                  <nz-input-number  [nzMin]="minBlock" [nzStep]="stepBlock" [nzMax]="maxBlock"
+                    (keydown)="checkPossiblePress($event)" [(ngModel)]="storage" (ngModelChange)="onInputChange($event)"
+                    [ngModelOptions]="{ standalone: true }" nzSize="large" style="width: 100%; margin-left: 0px"></nz-input-number>
                   <ng-template #numberErrorTpl let-control>
-                    <ng-container *ngIf="control.hasError('required')">{{'cloud-backup.validate.capacity.null'| i18n}}
+                    <ng-container *ngIf="form.controls.storage.hasError('required')">{{'cloud-backup.validate.capacity.null'| i18n}}
                     </ng-container>
                   </ng-template>
                 </nz-form-control>
@@ -71,7 +81,7 @@
               <nz-form-item>
                 <nz-form-label>{{'app.service.description'| i18n}}</nz-form-label>
                 <nz-form-control [nzErrorTip]="desErrorTpl">
-                  <textarea rows="3" nz-input formControlName="description" placeholder="{{'app.input.des'| i18n}}"
+                  <textarea rows="3" nz-input formControlName="description" maxlength="255"  placeholder="{{'app.input.des'| i18n}}"
                     [ngStyle]="isExistUsername ? { borderColor: '#ff4d4f' } : {}"></textarea>
                   <ng-template #desErrorTpl let-control>
                     <ng-container *ngIf="control.hasError('pattern')">{{'cloud-backup.validate.description'| i18n}}

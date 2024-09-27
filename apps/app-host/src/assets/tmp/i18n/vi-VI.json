@@ -3660,7 +3660,7 @@
   "app.add":"Thêm",
   "app.cloud-backup": "Cloud Backup",
   "app.label.init": "Khởi tạo",
-  "cloud-backup.validate.name": "Chỉ cho phép các chữ cái (a-z, A-Z, 0-9, '_', '-'). Độ dài dữ liệu đầu vào của bạn phải nằm trong khoảng từ 5 đến 50.",
+  "cloud-backup.validate.name": "Tên dịch vụ viết liền không dấu cách, không ký tự đặc biệt ngoại trừ ‘_’, Tối đa 50 ký tự",
   "cloud-backup.validate.name.exist": "Tên Cloud Backup đã tồn tại",
   "cloud-backup.validate.name.null": "Tên Cloud Backup không được để trống",
   "cloud-backup.validate.capacity": "Dung lượng tối đa là 40GB",

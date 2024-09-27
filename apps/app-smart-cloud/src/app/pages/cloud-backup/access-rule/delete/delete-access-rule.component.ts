@@ -14,7 +14,7 @@ import { finalize } from 'rxjs';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from '@core';
 import { Router } from '@angular/router';
-import { AccessRule } from '../../cloud-backup.model';
+import { AccessRule, CloudBackup } from '../../cloud-backup.model';
 import { CloudBackupService } from 'src/app/shared/services/cloud-backup.service';
 
 @Component({
@@ -23,6 +23,7 @@ import { CloudBackupService } from 'src/app/shared/services/cloud-backup.service
   styleUrls: ['./delete-access-rule.component.less']
 })
 export class DeleteAccessRuleComponent {
+  @Input() cloudBackup: CloudBackup;
   @Input() accessRuleData: AccessRule;
   @Input() canClick: boolean = true;
   @Output() onOk = new EventEmitter();
@@ -55,27 +56,19 @@ export class DeleteAccessRuleComponent {
   }
 
   handleOkDelete() {
-    if (this.inputConfirm == this.accessRuleData.source) {
-      this.isLoading = true
-      this.cloudBackupService.deleteAccessRule(this.accessRuleData.id).pipe(finalize(()=>{
-        this.isLoading = false
-      })).subscribe({
-        next:()=>{
-          this.notification.success(this.i18n.fanyi("app.status.success"), "Thao tác thành công")
-          this.isVisible = false;
-          this.onOk.emit()
-        },
-        error:()=>{
-          this.notification.success(this.i18n.fanyi("app.status.error"), "Đã xảy ra lỗi")
-        }
-      })
-    } else if (this.inputConfirm == '') {
-      this.checkInputEmpty = true;
-      this.checkInputConfirm = false;
-    } else {
-      this.checkInputEmpty = false;
-      this.checkInputConfirm = true;
-    }
+    this.isLoading = true
+    this.cloudBackupService.deleteAccessRule(this.cloudBackup.id, this.accessRuleData.id).pipe(finalize(()=>{
+      this.isLoading = false
+    })).subscribe({
+      next:()=>{
+        this.notification.success(this.i18n.fanyi("app.status.success"), "Thao tác thành công")
+        this.isVisible = false;
+        this.onOk.emit()
+      },
+      error:()=>{
+        this.notification.success(this.i18n.fanyi("app.status.error"), "Đã xảy ra lỗi")
+      }
+    })
     this.cdr.detectChanges();
   }
 }

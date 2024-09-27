@@ -42,6 +42,7 @@ export class CloudBackupComponent implements OnInit {
         this.isLoaded = true;
       },
       error:(err)=>{
+        this.isBegin = true;
         this.isLoaded = true;
       }
     })

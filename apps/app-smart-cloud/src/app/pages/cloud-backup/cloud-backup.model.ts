@@ -46,11 +46,13 @@ export class CloudBackupExtend {
 }
 
 export class CloudBackupResize {
-  newOfferId: number;
+  offerId: number;
   serviceType: number;
   actionType: number;
   serviceInstanceId: number;
   regionId: number;
+  currentSize: number;
+  newSize: number;
   serviceName: string;
   customerId: number;
   projectId: string;

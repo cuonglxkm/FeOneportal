@@ -16,30 +16,7 @@
     </h4>
   </ng-template>
   <ng-template #modalContent>
-    <nz-form-item>
-      <div class="text-label">
-        <span>{{'cloud-backup.access-rule.delete.instance' | i18n:{name: accessRuleData.source} }}</span
-        >
-      </div>
-      <nz-form-control style="margin-top: 10px; margin-bottom: 10px">
-        <input
-          class="input-custom"
-          appTrim
-          nz-input
-          placeholder="10.152.13.20"
-          [ngModel]="inputConfirm"
-          [ngModelOptions]="{ standalone: true }"
-          (keyup.enter)="handleOkDelete()"
-          (ngModelChange)="onInputChange($event)"
-        />
-        <div *ngIf="checkInputConfirm" style="color: #ff4d4f">
-          {{ 'cloud-backup.access-rule.delete.name.invalid' | i18n }}
-        </div>
-        <div *ngIf="checkInputEmpty" style="color: #ff4d4f">
-          {{ 'cloud-backup.access-rule.delete.name.required' | i18n }}
-        </div>
-      </nz-form-control>
-    </nz-form-item>
+    <p>Bạn hãy thực hiện nhấn <span class="text-bold">Xác nhận</span> để xóa IP/CIDR</p>
     <div class="d-flex justify-content-end">
       <button nz-button (click)="handleCancelDeleteDomain()">
         <img

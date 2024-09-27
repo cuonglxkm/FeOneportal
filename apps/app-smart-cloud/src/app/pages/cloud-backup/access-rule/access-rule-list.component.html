@@ -43,7 +43,7 @@
       <tr>
         <th nzLeft nzBreakWord>Source</th>
         <th nzLeft nzBreakWord>Port</th>
-        <th nzLeft nzBreakWord>{{ 'endpoint.table.title.enddate' | i18n }}</th>
+        <!-- <th nzLeft nzBreakWord>{{ 'endpoint.table.title.enddate' | i18n }}</th> -->
         <th nzBreakWord>{{ 'app.text.operation' | i18n }}</th>
       </tr>
       </thead>
@@ -51,10 +51,10 @@
       <tr *ngFor="let data of fixedTable.data">
         <td nzLeft nzBreakWord>{{ data.source }}</td>
         <td nzLeft nzBreakWord>{{ data.port }}</td>
-        <td nzLeft nzBreakWord>{{ data.enddate | date : "dd/MM/yyyy" }}</td>
+        <!-- <td nzLeft nzBreakWord>{{ data.enddate | date : "dd/MM/yyyy" }}</td> -->
         <td nzLeft nzBreakWord>
           <one-portal-edit-access-rule [accessRule]="data"></one-portal-edit-access-rule>
-          <one-portal-delete-access-rule [accessRuleData]="data"></one-portal-delete-access-rule>
+          <one-portal-delete-access-rule [cloudBackup]="cloudBackup" [accessRuleData]="data"></one-portal-delete-access-rule>
         </td>
       </tr>
       </tbody>

@@ -17,125 +17,132 @@
   </ng-template>
 </page-header>
 <!---------------FORM-------------->
-<form nz-form [formGroup]="form" [nzLayout]="'vertical'">
-  <nz-row nzGutter="24">
-    <nz-col nzSpan="16">
-      <nz-card class="text-label" nzTitle="" style="border-radius: 8px">
-        <div style="margin-bottom: 20px">
-          <span class="text-card-header">{{'app.info'|i18n}} Cloud Backup</span>
-        </div>
-        <div nz-row [nzGutter]="24">
-          <div nz-col [nzSpan]="24">
-            <nz-form-item>
-              <nz-form-label>{{'app.name'| i18n}} Cloud Backup (<span class="text-red">*</span>)<img
-                  style="margin-left: 10px" nz-tooltip="{{ 'cloud-backup.validate.name' | i18n }}"
-                  src="assets/imgs/pajamas_question.svg" alt="" /></nz-form-label>
-              <nz-form-control [nzErrorTip]="nameErrorTpl">
-                <input nz-input placeholder="{{'app.input.name'| i18n}} Cloud Backup"
-                  [ngStyle]="isExistName ? { borderColor: '#ff4d4f' } : {}" formControlName="name"
-                  (ngModelChange)="changeName($event)" maxlength="50" class="custom-input" />
-                <div *ngIf="isExistName" style="color: #ff4d4f">
-                  {{'cloud-backup.validate.name.exist'| i18n}}
-                </div>
-                <ng-template #nameErrorTpl let-control>
-                  <ng-container *ngIf="control.hasError('required')">{{'cloud-backup.validate.name.null'| i18n}}
-                  </ng-container>
-                  <ng-container *ngIf="control.hasError('pattern')">{{'cloud-backup.validate.name'| i18n}}
-                  </ng-container>
-                </ng-template>
-              </nz-form-control>
-            </nz-form-item>
-          </div>
-        </div>
-        <div nz-row [nzGutter]="24">
-          <div nz-col [nzSpan]="24">
-            <nz-form-item>
-              <nz-form-label>{{'app.capacity'| i18n}} backup (GB) (<span class="text-red">*</span>)
-                <img style="margin-left: 10px" nz-tooltip="{{ 'cloud-backup.validate.capacity' | i18n }}"
-                  src="assets/imgs/pajamas_question.svg" alt="" />
-              </nz-form-label>
-              <nz-form-control [nzErrorTip]="numberErrorTpl">
-                <nz-input-number [nzMin]="1" [nzMax]="30000" formControlName="storage" [nzFormatter]="formatter"
-                  (keydown)="onKeyDown($event)" (ngModelChange)="changeStorage($event)" class="custom-input"
-                  nzSize="large" style="width: 100%; margin-left: 0px" />
-                <ng-template #numberErrorTpl let-control>
-                  <ng-container *ngIf="control.hasError('required')">{{'cloud-backup.validate.capacity.null'| i18n}}
-                  </ng-container>
-                </ng-template>
-              </nz-form-control>
-            </nz-form-item>
-          </div>
-          <div nz-col [nzSpan]="24">
-            <nz-form-item>
-              <nz-form-label>{{'app.service.description'| i18n}}</nz-form-label>
-              <nz-form-control>
-                <textarea rows="3" nz-input formControlName="description" placeholder="{{'app.input.des'| i18n}}"
-                  [ngStyle]="isExistUsername ? { borderColor: '#ff4d4f' } : {}"></textarea>
-              </nz-form-control>
-            </nz-form-item>
-          </div>
-        </div>
-      </nz-card>
-    </nz-col>
-    <nz-col nzSpan="8">
-      <nz-affix [nzOffsetTop]="72">
-        <nz-card style="border-radius: 8px" class="border-card">
+
+<nz-spin [nzSpinning]="isLoading">
+  <form nz-form [formGroup]="form" [nzLayout]="'vertical'">
+    <nz-row nzGutter="24">
+      <nz-col nzSpan="16">
+        <nz-card class="text-label" nzTitle="" style="border-radius: 8px">
           <div style="margin-bottom: 20px">
-            <span class="text-card-header">{{ 'app.config.parameters' | i18n }}</span>
+            <span class="text-card-header">{{'app.info'|i18n}} Cloud Backup</span>
           </div>
-          <div class="text-label" style="margin-bottom: 12px">
-            <h3 class="custom-subtitle">{{'app.name'| i18n}} Cloud Backup</h3>
-            <span style="word-wrap: break-word;">{{form.get('name').value}}</span>
-          </div>
-          <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
-          <div class="text-label" style="margin-bottom: 12px">
-            <h3 class="custom-subtitle">{{'app.capacity'| i18n}} backup (GB)</h3>
-            <span style="word-wrap: break-word;">{{form.get('storage').value | number:'1.0-0'}}</span>
-          </div>
-          <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
-          <nz-row>
-            <nz-col style="width: 100%">
-              <button style="width: 100%" nz-button nzSize="large" nzType="primary" (click)="showConfirmCreate()"
-                      [disabled]="form.invalid">
-                <img src="assets/imgs/wallet.svg" style="margin-right: 5px; padding-bottom: 5px;" />
-                <span [style.color]="form.invalid ? 'gray' : 'white'">{{ 'app.button.create'|i18n }}</span>
-              </button>
-              <nz-modal [(nzVisible)]="isVisibleCreate" nzTabScrollList="true"
-                        (nzOnCancel)="handleCancelCreate()" [nzAutofocus]="undefined">
-                <div *nzModalTitle>
-                  <span class="text-modal-header">{{ 'volume.modal.confirm.title.create'|i18n }}</span>
-                </div>
-                <div *nzModalContent>
-                  <div>
-                    <span class="text-label"
-                          style="text-align: center">{{ 'volume.modal.confirm.content'|i18n }}</span>
+          <div nz-row [nzGutter]="24">
+            <div nz-col [nzSpan]="24">
+              <nz-form-item>
+                <nz-form-label>{{'app.name'| i18n}} Cloud Backup (<span class="text-red">*</span>)<img
+                    style="margin-left: 10px" nz-tooltip="{{ 'cloud-backup.validate.name' | i18n }}"
+                    src="assets/imgs/pajamas_question.svg" alt="" /></nz-form-label>
+                <nz-form-control [nzErrorTip]="nameErrorTpl">
+                  <input nz-input placeholder="{{'app.input.name'| i18n}} Cloud Backup"
+                    [ngStyle]="isExistName ? { borderColor: '#ff4d4f' } : {}" formControlName="name"
+                    (ngModelChange)="changeName($event)" maxlength="50" class="custom-input" />
+                  <div *ngIf="isExistName" style="color: #ff4d4f">
+                    {{'cloud-backup.validate.name.exist'| i18n}}
                   </div>
-                </div>
-                <div *nzModalFooter style="padding-left: 8px; padding-right: 8px;">
-                  <button nz-button nzType="default" (click)="handleCancelCreate()" class="button-cancel">
-                    <span nz-icon nzType="close" nzTheme="outline"></span>{{ 'app.button.cancel'|i18n }}
-                  </button>
-                  <button nz-button nzType="primary"
-
-                          (click)="handleOkCreate()"
-                          [nzLoading]="isLoadingCreate"
-                          class="button-ok" appAutofocus>
-                    <span nz-icon nzType="check" nzTheme="outline"></span>{{ 'app.button.confirm' | i18n }}
-                  </button>
-                </div>
-              </nz-modal>
-            </nz-col>
-          </nz-row>
+                  <ng-template #nameErrorTpl let-control>
+                    <ng-container *ngIf="control.hasError('required')">{{'cloud-backup.validate.name.null'| i18n}}
+                    </ng-container>
+                    <ng-container *ngIf="control.hasError('pattern')">{{'cloud-backup.validate.name'| i18n}}
+                    </ng-container>
+                  </ng-template>
+                </nz-form-control>
+              </nz-form-item>
+            </div>
+          </div>
+          <div nz-row [nzGutter]="24">
+            <div nz-col [nzSpan]="24">
+              <nz-form-item>
+                <nz-form-label>{{'app.capacity'| i18n}} backup (GB) (<span class="text-red">*</span>)
+                  <img style="margin-left: 10px" nz-tooltip="{{ 'cloud-backup.validate.capacity' | i18n }}"
+                    src="assets/imgs/pajamas_question.svg" alt="" />
+                </nz-form-label>
+                <nz-form-control [nzErrorTip]="numberErrorTpl">
+                  <nz-input-number formControlName="storage" [nzFormatter]="formatter"
+                    (keydown)="onKeyDown($event)" (ngModelChange)="changeStorage($event)" class="custom-input"
+                    nzSize="large" style="width: 100%; margin-left: 0px" />
+                  <!-- <nz-input-number  [nzMin]="minBlock" [nzStep]="stepBlock" [nzMax]="maxBlock"
+                    (keydown)="checkPossiblePress($event)" [(ngModel)]="storage" (ngModelChange)="onInputChange($event)"
+                    [ngModelOptions]="{ standalone: true }" nzSize="large" style="width: 100%; margin-left: 0px"></nz-input-number> -->
+                  <ng-template #numberErrorTpl let-control>
+                    <ng-container *ngIf="control.hasError('required')">{{'cloud-backup.validate.capacity.null'| i18n}}
+                    </ng-container>
+                  </ng-template>
+                </nz-form-control>
+              </nz-form-item>
+            </div>
+            <div nz-col [nzSpan]="24">
+              <nz-form-item>
+                <nz-form-label>{{'app.service.description'| i18n}}</nz-form-label>
+                <nz-form-control>
+                  <textarea rows="3" nz-input formControlName="description" placeholder="{{'app.input.des'| i18n}}"
+                    [ngStyle]="isExistUsername ? { borderColor: '#ff4d4f' } : {}"></textarea>
+                </nz-form-control>
+              </nz-form-item>
+            </div>
+          </div>
         </nz-card>
-      </nz-affix>
-    </nz-col>
-  </nz-row>
+      </nz-col>
+      <nz-col nzSpan="8">
+        <nz-affix [nzOffsetTop]="72">
+          <nz-card style="border-radius: 8px" class="border-card">
+            <div style="margin-bottom: 20px">
+              <span class="text-card-header">{{ 'app.config.parameters' | i18n }}</span>
+            </div>
+            <div class="text-label" style="margin-bottom: 12px">
+              <h3 class="custom-subtitle">{{'app.name'| i18n}} Cloud Backup</h3>
+              <span style="word-wrap: break-word;">{{form.get('name').value}}</span>
+            </div>
+            <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
+            <div class="text-label" style="margin-bottom: 12px">
+              <h3 class="custom-subtitle">{{'app.capacity'| i18n}} backup (GB)</h3>
+              <span style="word-wrap: break-word;">{{form.get('storage').value | number:'1.0-0'}}</span>
+            </div>
+            <nz-divider style="margin: 10px 0" nzType="horizontal"></nz-divider>
+            <nz-row>
+              <nz-col style="width: 100%">
+                <button style="width: 100%" nz-button nzSize="large" nzType="primary" (click)="showConfirmCreate()"
+                        [disabled]="form.invalid">
+                  <img src="assets/imgs/wallet.svg" style="margin-right: 5px; padding-bottom: 5px;" />
+                  <span [style.color]="form.invalid ? 'gray' : 'white'">{{ 'app.button.create'|i18n }}</span>
+                </button>
+                <nz-modal [(nzVisible)]="isVisibleCreate" nzTabScrollList="true"
+                          (nzOnCancel)="handleCancelCreate()" [nzAutofocus]="undefined">
+                  <div *nzModalTitle>
+                    <span class="text-modal-header">{{ 'volume.modal.confirm.title.create'|i18n }}</span>
+                  </div>
+                  <div *nzModalContent>
+                    <div>
+                      <span class="text-label"
+                            style="text-align: center">{{ 'volume.modal.confirm.content'|i18n }}</span>
+                    </div>
+                  </div>
+                  <div *nzModalFooter style="padding-left: 8px; padding-right: 8px;">
+                    <button nz-button nzType="default" (click)="handleCancelCreate()" class="button-cancel">
+                      <span nz-icon nzType="close" nzTheme="outline"></span>{{ 'app.button.cancel'|i18n }}
+                    </button>
+                    <button nz-button nzType="primary"
+  
+                            (click)="handleOkCreate()"
+                            [nzLoading]="isLoadingCreate"
+                            class="button-ok" appAutofocus>
+                      <span nz-icon nzType="check" nzTheme="outline"></span>{{ 'app.button.confirm' | i18n }}
+                    </button>
+                  </div>
+                </nz-modal>
+              </nz-col>
+            </nz-row>
+          </nz-card>
+        </nz-affix>
+      </nz-col>
+    </nz-row>
+  
+  
+    <!---------------CARD-THÀNH TIỀN-------------->
+    <!-- [nzLoading]="loadingCalculate" -->
+  
+  </form>
+</nz-spin>
 
-
-  <!---------------CARD-THÀNH TIỀN-------------->
-  <!-- [nzLoading]="loadingCalculate" -->
-
-</form>
 
 <one-portal-popup-list-error [isVisible]="isVisiblePopupError" [errorList]="errorList"
   (onCancel)="closePopupError()"></one-portal-popup-list-error>

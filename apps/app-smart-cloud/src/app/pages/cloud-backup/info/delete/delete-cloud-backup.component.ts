@@ -70,7 +70,7 @@ export class DeleteCloudBackupComponent implements OnInit{
           this.onOk.emit()
         },
         error:()=>{
-          this.notification.success(this.i18n.fanyi("app.status.error"), "Đã xảy ra lỗi")
+          this.notification.error(this.i18n.fanyi("app.status.error"), "Đã xảy ra lỗi")
         }
       })
     } else if (this.inputConfirm == '') {

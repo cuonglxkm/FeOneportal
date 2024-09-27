@@ -154,7 +154,10 @@ export class CloudBackupExtendComponent implements OnInit {
     //this.CloudBackupExtend.serviceType = ServiceType.CloudBackup;
     this.CloudBackupExtend.actionType = ServiceActionType.EXTEND;
     this.CloudBackupExtend.serviceInstanceId = this.id;
-    this.CloudBackupExtend.offerId = this.selectedOfferId;
+    this.CloudBackupExtend.projectId = this.project;
+    this.CloudBackupExtend.regionId = this.region;
+    this.CloudBackupExtend.vpcId = this.project;
+
   }
 
   totalAmount: number = 0;

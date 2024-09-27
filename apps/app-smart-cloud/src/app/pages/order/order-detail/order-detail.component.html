@@ -328,6 +328,11 @@
                 [routerLink]="['/app-smart-cloud/endpoint']"
                 >{{ item?.serviceName }}</a>
                 <div *ngSwitchDefault>{{ item?.serviceName }}</div>
+                <a
+                *ngSwitchCase="'Cloud Backup'"
+                [routerLink]="['/app-smart-cloud/cloud-backup']"
+                >{{ item?.serviceName }}</a>
+                <div *ngSwitchDefault>{{ item?.serviceName }}</div>
               </td>
             </ng-container>
             <ng-container *ngIf="data?.statusCode != 4">

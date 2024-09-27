@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, Inject, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, Inject, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { I18NService } from '@core';
@@ -13,12 +13,14 @@ import { ObjectStorageService } from 'src/app/shared/services/object-storage.ser
 import { OrderService } from 'src/app/shared/services/order.service';
 import { DataPayment, ItemPayment, OfferItem, Order, OrderItem } from '../../instances/instances.model';
 import { InstancesService } from '../../instances/instances.service';
-import { slider } from '../../../../../../../libs/common-utils/src';
+import { ProjectModel, RegionModel, slider } from '../../../../../../../libs/common-utils/src';
 import { PriceType } from 'src/app/core/models/enum';
 import { LoadingService } from '@delon/abc/loading';
 import { DecimalPipe } from '@angular/common';
 import { CloudBackupService } from 'src/app/shared/services/cloud-backup.service';
 import { CloudBackupCreate } from 'src/app/shared/models/cloud-backup-init';
+import { ConfigurationsService } from 'src/app/shared/services/configurations.service';
+import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
 
 @Component({
   selector: 'one-portal-cloud-backup-create',
@@ -27,7 +29,9 @@ import { CloudBackupCreate } from 'src/app/shared/models/cloud-backup-init';
   animations: [slider]
 })
 export class CloudBackupCreateComponent implements OnInit {
-
+  region = JSON.parse(localStorage.getItem('regionId'));
+  project = JSON.parse(localStorage.getItem('projectId'));
+  @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
   listOffers: OfferItem[] = [];
   today = new Date();
   expiredDate = new Date();
@@ -45,15 +49,21 @@ export class CloudBackupCreateComponent implements OnInit {
 
   isVisiblePopupError: boolean = false;
   errorList: string[] = [];
+  minBlock: number = 0;
+  stepBlock: number = 0;
+  maxBlock: number = 0;
+  storage: number = 0;
+  isFirstVisit: boolean;
+  typeVPC: number;
   closePopupError() {
     this.isVisiblePopupError = false;
   }
 
   
   form: FormGroup = this.fb.group({
-    name: ['', [Validators.required, Validators.pattern(/^[a-zA-Z0-9][a-zA-Z0-9_-]{5,49}$/)]],
+    name: ['', [Validators.required, Validators.pattern(NAME_REGEX)]],
     storage: [4, Validators.required],
-    description: ['',[Validators.pattern(/^[a-zA-Z0-9@._\-\s]{0,255}$/)]],
+    description: ['',[Validators.maxLength(255)]],
     time: [1]
   });
 
@@ -69,16 +79,33 @@ export class CloudBackupCreateComponent implements OnInit {
     private service: ObjectStorageService,
     private cloudBackupService: CloudBackupService,
     private loadingSrv: LoadingService,
+    private configurationsService: ConfigurationsService,
   ) {
 
   }
   ngOnInit() {
+    this.getStepBlock('CLOUDBACKUP');
     this.getOffers();
     this.checkExistName();
-    this.checkExistUsername();
     this.onChangeStorage();
+    this.inputChangeBlock.pipe(
+      debounceTime(800)
+    ).subscribe(data => this.checkNumberBlock(data));
   }
 
+  getStepBlock(name: string) {
+    this.configurationsService.getConfigurations(name).subscribe((res: any) => {
+      const valuestring: any = res.valueString;
+      const parts = valuestring.split("#")
+      this.minBlock = parseInt(parts[0]);
+      console.log("this.minBlock",this.minBlock)
+      this.stepBlock = parseInt(parts[1]);
+      console.log("this.stepBlock",this.stepBlock)
+      this.maxBlock = parseInt(parts[2]);
+      console.log("this.maxBlock",this.maxBlock)
+      this.storage = this.minBlock;
+    })
+  }
   onKeyDown(event: KeyboardEvent) {
     // Lấy giá trị của phím được nhấn
     const key = event.key;
@@ -99,7 +126,6 @@ export class CloudBackupCreateComponent implements OnInit {
   // Hàm để định dạng số với dấu phẩy
   formatter = (value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
   dataSubjectName: Subject<string> = new Subject<string>();
-  dataSubjectUserame: Subject<string> = new Subject<string>();
   dataSubjectStorage: Subject<number> = new Subject<number>();
   changeName(value: string) {
     this.dataSubjectName.next(value);
@@ -118,26 +144,14 @@ export class CloudBackupCreateComponent implements OnInit {
         debounceTime(300)
       )
       .subscribe((res) => {
-        this.cloudBackupService
-          .checkExitName(res)
-          .subscribe((data) => {
-            this.isExistName = data;
-          });
+        // this.cloudBackupService
+        //   .checkExitName(res)
+        //   .subscribe((data) => {
+        //     this.isExistName = data;
+        //   });
       });
   }
-  checkExistUsername() {
-    this.dataSubjectUserame
-      .pipe(
-        debounceTime(300)
-      )
-      .subscribe((res) => {
-        this.cloudBackupService
-          .checkExitUsername(res)
-          .subscribe((data) => {
-            this.isExistUsername = data;
-          });
-      });
-  }
+  
 
   onChangeStorage() {
     this.dataSubjectStorage
@@ -162,7 +176,10 @@ export class CloudBackupCreateComponent implements OnInit {
     this.cloudBackupCreate.isSendMail = true;
     this.cloudBackupCreate.name = this.form.controls.name.value;
     this.cloudBackupCreate.storage = this.form.controls.storage.value;
+    this.cloudBackupCreate.quotaCloudBackup = this.form.controls.storage.value;
     this.cloudBackupCreate.description = this.form.controls.description.value;
+    this.cloudBackupCreate.projectId =this.project;
+    this.cloudBackupCreate.regionId = this.region;
   }
   isInvalid: boolean = false
   onChangeTime(numberMonth: number) {
@@ -262,4 +279,53 @@ export class CloudBackupCreateComponent implements OnInit {
     });
   }
 
+  checkNumberBlock(value: number): void {
+    const messageStepNotification = `Số lượng phải chia hết cho  ${this.stepBlock} `;
+    const numericValue = Number(value);
+    if (isNaN(numericValue)) {
+      this.notification.warning('', messageStepNotification);
+      return;
+    }
+    let adjustedValue = Math.floor(numericValue / this.stepBlock) * this.stepBlock;
+    if (adjustedValue > this.maxBlock) {
+      adjustedValue = Math.floor(this.maxBlock / this.stepBlock) * this.stepBlock;
+    } else if (adjustedValue < this.minBlock) {
+      this.notification.warning('', messageStepNotification);
+      adjustedValue = this.minBlock;
+    }
+    if (numericValue !== adjustedValue) {
+      this.notification.warning('', messageStepNotification);
+    }
+    this.storage = adjustedValue;
+    this.form.controls.storage.setValue(adjustedValue);
+    this.getTotalAmount();
+
+  }
+  checkPossiblePress(event: KeyboardEvent) {
+    const key = event.key;
+    if (isNaN(Number(key)) && key !== 'Backspace' && key !== 'Delete' && key !== 'ArrowLeft' && key !== 'ArrowRight' && key !== 'Tab') {
+      event.preventDefault();
+    }
+  }
+  
+  private inputChangeBlock = new Subject<number>();
+  onInputChange(aa: number): void {
+    this.inputChangeBlock.next(aa);
+  }
+  regionChanged(region: RegionModel) {
+    this.region = region.regionId;
+    if (this.projectCombobox) {
+      this.projectCombobox.loadProjects(true, region.regionId);
+    }
+    setTimeout(() => {
+      //this.getListVolume(true);
+    }, 2500);
+  }
+  onRegionChanged(region: RegionModel) {
+    this.region = region.regionId;
+  }
+  projectChanged(project: ProjectModel) {
+    this.project = project?.id;
+    this.typeVPC = project?.type;
+  }
 }

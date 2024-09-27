@@ -113,7 +113,7 @@
                 <span class="label-fontsize">Dung lượng backup hiện tại: {{cloudBackupDetail.storage}} GB</span>
               </nz-col>
               <nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="12">
-                <span class="label-fontsize">Dung lượng backup sau điều chỉnh: {{form.controls.storage.value}} GB</span>
+                <span class="label-fontsize">Dung lượng backup sau điều chỉnh: {{cloudBackupDetail.storage+form.controls.storage.value}} GB</span>
               </nz-col>
             </nz-row>
             <nz-form-item class="mt-3">
@@ -122,16 +122,18 @@
                   src="assets/imgs/pajamas_question.svg" alt="" />
               </nz-form-label>
               <nz-form-control [nzErrorTip]="numberErrorTpl">
-                <nz-input-number [nzMin]="1" [nzMax]="40" formControlName="storage" [nzFormatter]="formatter"
+                <!-- <nz-input-number [nzMin]="1" [nzMax]="40" formControlName="storage" [nzFormatter]="formatter"
                   (keydown)="onKeyDown($event)" (ngModelChange)="changeStorage($event)" class="custom-input"
-                  nzSize="large" style="width: 100%; margin-left: 0px" />
+                  nzSize="large" style="width: 100%; margin-left: 0px" /> -->
+                <nz-input-number  [nzMin]="minBlock" [nzStep]="stepBlock" [nzMax]="maxBlock"
+                  (keydown)="checkPossiblePress($event)" [(ngModel)]="storage" (ngModelChange)="onInputChange($event)"
+                  [ngModelOptions]="{ standalone: true }" nzSize="large" style="width: 100%; margin-left: 0px"></nz-input-number>
                 <ng-template #numberErrorTpl let-control>
                   <ng-container *ngIf="control.hasError('required')">{{'cloud-backup.validate.capacity.null'| i18n}}
                   </ng-container>
                 </ng-template>
               </nz-form-control>
             </nz-form-item>
-            
           </nz-card>
     
           <!---------------CARD-CONG-THUC-------------->

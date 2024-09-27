@@ -19,6 +19,8 @@ import { LoadingService } from '@delon/abc/loading';
 import { DecimalPipe } from '@angular/common';
 import { CloudBackupService } from 'src/app/shared/services/cloud-backup.service';
 import { CloudBackupCreate } from 'src/app/shared/models/cloud-backup-init';
+import { ConfigurationsService } from 'src/app/shared/services/configurations.service';
+import { VpcService } from 'src/app/shared/services/vpc.service';
 
 @Component({
   selector: 'one-portal-cloud-backup-create-vpc',
@@ -27,7 +29,8 @@ import { CloudBackupCreate } from 'src/app/shared/models/cloud-backup-init';
   animations: [slider]
 })
 export class CloudBackupCreateVpcComponent implements OnInit {
-
+  region = JSON.parse(localStorage.getItem('regionId'));
+  project = JSON.parse(localStorage.getItem('projectId'));
   listOffers: OfferItem[] = [];
   today = new Date();
   expiredDate = new Date();
@@ -46,14 +49,19 @@ export class CloudBackupCreateVpcComponent implements OnInit {
   isVisiblePopupError: boolean = false;
   errorList: string[] = [];
   isVisibleCreate: boolean;
+  minBlock: number = 0;
+  stepBlock: number = 0;
+  maxBlock: number = 0;
+  storage: number = 0;
+  isLoading=false;
   closePopupError() {
     this.isVisiblePopupError = false;
   }
 
   form: FormGroup = this.fb.group({
     name: ['', [Validators.required, Validators.pattern(NAME_REGEX)]],
-    storage: [1, Validators.required],
-    description: [''],
+    storage: [{value: 1, disabled: true}, Validators.required],
+    description: ['',[Validators.maxLength(255)]],
     time: [1]
   });
 
@@ -69,14 +77,42 @@ export class CloudBackupCreateVpcComponent implements OnInit {
     private service: ObjectStorageService,
     private cloudBackupService: CloudBackupService,
     private loadingSrv: LoadingService,
+    private configurationsService: ConfigurationsService,
+    private vpcService: VpcService,
   ) {
 
   }
   ngOnInit() {
-    this.form.controls.email.disable();
+    this.getVpc();
+    this.getStepBlock('CLOUDBACKUP');
     this.getOffers();
     this.checkExistName();
-    this.checkExistUsername();
+    this.inputChangeBlock.pipe(
+      debounceTime(800)
+    ).subscribe(data => this.checkNumberBlock(data));
+  }
+
+  getVpc(){
+    this.vpcService.getDetail(this.project).subscribe({
+      next: (res) => {
+        this.storage = res.quotaCloudBackup??0;
+        this.form.controls.storage.setValue(res.quotaCloudBackup??0);
+      }
+    })
+  }
+
+  getStepBlock(name: string) {
+    this.configurationsService.getConfigurations(name).subscribe((res: any) => {
+      const valuestring: any = res.valueString;
+      const parts = valuestring.split("#")
+      this.minBlock = parseInt(parts[0]);
+      console.log("this.minBlock",this.minBlock)
+      this.stepBlock = parseInt(parts[1]);
+      console.log("this.stepBlock",this.stepBlock)
+      this.maxBlock = parseInt(parts[2]);
+      console.log("this.maxBlock",this.maxBlock)
+      this.storage = this.minBlock;
+    })
   }
 
   onKeyDown(event: KeyboardEvent) {
@@ -107,13 +143,15 @@ export class CloudBackupCreateVpcComponent implements OnInit {
   // Hàm để định dạng số với dấu phẩy
   formatter = (value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
   dataSubjectName: Subject<string> = new Subject<string>();
-  dataSubjectUserame: Subject<string> = new Subject<string>();
   changeName(value: string) {
     this.dataSubjectName.next(value);
   }
 
-  changeStorage(value: number) {
-    this.getTotalAmount();
+  
+  dataSubjectStorage: Subject<number> = new Subject<number>();
+   changeStorage(value: number) {
+    console.log('value', value);
+    this.dataSubjectStorage.next(value);
   }
 
   isExistName: boolean = false;
@@ -124,27 +162,14 @@ export class CloudBackupCreateVpcComponent implements OnInit {
         debounceTime(300)
       )
       .subscribe((res) => {
-        this.cloudBackupService
-          .checkExitName(res)
-          .subscribe((data) => {
-            this.isExistName = data;
-          });
+        // this.cloudBackupService
+        //   .checkExitName(res)
+        //   .subscribe((data) => {
+        //     this.isExistName = data;
+        //   });
       });
   }
-  checkExistUsername() {
-    this.dataSubjectUserame
-      .pipe(
-        debounceTime(300)
-      )
-      .subscribe((res) => {
-        this.cloudBackupService
-          .checkExitUsername(res)
-          .subscribe((data) => {
-            this.isExistUsername = data;
-          });
-      });
-  }
-
+  
   initCloudBackup() {
     this.cloudBackupCreate.customerId = this.tokenService.get()?.userId;
     this.cloudBackupCreate.userEmail = this.tokenService.get()?.email;
@@ -159,20 +184,11 @@ export class CloudBackupCreateVpcComponent implements OnInit {
     this.cloudBackupCreate.name = this.form.controls.name.value;
     this.cloudBackupCreate.storage = this.form.controls.storage.value;
     this.cloudBackupCreate.description = this.form.controls.description.value;
+    this.cloudBackupCreate.quotaCloudBackup = this.form.controls.storage.value;
+    this.cloudBackupCreate.projectId = this.project;
   }
   isInvalid: boolean = false
-  onChangeTime(numberMonth: number) {
-    if (numberMonth === undefined) {
-      this.isInvalid = true
-    } else {
-      this.isInvalid = false;
-      this.numOfMonth = numberMonth;
-      this.expiredDate = new Date(this.today);
-      this.expiredDate.setDate(this.today.getDate() + numberMonth * 30);
-      this.form.controls.time.setValue(numberMonth);
-      this.getTotalAmount();
-    }
-  }
+
 
   getTotalAmount() {
     if (!this.selectedOfferId) {
@@ -198,36 +214,37 @@ export class CloudBackupCreateVpcComponent implements OnInit {
     });
   }
   getOffers(): void {
-    this.loadingSrv.open({ type: 'spin', text: 'Loading...' })
+    this.isLoading=true;
     this.instancesService.getDetailProductByUniqueName('cloud-backup')
       .subscribe(
         data => {
-          // this.instancesService
-          //   .getListOffersByProductIdNoRegion(data[0].id)
-          //   .subscribe((data: any) => {
-          //     this.listOffers = data.filter(
-          //       (e: OfferItem) => e.status.toUpperCase() == 'ACTIVE'
-          //     );
-          //     this.selectedOfferId = this.listOffers[0].id;
-          //     this.priceType = this.listOffers[0].price.priceType;
-          //     this.getTotalAmount();
-          //     this.loadingSrv.close()
-          //   });
-          this.loadingSrv.close()
+          this.instancesService
+            .getListOffersByProductIdNoRegion(data[0].id)
+            .subscribe((data: any) => {
+              var offers = data.filter(
+                (e: OfferItem) => e.status.toUpperCase() == 'ACTIVE'
+              );
+              this.selectedOfferId = offers[0].id;
+              this.priceType = offers[0].price.priceType;
+              
+              this.isLoading=false;
+            });
         }
       );
   }
 
+
   orderItem: OrderItem[] = [];
   order: Order = new Order();
-  handleSubmit() {
+
+  handleOkCreate(){
     this.orderItem = [];
     this.initCloudBackup();
     let specification = JSON.stringify(this.cloudBackupCreate);
     let orderItemOS = new OrderItem();
     orderItemOS.orderItemQuantity = 1;//this.form.controls.capacity.value;
     orderItemOS.specification = specification;
-    orderItemOS.specificationType = 'cloud_backup_create';
+    orderItemOS.specificationType = 'cloudbackup_create';
     orderItemOS.price = this.totalAmount;
     orderItemOS.priceType = this.priceType;
     orderItemOS.serviceDuration = this.form.controls.time.value;
@@ -257,7 +274,36 @@ export class CloudBackupCreateVpcComponent implements OnInit {
       },
     });
   }
-  handleOkCreate(){
-    
+  checkNumberBlock(value: number): void {
+    const messageStepNotification = `Số lượng phải chia hết cho  ${this.stepBlock} `;
+    const numericValue = Number(value);
+    if (isNaN(numericValue)) {
+      this.notification.warning('', messageStepNotification);
+      return;
+    }
+    let adjustedValue = Math.floor(numericValue / this.stepBlock) * this.stepBlock;
+    if (adjustedValue > this.maxBlock) {
+      adjustedValue = Math.floor(this.maxBlock / this.stepBlock) * this.stepBlock;
+    } else if (adjustedValue < this.minBlock) {
+      this.notification.warning('', messageStepNotification);
+      adjustedValue = this.minBlock;
+    }
+    if (numericValue !== adjustedValue) {
+      this.notification.warning('', messageStepNotification);
+    }
+    this.storage = adjustedValue;
+    this.form.controls.storage.setValue(adjustedValue);
+    //this.getTotalAmount();
+  }
+  checkPossiblePress(event: KeyboardEvent) {
+    const key = event.key;
+    if (isNaN(Number(key)) && key !== 'Backspace' && key !== 'Delete' && key !== 'ArrowLeft' && key !== 'ArrowRight' && key !== 'Tab') {
+      event.preventDefault();
+    }
+  }
+  
+  private inputChangeBlock = new Subject<number>();
+  onInputChange(value: number): void {
+    this.inputChangeBlock.next(value);
   }
 }

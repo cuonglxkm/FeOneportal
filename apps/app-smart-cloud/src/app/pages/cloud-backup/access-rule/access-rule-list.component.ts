@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, Inject, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, Inject, Input, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
@@ -16,6 +16,7 @@ import { CloudBackupService } from 'src/app/shared/services/cloud-backup.service
 })
 
 export class AccessRuleListComponent implements OnInit, OnDestroy {
+  @Input() cloudBackup : CloudBackup;
   isLoading: boolean = true;
   selectedValue: string;
   value: string;
@@ -102,7 +103,7 @@ export class AccessRuleListComponent implements OnInit, OnDestroy {
 
   getListCloudBackup() {
     this.isLoading = true;
-    this.cloudBackupService.getCloudBackups(this.pageSize, this.pageIndex, this.selectedValue, this.value)
+    this.cloudBackupService.getAccessRules(this.cloudBackup.id, this.pageSize, this.pageIndex, this.value)
       .pipe(debounceTime(500))
       .subscribe({
         next: data => {

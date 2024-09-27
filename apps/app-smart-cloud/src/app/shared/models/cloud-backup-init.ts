@@ -34,4 +34,5 @@ export class CloudBackupCreate {
   name: string
   storage: number
   description: string
+  quotaCloudBackup: number
 }

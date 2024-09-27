@@ -36,7 +36,7 @@
         <app-cloud-backup-info [data]="cloudBackup"></app-cloud-backup-info>
       </nz-tab>
       <nz-tab nzTitle="Access rule">
-        <app-access-rule-list></app-access-rule-list>
+        <app-access-rule-list [cloudBackup]="cloudBackup"></app-access-rule-list>
       </nz-tab>
     </nz-tabset>
   </ng-container>
