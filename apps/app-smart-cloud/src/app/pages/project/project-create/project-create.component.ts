@@ -625,7 +625,7 @@ export class ProjectCreateComponent implements OnInit {
 
   }
   checkNumberInputStep(value: number, min: number, step: number, max: number, name: string): void {
-    const messageStepNotification = `Số lượng phải chia hết cho ${step}`;
+    // const messageStepNotification = `Số lượng phải chia hết cho ${step}`;
     const messageMaxNotification = `Vượt quá số lượng max ${max}`;
     const messageMinNotification = `Nhỏ hơn số lượng min ${min}`;
 
@@ -643,10 +643,10 @@ export class ProjectCreateComponent implements OnInit {
       number = max;
     }
     // Kiểm tra xem giá trị có chia hết cho step hay không
-    else if (number % step !== 0) {
-      this.notification.warning('', messageStepNotification);
-      number = Math.floor(number / step) * step;
-    }
+    // else if (number % step !== 0) {
+    //   this.notification.warning('', messageStepNotification);
+    //   number = Math.floor(number / step) * step;
+    // }
     switch (name) {
       case "k8s-cpu":
         this.numberk8sCpu = value;
