@@ -25,10 +25,12 @@
           <input nz-input placeholder="{{'cloud-backup.access-rule.input.source'| i18n}}"
               [ngStyle]="isExistName ? { borderColor: '#ff4d4f' } : {}" formControlName="source"
               class="custom-input" />
-          <ng-template #nameErrorTpl let-control>
-            <ng-container *ngIf="control.hasError('required')">{{'cloud-backup.validate.name.null'| i18n}}
+          <ng-template #numberErrorTpl let-control>
+            <ng-container *ngIf="control.hasError('required')">{{'cloud-backup.access-rule.validate.source.null'| i18n}}
             </ng-container>
-            <ng-container *ngIf="control.hasError('pattern')">{{'cloud-backup.validate.name'| i18n}}
+            <ng-container *ngIf="control.hasError('pattern')">{{'cloud-backup.access-rule.validate.source.pattern'| i18n}}
+            </ng-container>
+            <ng-container *ngIf="control.hasError('startsWith0000') && !control.hasError('pattern')">{{'cloud-backup.access-rule.validate.source.0'| i18n}}
             </ng-container>
           </ng-template>
         </nz-form-control>

@@ -1,4 +1,4 @@
-<page-header [breadcrumb]="breadcrumb" title="{{'app.label.init' | i18n}} Cloud Backup">
+<page-header [breadcrumb]="breadcrumb" title="{{'app.label.init' | i18n}} Cloud Backup"  [action]="action">
   <ng-template #breadcrumb>
     <nz-breadcrumb [nzSeparator]="iconTemplate">
       <nz-breadcrumb-item><a [routerLink]="['/']">{{
@@ -13,6 +13,13 @@
   <ng-template #action>
     <div class="alain-custom-action text-right">
       <share-users-combobox></share-users-combobox>
+      <region-select-dropdown (regionChange)="onRegionChanged($event)"
+                              (valueChanged)="regionChanged($event)"></region-select-dropdown>
+      <project-select-dropdown #projectCombobox (valueChanged)="projectChanged($event)"
+                               (userChanged)="userChangeProject($event)"
+                               [regionId]="region"
+                               [isFirstVisit]="isFirstVisit"
+                               [disabledProject]="isLoading"></project-select-dropdown>
     </div>
   </ng-template>
 </page-header>
@@ -101,7 +108,7 @@
             <nz-row>
               <nz-col style="width: 100%">
                 <button style="width: 100%" nz-button nzSize="large" nzType="primary" (click)="showConfirmCreate()"
-                        [disabled]="form.invalid">
+                        [disabled]="form.invalid && form.controls.storage.value>0">
                   <img src="assets/imgs/wallet.svg" style="margin-right: 5px; padding-bottom: 5px;" />
                   <span [style.color]="form.invalid ? 'gray' : 'white'">{{ 'app.button.create'|i18n }}</span>
                 </button>

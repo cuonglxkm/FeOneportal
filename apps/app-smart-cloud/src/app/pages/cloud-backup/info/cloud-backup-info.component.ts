@@ -1,4 +1,4 @@
-import { Component, Inject, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
+import { ChangeDetectorRef, Component, Inject, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 import { Router } from '@angular/router';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
@@ -13,6 +13,7 @@ import { CloudBackupService } from 'src/app/shared/services/cloud-backup.service
 })
 
 export class CloudBackupInfoComponent implements OnInit,OnChanges  {
+  @Input() typeVPC:number;
   @Input() data: CloudBackup;
   isVisibleCreateAccessRule:boolean = false;
   isVisibleDeleteCloudBackup:boolean = false;
@@ -20,6 +21,7 @@ export class CloudBackupInfoComponent implements OnInit,OnChanges  {
               @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
               private notification: NzNotificationService,
               private router: Router,
+              private cdr: ChangeDetectorRef
             ) {
   }
 
@@ -49,5 +51,37 @@ export class CloudBackupInfoComponent implements OnInit,OnChanges  {
   }
   closeDeleteCloudBackup(){
     this.isVisibleDeleteCloudBackup = false;
+  }
+
+  get buttonExtend(){
+    if(this.typeVPC == 1) {
+      return false
+    }
+    if(this.data.status != 'ACTIVE' && this.data.status != 'KHOITAO' && this.data.status != 'TAMNGUNG' && this.data.status != 'SUSPENDED') {
+      return false
+    }
+    return true
+  }
+  get buttonResize(){
+    if(this.typeVPC == 1) {
+      return false
+    }
+    if(this.data.status != 'ACTIVE' && this.data.status != 'KHOITAO') {
+      return false
+    }
+    return true
+  }
+  get buttonCreateAccessRule(){
+    if(this.data.status != 'ACTIVE' && this.data.status != 'KHOITAO') {
+      return false
+    }
+    return true
+  }
+
+  get buttonDelete(){
+    if(this.data.status != 'CREATING' && this.data.status != 'EXTENDING' && this.data.status != 'RESIZING'&& this.data.status != 'DELETING') {
+      return true
+    }
+    return false
   }
 }

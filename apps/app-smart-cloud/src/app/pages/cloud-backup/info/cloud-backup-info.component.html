@@ -1,6 +1,6 @@
 <nz-row nzJustify="space-between">
   <nz-col nzSpan="24">
-    <button nz-button
+    <button nz-button *ngIf="buttonExtend"
             nzType="primary"
             nzSize="large"
             (click)="extend()">
@@ -9,7 +9,7 @@
             alt="" />
       <span class="button-text-primary">{{ 'app.button.extend' | i18n }}</span>
     </button>
-    <button nz-button
+    <button nz-button *ngIf="buttonResize"
             nzType="primary"
             nzSize="large"
             (click)="resize()">
@@ -18,7 +18,7 @@
             alt="" />
       <span class="button-text-primary">{{ 'app.button.resize' | i18n }}</span>
     </button>
-    <button nz-button
+    <button nz-button *ngIf="buttonCreateAccessRule || buttonDelete"
             nzType="primary"
             nzSize="large"
             nz-dropdown
@@ -31,8 +31,8 @@
     </button>
     <nz-dropdown-menu #menu="nzDropdownMenu">
       <ul nz-menu>
-        <li nz-menu-item (click)="openCreateAccessRule()">{{'app.create'| i18n}} Access rule</li>
-        <li nz-menu-item (click)="openDeleteCloudBackup()">{{'app.delete'| i18n}}</li>
+        <li *ngIf="buttonCreateAccessRule" nz-menu-item (click)="openCreateAccessRule()">{{'app.create'| i18n}} Access rule</li>
+        <li *ngIf="buttonDelete" nz-menu-item (click)="openDeleteCloudBackup()">{{'app.delete'| i18n}}</li>
       </ul>
     </nz-dropdown-menu>
   </nz-col>
@@ -102,5 +102,5 @@
   </nz-card>
 </nz-content>
 
-<one-portal-create-access-rule [isVisibleCreateAccessRule]="isVisibleCreateAccessRule" (onCancel)="closeCreateAccessRule()"></one-portal-create-access-rule>
+<one-portal-create-access-rule [cloudBackup]="data" [isVisibleCreateAccessRule]="isVisibleCreateAccessRule" (onCancel)="closeCreateAccessRule()"></one-portal-create-access-rule>
 <one-portal-delete-cloud-backup [(isVisible)]="isVisibleDeleteCloudBackup" [cloudBackupData]="data"></one-portal-delete-cloud-backup>

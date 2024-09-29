@@ -33,7 +33,7 @@
   <ng-container *ngSwitchCase="false">
     <nz-tabset>
       <nz-tab nzTitle="Cloud Backup">
-        <app-cloud-backup-info [data]="cloudBackup"></app-cloud-backup-info>
+        <app-cloud-backup-info [typeVPC]="typeVPC" [data]="cloudBackup"></app-cloud-backup-info>
       </nz-tab>
       <nz-tab nzTitle="Access rule">
         <app-access-rule-list [cloudBackup]="cloudBackup"></app-access-rule-list>

@@ -10,6 +10,7 @@ import { BaseService } from './base.service';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { BaseResponse } from '../../../../../../libs/common-utils/src';
 import { AccessRule, CloudBackup, CreateAccessRule } from 'src/app/pages/cloud-backup/cloud-backup.model';
+import { urlencoded } from 'express';
 
 @Injectable({
   providedIn: 'root',
@@ -35,7 +36,7 @@ export class CloudBackupService extends BaseService {
       param = param.append('pageNumber', currentPage);
 
     return this.http
-      .get<BaseResponse<CloudBackup[]>>(
+      .get<BaseResponse<AccessRule[]>>(
         this.baseUrl + this.ENDPOINT.provisions + `/cloud-backup/${cloudBackupId}/pagingsgrule`,
         {
           params: param,
@@ -81,7 +82,7 @@ export class CloudBackupService extends BaseService {
     );
   }
   createAccessRule(cloudBackupId:number,accessRule: CreateAccessRule): Observable<AccessRule> {
-    return this.http.post<AccessRule>(this.baseUrl + this.ENDPOINT.provisions + `/cloud-backup/${cloudBackupId}/sgrule?port=${accessRule.port}&source=${accessRule.source}`, null, {headers: this.getHeaders().headers})
+    return this.http.post<AccessRule>(this.baseUrl + this.ENDPOINT.provisions + `/cloud-backup/${cloudBackupId}/sgrule?port=${accessRule.port}&source=${encodeURIComponent(accessRule.source)}`, null, {headers: this.getHeaders().headers})
   }
   updateAccessRule(accessRule: AccessRule): Observable<AccessRule> {
     return new BehaviorSubject<AccessRule>(null);

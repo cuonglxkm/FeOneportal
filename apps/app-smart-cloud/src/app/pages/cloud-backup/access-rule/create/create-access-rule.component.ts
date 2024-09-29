@@ -3,12 +3,16 @@ import {
   EventEmitter,
   Inject,
   Input,
+  OnChanges,
   Output,
+  SimpleChanges,
 } from '@angular/core';
 import {
+  AbstractControl,
   FormControl,
   FormGroup,
   NonNullableFormBuilder,
+  ValidationErrors,
   Validators,
 } from '@angular/forms';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
@@ -23,7 +27,7 @@ import { AccessRule, CloudBackup, CreateAccessRule } from '../../cloud-backup.mo
   templateUrl: './create-access-rule.component.html',
   styleUrls: ['./create-access-rule.component.less'],
 })
-export class CreateAccessRulePopupComponent {
+export class CreateAccessRulePopupComponent implements OnChanges {
   @Input() isVisibleCreateAccessRule: boolean;
   @Input() cloudBackup: CloudBackup;
   @Output() onOk = new EventEmitter();
@@ -35,10 +39,14 @@ export class CreateAccessRulePopupComponent {
     port: FormControl<number>;
     source: FormControl<string>;
   }> = this.fb.group({
-    port: [443, Validators.required],
-    source: ['', [Validators.required, Validators.pattern(IP_ADDRESS_REGEX)]],
+    port: [{ value: 443, disabled: true }, Validators.required],
+    source: ['', [Validators.required,this.notStartWith0000Validator, Validators.pattern(/^(25[0-5]|2[0-4]\d|1\d{2}|\d{1,2})(\.(25[0-5]|2[0-4]\d|1\d{2}|\d{1,2})){3}(\/(3[0-2]|[12]?\d))?$/)]],
   });
 
+  notStartWith0000Validator(control: AbstractControl): ValidationErrors | null {
+    const forbidden = control.value?.startsWith('0.0.0.0');
+    return forbidden ? { 'startsWith0000': true } : null;
+  }
 
   constructor(
     private fb: NonNullableFormBuilder,
@@ -52,13 +60,19 @@ export class CreateAccessRulePopupComponent {
     this.onCancel.emit(false)
   }
 
+  ngOnChanges(changes: SimpleChanges): void {
+    console.log("changessssssssssssssssssssssssssssssssss",changes)
+    console.log("cc",this.cloudBackup);
+  }
   ngOnInit(): void {
     
+    console.log("ádasdasd",this.cloudBackup);
   }
 
-  async handleCreate() {
+  handleCreate() {
     this.isLoading = true;
-    var accessRule = this.form.value as CreateAccessRule;
+    console.log("zzz",this.cloudBackup);
+    var accessRule = this.form.getRawValue() as CreateAccessRule;
     this.cloudBackupService.createAccessRule(this.cloudBackup.id, accessRule).subscribe({
       next: (data) => {
         this.isLoading = false;

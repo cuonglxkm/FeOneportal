@@ -232,6 +232,8 @@ export class CloudBackupExtendComponent implements OnInit {
     setTimeout(() => {
       //this.getListVolume(true);
     }, 2500);
+    
+    this.navigateToInfo();
   }
 
   onRegionChanged(region: RegionModel) {
@@ -243,10 +245,12 @@ export class CloudBackupExtendComponent implements OnInit {
     this.project = project?.id;
     this.typeVPC = project?.type;
     this.isLoading = true;
-    this.navigateToVolume();
+  }
+  userChangeProject(project: ProjectModel) {
+    this.navigateToInfo();
   }
 
-  navigateToVolume(){
-    //this.router.navigate(['/app-smart-cloud/cloud-backup']);
+  navigateToInfo(){
+    this.router.navigate(['/app-smart-cloud/cloud-backup']);
   }
 }

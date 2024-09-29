@@ -9,7 +9,7 @@ import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { debounceTime, Subject } from 'rxjs';
 import { OrderService } from 'src/app/shared/services/order.service';
 import { WafService } from 'src/app/shared/services/waf.service';
-import { RegionModel, slider } from '../../../../../../../libs/common-utils/src';
+import { ProjectModel, RegionModel, slider } from '../../../../../../../libs/common-utils/src';
 import {
   DataPayment,
   ItemPayment,
@@ -71,6 +71,8 @@ export class CloudBackupResizeComponent implements OnInit {
   maxBlock: number = 0;
   storage: number = 0;
   priceType: any;
+  isFirstVisit: boolean =true;
+  typeVPC: number;
   closePopupError() {
     this.isVisiblePopupError = false;
   }
@@ -335,9 +337,22 @@ export class CloudBackupResizeComponent implements OnInit {
     setTimeout(() => {
       //this.getListVolume(true);
     }, 2500);
+    this.navigateToInfo();
   }
 
   onRegionChanged(region: RegionModel) {
     this.region = region.regionId;
+  }
+  projectChanged(project: ProjectModel) {
+    this.isFirstVisit = false;
+    this.project = project?.id;
+    this.typeVPC = project?.type;
+    this.isLoading = true;
+  }
+  userChangeProject(project: ProjectModel) {
+    this.navigateToInfo();
+  }
+  navigateToInfo(){
+    this.router.navigate(['/app-smart-cloud/cloud-backup']);
   }
 }

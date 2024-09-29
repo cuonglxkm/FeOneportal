@@ -4,10 +4,9 @@ import { Router } from '@angular/router';
 import { I18NService } from '@core';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
-import { NguCarouselConfig } from '@ngu/carousel';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { debounceTime, Subject } from 'rxjs';
-import { NAME_REGEX, USERNAME_REGEX } from 'src/app/shared/constants/constants';
+import { NAME_REGEX } from 'src/app/shared/constants/constants';
 import { OrderItemObject } from 'src/app/shared/models/price';
 import { ObjectStorageService } from 'src/app/shared/services/object-storage.service';
 import { OrderService } from 'src/app/shared/services/order.service';
@@ -16,7 +15,6 @@ import { InstancesService } from '../../instances/instances.service';
 import { ProjectModel, RegionModel, slider } from '../../../../../../../libs/common-utils/src';
 import { PriceType } from 'src/app/core/models/enum';
 import { LoadingService } from '@delon/abc/loading';
-import { DecimalPipe } from '@angular/common';
 import { CloudBackupService } from 'src/app/shared/services/cloud-backup.service';
 import { CloudBackupCreate } from 'src/app/shared/models/cloud-backup-init';
 import { ConfigurationsService } from 'src/app/shared/services/configurations.service';
@@ -53,13 +51,12 @@ export class CloudBackupCreateComponent implements OnInit {
   stepBlock: number = 0;
   maxBlock: number = 0;
   storage: number = 0;
-  isFirstVisit: boolean;
+  isFirstVisit: boolean=true;
   typeVPC: number;
   closePopupError() {
     this.isVisiblePopupError = false;
   }
 
-  
   form: FormGroup = this.fb.group({
     name: ['', [Validators.required, Validators.pattern(NAME_REGEX)]],
     storage: [4, Validators.required],
@@ -77,8 +74,6 @@ export class CloudBackupCreateComponent implements OnInit {
     private orderService: OrderService,
     private fb: FormBuilder,
     private service: ObjectStorageService,
-    private cloudBackupService: CloudBackupService,
-    private loadingSrv: LoadingService,
     private configurationsService: ConfigurationsService,
   ) {
 
@@ -176,7 +171,7 @@ export class CloudBackupCreateComponent implements OnInit {
     this.cloudBackupCreate.isSendMail = true;
     this.cloudBackupCreate.name = this.form.controls.name.value;
     this.cloudBackupCreate.storage = this.form.controls.storage.value;
-    this.cloudBackupCreate.quotaCloudBackup = this.form.controls.storage.value;
+    //this.cloudBackupCreate.quotaCloudBackup = this.form.controls.storage.value;
     this.cloudBackupCreate.description = this.form.controls.description.value;
     this.cloudBackupCreate.projectId =this.project;
     this.cloudBackupCreate.regionId = this.region;
@@ -246,7 +241,7 @@ export class CloudBackupCreateComponent implements OnInit {
     this.initCloudBackup();
     let specification = JSON.stringify(this.cloudBackupCreate);
     let orderItemOS = new OrderItem();
-    orderItemOS.orderItemQuantity = 1;//this.form.controls.capacity.value;
+    orderItemOS.orderItemQuantity = 1;
     orderItemOS.specification = specification;
     orderItemOS.specificationType = 'cloudbackup_create';
     orderItemOS.price = this.totalAmount;
@@ -313,6 +308,7 @@ export class CloudBackupCreateComponent implements OnInit {
     this.inputChangeBlock.next(aa);
   }
   regionChanged(region: RegionModel) {
+    console.log('regionChanged', region);
     this.region = region.regionId;
     if (this.projectCombobox) {
       this.projectCombobox.loadProjects(true, region.regionId);
@@ -320,12 +316,23 @@ export class CloudBackupCreateComponent implements OnInit {
     setTimeout(() => {
       //this.getListVolume(true);
     }, 2500);
+    this.navigateToInfo();
   }
   onRegionChanged(region: RegionModel) {
+    console.log('onregionChanged', region);
     this.region = region.regionId;
   }
   projectChanged(project: ProjectModel) {
     this.project = project?.id;
     this.typeVPC = project?.type;
+    if(this.typeVPC == 1){
+      this.navigateToInfo();
+    }
+  }
+  userChangeProject(project: ProjectModel) {
+    this.navigateToInfo();
+  }
+  navigateToInfo(){
+    this.router.navigate(['/app-smart-cloud/cloud-backup']);
   }
 }

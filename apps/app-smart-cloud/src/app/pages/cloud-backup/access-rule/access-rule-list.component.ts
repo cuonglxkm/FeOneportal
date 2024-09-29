@@ -6,7 +6,7 @@ import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from '@core';
 import { debounceTime, Subject, Subscription } from 'rxjs';
 import { BaseResponse, NotificationService } from '../../../../../../../libs/common-utils/src';
-import { CloudBackup } from '../cloud-backup.model';
+import { AccessRule, CloudBackup } from '../cloud-backup.model';
 import { CloudBackupService } from 'src/app/shared/services/cloud-backup.service';
 
 @Component({
@@ -30,7 +30,7 @@ export class AccessRuleListComponent implements OnInit, OnDestroy {
   pageSize: number = 10;
   pageIndex: number = 1;
 
-  response: BaseResponse<CloudBackup[]>;
+  response: BaseResponse<AccessRule[]>;
 
   isBegin: boolean = false;
 
@@ -69,7 +69,7 @@ export class AccessRuleListComponent implements OnInit, OnDestroy {
     ).subscribe(res => {
       if (!this.enterPressed) {
         this.value = res.trim();
-        this.getListCloudBackup();
+        this.getListAccessRule();
       }
     });
   }
@@ -80,28 +80,22 @@ export class AccessRuleListComponent implements OnInit, OnDestroy {
     this.enterPressed = true;
     const value = (event.target as HTMLInputElement).value;
     this.value = value.trim();
-    this.getListCloudBackup();
-  }
-
-  onChange(value) {
-    this.pageIndex = 1;
-    this.selectedValue = value;
-    this.getListCloudBackup();
+    this.getListAccessRule();
   }
 
   onPageSizeChange(value) {
     this.pageSize = value;
-    this.getListCloudBackup();
+    this.getListAccessRule();
   }
 
   onPageIndexChange(value) {
     this.pageIndex = value;
-    this.getListCloudBackup();
+    this.getListAccessRule();
   }
 
   wafInstance: string = '';
 
-  getListCloudBackup() {
+  getListAccessRule() {
     this.isLoading = true;
     this.cloudBackupService.getAccessRules(this.cloudBackup.id, this.pageSize, this.pageIndex, this.value)
       .pipe(debounceTime(500))
@@ -109,7 +103,7 @@ export class AccessRuleListComponent implements OnInit, OnDestroy {
         next: data => {
           if (data) {
             this.isLoading = false;
-            this.response = data;
+            this.response = data
           } else {
             this.isLoading = false;
             this.response = null;
@@ -140,12 +134,12 @@ export class AccessRuleListComponent implements OnInit, OnDestroy {
 
   //delete
   handleOkDelete() {
-    this.getListCloudBackup();
+    this.getListAccessRule();
   }
 
   //update
   handleOkUpdate() {
-    this.getListCloudBackup();
+    this.getListAccessRule();
   }
 
   //create schedule snapshot
@@ -157,7 +151,7 @@ export class AccessRuleListComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.selectedValue = this.options[0].value;
     this.onChangeInputChange();
-    this.getListCloudBackup();
+    this.getListAccessRule();
     this.notificationService.connection.on('UpdateCloudBackup', (message) => {
       if (message) {
         switch (message.actionType) {
@@ -169,7 +163,7 @@ export class AccessRuleListComponent implements OnInit, OnDestroy {
           case 'EXTENDED':
           case 'DELETED':
           case 'DELETING':
-            this.getListCloudBackup();
+            this.getListAccessRule();
             break;
         }
       }

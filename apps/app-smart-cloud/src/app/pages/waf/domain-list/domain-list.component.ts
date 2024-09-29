@@ -10,6 +10,7 @@ import { BaseResponse, NotificationService } from '../../../../../../../libs/com
 import { WafService } from 'src/app/shared/services/waf.service';
 import { debug, error } from 'console';
 import { SslCertDTO, UpdatePolicies, WafDomain } from '../waf.model';
+import { PolicyService } from 'src/app/shared/services/policy.service';
 
 
 @Component({
@@ -53,12 +54,15 @@ export class WafDomainListComponent implements OnInit, OnDestroy {
   private searchSubscription: Subscription;
   private enterPressed: boolean = false;
   expandSet = new Set<number>();
+  isCreateWaf: boolean;
+  isCreateWafDomain: boolean;
 
   constructor(@Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
               private router: Router,
               private wafService: WafService,
               private notificationService: NotificationService,
               private notification: NzNotificationService,
+              private policyService: PolicyService,
               @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService) {
   }
 
@@ -288,6 +292,7 @@ export class WafDomainListComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    this.checkPermission();
     this.selectedValue = this.options[0].value;
     this.onChangeInputChange();
     this.getListWafDomain();
@@ -308,5 +313,18 @@ export class WafDomainListComponent implements OnInit, OnDestroy {
         }
       }
     });
+  }
+  checkPermission() {
+    this.isCreateWaf = this.policyService.hasPermission("order:Create") &&
+      this.policyService.hasPermission("order:GetOrderAmount") &&
+      this.policyService.hasPermission("waf:WafCertificateList") &&
+      this.policyService.hasPermission("payment:Get") &&
+      this.policyService.hasPermission("configuration:Get") &&
+      this.policyService.hasPermission("offer:Search") &&
+      this.policyService.hasPermission("order:Get");
+    this.isCreateWafDomain = 
+      this.policyService.hasPermission("waf:WafDomainCreate") &&
+      this.policyService.hasPermission("waf:WafCertificateList") && 
+      this.policyService.hasPermission("waf:List");
   }
 }

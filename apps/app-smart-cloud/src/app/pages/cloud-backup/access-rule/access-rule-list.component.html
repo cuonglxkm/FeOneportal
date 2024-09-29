@@ -53,7 +53,7 @@
         <td nzLeft nzBreakWord>{{ data.port }}</td>
         <!-- <td nzLeft nzBreakWord>{{ data.enddate | date : "dd/MM/yyyy" }}</td> -->
         <td nzLeft nzBreakWord>
-          <one-portal-edit-access-rule [accessRule]="data"></one-portal-edit-access-rule>
+          <!-- <one-portal-edit-access-rule [accessRule]="data"></one-portal-edit-access-rule> -->
           <one-portal-delete-access-rule [cloudBackup]="cloudBackup" [accessRuleData]="data"></one-portal-delete-access-rule>
         </td>
       </tr>
@@ -62,4 +62,4 @@
   </nz-card>
 </nz-content>
 
-<one-portal-create-access-rule [isVisibleCreateAccessRule]="isVisibleCreateAccessRule" (onCancel)="closeCreatePopup()"></one-portal-create-access-rule>
+<one-portal-create-access-rule [cloudBackup]="cloudBackup" [isVisibleCreateAccessRule]="isVisibleCreateAccessRule" (onCancel)="closeCreatePopup()"></one-portal-create-access-rule>

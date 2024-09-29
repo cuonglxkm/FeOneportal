@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, Inject, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, Inject, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { I18NService } from '@core';
@@ -13,7 +13,7 @@ import { ObjectStorageService } from 'src/app/shared/services/object-storage.ser
 import { OrderService } from 'src/app/shared/services/order.service';
 import { DataPayment, ItemPayment, OfferItem, Order, OrderItem } from '../../instances/instances.model';
 import { InstancesService } from '../../instances/instances.service';
-import { slider } from '../../../../../../../libs/common-utils/src';
+import { ProjectModel, RegionModel, slider } from '../../../../../../../libs/common-utils/src';
 import { PriceType } from 'src/app/core/models/enum';
 import { LoadingService } from '@delon/abc/loading';
 import { DecimalPipe } from '@angular/common';
@@ -21,6 +21,7 @@ import { CloudBackupService } from 'src/app/shared/services/cloud-backup.service
 import { CloudBackupCreate } from 'src/app/shared/models/cloud-backup-init';
 import { ConfigurationsService } from 'src/app/shared/services/configurations.service';
 import { VpcService } from 'src/app/shared/services/vpc.service';
+import { ProjectSelectDropdownComponent } from 'src/app/shared/components/project-select-dropdown/project-select-dropdown.component';
 
 @Component({
   selector: 'one-portal-cloud-backup-create-vpc',
@@ -31,6 +32,7 @@ import { VpcService } from 'src/app/shared/services/vpc.service';
 export class CloudBackupCreateVpcComponent implements OnInit {
   region = JSON.parse(localStorage.getItem('regionId'));
   project = JSON.parse(localStorage.getItem('projectId'));
+  @ViewChild('projectCombobox') projectCombobox: ProjectSelectDropdownComponent;
   listOffers: OfferItem[] = [];
   today = new Date();
   expiredDate = new Date();
@@ -54,13 +56,15 @@ export class CloudBackupCreateVpcComponent implements OnInit {
   maxBlock: number = 0;
   storage: number = 0;
   isLoading=false;
+  isFirstVisit: boolean = true;
+  typeVPC: number;
   closePopupError() {
     this.isVisiblePopupError = false;
   }
 
   form: FormGroup = this.fb.group({
     name: ['', [Validators.required, Validators.pattern(NAME_REGEX)]],
-    storage: [{value: 1, disabled: true}, Validators.required],
+    storage: [{value: 0, disabled: true}, Validators.required],
     description: ['',[Validators.maxLength(255)]],
     time: [1]
   });
@@ -186,6 +190,8 @@ export class CloudBackupCreateVpcComponent implements OnInit {
     this.cloudBackupCreate.description = this.form.controls.description.value;
     this.cloudBackupCreate.quotaCloudBackup = this.form.controls.storage.value;
     this.cloudBackupCreate.projectId = this.project;
+    this.cloudBackupCreate.vpcId = this.project;
+    this.cloudBackupCreate.regionId = this.region;
   }
   isInvalid: boolean = false
 
@@ -305,5 +311,36 @@ export class CloudBackupCreateVpcComponent implements OnInit {
   private inputChangeBlock = new Subject<number>();
   onInputChange(value: number): void {
     this.inputChangeBlock.next(value);
+  }
+  regionChanged(region: RegionModel) {
+    this.region = region.regionId;
+    if (this.projectCombobox) {
+      this.projectCombobox.loadProjects(true, region.regionId);
+    }
+    setTimeout(() => {
+      //this.getListVolume(true);
+    }, 2500);
+    this.navigateToInfo();
+  }
+
+  onRegionChanged(region: RegionModel) {
+    this.region = region.regionId;
+  }
+
+  projectChanged(project: ProjectModel) {
+    this.isFirstVisit = false;
+    this.project = project?.id;
+    this.typeVPC = project?.type;
+    this.isLoading = true;
+    if(this.typeVPC !== 1){
+      this.navigateToInfo();
+    }
+  }
+  userChangeProject(project: ProjectModel) {
+    this.navigateToInfo();
+  }
+
+  navigateToInfo(){
+    this.router.navigate(['/app-smart-cloud/cloud-backup']);
   }
 }

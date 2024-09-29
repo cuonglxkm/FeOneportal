@@ -49,26 +49,23 @@ export class CloudBackupComponent implements OnInit {
   }
   
   regionChanged(region: RegionModel) {
+    console.log('regionChanged', region);
     this.region = region.regionId;
-    if (this.projectCombobox) {
-      this.projectCombobox.loadProjects(true, region.regionId);
-    }
-    setTimeout(() => {
-      //this.getListVolume(true);
-    }, 2500);
   }
 
   onRegionChanged(region: RegionModel) {
+    console.log('onRegionChanged', region);
     this.region = region.regionId;
+    
   }
 
   projectChanged(project: ProjectModel) {
-    console.log(project);
     this.isFirstVisit = false;
     this.project = project?.id;
     this.typeVPC = project?.type;
     this.getCloudBackup();
   }
+
   navigateToCreateCloudBackup() {
     if(this.typeVPC==1){
       this.router.navigate(['/app-smart-cloud/cloud-backup/vpc/create']);
